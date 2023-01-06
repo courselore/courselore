@@ -579,7 +579,7 @@ export default async (application: Application): Promise<void> => {
 
               <button
                 class="dropdown--menu--item button button--transparent"
-                javascript="${javascript`
+                javascript-TODO="${javascript`
                   this.onclick = () => {
                     const content = this.closest("[data-content-source]").getAttribute("data-content-source");
                     const newMessage = document.querySelector('[key="new-message"]');
@@ -625,7 +625,7 @@ export default async (application: Application): Promise<void> => {
                 ? html`
                     <button
                       class="dropdown--menu--item button button--transparent"
-                      javascript="${javascript`
+                      javascript-TODO="${javascript`
                         leafac.setTippy({
                           event,
                           element: this,
@@ -694,7 +694,7 @@ export default async (application: Application): Promise<void> => {
 
               <button
                 class="dropdown--menu--item button button--transparent"
-                javascript="${javascript`
+                javascript-TODO="${javascript`
                   leafac.setTippy({
                     event,
                     element: this,
@@ -741,7 +741,7 @@ export default async (application: Application): Promise<void> => {
                 ? html`
                     <button
                       class="dropdown--menu--item button button--transparent"
-                      javascript="${javascript`
+                      javascript-TODO="${javascript`
                         this.onmouseenter = this.onfocus = async () => {
                           const messageEdit = this.closest('[key^="message/"]').querySelector('[key="message--edit"]');
                           const messageEditForm = messageEdit.querySelector('[key="form"]');
@@ -874,7 +874,7 @@ export default async (application: Application): Promise<void> => {
                 ? html`
                     <button
                       class="dropdown--menu--item button button--transparent"
-                      javascript="${javascript`
+                      javascript-TODO="${javascript`
                         leafac.setTippy({
                           event,
                           element: this,
@@ -944,7 +944,7 @@ export default async (application: Application): Promise<void> => {
                     <div>
                       <button
                         class="dropdown--menu--item button button--transparent"
-                        javascript="${javascript`
+                        javascript-TODO="${javascript`
                           leafac.setTippy({
                             event,
                             element: this,
@@ -1079,7 +1079,7 @@ export default async (application: Application): Promise<void> => {
               >
                 <button
                   class="button button--blue"
-                  javascript="${javascript`
+                  javascript-TODO="${javascript`
                     leafac.setTippy({
                       event,
                       element: this,
@@ -1088,13 +1088,13 @@ export default async (application: Application): Promise<void> => {
                         content: ${JSON.stringify(html`
                           <span class="keyboard-shortcut">
                             <span
-                              javascript="${javascript`
+                              javascript-TODO="${javascript`
                                   this.hidden = leafac.isAppleDevice;
                                 `}"
                               >Ctrl+Enter</span
                             ><span
                               class="keyboard-shortcut--cluster"
-                              javascript="${javascript`
+                              javascript-TODO="${javascript`
                                   this.hidden = !leafac.isAppleDevice;
                                 `}"
                               ><i class="bi bi-command"></i
@@ -1116,7 +1116,7 @@ export default async (application: Application): Promise<void> => {
                 <button
                   type="reset"
                   class="button button--transparent"
-                  javascript="${javascript`
+                  javascript-TODO="${javascript`
                     this.onclick = () => {
                       this.closest('[key^="message/"]').querySelector('[key="message--show"]').hidden = false;
                       this.closest('[key^="message/"]').querySelector('[key="message--edit"]').hidden = true;
@@ -1197,7 +1197,7 @@ export default async (application: Application): Promise<void> => {
                     >
                       <time
                         datetime="${new Date(reading.createdAt).toISOString()}"
-                        javascript="${javascript`
+                        javascript-TODO="${javascript`
                           leafac.relativizeDateTimeElement(this, { capitalize: true });
                         `}"
                       ></time>
@@ -1743,7 +1743,7 @@ export default async (application: Application): Promise<void> => {
                     >
                       <time
                         datetime="${new Date(like.createdAt).toISOString()}"
-                        javascript="${javascript`
+                        javascript-TODO="${javascript`
                           leafac.relativizeDateTimeElement(this, { capitalize: true });
                         `}"
                       ></time>

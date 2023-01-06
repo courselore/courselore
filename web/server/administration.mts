@@ -399,7 +399,7 @@ export default async (application: Application): Promise<void> => {
               type="text"
               class="input--text"
               placeholder="Filter…"
-              javascript="${javascript`
+              javascript-TODO="${javascript`
                 this.isModified = false;
 
                 this.oninput = () => {
@@ -450,7 +450,7 @@ export default async (application: Application): Promise<void> => {
                   display: flex;
                   gap: var(--space--2);
                 `}"
-                javascript="${javascript`
+                javascript-TODO="${javascript`
                   this.onbeforemorph = (event) => !event?.detail?.liveUpdate;
                 `}"
               >
@@ -504,7 +504,7 @@ export default async (application: Application): Promise<void> => {
                           line-height: var(--line-height--xs);
                           display: inline-flex;
                         `}"
-                        javascript="${javascript`
+                        javascript-TODO="${javascript`
                           leafac.setTippy({
                             event,
                             element: this,
@@ -548,7 +548,7 @@ export default async (application: Application): Promise<void> => {
                           datetime="${new Date(
                             user.lastSeenOnlineAt
                           ).toISOString()}"
-                          javascript="${javascript`
+                          javascript-TODO="${javascript`
                             leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
                           `}"
                         ></time>
@@ -574,7 +574,7 @@ export default async (application: Application): Promise<void> => {
                         class="button button--tight button--tight--inline button--transparent ${textColorsSystemRole[
                           user.systemRole
                         ]}"
-                        javascript="${javascript`
+                        javascript-TODO="${javascript`
                           leafac.setTippy({
                             event,
                             element: this,
@@ -617,7 +617,7 @@ export default async (application: Application): Promise<void> => {
                                               $${isOnlyAdministrator
                                                 ? html`
                                                     type="button"
-                                                    javascript="${javascript`
+                                                    javascript-TODO="${javascript`
                                                         leafac.setTippy({
                                                           event,
                                                           element: this,
@@ -632,7 +632,7 @@ export default async (application: Application): Promise<void> => {
                                                 : isSelf
                                                 ? html`
                                                     type="button"
-                                                    javascript="${javascript`
+                                                    javascript-TODO="${javascript`
                                                         leafac.setTippy({
                                                           event,
                                                           element: this,
