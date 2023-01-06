@@ -1514,7 +1514,7 @@ export default async (application: Application): Promise<void> => {
                           type="checkbox"
                           class="visually-hidden input--radio-or-checkbox--multilabel"
                           $${search !== undefined ? html`checked` : html``}
-                          javascript-TODO="${javascript`
+                          javascript-TODO="${javascript_TODO`
                             this.isModified = false;
 
                             this.onchange = () => {
@@ -1551,7 +1551,7 @@ export default async (application: Application): Promise<void> => {
                           filters.isQuick !== "true"
                             ? html`checked`
                             : html``}
-                          javascript-TODO="${javascript`
+                          javascript-TODO="${javascript_TODO`
                             this.isModified = false;
                             
                             this.onchange = () => {
@@ -1625,7 +1625,7 @@ export default async (application: Application): Promise<void> => {
                         flex-direction: column;
                         gap: var(--space--1);
                       `}"
-                      javascript-TODO="${javascript`
+                      javascript-TODO="${javascript_TODO`
                         this.isModified = false;
                       `}"
                     >
@@ -1650,7 +1650,7 @@ export default async (application: Application): Promise<void> => {
                         />
                         <button
                           class="button button--tight button--tight--inline button--transparent"
-                          javascript-TODO="${javascript`
+                          javascript-TODO="${javascript_TODO`
                             leafac.setTippy({
                               event,
                               element: this,
@@ -1680,7 +1680,7 @@ export default async (application: Application): Promise<void> => {
                                   { addQueryPrefix: true }
                                 )}"
                                 class="button button--tight button--tight--inline button--transparent"
-                                javascript-TODO="${javascript`
+                                javascript-TODO="${javascript_TODO`
                                     leafac.setTippy({
                                       event,
                                       element: this,
@@ -1735,7 +1735,7 @@ export default async (application: Application): Promise<void> => {
                                   ? html``
                                   : html`disabled`}
                                 class="visually-hidden input--radio-or-checkbox--multilabel"
-                                javascript-TODO="${javascript`
+                                javascript-TODO="${javascript_TODO`
                                     this.onchange = () => {
                                       if (this.checked) this.closest("form").querySelector('[name="conversations[filters][isUnread]"][value="false"]').checked = false;
                                     };
@@ -1766,7 +1766,7 @@ export default async (application: Application): Promise<void> => {
                                   ? html``
                                   : html`disabled`}
                                 class="visually-hidden input--radio-or-checkbox--multilabel"
-                                javascript-TODO="${javascript`
+                                javascript-TODO="${javascript_TODO`
                                     this.onchange = () => {
                                       if (this.checked) this.closest("form").querySelector('[name="conversations[filters][isUnread]"][value="true"]').checked = false;
                                     };
@@ -1813,10 +1813,10 @@ export default async (application: Application): Promise<void> => {
                                       ? html``
                                       : html`disabled`}
                                     class="visually-hidden input--radio-or-checkbox--multilabel"
-                                    javascript-TODO="${javascript`
+                                    javascript-TODO="${javascript_TODO`
                                         ${
                                           conversationType === "question"
-                                            ? javascript`
+                                            ? javascript_TODO`
                                                 this.onchange = () => {
                                                   if (this.checked) return;
                                                   for (const element of this.closest("form").querySelectorAll('[name="conversations[filters][isResolved]"]'))
@@ -1824,14 +1824,14 @@ export default async (application: Application): Promise<void> => {
                                                 };
                                               `
                                             : conversationType === "note"
-                                            ? javascript`
+                                            ? javascript_TODO`
                                                 this.onchange = () => {
                                                   if (this.checked) return;
                                                   for (const element of this.closest("form").querySelectorAll('[name="conversations[filters][isAnnouncement]"]'))
                                                     element.checked = false;
                                                 };
                                               `
-                                            : javascript``
+                                            : javascript_TODO``
                                         }
                                       `}"
                                   />
@@ -1881,7 +1881,7 @@ export default async (application: Application): Promise<void> => {
                                   ? html``
                                   : html`disabled`}
                                 class="visually-hidden input--radio-or-checkbox--multilabel"
-                                javascript-TODO="${javascript`
+                                javascript-TODO="${javascript_TODO`
                                     this.onchange = () => {
                                       if (!this.checked) return;
                                       const form = this.closest("form");
@@ -1915,7 +1915,7 @@ export default async (application: Application): Promise<void> => {
                                   ? html``
                                   : html`disabled`}
                                 class="visually-hidden input--radio-or-checkbox--multilabel"
-                                javascript-TODO="${javascript`
+                                javascript-TODO="${javascript_TODO`
                                     this.onchange = () => {
                                       if (!this.checked) return;
                                       const form = this.closest("form");
@@ -1962,7 +1962,7 @@ export default async (application: Application): Promise<void> => {
                                   ? html``
                                   : html`disabled`}
                                 class="visually-hidden input--radio-or-checkbox--multilabel"
-                                javascript-TODO="${javascript`
+                                javascript-TODO="${javascript_TODO`
                                     this.onchange = () => {
                                       if (!this.checked) return;
                                       const form = this.closest("form");
@@ -1996,7 +1996,7 @@ export default async (application: Application): Promise<void> => {
                                   ? html``
                                   : html`disabled`}
                                 class="visually-hidden input--radio-or-checkbox--multilabel"
-                                javascript-TODO="${javascript`
+                                javascript-TODO="${javascript_TODO`
                                     this.onchange = () => {
                                       if (!this.checked) return;
                                       const form = this.closest("form");
@@ -2079,7 +2079,7 @@ export default async (application: Application): Promise<void> => {
                             <button
                               type="button"
                               class="button button--tight button--tight--inline button--transparent"
-                              javascript-TODO="${javascript`
+                              javascript-TODO="${javascript_TODO`
                                   leafac.setTippy({
                                     event,
                                     element: this,
@@ -2117,7 +2117,7 @@ export default async (application: Application): Promise<void> => {
                                   ? html``
                                   : html`disabled`}
                                 class="visually-hidden input--radio-or-checkbox--multilabel"
-                                javascript-TODO="${javascript`
+                                javascript-TODO="${javascript_TODO`
                                     this.onchange = () => {
                                       if (this.checked) this.closest("form").querySelector('[name="conversations[filters][isPinned]"][value="false"]').checked = false;
                                     };
@@ -2148,7 +2148,7 @@ export default async (application: Application): Promise<void> => {
                                   ? html``
                                   : html`disabled`}
                                 class="visually-hidden input--radio-or-checkbox--multilabel"
-                                javascript-TODO="${javascript`
+                                javascript-TODO="${javascript_TODO`
                                     this.onchange = () => {
                                       if (this.checked) this.closest("form").querySelector('[name="conversations[filters][isPinned]"][value="true"]').checked = false;
                                     };
@@ -2175,7 +2175,7 @@ export default async (application: Application): Promise<void> => {
                                   <button
                                     type="button"
                                     class="button button--tight button--tight--inline button--transparent"
-                                    javascript-TODO="${javascript`
+                                    javascript-TODO="${javascript_TODO`
                                         leafac.setTippy({
                                           event,
                                           element: this,
@@ -2237,7 +2237,7 @@ export default async (application: Application): Promise<void> => {
                                           ? html`
                                               <span
                                                 class="text--sky"
-                                                javascript-TODO="${javascript`
+                                                javascript-TODO="${javascript_TODO`
                                                     leafac.setTippy({
                                                       event,
                                                       element: this,
@@ -2385,10 +2385,10 @@ export default async (application: Application): Promise<void> => {
                           css="${css`
                             margin-top: var(--space---2);
                           `}"
-                          javascript-TODO="${javascript`
+                          javascript-TODO="${javascript_TODO`
                             ${
                               response.locals.conversation !== undefined
-                                ? javascript`
+                                ? javascript_TODO`
                                     window.setTimeout(() => {
                                       if (event?.detail?.previousLocation?.href?.startsWith(${JSON.stringify(
                                         `https://${application.configuration.hostname}/courses/${response.locals.course.reference}`
@@ -2398,7 +2398,7 @@ export default async (application: Application): Promise<void> => {
                                       }"]')?.scrollIntoView({ block: "center" });
                                     });
                                   `
-                                : javascript``
+                                : javascript_TODO``
                             }
                           `}"
                         >
@@ -2483,7 +2483,7 @@ export default async (application: Application): Promise<void> => {
                                                   --line-height--2xs
                                                 );
                                               `}"
-                                              javascript-TODO="${javascript`
+                                              javascript-TODO="${javascript_TODO`
                                                   leafac.setTippy({
                                                     event,
                                                     element: this,
@@ -2680,10 +2680,10 @@ export default async (application: Application): Promise<void> => {
           class="${textColorsConversationParticipants[
             conversation.participants
           ]}"
-          javascript-TODO="${javascript`
+          javascript-TODO="${javascript_TODO`
             ${
               conversation.selectedParticipants.length > 1
-                ? javascript`
+                ? javascript_TODO`
                     leafac.setTippy({
                       event,
                       element: this,
@@ -2741,7 +2741,7 @@ export default async (application: Application): Promise<void> => {
                       }, 60 * 1000);
                     };
                   `
-                : javascript`
+                : javascript_TODO`
                     leafac.setTippy({
                       event,
                       element: this,
@@ -2774,7 +2774,7 @@ export default async (application: Application): Promise<void> => {
           ? html`
               <div
                 class="text--amber"
-                javascript-TODO="${javascript`
+                javascript-TODO="${javascript_TODO`
                   leafac.setTippy({
                     event,
                     element: this,
@@ -2834,7 +2834,7 @@ export default async (application: Application): Promise<void> => {
         `}"
       >
         <div
-          javascript-TODO="${javascript`
+          javascript-TODO="${javascript_TODO`
             leafac.setTippy({
               event,
               element: this,
@@ -2850,7 +2850,7 @@ export default async (application: Application): Promise<void> => {
 
         <time
           datetime="${new Date(conversation.createdAt).toISOString()}"
-          javascript-TODO="${javascript`
+          javascript-TODO="${javascript_TODO`
             leafac.relativizeDateTimeElement(this, { capitalize: true });
           `}"
         ></time>
@@ -2861,7 +2861,7 @@ export default async (application: Application): Promise<void> => {
                 Updated
                 <time
                   datetime="${new Date(conversation.updatedAt).toISOString()}"
-                  javascript-TODO="${javascript`
+                  javascript-TODO="${javascript_TODO`
                     leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
                   `}"
                 ></time>
@@ -2897,7 +2897,7 @@ export default async (application: Application): Promise<void> => {
                       ? html`
                           <span
                             class="text--sky"
-                            javascript-TODO="${javascript`
+                            javascript-TODO="${javascript_TODO`
                               leafac.setTippy({
                                 event,
                                 element: this,
@@ -3363,7 +3363,7 @@ export default async (application: Application): Promise<void> => {
                             ? html`checked`
                             : html``}
                           class="visually-hidden input--radio-or-checkbox--multilabel"
-                          javascript-TODO="${javascript`
+                          javascript-TODO="${javascript_TODO`
                             this.onchange = () => {
                               const form = this.closest("form");
                               for (const element of [form.querySelector('[name="content"]'), ...form.querySelectorAll('[name="tagsReferences[]"]')])
@@ -3374,7 +3374,7 @@ export default async (application: Application): Promise<void> => {
                               ${
                                 response.locals.enrollment.courseRole ===
                                 "staff"
-                                  ? javascript`
+                                  ? javascript_TODO`
                                       const notification = form.querySelector('[key="new-conversation--announcement"]');
                                       notification.hidden = ${JSON.stringify(
                                         conversationType !== "note"
@@ -3385,7 +3385,7 @@ export default async (application: Application): Promise<void> => {
                                             conversationType !== "note"
                                           )};
                                     `
-                                  : javascript``
+                                  : javascript_TODO``
                               }
                             };
                           `}"
@@ -3460,7 +3460,7 @@ export default async (application: Application): Promise<void> => {
                         <button
                           type="button"
                           class="button button--tight button--tight--inline button--transparent"
-                          javascript-TODO="${javascript`
+                          javascript-TODO="${javascript_TODO`
                             leafac.setTippy({
                               event,
                               element: this,
@@ -3583,7 +3583,7 @@ export default async (application: Application): Promise<void> => {
                                     ? html`
                                         <span
                                           class="text--sky"
-                                          javascript-TODO="${javascript`
+                                          javascript-TODO="${javascript_TODO`
                                               leafac.setTippy({
                                                 event,
                                                 element: this,
@@ -3676,7 +3676,7 @@ export default async (application: Application): Promise<void> => {
                     >
                       <div
                         key="participants"
-                        javascript-TODO="${javascript`
+                        javascript-TODO="${javascript_TODO`
                           leafac.setTippy({
                             event,
                             element: this,
@@ -3717,7 +3717,7 @@ export default async (application: Application): Promise<void> => {
                                               ? html`checked`
                                               : html``}
                                             class="visually-hidden input--radio-or-checkbox--multilabel"
-                                            javascript-TODO="${javascript`
+                                            javascript-TODO="${javascript_TODO`
                                                 this.isModified = false;
   
                                                 this.onchange = () => {  
@@ -3729,7 +3729,7 @@ export default async (application: Application): Promise<void> => {
                                                   ${
                                                     conversationParticipants ===
                                                     "everyone"
-                                                      ? javascript`
+                                                      ? javascript_TODO`
                                                           selectedParticipants.hidden = true;
     
                                                           for (const element of this.closest("form").querySelectorAll('[name="selectedParticipantsReferences[]"]'))
@@ -3737,7 +3737,7 @@ export default async (application: Application): Promise<void> => {
                                                         `
                                                       : conversationParticipants ===
                                                         "staff"
-                                                      ? javascript`
+                                                      ? javascript_TODO`
                                                           selectedParticipants.hidden = false;
     
                                                           for (const element of selectedParticipants.querySelectorAll('[data-enrollment-course-role="staff"]'))
@@ -3749,7 +3749,7 @@ export default async (application: Application): Promise<void> => {
                                                         `
                                                       : conversationParticipants ===
                                                         "selected-people"
-                                                      ? javascript`
+                                                      ? javascript_TODO`
                                                           selectedParticipants.hidden = false;
     
                                                           for (const element of selectedParticipants.querySelectorAll('[data-enrollment-course-role="staff"]'))
@@ -3759,7 +3759,7 @@ export default async (application: Application): Promise<void> => {
                                                           for (const element of this.closest("form").querySelectorAll('[name="selectedParticipantsReferences[]"]'))
                                                             element.disabled = false;
                                                         `
-                                                      : javascript``
+                                                      : javascript_TODO``
                                                   }
                                                 };
                                               `}"
@@ -3847,7 +3847,7 @@ export default async (application: Application): Promise<void> => {
                                                 type="text"
                                                 class="input--text"
                                                 placeholder="Filter…"
-                                                javascript-TODO="${javascript`
+                                                javascript-TODO="${javascript_TODO`
                                                     this.isModified = false;
   
                                                     this.oninput = () => {
@@ -3915,7 +3915,7 @@ export default async (application: Application): Promise<void> => {
                                                       ? html`checked`
                                                       : html``}
                                                     class="visually-hidden input--radio-or-checkbox--multilabel"
-                                                    javascript-TODO="${javascript`
+                                                    javascript-TODO="${javascript_TODO`
                                                         this.isModified = false;
   
                                                         this.onchange = () => {
@@ -3985,17 +3985,17 @@ export default async (application: Application): Promise<void> => {
                               required
                               tabindex="-1"
                               class="visually-hidden input--visible-when-enabled-and-checked"
-                              javascript-TODO="${javascript`
+                              javascript-TODO="${javascript_TODO`
                                   ${
                                     conversationParticipants ===
                                     "selected-people"
-                                      ? javascript`
+                                      ? javascript_TODO`
                                           this.onvalidate = () => {
                                             if (this.checked && [...this.closest("form").querySelectorAll('[name="selectedParticipantsReferences[]"]')].find(element => element.checked) === undefined)
                                               return "Please select at least one participant.";
                                           };
                                         `
-                                      : javascript``
+                                      : javascript_TODO``
                                   }
                                 `}"
                             />
@@ -4047,7 +4047,7 @@ export default async (application: Application): Promise<void> => {
                             key="selected-participants--button--${enrollment.reference}"
                             type="button"
                             class="button button--tight button--tight--inline button--transparent"
-                            javascript-TODO="${javascript`
+                            javascript-TODO="${javascript_TODO`
                               leafac.setTippy({
                                 event,
                                 element: this,
@@ -4110,7 +4110,7 @@ export default async (application: Application): Promise<void> => {
                           <button
                             type="button"
                             class="button button--tight button--tight--inline button--transparent"
-                            javascript-TODO="${javascript`
+                            javascript-TODO="${javascript_TODO`
                               leafac.setTippy({
                                 event,
                                 element: this,
@@ -4155,14 +4155,14 @@ export default async (application: Application): Promise<void> => {
                                 ? html`checked`
                                 : html``}
                               class="visually-hidden input--radio-or-checkbox--multilabel"
-                              javascript-TODO="${javascript`
+                              javascript-TODO="${javascript_TODO`
                                   this.onchange = () => {
                                     if (this.checked) this.closest("form").querySelector('[name="isPinned"]').checked = true;
                                   };
                                 `}"
                             />
                             <span
-                              javascript-TODO="${javascript`
+                              javascript-TODO="${javascript_TODO`
                                   leafac.setTippy({
                                     event,
                                     element: this,
@@ -4178,7 +4178,7 @@ export default async (application: Application): Promise<void> => {
                             </span>
                             <span
                               class="text--orange"
-                              javascript-TODO="${javascript`
+                              javascript-TODO="${javascript_TODO`
                                   leafac.setTippy({
                                     event,
                                     element: this,
@@ -4207,7 +4207,7 @@ export default async (application: Application): Promise<void> => {
                           <button
                             type="button"
                             class="button button--tight button--tight--inline button--transparent"
-                            javascript-TODO="${javascript`
+                            javascript-TODO="${javascript_TODO`
                               leafac.setTippy({
                                 event,
                                 element: this,
@@ -4244,7 +4244,7 @@ export default async (application: Application): Promise<void> => {
                               class="visually-hidden input--radio-or-checkbox--multilabel"
                             />
                             <span
-                              javascript-TODO="${javascript`
+                              javascript-TODO="${javascript_TODO`
                                   leafac.setTippy({
                                     event,
                                     element: this,
@@ -4260,7 +4260,7 @@ export default async (application: Application): Promise<void> => {
                             </span>
                             <span
                               class="text--amber"
-                              javascript-TODO="${javascript`
+                              javascript-TODO="${javascript_TODO`
                                   leafac.setTippy({
                                     event,
                                     element: this,
@@ -4298,7 +4298,7 @@ export default async (application: Application): Promise<void> => {
                               type="checkbox"
                               name="isAnonymous"
                               class="visually-hidden input--radio-or-checkbox--multilabel"
-                              javascript-TODO="${javascript`
+                              javascript-TODO="${javascript_TODO`
                                   this.isModified = false;
 
                                   this.onchange = () => {
@@ -4309,7 +4309,7 @@ export default async (application: Application): Promise<void> => {
                                 `}"
                             />
                             <span
-                              javascript-TODO="${javascript`
+                              javascript-TODO="${javascript_TODO`
                                   leafac.setTippy({
                                     event,
                                     element: this,
@@ -4339,7 +4339,7 @@ export default async (application: Application): Promise<void> => {
                               </span>
                             </span>
                             <span
-                              javascript-TODO="${javascript`
+                              javascript-TODO="${javascript_TODO`
                                   leafac.setTippy({
                                     event,
                                     element: this,
@@ -4375,7 +4375,7 @@ export default async (application: Application): Promise<void> => {
               <div>
                 <button
                   class="button button--full-width-on-small-screen button--blue"
-                  javascript-TODO="${javascript`
+                  javascript-TODO="${javascript_TODO`
                     leafac.setTippy({
                       event,
                       element: this,
@@ -4384,13 +4384,13 @@ export default async (application: Application): Promise<void> => {
                         content: ${JSON.stringify(html`
                           <span class="keyboard-shortcut">
                             <span
-                              javascript-TODO="${javascript`
+                              javascript-TODO="${javascript_TODO`
                                 this.hidden = leafac.isAppleDevice;
                               `}"
                               >Ctrl+Enter</span
                             ><span
                               class="keyboard-shortcut--cluster"
-                              javascript-TODO="${javascript`
+                              javascript-TODO="${javascript_TODO`
                                 this.hidden = !leafac.isAppleDevice;
                               `}"
                               ><i class="bi bi-command"></i
@@ -4461,7 +4461,7 @@ export default async (application: Application): Promise<void> => {
                   class="link"
                   name="isDraft"
                   value="true"
-                  javascript-TODO="${javascript`
+                  javascript-TODO="${javascript_TODO`
                     leafac.setTippy({
                       event,
                       element: this,
@@ -4470,13 +4470,13 @@ export default async (application: Application): Promise<void> => {
                         content: ${JSON.stringify(html`
                           <span class="keyboard-shortcut">
                             <span
-                              javascript-TODO="${javascript`
+                              javascript-TODO="${javascript_TODO`
                                 this.hidden = leafac.isAppleDevice;
                               `}"
                               >Ctrl+S</span
                             ><span
                               class="keyboard-shortcut--cluster"
-                              javascript-TODO="${javascript`
+                              javascript-TODO="${javascript_TODO`
                                 this.hidden = !leafac.isAppleDevice;
                               `}"
                               ><i class="bi bi-command"></i>S</span
@@ -4515,7 +4515,7 @@ export default async (application: Application): Promise<void> => {
                           { conversations: request.query.conversations },
                           { addQueryPrefix: true }
                         )}"
-                        javascript-TODO="${javascript`
+                        javascript-TODO="${javascript_TODO`
                           this.onclick = () => {
                             this.closest("form").isValid = true;
                           };
@@ -4531,7 +4531,7 @@ export default async (application: Application): Promise<void> => {
                             new Date(conversationDraft.createdAt).getTime() -
                               100 * 24 * 60 * 60 * 1000
                           ).toISOString()}"
-                          javascript-TODO="${javascript`
+                          javascript-TODO="${javascript_TODO`
                             leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
                           `}"
                         ></time>
@@ -4544,7 +4544,7 @@ export default async (application: Application): Promise<void> => {
                                 datetime="${new Date(
                                   conversationDraft.updatedAt
                                 ).toISOString()}"
-                                javascript-TODO="${javascript`
+                                javascript-TODO="${javascript_TODO`
                                     leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
                                   `}"
                               ></time>
@@ -5250,7 +5250,7 @@ export default async (application: Application): Promise<void> => {
                             max-width: calc(100% + var(--space--2));
                             margin-top: var(--space---2);
                           `}"
-                          javascript-TODO="${javascript`
+                          javascript-TODO="${javascript_TODO`
                             this.onclick = () => {
                               this.closest('[key="conversation--header"]').querySelector('[key="conversation--header--compact"]').hidden = true;
                               this.closest('[key="conversation--header"]').querySelector('[key="conversation--header--full"]').hidden = false;
@@ -5325,7 +5325,7 @@ export default async (application: Application): Promise<void> => {
                                     : textColorsConversationType[
                                         response.locals.conversation.type
                                       ]}"
-                                  javascript-TODO="${javascript`
+                                  javascript-TODO="${javascript_TODO`
                                       leafac.setTippy({
                                         event,
                                         element: this,
@@ -5457,7 +5457,7 @@ export default async (application: Application): Promise<void> => {
                                             />
                                             <button
                                               class="button button--tight button--tight--inline button--tight-gap button--transparent text--rose"
-                                              javascript-TODO="${javascript`
+                                              javascript-TODO="${javascript_TODO`
                                                   leafac.setTippy({
                                                     event,
                                                     element: this,
@@ -5483,7 +5483,7 @@ export default async (application: Application): Promise<void> => {
                                             />
                                             <button
                                               class="button button--tight button--tight--inline button--tight-gap button--transparent text--emerald"
-                                              javascript-TODO="${javascript`
+                                              javascript-TODO="${javascript_TODO`
                                                   leafac.setTippy({
                                                     event,
                                                     element: this,
@@ -5565,7 +5565,7 @@ export default async (application: Application): Promise<void> => {
                                             />
                                             <button
                                               class="button button--tight button--tight--inline button--tight-gap button--transparent"
-                                              javascript-TODO="${javascript`
+                                              javascript-TODO="${javascript_TODO`
                                                   leafac.setTippy({
                                                     event,
                                                     element: this,
@@ -5589,7 +5589,7 @@ export default async (application: Application): Promise<void> => {
                                             />
                                             <button
                                               class="button button--tight button--tight--inline button--tight-gap button--transparent text--orange"
-                                              javascript-TODO="${javascript`
+                                              javascript-TODO="${javascript_TODO`
                                                   leafac.setTippy({
                                                     event,
                                                     element: this,
@@ -5645,7 +5645,7 @@ export default async (application: Application): Promise<void> => {
                                       />
                                       <button
                                         class="button button--tight button--tight--inline button--tight-gap button--transparent"
-                                        javascript-TODO="${javascript`
+                                        javascript-TODO="${javascript_TODO`
                                             leafac.setTippy({
                                               event,
                                               element: this,
@@ -5669,7 +5669,7 @@ export default async (application: Application): Promise<void> => {
                                       />
                                       <button
                                         class="button button--tight button--tight--inline button--tight-gap button--transparent text--amber"
-                                        javascript-TODO="${javascript`
+                                        javascript-TODO="${javascript_TODO`
                                             leafac.setTippy({
                                               event,
                                               element: this,
@@ -5699,7 +5699,7 @@ export default async (application: Application): Promise<void> => {
                       <div>
                         <button
                           class="button button--tight button--tight--inline button--transparent secondary"
-                          javascript-TODO="${javascript`
+                          javascript-TODO="${javascript_TODO`
                             leafac.setTippy({
                               event,
                               element: this,
@@ -5725,7 +5725,7 @@ export default async (application: Application): Promise<void> => {
                                   <div class="dropdown--menu">
                                     <button
                                       class="dropdown--menu--item button button--transparent"
-                                      javascript-TODO="${javascript`
+                                      javascript-TODO="${javascript_TODO`
                                           leafac.setTippy({
                                             event,
                                             element: this,
@@ -5755,7 +5755,7 @@ export default async (application: Application): Promise<void> => {
                                       ? html`
                                           <button
                                             class="dropdown--menu--item button button--transparent"
-                                            javascript-TODO="${javascript`
+                                            javascript-TODO="${javascript_TODO`
                                                 this.onclick = () => {
                                                   this.closest('[key="conversation--header--full"]').querySelector('[key="title--show"]').hidden = true;
                                                   this.closest('[key="conversation--header--full"]').querySelector('[key="title--edit"]').hidden = false;
@@ -5883,7 +5883,7 @@ export default async (application: Application): Promise<void> => {
                                       ? html`
                                           <button
                                             class="dropdown--menu--item button button--transparent"
-                                            javascript-TODO="${javascript`
+                                            javascript-TODO="${javascript_TODO`
                                                 leafac.setTippy({
                                                   event,
                                                   element: this,
@@ -5959,7 +5959,7 @@ export default async (application: Application): Promise<void> => {
                                           <div>
                                             <button
                                               class="dropdown--menu--item button button--transparent"
-                                              javascript-TODO="${javascript`
+                                              javascript-TODO="${javascript_TODO`
                                                   leafac.setTippy({
                                                     event,
                                                     element: this,
@@ -6101,7 +6101,7 @@ export default async (application: Application): Promise<void> => {
                               css="${css`
                                 flex: 1;
                               `}"
-                              javascript-TODO="${javascript`
+                              javascript-TODO="${javascript_TODO`
                                   leafac.setTippy({
                                     event,
                                     element: this,
@@ -6118,7 +6118,7 @@ export default async (application: Application): Promise<void> => {
                             <button
                               type="reset"
                               class="button button--tight button--tight--inline button--transparent text--rose"
-                              javascript-TODO="${javascript`
+                              javascript-TODO="${javascript_TODO`
                                   leafac.setTippy({
                                     event,
                                     element: this,
@@ -6129,13 +6129,13 @@ export default async (application: Application): Promise<void> => {
                                         Cancel
                                         <span class="keyboard-shortcut">
                                           (<span
-                                            javascript-TODO="${javascript`
+                                            javascript-TODO="${javascript_TODO`
                                                 this.hidden = leafac.isAppleDevice;
                                               `}"
                                             >Esc</span
                                           ><span
                                             class="keyboard-shortcut--cluster"
-                                            javascript-TODO="${javascript`
+                                            javascript-TODO="${javascript_TODO`
                                                 this.hidden = !leafac.isAppleDevice;
                                               `}"
                                             ><i class="bi bi-escape"></i></span
@@ -6196,7 +6196,7 @@ export default async (application: Application): Promise<void> => {
                                   }
                                   text-align: left;
                                 `}"
-                                javascript-TODO="${javascript`
+                                javascript-TODO="${javascript_TODO`
                                     leafac.setTippy({
                                       event,
                                       element: this,
@@ -6215,7 +6215,7 @@ export default async (application: Application): Promise<void> => {
                                 ? html`
                                     <span
                                       class="text--sky"
-                                      javascript-TODO="${javascript`
+                                      javascript-TODO="${javascript_TODO`
                                           leafac.setTippy({
                                             event,
                                             element: this,
@@ -6261,7 +6261,7 @@ export default async (application: Application): Promise<void> => {
                                 css="${css`
                                   text-align: left;
                                 `}"
-                                javascript-TODO="${javascript`
+                                javascript-TODO="${javascript_TODO`
                                   leafac.setTippy({
                                     event,
                                     element: this,
@@ -6280,7 +6280,7 @@ export default async (application: Application): Promise<void> => {
                                 ? html`
                                     <span
                                       class="text--sky"
-                                      javascript-TODO="${javascript`
+                                      javascript-TODO="${javascript_TODO`
                                           leafac.setTippy({
                                             event,
                                             element: this,
@@ -6306,7 +6306,7 @@ export default async (application: Application): Promise<void> => {
                           <div>
                             <button
                               class="button button--tight button--tight--inline button--tight-gap button--transparent text--teal"
-                              javascript-TODO="${javascript`
+                              javascript-TODO="${javascript_TODO`
                                   leafac.setTippy({
                                     event,
                                     element: this,
@@ -6402,7 +6402,7 @@ export default async (application: Application): Promise<void> => {
                                                           ? html`
                                                               <span
                                                                 class="text--sky"
-                                                                javascript-TODO="${javascript`
+                                                                javascript-TODO="${javascript_TODO`
                                                                     leafac.setTippy({
                                                                       event,
                                                                       element: this,
@@ -6429,7 +6429,7 @@ export default async (application: Application): Promise<void> => {
                                                 ? html`
                                                     <div
                                                       class="dropdown--menu--item button button--blue text--teal disabled"
-                                                      javascript-TODO="${javascript`
+                                                      javascript-TODO="${javascript_TODO`
                                                           leafac.setTippy({
                                                             event,
                                                             element: this,
@@ -6450,7 +6450,7 @@ export default async (application: Application): Promise<void> => {
                                                         ? html`
                                                             <span
                                                               class="text--sky"
-                                                              javascript-TODO="${javascript`
+                                                              javascript-TODO="${javascript_TODO`
                                                                   leafac.setTippy({
                                                                     event,
                                                                     element: this,
@@ -6508,7 +6508,7 @@ export default async (application: Application): Promise<void> => {
                                                           ? html`
                                                               <span
                                                                 class="text--sky"
-                                                                javascript-TODO="${javascript`
+                                                                javascript-TODO="${javascript_TODO`
                                                                     leafac.setTippy({
                                                                       event,
                                                                       element: this,
@@ -6660,7 +6660,7 @@ export default async (application: Application): Promise<void> => {
                               >
                                 <div
                                   key="participants"
-                                  javascript-TODO="${javascript`
+                                  javascript-TODO="${javascript_TODO`
                                       leafac.setTippy({
                                         event,
                                         element: this,
@@ -6695,7 +6695,7 @@ export default async (application: Application): Promise<void> => {
                                                           ? html`checked`
                                                           : html``}
                                                         class="visually-hidden input--radio-or-checkbox--multilabel"
-                                                        javascript-TODO="${javascript`
+                                                        javascript-TODO="${javascript_TODO`
                                                             this.isModified = false;
   
                                                             this.onchange = () => {
@@ -6707,7 +6707,7 @@ export default async (application: Application): Promise<void> => {
                                                               ${
                                                                 conversationParticipants ===
                                                                 "everyone"
-                                                                  ? javascript`
+                                                                  ? javascript_TODO`
                                                                       selectedParticipants.hidden = true;
   
                                                                       for (const element of this.closest("form").querySelectorAll('[name="selectedParticipantsReferences[]"]'))
@@ -6715,7 +6715,7 @@ export default async (application: Application): Promise<void> => {
                                                                     `
                                                                   : conversationParticipants ===
                                                                     "staff"
-                                                                  ? javascript`
+                                                                  ? javascript_TODO`
                                                                       selectedParticipants.hidden = false;
   
                                                                       for (const element of selectedParticipants.querySelectorAll('[data-enrollment-course-role="staff"]'))
@@ -6727,7 +6727,7 @@ export default async (application: Application): Promise<void> => {
                                                                     `
                                                                   : conversationParticipants ===
                                                                     "selected-people"
-                                                                  ? javascript`
+                                                                  ? javascript_TODO`
                                                                       selectedParticipants.hidden = false;
   
                                                                       for (const element of selectedParticipants.querySelectorAll('[data-enrollment-course-role="staff"]'))
@@ -6737,7 +6737,7 @@ export default async (application: Application): Promise<void> => {
                                                                       for (const element of this.closest("form").querySelectorAll('[name="selectedParticipantsReferences[]"]'))
                                                                         element.disabled = false;
                                                                     `
-                                                                  : javascript``
+                                                                  : javascript_TODO``
                                                               }
   
                                                               this.closest("form").querySelector('[key="submit"]').hidden = !leafac.isModified(this.closest("form"));
@@ -6837,7 +6837,7 @@ export default async (application: Application): Promise<void> => {
                                                             type="text"
                                                             class="input--text"
                                                             placeholder="Filter…"
-                                                            javascript-TODO="${javascript`
+                                                            javascript-TODO="${javascript_TODO`
                                                                 this.isModified = false;
   
                                                                 this.oninput = () => {
@@ -6913,7 +6913,7 @@ export default async (application: Application): Promise<void> => {
                                                                   ? html`checked`
                                                                   : html``}
                                                                 class="visually-hidden input--radio-or-checkbox--multilabel"
-                                                                javascript-TODO="${javascript`
+                                                                javascript-TODO="${javascript_TODO`
                                                                     this.isModified = false;
   
                                                                     this.onchange = () => {
@@ -6981,17 +6981,17 @@ export default async (application: Application): Promise<void> => {
                                         required
                                         tabindex="-1"
                                         class="visually-hidden input--visible-when-enabled-and-checked"
-                                        javascript-TODO="${javascript`
+                                        javascript-TODO="${javascript_TODO`
                                           ${
                                             conversationParticipants ===
                                             "selected-people"
-                                              ? javascript`
+                                              ? javascript_TODO`
                                                   this.onvalidate = () => {
                                                     if (this.checked && [...this.closest("form").querySelectorAll('[name="selectedParticipantsReferences[]"]')].find(element => element.checked) === undefined)
                                                       return "Please select at least one participant.";
                                                   };
                                                 `
-                                              : javascript``
+                                              : javascript_TODO``
                                           }
 
                                         `}"
@@ -7043,7 +7043,7 @@ export default async (application: Application): Promise<void> => {
                                       key="selected-participants--button--${enrollment.reference}"
                                       type="button"
                                       class="button button--tight button--tight--inline button--transparent"
-                                      javascript-TODO="${javascript`
+                                      javascript-TODO="${javascript_TODO`
                                           leafac.setTippy({
                                             event,
                                             element: this,
@@ -7117,7 +7117,7 @@ export default async (application: Application): Promise<void> => {
                               class="${textColorsConversationParticipants[
                                 response.locals.conversation.participants
                               ]}"
-                              javascript-TODO="${javascript`
+                              javascript-TODO="${javascript_TODO`
                                   leafac.setTippy({
                                     event,
                                     element: this,
@@ -7164,7 +7164,7 @@ export default async (application: Application): Promise<void> => {
                       ? html`
                           <button
                             class="button button--tight button--tight--inline button--transparent"
-                            javascript-TODO="${javascript`
+                            javascript-TODO="${javascript_TODO`
                               this.onclick = () => {
                                 this.closest('[key="conversation--header"]').querySelector('[key="conversation--header--full"]').hidden = true;
                                 this.closest('[key="conversation--header"]').querySelector('[key="conversation--header--compact"]').hidden = false;
@@ -7201,7 +7201,7 @@ export default async (application: Application): Promise<void> => {
                           }
                         `
                       : css``}"
-                    javascript-TODO="${javascript`
+                    javascript-TODO="${javascript_TODO`
                       const scroll = () => {
                         if (
                           [undefined, "GET", "HEAD", "OPTIONS", "TRACE"].includes(event?.detail?.request?.method) &&
@@ -7212,7 +7212,7 @@ export default async (application: Application): Promise<void> => {
                               "string" &&
                             request.query.messages.messageReference.trim() !==
                               ""
-                              ? javascript`
+                              ? javascript_TODO`
                                   const element = this.querySelector('[key="message--${request.query.messages.messageReference}"]');
                                   if (element === null) return;
                                   element.scrollIntoView();
@@ -7224,21 +7224,21 @@ export default async (application: Application): Promise<void> => {
                                 `
                               : firstUnreadMessage !== undefined &&
                                 firstUnreadMessage !== messages[0]
-                              ? javascript`
+                              ? javascript_TODO`
                                   this.querySelector('[key="message--${firstUnreadMessage.reference}"]')?.scrollIntoView();
                                 `
                               : response.locals.conversation.type === "chat" &&
                                 messages.length > 0 &&
                                 afterMessage === undefined
-                              ? javascript`
+                              ? javascript_TODO`
                                   this.scroll(0, this.scrollHeight);
                                 `
-                              : javascript``
+                              : javascript_TODO``
                           }
                         }
                         ${
                           response.locals.conversation.type === "chat"
-                            ? javascript`
+                            ? javascript_TODO`
                                 else if (this.shouldScrollConversationToBottom) {
                                   this.scroll(0, this.scrollHeight);
                                 }
@@ -7248,7 +7248,7 @@ export default async (application: Application): Promise<void> => {
                                 };
                                 this.onscroll();
                               `
-                            : javascript``
+                            : javascript_TODO``
                         }
                       };
                       window.addEventListener("livenavigateself", scroll);
@@ -7381,7 +7381,7 @@ export default async (application: Application): Promise<void> => {
                                                 gap: var(--space--4);
                                                 align-items: center;
                                               `}"
-                                              javascript-TODO="${javascript`
+                                              javascript-TODO="${javascript_TODO`
                                                   if (this !== document.querySelector('[key="message--new-separator"]')) {
                                                     this.remove();
                                                     return;
@@ -7472,7 +7472,7 @@ export default async (application: Application): Promise<void> => {
                                                   datetime="${new Date(
                                                     message.createdAt
                                                   ).toISOString()}"
-                                                  javascript-TODO="${javascript`
+                                                  javascript-TODO="${javascript_TODO`
                                                       const element = this;
                                                       leafac.relativizeDateElement(element);
 
@@ -7593,7 +7593,7 @@ export default async (application: Application): Promise<void> => {
                                                     --line-height--xs
                                                   );
                                                 `}"
-                                                javascript-TODO="${javascript`
+                                                javascript-TODO="${javascript_TODO`
                                                     leafac.setTippy({
                                                       event,
                                                       element: this,
@@ -7734,7 +7734,7 @@ export default async (application: Application): Promise<void> => {
                                                       />
                                                       <button
                                                         class="button button--tight button--tight--inline button--tight-gap button--transparent"
-                                                        javascript-TODO="${javascript`
+                                                        javascript-TODO="${javascript_TODO`
                                                             leafac.setTippy({
                                                               event,
                                                               element: this,
@@ -7760,7 +7760,7 @@ export default async (application: Application): Promise<void> => {
                                                       />
                                                       <button
                                                         class="button button--tight button--tight--inline button--tight-gap button--transparent text--emerald"
-                                                        javascript-TODO="${javascript`
+                                                        javascript-TODO="${javascript_TODO`
                                                             leafac.setTippy({
                                                               event,
                                                               element: this,
@@ -7839,7 +7839,7 @@ export default async (application: Application): Promise<void> => {
                                                   ? html`
                                                       <button
                                                         class="button button--tight button--tight--inline button--tight-gap button--transparent text--blue"
-                                                        javascript-TODO="${javascript`
+                                                        javascript-TODO="${javascript_TODO`
                                                             leafac.setTippy({
                                                               event,
                                                               element: this,
@@ -7919,7 +7919,7 @@ export default async (application: Application): Promise<void> => {
                                                         ).length === 0
                                                           ? html``
                                                           : html`
-                                                              javascript-TODO="${javascript`
+                                                              javascript-TODO="${javascript_TODO`
                                                                   leafac.setTippy({
                                                                     event,
                                                                     element: this,
@@ -7988,14 +7988,14 @@ export default async (application: Application): Promise<void> => {
                                             header += html`
                                               <div
                                                 class="text--lime"
-                                                javascript-TODO="${javascript`
+                                                javascript-TODO="${javascript_TODO`
                                                     ${
                                                       message.endorsements.filter(
                                                         (endorsement) =>
                                                           endorsement.enrollment !==
                                                           "no-longer-enrolled"
                                                       ).length > 0
-                                                        ? javascript`
+                                                        ? javascript_TODO`
                                                             leafac.setTippy({
                                                               event,
                                                               element: this,
@@ -8027,7 +8027,7 @@ export default async (application: Application): Promise<void> => {
                                                               },
                                                             });
                                                           `
-                                                        : javascript``
+                                                        : javascript_TODO``
                                                     }
                                                   `}"
                                               >
@@ -8167,7 +8167,7 @@ export default async (application: Application): Promise<void> => {
                                                   datetime="${new Date(
                                                     message.createdAt
                                                   ).toISOString()}"
-                                                  javascript-TODO="${javascript`
+                                                  javascript-TODO="${javascript_TODO`
                                                       leafac.relativizeDateTimeElement(this, { capitalize: true });
                                                     `}"
                                                 ></time>
@@ -8180,7 +8180,7 @@ export default async (application: Application): Promise<void> => {
                                                           datetime="${new Date(
                                                             message.updatedAt
                                                           ).toISOString()}"
-                                                          javascript-TODO="${javascript`
+                                                          javascript-TODO="${javascript_TODO`
                                                               leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
                                                             `}"
                                                         ></time>
@@ -8220,7 +8220,7 @@ export default async (application: Application): Promise<void> => {
                                             ></div>
                                             <div
                                               key="message--show--content-area--content"
-                                              javascript-TODO="${javascript`
+                                              javascript-TODO="${javascript_TODO`
                                                   const dropdownMenuTarget = this.closest('[key="message--show--content-area"]').querySelector('[key="message--show--content-area--dropdown-menu-target"]');
                                                   leafac.setTippy({
                                                     event,
@@ -8235,7 +8235,7 @@ export default async (application: Application): Promise<void> => {
                                                         >
                                                           <button
                                                             class="dropdown--menu--item button button--transparent"
-                                                            javascript-TODO="${javascript`
+                                                            javascript-TODO="${javascript_TODO`
                                                                 this.onclick = () => {
                                                                   tippy.hideAll();
                                                                   const selection = window.getSelection();
@@ -8262,8 +8262,8 @@ export default async (application: Application): Promise<void> => {
                                                                     ((element.selectionStart > 0) ? "\\n\\n" : "") + "> " + ${
                                                                       message.authorEnrollment ===
                                                                       "no-longer-enrolled"
-                                                                        ? javascript``
-                                                                        : javascript`
+                                                                        ? javascript_TODO``
+                                                                        : javascript_TODO`
                                                                             "@${
                                                                               message.anonymousAt ===
                                                                               null
@@ -8397,7 +8397,7 @@ export default async (application: Application): Promise<void> => {
                                                       $${likesCount === 0
                                                         ? html``
                                                         : html`
-                                                            javascript-TODO="${javascript`
+                                                            javascript-TODO="${javascript_TODO`
                                                                 leafac.setTippy({
                                                                   event,
                                                                   element: this,
@@ -8435,7 +8435,7 @@ export default async (application: Application): Promise<void> => {
                                                           class="button button--tight button--tight--inline button--tight-gap button--transparent ${isLiked
                                                             ? "text--blue"
                                                             : ""}"
-                                                          javascript-TODO="${javascript`
+                                                          javascript-TODO="${javascript_TODO`
                                                               leafac.setTippy({
                                                                 event,
                                                                 element: this,
@@ -8535,7 +8535,7 @@ export default async (application: Application): Promise<void> => {
                                               messageShowFooter += html`
                                                 <button
                                                   class="button button--tight button--tight--inline button--tight-gap button--transparent"
-                                                  javascript-TODO="${javascript`
+                                                  javascript-TODO="${javascript_TODO`
                                                       leafac.setTippy({
                                                         event,
                                                         element: this,
@@ -8659,7 +8659,7 @@ export default async (application: Application): Promise<void> => {
                                           <div
                                             key="form"
                                             hidden
-                                            javascript-TODO="${javascript`
+                                            javascript-TODO="${javascript_TODO`
                                                 if (event?.detail?.liveUpdate && !this.closest('[key="message--edit"]').hidden) return;
                                                 this.partialParentElement = false;
                                                 this.skipLoading = false;
@@ -8884,15 +8884,15 @@ export default async (application: Application): Promise<void> => {
                   : css`
                       padding-top: var(--space--4);
                     `}"
-                javascript-TODO="${javascript`
+                javascript-TODO="${javascript_TODO`
                   this.onsubmit = () => {
                     window.setTimeout(() => {
                       const placeholder = document.querySelector('[key="message--new-message--placeholder"]');
                       const content = this.querySelector('[name="content"]');
                       ${
                         response.locals.enrollment.courseRole === "staff"
-                          ? javascript``
-                          : javascript`
+                          ? javascript_TODO``
+                          : javascript_TODO`
                               const isAnonymous = this.querySelector('[name="isAnonymous"]');
                               placeholder.querySelector('[key="message--new-message--placeholder--anonymous--' + (!isAnonymous.checked).toString() + '"]').hidden = true;
                             `
@@ -8941,12 +8941,12 @@ export default async (application: Application): Promise<void> => {
                                   ? `checked`
                                   : ``}
                                 class="visually-hidden input--radio-or-checkbox--multilabel"
-                                javascript-TODO="${javascript`
+                                javascript-TODO="${javascript_TODO`
                                     leafac.saveFormInputValue(this, "answer");
                                   `}"
                               />
                               <span
-                                javascript-TODO="${javascript`
+                                javascript-TODO="${javascript_TODO`
                                     leafac.setTippy({
                                       event,
                                       element: this,
@@ -8962,7 +8962,7 @@ export default async (application: Application): Promise<void> => {
                               </span>
                               <span
                                 class="text--emerald"
-                                javascript-TODO="${javascript`
+                                javascript-TODO="${javascript_TODO`
                                     leafac.setTippy({
                                       event,
                                       element: this,
@@ -8996,7 +8996,7 @@ export default async (application: Application): Promise<void> => {
                         grid-area: 1 / 1;
                       }
                     `}"
-                    javascript-TODO="${javascript`
+                    javascript-TODO="${javascript_TODO`
                       leafac.saveFormInputValue(this.querySelector('[key="content-editor--write--textarea"]'), "new-message");
                     `}"
                   >
@@ -9019,7 +9019,7 @@ export default async (application: Application): Promise<void> => {
                               margin: var(--space--1);
                               align-items: center;
                             `}"
-                            javascript-TODO="${javascript`
+                            javascript-TODO="${javascript_TODO`
                               leafac.setTippy({
                                 event,
                                 element: this,
@@ -9029,13 +9029,13 @@ export default async (application: Application): Promise<void> => {
                                     Send Message
                                     <span class="keyboard-shortcut">
                                       <span
-                                        javascript-TODO="${javascript`
+                                        javascript-TODO="${javascript_TODO`
                                             this.hidden = leafac.isAppleDevice;
                                           `}"
                                         >Ctrl+Enter</span
                                       ><span
                                         class="keyboard-shortcut--cluster"
-                                        javascript-TODO="${javascript`
+                                        javascript-TODO="${javascript_TODO`
                                             this.hidden = !leafac.isAppleDevice;
                                           `}"
                                         ><i class="bi bi-command"></i
@@ -9079,7 +9079,7 @@ export default async (application: Application): Promise<void> => {
                                 type="checkbox"
                                 name="isAnonymous"
                                 class="visually-hidden input--radio-or-checkbox--multilabel"
-                                javascript-TODO="${javascript`
+                                javascript-TODO="${javascript_TODO`
                                     this.isModified = false;
 
                                     this.onchange = () => {
@@ -9090,7 +9090,7 @@ export default async (application: Application): Promise<void> => {
                                   `}"
                               />
                               <span
-                                javascript-TODO="${javascript`
+                                javascript-TODO="${javascript_TODO`
                                     leafac.setTippy({
                                       event,
                                       element: this,
@@ -9120,7 +9120,7 @@ export default async (application: Application): Promise<void> => {
                                 </span>
                               </span>
                               <span
-                                javascript-TODO="${javascript`
+                                javascript-TODO="${javascript_TODO`
                                     leafac.setTippy({
                                       event,
                                       element: this,
@@ -9159,7 +9159,7 @@ export default async (application: Application): Promise<void> => {
                   >
                     <button
                       class="button button--full-width-on-small-screen button--blue"
-                      javascript-TODO="${javascript`
+                      javascript-TODO="${javascript_TODO`
                         leafac.setTippy({
                           event,
                           element: this,
@@ -9168,13 +9168,13 @@ export default async (application: Application): Promise<void> => {
                             content: ${JSON.stringify(html`
                               <span class="keyboard-shortcut">
                                 <span
-                                  javascript-TODO="${javascript`
+                                  javascript-TODO="${javascript_TODO`
                                       this.hidden = leafac.isAppleDevice;
                                     `}"
                                   >Ctrl+Enter</span
                                 ><span
                                   class="keyboard-shortcut--cluster"
-                                  javascript-TODO="${javascript`
+                                  javascript-TODO="${javascript_TODO`
                                       this.hidden = !leafac.isAppleDevice;
                                     `}"
                                   ><i class="bi bi-command"></i

@@ -122,7 +122,7 @@ await node.time("[Server] Babel", async () => {
                       );
                       if (!staticJavaScriptIdentifiers.has(identifier)) {
                         staticJavaScriptIdentifiers.add(identifier);
-                        staticJavaScript += javascript`export const ${identifier} = (${[
+                        staticJavaScript += javascript_TODO`export const ${identifier} = (${[
                           "event",
                           ...path.node.quasi.expressions.map(
                             (value, index) => `$$${index}`

@@ -616,7 +616,7 @@ export default async (application: Application): Promise<void> => {
                 required
                 autofocus
                 class="input--text"
-                javascript-TODO="${javascript`
+                javascript-TODO="${javascript_TODO`
                   this.isModified = false;
                 `}"
               />
@@ -628,7 +628,7 @@ export default async (application: Application): Promise<void> => {
                 name="password"
                 required
                 class="input--text"
-                javascript-TODO="${javascript`
+                javascript-TODO="${javascript_TODO`
                   this.isModified = false;
                 `}"
               />
@@ -862,7 +862,7 @@ export default async (application: Application): Promise<void> => {
                 required
                 autofocus
                 class="input--text"
-                javascript-TODO="${javascript`
+                javascript-TODO="${javascript_TODO`
                   this.isModified = false;
                 `}"
               />
@@ -1160,7 +1160,7 @@ export default async (application: Application): Promise<void> => {
                 type="password"
                 required
                 class="input--text"
-                javascript-TODO="${javascript`
+                javascript-TODO="${javascript_TODO`
                   this.onvalidate = () => {
                     if (this.value !== this.closest("form").querySelector('[name="password"]').value)
                       return "Password & Password Confirmation don’t match.";
@@ -1400,7 +1400,7 @@ export default async (application: Application): Promise<void> => {
                 type="password"
                 required
                 class="input--text"
-                javascript-TODO="${javascript`
+                javascript-TODO="${javascript_TODO`
                   this.onvalidate = () => {
                     if (this.value !== this.closest("form").querySelector('[name="password"]').value)
                       return "Password & Password Confirmation don’t match.";

@@ -491,7 +491,7 @@ export default async (application: Application): Promise<void> => {
                 border-radius: var(--border-radius--circle);
                 place-self: end;
               `}"
-              javascript-TODO="${javascript`
+              javascript-TODO="${javascript_TODO`
                 const element = this;
 
                 leafac.setTippy({
@@ -545,7 +545,7 @@ export default async (application: Application): Promise<void> => {
           enrollment.courseRole === "staff"
             ? html`<span
                 class="text--sky"
-                javascript-TODO="${javascript`
+                javascript-TODO="${javascript_TODO`
                   leafac.setTippy({
                     event,
                     element: this,
@@ -572,7 +572,7 @@ export default async (application: Application): Promise<void> => {
 
     if (tooltip && userHTML !== undefined)
       userHTML = html`<span
-        javascript-TODO="${javascript`
+        javascript-TODO="${javascript_TODO`
           leafac.setTippy({
             event,
             element: this,
@@ -642,7 +642,7 @@ export default async (application: Application): Promise<void> => {
                                     line-height: var(--line-height--xs);
                                     display: inline-flex;
                                   `}"
-                                  javascript-TODO="${javascript`
+                                  javascript-TODO="${javascript_TODO`
                                       leafac.setTippy({
                                         event,
                                         element: this,
@@ -698,7 +698,7 @@ export default async (application: Application): Promise<void> => {
                                     datetime="${new Date(
                                       user!.lastSeenOnlineAt
                                     ).toISOString()}"
-                                    javascript-TODO="${javascript`
+                                    javascript-TODO="${javascript_TODO`
                                         leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
                                       `}"
                                   ></time>
@@ -808,7 +808,7 @@ export default async (application: Application): Promise<void> => {
 
     if (tooltip && anonymousHTML !== undefined)
       anonymousHTML = html`<span
-        javascript-TODO="${javascript`
+        javascript-TODO="${javascript_TODO`
           leafac.setTippy({
             event,
             element: this,
@@ -908,7 +908,7 @@ export default async (application: Application): Promise<void> => {
                     }
                   }
                 `}"
-                javascript-TODO="${javascript`
+                javascript-TODO="${javascript_TODO`
                   this.ondragover = (event) => {
                     if (!event.dataTransfer.types.includes("Files")) return;
                     event.preventDefault();
@@ -932,7 +932,7 @@ export default async (application: Application): Promise<void> => {
                   <button
                     type="button"
                     class="button button--transparent"
-                    javascript-TODO="${javascript`
+                    javascript-TODO="${javascript_TODO`
                       leafac.setTippy({
                         event,
                         element: this,
@@ -977,7 +977,7 @@ export default async (application: Application): Promise<void> => {
                   <button
                     type="button"
                     class="button button--transparent"
-                    javascript-TODO="${javascript`
+                    javascript-TODO="${javascript_TODO`
                       leafac.setTippy({
                         event,
                         element: this,
@@ -1017,7 +1017,7 @@ export default async (application: Application): Promise<void> => {
                       transform: translate(-20%, -20%);
                       align-items: center;
                     `}"
-                    javascript-TODO="${javascript`
+                    javascript-TODO="${javascript_TODO`
                       leafac.setTippy({
                         event,
                         element: this,
@@ -1045,7 +1045,7 @@ export default async (application: Application): Promise<void> => {
                   type="file"
                   accept="image/*"
                   hidden
-                  javascript-TODO="${javascript`
+                  javascript-TODO="${javascript_TODO`
                     this.isModified = false;
 
                     const avatarChooser = this.closest('[key="avatar-chooser"]');
@@ -1371,7 +1371,7 @@ export default async (application: Application): Promise<void> => {
                 value="${response.locals.user.email}"
                 required
                 class="input--text"
-                javascript-TODO="${javascript`
+                javascript-TODO="${javascript_TODO`
                   this.onvalidate = () => {
                     if (!leafac.isModified(this))
                       return "Please provide the email address to which you’d like to update.";
@@ -1385,7 +1385,7 @@ export default async (application: Application): Promise<void> => {
                 <button
                   type="button"
                   class="button button--tight button--tight--inline button--transparent"
-                  javascript-TODO="${javascript`
+                  javascript-TODO="${javascript_TODO`
                     leafac.setTippy({
                       event,
                       element: this,
@@ -1455,7 +1455,7 @@ export default async (application: Application): Promise<void> => {
                 type="password"
                 required
                 class="input--text"
-                javascript-TODO="${javascript`
+                javascript-TODO="${javascript_TODO`
                   this.onvalidate = () => {
                     if (this.value !== this.closest("form").querySelector('[name="newPassword"]').value)
                       return "New Password & New Password Confirmation don’t match.";
@@ -1762,7 +1762,7 @@ export default async (application: Application): Promise<void> => {
                       ? html`checked`
                       : html``}
                     class="input--checkbox"
-                    javascript-TODO="${javascript`
+                    javascript-TODO="${javascript_TODO`
                       this.onchange = () => {
                         if (this.checked) {
                           this.closest("form").querySelector('[name="isEmailNotificationsForMentions"]').checked = true;
@@ -1879,7 +1879,7 @@ export default async (application: Application): Promise<void> => {
                       ? html`checked`
                       : html``}
                     class="input--checkbox"
-                    javascript-TODO="${javascript`
+                    javascript-TODO="${javascript_TODO`
                       this.onchange = () => {
                         if (!this.checked) {
                           const element = this.closest("form").querySelector('[name="isEmailNotificationsForAllMessages"]');
@@ -1908,7 +1908,7 @@ export default async (application: Application): Promise<void> => {
                       ? html`checked`
                       : html``}
                     class="input--checkbox"
-                    javascript-TODO="${javascript`
+                    javascript-TODO="${javascript_TODO`
                       this.onchange = () => {
                         if (!this.checked) {
                           const element = this.closest("form").querySelector('[name="isEmailNotificationsForAllMessages"]');
@@ -1938,7 +1938,7 @@ export default async (application: Application): Promise<void> => {
                       ? html`checked`
                       : html``}
                     class="input--checkbox"
-                    javascript-TODO="${javascript`
+                    javascript-TODO="${javascript_TODO`
                       this.onchange = () => {
                         if (!this.checked) {
                           const element = this.closest("form").querySelector('[name="isEmailNotificationsForAllMessages"]');
@@ -1960,7 +1960,7 @@ export default async (application: Application): Promise<void> => {
               >
                 <label
                   class="button button--tight button--tight--inline disabled"
-                  javascript-TODO="${javascript`
+                  javascript-TODO="${javascript_TODO`
                     leafac.setTippy({
                       event,
                       element: this,
@@ -2141,7 +2141,7 @@ export default async (application: Application): Promise<void> => {
                 <button
                   type="button"
                   class="button button--tight button--tight--inline button--transparent"
-                  javascript-TODO="${javascript`
+                  javascript-TODO="${javascript_TODO`
                     leafac.setTippy({
                       event,
                       element: this,
@@ -2166,7 +2166,7 @@ export default async (application: Application): Promise<void> => {
             <div>
               <button
                 class="button button--full-width-on-small-screen button--rose"
-                javascript-TODO="${javascript`
+                javascript-TODO="${javascript_TODO`
                   this.onclick = () => {
                     localStorage.clear();
                   };
