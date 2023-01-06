@@ -89,11 +89,13 @@ await node.time("[Server] Babel", async () => {
                     // }
 
                     case "css": {
-                      // TODO: Prettier CSS?
-                      const css_ = new Function(
-                        "css",
-                        `return (${babelGenerator.default(path.node).code});`
-                      )(css);
+                      const css_ = prettier.format(
+                        new Function(
+                          "css",
+                          `return (${babelGenerator.default(path.node).code});`
+                        )(css),
+                        { parser: "css" }
+                      );
                       const identifier = baseIdentifier.encode(
                         xxhash.XXHash3.hash(Buffer.from(css_))
                       );
