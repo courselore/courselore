@@ -899,13 +899,14 @@ export function javascript({
   element = undefined,
   elements = element.querySelectorAll("[javascript]"),
 }) {
-  const javascript = JSON.parse(element.getAttribute("javascript"));
-  for (const element of elements)
+  for (const element of elements) {
+    const javascript = JSON.parse(element.getAttribute("javascript"));
     window.applicationJavaScript[javascript.function].call(
       element,
       event,
       ...javascript.arguments
     );
+  }
 }
 
 export function ancestors(element) {
