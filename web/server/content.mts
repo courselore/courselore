@@ -8,7 +8,6 @@ import sql from "@leafac/sqlite";
 import html, { HTML } from "@leafac/html";
 import css from "@leafac/css";
 import javascript from "@leafac/javascript";
-import javascript_TODO from "@leafac/javascript";
 import * as sanitizeXMLCharacters from "sanitize-xml-string";
 import { unified } from "unified";
 import remarkParse from "remark-parse";
@@ -2575,7 +2574,7 @@ ${contentSource}</textarea
                       key="mention-user-search--${enrollment.reference}"
                       type="button"
                       class="dropdown--menu--item button button--transparent"
-                      javascript-TODO="${javascript_TODO`
+                      javascript="${javascript`
                         this.onclick = () => {
                           this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete(${`${
                             enrollment.reference
@@ -2650,7 +2649,7 @@ ${contentSource}</textarea
               key="refer-to-conversation-or-message-search--${conversation.reference}"
               type="button"
               class="dropdown--menu--item button button--transparent"
-              javascript-TODO="${javascript_TODO`
+              javascript="${javascript`
                 this.onclick = () => {
                   this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete(${conversation.reference});
                 };
@@ -2716,7 +2715,7 @@ ${contentSource}</textarea
                 key="refer-to-conversation-or-message-search--${conversation.reference}/${message.reference}"
                 type="button"
                 class="dropdown--menu--item button button--transparent"
-                javascript-TODO="${javascript_TODO`
+                javascript="${javascript`
                   this.onclick = () => {
                     this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete(${`${conversation.reference}/${message.reference}`});
                   };
@@ -2747,7 +2746,7 @@ ${contentSource}</textarea
             <button
               type="button"
               class="dropdown--menu--item button button--transparent"
-              javascript-TODO="${javascript_TODO`
+              javascript="${javascript`
                 this.onclick = () => {
                   this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete(${conversation.reference});
                 };
@@ -2800,7 +2799,7 @@ ${contentSource}</textarea
             key="refer-to-conversation-or-message-search--${conversation.reference}"
             type="button"
             class="dropdown--menu--item button button--transparent"
-            javascript-TODO="${javascript_TODO`
+            javascript="${javascript`
               this.onclick = () => {
                 this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete(${conversation.reference});
               };
@@ -2871,7 +2870,7 @@ ${contentSource}</textarea
             key="refer-to-conversation-or-message-search--${conversation.reference}/${message.reference}"
             type="button"
             class="dropdown--menu--item button button--transparent"
-            javascript-TODO="${javascript_TODO`
+            javascript="${javascript`
               this.onclick = () => {
                 this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete(${`${conversation.reference}/${message.reference}`});
               };
@@ -2950,7 +2949,7 @@ ${contentSource}</textarea
             key="refer-to-conversation-or-message-search--${conversation.reference}/${message.reference}"
             type="button"
             class="dropdown--menu--item button button--transparent"
-            javascript-TODO="${javascript_TODO`
+            javascript="${javascript`
               this.onclick = () => {
                 this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete(${`${conversation.reference}/${message.reference}`});
               };
