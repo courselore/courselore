@@ -383,7 +383,7 @@ export default async (application: Application): Promise<void> => {
       if (isExternal)
         element.setAttribute(
           "javascript",
-          javascript_TODO`
+          javascript`
             leafac.setTippy({
               event,
               element: this,
@@ -485,13 +485,13 @@ export default async (application: Application): Promise<void> => {
                 case "students":
                   mentions.add(mention);
                   mentionHTML = html`<span
-                    javascript-TODO="${javascript_TODO`
+                    javascript="${javascript`
                       leafac.setTippy({
                         event,
                         element: this,
                         tippyProps: {
                           touch: false,
-                          content: "Mention " + ${mention} + " in the conversation",
+                          content: ${`Mention ${mention} in the conversation`},
                         },
                       });
                     `}"
@@ -669,7 +669,7 @@ export default async (application: Application): Promise<void> => {
         if (hrefMessageReference === undefined) {
           element.setAttribute(
             "javascript",
-            javascript_TODO`
+            javascript`
               leafac.setTippy({
                 event,
                 element: this,
@@ -703,7 +703,7 @@ export default async (application: Application): Promise<void> => {
         if (message === undefined) continue;
         element.setAttribute(
           "javascript",
-          javascript_TODO`
+          javascript`
             leafac.setTippy({
               event,
               element: this,
@@ -852,7 +852,7 @@ export default async (application: Application): Promise<void> => {
                   name="content-editor--mode"
                   checked
                   class="visually-hidden"
-                  javascript-TODO="${javascript_TODO`
+                  javascript="${javascript`
                     this.isModified = false;
 
                     this.onclick = () => {
@@ -872,7 +872,7 @@ export default async (application: Application): Promise<void> => {
                   type="radio"
                   name="content-editor--mode"
                   class="content-editor--button--preview visually-hidden"
-                  javascript-TODO="${javascript_TODO`
+                  javascript="${javascript`
                     this.isModified = false;
 
                     this.onclick = async (event) => {
@@ -917,7 +917,7 @@ export default async (application: Application): Promise<void> => {
                 />
                 <span
                   class="button button--transparent"
-                  javascript-TODO="${javascript_TODO`
+                  javascript="${javascript`
                     leafac.setTippy({
                       event,
                       element: this,
@@ -926,15 +926,15 @@ export default async (application: Application): Promise<void> => {
                         content: ${html`
                           <span class="keyboard-shortcut">
                             <span
-                              javascript-TODO="${javascript_TODO`
-                                  this.hidden = leafac.isAppleDevice;
-                                `}"
+                              javascript="${javascript`
+                                this.hidden = leafac.isAppleDevice;
+                              `}"
                               >Ctrl+Alt+P</span
                             ><span
                               class="keyboard-shortcut--cluster"
-                              javascript-TODO="${javascript_TODO`
-                                  this.hidden = !leafac.isAppleDevice;
-                                `}"
+                              javascript="${javascript`
+                                this.hidden = !leafac.isAppleDevice;
+                              `}"
                               ><i class="bi bi-alt"></i
                               ><i class="bi bi-command"></i>P</span
                             >
@@ -989,7 +989,7 @@ export default async (application: Application): Promise<void> => {
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                javascript-TODO="${javascript_TODO`
+                javascript="${javascript`
                   leafac.setTippy({
                     event,
                     element: this,
@@ -1035,7 +1035,7 @@ export default async (application: Application): Promise<void> => {
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                javascript-TODO="${javascript_TODO`
+                javascript="${javascript`
                   leafac.setTippy({
                     event,
                     element: this,
@@ -1045,13 +1045,13 @@ export default async (application: Application): Promise<void> => {
                         Heading 1
                         <span class="keyboard-shortcut">
                           (<span
-                            javascript-TODO="${javascript_TODO`
+                            javascript="${javascript`
                               this.hidden = leafac.isAppleDevice;
                             `}"
                             >Ctrl+Alt+1</span
                           ><span
                             class="keyboard-shortcut--cluster"
-                            javascript-TODO="${javascript_TODO`
+                            javascript="${javascript`
                               this.hidden = !leafac.isAppleDevice;
                             `}"
                             ><i class="bi bi-alt"></i
@@ -1077,7 +1077,7 @@ export default async (application: Application): Promise<void> => {
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                javascript-TODO="${javascript_TODO`
+                javascript="${javascript`
                   leafac.setTippy({
                     event,
                     element: this,
@@ -1087,13 +1087,13 @@ export default async (application: Application): Promise<void> => {
                         Heading 2
                         <span class="keyboard-shortcut">
                           (<span
-                            javascript-TODO="${javascript_TODO`
+                            javascript="${javascript`
                               this.hidden = leafac.isAppleDevice;
                             `}"
                             >Ctrl+Alt+2</span
                           ><span
                             class="keyboard-shortcut--cluster"
-                            javascript-TODO="${javascript_TODO`
+                            javascript="${javascript`
                               this.hidden = !leafac.isAppleDevice;
                             `}"
                             ><i class="bi bi-alt"></i
@@ -1119,7 +1119,7 @@ export default async (application: Application): Promise<void> => {
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                javascript-TODO="${javascript_TODO`
+                javascript="${javascript`
                   leafac.setTippy({
                     event,
                     element: this,
@@ -1129,13 +1129,13 @@ export default async (application: Application): Promise<void> => {
                         Heading 3
                         <span class="keyboard-shortcut">
                           (<span
-                            javascript-TODO="${javascript_TODO`
+                            javascript="${javascript`
                               this.hidden = leafac.isAppleDevice;
                             `}"
                             >Ctrl+Alt+3</span
                           ><span
                             class="keyboard-shortcut--cluster"
-                            javascript-TODO="${javascript_TODO`
+                            javascript="${javascript`
                               this.hidden = !leafac.isAppleDevice;
                             `}"
                             ><i class="bi bi-alt"></i
@@ -1163,7 +1163,7 @@ export default async (application: Application): Promise<void> => {
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                javascript-TODO="${javascript_TODO`
+                javascript="${javascript`
                   leafac.setTippy({
                     event,
                     element: this,
@@ -1173,13 +1173,13 @@ export default async (application: Application): Promise<void> => {
                         Bold
                         <span class="keyboard-shortcut">
                           (<span
-                            javascript-TODO="${javascript_TODO`
+                            javascript="${javascript`
                               this.hidden = leafac.isAppleDevice;
                             `}"
                             >Ctrl+B</span
                           ><span
                             class="keyboard-shortcut--cluster"
-                            javascript-TODO="${javascript_TODO`
+                            javascript="${javascript`
                               this.hidden = !leafac.isAppleDevice;
                             `}"
                             ><i class="bi bi-command"></i>B</span
@@ -1204,7 +1204,7 @@ export default async (application: Application): Promise<void> => {
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                javascript-TODO="${javascript_TODO`
+                javascript="${javascript`
                   leafac.setTippy({
                     event,
                     element: this,
@@ -1214,13 +1214,13 @@ export default async (application: Application): Promise<void> => {
                         Italic
                         <span class="keyboard-shortcut">
                           (<span
-                            javascript-TODO="${javascript_TODO`
+                            javascript="${javascript`
                               this.hidden = leafac.isAppleDevice;
                             `}"
                             >Ctrl+I</span
                           ><span
                             class="keyboard-shortcut--cluster"
-                            javascript-TODO="${javascript_TODO`
+                            javascript="${javascript`
                               this.hidden = !leafac.isAppleDevice;
                             `}"
                             ><i class="bi bi-command"></i>I</span
@@ -1245,7 +1245,7 @@ export default async (application: Application): Promise<void> => {
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                javascript-TODO="${javascript_TODO`
+                javascript="${javascript`
                   leafac.setTippy({
                     event,
                     element: this,
@@ -1255,13 +1255,13 @@ export default async (application: Application): Promise<void> => {
                         Underline
                         <span class="keyboard-shortcut">
                           (<span
-                            javascript-TODO="${javascript_TODO`
+                            javascript="${javascript`
                               this.hidden = leafac.isAppleDevice;
                             `}"
                             >Ctrl+U</span
                           ><span
                             class="keyboard-shortcut--cluster"
-                            javascript-TODO="${javascript_TODO`
+                            javascript="${javascript`
                               this.hidden = !leafac.isAppleDevice;
                             `}"
                             ><i class="bi bi-command"></i>U</span
@@ -1286,7 +1286,7 @@ export default async (application: Application): Promise<void> => {
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                javascript-TODO="${javascript_TODO`
+                javascript="${javascript`
                   leafac.setTippy({
                     event,
                     element: this,
@@ -1296,13 +1296,13 @@ export default async (application: Application): Promise<void> => {
                         Strikethrough
                         <span class="keyboard-shortcut">
                           (<span
-                            javascript-TODO="${javascript_TODO`
+                            javascript="${javascript`
                               this.hidden = leafac.isAppleDevice;
                             `}"
                             >Ctrl+Alt+S</span
                           ><span
                             class="keyboard-shortcut--cluster"
-                            javascript-TODO="${javascript_TODO`
+                            javascript="${javascript`
                               this.hidden = !leafac.isAppleDevice;
                             `}"
                             ><i class="bi bi-alt"></i
@@ -1328,7 +1328,7 @@ export default async (application: Application): Promise<void> => {
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                javascript-TODO="${javascript_TODO`
+                javascript="${javascript`
                   leafac.setTippy({
                     event,
                     element: this,
@@ -1338,13 +1338,13 @@ export default async (application: Application): Promise<void> => {
                         Link
                         <span class="keyboard-shortcut">
                           (<span
-                            javascript-TODO="${javascript_TODO`
+                            javascript="${javascript`
                               this.hidden = leafac.isAppleDevice;
                             `}"
                             >Ctrl+K</span
                           ><span
                             class="keyboard-shortcut--cluster"
-                            javascript-TODO="${javascript_TODO`
+                            javascript="${javascript`
                               this.hidden = !leafac.isAppleDevice;
                             `}"
                             ><i class="bi bi-command"></i>K</span
@@ -1371,7 +1371,7 @@ export default async (application: Application): Promise<void> => {
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                javascript-TODO="${javascript_TODO`
+                javascript="${javascript`
                   leafac.setTippy({
                     event,
                     element: this,
@@ -1381,13 +1381,13 @@ export default async (application: Application): Promise<void> => {
                         Bulleted List
                         <span class="keyboard-shortcut">
                           (<span
-                            javascript-TODO="${javascript_TODO`
+                            javascript="${javascript`
                               this.hidden = leafac.isAppleDevice;
                             `}"
                             >Ctrl+Shift+8</span
                           ><span
                             class="keyboard-shortcut--cluster"
-                            javascript-TODO="${javascript_TODO`
+                            javascript="${javascript`
                               this.hidden = !leafac.isAppleDevice;
                             `}"
                             ><i class="bi bi-shift"></i
@@ -1413,7 +1413,7 @@ export default async (application: Application): Promise<void> => {
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                javascript-TODO="${javascript_TODO`
+                javascript="${javascript`
                   leafac.setTippy({
                     event,
                     element: this,
@@ -1423,13 +1423,13 @@ export default async (application: Application): Promise<void> => {
                         Numbered List
                         <span class="keyboard-shortcut">
                           (<span
-                            javascript-TODO="${javascript_TODO`
+                            javascript="${javascript`
                               this.hidden = leafac.isAppleDevice;
                             `}"
                             >Ctrl+Shift+7</span
                           ><span
                             class="keyboard-shortcut--cluster"
-                            javascript-TODO="${javascript_TODO`
+                            javascript="${javascript`
                               this.hidden = !leafac.isAppleDevice;
                             `}"
                             ><i class="bi bi-shift"></i
@@ -1455,7 +1455,7 @@ export default async (application: Application): Promise<void> => {
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                javascript-TODO="${javascript_TODO`
+                javascript="${javascript`
                   leafac.setTippy({
                     event,
                     element: this,
@@ -1465,13 +1465,13 @@ export default async (application: Application): Promise<void> => {
                         Checklist
                         <span class="keyboard-shortcut">
                           (<span
-                            javascript-TODO="${javascript_TODO`
+                            javascript="${javascript`
                               this.hidden = leafac.isAppleDevice;
                             `}"
                             >Ctrl+Shift+9</span
                           ><span
                             class="keyboard-shortcut--cluster"
-                            javascript-TODO="${javascript_TODO`
+                            javascript="${javascript`
                               this.hidden = !leafac.isAppleDevice;
                             `}"
                             ><i class="bi bi-shift"></i
@@ -1499,7 +1499,7 @@ export default async (application: Application): Promise<void> => {
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                javascript-TODO="${javascript_TODO`
+                javascript="${javascript`
                   leafac.setTippy({
                     event,
                     element: this,
@@ -1509,13 +1509,13 @@ export default async (application: Application): Promise<void> => {
                         Quote
                         <span class="keyboard-shortcut">
                           (<span
-                            javascript-TODO="${javascript_TODO`
+                            javascript="${javascript`
                               this.hidden = leafac.isAppleDevice;
                             `}"
                             >Ctrl+'</span
                           ><span
                             class="keyboard-shortcut--cluster"
-                            javascript-TODO="${javascript_TODO`
+                            javascript="${javascript`
                               this.hidden = !leafac.isAppleDevice;
                             `}"
                             ><i class="bi bi-command"></i>'</span
@@ -1540,7 +1540,7 @@ export default async (application: Application): Promise<void> => {
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                javascript-TODO="${javascript_TODO`
+                javascript="${javascript`
                   leafac.setTippy({
                     event,
                     element: this,
@@ -1550,13 +1550,13 @@ export default async (application: Application): Promise<void> => {
                         Table
                         <span class="keyboard-shortcut">
                           (<span
-                            javascript-TODO="${javascript_TODO`
+                            javascript="${javascript`
                               this.hidden = leafac.isAppleDevice;
                             `}"
                             >Ctrl+Alt+T</span
                           ><span
                             class="keyboard-shortcut--cluster"
-                            javascript-TODO="${javascript_TODO`
+                            javascript="${javascript`
                               this.hidden = !leafac.isAppleDevice;
                             `}"
                             ><i class="bi bi-alt"></i
@@ -1583,7 +1583,7 @@ export default async (application: Application): Promise<void> => {
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                javascript-TODO="${javascript_TODO`
+                javascript="${javascript`
                   leafac.setTippy({
                     event,
                     element: this,
@@ -1593,13 +1593,13 @@ export default async (application: Application): Promise<void> => {
                         Disclosure
                         <span class="keyboard-shortcut">
                           (<span
-                            javascript-TODO="${javascript_TODO`
+                            javascript="${javascript`
                               this.hidden = leafac.isAppleDevice;
                             `}"
                             >Ctrl+Shift+D</span
                           ><span
                             class="keyboard-shortcut--cluster"
-                            javascript-TODO="${javascript_TODO`
+                            javascript="${javascript`
                               this.hidden = !leafac.isAppleDevice;
                             `}"
                             ><i class="bi bi-shift"></i
@@ -1625,7 +1625,7 @@ export default async (application: Application): Promise<void> => {
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                javascript-TODO="${javascript_TODO`
+                javascript="${javascript`
                   leafac.setTippy({
                     event,
                     element: this,
@@ -1635,13 +1635,13 @@ export default async (application: Application): Promise<void> => {
                         Footnote
                         <span class="keyboard-shortcut">
                           (<span
-                            javascript-TODO="${javascript_TODO`
+                            javascript="${javascript`
                               this.hidden = leafac.isAppleDevice;
                             `}"
                             >Ctrl+Shift+F</span
                           ><span
                             class="keyboard-shortcut--cluster"
-                            javascript-TODO="${javascript_TODO`
+                            javascript="${javascript`
                               this.hidden = !leafac.isAppleDevice;
                             `}"
                             ><i class="bi bi-shift"></i
@@ -1669,7 +1669,7 @@ export default async (application: Application): Promise<void> => {
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                javascript-TODO="${javascript_TODO`
+                javascript="${javascript`
                   leafac.setTippy({
                     event,
                     element: this,
@@ -1679,13 +1679,13 @@ export default async (application: Application): Promise<void> => {
                         Inline Code
                         <span class="keyboard-shortcut">
                           (<span
-                            javascript-TODO="${javascript_TODO`
+                            javascript="${javascript`
                               this.hidden = leafac.isAppleDevice;
                             `}"
                             >Ctrl+E</span
                           ><span
                             class="keyboard-shortcut--cluster"
-                            javascript-TODO="${javascript_TODO`
+                            javascript="${javascript`
                               this.hidden = !leafac.isAppleDevice;
                             `}"
                             ><i class="bi bi-command"></i>E</span
@@ -1710,7 +1710,7 @@ export default async (application: Application): Promise<void> => {
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                javascript-TODO="${javascript_TODO`
+                javascript="${javascript`
                   leafac.setTippy({
                     event,
                     element: this,
@@ -1720,13 +1720,13 @@ export default async (application: Application): Promise<void> => {
                         Code Block
                         <span class="keyboard-shortcut">
                           (<span
-                            javascript-TODO="${javascript_TODO`
+                            javascript="${javascript`
                               this.hidden = leafac.isAppleDevice;
                             `}"
                             >Ctrl+Shift+E</span
                           ><span
                             class="keyboard-shortcut--cluster"
-                            javascript-TODO="${javascript_TODO`
+                            javascript="${javascript`
                               this.hidden = !leafac.isAppleDevice;
                             `}"
                             ><i class="bi bi-shift"></i
@@ -1754,7 +1754,7 @@ export default async (application: Application): Promise<void> => {
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                javascript-TODO="${javascript_TODO`
+                javascript="${javascript`
                   leafac.setTippy({
                     event,
                     element: this,
@@ -1764,13 +1764,13 @@ export default async (application: Application): Promise<void> => {
                         Inline Equation
                         <span class="keyboard-shortcut">
                           (<span
-                            javascript-TODO="${javascript_TODO`
+                            javascript="${javascript`
                               this.hidden = leafac.isAppleDevice;
                             `}"
                             >Ctrl+Alt+E</span
                           ><span
                             class="keyboard-shortcut--cluster"
-                            javascript-TODO="${javascript_TODO`
+                            javascript="${javascript`
                               this.hidden = !leafac.isAppleDevice;
                             `}"
                             ><i class="bi bi-alt"></i
@@ -1796,7 +1796,7 @@ export default async (application: Application): Promise<void> => {
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                javascript-TODO="${javascript_TODO`
+                javascript="${javascript`
                   leafac.setTippy({
                     event,
                     element: this,
@@ -1806,13 +1806,13 @@ export default async (application: Application): Promise<void> => {
                         Equation Block
                         <span class="keyboard-shortcut">
                           (<span
-                            javascript-TODO="${javascript_TODO`
+                            javascript="${javascript`
                               this.hidden = leafac.isAppleDevice;
                             `}"
                             >Ctrl+Alt+Shift+E</span
                           ><span
                             class="keyboard-shortcut--cluster"
-                            javascript-TODO="${javascript_TODO`
+                            javascript="${javascript`
                               this.hidden = !leafac.isAppleDevice;
                             `}"
                             ><i class="bi bi-alt"></i><i class="bi bi-shift"></i
@@ -1842,7 +1842,7 @@ export default async (application: Application): Promise<void> => {
                     <button
                       type="button"
                       class="button button--tight button--transparent"
-                      javascript-TODO="${javascript_TODO`
+                      javascript="${javascript`
                         leafac.setTippy({
                           event,
                           element: this,
@@ -1868,7 +1868,7 @@ export default async (application: Application): Promise<void> => {
                     <button
                       type="button"
                       class="button button--tight button--transparent"
-                      javascript-TODO="${javascript_TODO`
+                      javascript="${javascript`
                         leafac.setTippy({
                           event,
                           element: this,
@@ -1898,7 +1898,7 @@ export default async (application: Application): Promise<void> => {
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                javascript-TODO="${javascript_TODO`
+                javascript="${javascript`
                   leafac.setTippy({
                     event,
                     element: this,
@@ -1908,13 +1908,13 @@ export default async (application: Application): Promise<void> => {
                         Image
                         <span class="keyboard-shortcut">
                           (<span
-                            javascript-TODO="${javascript_TODO`
+                            javascript="${javascript`
                               this.hidden = leafac.isAppleDevice;
                             `}"
                             >Ctrl+Shift+I</span
                           ><span
                             class="keyboard-shortcut--cluster"
-                            javascript-TODO="${javascript_TODO`
+                            javascript="${javascript`
                               this.hidden = !leafac.isAppleDevice;
                             `}"
                             ><i class="bi bi-shift"></i
@@ -1940,7 +1940,7 @@ export default async (application: Application): Promise<void> => {
               <button
                 type="button"
                 class="button button--tight button--transparent"
-                javascript-TODO="${javascript_TODO`
+                javascript="${javascript`
                   leafac.setTippy({
                     event,
                     element: this,
@@ -1950,13 +1950,13 @@ export default async (application: Application): Promise<void> => {
                         Attachment
                         <span class="keyboard-shortcut">
                           (<span
-                            javascript-TODO="${javascript_TODO`
+                            javascript="${javascript`
                               this.hidden = leafac.isAppleDevice;
                             `}"
                             >Ctrl+Shift+K</span
                           ><span
                             class="keyboard-shortcut--cluster"
-                            javascript-TODO="${javascript_TODO`
+                            javascript="${javascript`
                               this.hidden = !leafac.isAppleDevice;
                             `}"
                             ><i class="bi bi-shift"></i
@@ -1984,7 +1984,7 @@ export default async (application: Application): Promise<void> => {
                 type="file"
                 multiple
                 hidden
-                javascript-TODO="${javascript_TODO`
+                javascript="${javascript`
                   this.isModified = false;
 
                   const textarea = this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
@@ -1997,9 +1997,7 @@ export default async (application: Application): Promise<void> => {
                     tippy.hideAll();
                     textarea.uploadingIndicator.show();
                     textarea.disabled = true;
-                    const response = await (await fetch("https://${
-                      application.configuration.hostname
-                    }/content-editor/attachments", {
+                    const response = await (await fetch(${`https://${application.configuration.hostname}/content-editor/attachments`}, {
                       cache: "no-store",
                       method: "POST",
                       headers: { "CSRF-Protection": "true", },
@@ -2011,32 +2009,28 @@ export default async (application: Application): Promise<void> => {
                     textarea.focus();
                   };
 
-                  const checkIsSignedIn = ${
-                    response.locals.user === undefined ||
-                    response.locals.user.emailVerifiedAt === null
-                      ? javascript_TODO`
-                          (() => {
-                            leafac.setTippy({
-                              event,
-                              element: textarea,
-                              tippyProps: {
-                                trigger: "manual",
-                                theme: "rose",
-                                content: "You must sign in to upload files.",
-                              },
-                            });
+                  const checkIsSignedIn = () => {
+                    if (${
+                      response.locals.user === undefined ||
+                      response.locals.user.emailVerifiedAt === null
+                    }) {
+                      leafac.setTippy({
+                        event,
+                        element: textarea,
+                        tippyProps: {
+                          trigger: "manual",
+                          theme: "rose",
+                          content: "You must sign in to upload files.",
+                        },
+                      });
 
-                            return () => {
-                              textarea.tooltip.show();
-                              return false;
-                            };
-                          })();
-                        `
-                      : javascript_TODO`
-                          () => true;
-                        `
-                  }
-
+                      return () => {
+                        textarea.tooltip.show();
+                        return false;
+                      };
+                    } else
+                      return () => true;
+                  };
 
                   leafac.setTippy({
                     event,
