@@ -7592,95 +7592,95 @@ export default async (application: Application): Promise<void> => {
                                                     --line-height--xs
                                                   );
                                                 `}"
-                                                javascript-TODO="${javascript_TODO`
-                                                    leafac.setTippy({
-                                                      event,
-                                                      element: this,
-                                                      tippyProps: {
-                                                        touch: false,
-                                                        content: "Actions",
-                                                      },
-                                                    });
+                                                javascript="${javascript`
+                                                  leafac.setTippy({
+                                                    event,
+                                                    element: this,
+                                                    tippyProps: {
+                                                      touch: false,
+                                                      content: "Actions",
+                                                    },
+                                                  });
 
-                                                    leafac.setTippy({
-                                                      event,
-                                                      element: this,
-                                                      elementProperty: "dropdown",
-                                                      tippyProps: {
-                                                        trigger: "click",
-                                                        interactive: true,
-                                                        onHidden: () => { this.onmouseleave(); },
-                                                        content: ${html`
-                                                          <div
-                                                            key="loading"
-                                                            css="${css`
-                                                              display: flex;
-                                                              gap: var(
-                                                                --space--2
-                                                              );
-                                                              align-items: center;
-                                                            `}"
-                                                          >
-                                                            $${application.server.locals.partials.spinner(
-                                                              {
-                                                                request,
-                                                                response,
-                                                              }
-                                                            )}
-                                                            Loading…
-                                                          </div>
-                                                          <div
-                                                            key="content"
-                                                            hidden
-                                                          ></div>
-                                                        `},
-                                                      },
-                                                    });
+                                                  leafac.setTippy({
+                                                    event,
+                                                    element: this,
+                                                    elementProperty: "dropdown",
+                                                    tippyProps: {
+                                                      trigger: "click",
+                                                      interactive: true,
+                                                      onHidden: () => { this.onmouseleave(); },
+                                                      content: ${html`
+                                                        <div
+                                                          key="loading"
+                                                          css="${css`
+                                                            display: flex;
+                                                            gap: var(
+                                                              --space--2
+                                                            );
+                                                            align-items: center;
+                                                          `}"
+                                                        >
+                                                          $${application.server.locals.partials.spinner(
+                                                            {
+                                                              request,
+                                                              response,
+                                                            }
+                                                          )}
+                                                          Loading…
+                                                        </div>
+                                                        <div
+                                                          key="content"
+                                                          hidden
+                                                        ></div>
+                                                      `},
+                                                    },
+                                                  });
 
+                                                  window.clearTimeout(this.dropdownContentTimeout);
+                                                  this.dropdownContentSkipLoading = false;
+
+                                                  this.onmouseenter = this.onfocus = async () => {
                                                     window.clearTimeout(this.dropdownContentTimeout);
-                                                    this.dropdownContentSkipLoading = false;
+                                                    if (this.dropdownContentSkipLoading) return;
+                                                    this.dropdownContentSkipLoading = true;
+                                                    leafac.loadPartial(this.dropdown.props.content.querySelector('[key="content"]'), await (await fetch(${`https://${
+                                                      application.configuration
+                                                        .hostname
+                                                    }/courses/${
+                                                      response.locals.course
+                                                        .reference
+                                                    }/conversations/${
+                                                      response.locals
+                                                        .conversation.reference
+                                                    }/messages/${
+                                                      message.reference
+                                                    }/actions${qs.stringify(
+                                                      {
+                                                        conversations:
+                                                          request.query
+                                                            .conversations,
+                                                        messages:
+                                                          request.query
+                                                            .messages,
+                                                      },
+                                                      { addQueryPrefix: true }
+                                                    )}`}, { cache: "no-store" })).text());
+                                                    this.dropdown.props.content.querySelector('[key="loading"]').hidden = true;
+                                                    this.dropdown.props.content.querySelector('[key="content"]').hidden = false;
+                                                    this.dropdown.setProps({});
+                                                  };
 
-                                                    this.onmouseenter = this.onfocus = async () => {
-                                                      window.clearTimeout(this.dropdownContentTimeout);
-                                                      if (this.dropdownContentSkipLoading) return;
-                                                      this.dropdownContentSkipLoading = true;
-                                                      leafac.loadPartial(this.dropdown.props.content.querySelector('[key="content"]'), await (await fetch("https://${
-                                                        application
-                                                          .configuration
-                                                          .hostname
-                                                      }/courses/${
-                                                  response.locals.course
-                                                    .reference
-                                                }/conversations/${
-                                                  response.locals.conversation
-                                                    .reference
-                                                }/messages/${
-                                                  message.reference
-                                                }/actions${qs.stringify(
-                                                  {
-                                                    conversations:
-                                                      request.query
-                                                        .conversations,
-                                                    messages:
-                                                      request.query.messages,
-                                                  },
-                                                  { addQueryPrefix: true }
-                                                )}", { cache: "no-store" })).text());
-                                                      this.dropdown.props.content.querySelector('[key="loading"]').hidden = true;
-                                                      this.dropdown.props.content.querySelector('[key="content"]').hidden = false;
-                                                      this.dropdown.setProps({});
-                                                    };
-
-                                                    this.onmouseleave = this.onblur = () => {
-                                                      window.clearTimeout(this.dropdownContentTimeout);
-                                                      if (this.matches(":hover, :focus-within") || this.dropdown.state.isShown) return;
-                                                      this.dropdownContentTimeout = window.setTimeout(() => {
-                                                        this.dropdown.props.content.querySelector('[key="loading"]').hidden = false;
-                                                        this.dropdown.props.content.querySelector('[key="content"]').hidden = true;
-                                                        this.dropdownContentSkipLoading = false;
-                                                      }, 60 * 1000);
-                                                    };
-                                                  `}"
+                                                  this.onmouseleave = this.onblur = () => {
+                                                    window.clearTimeout(this.dropdownContentTimeout);
+                                                    if (this.matches(":hover, :focus-within") || this.dropdown.state.isShown) return;
+                                                    this.dropdownContentTimeout = window.setTimeout(() => {
+                                                      this.dropdown.props.content.querySelector('[key="loading"]').hidden = false;
+                                                      this.dropdown.props.content.querySelector('[key="content"]').hidden = true;
+                                                      this.dropdownContentSkipLoading = false;
+                                                    }, 60 * 1000);
+                                                  };
+                                                `}"
                                               >
                                                 <i
                                                   class="bi bi-three-dots-vertical"

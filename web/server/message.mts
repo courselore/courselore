@@ -580,7 +580,7 @@ export default async (application: Application): Promise<void> => {
 
               <button
                 class="dropdown--menu--item button button--transparent"
-                javascript-TODO="${javascript_TODO`
+                javascript="${javascript`
                   this.onclick = () => {
                     const content = this.closest("[data-content-source]").getAttribute("data-content-source");
                     const newMessage = document.querySelector('[key="new-message"]');
@@ -591,9 +591,8 @@ export default async (application: Application): Promise<void> => {
                       ((element.selectionStart > 0) ? "\\n\\n" : "") + "> " + ${
                         response.locals.message.authorEnrollment ===
                         "no-longer-enrolled"
-                          ? javascript_TODO``
-                          : javascript_TODO`
-                            "@${
+                          ? ``
+                          : `@${
                               response.locals.message.anonymousAt === null
                                 ? `${
                                     response.locals.message.authorEnrollment
@@ -603,9 +602,8 @@ export default async (application: Application): Promise<void> => {
                                       .user.name
                                   )}`
                                 : `anonymous`
-                            } · " +
-                          `
-                      } "#" + ${
+                            } · `
+                      } + "#" + ${
                   response.locals.conversation.reference
                 } + "/" + ${
                   response.locals.message.reference
