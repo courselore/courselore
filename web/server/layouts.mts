@@ -1582,12 +1582,6 @@ export default async (application: Application): Promise<void> => {
                   >
                     <button
                       class="button"
-                      style="
-                        --color--accent-color--500: var(--color--${response
-                        .locals.enrollment.accentColor}--500);
-                        --color--accent-color--600: var(--color--${response
-                        .locals.enrollment.accentColor}--600);
-                      "
                       css="${css`
                         background-color: var(--color--accent-color--500);
                         @media (prefers-color-scheme: dark) {
@@ -1597,6 +1591,9 @@ export default async (application: Application): Promise<void> => {
                         flex: 1;
                       `}"
                       javascript="${javascript`
+                        this.style.setProperty("--color--accent-color--500", ${`var(--color--${response.locals.enrollment.accentColor}--500)`});
+                        this.style.setProperty("--color--accent-color--600", ${`var(--color--${response.locals.enrollment.accentColor}--600)`});
+
                         leafac.setTippy({
                           event,
                           element: this,
