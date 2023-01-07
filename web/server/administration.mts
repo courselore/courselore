@@ -4,7 +4,6 @@ import sql from "@leafac/sqlite";
 import html, { HTML } from "@leafac/html";
 import css from "@leafac/css";
 import javascript from "@leafac/javascript";
-import javascript_TODO from "@leafac/javascript";
 import lodash from "lodash";
 import semver from "semver";
 import { Application } from "./index.mjs";
@@ -400,7 +399,7 @@ export default async (application: Application): Promise<void> => {
               type="text"
               class="input--text"
               placeholder="Filter…"
-              javascript-TODO="${javascript_TODO`
+              javascript="${javascript`
                 this.isModified = false;
 
                 this.oninput = () => {
@@ -451,7 +450,7 @@ export default async (application: Application): Promise<void> => {
                   display: flex;
                   gap: var(--space--2);
                 `}"
-                javascript-TODO="${javascript_TODO`
+                javascript="${javascript`
                   this.onbeforemorph = (event) => !event?.detail?.liveUpdate;
                 `}"
               >
@@ -505,7 +504,7 @@ export default async (application: Application): Promise<void> => {
                           line-height: var(--line-height--xs);
                           display: inline-flex;
                         `}"
-                        javascript-TODO="${javascript_TODO`
+                        javascript="${javascript`
                           leafac.setTippy({
                             event,
                             element: this,
@@ -549,7 +548,7 @@ export default async (application: Application): Promise<void> => {
                           datetime="${new Date(
                             user.lastSeenOnlineAt
                           ).toISOString()}"
-                          javascript-TODO="${javascript_TODO`
+                          javascript="${javascript`
                             leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
                           `}"
                         ></time>
@@ -575,7 +574,7 @@ export default async (application: Application): Promise<void> => {
                         class="button button--tight button--tight--inline button--transparent ${textColorsSystemRole[
                           user.systemRole
                         ]}"
-                        javascript-TODO="${javascript_TODO`
+                        javascript="${javascript`
                           leafac.setTippy({
                             event,
                             element: this,
@@ -618,89 +617,88 @@ export default async (application: Application): Promise<void> => {
                                               $${isOnlyAdministrator
                                                 ? html`
                                                     type="button"
-                                                    javascript-TODO="${javascript_TODO`
-                                                        leafac.setTippy({
-                                                          event,
-                                                          element: this,
-                                                          tippyProps: {
-                                                            theme: "rose",
-                                                            trigger: "click",
-                                                            content: "You may not update your own role because you’re the only administrator.",
-                                                          },
-                                                        });
-                                                      `}"
+                                                    javascript="${javascript`
+                                                      leafac.setTippy({
+                                                        event,
+                                                        element: this,
+                                                        tippyProps: {
+                                                          theme: "rose",
+                                                          trigger: "click",
+                                                          content: "You may not update your own role because you’re the only administrator.",
+                                                        },
+                                                      });
+                                                    `}"
                                                   `
                                                 : isSelf
                                                 ? html`
                                                     type="button"
-                                                    javascript-TODO="${javascript_TODO`
-                                                        leafac.setTippy({
-                                                          event,
-                                                          element: this,
-                                                          elementProperty: "dropdown",
-                                                          tippyProps: {
-                                                            theme: "rose",
-                                                            trigger: "click",
-                                                            interactive: true,
-                                                            appendTo: document.querySelector("body"),
-                                                            content: ${html`
-                                                              <form
-                                                                key="role--${systemRole}"
-                                                                method="PATCH"
-                                                                action="${action}"
-                                                                css="${css`
-                                                                  padding: var(
-                                                                    --space--2
-                                                                  );
-                                                                  display: flex;
-                                                                  flex-direction: column;
-                                                                  gap: var(
-                                                                    --space--4
-                                                                  );
-                                                                `}"
-                                                              >
-                                                                <input
-                                                                  type="hidden"
-                                                                  name="role"
-                                                                  value="${systemRole}"
-                                                                />
-                                                                <p>
-                                                                  Are you sure
-                                                                  you want to
-                                                                  update your
-                                                                  own role to
-                                                                  ${systemRole}?
-                                                                </p>
-                                                                <p>
-                                                                  <strong
-                                                                    css="${css`
-                                                                      font-weight: var(
-                                                                        --font-weight--bold
-                                                                      );
-                                                                    `}"
-                                                                  >
-                                                                    You may not
-                                                                    undo this
-                                                                    action!
-                                                                  </strong>
-                                                                </p>
-                                                                <button
-                                                                  class="button button--rose"
+                                                    javascript="${javascript`
+                                                      leafac.setTippy({
+                                                        event,
+                                                        element: this,
+                                                        elementProperty: "dropdown",
+                                                        tippyProps: {
+                                                          theme: "rose",
+                                                          trigger: "click",
+                                                          interactive: true,
+                                                          appendTo: document.querySelector("body"),
+                                                          content: ${html`
+                                                            <form
+                                                              key="role--${systemRole}"
+                                                              method="PATCH"
+                                                              action="${action}"
+                                                              css="${css`
+                                                                padding: var(
+                                                                  --space--2
+                                                                );
+                                                                display: flex;
+                                                                flex-direction: column;
+                                                                gap: var(
+                                                                  --space--4
+                                                                );
+                                                              `}"
+                                                            >
+                                                              <input
+                                                                type="hidden"
+                                                                name="role"
+                                                                value="${systemRole}"
+                                                              />
+                                                              <p>
+                                                                Are you sure you
+                                                                want to update
+                                                                your own role to
+                                                                ${systemRole}?
+                                                              </p>
+                                                              <p>
+                                                                <strong
+                                                                  css="${css`
+                                                                    font-weight: var(
+                                                                      --font-weight--bold
+                                                                    );
+                                                                  `}"
                                                                 >
-                                                                  <i
-                                                                    class="bi bi-pencil-fill"
-                                                                  ></i>
-                                                                  Update My Own
-                                                                  Role to
-                                                                  ${lodash.capitalize(
-                                                                    systemRole
-                                                                  )}
-                                                                </button>
-                                                              </form>
-                                                            `},  
-                                                          },
-                                                        });
-                                                      `}"
+                                                                  You may not
+                                                                  undo this
+                                                                  action!
+                                                                </strong>
+                                                              </p>
+                                                              <button
+                                                                class="button button--rose"
+                                                              >
+                                                                <i
+                                                                  class="bi bi-pencil-fill"
+                                                                ></i>
+                                                                Update My Own
+                                                                Role to
+                                                                ${lodash.capitalize(
+                                                                  systemRole
+                                                                )}
+                                                              </button>
+                                                            </form>
+                                                          `},  
+                                                        },
+                                                      });
+                                                    `}"
                                                   `
                                                 : html``}
                                             >
