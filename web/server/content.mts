@@ -2009,7 +2009,7 @@ export default async (application: Application): Promise<void> => {
                     textarea.focus();
                   };
 
-                  const checkIsSignedIn = () => {
+                  const checkIsSignedIn = (() => {
                     if (${
                       response.locals.user === undefined ||
                       response.locals.user.emailVerifiedAt === null
@@ -2030,7 +2030,7 @@ export default async (application: Application): Promise<void> => {
                       };
                     } else
                       return () => true;
-                  };
+                  })();
 
                   leafac.setTippy({
                     event,
@@ -2069,7 +2069,7 @@ export default async (application: Application): Promise<void> => {
             <div>
               <label
                 class="button button--tight button--transparent"
-                javascript-TODO="${javascript_TODO`
+                javascript="${javascript`
                   leafac.setTippy({
                     event,
                     element: this,
@@ -2080,13 +2080,13 @@ export default async (application: Application): Promise<void> => {
                         <span class="secondary">(Monospaced Font)</span>
                         <span class="keyboard-shortcut">
                           (<span
-                            javascript-TODO="${javascript_TODO`
+                            javascript="${javascript`
                               this.hidden = leafac.isAppleDevice;
                             `}"
                             >Ctrl+Alt+0</span
                           ><span
                             class="keyboard-shortcut--cluster"
-                            javascript-TODO="${javascript_TODO`
+                            javascript="${javascript`
                               this.hidden = !leafac.isAppleDevice;
                             `}"
                             ><i class="bi bi-alt"></i
@@ -2101,7 +2101,7 @@ export default async (application: Application): Promise<void> => {
                 <input
                   type="checkbox"
                   class="visually-hidden input--radio-or-checkbox--multilabel"
-                  javascript-TODO="${javascript_TODO`
+                  javascript="${javascript`
                     this.isModified = false;
 
                     const textarea = this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
@@ -2164,7 +2164,7 @@ export default async (application: Application): Promise<void> => {
                   font-variant-ligatures: none;
                 }
               `}"
-              javascript-TODO="${javascript_TODO`
+              javascript="${javascript`
                 autosize(this);
                 autosize.update(this);
 
@@ -2192,218 +2192,214 @@ export default async (application: Application): Promise<void> => {
                   this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--attachments"]').upload(event.clipboardData.files);
                 };
 
-                ${
-                  response.locals.course !== undefined
-                    ? javascript_TODO`
-                        const dropdownMenuTarget = this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea--dropdown-menu-target"]');
+                if (${response.locals.course !== undefined}) {
+                  const dropdownMenuTarget = this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea--dropdown-menu-target"]');
 
-                        leafac.setTippy({
-                          event,
-                          element: dropdownMenuTarget,
-                          elementProperty: "dropdownMenuMention",
-                          tippyProps: {
-                            placement: "bottom-start",
-                            trigger: "manual",
-                            interactive: true,
-                            content: ${html`
-                              <div
-                                css="${css`
-                                  width: var(--space--56);
-                                  max-height: var(--space--44);
-                                  overflow: auto;
-                                `}"
-                              >
-                                <p class="heading">
-                                  <i class="bi bi-at"></i>
-                                  Mention User
-                                </p>
-                                <div class="dropdown--menu">
-                                  <div key="search-results"></div>
-                                  <button
-                                    type="button"
-                                    class="dropdown--menu--item button button--transparent"
-                                    javascript-TODO="${javascript_TODO`
-                                        this.onclick = () => {
-                                          this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete("everyone");
-                                        };
-                                      `}"
-                                  >
-                                    Everyone in the Conversation
-                                  </button>
-                                  <button
-                                    type="button"
-                                    class="dropdown--menu--item button button--transparent"
-                                    javascript-TODO="${javascript_TODO`
-                                        this.onclick = () => {
-                                          this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete("staff");
-                                        };
-                                      `}"
-                                  >
-                                    Staff in the Conversation
-                                  </button>
-                                  <button
-                                    type="button"
-                                    class="dropdown--menu--item button button--transparent"
-                                    javascript-TODO="${javascript_TODO`
-                                        this.onclick = () => {
-                                          this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete("students");
-                                        };
-                                      `}"
-                                  >
-                                    Students in the Conversation
-                                  </button>
-                                </div>
-                              </div>
-                            `},  
-                          },
-                        });
+                  leafac.setTippy({
+                    event,
+                    element: dropdownMenuTarget,
+                    elementProperty: "dropdownMenuMention",
+                    tippyProps: {
+                      placement: "bottom-start",
+                      trigger: "manual",
+                      interactive: true,
+                      content: ${html`
+                        <div
+                          css="${css`
+                            width: var(--space--56);
+                            max-height: var(--space--44);
+                            overflow: auto;
+                          `}"
+                        >
+                          <p class="heading">
+                            <i class="bi bi-at"></i>
+                            Mention User
+                          </p>
+                          <div class="dropdown--menu">
+                            <div key="search-results"></div>
+                            <button
+                              type="button"
+                              class="dropdown--menu--item button button--transparent"
+                              javascript="${javascript`
+                                this.onclick = () => {
+                                  this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete("everyone");
+                                };
+                              `}"
+                            >
+                              Everyone in the Conversation
+                            </button>
+                            <button
+                              type="button"
+                              class="dropdown--menu--item button button--transparent"
+                              javascript="${javascript`
+                                this.onclick = () => {
+                                  this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete("staff");
+                                };
+                              `}"
+                            >
+                              Staff in the Conversation
+                            </button>
+                            <button
+                              type="button"
+                              class="dropdown--menu--item button button--transparent"
+                              javascript="${javascript`
+                                this.onclick = () => {
+                                  this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete("students");
+                                };
+                              `}"
+                            >
+                              Students in the Conversation
+                            </button>
+                          </div>
+                        </div>
+                      `},  
+                    },
+                  });
 
-                        leafac.setTippy({
-                          event,
-                          element: dropdownMenuTarget,
-                          elementProperty: "dropdownMenuReference",
-                          tippyProps: {
-                            placement: "bottom-start",
-                            trigger: "manual",
-                            interactive: true,
-                            content: ${html`
-                              <div
-                                css="${css`
-                                  width: var(--space--72);
-                                  max-height: var(--space--44);
-                                  overflow: auto;
-                                `}"
-                              >
-                                <p class="heading">
-                                  <i class="bi bi-hash"></i>
-                                  Refer to Conversation or Message
-                                </p>
-                                <div class="dropdown--menu">
-                                  <div key="search-results"></div>
-                                </div>
-                              </div>
-                            `},  
-                          },
-                        });
+                  leafac.setTippy({
+                    event,
+                    element: dropdownMenuTarget,
+                    elementProperty: "dropdownMenuReference",
+                    tippyProps: {
+                      placement: "bottom-start",
+                      trigger: "manual",
+                      interactive: true,
+                      content: ${html`
+                        <div
+                          css="${css`
+                            width: var(--space--72);
+                            max-height: var(--space--44);
+                            overflow: auto;
+                          `}"
+                        >
+                          <p class="heading">
+                            <i class="bi bi-hash"></i>
+                            Refer to Conversation or Message
+                          </p>
+                          <div class="dropdown--menu">
+                            <div key="search-results"></div>
+                          </div>
+                        </div>
+                      `},  
+                    },
+                  });
 
-                        const dropdownMenus = [
-                          {
-                            trigger: "@",
-                            route: ${`https://${
-                              application.configuration.hostname
-                            }/courses/${response.locals.course.reference}/${
-                              response.locals.conversation !== undefined
-                                ? `conversations/${response.locals.conversation.reference}/`
-                                : ``
-                            }content-editor/mention-user-search`},
-                            dropdownMenu: dropdownMenuTarget.dropdownMenuMention,
-                          },
-                          {
-                            trigger: "#",
-                            route: ${`https://${application.configuration.hostname}/courses/${response.locals.course.reference}/content-editor/refer-to-conversation-or-message-search`},
-                            dropdownMenu: dropdownMenuTarget.dropdownMenuReference,
-                          },
-                        ];
+                  const dropdownMenus = [
+                    {
+                      trigger: "@",
+                      route: ${`https://${
+                        application.configuration.hostname
+                      }/courses/${response.locals.course?.reference}/${
+                        response.locals.conversation !== undefined
+                          ? `conversations/${response.locals.conversation.reference}/`
+                          : ``
+                      }content-editor/mention-user-search`},
+                      dropdownMenu: dropdownMenuTarget.dropdownMenuMention,
+                    },
+                    {
+                      trigger: "#",
+                      route: ${`https://${application.configuration.hostname}/courses/${response.locals.course?.reference}/content-editor/refer-to-conversation-or-message-search`},
+                      dropdownMenu: dropdownMenuTarget.dropdownMenuReference,
+                    },
+                  ];
 
-                        let anchorIndex = null;
+                  let anchorIndex = null;
 
-                        this.oninput = (() => {
-                          let isUpdating = false;
-                          let shouldUpdateAgain = false;
-                          return async () => {
-                            const value = this.value;
-                            const selectionMin = Math.min(this.selectionStart, this.selectionEnd);
-                            const selectionMax = Math.max(this.selectionStart, this.selectionEnd);
-                            for (const { trigger, route, dropdownMenu } of dropdownMenus) {
-                              if (!dropdownMenu.state.isShown) {
-                                if (
-                                  value[selectionMin - 1] !== trigger ||
-                                  (selectionMin > 1 && value[selectionMin - 2].match(/\\w/) !== null)
-                                ) continue;
-                                anchorIndex = selectionMin;
-                                const caretCoordinates = textareaCaret(this, anchorIndex - 1);
-                                dropdownMenuTarget.style.top = String(caretCoordinates.top) + "px";
-                                dropdownMenuTarget.style.left = String(caretCoordinates.left) + "px";
-                                tippy.hideAll();
-                                dropdownMenu.show();
-                              }
-                              if (selectionMin < anchorIndex || value[anchorIndex - 1] !== trigger || value[anchorIndex] === " ") {
-                                dropdownMenu.hide();
-                                continue;
-                              }
-                              if (isUpdating) {
-                                shouldUpdateAgain = true;
-                                continue;
-                              }
-                              isUpdating = true;
-                              shouldUpdateAgain = false;
-                              const content = dropdownMenu.props.content;
-                              const searchResults = content.querySelector('[key="search-results"]');
-                              const search = value.slice(anchorIndex, selectionMax).trim();
-                              if (search === "") searchResults.innerHTML = "";
-                              else
-                                leafac.loadPartial(
-                                  searchResults,
-                                  await (await fetch(route + "?" + new URLSearchParams({ search }), { cache: "no-store" })).text()
-                                );
-                              const buttons = content.querySelectorAll(".button");
-                              for (const button of buttons) button.classList.remove("hover");
-                              if (buttons.length > 0) buttons[0].classList.add("hover");
-                              isUpdating = false;
-                              if (shouldUpdateAgain) this.oninput();
-                            }
-                          }
-                        })();
-
-                        this.onkeydown = (event) => {
-                          for (const { dropdownMenu } of dropdownMenus) {
-                            if (!dropdownMenu.state.isShown) continue;
-                            const content = dropdownMenu.props.content;
-                            switch (event.code) {
-                              case "ArrowUp":
-                              case "ArrowDown":
-                                event.preventDefault();
-                                const buttons = [...content.querySelectorAll(".button")];
-                                if (buttons.length === 0) continue;    
-                                const currentHoverIndex = buttons.indexOf(content.querySelector(".button.hover"));
-                                if (
-                                  currentHoverIndex === -1 ||
-                                  (event.code === "ArrowUp" && currentHoverIndex === 0) ||
-                                  (event.code === "ArrowDown" && currentHoverIndex === buttons.length - 1)
-                                ) continue;
-                                buttons[currentHoverIndex].classList.remove("hover");
-                                const buttonToHover = buttons[currentHoverIndex + (event.code === "ArrowUp" ? -1 : 1)];
-                                buttonToHover.classList.add("hover");
-                                scrollIntoViewIfNeeded(buttonToHover, { scrollMode: "if-needed" });
-                                break;
-                              case "Enter":
-                              case "Tab":
-                                const buttonHover = content.querySelector(".button.hover");
-                                if (buttonHover === null) dropdownMenu.hide();
-                                else {
-                                  event.preventDefault();
-                                  buttonHover.click();
-                                }
-                                break;
-                              case "Escape":
-                              case "ArrowLeft":
-                              case "ArrowRight":
-                              case "Home":
-                              case "End":
-                                dropdownMenu.hide();
-                                break;
-                            }
-                          }
-                        };
-
-                        this.dropdownMenuComplete = (text) => {
-                          this.setSelectionRange(anchorIndex, Math.max(this.selectionStart, this.selectionEnd));
-                          textFieldEdit.insert(this, text + " ");
+                  this.oninput = (() => {
+                    let isUpdating = false;
+                    let shouldUpdateAgain = false;
+                    return async () => {
+                      const value = this.value;
+                      const selectionMin = Math.min(this.selectionStart, this.selectionEnd);
+                      const selectionMax = Math.max(this.selectionStart, this.selectionEnd);
+                      for (const { trigger, route, dropdownMenu } of dropdownMenus) {
+                        if (!dropdownMenu.state.isShown) {
+                          if (
+                            value[selectionMin - 1] !== trigger ||
+                            (selectionMin > 1 && value[selectionMin - 2].match(/\\w/) !== null)
+                          ) continue;
+                          anchorIndex = selectionMin;
+                          const caretCoordinates = textareaCaret(this, anchorIndex - 1);
+                          dropdownMenuTarget.style.top = String(caretCoordinates.top) + "px";
+                          dropdownMenuTarget.style.left = String(caretCoordinates.left) + "px";
                           tippy.hideAll();
-                          this.focus();
-                        };
-                      `
-                    : javascript_TODO``
+                          dropdownMenu.show();
+                        }
+                        if (selectionMin < anchorIndex || value[anchorIndex - 1] !== trigger || value[anchorIndex] === " ") {
+                          dropdownMenu.hide();
+                          continue;
+                        }
+                        if (isUpdating) {
+                          shouldUpdateAgain = true;
+                          continue;
+                        }
+                        isUpdating = true;
+                        shouldUpdateAgain = false;
+                        const content = dropdownMenu.props.content;
+                        const searchResults = content.querySelector('[key="search-results"]');
+                        const search = value.slice(anchorIndex, selectionMax).trim();
+                        if (search === "") searchResults.innerHTML = "";
+                        else
+                          leafac.loadPartial(
+                            searchResults,
+                            await (await fetch(route + "?" + new URLSearchParams({ search }), { cache: "no-store" })).text()
+                          );
+                        const buttons = content.querySelectorAll(".button");
+                        for (const button of buttons) button.classList.remove("hover");
+                        if (buttons.length > 0) buttons[0].classList.add("hover");
+                        isUpdating = false;
+                        if (shouldUpdateAgain) this.oninput();
+                      }
+                    }
+                  })();
+
+                  this.onkeydown = (event) => {
+                    for (const { dropdownMenu } of dropdownMenus) {
+                      if (!dropdownMenu.state.isShown) continue;
+                      const content = dropdownMenu.props.content;
+                      switch (event.code) {
+                        case "ArrowUp":
+                        case "ArrowDown":
+                          event.preventDefault();
+                          const buttons = [...content.querySelectorAll(".button")];
+                          if (buttons.length === 0) continue;    
+                          const currentHoverIndex = buttons.indexOf(content.querySelector(".button.hover"));
+                          if (
+                            currentHoverIndex === -1 ||
+                            (event.code === "ArrowUp" && currentHoverIndex === 0) ||
+                            (event.code === "ArrowDown" && currentHoverIndex === buttons.length - 1)
+                          ) continue;
+                          buttons[currentHoverIndex].classList.remove("hover");
+                          const buttonToHover = buttons[currentHoverIndex + (event.code === "ArrowUp" ? -1 : 1)];
+                          buttonToHover.classList.add("hover");
+                          scrollIntoViewIfNeeded(buttonToHover, { scrollMode: "if-needed" });
+                          break;
+                        case "Enter":
+                        case "Tab":
+                          const buttonHover = content.querySelector(".button.hover");
+                          if (buttonHover === null) dropdownMenu.hide();
+                          else {
+                            event.preventDefault();
+                            buttonHover.click();
+                          }
+                          break;
+                        case "Escape":
+                        case "ArrowLeft":
+                        case "ArrowRight":
+                        case "Home":
+                        case "End":
+                          dropdownMenu.hide();
+                          break;
+                      }
+                    }
+                  };
+
+                  this.dropdownMenuComplete = (text) => {
+                    this.setSelectionRange(anchorIndex, Math.max(this.selectionStart, this.selectionEnd));
+                    textFieldEdit.insert(this, text + " ");
+                    tippy.hideAll();
+                    this.focus();
+                  };
                 }
               `}"
             >
