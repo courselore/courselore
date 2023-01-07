@@ -2150,6 +2150,9 @@ export default async (application: Application): Promise<void> => {
               name="${name}"
               $${required ? html`required` : html``}
               class="input--text input--text--textarea"
+              style="
+                --height: ${compact ? `var(--space--14)` : `var(--space--20)`};
+              "
               css="${css`
                 height: var(--height);
                 max-height: var(--space--64);
@@ -2168,10 +2171,6 @@ export default async (application: Application): Promise<void> => {
                 }
               `}"
               javascript-TODO="${javascript_TODO`
-                this.style.setProperty("--height", ${
-                  compact ? `var(--space--14)` : `var(--space--20)`
-                });
-
                 autosize(this);
                 autosize.update(this);
 
