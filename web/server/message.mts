@@ -5,7 +5,6 @@ import sql from "@leafac/sqlite";
 import html, { HTML } from "@leafac/html";
 import css from "@leafac/css";
 import javascript from "@leafac/javascript";
-import javascript_TODO from "@leafac/javascript";
 import slugify from "@sindresorhus/slugify";
 import { Application } from "./index.mjs";
 
@@ -624,7 +623,7 @@ export default async (application: Application): Promise<void> => {
                 ? html`
                     <button
                       class="dropdown--menu--item button button--transparent"
-                      javascript-TODO="${javascript_TODO`
+                      javascript="${javascript`
                         leafac.setTippy({
                           event,
                           element: this,
@@ -659,15 +658,7 @@ export default async (application: Application): Promise<void> => {
                           window.clearTimeout(this.tooltipContentTimeout);
                           if (this.tooltipContentSkipLoading) return;
                           this.tooltipContentSkipLoading = true;
-                          leafac.loadPartial(this.tooltip.props.content.querySelector('[key="content"]'), await (await fetch("https://${
-                            application.configuration.hostname
-                          }/courses/${
-                        response.locals.course.reference
-                      }/conversations/${
-                        response.locals.conversation.reference
-                      }/messages/${
-                        response.locals.message.reference
-                      }/views", { cache: "no-store" })).text());
+                          leafac.loadPartial(this.tooltip.props.content.querySelector('[key="content"]'), await (await fetch(${`https://${application.configuration.hostname}/courses/${response.locals.course.reference}/conversations/${response.locals.conversation.reference}/messages/${response.locals.message.reference}/views`}, { cache: "no-store" })).text());
                           this.tooltip.props.content.querySelector('[key="loading"]').hidden = true;
                           this.tooltip.props.content.querySelector('[key="content"]').hidden = false;
                           this.tooltip.setProps({});
@@ -693,7 +684,7 @@ export default async (application: Application): Promise<void> => {
 
               <button
                 class="dropdown--menu--item button button--transparent"
-                javascript-TODO="${javascript_TODO`
+                javascript="${javascript`
                   leafac.setTippy({
                     event,
                     element: this,
@@ -706,22 +697,22 @@ export default async (application: Application): Promise<void> => {
                   });
 
                   this.onclick = async () => {
-                    await navigator.clipboard.writeText("https://${
+                    await navigator.clipboard.writeText(${`https://${
                       application.configuration.hostname
                     }/courses/${
-                  response.locals.course.reference
-                }/conversations/${
-                  response.locals.conversation.reference
-                }${qs.stringify(
-                  {
-                    messages: {
-                      messageReference: response.locals.message.reference,
-                    },
-                  },
-                  {
-                    addQueryPrefix: true,
-                  }
-                )}");
+                      response.locals.course.reference
+                    }/conversations/${
+                      response.locals.conversation.reference
+                    }${qs.stringify(
+                      {
+                        messages: {
+                          messageReference: response.locals.message.reference,
+                        },
+                      },
+                      {
+                        addQueryPrefix: true,
+                      }
+                    )}`});
                     this.copied.show();
                     await new Promise((resolve) => { window.setTimeout(resolve, 1000); });
                     this.copied.hide();
@@ -740,27 +731,27 @@ export default async (application: Application): Promise<void> => {
                 ? html`
                     <button
                       class="dropdown--menu--item button button--transparent"
-                      javascript-TODO="${javascript_TODO`
+                      javascript="${javascript`
                         this.onmouseenter = this.onfocus = async () => {
                           const messageEdit = this.closest('[key^="message/"]').querySelector('[key="message--edit"]');
                           const messageEditForm = messageEdit.querySelector('[key="form"]');
                           if (messageEditForm.skipLoading === true) return;
                           messageEditForm.skipLoading = true;
-                          leafac.loadPartial(messageEditForm, await (await fetch("https://${
+                          leafac.loadPartial(messageEditForm, await (await fetch(${`https://${
                             application.configuration.hostname
                           }/courses/${
-                        response.locals.course.reference
-                      }/conversations/${
-                        response.locals.conversation.reference
-                      }/messages/${
-                        response.locals.message.reference
-                      }/edit${qs.stringify(
-                        {
-                          conversations: request.query.conversations,
-                          messages: request.query.messages,
-                        },
-                        { addQueryPrefix: true }
-                      )}", { cache: "no-store" })).text());
+                            response.locals.course.reference
+                          }/conversations/${
+                            response.locals.conversation.reference
+                          }/messages/${
+                            response.locals.message.reference
+                          }/edit${qs.stringify(
+                            {
+                              conversations: request.query.conversations,
+                              messages: request.query.messages,
+                            },
+                            { addQueryPrefix: true }
+                          )}`}, { cache: "no-store" })).text());
                           messageEdit.querySelector('[key="loading"]').hidden = true;
                           messageEdit.querySelector('[key="form"]').hidden = false;
                           autosize.update(this.closest('[key^="message/"]')?.querySelector('[key="message--edit"] [key="content-editor--write--textarea"]'));
@@ -873,7 +864,7 @@ export default async (application: Application): Promise<void> => {
                 ? html`
                     <button
                       class="dropdown--menu--item button button--transparent"
-                      javascript-TODO="${javascript_TODO`
+                      javascript="${javascript`
                         leafac.setTippy({
                           event,
                           element: this,
@@ -908,15 +899,7 @@ export default async (application: Application): Promise<void> => {
                           window.clearTimeout(this.tooltipContentTimeout);
                           if (this.tooltipContentSkipLoading) return;
                           this.tooltipContentSkipLoading = true;
-                          leafac.loadPartial(this.tooltip.props.content.querySelector('[key="content"]'), await (await fetch("https://${
-                            application.configuration.hostname
-                          }/courses/${
-                        response.locals.course.reference
-                      }/conversations/${
-                        response.locals.conversation.reference
-                      }/messages/${
-                        response.locals.message.reference
-                      }/reuse", { cache: "no-store" })).text());
+                          leafac.loadPartial(this.tooltip.props.content.querySelector('[key="content"]'), await (await fetch(${`https://${application.configuration.hostname}/courses/${response.locals.course.reference}/conversations/${response.locals.conversation.reference}/messages/${response.locals.message.reference}/reuse`}, { cache: "no-store" })).text());
                           this.tooltip.props.content.querySelector('[key="loading"]').hidden = true;
                           this.tooltip.props.content.querySelector('[key="content"]').hidden = false;
                           this.tooltip.setProps({});
@@ -943,7 +926,7 @@ export default async (application: Application): Promise<void> => {
                     <div>
                       <button
                         class="dropdown--menu--item button button--transparent"
-                        javascript-TODO="${javascript_TODO`
+                        javascript="${javascript`
                           leafac.setTippy({
                             event,
                             element: this,
@@ -1078,7 +1061,7 @@ export default async (application: Application): Promise<void> => {
               >
                 <button
                   class="button button--blue"
-                  javascript-TODO="${javascript_TODO`
+                  javascript="${javascript`
                     leafac.setTippy({
                       event,
                       element: this,
@@ -1087,15 +1070,15 @@ export default async (application: Application): Promise<void> => {
                         content: ${html`
                           <span class="keyboard-shortcut">
                             <span
-                              javascript-TODO="${javascript_TODO`
-                                  this.hidden = leafac.isAppleDevice;
-                                `}"
+                              javascript="${javascript`
+                                this.hidden = leafac.isAppleDevice;
+                              `}"
                               >Ctrl+Enter</span
                             ><span
                               class="keyboard-shortcut--cluster"
-                              javascript-TODO="${javascript_TODO`
-                                  this.hidden = !leafac.isAppleDevice;
-                                `}"
+                              javascript="${javascript`
+                                this.hidden = !leafac.isAppleDevice;
+                              `}"
                               ><i class="bi bi-command"></i
                               ><i class="bi bi-arrow-return-left"></i
                             ></span>
@@ -1115,7 +1098,7 @@ export default async (application: Application): Promise<void> => {
                 <button
                   type="reset"
                   class="button button--transparent"
-                  javascript-TODO="${javascript_TODO`
+                  javascript="${javascript`
                     this.onclick = () => {
                       this.closest('[key^="message/"]').querySelector('[key="message--show"]').hidden = false;
                       this.closest('[key^="message/"]').querySelector('[key="message--edit"]').hidden = true;
@@ -1196,7 +1179,7 @@ export default async (application: Application): Promise<void> => {
                     >
                       <time
                         datetime="${new Date(reading.createdAt).toISOString()}"
-                        javascript-TODO="${javascript_TODO`
+                        javascript="${javascript`
                           leafac.relativizeDateTimeElement(this, { capitalize: true });
                         `}"
                       ></time>
@@ -1742,7 +1725,7 @@ export default async (application: Application): Promise<void> => {
                     >
                       <time
                         datetime="${new Date(like.createdAt).toISOString()}"
-                        javascript-TODO="${javascript_TODO`
+                        javascript="${javascript`
                           leafac.relativizeDateTimeElement(this, { capitalize: true });
                         `}"
                       ></time>
