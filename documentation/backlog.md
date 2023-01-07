@@ -20,6 +20,7 @@
 - Idea: Minimize whitespace and whatnot from source CSS/JavaScript before computing the hash, to allow for even more reuse.
 - Maybe `stringToElement()` should return the surrounding `<div>`? We keep having to wrap the content in a `<div>` anyway…
 - Test that changing accent color works, because `morph()` doesn’t update inline `style`s.
+- Edge case: You have just created your account and you mistyped your email, so you can’t verify it. Additionally, you have forgotten your password, so you can’t go to “Forgot your password?” Now you’re locked out, but at the same time, how can you prove that you’re you…
 
 ---
 
