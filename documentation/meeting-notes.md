@@ -1,6 +1,16 @@
 # Meeting Notes
 
 <details>
+<summary>2023-01-07</summary>
+
+- We’re introducing a compiler pass that extracts static CSS & client JavaScript.
+- Killer feature to attract people: off-the-shelf AI
+  - Reuse questions
+  - Reuse questions from previous year
+
+</details>
+
+<details>
 <summary>2022-12-24</summary>
 
 - Resumed work on pagination, which is causing performance issues.
