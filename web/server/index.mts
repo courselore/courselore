@@ -165,16 +165,19 @@ if (await node.isExecuted(import.meta.url)) {
           ),
           ports: {
             server: lodash.times(
-              os.cpus().length,
+              // FIXME: https://github.com/DefinitelyTyped/DefinitelyTyped/pull/63824
+              (os as any).availableParallelism(),
               (processNumber) => 6000 + processNumber
             ),
             serverEvents: lodash.times(
-              os.cpus().length,
+              // FIXME: https://github.com/DefinitelyTyped/DefinitelyTyped/pull/63824
+              (os as any).availableParallelism(),
               (processNumber) => 7000 + processNumber
             ),
             serverEventsAny: 7999,
             workerEvents: lodash.times(
-              os.cpus().length,
+              // FIXME: https://github.com/DefinitelyTyped/DefinitelyTyped/pull/63824
+              (os as any).availableParallelism(),
               (processNumber) => 8000 + processNumber
             ),
             workerEventsAny: 8999,
@@ -229,39 +232,43 @@ if (await node.isExecuted(import.meta.url)) {
             let restartChildProcesses = true;
             for (const execaArguments of [
               ...["server", "worker"].flatMap((processType) =>
-                lodash.times(os.cpus().length, (processNumber) => ({
-                  file:
-                    application.configuration.environment === "profile"
-                      ? "0x"
-                      : process.argv[0],
-                  arguments: [
-                    ...(application.configuration.environment === "profile"
-                      ? [
-                          "--name",
-                          `${processType}--${processNumber}`,
-                          "--output-dir",
-                          "data/measurements/profiles/{name}",
-                          "--collect-delay",
-                          "2000",
-                        ]
-                      : []),
-                    process.argv[1],
-                    "--process-type",
-                    processType,
-                    "--process-number",
-                    processNumber,
-                    configuration,
-                  ],
-                  options: {
-                    preferLocal: true,
-                    stdio: "inherit",
-                    ...(["production", "profile"].includes(
-                      application.configuration.environment
-                    )
-                      ? { env: { NODE_ENV: "production" } }
-                      : {}),
-                  },
-                }))
+                lodash.times(
+                  // FIXME: https://github.com/DefinitelyTyped/DefinitelyTyped/pull/63824
+                  (os as any).availableParallelism(),
+                  (processNumber) => ({
+                    file:
+                      application.configuration.environment === "profile"
+                        ? "0x"
+                        : process.argv[0],
+                    arguments: [
+                      ...(application.configuration.environment === "profile"
+                        ? [
+                            "--name",
+                            `${processType}--${processNumber}`,
+                            "--output-dir",
+                            "data/measurements/profiles/{name}",
+                            "--collect-delay",
+                            "2000",
+                          ]
+                        : []),
+                      process.argv[1],
+                      "--process-type",
+                      processType,
+                      "--process-number",
+                      processNumber,
+                      configuration,
+                    ],
+                    options: {
+                      preferLocal: true,
+                      stdio: "inherit",
+                      ...(["production", "profile"].includes(
+                        application.configuration.environment
+                      )
+                        ? { env: { NODE_ENV: "production" } }
+                        : {}),
+                    },
+                  })
+                )
               ),
               {
                 file: "caddy",
