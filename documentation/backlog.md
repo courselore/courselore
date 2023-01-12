@@ -54,6 +54,7 @@
 - Features from competitors, including Piazza, Ed, and so forth.
   - Find features that people will ask for, and that we need to have.
   - Table of comparison for home page.
+- Probably bad idea for reducing HTML size and improving performance: Have some “templates” as JavaScript strings at the global level that we reuse, for things like spinners. (Spooky action at a distance.)
 
 ## Spring
 
