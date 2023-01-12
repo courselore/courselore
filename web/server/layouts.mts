@@ -1733,7 +1733,10 @@ export default async (application: Application): Promise<void> => {
                                 class="dropdown--menu--item button button--transparent"
                                 javascript="${javascript`
                                   this.onclick = async () => {
+                                    this.classList.add("button--amber");
+                                    await new Promise((resolve) => { window.setTimeout(resolve, 3 * 1000); });
                                     await fetch(${`https://${application.configuration.hostname}/live-updates`}, { cache: "no-store" });
+                                    this.classList.remove("button--amber");
                                     this.classList.add("button--green");
                                   };
                                 `}"
