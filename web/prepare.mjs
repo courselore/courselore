@@ -98,7 +98,7 @@ await node.time("[Server] Babel", async () => {
                       );
                       if (!staticCSSIdentifiers.has(identifier)) {
                         staticCSSIdentifiers.add(identifier);
-                        staticCSS += `${`[css~="${identifier}"]`.repeat(
+                        staticCSS += `/********************************************************************************/\n\n${`[css~="${identifier}"]`.repeat(
                           6
                         )} {\n${css_}}\n\n`;
                       }
@@ -123,7 +123,7 @@ await node.time("[Server] Babel", async () => {
                       );
                       if (!staticJavaScriptIdentifiers.has(identifier)) {
                         staticJavaScriptIdentifiers.add(identifier);
-                        staticJavaScript += `export function ${identifier}(${[
+                        staticJavaScript += `/********************************************************************************/\n\nexport function ${identifier}(${[
                           "event",
                           ...path.node.quasi.expressions.map(
                             (value, index) => `$$${index}`
