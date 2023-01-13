@@ -5330,8 +5330,7 @@ export default async (application: Application): Promise<void> => {
                                                         request.query
                                                           .conversations,
                                                       messages:
-                                                        request.query
-                                                          .messages,
+                                                        request.query.messages,
                                                     },
                                                     { addQueryPrefix: true }
                                                   )}"
@@ -5343,8 +5342,8 @@ export default async (application: Application): Promise<void> => {
                                                   />
                                                   <button
                                                     class="dropdown--menu--item button ${conversationType ===
-                                                    response.locals
-                                                      .conversation.type
+                                                    response.locals.conversation
+                                                      .type
                                                       ? "button--blue"
                                                       : "button--transparent"} ${textColorsConversationType[
                                                       conversationType
