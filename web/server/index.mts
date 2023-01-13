@@ -289,9 +289,7 @@ if (await node.isExecuted(import.meta.url)) {
 
                     (common) {
                       header Cache-Control no-store
-                      header Content-Security-Policy "default-src https://${
-                        application.configuration.hostname
-                      }/ 'unsafe-inline' 'unsafe-eval'; frame-ancestors 'none'; object-src 'none'"
+                      header Content-Security-Policy "default-src 'self'; style-src 'self' 'unsafe-inline'; object-src 'none'; form-action 'self'; frame-ancestors 'none'"
                       header Cross-Origin-Embedder-Policy require-corp
                       header Cross-Origin-Opener-Policy same-origin
                       header Cross-Origin-Resource-Policy same-origin
