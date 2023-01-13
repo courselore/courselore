@@ -1037,7 +1037,9 @@ export default async (application: Application): Promise<void> => {
                 key="header--menu--secondary"
                 css="${css`
                   @media (min-width: 900px) {
-                    display: none;
+                    && {
+                      display: none;
+                    }
                   }
                 `}"
               >
