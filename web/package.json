@@ -81,6 +81,7 @@
   "caddy": "2.6.2",
   "devDependencies": {
     "@babel/core": "^7.20.12",
+    "@babel/preset-typescript": "^7.18.6",
     "0x": "^5.4.1",
     "autocannon": "^7.10.0",
     "autoprefixer": "^10.4.13",
