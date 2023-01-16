@@ -35,10 +35,18 @@ await node.time("[Server] Babel", async () => {
       preferUnquoted: false,
     });
   for (const file of await globby("./**/*.mts", { cwd: "./server" })) {
-    const babelResult = await babel.transformFileAsync(
-      path.join("./server", file),
-      {
+    const filename = path.join("./server", file);
+    let code = await fs.readFile(filename, "utf-8");
+    let ast = (
+      await babel.parseAsync(code, {
         presets: ["@babel/preset-typescript"],
+        filename,
+      })
+    ).program;
+    let sourceMap = undefined;
+    for (const options of [
+      { presets: ["@babel/preset-typescript"] },
+      {
         plugins: [
           {
             visitor: {
@@ -110,13 +118,13 @@ await node.time("[Server] Babel", async () => {
                     }
                     path.replaceWith(
                       babel.template.ast`
-                      JSON.stringify({
-                        function: ${babel.types.stringLiteral(identifier)},
-                        arguments: ${babel.types.arrayExpression(
-                          path.node.quasi.expressions
-                        )},
-                      })
-                    `
+                        JSON.stringify({
+                          function: ${babel.types.stringLiteral(identifier)},
+                          arguments: ${babel.types.arrayExpression(
+                            path.node.quasi.expressions
+                          )},
+                        })
+                      `
                     );
                     break;
                   }
@@ -125,16 +133,27 @@ await node.time("[Server] Babel", async () => {
             },
           },
         ],
-      }
-    );
+      },
+    ]) {
+      const babelResult = await babel.transformFromAstAsync(ast, code, {
+        ...options,
+        filename,
+        ast: true,
+        inputSourceMap: sourceMap,
+        sourceMaps: true,
+      });
+      code = babelResult.code;
+      ast = babelResult.ast;
+      sourceMap = babelResult.map;
+    }
 
     const output = path.join(
       "./build/server",
       `${file.slice(0, -path.extname(file).length)}.mjs`
     );
     await fs.mkdir(path.dirname(output), { recursive: true });
-    await fs.writeFile(output, babelResult.code);
-    await fs.writeFile(`${output}.map`, JSON.stringify(babelResult.map));
+    await fs.writeFile(output, code);
+    await fs.writeFile(`${output}.map`, JSON.stringify(sourceMap));
   }
 });
 
