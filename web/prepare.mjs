@@ -54,6 +54,7 @@ await node.time("[Server] Babel", async () => {
       filename: input,
       inputSourceMap: babelResult.map,
       sourceMaps: true,
+      cloneInputAst: false,
       plugins: [
         {
           visitor: {
