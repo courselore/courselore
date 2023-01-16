@@ -35,125 +35,113 @@ await node.time("[Server] Babel", async () => {
       preferUnquoted: false,
     });
   for (const file of await globby("./**/*.mts", { cwd: "./server" })) {
-    const filename = path.join("./server", file);
-    let code = await fs.readFile(filename, "utf-8");
-    let ast = (
-      await babel.parseAsync(code, {
-        presets: ["@babel/preset-typescript"],
-        filename,
-      })
-    ).program;
-    let sourceMap = undefined;
-    for (const options of [
-      { presets: ["@babel/preset-typescript"] },
-      {
-        plugins: [
-          {
-            visitor: {
-              TaggedTemplateExpression(path) {
-                switch (path.node.tag.name) {
-                  // TODO
-                  // case "html": {
-                  //   path.node.quasi.quasis = htmlMinifier
-                  //     .processSync(
-                  //       path.node.quasi.quasis
-                  //         .map(
-                  //           (templateElement) => templateElement.value.cooked
-                  //         )
-                  //         .join("◊◊◊◊")
-                  //     )
-                  //     .value.split("◊◊◊◊")
-                  //     .map((templateElementValueCooked) =>
-                  //       babel.types.templateElement({
-                  //         raw: templateElementValueCooked,
-                  //       })
-                  //     );
-                  //   break;
-                  // }
-
-                  case "css": {
-                    const css_ = prettier.format(
-                      new Function(
-                        "css",
-                        `return (${babelGenerator.default(path.node).code});`
-                      )(css),
-                      { parser: "css" }
-                    );
-                    const identifier = baseIdentifier.encode(
-                      xxhash.XXHash3.hash(Buffer.from(css_))
-                    );
-                    if (!staticCSSIdentifiers.has(identifier)) {
-                      staticCSSIdentifiers.add(identifier);
-                      staticCSS += `/********************************************************************************/\n\n${`[css~="${identifier}"]`.repeat(
-                        6
-                      )} {\n${css_}}\n\n`;
-                    }
-                    path.replaceWith(babel.types.stringLiteral(identifier));
-                    break;
-                  }
-
-                  case "javascript": {
-                    let javascript_ = "";
-                    for (const [
-                      index,
-                      quasi,
-                    ] of path.node.quasi.quasis.entries())
-                      javascript_ +=
-                        (index === 0 ? `` : `$$${index - 1}`) +
-                        quasi.value.cooked;
-                    javascript_ = prettier.format(javascript_, {
-                      parser: "babel",
-                    });
-                    const identifier = baseIdentifier.encode(
-                      xxhash.XXHash3.hash(Buffer.from(javascript_))
-                    );
-                    if (!staticJavaScriptIdentifiers.has(identifier)) {
-                      staticJavaScriptIdentifiers.add(identifier);
-                      staticJavaScript += `/********************************************************************************/\n\nexport function ${identifier}(${[
-                        "event",
-                        ...path.node.quasi.expressions.map(
-                          (value, index) => `$$${index}`
-                        ),
-                      ].join(", ")}) {\n${javascript_}}\n\n`;
-                    }
-                    path.replaceWith(
-                      babel.template.ast`
-                        JSON.stringify({
-                          function: ${babel.types.stringLiteral(identifier)},
-                          arguments: ${babel.types.arrayExpression(
-                            path.node.quasi.expressions
-                          )},
-                        })
-                      `
-                    );
-                    break;
-                  }
-                }
-              },
-            },
-          },
-        ],
-      },
-    ]) {
-      const babelResult = await babel.transformFromAstAsync(ast, code, {
-        ...options,
-        filename,
-        ast: true,
-        inputSourceMap: sourceMap,
-        sourceMaps: true,
-      });
-      code = babelResult.code;
-      ast = babelResult.ast;
-      sourceMap = babelResult.map;
-    }
-
+    const input = path.join("./server", file);
     const output = path.join(
       "./build/server",
       `${file.slice(0, -path.extname(file).length)}.mjs`
     );
+
+    const code = await fs.readFile(input, "utf-8");
+
+    let babelResult = await babel.transformAsync(code, {
+      filename: input,
+      ast: true,
+      sourceMaps: true,
+      presets: ["@babel/preset-typescript"],
+    });
+
+    babelResult = await babel.transformFromAstAsync(babelResult.ast, code, {
+      filename: input,
+      inputSourceMap: babelResult.map,
+      sourceMaps: true,
+      plugins: [
+        {
+          visitor: {
+            TaggedTemplateExpression(path) {
+              switch (path.node.tag.name) {
+                // TODO
+                // case "html": {
+                //   path.node.quasi.quasis = htmlMinifier
+                //     .processSync(
+                //       path.node.quasi.quasis
+                //         .map(
+                //           (templateElement) => templateElement.value.cooked
+                //         )
+                //         .join("◊◊◊◊")
+                //     )
+                //     .value.split("◊◊◊◊")
+                //     .map((templateElementValueCooked) =>
+                //       babel.types.templateElement({
+                //         raw: templateElementValueCooked,
+                //       })
+                //     );
+                //   break;
+                // }
+
+                case "css": {
+                  const css_ = prettier.format(
+                    new Function(
+                      "css",
+                      `return (${babelGenerator.default(path.node).code});`
+                    )(css),
+                    { parser: "css" }
+                  );
+                  const identifier = baseIdentifier.encode(
+                    xxhash.XXHash3.hash(Buffer.from(css_))
+                  );
+                  if (!staticCSSIdentifiers.has(identifier)) {
+                    staticCSSIdentifiers.add(identifier);
+                    staticCSS += `/********************************************************************************/\n\n${`[css~="${identifier}"]`.repeat(
+                      6
+                    )} {\n${css_}}\n\n`;
+                  }
+                  path.replaceWith(babel.types.stringLiteral(identifier));
+                  break;
+                }
+
+                case "javascript": {
+                  let javascript_ = "";
+                  for (const [index, quasi] of path.node.quasi.quasis.entries())
+                    javascript_ +=
+                      (index === 0 ? `` : `$$${index - 1}`) +
+                      quasi.value.cooked;
+                  javascript_ = prettier.format(javascript_, {
+                    parser: "babel",
+                  });
+                  const identifier = baseIdentifier.encode(
+                    xxhash.XXHash3.hash(Buffer.from(javascript_))
+                  );
+                  if (!staticJavaScriptIdentifiers.has(identifier)) {
+                    staticJavaScriptIdentifiers.add(identifier);
+                    staticJavaScript += `/********************************************************************************/\n\nexport function ${identifier}(${[
+                      "event",
+                      ...path.node.quasi.expressions.map(
+                        (value, index) => `$$${index}`
+                      ),
+                    ].join(", ")}) {\n${javascript_}}\n\n`;
+                  }
+                  path.replaceWith(
+                    babel.template.ast`
+                      JSON.stringify({
+                        function: ${babel.types.stringLiteral(identifier)},
+                        arguments: ${babel.types.arrayExpression(
+                          path.node.quasi.expressions
+                        )},
+                      })
+                    `
+                  );
+                  break;
+                }
+              }
+            },
+          },
+        },
+      ],
+    });
+
     await fs.mkdir(path.dirname(output), { recursive: true });
-    await fs.writeFile(output, code);
-    await fs.writeFile(`${output}.map`, JSON.stringify(sourceMap));
+    await fs.writeFile(output, babelResult.code);
+    await fs.writeFile(`${output}.map`, JSON.stringify(babelResult.map));
   }
 });
 
