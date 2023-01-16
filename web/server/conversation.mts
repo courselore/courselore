@@ -5729,7 +5729,7 @@ export default async (application: Application): Promise<void> => {
                                               this.onclick = () => {
                                                 this.closest('[key="conversation--header--full"]').querySelector('[key="title--show"]').hidden = true;
                                                 this.closest('[key="conversation--header--full"]').querySelector('[key="title--edit"]').hidden = false;
-                                                tippyStatic.hideAll();
+                                                tippy.hideAll();
                                               };
                                             `}"
                                           >
@@ -8165,7 +8165,7 @@ export default async (application: Application): Promise<void> => {
                                                           class="dropdown--menu--item button button--transparent"
                                                           javascript="${javascript`
                                                             this.onclick = () => {
-                                                              tippyStatic.hideAll();
+                                                              tippy.hideAll();
                                                               const selection = window.getSelection();
                                                               const anchorElement = leafac.ancestors(selection.anchorNode).reverse().find(element => typeof element?.getAttribute?.("data-position") === "string");
                                                               const focusElement = leafac.ancestors(selection.focusNode).reverse().find(element => typeof element?.getAttribute?.("data-position") === "string");

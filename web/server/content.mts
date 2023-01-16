@@ -887,7 +887,7 @@ export default async (application: Application): Promise<void> => {
                         event.preventDefault();
                         return;
                       }
-                      tippyStatic.hideAll();
+                      tippy.hideAll();
                       write.hidden = true;
                       loading.hidden = false;
                       preview.hidden = true;
@@ -1993,7 +1993,7 @@ export default async (application: Application): Promise<void> => {
                     const body = new FormData();
                     for (const file of fileList) body.append("attachments", file);
                     this.value = "";
-                    tippyStatic.hideAll();
+                    tippy.hideAll();
                     textarea.uploadingIndicator.show();
                     textarea.disabled = true;
                     const response = await (await fetch(${`https://${application.configuration.hostname}/content-editor/attachments`}, {
@@ -2321,7 +2321,7 @@ export default async (application: Application): Promise<void> => {
                           const caretCoordinates = textareaCaret(this, anchorIndex - 1);
                           dropdownMenuTarget.style.top = String(caretCoordinates.top) + "px";
                           dropdownMenuTarget.style.left = String(caretCoordinates.left) + "px";
-                          tippyStatic.hideAll();
+                          tippy.hideAll();
                           dropdownMenu.show();
                         }
                         if (selectionMin < anchorIndex || value[anchorIndex - 1] !== trigger || value[anchorIndex] === " ") {
@@ -2396,7 +2396,7 @@ export default async (application: Application): Promise<void> => {
                   this.dropdownMenuComplete = (text) => {
                     this.setSelectionRange(anchorIndex, Math.max(this.selectionStart, this.selectionEnd));
                     textFieldEdit.insert(this, text + " ");
-                    tippyStatic.hideAll();
+                    tippy.hideAll();
                     this.focus();
                   };
                 }

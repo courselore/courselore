@@ -38,7 +38,7 @@ import "./index.css";
 import autosize from "autosize";
 import Mousetrap from "mousetrap";
 import scrollIntoViewIfNeeded from "scroll-into-view-if-needed";
-import tippy, * as tippyStatic from "tippy.js";
+import * as tippy from "tippy.js";
 import textareaCaret from "textarea-caret";
 import * as textFieldEdit from "text-field-edit";
 // import * as leafac from "@leafac/javascript/static/index.mjs";
