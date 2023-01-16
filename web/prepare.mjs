@@ -64,10 +64,8 @@ await node.time("[Server] Babel", async () => {
 
   for (const file of await globby("./**/*.mts", { cwd: "./server" })) {
     const input = path.join("./server", file);
-    const output = path.join(
-      "./build/server",
-      `${file.slice(0, -path.extname(file).length)}.mjs`
-    );
+    const outputFile = `${file.slice(0, -path.extname(file).length)}.mjs`;
+    const output = path.join("./build/server", outputFile);
 
     const code = await fs.readFile(input, "utf-8");
 
@@ -169,7 +167,10 @@ await node.time("[Server] Babel", async () => {
     });
 
     await fs.mkdir(path.dirname(output), { recursive: true });
-    await fs.writeFile(output, babelResult.code);
+    await fs.writeFile(
+      output,
+      `${babelResult.code}\n//# sourceMappingURL=${outputFile}.map`
+    );
     await fs.writeFile(`${output}.map`, JSON.stringify(babelResult.map));
   }
 });
