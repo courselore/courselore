@@ -23,9 +23,9 @@ import css from "@leafac/css";
 let staticCSS = "";
 let staticJavaScript = "";
 await node.time("[Server] Babel", async () => {
-  const baseIdentifier = baseX("abcdefghijklmnopqrstuvwxyz");
   const staticCSSIdentifiers = new Set();
   const staticJavaScriptIdentifiers = new Set();
+  const baseIdentifier = baseX("abcdefghijklmnopqrstuvwxyz");
   const htmlMinifier = unified()
     .use(rehypeParse, { fragment: true, emitParseErrors: true })
     // .use(rehypePresetMinify)
@@ -34,6 +34,7 @@ await node.time("[Server] Babel", async () => {
       allowDangerousHtml: true,
       preferUnquoted: false,
     });
+
   for (const file of await globby("./**/*.mts", { cwd: "./server" })) {
     const input = path.join("./server", file);
     const output = path.join(
