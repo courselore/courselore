@@ -19,9 +19,36 @@ import xxhash from "xxhash-addon";
 import baseX from "base-x";
 import html from "@leafac/html";
 import css from "@leafac/css";
+import javascript from "@leafac/javascript";
 
 let staticCSS = "";
-let staticJavaScript = "";
+let staticJavaScript = javascript`
+import "@fontsource/public-sans/variable.css";
+import "@fontsource/public-sans/variable-italic.css";
+import "@fontsource/jetbrains-mono/variable.css";
+import "@fontsource/jetbrains-mono/variable-italic.css";
+import "bootstrap-icons/font/bootstrap-icons.css";
+import "katex/dist/katex.css";
+import "tippy.js/dist/tippy.css";
+import "tippy.js/dist/svg-arrow.css";
+import "tippy.js/dist/border.css";
+import "@leafac/css/static/index.css";
+import "./index.css";
+
+import autosize from "autosize";
+import Mousetrap from "mousetrap";
+import scrollIntoViewIfNeeded from "scroll-into-view-if-needed";
+import tippy, * as tippyStatic from "tippy.js";
+import textareaCaret from "textarea-caret";
+import * as textFieldEdit from "text-field-edit";
+// import * as leafac from "@leafac/javascript/static/index.mjs";
+import * as leafac from "./leafac--javascript.mjs";
+
+leafac.customFormValidation();
+leafac.warnAboutLosingInputs();
+leafac.tippySetDefaultProps();
+leafac.liveNavigation();
+`;
 await node.time("[Server] Babel", async () => {
   const staticCSSIdentifiers = new Set();
   const staticJavaScriptIdentifiers = new Set();
@@ -115,12 +142,12 @@ await node.time("[Server] Babel", async () => {
                   );
                   if (!staticJavaScriptIdentifiers.has(identifier)) {
                     staticJavaScriptIdentifiers.add(identifier);
-                    staticJavaScript += `/********************************************************************************/\n\nexport function ${identifier}(${[
+                    staticJavaScript += `/********************************************************************************/\n\nleafac.javascript.functions.set("${identifier}", function (${[
                       "event",
                       ...path.node.quasi.expressions.map(
                         (value, index) => `$$${index}`
                       ),
-                    ].join(", ")}) {\n${javascript_}}\n\n`;
+                    ].join(", ")}) {\n${javascript_}});\n\n`;
                   }
                   path.replaceWith(
                     babel.template.ast`
@@ -155,8 +182,8 @@ await node.time("[Static] PostCSS", async () => {
   ).css;
 });
 
-await fs.writeFile("./static/application.css", staticCSS);
-await fs.writeFile("./static/application.mjs", staticJavaScript);
+await fs.writeFile("./static/index.css", staticCSS);
+await fs.writeFile("./static/index.mjs", staticJavaScript);
 
 let esbuildResult;
 await node.time("[Static] esbuild", async () => {
@@ -182,8 +209,8 @@ await node.time("[Static] esbuild", async () => {
   });
 });
 
-await fs.rm("./static/application.css");
-await fs.rm("./static/application.mjs");
+await fs.rm("./static/index.css");
+await fs.rm("./static/index.mjs");
 
 const paths = {};
 

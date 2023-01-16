@@ -900,14 +900,14 @@ export function javascript({
   elements = element.querySelectorAll("[javascript]"),
 }) {
   for (const element of elements) {
-    const javascript = JSON.parse(element.getAttribute("javascript"));
-    window.applicationJavaScript[javascript.function].call(
-      element,
-      event,
-      ...javascript.arguments
-    );
+    const javascript_ = JSON.parse(element.getAttribute("javascript"));
+    javascript.functions
+      .get(javascript_.function)
+      .call(element, event, ...javascript_.arguments);
   }
 }
+
+javascript.functions = new Map();
 
 export function ancestors(element) {
   const ancestors = [];

@@ -1089,7 +1089,7 @@ export default async (application: Application): Promise<void> => {
                       const body = new FormData();
                       body.append("avatar", fileList[0]);
                       this.value = "";
-                      tippy.hideAll();
+                      tippyStatic.hideAll();
                       avatarChooser.uploadingIndicator.show();
                       const response = await fetch(${`https://${application.configuration.hostname}/settings/profile/avatar`}, {
                         cache: "no-store",

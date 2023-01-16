@@ -3227,7 +3227,7 @@ export default async (application: Application): Promise<void> => {
                 class="link"
                 javascript="${javascript`
                   this.onclick = () => {
-                    tippy.hideAll();
+                    tippyStatic.hideAll();
                     const button = document.querySelector(${`[key="invitation--${invitation.reference}"] [key="see-invitation-link"]`});
                     button.click();
                     button.tooltip.hide();

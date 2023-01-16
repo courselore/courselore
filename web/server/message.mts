@@ -610,7 +610,7 @@ export default async (application: Application): Promise<void> => {
                       ""
                     );
                     element.focus();
-                    tippy.hideAll();
+                    tippyStatic.hideAll();
                   };
                 `}"
               >
@@ -761,7 +761,7 @@ export default async (application: Application): Promise<void> => {
                           this.closest('[key^="message/"]').querySelector('[key="message--show"]').hidden = true;
                           this.closest('[key^="message/"]').querySelector('[key="message--edit"]').hidden = false;
                           autosize.update(this.closest('[key^="message/"]').querySelector('[key="message--edit"] [key="content-editor--write--textarea"]'));
-                          tippy.hideAll();
+                          tippyStatic.hideAll();
                         };
                       `}"
                     >
