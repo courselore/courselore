@@ -63,12 +63,18 @@ await node.time("[Server] Babel", async () => {
     });
 
   for (const input of await globby("./server/**/*.mts")) {
+    const output = path.join(
+      "./build",
+      `${input.slice(0, -path.extname(input).length)}.mjs`
+    );
+
     const code = await fs.readFile(input, "utf-8");
 
     let babelResult = await babel.transformAsync(code, {
       filename: input,
       ast: true,
       sourceMaps: true,
+      sourceFileName: path.relative(path.dirname(output), input),
       presets: ["@babel/preset-typescript"],
     });
 
@@ -76,6 +82,7 @@ await node.time("[Server] Babel", async () => {
       filename: input,
       inputSourceMap: babelResult.map,
       sourceMaps: true,
+      sourceFileName: path.relative(path.dirname(output), input),
       cloneInputAst: false,
       plugins: [
         {
@@ -162,10 +169,6 @@ await node.time("[Server] Babel", async () => {
       ],
     });
 
-    const output = path.join(
-      "./build",
-      `${input.slice(0, -path.extname(input).length)}.mjs`
-    );
     await fs.mkdir(path.dirname(output), { recursive: true });
     await fs.writeFile(
       output,
