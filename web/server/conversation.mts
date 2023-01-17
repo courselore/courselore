@@ -7156,7 +7156,7 @@ export default async (application: Application): Promise<void> => {
                             request.query.messages.messageReference.trim() !==
                               ""
                           }) {
-                            const element = this.querySelector(${`[key="message--${request.query.messages?.messageReference}"]`});
+                            const element = this.querySelector(${`[key="message/${request.query.messages?.messageReference}"]`});
                             if (element === null) return;
                             element.scrollIntoView();
                             const messageHighlight = element.querySelector('[key="message--highlight"]');
@@ -7168,7 +7168,7 @@ export default async (application: Application): Promise<void> => {
                             firstUnreadMessage !== undefined &&
                             firstUnreadMessage !== messages[0]
                           }) {
-                            this.querySelector(${`[key="message--${firstUnreadMessage?.reference}"]`})?.scrollIntoView();
+                            this.querySelector(${`[key="message/${firstUnreadMessage?.reference}"]`})?.scrollIntoView();
                           } else if (${
                             response.locals.conversation.type === "chat" &&
                             messages.length > 0 &&
