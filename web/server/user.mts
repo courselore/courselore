@@ -450,7 +450,7 @@ export default async (application: Application): Promise<void> => {
 
         if (decorate && user !== "no-longer-enrolled")
           userAvatar = html`<span
-            css-TODO css="${{
+            css="${{
               xs: css`
                 vertical-align: var(--space---1);
               `,
@@ -886,7 +886,7 @@ export default async (application: Application): Promise<void> => {
             >
               <div
                 key="avatar-chooser"
-                css-TODO css="${css`
+                css="${css`
                   display: flex;
                   justify-content: center;
                   align-items: center;
@@ -946,7 +946,7 @@ export default async (application: Application): Promise<void> => {
                     `}"
                   >
                     <div
-                      css-TODO css="${css`
+                      css="${css`
                         width: var(--space--4);
                         height: var(--space--4);
                         transform: scale(8);
@@ -1005,15 +1005,17 @@ export default async (application: Application): Promise<void> => {
                     type="button"
                     class="button button--rose"
                     css="${css`
-                      font-size: var(--font-size--xs);
-                      line-height: var(--line-height--xs);
-                      place-self: end;
-                      width: var(--font-size--2xl);
-                      height: var(--font-size--2xl);
-                      padding: var(--space--0);
-                      border-radius: var(--border-radius--circle);
-                      transform: translate(-20%, -20%);
-                      align-items: center;
+                      && {
+                        font-size: var(--font-size--xs);
+                        line-height: var(--line-height--xs);
+                        place-self: end;
+                        width: var(--font-size--2xl);
+                        height: var(--font-size--2xl);
+                        padding: var(--space--0);
+                        border-radius: var(--border-radius--circle);
+                        transform: translate(-20%, -20%);
+                        align-items: center;
+                      }
                     `}"
                     javascript="${javascript`
                       leafac.setTippy({
