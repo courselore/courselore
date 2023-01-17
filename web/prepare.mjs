@@ -75,6 +75,7 @@ await node.time("[Server] Babel", async () => {
         await babel.transformAsync(code, {
           filename: input,
           ast: true,
+          code: false,
           presets: ["@babel/preset-typescript"],
         })
       ).ast,
