@@ -1,15 +1,10 @@
 import path from "node:path";
 import url from "node:url";
 import fs from "node:fs/promises";
-import { execa } from "execa";
 import { globby } from "globby";
 import * as node from "@leafac/node";
 import babel from "@babel/core";
 import babelGenerator from "@babel/generator";
-import { unified } from "unified";
-import rehypeParse from "rehype-parse";
-import rehypePresetMinify from "rehype-preset-minify";
-import rehypeStringify from "rehype-stringify";
 import prettier from "prettier";
 import postcss from "postcss";
 import postcssNested from "postcss-nested";
@@ -17,7 +12,6 @@ import autoprefixer from "autoprefixer";
 import esbuild from "esbuild";
 import xxhash from "xxhash-addon";
 import baseX from "base-x";
-import html from "@leafac/html";
 import css from "@leafac/css";
 import javascript from "@leafac/javascript";
 
@@ -53,14 +47,6 @@ await node.time("[Server] Babel", async () => {
   const staticCSSIdentifiers = new Set();
   const staticJavaScriptIdentifiers = new Set();
   const baseIdentifier = baseX("abcdefghijklmnopqrstuvwxyz");
-  const htmlMinifier = unified()
-    .use(rehypeParse, { fragment: true, emitParseErrors: true })
-    // .use(rehypePresetMinify)
-    .use(rehypeStringify, {
-      allowDangerousCharacters: true,
-      allowDangerousHtml: true,
-      preferUnquoted: false,
-    });
 
   for (const input of await globby("./server/**/*.mts")) {
     const output = path.join(
@@ -90,25 +76,6 @@ await node.time("[Server] Babel", async () => {
             visitor: {
               TaggedTemplateExpression(path) {
                 switch (path.node.tag.name) {
-                  // TODO
-                  // case "html": {
-                  //   path.node.quasi.quasis = htmlMinifier
-                  //     .processSync(
-                  //       path.node.quasi.quasis
-                  //         .map(
-                  //           (templateElement) => templateElement.value.cooked
-                  //         )
-                  //         .join("◊◊◊◊")
-                  //     )
-                  //     .value.split("◊◊◊◊")
-                  //     .map((templateElementValueCooked) =>
-                  //       babel.types.templateElement({
-                  //         raw: templateElementValueCooked,
-                  //       })
-                  //     );
-                  //   break;
-                  // }
-
                   case "css": {
                     const css_ = prettier.format(
                       new Function(
