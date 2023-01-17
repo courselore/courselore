@@ -22,7 +22,7 @@
     "start": "nodemon --watch \"./{package.json,prepare.mjs}\" --watch \"./server/{package.json,**/*.mts}\" --watch \"./static/{package.json,leafac--javascript.mjs,**/*.{webp,png,ico}}\" --watch \"./configuration/**/*.mjs\" --ext \"*\" --exec \"npm run prepare && cross-env NODE_OPTIONS=--enable-source-maps node ./build/server/index.mjs ./configuration/development.mjs\"",
     "start:profile": "shx rm -rf ./data/measurements/ && npm run prepare && node ./build/server/index.mjs ./configuration/profile.mjs",
     "start:clean:data": "npm run clean:data && npm run start",
-    "test": "prettier --check \"./package.json\" --check \"./prepare.mjs\" --check \"./server/**/*.mts\" --check \"./server/package.json\" --check \"./static/index.mjs\" --check \"./static/package.json\" --check \"./configuration/**/*.mjs\" --end-of-line auto && cd ./server/ && npx tsc --noEmit",
+    "test": "prettier --check \"./package.json\" --check \"./prepare.mjs\" --check \"./server/**/*.mts\" --check \"./server/package.json\" --check \"./static/package.json\" --check \"./configuration/**/*.mjs\" --end-of-line auto && cd ./server/ && npx tsc --noEmit",
     "test:license": "license-checker --summary && (cd ./server/ && license-checker --summary && cd ..) && (cd ./static/ && license-checker --summary && cd ..)",
     "clean:all": "npm run clean:build && npm run clean:data && npm run clean:node_modules",
     "clean:build": "shx rm -rf ./build/",
