@@ -450,7 +450,7 @@ export default async (application: Application): Promise<void> => {
 
         if (decorate && user !== "no-longer-enrolled")
           userAvatar = html`<span
-            css="${{
+            css-TODO css="${{
               xs: css`
                 vertical-align: var(--space---1);
               `,
@@ -886,7 +886,7 @@ export default async (application: Application): Promise<void> => {
             >
               <div
                 key="avatar-chooser"
-                css="${css`
+                css-TODO css="${css`
                   display: flex;
                   justify-content: center;
                   align-items: center;
@@ -946,7 +946,7 @@ export default async (application: Application): Promise<void> => {
                     `}"
                   >
                     <div
-                      css="${css`
+                      css-TODO css="${css`
                         width: var(--space--4);
                         height: var(--space--4);
                         transform: scale(8);
