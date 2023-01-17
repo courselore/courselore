@@ -3,22 +3,22 @@ jobs:
   web--build:
     strategy:
       matrix:
-        os: [windows, macos, ubuntu]
+        os: [windows-latest, macos-latest, ubuntu-20.04]
         include:
-          - os: windows
+          - os: windows-latest
             build: npx caxa --input . --output "courselore--windows--${{ github.sha }}.exe" -- "{{caxa}}/node_modules/.bin/node" "{{caxa}}/build/server/index.mjs"
             artifact: courselore--windows--${{ github.sha }}.exe
-          - os: macos
+          - os: macos-latest
             build: |
               npx caxa --input . --output "courselore" -- "{{caxa}}/node_modules/.bin/node" "{{caxa}}/build/server/index.mjs"
               tar czf "courselore--macos--${{ github.sha }}.tgz" "courselore"
             artifact: courselore--macos--${{ github.sha }}.tgz
-          - os: ubuntu
+          - os: ubuntu-20.04
             build: |
               npx caxa --input . --output "courselore" -- "{{caxa}}/node_modules/.bin/node" "{{caxa}}/build/server/index.mjs"
               tar czf "courselore--linux--${{ github.sha }}.tgz" "courselore"
             artifact: courselore--linux--${{ github.sha }}.tgz
-    runs-on: ${{ matrix.os }}-latest
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
@@ -37,8 +37,8 @@ jobs:
   web--test:
     strategy:
       matrix:
-        os: [windows, macos, ubuntu]
-    runs-on: ${{ matrix.os }}-latest
+        os: [windows-latest, macos-latest, ubuntu-20.04]
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
