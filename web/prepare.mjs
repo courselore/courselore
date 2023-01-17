@@ -23,31 +23,31 @@ import javascript from "@leafac/javascript";
 
 let staticCSS = "";
 let staticJavaScript = javascript`
-import "@fontsource/public-sans/variable.css";
-import "@fontsource/public-sans/variable-italic.css";
-import "@fontsource/jetbrains-mono/variable.css";
-import "@fontsource/jetbrains-mono/variable-italic.css";
-import "bootstrap-icons/font/bootstrap-icons.css";
-import "katex/dist/katex.css";
-import "tippy.js/dist/tippy.css";
-import "tippy.js/dist/svg-arrow.css";
-import "tippy.js/dist/border.css";
-import "@leafac/css/static/index.css";
-import "./index.css";
+  import "@fontsource/public-sans/variable.css";
+  import "@fontsource/public-sans/variable-italic.css";
+  import "@fontsource/jetbrains-mono/variable.css";
+  import "@fontsource/jetbrains-mono/variable-italic.css";
+  import "bootstrap-icons/font/bootstrap-icons.css";
+  import "katex/dist/katex.css";
+  import "tippy.js/dist/tippy.css";
+  import "tippy.js/dist/svg-arrow.css";
+  import "tippy.js/dist/border.css";
+  import "@leafac/css/static/index.css";
+  import "./index.css";
 
-import autosize from "autosize";
-import Mousetrap from "mousetrap";
-import scrollIntoViewIfNeeded from "scroll-into-view-if-needed";
-import * as tippy from "tippy.js";
-import textareaCaret from "textarea-caret";
-import * as textFieldEdit from "text-field-edit";
-// import * as leafac from "@leafac/javascript/static/index.mjs";
-import * as leafac from "./leafac--javascript.mjs";
+  import autosize from "autosize";
+  import Mousetrap from "mousetrap";
+  import scrollIntoViewIfNeeded from "scroll-into-view-if-needed";
+  import * as tippy from "tippy.js";
+  import textareaCaret from "textarea-caret";
+  import * as textFieldEdit from "text-field-edit";
+  // import * as leafac from "@leafac/javascript/static/index.mjs";
+  import * as leafac from "./leafac--javascript.mjs";
 
-leafac.customFormValidation();
-leafac.warnAboutLosingInputs();
-leafac.tippySetDefaultProps();
-leafac.liveNavigation();
+  leafac.customFormValidation();
+  leafac.warnAboutLosingInputs();
+  leafac.tippySetDefaultProps();
+  leafac.liveNavigation();
 `;
 await node.time("[Server] Babel", async () => {
   const staticCSSIdentifiers = new Set();
@@ -233,17 +233,7 @@ for (const [javascriptBundle, { entryPoint, cssBundle }] of Object.entries(
 
 await node.time("[Static] Copy static files with cache busting", async () => {
   const baseFileHash = baseX("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789");
-  for (const source of [
-    "./static/about/ali-madooei.webp",
-    "./static/about/eliot-smith.webp",
-    "./static/about/leandro-facchinetti.webp",
-    "./static/about/main-screen--dark.webp",
-    "./static/about/main-screen--light-and-dark.webp",
-    "./static/about/main-screen--light.webp",
-    "./static/about/main-screen--phone--dark.webp",
-    "./static/about/main-screen--phone--light.webp",
-    "./static/about/scott-smith.webp",
-  ]) {
+  for (const source of await globby("./static/about/")) {
     const extension = path.extname(source);
     const destination = path.join(
       "./build",
