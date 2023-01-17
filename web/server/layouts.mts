@@ -1844,7 +1844,7 @@ export default async (application: Application): Promise<void> => {
                 ? html`
                     <div
                       key="header"
-                      css-TODO css="${css`
+                      css="${css`
                         font-size: var(--font-size--xs);
                         line-height: var(--line-height--xs);
                         background-color: var(--color--gray--medium--100);
@@ -2494,10 +2494,12 @@ export default async (application: Application): Promise<void> => {
         <div
           key="header--menu--primary"
           css="${css`
-            padding-top: var(--space--1);
-            padding-bottom: var(--space--1);
-            gap: var(--space--4);
-            align-items: center;
+            && {
+              padding-top: var(--space--1);
+              padding-bottom: var(--space--1);
+              gap: var(--space--4);
+              align-items: center;
+            }
           `}"
         >
           <a
@@ -2805,7 +2807,7 @@ export default async (application: Application): Promise<void> => {
               `}"
             >
               <div
-                css-TODO css="${css`
+                css="${css`
                   display: grid;
                   & > * {
                     grid-area: 1 / 1;
@@ -3011,9 +3013,11 @@ export default async (application: Application): Promise<void> => {
               <div
                 key="header--menu--secondary--${request.path}"
                 css="${css`
-                  justify-content: center;
-                  @media (min-width: 700px) {
-                    display: none;
+                  && {
+                    justify-content: center;
+                    @media (min-width: 700px) {
+                      display: none;
+                    }
                   }
                 `}"
               >
