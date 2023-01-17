@@ -241,7 +241,7 @@ await node.time("[Static] Copy static files with cache busting", async () => {
         xxhash.XXHash3.hash(await fs.readFile(source))
       )}${extension}`
     );
-    paths[source.slice("./static/".length)] = destination.slice(
+    paths[source.slice("static/".length)] = destination.slice(
       "build/static/".length
     );
     await fs.mkdir(path.dirname(destination), { recursive: true });
