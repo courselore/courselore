@@ -318,7 +318,7 @@ export default async (application: Application): Promise<void> => {
               />
             </label>
             <div
-              css-TODO css="${css`
+              css="${css`
                 display: flex;
                 gap: var(--space--2);
                 & > * {
@@ -1125,7 +1125,7 @@ export default async (application: Application): Promise<void> => {
                 />
               </label>
               <div
-                css-TODO css="${css`
+                css="${css`
                   display: flex;
                   gap: var(--space--2);
                   & > * {
@@ -1556,7 +1556,7 @@ export default async (application: Application): Promise<void> => {
                             </label>
                           </div>
                           <div
-                            css-TODO css="${css`
+                            css="${css`
                               [key^="tag/"].deleted & {
                                 display: none;
                               }
@@ -1646,7 +1646,7 @@ export default async (application: Application): Promise<void> => {
                             </button>
                           </div>
                           <div
-                            css-TODO css="${css`
+                            css="${css`
                               [key^="tag/"]:not(.deleted) & {
                                 display: none;
                               }
@@ -3714,7 +3714,7 @@ export default async (application: Application): Promise<void> => {
                 course: response.locals.invitation.course,
               })}
               <div
-                css-TODO css="${css`
+                css="${css`
                   display: flex;
                   gap: var(--space--4);
                   & > * {
