@@ -7283,7 +7283,6 @@ export default async (application: Application): Promise<void> => {
                                   html`
                                     <div
                                       key="message/${message.reference}"
-                                      class="message"
                                       css="${response.locals.conversation
                                         .type === "chat"
                                         ? css``
@@ -7514,7 +7513,7 @@ export default async (application: Application): Promise<void> => {
                                                       transition-timing-function: var(
                                                         --transition-timing-function--in-out
                                                       );
-                                                      .message:not(
+                                                      [key^="message/"]:not(
                                                           :hover,
                                                           :focus-within
                                                         )
