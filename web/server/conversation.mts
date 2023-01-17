@@ -2259,7 +2259,7 @@ export default async (application: Application): Promise<void> => {
                               </div>
                             `}
                         <div
-                          css-TODO css="${css`
+                          css="${css`
                             margin-top: var(--space--2);
                             display: flex;
                             gap: var(--space--2);
@@ -2415,9 +2415,9 @@ export default async (application: Application): Promise<void> => {
                                   class="button ${isSelected
                                     ? "button--blue"
                                     : "button--transparent"}"
-                                  css-TODO css="${isSelected
+                                  css="${isSelected
                                     ? css`
-                                        & + * {
+                                        && + * {
                                           margin-bottom: var(--space--0);
                                         }
                                       `
@@ -2617,7 +2617,7 @@ export default async (application: Application): Promise<void> => {
       `}"
     >
       <div
-        css-TODO css="${css`
+        css="${css`
           font-size: var(--font-size--xs);
           line-height: var(--line-height--xs);
           display: flex;
@@ -2853,7 +2853,7 @@ export default async (application: Application): Promise<void> => {
         ? html``
         : html`
             <div
-              css-TODO css="${css`
+              css="${css`
                 font-size: var(--font-size--xs);
                 line-height: var(--line-height--xs);
                 display: flex;
@@ -5200,7 +5200,7 @@ export default async (application: Application): Promise<void> => {
                 `}"
               >
                 <div
-                  css-TODO css="${response.locals.conversation.type === "chat"
+                  css="${response.locals.conversation.type === "chat"
                     ? css`
                         flex: 1;
                         min-width: var(--width--0);
@@ -5271,7 +5271,7 @@ export default async (application: Application): Promise<void> => {
                       `}"
                     >
                       <div
-                        css-TODO css="${css`
+                        css="${css`
                           flex: 1;
                           display: flex;
                           flex-wrap: wrap;
@@ -6502,7 +6502,7 @@ export default async (application: Application): Promise<void> => {
                       return tags !== html``
                         ? html`
                             <div
-                              css-TODO css="${css`
+                              css="${css`
                                 font-size: var(--font-size--xs);
                                 line-height: var(--line-height--xs);
                                 display: flex;
@@ -7038,7 +7038,7 @@ export default async (application: Application): Promise<void> => {
                         })()
                       : html`
                           <div
-                            css-TODO css="${css`
+                            css="${css`
                               font-size: var(--font-size--xs);
                               line-height: var(--line-height--xs);
                               max-height: var(--space--24);
@@ -7502,7 +7502,7 @@ export default async (application: Application): Promise<void> => {
                                             <div key="message--actions">
                                               <button
                                                 class="button button--tight button--tight--inline button--transparent secondary"
-                                                css-TODO css="${response.locals
+                                                css="${response.locals
                                                   .conversation.type === "chat"
                                                   ? css`
                                                       transition-property: var(
@@ -7986,7 +7986,7 @@ export default async (application: Application): Promise<void> => {
                                                     `}"
                                                   >
                                                     <div
-                                                      css-TODO css="${css`
+                                                      css="${css`
                                                         flex: 1;
                                                         display: flex;
                                                         flex-wrap: wrap;
@@ -8879,7 +8879,7 @@ export default async (application: Application): Promise<void> => {
 
                   <div
                     key="new-message"
-                    css-TODO css="${response.locals.conversation.type === "chat"
+                    css="${response.locals.conversation.type === "chat"
                       ? css`
                           textarea {
                             padding-right: var(--space--8);
