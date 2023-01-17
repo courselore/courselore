@@ -1073,13 +1073,7 @@ export default async (application: Application): Promise<void> => {
           <div
             key="layout--conversation--sidebar--/${response.locals.course
               .reference}"
-            css="${sidebarOnSmallScreen
-              ? css``
-              : css`
-                  @media (max-width: 899px) {
-                    display: none;
-                  }
-                `} ${css`
+            css="${css`
               display: flex;
               flex-direction: column;
               @media (max-width: 899px) {
@@ -1093,7 +1087,13 @@ export default async (application: Application): Promise<void> => {
                   border-color: var(--color--gray--medium--700);
                 }
               }
-            `}"
+            `} ${sidebarOnSmallScreen
+              ? css``
+              : css`
+                  @media (max-width: 899px) {
+                    display: none;
+                  }
+                `}"
           >
             <div
               css="${css`
