@@ -255,7 +255,6 @@ export default async (application: Application): Promise<void> => {
           </div>
 
           <div
-            css-TODO
             css="${css`
               background-color: var(--color--gray--medium--100);
               @media (prefers-color-scheme: dark) {
@@ -735,7 +734,6 @@ export default async (application: Application): Promise<void> => {
             </div>
 
             <div
-              css-TODO
               css="${css`
                 display: flex;
                 gap: var(--space--14);
