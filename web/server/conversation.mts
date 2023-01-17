@@ -2415,13 +2415,7 @@ export default async (application: Application): Promise<void> => {
                                   class="button ${isSelected
                                     ? "button--blue"
                                     : "button--transparent"}"
-                                  css="${isSelected
-                                    ? css`
-                                        && + * {
-                                          margin-bottom: var(--space--0);
-                                        }
-                                      `
-                                    : css``} ${css`
+                                  css="${css`
                                     width: calc(
                                       var(--space--2) + 100% + var(--space--2)
                                     );
@@ -2429,7 +2423,13 @@ export default async (application: Application): Promise<void> => {
                                     margin-left: var(--space---2);
                                     position: relative;
                                     align-items: center;
-                                  `}"
+                                  `} ${isSelected
+                                    ? css`
+                                        && + * {
+                                          margin-bottom: var(--space--0);
+                                        }
+                                      `
+                                    : css``}"
                                 >
                                   <div
                                     css="${css`
@@ -2547,19 +2547,24 @@ export default async (application: Application): Promise<void> => {
 
           <div
             key="layout--conversation--main--${request.path}"
-            css="${sidebarOnSmallScreen
+            css="${css`
+              overflow: auto;
+              flex: 1;
+            `} ${sidebarOnSmallScreen
               ? css`
                   @media (max-width: 899px) {
                     display: none;
                   }
                 `
-              : css``} ${css`
-              overflow: auto;
-              flex: 1;
-            `}"
+              : css``}"
           >
             <div
-              css="${mainIsAScrollingPane
+              css="${css`
+                @media (max-width: 899px) {
+                  display: flex;
+                  justify-content: center;
+                }
+              `} ${mainIsAScrollingPane
                 ? css`
                     height: 100%;
                     display: flex;
@@ -2569,12 +2574,7 @@ export default async (application: Application): Promise<void> => {
                     @media (min-width: 900px) {
                       margin-left: var(--space--8);
                     }
-                  `} ${css`
-                @media (max-width: 899px) {
-                  display: flex;
-                  justify-content: center;
-                }
-              `}"
+                  `}"
             >
               $${mainIsAScrollingPane
                 ? body
@@ -5177,7 +5177,14 @@ export default async (application: Application): Promise<void> => {
             >
               <div
                 key="conversation--header"
-                css="${response.locals.conversation.type === "chat"
+                css="${css`
+                  padding-bottom: var(--space--2);
+                  border-bottom: var(--border-width--1) solid
+                    var(--color--gray--medium--200);
+                  @media (prefers-color-scheme: dark) {
+                    border-color: var(--color--gray--medium--700);
+                  }
+                `} ${response.locals.conversation.type === "chat"
                   ? css`
                       padding-top: var(--space--4);
                       padding-right: var(--space--4);
@@ -5190,14 +5197,7 @@ export default async (application: Application): Promise<void> => {
                         justify-content: center;
                       }
                     `
-                  : css``} ${css`
-                  padding-bottom: var(--space--2);
-                  border-bottom: var(--border-width--1) solid
-                    var(--color--gray--medium--200);
-                  @media (prefers-color-scheme: dark) {
-                    border-color: var(--color--gray--medium--700);
-                  }
-                `}"
+                  : css``}"
               >
                 <div
                   css="${response.locals.conversation.type === "chat"
@@ -7439,7 +7439,34 @@ export default async (application: Application): Promise<void> => {
 
                                       <div
                                         key="message--highlight"
-                                        css="${response.locals.conversation
+                                        css="${css`
+                                          padding: var(--space--2);
+                                          border-radius: var(
+                                            --border-radius--lg
+                                          );
+                                          margin: var(--space--0)
+                                            var(--space---2);
+                                          display: flex;
+                                          flex-direction: column;
+                                          --message--highlight--background-color: var(
+                                            --color--amber--200
+                                          );
+                                          @media (prefers-color-scheme: dark) {
+                                            --message--highlight--background-color: var(
+                                              --color--amber--900
+                                            );
+                                          }
+                                          @keyframes message--highlight {
+                                            from {
+                                              background-color: var(
+                                                --message--highlight--background-color
+                                              );
+                                            }
+                                            to {
+                                              background-color: transparent;
+                                            }
+                                          }
+                                        `} ${response.locals.conversation
                                           .type === "chat"
                                           ? css`
                                               gap: var(--space--1);
@@ -7467,41 +7494,21 @@ export default async (application: Application): Promise<void> => {
                                           : css`
                                               padding-bottom: var(--space--4);
                                               gap: var(--space--2);
-                                            `} ${css`
-                                          padding: var(--space--2);
-                                          border-radius: var(
-                                            --border-radius--lg
-                                          );
-                                          margin: var(--space--0)
-                                            var(--space---2);
-                                          display: flex;
-                                          flex-direction: column;
-                                          --message--highlight--background-color: var(
-                                            --color--amber--200
-                                          );
-                                          @media (prefers-color-scheme: dark) {
-                                            --message--highlight--background-color: var(
-                                              --color--amber--900
-                                            );
-                                          }
-                                          @keyframes message--highlight {
-                                            from {
-                                              background-color: var(
-                                                --message--highlight--background-color
-                                              );
-                                            }
-                                            to {
-                                              background-color: transparent;
-                                            }
-                                          }
-                                        `}"
+                                            `}"
                                       >
                                         $${(() => {
                                           const actions = html`
                                             <div key="message--actions">
                                               <button
                                                 class="button button--tight button--tight--inline button--transparent secondary"
-                                                css="${response.locals
+                                                css="${css`
+                                                  font-size: var(
+                                                    --font-size--xs
+                                                  );
+                                                  line-height: var(
+                                                    --line-height--xs
+                                                  );
+                                                `} ${response.locals
                                                   .conversation.type === "chat"
                                                   ? css`
                                                       transition-property: var(
@@ -7523,14 +7530,7 @@ export default async (application: Application): Promise<void> => {
                                                         );
                                                       }
                                                     `
-                                                  : css``} ${css`
-                                                  font-size: var(
-                                                    --font-size--xs
-                                                  );
-                                                  line-height: var(
-                                                    --line-height--xs
-                                                  );
-                                                `}"
+                                                  : css``}"
                                                 javascript="${javascript`
                                                   leafac.setTippy({
                                                     event,
@@ -8612,7 +8612,9 @@ export default async (application: Application): Promise<void> => {
                               <div
                                 key="message--new-message--placeholder"
                                 hidden
-                                css="${response.locals.conversation.type ===
+                                css="${css`
+                                  opacity: var(--opacity--50);
+                                `} ${response.locals.conversation.type ===
                                 "chat"
                                   ? css``
                                   : css`
@@ -8623,12 +8625,16 @@ export default async (application: Application): Promise<void> => {
                                           --color--gray--medium--700
                                         );
                                       }
-                                    `} ${css`
-                                  opacity: var(--opacity--50);
-                                `}"
+                                    `}"
                               >
                                 <div
-                                  css="${response.locals.conversation.type ===
+                                  css="${css`
+                                    padding: var(--space--2);
+                                    border-radius: var(--border-radius--lg);
+                                    margin: var(--space--0) var(--space---2);
+                                    display: flex;
+                                    flex-direction: column;
+                                  `} ${response.locals.conversation.type ===
                                   "chat"
                                     ? css`
                                         gap: var(--space--1);
@@ -8656,13 +8662,7 @@ export default async (application: Application): Promise<void> => {
                                     : css`
                                         padding-bottom: var(--space--4);
                                         gap: var(--space--2);
-                                      `} ${css`
-                                    padding: var(--space--2);
-                                    border-radius: var(--border-radius--lg);
-                                    margin: var(--space--0) var(--space---2);
-                                    display: flex;
-                                    flex-direction: column;
-                                  `}"
+                                      `}"
                                 >
                                   <div
                                     css="${css`
@@ -8801,7 +8801,10 @@ export default async (application: Application): Promise<void> => {
                 `}"
               >
                 <div
-                  css="${response.locals.conversation.type === "chat"
+                  css="${css`
+                    display: flex;
+                    flex-direction: column;
+                  `} ${response.locals.conversation.type === "chat"
                     ? css`
                         gap: var(--space--2);
                         flex: 1;
@@ -8810,10 +8813,7 @@ export default async (application: Application): Promise<void> => {
                       `
                     : css`
                         gap: var(--space--4);
-                      `} ${css`
-                    display: flex;
-                    flex-direction: column;
-                  `}"
+                      `}"
                 >
                   $${response.locals.conversation.type === "question"
                     ? html`
@@ -8878,18 +8878,18 @@ export default async (application: Application): Promise<void> => {
 
                   <div
                     key="new-message"
-                    css="${response.locals.conversation.type === "chat"
+                    css="${css`
+                      display: grid;
+                      & > * {
+                        grid-area: 1 / 1;
+                      }
+                    `} ${response.locals.conversation.type === "chat"
                       ? css`
                           textarea {
                             padding-right: var(--space--8);
                           }
                         `
-                      : css``} ${css`
-                      display: grid;
-                      & > * {
-                        grid-area: 1 / 1;
-                      }
-                    `}"
+                      : css``}"
                     javascript="${javascript`
                       leafac.saveFormInputValue(this.querySelector('[key="content-editor--write--textarea"]'), "new-message");
                     `}"

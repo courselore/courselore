@@ -630,7 +630,9 @@ export default async (application: Application): Promise<void> => {
             --color--accent-color--800: var(--color--${enrollment?.accentColor ??
           ""}--800);
           "
-          css="${enrollment === undefined
+          css="${css`
+            cursor: default;
+          `} ${enrollment === undefined
             ? css``
             : css`
                 color: var(--color--accent-color--700);
@@ -639,9 +641,7 @@ export default async (application: Application): Promise<void> => {
                   color: var(--color--accent-color--200);
                   background-color: var(--color--accent-color--800);
                 }
-              `} ${css`
-            cursor: default;
-          `}"
+              `}"
           javascript="${javascript`
             this.style.setProperty("--color--accent-color--100", ${`var(--color--${enrollment?.accentColor}--100)`});
             this.style.setProperty("--color--accent-color--200", ${`var(--color--${enrollment?.accentColor}--200)`});

@@ -328,7 +328,15 @@ export default async (application: Application): Promise<void> => {
           user === "no-longer-enrolled"
             ? html`<svg
                 viewBox="0 0 24 24"
-                css="${{
+                css="${css`
+                  color: var(--color--rose--700);
+                  background-color: var(--color--rose--200);
+                  @media (prefers-color-scheme: dark) {
+                    color: var(--color--rose--200);
+                    background-color: var(--color--rose--700);
+                  }
+                  border-radius: var(--border-radius--circle);
+                `} ${{
                   xs: css`
                     width: var(--space--4);
                     height: var(--space--4);
@@ -343,15 +351,7 @@ export default async (application: Application): Promise<void> => {
                     width: var(--space--32);
                     height: var(--space--32);
                   `,
-                }[size]} ${css`
-                  color: var(--color--rose--700);
-                  background-color: var(--color--rose--200);
-                  @media (prefers-color-scheme: dark) {
-                    color: var(--color--rose--200);
-                    background-color: var(--color--rose--700);
-                  }
-                  border-radius: var(--border-radius--circle);
-                `}"
+                }[size]}"
               >
                 <foreignObject x="2" y="-2" width="24" height="24">
                   <span
@@ -369,7 +369,12 @@ export default async (application: Application): Promise<void> => {
                 src="${user.avatar}"
                 alt="${user.name}"
                 loading="lazy"
-                css="${{
+                css="${css`
+                  border-radius: var(--border-radius--circle);
+                  @media (prefers-color-scheme: dark) {
+                    filter: brightness(var(--brightness--90));
+                  }
+                `} ${{
                   xs: css`
                     width: var(--space--4);
                     height: var(--space--4);
@@ -384,12 +389,7 @@ export default async (application: Application): Promise<void> => {
                     width: var(--space--32);
                     height: var(--space--32);
                   `,
-                }[size]} ${css`
-                  border-radius: var(--border-radius--circle);
-                  @media (prefers-color-scheme: dark) {
-                    filter: brightness(var(--brightness--90));
-                  }
-                `}"
+                }[size]}"
               />`
             : html`<svg
                 viewBox="0 0 24 24"
@@ -397,22 +397,7 @@ export default async (application: Application): Promise<void> => {
                   --color--avatarless-background-color--200: var(--color--${user.avatarlessBackgroundColor}--200);
                   --color--avatarless-background-color--700: var(--color--${user.avatarlessBackgroundColor}--700);
                 "
-                css="${{
-                  xs: css`
-                    width: var(--space--4);
-                    height: var(--space--4);
-                    vertical-align: var(--space---1);
-                  `,
-                  sm: css`
-                    width: var(--space--6);
-                    height: var(--space--6);
-                    vertical-align: var(--space---1-5);
-                  `,
-                  xl: css`
-                    width: var(--space--32);
-                    height: var(--space--32);
-                  `,
-                }[size]} ${css`
+                css="${css`
                   color: var(--color--avatarless-background-color--700);
                   background-color: var(
                     --color--avatarless-background-color--200
@@ -424,7 +409,22 @@ export default async (application: Application): Promise<void> => {
                     );
                   }
                   border-radius: var(--border-radius--circle);
-                `}"
+                `} ${{
+                  xs: css`
+                    width: var(--space--4);
+                    height: var(--space--4);
+                    vertical-align: var(--space---1);
+                  `,
+                  sm: css`
+                    width: var(--space--6);
+                    height: var(--space--6);
+                    vertical-align: var(--space---1-5);
+                  `,
+                  xl: css`
+                    width: var(--space--32);
+                    height: var(--space--32);
+                  `,
+                }[size]}"
               >
                 <text
                   x="12"
@@ -450,7 +450,13 @@ export default async (application: Application): Promise<void> => {
 
         if (decorate && user !== "no-longer-enrolled")
           userAvatar = html`<span
-            css="${{
+            css="${css`
+              display: inline-grid;
+              & > * {
+                grid-area: 1 / 1;
+                position: relative;
+              }
+            `} ${{
               xs: css`
                 vertical-align: var(--space---1);
               `,
@@ -458,18 +464,19 @@ export default async (application: Application): Promise<void> => {
                 vertical-align: var(--space---1-5);
               `,
               xl: css``,
-            }[size]} ${css`
-              display: inline-grid;
-              & > * {
-                grid-area: 1 / 1;
-                position: relative;
-              }
-            `}"
+            }[size]}"
           >
             $${userAvatar}
             <span
               hidden
-              css="${{
+              css="${css`
+                background-color: var(--color--green--500);
+                @media (prefers-color-scheme: dark) {
+                  background-color: var(--color--green--600);
+                }
+                border-radius: var(--border-radius--circle);
+                place-self: end;
+              `} ${{
                 xs: css`
                   width: var(--space--1);
                   height: var(--space--1);
@@ -483,14 +490,7 @@ export default async (application: Application): Promise<void> => {
                   height: var(--space--3);
                   transform: translate(-100%, -100%);
                 `,
-              }[size]} ${css`
-                background-color: var(--color--green--500);
-                @media (prefers-color-scheme: dark) {
-                  background-color: var(--color--green--600);
-                }
-                border-radius: var(--border-radius--circle);
-                place-self: end;
-              `}"
+              }[size]}"
               javascript="${javascript`
                 const element = this;
 
@@ -747,7 +747,15 @@ export default async (application: Application): Promise<void> => {
       if (avatar)
         anonymousAvatar = html`<svg
           viewBox="0 0 24 24"
-          css="${{
+          css="${css`
+            color: var(--color--violet--700);
+            background-color: var(--color--violet--200);
+            @media (prefers-color-scheme: dark) {
+              color: var(--color--violet--200);
+              background-color: var(--color--violet--700);
+            }
+            border-radius: var(--border-radius--circle);
+          `} ${{
             xs: css`
               width: var(--space--4);
               height: var(--space--4);
@@ -762,15 +770,7 @@ export default async (application: Application): Promise<void> => {
               width: var(--space--32);
               height: var(--space--32);
             `,
-          }[size]} ${css`
-            color: var(--color--violet--700);
-            background-color: var(--color--violet--200);
-            @media (prefers-color-scheme: dark) {
-              color: var(--color--violet--200);
-              background-color: var(--color--violet--700);
-            }
-            border-radius: var(--border-radius--circle);
-          `}"
+          }[size]}"
         >
           <foreignObject x="2" y="-2" width="24" height="24">
             <span
