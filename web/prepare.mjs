@@ -43,12 +43,12 @@ let staticJavaScript = javascript`
   leafac.tippySetDefaultProps();
   leafac.liveNavigation();
 `;
-await node.time("[Server] Babel", async () => {
+await node.time("Babel", async () => {
   const staticCSSIdentifiers = new Set();
   const staticJavaScriptIdentifiers = new Set();
   const baseIdentifier = baseX("abcdefghijklmnopqrstuvwxyz");
 
-  for (const input of await globby("./server/**/*.mts")) {
+  for (const input of await globby("./source/**/*.mts")) {
     const output = path.join(
       "./build",
       `${input.slice(0, -path.extname(input).length)}.mjs`
@@ -150,7 +150,7 @@ await node.time("[Server] Babel", async () => {
   }
 });
 
-await node.time("[Static] PostCSS", async () => {
+await node.time("PostCSS", async () => {
   staticCSS = (
     await postcss([postcssNested, autoprefixer]).process(staticCSS, {
       from: undefined,
@@ -162,7 +162,7 @@ await fs.writeFile("./static/index.css", staticCSS);
 await fs.writeFile("./static/index.mjs", staticJavaScript);
 
 let esbuildResult;
-await node.time("[Static] esbuild", async () => {
+await node.time("esbuild", async () => {
   esbuildResult = await esbuild.build({
     absWorkingDir: url.fileURLToPath(new URL("./static/", import.meta.url)),
     entryPoints: ["./index.mjs"],
@@ -199,7 +199,7 @@ for (const [javascriptBundle, { entryPoint, cssBundle }] of Object.entries(
     break;
   }
 
-await node.time("[Static] Copy static files with cache busting", async () => {
+await node.time("Copy static files with cache busting", async () => {
   const baseFileHash = baseX("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789");
   for (const source of await globby("./static/about/")) {
     const extension = path.extname(source);
@@ -222,17 +222,14 @@ await fs.writeFile(
   JSON.stringify(paths, undefined, 2)
 );
 
-await node.time(
-  "[Static] Copy static files without cache busting",
-  async () => {
-    for (const source of [
-      "./static/apple-touch-icon.png",
-      "./static/favicon.ico",
-      "./static/node_modules/fake-avatars/avatars/webp/",
-    ]) {
-      const destination = path.join("./build", source);
-      await fs.mkdir(path.dirname(destination), { recursive: true });
-      await fs.cp(source, destination, { recursive: true });
-    }
+await node.time("Copy static files without cache busting", async () => {
+  for (const source of [
+    "./static/apple-touch-icon.png",
+    "./static/favicon.ico",
+    "./static/node_modules/fake-avatars/avatars/webp/",
+  ]) {
+    const destination = path.join("./build", source);
+    await fs.mkdir(path.dirname(destination), { recursive: true });
+    await fs.cp(source, destination, { recursive: true });
   }
-);
+});

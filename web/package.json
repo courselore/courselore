@@ -15,20 +15,20 @@
   "bugs": "https://github.com/courselore/courselore/issues",
   "author": "Courselore <npm@courselore.org> (https://courselore.org)",
   "license": "GPL-3.0",
-  "bin": "./build/server/index.mjs",
+  "bin": "./build/build/index.mjs",
   "scripts": {
-    "postinstall": "(cd ./server/ && npm install && cd ..) && (cd ./static/ && npm install && cd ..)",
+    "postinstall": "(cd ./source/ && npm install && cd ..) && (cd ./static/ && npm install && cd ..)",
     "prepare": "node ./prepare.mjs",
-    "start": "nodemon --watch \"./{package.json,prepare.mjs}\" --watch \"./server/{package.json,**/*.mts}\" --watch \"./static/{package.json,leafac--javascript.mjs,**/*.{webp,png,ico}}\" --watch \"./configuration/**/*.mjs\" --ext \"*\" --exec \"npm run prepare && cross-env NODE_OPTIONS=--enable-source-maps node ./build/server/index.mjs ./configuration/development.mjs\"",
-    "start:profile": "shx rm -rf ./data/measurements/ && npm run prepare && node ./build/server/index.mjs ./configuration/profile.mjs",
+    "start": "nodemon --watch \"./{package.json,prepare.mjs}\" --watch \"./source/{package.json,**/*.mts}\" --watch \"./static/{package.json,leafac--javascript.mjs,**/*.{webp,png,ico}}\" --watch \"./configuration/**/*.mjs\" --ext \"*\" --exec \"npm run prepare && cross-env NODE_OPTIONS=--enable-source-maps node ./build/build/index.mjs ./configuration/development.mjs\"",
+    "start:profile": "shx rm -rf ./data/measurements/ && npm run prepare && node ./build/build/index.mjs ./configuration/profile.mjs",
     "start:clean:data": "npm run clean:data && npm run start",
-    "test": "prettier --check \"./package.json\" --check \"./prepare.mjs\" --check \"./server/**/*.mts\" --check \"./server/package.json\" --check \"./static/package.json\" --check \"./configuration/**/*.mjs\" --end-of-line auto && cd ./server/ && npx tsc --noEmit",
-    "test:license": "license-checker --summary && (cd ./server/ && license-checker --summary && cd ..) && (cd ./static/ && license-checker --summary && cd ..)",
+    "test": "prettier --check \"./package.json\" --check \"./prepare.mjs\" --check \"./source/**/*.mts\" --check \"./source/package.json\" --check \"./static/package.json\" --check \"./configuration/**/*.mjs\" --end-of-line auto && cd ./source/ && npx tsc --noEmit",
+    "test:license": "license-checker --summary && (cd ./source/ && license-checker --summary && cd ..) && (cd ./static/ && license-checker --summary && cd ..)",
     "clean:all": "npm run clean:build && npm run clean:data && npm run clean:node_modules",
     "clean:build": "shx rm -rf ./build/",
     "clean:data": "shx rm -rf ./data/",
-    "clean:node_modules": "shx rm -rf ./node_modules/ ./server/node_modules/ ./static/node_modules/",
-    "update": "npm-check-updates --upgrade && (cd ./server/ && npm-check-updates --upgrade && cd ..) && (cd ./static/ && npm-check-updates --upgrade && cd ..) && npm install"
+    "clean:node_modules": "shx rm -rf ./node_modules/ ./source/node_modules/ ./static/node_modules/",
+    "update": "npm-check-updates --upgrade && (cd ./source/ && npm-check-updates --upgrade && cd ..) && (cd ./static/ && npm-check-updates --upgrade && cd ..) && npm install"
   },
   "engines": {
     "node": ">=19"

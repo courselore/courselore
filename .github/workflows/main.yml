@@ -6,16 +6,16 @@ jobs:
         os: [windows-latest, macos-latest, ubuntu-20.04]
         include:
           - os: windows-latest
-            build: npx caxa --input . --output "courselore--windows--${{ github.sha }}.exe" -- "{{caxa}}/node_modules/.bin/node" "{{caxa}}/build/server/index.mjs"
+            build: npx caxa --input . --output "courselore--windows--${{ github.sha }}.exe" -- "{{caxa}}/node_modules/.bin/node" "{{caxa}}/build/build/index.mjs"
             artifact: courselore--windows--${{ github.sha }}.exe
           - os: macos-latest
             build: |
-              npx caxa --input . --output "courselore" -- "{{caxa}}/node_modules/.bin/node" "{{caxa}}/build/server/index.mjs"
+              npx caxa --input . --output "courselore" -- "{{caxa}}/node_modules/.bin/node" "{{caxa}}/build/build/index.mjs"
               tar czf "courselore--macos--${{ github.sha }}.tgz" "courselore"
             artifact: courselore--macos--${{ github.sha }}.tgz
           - os: ubuntu-20.04
             build: |
-              npx caxa --input . --output "courselore" -- "{{caxa}}/node_modules/.bin/node" "{{caxa}}/build/server/index.mjs"
+              npx caxa --input . --output "courselore" -- "{{caxa}}/node_modules/.bin/node" "{{caxa}}/build/build/index.mjs"
               tar czf "courselore--linux--${{ github.sha }}.tgz" "courselore"
             artifact: courselore--linux--${{ github.sha }}.tgz
     runs-on: ${{ matrix.os }}
@@ -27,7 +27,7 @@ jobs:
       - run: |
           cd web
           npm ci
-          npx shx rm -rf ./server/node_modules/ ./static/node_modules/
+          npx shx rm -rf ./source/node_modules/ ./static/node_modules/
           ${{ matrix.build }}
       - uses: actions/upload-artifact@v3
         with:
