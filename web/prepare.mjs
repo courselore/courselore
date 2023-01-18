@@ -213,7 +213,11 @@ for (const source of [
   "./static/favicon.ico",
   "./node_modules/fake-avatars/avatars/webp/",
 ]) {
-  const destination = path.join("./build", source);
+  const destination = path.join(
+    "./build",
+    ...(source.startsWith("./static/") ? [] : ["./static/"]),
+    source
+  );
   await fs.mkdir(path.dirname(destination), { recursive: true });
   await fs.cp(source, destination, { recursive: true });
 }
