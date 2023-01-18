@@ -27,7 +27,6 @@ jobs:
       - run: |
           cd web
           npm ci
-          npx shx rm -rf ./source/node_modules/ ./static/node_modules/
           ${{ matrix.build }}
       - uses: actions/upload-artifact@v3
         with:
