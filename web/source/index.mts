@@ -100,7 +100,7 @@ export type Application = {
 
 if (await node.isExecuted(import.meta.url)) {
   const version = JSON.parse(
-    await fs.readFile(new URL("../../package.json", import.meta.url), "utf8")
+    await fs.readFile(new URL("../package.json", import.meta.url), "utf8")
   ).version;
   await commander.program
     .name("courselore")
@@ -117,7 +117,7 @@ if (await node.isExecuted(import.meta.url)) {
       "[configuration]",
       "Path to configuration file. If you don’t provide a configuration file, the application runs in demonstration mode.",
       url.fileURLToPath(
-        new URL("../../configuration/default.mjs", import.meta.url)
+        new URL("../configuration/default.mjs", import.meta.url)
       )
     )
     .version(version)
