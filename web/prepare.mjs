@@ -212,7 +212,7 @@ await fs.writeFile(
 for (const source of [
   "./static/apple-touch-icon.png",
   "./static/favicon.ico",
-  "./static/node_modules/fake-avatars/avatars/webp/",
+  "./node_modules/fake-avatars/avatars/webp/",
 ]) {
   const destination = path.join("./build", source);
   await fs.mkdir(path.dirname(destination), { recursive: true });
