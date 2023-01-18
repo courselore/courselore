@@ -159,7 +159,7 @@ if (await node.isExecuted(import.meta.url)) {
             .default,
           static: JSON.parse(
             await fs.readFile(
-              new URL("../static/paths.json", import.meta.url),
+              new URL("./static/paths.json", import.meta.url),
               "utf8"
             )
           ),
@@ -350,7 +350,7 @@ if (await node.isExecuted(import.meta.url)) {
                         route {
                           root * ${JSON.stringify(
                             url.fileURLToPath(
-                              new URL("../static/", import.meta.url)
+                              new URL("./static/", import.meta.url)
                             )
                           )}
                           @file_exists file

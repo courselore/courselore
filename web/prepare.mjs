@@ -51,7 +51,7 @@ await node.time("Babel", async () => {
   for (const input of await globby("./source/**/*.mts")) {
     const output = path.join(
       "./build",
-      `${input.slice(0, -path.extname(input).length)}.mjs`
+      `${input.slice("./source/".length, -path.extname(input).length)}.mjs`
     );
 
     const code = await fs.readFile(input, "utf-8");
