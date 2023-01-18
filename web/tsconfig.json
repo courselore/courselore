@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
-    "rootDir": "./",
-    "outDir": "../build/",
+    "rootDir": "./source/",
+    "outDir": "./build/",
 
     "module": "ESNext",
     "moduleResolution": "NodeNext",
