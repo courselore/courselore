@@ -10,6 +10,12 @@
 
 ## Unreleased
 
+## 6.0.5
+
+**2023-01-18 · [Download](https://github.com/courselore/courselore/releases/tag/v6.0.5) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
+
+- Improved the performance across the application, particularly on big pages, by extracting client CSS/JavaScript and serving them as static files.
+
 ## 6.0.4
 
 **2022-12-16 · [Download](https://github.com/courselore/courselore/releases/tag/v6.0.4) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
