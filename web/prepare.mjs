@@ -2,7 +2,6 @@ import path from "node:path";
 import url from "node:url";
 import fs from "node:fs/promises";
 import { globby } from "globby";
-import * as node from "@leafac/node";
 import babel from "@babel/core";
 import babelGenerator from "@babel/generator";
 import prettier from "prettier";
