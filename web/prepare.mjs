@@ -1,5 +1,4 @@
 import path from "node:path";
-import url from "node:url";
 import fs from "node:fs/promises";
 import { globby } from "globby";
 import babel from "@babel/core";
@@ -154,7 +153,7 @@ await fs.writeFile("./static/index.css", staticCSS);
 await fs.writeFile("./static/index.mjs", staticJavaScript);
 
 const esbuildResult = await esbuild.build({
-  absWorkingDir: url.fileURLToPath(new URL("./static/", import.meta.url)),
+  absWorkingDir: path.resolve("./static/"),
   entryPoints: ["./index.mjs"],
   outdir: "../build/static/",
   entryNames: "[dir]/[name]--[hash]",
