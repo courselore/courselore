@@ -434,48 +434,6 @@ export default async (application: Application): Promise<void> => {
         const exampleOfAllFeaturesInRichTextMessages = `
 **Edit to see source**
 
-# \`@mentions\`
-
-Self: @${enrollment.reference}
-
-Other: @${lodash.sample(enrollments)!.reference}
-
-Non-existent: @1571024857
-
-# \`#references\`
-
-Conversation self: #1
-
-Conversation other: #2
-
-Conversation non-existent: #14981039481
-
-Conversation permanent link turned reference: <https://${
-          application.configuration.hostname
-        }/courses/${course.reference}/conversations/1>
-
-Conversation non-existent permanent link turned reference: <https://${
-          application.configuration.hostname
-        }/courses/${course.reference}/conversations/14981039481>
-
-Message self: #1/1
-
-Message other: #2/1
-
-Message non-existent: #1/2
-
-Message permanent link turned reference: <https://${
-          application.configuration.hostname
-        }/courses/${
-          course.reference
-        }/conversations/1?messages%5BmessageReference%5D=1>
-
-Message non-existent permanent link turned reference: <https://${
-          application.configuration.hostname
-        }/courses/${
-          course.reference
-        }/conversations/1?messages%5BmessageReference%5D=2>
-
 # Headings
 
 ${lodash
@@ -522,14 +480,6 @@ ${lodash
 
 **Bold**, _italics_, <u>underline</u>, <ins>insertion</ins>, ~~deletion~~ (~one tilde~), <sup>superscript</sup>, <sub>subscript</sub>, \`code\`, [links](https://courselore.org), www.example.com, https://example.com, contact@example.com, and a line  
 break.
-
-# Footnotes
-
-Footnote[^1] and another.[^2]
-
-[^1]: ${casual.sentences(lodash.random(1, 6))}
-
-[^2]: ${casual.sentences(lodash.random(1, 6))}
 
 # Image
 
@@ -681,6 +631,14 @@ ${lodash
   )
   .join("\n>\n")}
 
+# Separator
+
+${casual.sentences(lodash.random(1, 6))}
+
+---
+
+${casual.sentences(lodash.random(1, 6))}
+
 # Details
 
 <details>
@@ -712,9 +670,59 @@ ${lodash
   )
   .join("\n")}
 
+# Footnotes
+
+Footnote[^1] and another.[^2]
+
+[^1]: ${casual.sentences(lodash.random(1, 6))}
+
+[^2]: ${casual.sentences(lodash.random(1, 6))}
+
 # Cross-Site Scripting
 
 👍<script>document.write("💩");</script>🙌
+
+# \`@mentions\`
+
+Self: @${enrollment.reference}
+
+Other: @${lodash.sample(enrollments)!.reference}
+
+Non-existent: @1571024857
+
+# \`#references\`
+
+Conversation self: #1
+
+Conversation other: #2
+
+Conversation non-existent: #14981039481
+
+Conversation permanent link turned reference: <https://${
+          application.configuration.hostname
+        }/courses/${course.reference}/conversations/1>
+
+Conversation non-existent permanent link turned reference: <https://${
+          application.configuration.hostname
+        }/courses/${course.reference}/conversations/14981039481>
+
+Message self: #1/1
+
+Message other: #2/1
+
+Message non-existent: #1/2
+
+Message permanent link turned reference: <https://${
+          application.configuration.hostname
+        }/courses/${
+          course.reference
+        }/conversations/1?messages%5BmessageReference%5D=1>
+
+Message non-existent permanent link turned reference: <https://${
+          application.configuration.hostname
+        }/courses/${
+          course.reference
+        }/conversations/1?messages%5BmessageReference%5D=2>
 `;
 
         for (
