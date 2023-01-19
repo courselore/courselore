@@ -185,17 +185,18 @@ export default async (application: Application): Promise<void> => {
           "input",
         ],
         attributes: {
-          a: ["href"],
+          a: ["href", "id"],
           img: ["src", "alt"],
           video: ["src"],
           code: [["className", /^language-/]],
+          li: ["id"],
           input: ["checked"],
           "*": [],
         },
         required: {
-          input: { type: "checkbox", disabled: true },
           div: { className: "math math-display" },
           span: { className: "math math-inline" },
+          input: { type: "checkbox", disabled: true },
         },
       })
       .use(rehypeKatex, { maxSize: 25, maxExpand: 10, output: "html" })
