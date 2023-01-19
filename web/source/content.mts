@@ -15,9 +15,7 @@ import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
 import remarkRehype from "remark-rehype";
 import rehypeRaw from "rehype-raw";
-import rehypeSanitize, {
-  defaultSchema as rehypeSanitizeDefaultSchema,
-} from "rehype-sanitize";
+import rehypeSanitize from "rehype-sanitize";
 import rehypeKatex from "rehype-katex";
 import * as shiki from "shiki";
 import rehypeParse from "rehype-parse";
@@ -130,31 +128,78 @@ export default async (application: Application): Promise<void> => {
       .use(remarkRehype, { allowDangerousHtml: true })
       .use(rehypeRaw)
       .use(rehypeSanitize, {
-        ...rehypeSanitizeDefaultSchema,
+        strip: ["script"],
+        clobberPrefix: "UNUSED",
         clobber: [],
+        ancestors: {
+          li: ["ul", "ol"],
+          thead: ["table"],
+          tbody: ["table"],
+          tfoot: ["table"],
+          tr: ["table"],
+          th: ["table"],
+          td: ["table"],
+          summary: ["details"],
+        },
+        protocols: {
+          href: ["http", "https", "mailto"],
+          src: ["http", "https"],
+        },
         tagNames: [
-          ...(rehypeSanitizeDefaultSchema.tagNames ?? []),
+          "h1",
+          "h2",
+          "h3",
+          "h4",
+          "h5",
+          "h6",
+          "p",
+          "br",
+          "strong",
+          "em",
           "u",
+          "ins",
+          "del",
+          "sup",
+          "sub",
+          "a",
+          "img",
           "video",
+          "div",
+          "span",
+          "pre",
+          "code",
+          "ol",
+          "ul",
+          "li",
+          "table",
+          "thead",
+          "tbody",
+          "tfoot",
+          "tr",
+          "th",
+          "td",
+          "blockquote",
+          "hr",
+          "details",
+          "summary",
+          "input",
         ],
         attributes: {
-          ...rehypeSanitizeDefaultSchema.attributes,
-          div: [
-            ...(rehypeSanitizeDefaultSchema.attributes?.div ?? []),
-            ["className", "math", "math-display"],
-          ],
-          span: [
-            ...(rehypeSanitizeDefaultSchema.attributes?.span ?? []),
-            ["className", "math", "math-inline"],
-          ],
-          code: [
-            ...(rehypeSanitizeDefaultSchema.attributes?.code ?? []),
-            "className",
-          ],
-          video: [
-            ...(rehypeSanitizeDefaultSchema.attributes?.video ?? []),
-            "src",
-          ],
+          a: ["href"],
+          img: ["src", "alt"],
+          video: ["src"],
+          div: [["className", "math", "math-display"]],
+          span: [["className", "math", "math-inline"]],
+          code: [["className", /^language-/]],
+          // TODO: ["type", "checkbox"], ["disabled", true],
+          input: ["checked"],
+          "*": [],
+        },
+        required: {
+          input: {
+            type: "checkbox",
+            disabled: true,
+          },
         },
       })
       .use(rehypeKatex, { maxSize: 25, maxExpand: 10, output: "html" })
