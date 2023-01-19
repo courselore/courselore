@@ -434,8 +434,6 @@ export default async (application: Application): Promise<void> => {
         const exampleOfAllFeaturesInRichTextMessages = `
 **Edit to see source**
 
----
-
 # \`@mentions\`
 
 Self: @${enrollment.reference}
@@ -443,8 +441,6 @@ Self: @${enrollment.reference}
 Other: @${lodash.sample(enrollments)!.reference}
 
 Non-existent: @1571024857
-
----
 
 # \`#references\`
 
@@ -480,58 +476,78 @@ Message non-existent permanent link turned reference: <https://${
           course.reference
         }/conversations/1?messages%5BmessageReference%5D=2>
 
----
+# Headings
+
+${lodash
+  .times(lodash.random(1, 6), () => casual.sentences(lodash.random(1, 6)))
+  .join("\n\n")}
 
 # Heading 1
 
+${lodash
+  .times(lodash.random(1, 6), () => casual.sentences(lodash.random(1, 6)))
+  .join("\n\n")}
+
 ## Heading 2
+
+${lodash
+  .times(lodash.random(1, 6), () => casual.sentences(lodash.random(1, 6)))
+  .join("\n\n")}
 
 ### Heading 3
 
+${lodash
+  .times(lodash.random(1, 6), () => casual.sentences(lodash.random(1, 6)))
+  .join("\n\n")}
+
 #### Heading 4
+
+${lodash
+  .times(lodash.random(1, 6), () => casual.sentences(lodash.random(1, 6)))
+  .join("\n\n")}
 
 ##### Heading 5
 
+${lodash
+  .times(lodash.random(1, 6), () => casual.sentences(lodash.random(1, 6)))
+  .join("\n\n")}
+
 ###### Heading 6
 
----
+${lodash
+  .times(lodash.random(1, 6), () => casual.sentences(lodash.random(1, 6)))
+  .join("\n\n")}
 
-Paragraph
+# Inline
 
-Line  
-break
+**Bold**, _italics_, <u>underline</u>, <ins>insertion</ins>, ~~deletion~~ (~one tilde~), <sup>superscript</sup>, <sub>subscript</sub>, \`code\`, [links](https://courselore.org), www.example.com, https://example.com, contact@example.com, and a line  
+break.
 
-**Bold**, _italics_, <u>underline</u>, <ins>insertion</ins>, ~~deletion~~ (~one tilde~), <sup>superscript</sup>, <sub>subscript</sub>, \`code\`, and [links](https://courselore.org) www.example.com, https://example.com, and contact@example.com.
+# Footnotes
 
----
+Footnote[^1] and another.[^2]
 
-Footnote[^1] and another[^2]
+[^1]: ${casual.sentences(lodash.random(1, 6))}
 
-[^1]: Lorem, ipsum dolor sit amet consectetur adipisicing elit. Voluptatibus cupiditate distinctio similique sequi velit omnis tenetur aut vitae sapiente quod a repudiandae porro veniam soluta doloribus quia, dolorum, reprehenderit quisquam.
+[^2]: ${casual.sentences(lodash.random(1, 6))}
 
-[^2]: Lorem, ipsum dolor sit amet consectetur adipisicing elit. Voluptatibus cupiditate distinctio similique sequi velit omnis tenetur aut vitae sapiente quod a repudiandae porro veniam soluta doloribus quia, dolorum, reprehenderit quisquam.
-
----
-
-Image
+# Image
 
 ![Image](https://${
           application.configuration.hostname
         }/node_modules/fake-avatars/avatars/webp/1.webp)
 
-Animated GIF
+# Animated GIF
 
 [<video src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4"></video>](https://${
           application.configuration.hostname
         }/node_modules/fake-avatars/avatars/webp/1.webp)
 
-Video
+# Video
 
 <video src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4"></video>
 
----
-
-Mathematics
+# Mathematics
 
 $\\displaystyle \\frac{1}{\\Bigl(\\sqrt{\\phi \\sqrt{5}}-\\phi\\Bigr) e^{\\frac25 \\pi}} = 1+\\frac{e^{-2\\pi}} {1+\\frac{e^{-4\\pi}} {1+\\frac{e^{-6\\pi}} {1+\\frac{e^{-8\\pi}} {1+\\cdots} } } }$
 
@@ -554,9 +570,7 @@ $$
 \\rule{500em}{500em}
 $$
 
----
-
-Syntax Highlighting
+# Syntax Highlighting
 
 \`\`\`javascript
 for (let orderIndex = 2; orderIndex <= order; orderIndex++) {
@@ -612,70 +626,95 @@ for (let orderIndex = 2; orderIndex <= order; orderIndex++) {
             RER       - Apollinaire
 </pre>
 
----
-
-Lists
+# Lists
 
 - Banana
 - Pijama
 - Phone
 
-- Lift($L$) can be determined by Lift Coefficient ($C_L$) like the following equation. Lift($L$) can be determined by Lift Coefficient ($C_L$) like the following equation. Lift($L$) can be determined by Lift Coefficient ($C_L$) like the following equation.
-- Lift($L$) can be determined by Lift Coefficient ($C_L$) like the following equation. Lift($L$) can be determined by Lift Coefficient ($C_L$) like the following equation. Lift($L$) can be determined by Lift Coefficient ($C_L$) like the following equation.
-- Lift($L$) can be determined by Lift Coefficient ($C_L$) like the following equation. Lift($L$) can be determined by Lift Coefficient ($C_L$) like the following equation. Lift($L$) can be determined by Lift Coefficient ($C_L$) like the following equation.
+---
+
+${lodash
+  .times(
+    lodash.random(3, 6),
+    () =>
+      `- ${lodash
+        .times(lodash.random(1, 6), () => casual.sentences(lodash.random(1, 6)))
+        .join("\n\n  ")}`
+  )
+  .join("\n\n")}
+
+---
 
 1. Banana
 2. Pijama
 3. Phone
 
-1. Lift($L$) can be determined by Lift Coefficient ($C_L$) like the following equation. Lift($L$) can be determined by Lift Coefficient ($C_L$) like the following equation. Lift($L$) can be determined by Lift Coefficient ($C_L$) like the following equation.
-2. Lift($L$) can be determined by Lift Coefficient ($C_L$) like the following equation. Lift($L$) can be determined by Lift Coefficient ($C_L$) like the following equation. Lift($L$) can be determined by Lift Coefficient ($C_L$) like the following equation.
-3. Lift($L$) can be determined by Lift Coefficient ($C_L$) like the following equation. Lift($L$) can be determined by Lift Coefficient ($C_L$) like the following equation. Lift($L$) can be determined by Lift Coefficient ($C_L$) like the following equation.
-
 ---
 
-Table
+${lodash
+  .times(
+    lodash.random(3, 6),
+    (index) =>
+      `${index + 1}. ${lodash
+        .times(lodash.random(1, 6), () => casual.sentences(lodash.random(1, 6)))
+        .join("\n\n   ")}`
+  )
+  .join("\n\n")}
 
-| a   | b   |   c |  d  |
-| --- | :-- | --: | :-: |
-| 1   | 2   |   3 |  4  |
+# Table
 
----
+| Left-aligned | Center-aligned | Right-aligned |
+| :---         |     :---:      |          ---: |
+| git status   | git status     | git status    |
+| git diff     | git diff       | git diff      |
 
-Blockquote
+# Blockquote
 
-> Lift($L$) can be determined by Lift Coefficient ($C_L$) like the following equation. Lift($L$) can be determined by Lift Coefficient ($C_L$) like the following equation. Lift($L$) can be determined by Lift Coefficient ($C_L$) like the following equation.
+${lodash
+  .times(
+    lodash.random(3, 6),
+    () =>
+      `> ${lodash
+        .times(lodash.random(1, 6), () => casual.sentences(lodash.random(1, 6)))
+        .join("\n> ")}`
+  )
+  .join("\n>\n")}
 
----
-
-Details
+# Details
 
 <details>
 <summary>Example of details with summary</summary>
 
-Lift($L$) can be determined by Lift Coefficient ($C_L$) like the following equation. Lift($L$) can be determined by Lift Coefficient ($C_L$) like the following equation. Lift($L$) can be determined by Lift Coefficient ($C_L$) like the following equation.
+${lodash
+  .times(lodash.random(1, 6), () => casual.sentences(lodash.random(1, 6)))
+  .join("\n\n")}
 
 </details>
 
 <details>
 
-Lift($L$) can be determined by Lift Coefficient ($C_L$) like the following equation. Lift($L$) can be determined by Lift Coefficient ($C_L$) like the following equation. Lift($L$) can be determined by Lift Coefficient ($C_L$) like the following equation.
+${lodash
+  .times(lodash.random(1, 6), () => casual.sentences(lodash.random(1, 6)))
+  .join("\n\n")}
 
 </details>
 
----
+# Checklists
 
-TODO Lists
+${lodash
+  .times(
+    lodash.random(4, 8),
+    () =>
+      `- [${Math.random() < 0.5 ? " " : "x"}] ${casual.sentences(
+        lodash.random(1, 6)
+      )}`
+  )
+  .join("\n")}
 
-- [ ] Lorem, ipsum dolor sit amet consectetur adipisicing elit. Voluptatibus cupiditate distinctio similique sequi velit omnis tenetur aut vitae sapiente quod a repudiandae porro veniam soluta doloribus quia, dolorum, reprehenderit quisquam.
-- [x] Lorem ipsum dolor sit amet, consectetur adipisicing elit. Delectus, voluptatem at architecto excepturi officia, dolores quibusdam fugiat eligendi veniam perspiciatis, nostrum laudantium autem quasi sequi explicabo molestias ea minima iusto.
-
----
-
-Cross-Site Scripting
+# Cross-Site Scripting
 
 👍<script>document.write("💩");</script>🙌
-
 `;
 
         for (
