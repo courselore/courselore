@@ -478,7 +478,7 @@ ${lodash
 
 # Inline
 
-**Bold**, _italics_, <u>underline</u>, [links](https://courselore.org), www.example.com, https://example.com, contact@example.com, \`code\`, <ins>insertion</ins>, ~~deletion~~ (~one tilde~), <sup>superscript</sup>, <sub>subscript</sub>, and a line  
+**Bold**, _italics_, <u>underline</u>, [link](https://courselore.org), www.example.com, https://example.com, contact@example.com, \`code\`, <ins>insertion</ins>, ~~deletion~~ (~one tilde~), <sup>superscript</sup>, <sub>subscript</sub>, and a line  
 break.
 
 # Image

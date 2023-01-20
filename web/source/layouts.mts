@@ -1071,20 +1071,14 @@ export default async (application: Application): Promise<void> => {
               }
 
               .content {
-                &,
-                blockquote {
-                  display: flex;
-                  flex-direction: column;
-                  gap: var(--space--4);
-                }
-
                 h1,
                 h2,
                 h3,
                 h4,
                 h5,
                 h6 {
-                  margin-top: var(--space--4);
+                  margin-top: var(--space--6);
+                  margin-bottom: var(--space--2);
                 }
 
                 h1 {
@@ -1110,6 +1104,10 @@ export default async (application: Application): Promise<void> => {
 
                 h2 {
                   font-style: italic;
+                }
+
+                p + p {
+                  margin-top: var(--space--2);
                 }
 
                 strong {
@@ -1164,6 +1162,18 @@ export default async (application: Application): Promise<void> => {
                   cursor: pointer;
                 }
 
+                code {
+                  font-family: "JetBrains MonoVariable",
+                    var(--font-family--monospace);
+                  font-variant-ligatures: none;
+                  background-color: var(--color--gray--medium--200);
+                  @media (prefers-color-scheme: dark) {
+                    background-color: var(--color--gray--medium--700);
+                  }
+                  padding: var(--space--0) var(--space--0-5);
+                  border-radius: var(--border-radius--base);
+                }
+
                 ins {
                   color: var(--color--green--600);
                   @media (prefers-color-scheme: dark) {
@@ -1211,11 +1221,36 @@ export default async (application: Application): Promise<void> => {
                   display: block;
                 }
 
+                blockquote {
+                  padding-left: var(--space--4);
+                  color: var(--color--gray--medium--500);
+                  border-left: var(--border-width--4) solid
+                    var(--color--gray--medium--200);
+                  @media (prefers-color-scheme: dark) {
+                    color: var(--color--gray--medium--400);
+                    border-color: var(--color--gray--medium--700);
+                  }
+                }
+
                 hr {
                   border-top: var(--border-width--1) solid
                     var(--color--gray--medium--200);
                   @media (prefers-color-scheme: dark) {
                     border-color: var(--color--gray--medium--700);
+                  }
+                  margin: var(--space--2) var(--space--0);
+                }
+
+                ul {
+                  padding-left: var(--space--8);
+                  & > li {
+                    list-style: disc;
+                    &::marker {
+                      color: var(--color--gray--medium--500);
+                      @media (prefers-color-scheme: dark) {
+                        color: var(--color--gray--medium--400);
+                      }
+                    }
                   }
                 }
 
@@ -1232,17 +1267,8 @@ export default async (application: Application): Promise<void> => {
                   }
                 }
 
-                ul {
-                  padding-left: var(--space--8);
-                  & > li {
-                    list-style: disc;
-                    &::marker {
-                      color: var(--color--gray--medium--500);
-                      @media (prefers-color-scheme: dark) {
-                        color: var(--color--gray--medium--400);
-                      }
-                    }
-                  }
+                li + li {
+                  margin-top: var(--space--2);
                 }
 
                 table {
@@ -1271,14 +1297,18 @@ export default async (application: Application): Promise<void> => {
                   }
                 }
 
+                /*
+                &,
                 blockquote {
-                  padding-left: var(--space--4);
-                  border-left: var(--border-width--4) solid
-                    var(--color--gray--medium--200);
-                  @media (prefers-color-scheme: dark) {
-                    border-color: var(--color--gray--medium--700);
-                  }
+                  display: flex;
+                  flex-direction: column;
+                  gap: var(--space--4);
                 }
+
+
+
+               
+
 
                 dl {
                   dt {
@@ -1317,18 +1347,6 @@ export default async (application: Application): Promise<void> => {
                     padding: var(--space--0);
                     overflow-wrap: normal;
                   }
-                }
-
-                code {
-                  font-family: "JetBrains MonoVariable",
-                    var(--font-family--monospace);
-                  font-variant-ligatures: none;
-                  background-color: var(--color--gray--medium--200);
-                  @media (prefers-color-scheme: dark) {
-                    background-color: var(--color--gray--medium--700);
-                  }
-                  padding: var(--space--0) var(--space--0-5);
-                  border-radius: var(--border-radius--base);
                 }
 
                 details {
@@ -1436,6 +1454,7 @@ export default async (application: Application): Promise<void> => {
                 .katex {
                   overflow: auto;
                 }
+                */
               }
             }
 
