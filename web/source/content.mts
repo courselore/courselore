@@ -358,6 +358,7 @@ export default async (application: Application): Promise<void> => {
         );
     }
 
+    // TODO: Review uses of ‘class=""’ below in decoration
     // TODO
     // for (const element of contentElement.querySelectorAll("li, th, td"))
     //   element.innerHTML = [...element.childNodes].some(
