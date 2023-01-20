@@ -24,6 +24,8 @@
 - Killer feature to attract people: off-the-shelf AI
   - Reuse questions
   - Reuse questions from previous year
+- https://www.partneradvantage.goog/
+- https://cloud.google.com/partners/become-a-partner/
 
 ---
 
