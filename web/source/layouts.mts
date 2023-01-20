@@ -1205,6 +1205,16 @@ export default async (application: Application): Promise<void> => {
                   bottom: var(--space---1);
                 }
 
+                video,
+                blockquote,
+                ul,
+                ol,
+                table,
+                details,
+                .math-display {
+                  margin: var(--space--4) var(--space--0);
+                }
+
                 img,
                 video {
                   background-color: var(--color--gray--medium--50);
@@ -1274,19 +1284,16 @@ export default async (application: Application): Promise<void> => {
                 table {
                   border-collapse: collapse;
                   display: block;
-                  caption {
-                    font-size: var(--font-size--xs);
-                    line-height: var(--line-height--xs);
-                    font-weight: var(--font-weight--bold);
-                  }
-                  th,
-                  td {
-                    padding: var(--space--1) var(--space--3);
+                  tbody tr {
                     border-top: var(--border-width--1) solid
                       var(--color--gray--medium--200);
                     @media (prefers-color-scheme: dark) {
                       border-color: var(--color--gray--medium--700);
                     }
+                  }
+                  th,
+                  td {
+                    padding: var(--space--1) var(--space--3);
                   }
                   th {
                     font-weight: var(--font-weight--bold);
@@ -1297,41 +1304,53 @@ export default async (application: Application): Promise<void> => {
                   }
                 }
 
-                /*
-                &,
-                blockquote {
-                  display: flex;
-                  flex-direction: column;
-                  gap: var(--space--4);
-                }
-
-
-
-               
-
-
-                dl {
-                  dt {
-                    font-weight: var(--font-weight--bold);
-                    color: var(--color--gray--medium--800);
+                details {
+                  background-color: var(--color--gray--medium--200);
+                  @media (prefers-color-scheme: dark) {
+                    background-color: var(--color--gray--medium--700);
+                  }
+                  border-radius: var(--border-radius--xl);
+                  padding: var(--space--0) var(--space--4);
+                  & > summary {
+                    &:hover,
+                    &:focus-within {
+                      background-color: var(--color--gray--medium--300);
+                    }
                     @media (prefers-color-scheme: dark) {
-                      color: var(--color--gray--medium--100);
+                      &:hover,
+                      &:focus-within {
+                        background-color: var(--color--gray--medium--600);
+                      }
+                    }
+                    padding: var(--space--2) var(--space--4);
+                    border-radius: var(--border-radius--xl);
+                    margin: var(--space--0) var(--space---4);
+                    transition-property: var(--transition-property--colors);
+                    transition-duration: var(--transition-duration--150);
+                    transition-timing-function: var(
+                      --transition-timing-function--in-out
+                    );
+                    cursor: pointer;
+                    &::before {
+                      content: "\\f275";
+                      font-family: "bootstrap-icons" !important;
+                      font-size: var(--font-size--xs);
+                      line-height: var(--line-height--xs);
+                      margin-right: var(--space--2);
                     }
                   }
-                  dd {
-                    padding-left: var(--space--4);
+                  &[open] {
+                    padding-bottom: var(--space--4);
+                    & > summary {
+                      margin-bottom: var(--space--4);
+                      &::before {
+                        content: "\\f273";
+                      }
+                    }
                   }
                 }
 
-                var {
-                  font-style: italic;
-                }
-
-                s,
-                strike {
-                  text-decoration: line-through;
-                }
-
+                /*
                 pre {
                   background-color: #ffffff;
                   @media (prefers-color-scheme: dark) {
@@ -1349,46 +1368,7 @@ export default async (application: Application): Promise<void> => {
                   }
                 }
 
-                details {
-                  background-color: var(--color--gray--medium--200);
-                  @media (prefers-color-scheme: dark) {
-                    background-color: var(--color--gray--medium--700);
-                  }
-                  border-radius: var(--border-radius--xl);
-                  summary {
-                    &:hover,
-                    &:focus-within {
-                      background-color: var(--color--gray--medium--300);
-                    }
-                    @media (prefers-color-scheme: dark) {
-                      &:hover,
-                      &:focus-within {
-                        background-color: var(--color--gray--medium--600);
-                      }
-                    }
-                    padding: var(--space--2) var(--space--4);
-                    border-radius: var(--border-radius--xl);
-                    transition-property: var(--transition-property--colors);
-                    transition-duration: var(--transition-duration--150);
-                    transition-timing-function: var(
-                      --transition-timing-function--in-out
-                    );
-                    cursor: pointer;
-                    &::before {
-                      content: "\\f275";
-                      font-family: "bootstrap-icons" !important;
-                      font-size: var(--font-size--xs);
-                      line-height: var(--line-height--xs);
-                      margin-right: var(--space--2);
-                    }
-                  }
-                  &[open] > summary::before {
-                    content: "\\f273";
-                  }
-                  & > div:last-child {
-                    padding: var(--space--4);
-                  }
-                }
+                
 
                 figure {
                   figcaption {
