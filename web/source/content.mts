@@ -189,6 +189,8 @@ export default async (application: Application): Promise<void> => {
           img: ["src", "alt"],
           video: ["src"],
           li: ["id"],
+          th: [["align", "left", "center", "right"]],
+          td: [["align", "left", "center", "right"]],
           input: [["type", "checkbox"], ["disabled", "true"], "checked"],
           div: [["className", "math-display"]],
           span: [["className", "math-inline"]],
