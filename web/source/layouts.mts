@@ -1211,7 +1211,8 @@ export default async (application: Application): Promise<void> => {
                 ol,
                 table,
                 details,
-                .math-display {
+                .math-display,
+                pre {
                   margin: var(--space--4) var(--space--0);
                 }
 
@@ -1284,6 +1285,7 @@ export default async (application: Application): Promise<void> => {
                 table {
                   border-collapse: collapse;
                   display: block;
+                  overflow-x: auto;
                   tbody tr {
                     border-top: var(--border-width--1) solid
                       var(--color--gray--medium--200);
@@ -1350,58 +1352,6 @@ export default async (application: Application): Promise<void> => {
                   }
                 }
 
-                /*
-                pre {
-                  background-color: #ffffff;
-                  @media (prefers-color-scheme: dark) {
-                    background-color: #1e1e1e;
-                  }
-                  padding: var(--space--4);
-                  border-radius: var(--border-radius--xl);
-                  overflow-x: auto;
-                  & > code {
-                    font-size: var(--font-size--xs);
-                    line-height: var(--line-height--xs);
-                    background-color: transparent;
-                    padding: var(--space--0);
-                    overflow-wrap: normal;
-                  }
-                }
-
-                
-
-                figure {
-                  figcaption {
-                    font-size: var(--font-size--xs);
-                    line-height: var(--line-height--xs);
-                    font-weight: var(--font-weight--bold);
-                  }
-                }
-
-                abbr {
-                  text-decoration: underline dotted;
-                  cursor: help;
-                }
-
-                dfn {
-                  font-weight: var(--font-weight--bold);
-                }
-
-                mark {
-                  color: var(--color--amber--700);
-                  background-color: var(--color--amber--200);
-                  @media (prefers-color-scheme: dark) {
-                    color: var(--color--amber--200);
-                    background-color: var(--color--amber--700);
-                  }
-                  border-radius: var(--border-radius--base);
-                }
-
-                small {
-                  font-size: var(--font-size--xs);
-                  line-height: var(--line-height--xs);
-                }
-
                 input[type="checkbox"] {
                   font-size: var(--font-size--2xs);
                   line-height: var(--line-height--2xs);
@@ -1434,7 +1384,23 @@ export default async (application: Application): Promise<void> => {
                 .katex {
                   overflow: auto;
                 }
-                */
+
+                pre {
+                  background-color: #ffffff;
+                  @media (prefers-color-scheme: dark) {
+                    background-color: #1e1e1e;
+                  }
+                  padding: var(--space--4);
+                  border-radius: var(--border-radius--xl);
+                  overflow-x: auto;
+                  & > code {
+                    font-size: var(--font-size--xs);
+                    line-height: var(--line-height--xs);
+                    background-color: transparent;
+                    padding: var(--space--0);
+                    overflow-wrap: normal;
+                  }
+                }
               }
             }
 
