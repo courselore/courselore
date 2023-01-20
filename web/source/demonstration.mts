@@ -478,7 +478,7 @@ ${lodash
 
 # Inline
 
-**Bold**, _italics_, <u>underline</u>, <ins>insertion</ins>, ~~deletion~~ (~one tilde~), <sup>superscript</sup>, <sub>subscript</sub>, \`code\`, [links](https://courselore.org), www.example.com, https://example.com, contact@example.com, and a line  
+**Bold**, _italics_, <u>underline</u>, [links](https://courselore.org), www.example.com, https://example.com, contact@example.com, \`code\`, <ins>insertion</ins>, ~~deletion~~ (~one tilde~), <sup>superscript</sup>, <sub>subscript</sub>, and a line  
 break.
 
 # Image
@@ -496,6 +496,112 @@ break.
 # Video
 
 <video src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4"></video>
+
+# Blockquote
+
+${lodash
+  .times(
+    lodash.random(3, 6),
+    () =>
+      `> ${lodash
+        .times(lodash.random(1, 6), () => casual.sentences(lodash.random(1, 6)))
+        .join("\n> ")}`
+  )
+  .join("\n>\n")}
+
+# Separator
+
+${casual.sentences(lodash.random(1, 6))}
+
+---
+
+${casual.sentences(lodash.random(1, 6))}  
+
+# Lists
+
+- Banana
+- Pijama
+- Phone
+
+---
+
+${lodash
+  .times(
+    lodash.random(3, 6),
+    () =>
+      `- ${lodash
+        .times(lodash.random(1, 6), () => casual.sentences(lodash.random(1, 6)))
+        .join("\n\n  ")}`
+  )
+  .join("\n\n")}
+
+---
+
+1. Banana
+2. Pijama
+3. Phone
+
+---
+
+${lodash
+  .times(
+    lodash.random(3, 6),
+    (index) =>
+      `${index + 1}. ${lodash
+        .times(lodash.random(1, 6), () => casual.sentences(lodash.random(1, 6)))
+        .join("\n\n   ")}`
+  )
+  .join("\n\n")}
+
+# Table
+
+| Left-aligned | Center-aligned | Right-aligned |
+| :---         |     :---:      |          ---: |
+| git status   | git status     | git status    |
+| git diff     | git diff       | git diff      |
+
+# Details
+
+<details>
+<summary>Example of details with summary</summary>
+
+${lodash
+  .times(lodash.random(1, 6), () => casual.sentences(lodash.random(1, 6)))
+  .join("\n\n")}
+
+</details>
+
+<details>
+
+${lodash
+  .times(lodash.random(1, 6), () => casual.sentences(lodash.random(1, 6)))
+  .join("\n\n")}
+
+</details>
+
+# Checklists
+
+${lodash
+  .times(
+    lodash.random(4, 8),
+    () =>
+      `- [${Math.random() < 0.5 ? " " : "x"}] ${casual.sentences(
+        lodash.random(1, 6)
+      )}`
+  )
+  .join("\n")}
+
+# Footnotes
+
+Footnote[^1] and another.[^2]
+
+[^1]: ${casual.sentences(lodash.random(1, 6))}
+
+[^2]: ${casual.sentences(lodash.random(1, 6))}
+
+# Cross-Site Scripting
+
+👍<script>document.write("💩");</script>🙌
 
 # Mathematics
 
@@ -575,112 +681,6 @@ for (let orderIndex = 2; orderIndex <= order; orderIndex++) {
     SI      RESPI
             RER       - Apollinaire
 </pre>
-
-# Lists
-
-- Banana
-- Pijama
-- Phone
-
----
-
-${lodash
-  .times(
-    lodash.random(3, 6),
-    () =>
-      `- ${lodash
-        .times(lodash.random(1, 6), () => casual.sentences(lodash.random(1, 6)))
-        .join("\n\n  ")}`
-  )
-  .join("\n\n")}
-
----
-
-1. Banana
-2. Pijama
-3. Phone
-
----
-
-${lodash
-  .times(
-    lodash.random(3, 6),
-    (index) =>
-      `${index + 1}. ${lodash
-        .times(lodash.random(1, 6), () => casual.sentences(lodash.random(1, 6)))
-        .join("\n\n   ")}`
-  )
-  .join("\n\n")}
-
-# Table
-
-| Left-aligned | Center-aligned | Right-aligned |
-| :---         |     :---:      |          ---: |
-| git status   | git status     | git status    |
-| git diff     | git diff       | git diff      |
-
-# Blockquote
-
-${lodash
-  .times(
-    lodash.random(3, 6),
-    () =>
-      `> ${lodash
-        .times(lodash.random(1, 6), () => casual.sentences(lodash.random(1, 6)))
-        .join("\n> ")}`
-  )
-  .join("\n>\n")}
-
-# Separator
-
-${casual.sentences(lodash.random(1, 6))}
-
----
-
-${casual.sentences(lodash.random(1, 6))}
-
-# Details
-
-<details>
-<summary>Example of details with summary</summary>
-
-${lodash
-  .times(lodash.random(1, 6), () => casual.sentences(lodash.random(1, 6)))
-  .join("\n\n")}
-
-</details>
-
-<details>
-
-${lodash
-  .times(lodash.random(1, 6), () => casual.sentences(lodash.random(1, 6)))
-  .join("\n\n")}
-
-</details>
-
-# Checklists
-
-${lodash
-  .times(
-    lodash.random(4, 8),
-    () =>
-      `- [${Math.random() < 0.5 ? " " : "x"}] ${casual.sentences(
-        lodash.random(1, 6)
-      )}`
-  )
-  .join("\n")}
-
-# Footnotes
-
-Footnote[^1] and another.[^2]
-
-[^1]: ${casual.sentences(lodash.random(1, 6))}
-
-[^2]: ${casual.sentences(lodash.random(1, 6))}
-
-# Cross-Site Scripting
-
-👍<script>document.write("💩");</script>🙌
 
 # \`@mentions\`
 
