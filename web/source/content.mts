@@ -314,17 +314,6 @@ export default async (application: Application): Promise<void> => {
     `).firstElementChild!;
     const mentions = new Set<string>();
 
-    for (const element of contentElement.querySelectorAll("li, td, th, dt, dd"))
-      element.innerHTML = [...element.childNodes].some(
-        (node) =>
-          (node.nodeType === node.TEXT_NODE &&
-            node.textContent!.trim() !== "") ||
-          (node.nodeType === node.ELEMENT_NODE &&
-            (node as Element).matches("a"))
-      )
-        ? html`<div><p>$${element.innerHTML}</p></div>`
-        : html`<div>$${element.innerHTML}</div>`;
-
     for (const element of contentElement.querySelectorAll("img")) {
       element.setAttribute("loading", "lazy");
       if (
@@ -369,38 +358,46 @@ export default async (application: Application): Promise<void> => {
         );
     }
 
-    for (const element of contentElement.querySelectorAll("details")) {
-      const childNodes = [...element.childNodes];
-      while (
-        childNodes.length > 0 &&
-        childNodes[0].nodeType === childNodes[0].TEXT_NODE &&
-        typeof childNodes[0].nodeValue === "string" &&
-        childNodes[0].nodeValue.trim() === ""
-      )
-        childNodes.shift();
-      const wrapper = JSDOM.fragment(html`<div></div>`).firstElementChild!;
-      if (
-        childNodes.length > 0 &&
-        childNodes[0].nodeType === childNodes[0].ELEMENT_NODE &&
-        (childNodes[0] as Element).matches("summary")
-      ) {
-        wrapper.replaceChildren(...childNodes.slice(1));
-        element.replaceChildren(childNodes[0], wrapper);
-      } else {
-        wrapper.replaceChildren(...childNodes);
-        element.replaceChildren(
-          JSDOM.fragment(html`<summary>See More</summary>`).firstElementChild!,
-          wrapper
-        );
-      }
-    }
+    // TODO
+    // for (const element of contentElement.querySelectorAll("li, th, td"))
+    //   element.innerHTML = [...element.childNodes].some(
+    //     (node) =>
+    //       (node.nodeType === node.TEXT_NODE &&
+    //         node.textContent!.trim() !== "") ||
+    //       (node.nodeType === node.ELEMENT_NODE &&
+    //         (node as Element).matches("a"))
+    //   )
+    //     ? html`<div><p>$${element.innerHTML}</p></div>`
+    //     : html`<div>$${element.innerHTML}</div>`;
 
-    for (const attribute of ["id", "name"])
-      for (const element of contentElement.querySelectorAll(`[${attribute}]`))
-        element.setAttribute(
-          attribute,
-          `${id}--${element.getAttribute(attribute)}`
-        );
+    // for (const element of contentElement.querySelectorAll("details")) {
+    //   const childNodes = [...element.childNodes];
+    //   while (
+    //     childNodes.length > 0 &&
+    //     childNodes[0].nodeType === childNodes[0].TEXT_NODE &&
+    //     typeof childNodes[0].nodeValue === "string" &&
+    //     childNodes[0].nodeValue.trim() === ""
+    //   )
+    //     childNodes.shift();
+    //   const wrapper = JSDOM.fragment(html`<div></div>`).firstElementChild!;
+    //   if (
+    //     childNodes.length > 0 &&
+    //     childNodes[0].nodeType === childNodes[0].ELEMENT_NODE &&
+    //     (childNodes[0] as Element).matches("summary")
+    //   ) {
+    //     wrapper.replaceChildren(...childNodes.slice(1));
+    //     element.replaceChildren(childNodes[0], wrapper);
+    //   } else {
+    //     wrapper.replaceChildren(...childNodes);
+    //     element.replaceChildren(
+    //       JSDOM.fragment(html`<summary>See More</summary>`).firstElementChild!,
+    //       wrapper
+    //     );
+    //   }
+    // }
+
+    for (const element of contentElement.querySelectorAll(`[id]`))
+      element.setAttribute("id", `${id}--${element.getAttribute("id")}`);
     for (const element of contentElement.querySelectorAll("[href]")) {
       let href = element.getAttribute("href")!;
       if (href.startsWith("#")) {
