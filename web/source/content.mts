@@ -316,89 +316,6 @@ export default async (application: Application): Promise<void> => {
     `).firstElementChild!;
     const mentions = new Set<string>();
 
-    for (const element of contentElement.querySelectorAll("img")) {
-      element.setAttribute("loading", "lazy");
-      if (
-        !element
-          .getAttribute("src")
-          ?.startsWith(`https://${application.configuration.hostname}/`)
-      )
-        element.setAttribute(
-          "src",
-          `https://${
-            application.configuration.hostname
-          }/content/proxy${qs.stringify(
-            { url: element.getAttribute("src") },
-            { addQueryPrefix: true }
-          )}`
-        );
-    }
-
-    for (const element of contentElement.querySelectorAll("video")) {
-      if (element.parentElement?.matches("a")) {
-        element.setAttribute("autoplay", "");
-        element.setAttribute("loop", "");
-        element.setAttribute("muted", "");
-        element.setAttribute("playsinline", "");
-      } else {
-        element.setAttribute("controls", "");
-        element.setAttribute("preload", "metadata");
-      }
-      if (
-        !element
-          .getAttribute("src")
-          ?.startsWith(`https://${application.configuration.hostname}/`)
-      )
-        element.setAttribute(
-          "src",
-          `https://${
-            application.configuration.hostname
-          }/content/proxy${qs.stringify(
-            { url: element.getAttribute("src") },
-            { addQueryPrefix: true }
-          )}`
-        );
-    }
-
-    // TODO: Review uses of ‘class=""’ below in decoration
-    // TODO
-    // for (const element of contentElement.querySelectorAll("li, th, td"))
-    //   element.innerHTML = [...element.childNodes].some(
-    //     (node) =>
-    //       (node.nodeType === node.TEXT_NODE &&
-    //         node.textContent!.trim() !== "") ||
-    //       (node.nodeType === node.ELEMENT_NODE &&
-    //         (node as Element).matches("a"))
-    //   )
-    //     ? html`<div><p>$${element.innerHTML}</p></div>`
-    //     : html`<div>$${element.innerHTML}</div>`;
-
-    // for (const element of contentElement.querySelectorAll("details")) {
-    //   const childNodes = [...element.childNodes];
-    //   while (
-    //     childNodes.length > 0 &&
-    //     childNodes[0].nodeType === childNodes[0].TEXT_NODE &&
-    //     typeof childNodes[0].nodeValue === "string" &&
-    //     childNodes[0].nodeValue.trim() === ""
-    //   )
-    //     childNodes.shift();
-    //   const wrapper = JSDOM.fragment(html`<div></div>`).firstElementChild!;
-    //   if (
-    //     childNodes.length > 0 &&
-    //     childNodes[0].nodeType === childNodes[0].ELEMENT_NODE &&
-    //     (childNodes[0] as Element).matches("summary")
-    //   ) {
-    //     wrapper.replaceChildren(...childNodes.slice(1));
-    //     element.replaceChildren(childNodes[0], wrapper);
-    //   } else {
-    //     wrapper.replaceChildren(...childNodes);
-    //     element.replaceChildren(
-    //       JSDOM.fragment(html`<summary>See More</summary>`).firstElementChild!,
-    //       wrapper
-    //     );
-    //   }
-    // }
-
     for (const element of contentElement.querySelectorAll(`[id]`))
       element.setAttribute("id", `${id}--${element.getAttribute("id")}`);
     for (const element of contentElement.querySelectorAll("[href]")) {
@@ -445,6 +362,57 @@ export default async (application: Application): Promise<void> => {
           `
         );
     }
+
+    for (const element of contentElement.querySelectorAll("img")) {
+      element.setAttribute("loading", "lazy");
+      if (
+        !element
+          .getAttribute("src")
+          ?.startsWith(`https://${application.configuration.hostname}/`)
+      )
+        element.setAttribute(
+          "src",
+          `https://${
+            application.configuration.hostname
+          }/content/proxy${qs.stringify(
+            { url: element.getAttribute("src") },
+            { addQueryPrefix: true }
+          )}`
+        );
+    }
+
+    for (const element of contentElement.querySelectorAll("video")) {
+      if (element.parentElement?.matches("a")) {
+        element.setAttribute("autoplay", "");
+        element.setAttribute("loop", "");
+        element.setAttribute("muted", "");
+        element.setAttribute("playsinline", "");
+      } else {
+        element.setAttribute("controls", "");
+        element.setAttribute("preload", "metadata");
+      }
+      if (
+        !element
+          .getAttribute("src")
+          ?.startsWith(`https://${application.configuration.hostname}/`)
+      )
+        element.setAttribute(
+          "src",
+          `https://${
+            application.configuration.hostname
+          }/content/proxy${qs.stringify(
+            { url: element.getAttribute("src") },
+            { addQueryPrefix: true }
+          )}`
+        );
+    }
+
+    for (const element of contentElement.querySelectorAll("details"))
+      if (!element.children[0].matches("summary"))
+        element.insertAdjacentHTML(
+          "afterbegin",
+          html`<summary>See More</summary>`
+        );
 
     if (decorate && response.locals.course !== undefined) {
       const requestCourseEnrolled = request as express.Request<
