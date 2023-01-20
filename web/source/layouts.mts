@@ -1072,8 +1072,6 @@ export default async (application: Application): Promise<void> => {
 
               .content {
                 &,
-                div,
-                figure,
                 blockquote {
                   display: flex;
                   flex-direction: column;
@@ -1114,7 +1112,6 @@ export default async (application: Application): Promise<void> => {
                   font-style: italic;
                 }
 
-                b,
                 strong {
                   font-weight: var(--font-weight--bold);
                   color: var(--color--gray--medium--800);
@@ -1123,7 +1120,6 @@ export default async (application: Application): Promise<void> => {
                   }
                 }
 
-                i:not(.bi),
                 em {
                   font-style: italic;
                   color: var(--color--gray--medium--800);
@@ -1168,36 +1164,11 @@ export default async (application: Application): Promise<void> => {
                   cursor: pointer;
                 }
 
-                pre {
-                  background-color: #ffffff;
+                ins {
+                  color: var(--color--green--600);
                   @media (prefers-color-scheme: dark) {
-                    background-color: #1e1e1e;
+                    color: var(--color--green--500);
                   }
-                  padding: var(--space--4);
-                  border-radius: var(--border-radius--xl);
-                  overflow-x: auto;
-                  & > code {
-                    font-size: var(--font-size--xs);
-                    line-height: var(--line-height--xs);
-                    background-color: transparent;
-                    padding: var(--space--0);
-                    overflow-wrap: normal;
-                  }
-                }
-
-                code,
-                tt,
-                kbd,
-                samp {
-                  font-family: "JetBrains MonoVariable",
-                    var(--font-family--monospace);
-                  font-variant-ligatures: none;
-                  background-color: var(--color--gray--medium--200);
-                  @media (prefers-color-scheme: dark) {
-                    background-color: var(--color--gray--medium--700);
-                  }
-                  padding: var(--space--0) var(--space--0-5);
-                  border-radius: var(--border-radius--base);
                 }
 
                 del {
@@ -1205,13 +1176,6 @@ export default async (application: Application): Promise<void> => {
                   color: var(--color--rose--600);
                   @media (prefers-color-scheme: dark) {
                     color: var(--color--rose--500);
-                  }
-                }
-
-                ins {
-                  color: var(--color--green--600);
-                  @media (prefers-color-scheme: dark) {
-                    color: var(--color--green--500);
                   }
                 }
 
@@ -1336,6 +1300,35 @@ export default async (application: Application): Promise<void> => {
                 s,
                 strike {
                   text-decoration: line-through;
+                }
+
+                pre {
+                  background-color: #ffffff;
+                  @media (prefers-color-scheme: dark) {
+                    background-color: #1e1e1e;
+                  }
+                  padding: var(--space--4);
+                  border-radius: var(--border-radius--xl);
+                  overflow-x: auto;
+                  & > code {
+                    font-size: var(--font-size--xs);
+                    line-height: var(--line-height--xs);
+                    background-color: transparent;
+                    padding: var(--space--0);
+                    overflow-wrap: normal;
+                  }
+                }
+
+                code {
+                  font-family: "JetBrains MonoVariable",
+                    var(--font-family--monospace);
+                  font-variant-ligatures: none;
+                  background-color: var(--color--gray--medium--200);
+                  @media (prefers-color-scheme: dark) {
+                    background-color: var(--color--gray--medium--700);
+                  }
+                  padding: var(--space--0) var(--space--0-5);
+                  border-radius: var(--border-radius--base);
                 }
 
                 details {
