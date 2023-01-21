@@ -1478,32 +1478,13 @@ export default async (application: Application): Promise<void> => {
                                 tippyProps: {
                                   theme: "green",
                                   touch: false,
-                                  content: ${html`
-                                    Close
-                                    <span class="keyboard-shortcut">
-                                      (<span
-                                        javascript="${javascript`
-                                          this.hidden = leafac.isAppleDevice;
-                                        `}"
-                                        >Esc</span
-                                      ><span
-                                        class="keyboard-shortcut--cluster"
-                                        javascript="${javascript`
-                                          this.hidden = !leafac.isAppleDevice;
-                                        `}"
-                                        ><i class="bi bi-escape"></i></span
-                                      >)
-                                    </span>
-                                  `},
+                                  content: "Close",
                                 },
                               });
 
                               this.onclick = () => {
                                 this.closest("[data-tippy-root]")._tippy.hide();
                               };
-
-                              const keys = "escape";
-                              (this.mousetrap ??= new Mousetrap()).bind(keys, () => { this.click(); this.mousetrap.unbind(keys); return false; });
                             `}"
                           >
                             <i class="bi bi-x-circle"></i>

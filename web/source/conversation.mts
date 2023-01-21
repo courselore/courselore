@@ -6085,34 +6085,14 @@ export default async (application: Application): Promise<void> => {
                                   tippyProps: {
                                     theme: "rose",
                                     touch: false,
-                                    content: ${html`
-                                      Cancel
-                                      <span class="keyboard-shortcut">
-                                        (<span
-                                          javascript="${javascript`
-                                            this.hidden = leafac.isAppleDevice;
-                                          `}"
-                                          >Esc</span
-                                        ><span
-                                          class="keyboard-shortcut--cluster"
-                                          javascript="${javascript`
-                                            this.hidden = !leafac.isAppleDevice;
-                                          `}"
-                                          ><i class="bi bi-escape"></i></span
-                                        >)
-                                      </span>
-                                    `},
+                                    content: "Cancel",
                                   },
                                 });
-                                    
+
                                 this.onclick = () => {
                                   this.closest('[key="conversation--header--full"]').querySelector('[key="title--show"]').hidden = false;
                                   this.closest('[key="conversation--header--full"]').querySelector('[key="title--edit"]').hidden = true;
                                 };
-
-                                const input = this.closest('[key="title--edit"]').querySelector('[name="title"]');
-
-                                (input.mousetrap ??= new Mousetrap(input)).bind("escape", () => { this.click(); return false; });
                               `}"
                             >
                               <i class="bi bi-x-lg"></i>
