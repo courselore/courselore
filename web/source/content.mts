@@ -1066,106 +1066,135 @@ export default async (application: Application): Promise<void> => {
                       trigger: "click",
                       interactive: true,
                       content: ${html`
-                        <div class="dropdown--menu">
-                          <button
-                            type="button"
-                            class="dropdown--menu--item button button--transparent"
-                            javascript="${javascript`
-                              const textarea = this.closest("[data-tippy-root]")._tippy.reference.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
-            
-                              this.onclick = () => {
-                                this.closest("[data-tippy-root]")._tippy.hide();
-                                textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "# ", "\\n\\n");
-                                textarea.focus();
-                              };
+                        <div
+                          css="${css`
+                            display: flex;
+                            flex-direction: column;
+                            gap: var(--space--2);
+                          `}"
+                        >
+                          <div class="dropdown--menu">
+                            <button
+                              type="button"
+                              class="dropdown--menu--item button button--transparent"
+                              javascript="${javascript`
+                                const textarea = this.closest("[data-tippy-root]")._tippy.reference.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
+              
+                                this.onclick = () => {
+                                  this.closest("[data-tippy-root]")._tippy.hide();
+                                  textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "# ", "\\n\\n");
+                                  textarea.focus();
+                                };
 
-                              (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+alt+1", () => { this.click(); return false; });
-                            `}"
-                          >
-                            <i class="bi bi-type-h1"></i>
-                            Heading 1
-                            <span class="keyboard-shortcut">
-                              <span
-                                javascript="${javascript`
-                                  this.hidden = leafac.isAppleDevice;
-                                `}"
-                                >Ctrl+Alt+1</span
-                              ><span
-                                class="keyboard-shortcut--cluster"
-                                javascript="${javascript`
-                                  this.hidden = !leafac.isAppleDevice;
-                                `}"
-                                ><i class="bi bi-alt"></i
-                                ><i class="bi bi-command"></i>1</span
-                              >
-                            </span>
-                          </button>
-                          <button
-                            type="button"
-                            class="dropdown--menu--item button button--transparent"
-                            javascript="${javascript`
-                              const textarea = this.closest("[data-tippy-root]")._tippy.reference.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
-            
-                              this.onclick = () => {
-                                this.closest("[data-tippy-root]")._tippy.hide();
-                                textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "## ", "\\n\\n");
-                                textarea.focus();  
-                              };
+                                (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+alt+1", () => { this.click(); return false; });
+                              `}"
+                            >
+                              <i class="bi bi-type-h1"></i>
+                              Heading 1
+                              <span class="keyboard-shortcut">
+                                <span
+                                  javascript="${javascript`
+                                    this.hidden = leafac.isAppleDevice;
+                                  `}"
+                                  >Ctrl+Alt+1</span
+                                ><span
+                                  class="keyboard-shortcut--cluster"
+                                  javascript="${javascript`
+                                    this.hidden = !leafac.isAppleDevice;
+                                  `}"
+                                  ><i class="bi bi-alt"></i
+                                  ><i class="bi bi-command"></i>1</span
+                                >
+                              </span>
+                            </button>
+                            <button
+                              type="button"
+                              class="dropdown--menu--item button button--transparent"
+                              javascript="${javascript`
+                                const textarea = this.closest("[data-tippy-root]")._tippy.reference.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
+              
+                                this.onclick = () => {
+                                  this.closest("[data-tippy-root]")._tippy.hide();
+                                  textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "## ", "\\n\\n");
+                                  textarea.focus();  
+                                };
 
-                              (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+alt+2", () => { this.click(); return false; });
-                            `}"
-                          >
-                            <i class="bi bi-type-h2"></i>
-                            Heading 2
-                            <span class="keyboard-shortcut">
-                              <span
-                                javascript="${javascript`
-                                  this.hidden = leafac.isAppleDevice;
-                                `}"
-                                >Ctrl+Alt+2</span
-                              ><span
-                                class="keyboard-shortcut--cluster"
-                                javascript="${javascript`
-                                  this.hidden = !leafac.isAppleDevice;
-                                `}"
-                                ><i class="bi bi-alt"></i
-                                ><i class="bi bi-command"></i>2</span
-                              >
-                            </span>
-                          </button>
-                          <button
-                            type="button"
-                            class="dropdown--menu--item button button--transparent"
-                            javascript="${javascript`
-                              const textarea = this.closest("[data-tippy-root]")._tippy.reference.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
-            
-                              this.onclick = () => {
-                                this.closest("[data-tippy-root]")._tippy.hide();
-                                textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "### ", "\\n\\n");
-                                textarea.focus();  
-                              };
+                                (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+alt+2", () => { this.click(); return false; });
+                              `}"
+                            >
+                              <i class="bi bi-type-h2"></i>
+                              Heading 2
+                              <span class="keyboard-shortcut">
+                                <span
+                                  javascript="${javascript`
+                                    this.hidden = leafac.isAppleDevice;
+                                  `}"
+                                  >Ctrl+Alt+2</span
+                                ><span
+                                  class="keyboard-shortcut--cluster"
+                                  javascript="${javascript`
+                                    this.hidden = !leafac.isAppleDevice;
+                                  `}"
+                                  ><i class="bi bi-alt"></i
+                                  ><i class="bi bi-command"></i>2</span
+                                >
+                              </span>
+                            </button>
+                            <button
+                              type="button"
+                              class="dropdown--menu--item button button--transparent"
+                              javascript="${javascript`
+                                const textarea = this.closest("[data-tippy-root]")._tippy.reference.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
+              
+                                this.onclick = () => {
+                                  this.closest("[data-tippy-root]")._tippy.hide();
+                                  textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "### ", "\\n\\n");
+                                  textarea.focus();  
+                                };
 
-                              (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+alt+3", () => { this.click(); return false; });
-                            `}"
-                          >
-                            <i class="bi bi-type-h3"></i>
-                            Heading 3
-                            <span class="keyboard-shortcut">
-                              <span
-                                javascript="${javascript`
-                                  this.hidden = leafac.isAppleDevice;
-                                `}"
-                                >Ctrl+Alt+3</span
-                              ><span
-                                class="keyboard-shortcut--cluster"
-                                javascript="${javascript`
-                                  this.hidden = !leafac.isAppleDevice;
-                                `}"
-                                ><i class="bi bi-alt"></i
-                                ><i class="bi bi-command"></i>3</span
-                              >
-                            </span>
-                          </button>
+                                (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+alt+3", () => { this.click(); return false; });
+                              `}"
+                            >
+                              <i class="bi bi-type-h3"></i>
+                              Heading 3
+                              <span class="keyboard-shortcut">
+                                <span
+                                  javascript="${javascript`
+                                    this.hidden = leafac.isAppleDevice;
+                                  `}"
+                                  >Ctrl+Alt+3</span
+                                ><span
+                                  class="keyboard-shortcut--cluster"
+                                  javascript="${javascript`
+                                    this.hidden = !leafac.isAppleDevice;
+                                  `}"
+                                  ><i class="bi bi-alt"></i
+                                  ><i class="bi bi-command"></i>3</span
+                                >
+                              </span>
+                            </button>
+                          </div>
+
+                          <hr class="dropdown--separator" />
+
+                          <div class="dropdown--menu">
+                            <button
+                              type="button"
+                              class="dropdown--menu--item button button--transparent"
+                              javascript="${javascript`
+                                const textarea = this.closest("[data-tippy-root]")._tippy.reference.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
+              
+                                this.onclick = () => {
+                                  this.closest("[data-tippy-root]")._tippy.hide();
+                                  textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "---\\n\\n", "");
+                                  textarea.focus();  
+                                };
+                              `}"
+                            >
+                              <i class="bi bi-dash-lg"></i>
+                              Separator
+                            </button>
+                          </div>
                         </div>
                       `},  
                     },
