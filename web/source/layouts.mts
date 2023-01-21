@@ -965,6 +965,8 @@ export default async (application: Application): Promise<void> => {
                   @media (prefers-color-scheme: dark) {
                     color: var(--color--gray--medium--400);
                   }
+                  flex: 1;
+                  text-align: right;
 
                   .keyboard-shortcut--cluster {
                     letter-spacing: var(--letter-spacing--widest);
