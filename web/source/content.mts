@@ -1339,7 +1339,7 @@ export default async (application: Application): Promise<void> => {
                               (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+e", () => { this.click(); return false; });
                             `}"
                           >
-                            <i class="bi bi-code"></i>
+                            <i class="bi bi-braces"></i>
                             Code
                             <span class="keyboard-shortcut">
                               <span
@@ -1356,13 +1356,77 @@ export default async (application: Application): Promise<void> => {
                               >
                             </span>
                           </button>
+                          <button
+                            type="button"
+                            class="dropdown--menu--item button button--transparent"
+                            javascript="${javascript`
+                              const textarea = this.closest("[data-tippy-root]")._tippy.reference.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
+            
+                              this.onclick = () => {
+                                this.closest("[data-tippy-root]")._tippy.hide();
+                                textFieldEdit.wrapSelection(textarea, "<ins>", "</ins>");
+                                textarea.focus();
+                              };
+                            `}"
+                          >
+                            <i class="bi bi-plus-square-dotted"></i>
+                            Insertion
+                          </button>
+                          <button
+                            type="button"
+                            class="dropdown--menu--item button button--transparent"
+                            javascript="${javascript`
+                              const textarea = this.closest("[data-tippy-root]")._tippy.reference.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
+            
+                              this.onclick = () => {
+                                this.closest("[data-tippy-root]")._tippy.hide();
+                                textFieldEdit.wrapSelection(textarea, "~~");
+                                textarea.focus();
+                              };
+                            `}"
+                          >
+                            <i class="bi bi-dash-square-dotted"></i>
+                            Deletion
+                          </button>
+                          <button
+                            type="button"
+                            class="dropdown--menu--item button button--transparent"
+                            javascript="${javascript`
+                              const textarea = this.closest("[data-tippy-root]")._tippy.reference.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
+            
+                              this.onclick = () => {
+                                this.closest("[data-tippy-root]")._tippy.hide();
+                                textFieldEdit.wrapSelection(textarea, "<sup>", "</sup>");
+                                textarea.focus();
+                              };
+                            `}"
+                          >
+                            <i class="bi bi-superscript"></i>
+                            Superscript
+                          </button>
+                          <button
+                            type="button"
+                            class="dropdown--menu--item button button--transparent"
+                            javascript="${javascript`
+                              const textarea = this.closest("[data-tippy-root]")._tippy.reference.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
+            
+                              this.onclick = () => {
+                                this.closest("[data-tippy-root]")._tippy.hide();
+                                textFieldEdit.wrapSelection(textarea, "<sub>", "</sub>");
+                                textarea.focus();
+                              };
+                            `}"
+                          >
+                            <i class="bi bi-subscript"></i>
+                            Subscript
+                          </button>
                         </div>
                       `},  
                     },
                   });
                 `}"
               >
-                <i class="bi bi-type-bold"></i>
+                <i class="bi bi-type"></i>
               </button>
             </div>
             <div
