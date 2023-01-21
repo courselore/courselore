@@ -1108,6 +1108,15 @@ export default async (application: Application): Promise<void> => {
                   font-style: italic;
                 }
 
+                hr {
+                  border-top: var(--border-width--1) solid
+                    var(--color--gray--medium--200);
+                  @media (prefers-color-scheme: dark) {
+                    border-color: var(--color--gray--medium--700);
+                  }
+                  margin: var(--space--2) var(--space--0);
+                }
+
                 p + p {
                   margin-top: var(--space--2);
                 }
@@ -1208,9 +1217,9 @@ export default async (application: Application): Promise<void> => {
                 }
 
                 video,
-                blockquote,
                 ul,
                 ol,
+                blockquote,
                 table,
                 details,
                 .math-display,
@@ -1232,26 +1241,6 @@ export default async (application: Application): Promise<void> => {
 
                 video {
                   display: block;
-                }
-
-                blockquote {
-                  padding-left: var(--space--4);
-                  color: var(--color--gray--medium--500);
-                  border-left: var(--border-width--4) solid
-                    var(--color--gray--medium--200);
-                  @media (prefers-color-scheme: dark) {
-                    color: var(--color--gray--medium--400);
-                    border-color: var(--color--gray--medium--700);
-                  }
-                }
-
-                hr {
-                  border-top: var(--border-width--1) solid
-                    var(--color--gray--medium--200);
-                  @media (prefers-color-scheme: dark) {
-                    border-color: var(--color--gray--medium--700);
-                  }
-                  margin: var(--space--2) var(--space--0);
                 }
 
                 ul {
@@ -1317,6 +1306,17 @@ export default async (application: Application): Promise<void> => {
                   position: absolute;
                   margin-left: var(--space---5);
                   margin-top: var(--space--1);
+                }
+
+                blockquote {
+                  padding-left: var(--space--4);
+                  color: var(--color--gray--medium--500);
+                  border-left: var(--border-width--4) solid
+                    var(--color--gray--medium--200);
+                  @media (prefers-color-scheme: dark) {
+                    color: var(--color--gray--medium--400);
+                    border-color: var(--color--gray--medium--700);
+                  }
                 }
 
                 table {

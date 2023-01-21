@@ -476,9 +476,17 @@ ${lodash
   .times(lodash.random(1, 6), () => casual.sentences(lodash.random(1, 6)))
   .join("\n\n")}
 
+# Separator
+
+${casual.sentences(lodash.random(5, 10))}
+
+---
+
+${casual.sentences(lodash.random(5, 10))}
+
 # Inline
 
-**Bold**, _italics_, <u>underline</u>, [link](https://courselore.org), www.example.com, https://example.com, contact@example.com, \`code\`, <ins>insertion</ins>, ~~deletion~~ (~one tilde~), <sup>superscript</sup>, <sub>subscript</sub>, and a line  
+**Bold**, _italics_, <u>underline</u>, ~~strikethrough~~, [link](https://courselore.org), www.example.com, https://example.com, contact@example.com, $E=mc^2$, \`code\`, <ins>insertion</ins>, ~~deletion~~ (~one tilde~), <sup>superscript</sup>, <sub>subscript</sub>, and a line  
 break.
 
 # Image
@@ -496,26 +504,6 @@ break.
 # Video
 
 <video src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4"></video>
-
-# Blockquote
-
-${lodash
-  .times(
-    lodash.random(3, 6),
-    () =>
-      `> ${lodash
-        .times(lodash.random(1, 6), () => casual.sentences(lodash.random(1, 6)))
-        .join("\n> ")}`
-  )
-  .join("\n>\n")}
-
-# Separator
-
-${casual.sentences(lodash.random(1, 6))}
-
----
-
-${casual.sentences(lodash.random(1, 6))}  
 
 # Lists
 
@@ -564,6 +552,18 @@ ${lodash
       )}`
   )
   .join("\n")}
+
+# Blockquote
+
+${lodash
+  .times(
+    lodash.random(3, 6),
+    () =>
+      `> ${lodash
+        .times(lodash.random(1, 6), () => casual.sentences(lodash.random(1, 6)))
+        .join("\n> ")}`
+  )
+  .join("\n>\n")}
 
 # Table
 

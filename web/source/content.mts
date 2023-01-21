@@ -153,11 +153,13 @@ export default async (application: Application): Promise<void> => {
           "h4",
           "h5",
           "h6",
+          "hr",
           "p",
           "strong",
           "em",
           "u",
           "a",
+          "span",
           "code",
           "ins",
           "del",
@@ -166,12 +168,11 @@ export default async (application: Application): Promise<void> => {
           "br",
           "img",
           "video",
-          "blockquote",
-          "hr",
           "ul",
           "ol",
           "li",
           "input",
+          "blockquote",
           "table",
           "thead",
           "tbody",
@@ -182,7 +183,6 @@ export default async (application: Application): Promise<void> => {
           "details",
           "summary",
           "div",
-          "span",
           "pre",
         ],
         attributes: {
@@ -1033,6 +1033,8 @@ export default async (application: Application): Promise<void> => {
                       content: ${html`
                         <div
                           css="${css`
+                            max-height: 40vh;
+                            overflow: auto;
                             padding: var(--space--2);
                           `}"
                         >
@@ -1068,6 +1070,8 @@ export default async (application: Application): Promise<void> => {
                       content: ${html`
                         <div
                           css="${css`
+                            max-height: 40vh;
+                            overflow: auto;
                             display: flex;
                             flex-direction: column;
                             gap: var(--space--2);
@@ -1226,6 +1230,8 @@ export default async (application: Application): Promise<void> => {
                       content: ${html`
                         <div
                           css="${css`
+                            max-height: 40vh;
+                            overflow: auto;
                             display: flex;
                             flex-direction: column;
                             gap: var(--space--2);
