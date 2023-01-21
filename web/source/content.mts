@@ -1324,6 +1324,38 @@ export default async (application: Application): Promise<void> => {
                               >
                             </span>
                           </button>
+                          <button
+                            type="button"
+                            class="dropdown--menu--item button button--transparent"
+                            javascript="${javascript`
+                              const textarea = this.closest("[data-tippy-root]")._tippy.reference.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
+            
+                              this.onclick = () => {
+                                this.closest("[data-tippy-root]")._tippy.hide();
+                                textFieldEdit.wrapSelection(textarea, "\`");
+                                textarea.focus();
+                              };
+                          
+                              (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+e", () => { this.click(); return false; });
+                            `}"
+                          >
+                            <i class="bi bi-code"></i>
+                            Code
+                            <span class="keyboard-shortcut">
+                              <span
+                                javascript="${javascript`
+                                  this.hidden = leafac.isAppleDevice;
+                                `}"
+                                >Ctrl+E</span
+                              ><span
+                                class="keyboard-shortcut--cluster"
+                                javascript="${javascript`
+                                  this.hidden = !leafac.isAppleDevice;
+                                `}"
+                                ><i class="bi bi-command"></i>E</span
+                              >
+                            </span>
+                          </button>
                         </div>
                       `},  
                     },
