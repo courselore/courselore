@@ -1685,6 +1685,354 @@ export default async (application: Application): Promise<void> => {
                   };
                 `}"
               />
+              <button
+                type="button"
+                class="button button--tight button--transparent"
+                javascript="${javascript`
+                  leafac.setTippy({
+                    event,
+                    element: this,
+                    tippyProps: {
+                      touch: false,
+                      content: "Block",
+                    },
+                  });
+
+                  leafac.setTippy({
+                    event,
+                    element: this,
+                    elementProperty: "dropdown",
+                    tippyProps: {
+                      trigger: "click",
+                      interactive: true,
+                      content: ${html`
+                        <div
+                          css="${css`
+                            max-height: 40vh;
+                            overflow: auto;
+                            display: flex;
+                            flex-direction: column;
+                            gap: var(--space--2);
+                          `}"
+                        >
+                          <div class="dropdown--menu">
+                            <button
+                              type="button"
+                              class="dropdown--menu--item button button--transparent"
+                              javascript="${javascript`
+                                const textarea = this.closest("[data-tippy-root]")._tippy.reference.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
+              
+                                this.onclick = () => {
+                                  this.closest("[data-tippy-root]")._tippy.hide();
+                                  textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "- ", "\\n\\n");
+                                  textarea.focus();
+                                };
+
+                                (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+shift+8", () => { this.click(); return false; });
+                              `}"
+                            >
+                              <i class="bi bi-list-ul"></i>
+                              Bulleted List
+                              <span class="keyboard-shortcut">
+                                <span
+                                  javascript="${javascript`
+                                    this.hidden = leafac.isAppleDevice;
+                                  `}"
+                                  >Ctrl+Shift+8</span
+                                ><span
+                                  class="keyboard-shortcut--cluster"
+                                  javascript="${javascript`
+                                    this.hidden = !leafac.isAppleDevice;
+                                  `}"
+                                  ><i class="bi bi-shift"></i
+                                  ><i class="bi bi-command"></i>8</span
+                                >
+                              </span>
+                            </button>
+                            <button
+                              type="button"
+                              class="dropdown--menu--item button button--transparent"
+                              javascript="${javascript`
+                                const textarea = this.closest("[data-tippy-root]")._tippy.reference.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
+              
+                                this.onclick = () => {
+                                  this.closest("[data-tippy-root]")._tippy.hide();
+                                  textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "1. ", "\\n\\n");
+                                  textarea.focus();
+                                };
+
+                                (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+shift+7", () => { this.click(); return false; });
+                              `}"
+                            >
+                              <i class="bi bi-list-ol"></i>
+                              Numbered List
+                              <span class="keyboard-shortcut">
+                                <span
+                                  javascript="${javascript`
+                                    this.hidden = leafac.isAppleDevice;
+                                  `}"
+                                  >Ctrl+Shift+7</span
+                                ><span
+                                  class="keyboard-shortcut--cluster"
+                                  javascript="${javascript`
+                                    this.hidden = !leafac.isAppleDevice;
+                                  `}"
+                                  ><i class="bi bi-shift"></i
+                                  ><i class="bi bi-command"></i>7</span
+                                >
+                              </span>
+                            </button>
+                            <button
+                              type="button"
+                              class="dropdown--menu--item button button--transparent"
+                              javascript="${javascript`
+                                const textarea = this.closest("[data-tippy-root]")._tippy.reference.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
+              
+                                this.onclick = () => {
+                                  this.closest("[data-tippy-root]")._tippy.hide();
+                                  textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "- [ ] ", "\\n\\n");
+                                  textarea.focus();
+                                };
+
+                                (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+shift+9", () => { this.click(); return false; });
+                              `}"
+                            >
+                              <i class="bi bi-list-check"></i>
+                              Checklist
+                              <span class="keyboard-shortcut">
+                                <span
+                                  javascript="${javascript`
+                                    this.hidden = leafac.isAppleDevice;
+                                  `}"
+                                  >Ctrl+Shift+9</span
+                                ><span
+                                  class="keyboard-shortcut--cluster"
+                                  javascript="${javascript`
+                                    this.hidden = !leafac.isAppleDevice;
+                                  `}"
+                                  ><i class="bi bi-shift"></i
+                                  ><i class="bi bi-command"></i>9</span
+                                >
+                              </span>
+                            </button>
+                          </div>
+
+                          <hr class="dropdown--separator" />
+
+                          <div class="dropdown--menu">
+                            <button
+                              type="button"
+                              class="dropdown--menu--item button button--transparent"
+                              javascript="${javascript`
+                                const textarea = this.closest("[data-tippy-root]")._tippy.reference.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
+              
+                                this.onclick = () => {
+                                  this.closest("[data-tippy-root]")._tippy.hide();
+                                  textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "> ", "\\n\\n");
+                                  textarea.focus();
+                                };
+
+                                (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+'", () => { this.click(); return false; });
+                              `}"
+                            >
+                              <i class="bi bi-quote"></i>
+                              Blockquote
+                              <span class="keyboard-shortcut">
+                                <span
+                                  javascript="${javascript`
+                                    this.hidden = leafac.isAppleDevice;
+                                  `}"
+                                  >Ctrl+'</span
+                                ><span
+                                  class="keyboard-shortcut--cluster"
+                                  javascript="${javascript`
+                                    this.hidden = !leafac.isAppleDevice;
+                                  `}"
+                                  ><i class="bi bi-command"></i>'</span
+                                >
+                              </span>
+                            </button>
+                            <button
+                              type="button"
+                              class="dropdown--menu--item button button--transparent"
+                              javascript="${javascript`
+                                const textarea = this.closest("[data-tippy-root]")._tippy.reference.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
+              
+                                this.onclick = () => {
+                                  this.closest("[data-tippy-root]")._tippy.hide();
+                                  const gapLength = textarea.selectionEnd - textarea.selectionStart + 2;
+                                  textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "| ", " |  |\\n|" + "-".repeat(gapLength) + "|--|\\n|" + " ".repeat(gapLength) + "|  |\\n\\n");
+                                  textarea.focus();
+                                };
+                            
+                                (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+alt+t", () => { this.click(); return false; });
+                              `}"
+                            >
+                              <i class="bi bi-table"></i>
+                              Table
+                              <span class="keyboard-shortcut">
+                                <span
+                                  javascript="${javascript`
+                                    this.hidden = leafac.isAppleDevice;
+                                  `}"
+                                  >Ctrl+Alt+T</span
+                                ><span
+                                  class="keyboard-shortcut--cluster"
+                                  javascript="${javascript`
+                                    this.hidden = !leafac.isAppleDevice;
+                                  `}"
+                                  ><i class="bi bi-alt"></i
+                                  ><i class="bi bi-command"></i>T</span
+                                >
+                              </span>
+                            </button>
+                            <button
+                              type="button"
+                              class="dropdown--menu--item button button--transparent"
+                              javascript="${javascript`
+                                const textarea = this.closest("[data-tippy-root]")._tippy.reference.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
+              
+                                this.onclick = () => {
+                                  this.closest("[data-tippy-root]")._tippy.hide();
+                                  textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "<details>\\n<summary>", "</summary>\\n\\nContent\\n\\n</details>\\n\\n");
+                                  textarea.focus();
+                                };
+                            
+                                (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+shift+d", () => { this.click(); return false; });
+                              `}"
+                            >
+                              <i class="bi bi-chevron-bar-expand"></i>
+                              Disclosure
+                              <span class="keyboard-shortcut">
+                                <span
+                                  javascript="${javascript`
+                                    this.hidden = leafac.isAppleDevice;
+                                  `}"
+                                  >Ctrl+Shift+D</span
+                                ><span
+                                  class="keyboard-shortcut--cluster"
+                                  javascript="${javascript`
+                                    this.hidden = !leafac.isAppleDevice;
+                                  `}"
+                                  ><i class="bi bi-shift"></i
+                                  ><i class="bi bi-command"></i>D</span
+                                >
+                              </span>
+                            </button>
+                            <button
+                              type="button"
+                              class="dropdown--menu--item button button--transparent"
+                              javascript="${javascript`
+                                const textarea = this.closest("[data-tippy-root]")._tippy.reference.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
+              
+                                this.onclick = () => {
+                                  this.closest("[data-tippy-root]")._tippy.hide();
+                                  textFieldEdit.wrapSelection(textarea, "[^", "<identifier>]\\n\\n[^<identifier>]: <footnote>");
+                                  textarea.focus();
+                                };
+                            
+                                (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+shift+f", () => { this.click(); return false; });
+                              `}"
+                            >
+                              <i class="bi bi-card-text"></i>
+                              Footnote
+                              <span class="keyboard-shortcut">
+                                <span
+                                  javascript="${javascript`
+                                    this.hidden = leafac.isAppleDevice;
+                                  `}"
+                                  >Ctrl+Shift+F</span
+                                ><span
+                                  class="keyboard-shortcut--cluster"
+                                  javascript="${javascript`
+                                    this.hidden = !leafac.isAppleDevice;
+                                  `}"
+                                  ><i class="bi bi-shift"></i
+                                  ><i class="bi bi-command"></i>F</span
+                                >
+                              </span>
+                            </button>
+                          </div>
+
+                          <hr class="dropdown--separator" />
+
+                          <div class="dropdown--menu">
+                            <button
+                              type="button"
+                              class="dropdown--menu--item button button--transparent"
+                              javascript="${javascript`
+                                const textarea = this.closest("[data-tippy-root]")._tippy.reference.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
+              
+                                this.onclick = () => {
+                                  this.closest("[data-tippy-root]")._tippy.hide();
+                                  textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "$$\\n", "\\n$$\\n\\n");
+                                  textarea.focus();
+                                };
+                            
+                                (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+alt+shift+e", () => { this.click(); return false; });
+                              `}"
+                            >
+                              <i class="bi bi-calculator"></i>
+                              Mathematics (LaTeX)
+                              <span class="keyboard-shortcut">
+                                <span
+                                  javascript="${javascript`
+                                    this.hidden = leafac.isAppleDevice;
+                                  `}"
+                                  >Ctrl+Alt+Shift+E</span
+                                ><span
+                                  class="keyboard-shortcut--cluster"
+                                  javascript="${javascript`
+                                    this.hidden = !leafac.isAppleDevice;
+                                  `}"
+                                  ><i class="bi bi-alt"></i
+                                  ><i class="bi bi-shift"></i
+                                  ><i class="bi bi-command"></i>E</span
+                                >
+                              </span>
+                            </button>
+                            <button
+                              type="button"
+                              class="dropdown--menu--item button button--transparent"
+                              javascript="${javascript`
+                                const textarea = this.closest("[data-tippy-root]")._tippy.reference.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
+              
+                                this.onclick = () => {
+                                  this.closest("[data-tippy-root]")._tippy.hide();
+                                  textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "\`\`\`language\\n", "\\n\`\`\`\\n\\n");
+                                  textarea.focus();
+                                };
+                            
+                                (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+shift+e", () => { this.click(); return false; });
+                              `}"
+                            >
+                              <i class="bi bi-braces"></i>
+                              Code
+                              <span class="keyboard-shortcut">
+                                <span
+                                  javascript="${javascript`
+                                    this.hidden = leafac.isAppleDevice;
+                                  `}"
+                                  >Ctrl+Shift+E</span
+                                ><span
+                                  class="keyboard-shortcut--cluster"
+                                  javascript="${javascript`
+                                    this.hidden = !leafac.isAppleDevice;
+                                  `}"
+                                  ><i class="bi bi-shift"></i
+                                  ><i class="bi bi-command"></i>E</span
+                                >
+                              </span>
+                            </button>
+                          </div>
+                        </div>
+                      `},  
+                    },
+                  });
+                `}"
+              >
+                <i class="bi bi-textarea-t"></i>
+              </button>
             </div>
             <div
               css="${css`
