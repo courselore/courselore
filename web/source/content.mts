@@ -1428,6 +1428,134 @@ export default async (application: Application): Promise<void> => {
               >
                 <i class="bi bi-type"></i>
               </button>
+              <button
+                type="button"
+                class="button button--tight button--transparent"
+                javascript="${javascript`
+                  leafac.setTippy({
+                    event,
+                    element: this,
+                    tippyProps: {
+                      touch: false,
+                      content: ${html`
+                        Attachment
+                        <span class="keyboard-shortcut">
+                          <span
+                            javascript="${javascript`
+                              this.hidden = leafac.isAppleDevice;
+                            `}"
+                            >Ctrl+Shift+K</span
+                          ><span
+                            class="keyboard-shortcut--cluster"
+                            javascript="${javascript`
+                              this.hidden = !leafac.isAppleDevice;
+                            `}"
+                            ><i class="bi bi-shift"></i
+                            ><i class="bi bi-command"></i>K</span
+                          >
+                          / drag-and-drop / copy-and-paste
+                        </span>
+                      `},  
+                    },
+                  });
+
+                  this.onclick = () => {
+                    this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--attachments"]').click();
+                  };
+
+                  const textarea = this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
+
+                  (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+shift+k", () => { this.click(); return false; });
+                `}"
+              >
+                <i class="bi bi-paperclip"></i>
+              </button>
+              <input
+                key="content-editor--write--attachments"
+                type="file"
+                multiple
+                hidden
+                javascript="${javascript`
+                  this.isModified = false;
+
+                  const textarea = this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
+
+                  this.upload = async (fileList) => {
+                    if (!checkIsSignedIn()) return;
+                    const body = new FormData();
+                    for (const file of fileList) body.append("attachments", file);
+                    this.value = "";
+                    tippy.hideAll();
+                    textarea.uploadingIndicator.show();
+                    textarea.disabled = true;
+                    const response = await (await fetch(${`https://${application.configuration.hostname}/content-editor/attachments`}, {
+                      cache: "no-store",
+                      method: "POST",
+                      headers: { "CSRF-Protection": "true", },
+                      body,
+                    })).text();
+                    textarea.disabled = false;
+                    textarea.uploadingIndicator.hide();
+                    textFieldEdit.wrapSelection(textarea, response, "");
+                    textarea.focus();
+                  };
+
+                  const checkIsSignedIn = (() => {
+                    if (${
+                      response.locals.user === undefined ||
+                      response.locals.user.emailVerifiedAt === null
+                    }) {
+                      leafac.setTippy({
+                        event,
+                        element: textarea,
+                        tippyProps: {
+                          trigger: "manual",
+                          theme: "rose",
+                          content: "You must sign in to upload files.",
+                        },
+                      });
+
+                      return () => {
+                        textarea.tooltip.show();
+                        return false;
+                      };
+                    } else
+                      return () => true;
+                  })();
+
+                  leafac.setTippy({
+                    event,
+                    element: textarea,
+                    elementProperty: "uploadingIndicator",
+                    tippyProps: {
+                      trigger: "manual",
+                      hideOnClick: false,
+                      content: ${html`
+                        <div
+                          css="${css`
+                            display: flex;
+                            gap: var(--space--2);
+                          `}"
+                        >
+                          $${application.server.locals.partials.spinner({
+                            request,
+                            response,
+                          })}
+                          Uploading…
+                        </div>
+                      `},  
+                    },
+                  });
+
+                  this.onclick = (event) => {
+                    if (!checkIsSignedIn()) event.preventDefault();
+                  };
+
+                  this.onchange = () => {
+                    this.upload(this.files);
+                  };
+                `}"
+              />
             </div>
             <div
               css="${css`
