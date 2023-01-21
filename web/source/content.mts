@@ -8,6 +8,7 @@ import sql from "@leafac/sqlite";
 import html, { HTML } from "@leafac/html";
 import css from "@leafac/css";
 import javascript from "@leafac/javascript";
+import markdown from "dedent";
 import * as sanitizeXMLCharacters from "sanitize-xml-string";
 import { unified } from "unified";
 import remarkParse from "remark-parse";
@@ -811,6 +812,28 @@ export default async (application: Application): Promise<void> => {
   );
 
   application.server.locals.partials.contentEditor = (() => {
+    const help = application.server.locals.partials.content({
+      request: undefined as any,
+      response: undefined as any,
+      contentPreprocessed:
+        application.server.locals.partials.contentPreprocessed(
+          markdown`
+            You may style text with
+            [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/)
+            and include mathematical formulas with [LaTeX](https://katex.org/docs/supported.html), for example:
+
+            | You Write    | Result    |
+            | ------------ | --------- |
+            | \`**Bold**\`   | **Bold**  |
+            | \`_Italics_\`  | _Italics_ |
+            | \`\` \`Code\` \`\` | \`Code\`    |
+            | \`$E=mc^2$\`   | $E=mc^2$  |
+
+            Use the toolbar to learn more options.
+          `
+        ).contentPreprocessed,
+    }).contentProcessed;
+
     return ({
       request,
       response,
@@ -1020,24 +1043,13 @@ export default async (application: Application): Promise<void> => {
                       tippyProps: {
                         trigger: "click",
                         interactive: true,
-                        content: ${html`
-                          <p>
-                            You may style text with
-                            <a
-                              href="https://guides.github.com/features/mastering-markdown/"
-                              target="_blank"
-                              class="link"
-                              >GitHub Flavored Markdown</a
-                            >
-                            and include mathematical formulas with
-                            <a
-                              href="https://katex.org/docs/supported.html"
-                              target="_blank"
-                              class="link"
-                              >LaTeX</a
-                            >.
-                          </p>
-                        `},  
+                        content: ${html`<div
+                          css="${css`
+                            padding: var(--space--2);
+                          `}"
+                        >
+                          $${help}
+                        </div>`},  
                       },
                     });
                   `}"
