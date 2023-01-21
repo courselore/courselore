@@ -480,7 +480,9 @@ export default async (application: Application): Promise<void> => {
           if (
             node.textContent === null ||
             parentElement === null ||
-            parentElement.closest("a, code, .mention, .reference") !== null
+            parentElement.closest(
+              `a, code, [key="mention"], [key="reference"]`
+            ) !== null
           )
             return;
           let newNodeHTML = html`${node.textContent}`;
@@ -591,7 +593,7 @@ export default async (application: Application): Promise<void> => {
                     >`;
                   break;
               }
-              return html`<strong class="mention">$${mentionHTML}</strong>`;
+              return html`<strong key="mention">$${mentionHTML}</strong>`;
             }
           );
 
@@ -607,7 +609,7 @@ export default async (application: Application): Promise<void> => {
               if (conversation === undefined) return match;
               if (messageReference === undefined)
                 return html`<a
-                  class="reference"
+                  key="reference"
                   href="https://${application.configuration
                     .hostname}/courses/${response.locals.course!
                     .reference}/conversations/${conversation.reference}${qs.stringify(
@@ -624,7 +626,7 @@ export default async (application: Application): Promise<void> => {
               });
               if (message === undefined) return match;
               return html`<a
-                class="reference"
+                key="reference"
                 href="https://${application.configuration
                   .hostname}/courses/${response.locals.course!
                   .reference}/conversations/${conversation.reference}${qs.stringify(
