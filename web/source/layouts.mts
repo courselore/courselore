@@ -1667,90 +1667,102 @@ export default async (application: Application): Promise<void> => {
                     <button
                       class="button button--transparent"
                       javascript="${javascript`
-                      leafac.setTippy({
-                        event,
-                        element: this,
-                        elementProperty: "dropdown",
-                        tippyProps: {
-                          trigger: "click",
-                          interactive: true,
-                          content: ${html`
-                            <div class="dropdown--menu">
-                              <button
-                                class="dropdown--menu--item button button--transparent"
-                                javascript="${javascript`
-                                  this.onclick = async () => {
-                                    this.classList.add("button--amber");
-                                    await new Promise((resolve) => { window.setTimeout(resolve, 3 * 1000); });
-                                    await fetch(${`https://${application.configuration.hostname}/live-updates`}, { cache: "no-store" });
-                                    this.classList.remove("button--amber");
-                                    this.classList.add("button--green");
-                                  };
+                        leafac.setTippy({
+                          event,
+                          element: this,
+                          elementProperty: "dropdown",
+                          tippyProps: {
+                            trigger: "click",
+                            interactive: true,
+                            content: ${html`
+                              <div
+                                css="${css`
+                                  display: flex;
+                                  flex-direction: column;
+                                  gap: var(--space--2);
                                 `}"
                               >
-                                <i class="bi bi-arrow-clockwise"></i>
-                                Live-Updates
-                              </button>
+                                <div class="dropdown--menu">
+                                  <button
+                                    class="dropdown--menu--item button button--transparent"
+                                    javascript="${javascript`
+                                      this.onclick = async () => {
+                                        this.classList.add("button--amber");
+                                        await new Promise((resolve) => { window.setTimeout(resolve, 3 * 1000); });
+                                        await fetch(${`https://${application.configuration.hostname}/live-updates`}, { cache: "no-store" });
+                                        this.classList.remove("button--amber");
+                                        this.classList.add("button--green");
+                                      };
+                                    `}"
+                                  >
+                                    <i class="bi bi-arrow-clockwise"></i>
+                                    Live-Updates
+                                  </button>
+                                </div>
 
-                              <hr class="dropdown--separator" />
+                                <hr class="dropdown--separator" />
 
-                              <a
-                                href="https://${application.configuration
-                                  .hostname}/health"
-                                target="_blank"
-                                class="dropdown--menu--item button button--transparent"
-                              >
-                                <i class="bi bi-heart-pulse"></i>
-                                Health Check
-                              </a>
+                                <div class="dropdown--menu">
+                                  <a
+                                    href="https://${application.configuration
+                                      .hostname}/health"
+                                    target="_blank"
+                                    class="dropdown--menu--item button button--transparent"
+                                  >
+                                    <i class="bi bi-heart-pulse"></i>
+                                    Health Check
+                                  </a>
+                                </div>
 
-                              <hr class="dropdown--separator" />
+                                <hr class="dropdown--separator" />
 
-                              <a
-                                href="https://${application.configuration
-                                  .hostname}/errors/not-found"
-                                class="dropdown--menu--item button button--transparent"
-                              >
-                                <i class="bi bi-question-diamond"></i>
-                                404 Not Found
-                              </a>
-                              <a
-                                href="https://${application.configuration
-                                  .hostname}/errors/validation"
-                                class="dropdown--menu--item button button--transparent"
-                              >
-                                <i class="bi bi-bug"></i>
-                                Validation Error
-                              </a>
-                              <a
-                                href="https://${application.configuration
-                                  .hostname}/errors/cross-site-request-forgery"
-                                class="dropdown--menu--item button button--transparent"
-                              >
-                                <i class="bi bi-bug"></i>
-                                Cross-Site Request Forgery Error
-                              </a>
-                              <a
-                                href="https://${application.configuration
-                                  .hostname}/errors/exception"
-                                class="dropdown--menu--item button button--transparent"
-                              >
-                                <i class="bi bi-bug"></i>
-                                Server Error
-                              </a>
-                              <a
-                                href="https://${application.configuration
-                                  .hostname}/errors/crash"
-                                class="dropdown--menu--item button button--transparent"
-                              >
-                                <i class="bi bi-fire"></i>
-                                Crash
-                              </a>
-                            </div>
-                          `},  
-                        },
-                      });
-                    `}"
+                                <div class="dropdown--menu">
+                                  <a
+                                    href="https://${application.configuration
+                                      .hostname}/errors/not-found"
+                                    class="dropdown--menu--item button button--transparent"
+                                  >
+                                    <i class="bi bi-question-diamond"></i>
+                                    404 Not Found
+                                  </a>
+                                  <a
+                                    href="https://${application.configuration
+                                      .hostname}/errors/validation"
+                                    class="dropdown--menu--item button button--transparent"
+                                  >
+                                    <i class="bi bi-bug"></i>
+                                    Validation Error
+                                  </a>
+                                  <a
+                                    href="https://${application.configuration
+                                      .hostname}/errors/cross-site-request-forgery"
+                                    class="dropdown--menu--item button button--transparent"
+                                  >
+                                    <i class="bi bi-bug"></i>
+                                    Cross-Site Request Forgery Error
+                                  </a>
+                                  <a
+                                    href="https://${application.configuration
+                                      .hostname}/errors/exception"
+                                    class="dropdown--menu--item button button--transparent"
+                                  >
+                                    <i class="bi bi-bug"></i>
+                                    Server Error
+                                  </a>
+                                  <a
+                                    href="https://${application.configuration
+                                      .hostname}/errors/crash"
+                                    class="dropdown--menu--item button button--transparent"
+                                  >
+                                    <i class="bi bi-fire"></i>
+                                    Crash
+                                  </a>
+                                </div>
+                              </div>
+                            `},  
+                          },
+                        });
+                      `}"
                     >
                       <i class="bi bi-tools"></i>
                       Development Utilities
