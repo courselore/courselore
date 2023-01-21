@@ -1876,7 +1876,7 @@ export default async (application: Application): Promise<void> => {
                             tippyProps: {
                               touch: false,
                               content: ${html`
-                                Mention User
+                                Mention Person
                                 <span class="keyboard-shortcut">(@)</span>
                               `},
                             },
@@ -2242,7 +2242,7 @@ export default async (application: Application): Promise<void> => {
                           >
                             <p class="heading">
                               <i class="bi bi-at"></i>
-                              Mention User
+                              Mention Person
                             </p>
                             <div class="dropdown--menu">
                               <div key="search-results"></div>
@@ -2596,7 +2596,7 @@ export default async (application: Application): Promise<void> => {
             $${enrollments.length === 0
               ? html`
                   <div class="dropdown--menu--item secondary">
-                    No user found.
+                    Person not found.
                   </div>
                 `
               : enrollments.map(
