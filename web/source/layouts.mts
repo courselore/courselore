@@ -1282,6 +1282,41 @@ export default async (application: Application): Promise<void> => {
                   margin-top: var(--space--2);
                 }
 
+                input[type="checkbox"] {
+                  font-size: var(--font-size--2xs);
+                  line-height: var(--line-height--2xs);
+                  color: var(--color--transparent);
+                  background-color: var(--color--gray--medium--200);
+                  &:checked {
+                    color: var(--color--blue--50);
+                    background-color: var(--color--blue--600);
+                  }
+                  @media (prefers-color-scheme: dark) {
+                    background-color: var(--color--gray--medium--700);
+                    &:checked {
+                      color: var(--color--blue--200);
+                      background-color: var(--color--blue--700);
+                    }
+                  }
+                  width: var(--space--3-5);
+                  height: var(--space--3-5);
+                  border-radius: var(--border-radius--base);
+                  margin-right: var(--space--1);
+                  display: inline-flex;
+                  justify-content: center;
+                  align-items: center;
+                  &::before {
+                    content: "\\f633";
+                    font-family: "bootstrap-icons" !important;
+                  }
+                }
+
+                li > input[type="checkbox"]:first-child {
+                  position: absolute;
+                  margin-left: var(--space---5);
+                  margin-top: var(--space--1);
+                }
+
                 table {
                   border-collapse: collapse;
                   display: block;
@@ -1350,41 +1385,6 @@ export default async (application: Application): Promise<void> => {
                       }
                     }
                   }
-                }
-
-                input[type="checkbox"] {
-                  font-size: var(--font-size--2xs);
-                  line-height: var(--line-height--2xs);
-                  color: var(--color--transparent);
-                  background-color: var(--color--gray--medium--200);
-                  &:checked {
-                    color: var(--color--blue--50);
-                    background-color: var(--color--blue--600);
-                  }
-                  @media (prefers-color-scheme: dark) {
-                    background-color: var(--color--gray--medium--700);
-                    &:checked {
-                      color: var(--color--blue--200);
-                      background-color: var(--color--blue--700);
-                    }
-                  }
-                  width: var(--space--3-5);
-                  height: var(--space--3-5);
-                  border-radius: var(--border-radius--base);
-                  margin-right: var(--space--1);
-                  display: inline-flex;
-                  justify-content: center;
-                  align-items: center;
-                  &::before {
-                    content: "\\f633";
-                    font-family: "bootstrap-icons" !important;
-                  }
-                }
-
-                li > input[type="checkbox"]:first-child {
-                  position: absolute;
-                  margin-left: var(--space---5);
-                  margin-top: var(--space--1);
                 }
 
                 .katex {

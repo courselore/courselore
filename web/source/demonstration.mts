@@ -553,6 +553,18 @@ ${lodash
   )
   .join("\n\n")}
 
+---
+
+${lodash
+  .times(
+    lodash.random(4, 8),
+    () =>
+      `- [${Math.random() < 0.5 ? " " : "x"}] ${casual.sentences(
+        lodash.random(1, 6)
+      )}`
+  )
+  .join("\n")}
+
 # Table
 
 | Left-aligned | Center-aligned | Right-aligned |
@@ -583,18 +595,6 @@ ${lodash
   .join("\n\n")}
 
 </details>
-
-# Checklists
-
-${lodash
-  .times(
-    lodash.random(4, 8),
-    () =>
-      `- [${Math.random() < 0.5 ? " " : "x"}] ${casual.sentences(
-        lodash.random(1, 6)
-      )}`
-  )
-  .join("\n")}
 
 # Footnotes
 
