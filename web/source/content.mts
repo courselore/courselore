@@ -1074,8 +1074,9 @@ export default async (application: Application): Promise<void> => {
                               const textarea = this.closest("[data-tippy-root]")._tippy.reference.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
             
                               this.onclick = () => {
+                                this.closest("[data-tippy-root]")._tippy.hide();
                                 textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "# ", "\\n\\n");
-                                textarea.focus();  
+                                textarea.focus();
                               };
 
                               (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+alt+1", () => { this.click(); return false; });
@@ -1106,6 +1107,7 @@ export default async (application: Application): Promise<void> => {
                               const textarea = this.closest("[data-tippy-root]")._tippy.reference.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
             
                               this.onclick = () => {
+                                this.closest("[data-tippy-root]")._tippy.hide();
                                 textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "## ", "\\n\\n");
                                 textarea.focus();  
                               };
@@ -1138,6 +1140,7 @@ export default async (application: Application): Promise<void> => {
                               const textarea = this.closest("[data-tippy-root]")._tippy.reference.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
             
                               this.onclick = () => {
+                                this.closest("[data-tippy-root]")._tippy.hide();
                                 textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "### ", "\\n\\n");
                                 textarea.focus();  
                               };
@@ -1200,6 +1203,7 @@ export default async (application: Application): Promise<void> => {
                               const textarea = this.closest("[data-tippy-root]")._tippy.reference.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
             
                               this.onclick = () => {
+                                this.closest("[data-tippy-root]")._tippy.hide();
                                 textFieldEdit.wrapSelection(textarea, "**");
                                 textarea.focus();
                               };
@@ -1231,6 +1235,7 @@ export default async (application: Application): Promise<void> => {
                               const textarea = this.closest("[data-tippy-root]")._tippy.reference.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
             
                               this.onclick = () => {
+                                this.closest("[data-tippy-root]")._tippy.hide();
                                 textFieldEdit.wrapSelection(textarea, "_");
                                 textarea.focus();
                               };
@@ -1262,6 +1267,7 @@ export default async (application: Application): Promise<void> => {
                               const textarea = this.closest("[data-tippy-root]")._tippy.reference.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
             
                               this.onclick = () => {
+                                this.closest("[data-tippy-root]")._tippy.hide();
                                 textFieldEdit.wrapSelection(textarea, "<u>", "</u>");
                                 textarea.focus();
                               };
@@ -1283,6 +1289,38 @@ export default async (application: Application): Promise<void> => {
                                   this.hidden = !leafac.isAppleDevice;
                                 `}"
                                 ><i class="bi bi-command"></i>U</span
+                              >
+                            </span>
+                          </button>
+                          <button
+                            type="button"
+                            class="dropdown--menu--item button button--transparent"
+                            javascript="${javascript`
+                              const textarea = this.closest("[data-tippy-root]")._tippy.reference.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
+            
+                              this.onclick = () => {
+                                this.closest("[data-tippy-root]")._tippy.hide();
+                                textFieldEdit.wrapSelection(textarea, "[", "](https://example.com)");
+                                textarea.focus();
+                              };
+                          
+                              (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+k", () => { this.click(); return false; });
+                            `}"
+                          >
+                            <i class="bi bi-link"></i>
+                            Link
+                            <span class="keyboard-shortcut">
+                              <span
+                                javascript="${javascript`
+                                  this.hidden = leafac.isAppleDevice;
+                                `}"
+                                >Ctrl+K</span
+                              ><span
+                                class="keyboard-shortcut--cluster"
+                                javascript="${javascript`
+                                  this.hidden = !leafac.isAppleDevice;
+                                `}"
+                                ><i class="bi bi-command"></i>K</span
                               >
                             </span>
                           </button>
