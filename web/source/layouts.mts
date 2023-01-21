@@ -1384,7 +1384,7 @@ export default async (application: Application): Promise<void> => {
                 li > input[type="checkbox"]:first-child {
                   position: absolute;
                   margin-left: var(--space---5);
-                  margin-top: var(--space--0-5);
+                  margin-top: var(--space--1);
                 }
 
                 .katex {
