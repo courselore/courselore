@@ -1172,7 +1172,7 @@ export default async (application: Application): Promise<void> => {
                   });
                 `}"
               >
-                <i class="bi bi-type-h1"></i>
+                <i class="bi bi-paragraph"></i>
               </button>
               <button
                 type="button"
