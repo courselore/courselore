@@ -1084,7 +1084,7 @@ export default async (application: Application): Promise<void> => {
                             <i class="bi bi-type-h1"></i>
                             Heading 1
                             <span class="keyboard-shortcut">
-                              (<span
+                              <span
                                 javascript="${javascript`
                                   this.hidden = leafac.isAppleDevice;
                                 `}"
@@ -1096,7 +1096,7 @@ export default async (application: Application): Promise<void> => {
                                 `}"
                                 ><i class="bi bi-alt"></i
                                 ><i class="bi bi-command"></i>1</span
-                              >)
+                              >
                             </span>
                           </button>
                           <button
@@ -1116,7 +1116,7 @@ export default async (application: Application): Promise<void> => {
                             <i class="bi bi-type-h2"></i>
                             Heading 2
                             <span class="keyboard-shortcut">
-                              (<span
+                              <span
                                 javascript="${javascript`
                                   this.hidden = leafac.isAppleDevice;
                                 `}"
@@ -1128,7 +1128,7 @@ export default async (application: Application): Promise<void> => {
                                 `}"
                                 ><i class="bi bi-alt"></i
                                 ><i class="bi bi-command"></i>2</span
-                              >)
+                              >
                             </span>
                           </button>
                           <button
@@ -1148,7 +1148,7 @@ export default async (application: Application): Promise<void> => {
                             <i class="bi bi-type-h3"></i>
                             Heading 3
                             <span class="keyboard-shortcut">
-                              (<span
+                              <span
                                 javascript="${javascript`
                                   this.hidden = leafac.isAppleDevice;
                                 `}"
@@ -1160,7 +1160,7 @@ export default async (application: Application): Promise<void> => {
                                 `}"
                                 ><i class="bi bi-alt"></i
                                 ><i class="bi bi-command"></i>3</span
-                              >)
+                              >
                             </span>
                           </button>
                         </div>
@@ -1210,7 +1210,7 @@ export default async (application: Application): Promise<void> => {
                             <i class="bi bi-type-bold"></i>
                             Bold
                             <span class="keyboard-shortcut">
-                              (<span
+                              <span
                                 javascript="${javascript`
                                   this.hidden = leafac.isAppleDevice;
                                 `}"
@@ -1221,7 +1221,7 @@ export default async (application: Application): Promise<void> => {
                                   this.hidden = !leafac.isAppleDevice;
                                 `}"
                                 ><i class="bi bi-command"></i>B</span
-                              >)
+                              >
                             </span>
                           </button>
                           <button
@@ -1241,7 +1241,7 @@ export default async (application: Application): Promise<void> => {
                             <i class="bi bi-type-italic"></i>
                             Italic
                             <span class="keyboard-shortcut">
-                              (<span
+                              <span
                                 javascript="${javascript`
                                   this.hidden = leafac.isAppleDevice;
                                 `}"
@@ -1252,7 +1252,38 @@ export default async (application: Application): Promise<void> => {
                                   this.hidden = !leafac.isAppleDevice;
                                 `}"
                                 ><i class="bi bi-command"></i>I</span
-                              >)
+                              >
+                            </span>
+                          </button>
+                          <button
+                            type="button"
+                            class="dropdown--menu--item button button--transparent"
+                            javascript="${javascript`
+                              const textarea = this.closest("[data-tippy-root]")._tippy.reference.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
+            
+                              this.onclick = () => {
+                                textFieldEdit.wrapSelection(textarea, "<u>", "</u>");
+                                textarea.focus();
+                              };
+                          
+                              (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+u", () => { this.click(); return false; });
+                            `}"
+                          >
+                            <i class="bi bi-type-underline"></i>
+                            Underline
+                            <span class="keyboard-shortcut">
+                              <span
+                                javascript="${javascript`
+                                  this.hidden = leafac.isAppleDevice;
+                                `}"
+                                >Ctrl+U</span
+                              ><span
+                                class="keyboard-shortcut--cluster"
+                                javascript="${javascript`
+                                  this.hidden = !leafac.isAppleDevice;
+                                `}"
+                                ><i class="bi bi-command"></i>U</span
+                              >
                             </span>
                           </button>
                         </div>
