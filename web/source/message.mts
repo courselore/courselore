@@ -2429,7 +2429,7 @@ export default async (application: Application): Promise<void> => {
                       <small>
                         <a
                           href="https://${application.configuration
-                            .hostname}/settings/notifications-preferences"
+                            .hostname}/settings/notifications"
                           >Change Notifications Preferences</a
                         >
                       </small>
