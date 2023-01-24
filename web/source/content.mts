@@ -2326,36 +2326,32 @@ export default async (application: Application): Promise<void> => {
             </div>
           </div>
 
-          $${compact
-            ? html``
-            : html`
-                <div
-                  key="content-editor--loading"
-                  hidden
-                  class="strong"
-                  css="${css`
-                    padding: var(--space--4);
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    gap: var(--space--2);
-                  `}"
-                >
-                  $${application.server.locals.partials.spinner({
-                    request,
-                    response,
-                  })}
-                  Loading…
-                </div>
+          <div
+            key="content-editor--loading"
+            hidden
+            class="strong"
+            css="${css`
+              padding: var(--space--4);
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              gap: var(--space--2);
+            `}"
+          >
+            $${application.server.locals.partials.spinner({
+              request,
+              response,
+            })}
+            Loading…
+          </div>
 
-                <div
-                  key="content-editor--preview"
-                  hidden
-                  css="${css`
-                    padding: var(--space--4);
-                  `}"
-                ></div>
-              `}
+          <div
+            key="content-editor--preview"
+            hidden
+            css="${css`
+              padding: var(--space--4);
+            `}"
+          ></div>
         </div>
       </div>
     `;
