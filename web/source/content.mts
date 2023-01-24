@@ -2041,289 +2041,354 @@ export default async (application: Application): Promise<void> => {
             border-radius: var(--border-radius--lg);
           `}"
         >
-          <div key="content-editor--write">
-            <div
-              css="${css`
-                position: relative;
-              `}"
-            >
+          <div
+            key="content-editor--write"
+            css="${css`
+              display: grid;
+              & > * {
+                grid-area: 1 / 1;
+              }
+            `}"
+          >
+            <div>
               <div
-                key="content-editor--write--textarea--dropdown-menu-target"
                 css="${css`
-                  width: var(--space--0);
-                  height: var(--line-height--sm);
-                  position: absolute;
+                  position: relative;
                 `}"
-              ></div>
-              <textarea
-                key="content-editor--write--textarea"
-                name="${name}"
-                $${required ? html`required` : html``}
-                class="input--text input--text--textarea"
-                style="
-                  --height: ${compact
-                  ? `var(--space--14)`
-                  : `var(--space--20)`};
-                "
-                css="${css`
-                  height: var(--height);
-                  max-height: var(--space--64);
+              >
+                <div
+                  key="content-editor--write--textarea--dropdown-menu-target"
+                  css="${css`
+                    width: var(--space--0);
+                    height: var(--line-height--sm);
+                    position: absolute;
+                  `}"
+                ></div>
+                <textarea
+                  key="content-editor--write--textarea"
+                  name="${name}"
+                  $${required ? html`required` : html``}
+                  class="input--text input--text--textarea"
+                  style="
+                    --height: ${compact
+                    ? `var(--space--14)`
+                    : `var(--space--20)`};
+                  "
+                  css="${css`
+                    height: var(--height);
+                    max-height: var(--space--64);
 
-                  &.drag {
-                    background-color: var(--color--blue--200);
-                    @media (prefers-color-scheme: dark) {
-                      background-color: var(--color--blue--900);
+                    &.drag {
+                      background-color: var(--color--blue--200);
+                      @media (prefers-color-scheme: dark) {
+                        background-color: var(--color--blue--900);
+                      }
                     }
-                  }
 
-                  &.content-editor--write--textarea--programmer-mode {
-                    font-family: "JetBrains MonoVariable",
-                      var(--font-family--monospace);
-                    font-variant-ligatures: none;
-                  }
-                `}"
-                javascript="${javascript`
-                  autosize(this);
-                  autosize.update(this);
-  
-                  this.ondragenter = () => {
-                    this.classList.add("drag");
-                  };
-                  this.ondragleave = () => {
-                    this.classList.remove("drag");
-                  };
-  
-                  this.ondragover = (event) => {
-                    if (!event.dataTransfer.types.includes("Files")) return;
-                    event.preventDefault();
-                  };
-                  this.ondrop = (event) => {
-                    this.classList.remove("drag");
-                    if (event.dataTransfer.files.length === 0) return;
-                    event.preventDefault();
-                    this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--attachments"]').upload(event.dataTransfer.files);
-                  };
-  
-                  this.onpaste = (event) => {
-                    if (event.clipboardData.files.length === 0) return;
-                    event.preventDefault();
-                    this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--attachments"]').upload(event.clipboardData.files);
-                  };
-  
-                  if (${response.locals.course !== undefined}) {
-                    const dropdownMenuTarget = this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea--dropdown-menu-target"]');
-  
-                    leafac.setTippy({
-                      event,
-                      element: dropdownMenuTarget,
-                      elementProperty: "dropdownMenuMention",
-                      tippyProps: {
-                        placement: "bottom-start",
-                        trigger: "manual",
-                        interactive: true,
-                        content: ${html`
-                          <div
-                            css="${css`
-                              width: var(--space--56);
-                              max-height: var(--space--44);
-                              overflow: auto;
-                            `}"
-                          >
-                            <p class="heading">
-                              <i class="bi bi-at"></i>
-                              Mention Person
-                            </p>
-                            <div class="dropdown--menu">
-                              <div key="search-results"></div>
-                              <button
-                                type="button"
-                                class="dropdown--menu--item button button--transparent"
-                                javascript="${javascript`
-                                  this.onclick = () => {
-                                    this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete("everyone");
-                                  };
-                                `}"
-                              >
-                                Everyone in the Conversation
-                              </button>
-                              <button
-                                type="button"
-                                class="dropdown--menu--item button button--transparent"
-                                javascript="${javascript`
-                                  this.onclick = () => {
-                                    this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete("staff");
-                                  };
-                                `}"
-                              >
-                                Staff in the Conversation
-                              </button>
-                              <button
-                                type="button"
-                                class="dropdown--menu--item button button--transparent"
-                                javascript="${javascript`
-                                  this.onclick = () => {
-                                    this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete("students");
-                                  };
-                                `}"
-                              >
-                                Students in the Conversation
-                              </button>
+                    &.content-editor--write--textarea--programmer-mode {
+                      font-family: "JetBrains MonoVariable",
+                        var(--font-family--monospace);
+                      font-variant-ligatures: none;
+                    }
+                  `} ${compact
+                    ? css`
+                        padding-right: var(--space--8);
+                      `
+                    : css``}"
+                  javascript="${javascript`
+                    autosize(this);
+                    autosize.update(this);
+    
+                    this.ondragenter = () => {
+                      this.classList.add("drag");
+                    };
+                    this.ondragleave = () => {
+                      this.classList.remove("drag");
+                    };
+    
+                    this.ondragover = (event) => {
+                      if (!event.dataTransfer.types.includes("Files")) return;
+                      event.preventDefault();
+                    };
+                    this.ondrop = (event) => {
+                      this.classList.remove("drag");
+                      if (event.dataTransfer.files.length === 0) return;
+                      event.preventDefault();
+                      this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--attachments"]').upload(event.dataTransfer.files);
+                    };
+    
+                    this.onpaste = (event) => {
+                      if (event.clipboardData.files.length === 0) return;
+                      event.preventDefault();
+                      this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--attachments"]').upload(event.clipboardData.files);
+                    };
+    
+                    if (${response.locals.course !== undefined}) {
+                      const dropdownMenuTarget = this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea--dropdown-menu-target"]');
+    
+                      leafac.setTippy({
+                        event,
+                        element: dropdownMenuTarget,
+                        elementProperty: "dropdownMenuMention",
+                        tippyProps: {
+                          placement: "bottom-start",
+                          trigger: "manual",
+                          interactive: true,
+                          content: ${html`
+                            <div
+                              css="${css`
+                                width: var(--space--56);
+                                max-height: var(--space--44);
+                                overflow: auto;
+                              `}"
+                            >
+                              <p class="heading">
+                                <i class="bi bi-at"></i>
+                                Mention Person
+                              </p>
+                              <div class="dropdown--menu">
+                                <div key="search-results"></div>
+                                <button
+                                  type="button"
+                                  class="dropdown--menu--item button button--transparent"
+                                  javascript="${javascript`
+                                    this.onclick = () => {
+                                      this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete("everyone");
+                                    };
+                                  `}"
+                                >
+                                  Everyone in the Conversation
+                                </button>
+                                <button
+                                  type="button"
+                                  class="dropdown--menu--item button button--transparent"
+                                  javascript="${javascript`
+                                    this.onclick = () => {
+                                      this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete("staff");
+                                    };
+                                  `}"
+                                >
+                                  Staff in the Conversation
+                                </button>
+                                <button
+                                  type="button"
+                                  class="dropdown--menu--item button button--transparent"
+                                  javascript="${javascript`
+                                    this.onclick = () => {
+                                      this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete("students");
+                                    };
+                                  `}"
+                                >
+                                  Students in the Conversation
+                                </button>
+                              </div>
                             </div>
-                          </div>
-                        `},  
-                      },
-                    });
-  
-                    leafac.setTippy({
-                      event,
-                      element: dropdownMenuTarget,
-                      elementProperty: "dropdownMenuReference",
-                      tippyProps: {
-                        placement: "bottom-start",
-                        trigger: "manual",
-                        interactive: true,
-                        content: ${html`
-                          <div
-                            css="${css`
-                              width: var(--space--72);
-                              max-height: var(--space--44);
-                              overflow: auto;
-                            `}"
-                          >
-                            <p class="heading">
-                              <i class="bi bi-hash"></i>
-                              Refer to Conversation or Message
-                            </p>
-                            <div class="dropdown--menu">
-                              <div key="search-results"></div>
+                          `},  
+                        },
+                      });
+    
+                      leafac.setTippy({
+                        event,
+                        element: dropdownMenuTarget,
+                        elementProperty: "dropdownMenuReference",
+                        tippyProps: {
+                          placement: "bottom-start",
+                          trigger: "manual",
+                          interactive: true,
+                          content: ${html`
+                            <div
+                              css="${css`
+                                width: var(--space--72);
+                                max-height: var(--space--44);
+                                overflow: auto;
+                              `}"
+                            >
+                              <p class="heading">
+                                <i class="bi bi-hash"></i>
+                                Refer to Conversation or Message
+                              </p>
+                              <div class="dropdown--menu">
+                                <div key="search-results"></div>
+                              </div>
                             </div>
-                          </div>
-                        `},  
-                      },
-                    });
-  
-                    const dropdownMenus = [
-                      {
-                        trigger: "@",
-                        route: ${`https://${
-                          application.configuration.hostname
-                        }/courses/${response.locals.course?.reference}/${
-                          response.locals.conversation !== undefined
-                            ? `conversations/${response.locals.conversation.reference}/`
-                            : ``
-                        }content-editor/mention-user-search`},
-                        dropdownMenu: dropdownMenuTarget.dropdownMenuMention,
-                      },
-                      {
-                        trigger: "#",
-                        route: ${`https://${application.configuration.hostname}/courses/${response.locals.course?.reference}/content-editor/refer-to-conversation-or-message-search`},
-                        dropdownMenu: dropdownMenuTarget.dropdownMenuReference,
-                      },
-                    ];
-  
-                    let anchorIndex = null;
-  
-                    this.oninput = (() => {
-                      let isUpdating = false;
-                      let shouldUpdateAgain = false;
-                      return async () => {
-                        const value = this.value;
-                        const selectionMin = Math.min(this.selectionStart, this.selectionEnd);
-                        const selectionMax = Math.max(this.selectionStart, this.selectionEnd);
-                        for (const { trigger, route, dropdownMenu } of dropdownMenus) {
-                          if (!dropdownMenu.state.isShown) {
-                            if (
-                              value[selectionMin - 1] !== trigger ||
-                              (selectionMin > 1 && value[selectionMin - 2].match(/\\w/) !== null)
-                            ) continue;
-                            anchorIndex = selectionMin;
-                            const caretCoordinates = textareaCaret(this, anchorIndex - 1);
-                            dropdownMenuTarget.style.top = String(caretCoordinates.top) + "px";
-                            dropdownMenuTarget.style.left = String(caretCoordinates.left) + "px";
-                            tippy.hideAll();
-                            dropdownMenu.show();
-                          }
-                          if (selectionMin < anchorIndex || value[anchorIndex - 1] !== trigger || value[anchorIndex] === " ") {
-                            dropdownMenu.hide();
-                            continue;
-                          }
-                          if (isUpdating) {
-                            shouldUpdateAgain = true;
-                            continue;
-                          }
-                          isUpdating = true;
-                          shouldUpdateAgain = false;
-                          const content = dropdownMenu.props.content;
-                          const searchResults = content.querySelector('[key="search-results"]');
-                          const search = value.slice(anchorIndex, selectionMax).trim();
-                          if (search === "") searchResults.innerHTML = "";
-                          else
-                            leafac.loadPartial(
-                              searchResults,
-                              await (await fetch(route + "?" + new URLSearchParams({ search }), { cache: "no-store" })).text()
-                            );
-                          const buttons = content.querySelectorAll(".button");
-                          for (const button of buttons) button.classList.remove("hover");
-                          if (buttons.length > 0) buttons[0].classList.add("hover");
-                          isUpdating = false;
-                          if (shouldUpdateAgain) this.oninput();
-                        }
-                      }
-                    })();
-  
-                    this.onkeydown = (event) => {
-                      for (const { dropdownMenu } of dropdownMenus) {
-                        if (!dropdownMenu.state.isShown) continue;
-                        const content = dropdownMenu.props.content;
-                        switch (event.code) {
-                          case "ArrowUp":
-                          case "ArrowDown":
-                            event.preventDefault();
-                            const buttons = [...content.querySelectorAll(".button")];
-                            if (buttons.length === 0) continue;    
-                            const currentHoverIndex = buttons.indexOf(content.querySelector(".button.hover"));
-                            if (
-                              currentHoverIndex === -1 ||
-                              (event.code === "ArrowUp" && currentHoverIndex === 0) ||
-                              (event.code === "ArrowDown" && currentHoverIndex === buttons.length - 1)
-                            ) continue;
-                            buttons[currentHoverIndex].classList.remove("hover");
-                            const buttonToHover = buttons[currentHoverIndex + (event.code === "ArrowUp" ? -1 : 1)];
-                            buttonToHover.classList.add("hover");
-                            scrollIntoViewIfNeeded(buttonToHover, { scrollMode: "if-needed" });
-                            break;
-                          case "Enter":
-                          case "Tab":
-                            const buttonHover = content.querySelector(".button.hover");
-                            if (buttonHover === null) dropdownMenu.hide();
-                            else {
-                              event.preventDefault();
-                              buttonHover.click();
+                          `},  
+                        },
+                      });
+    
+                      const dropdownMenus = [
+                        {
+                          trigger: "@",
+                          route: ${`https://${
+                            application.configuration.hostname
+                          }/courses/${response.locals.course?.reference}/${
+                            response.locals.conversation !== undefined
+                              ? `conversations/${response.locals.conversation.reference}/`
+                              : ``
+                          }content-editor/mention-user-search`},
+                          dropdownMenu: dropdownMenuTarget.dropdownMenuMention,
+                        },
+                        {
+                          trigger: "#",
+                          route: ${`https://${application.configuration.hostname}/courses/${response.locals.course?.reference}/content-editor/refer-to-conversation-or-message-search`},
+                          dropdownMenu: dropdownMenuTarget.dropdownMenuReference,
+                        },
+                      ];
+    
+                      let anchorIndex = null;
+    
+                      this.oninput = (() => {
+                        let isUpdating = false;
+                        let shouldUpdateAgain = false;
+                        return async () => {
+                          const value = this.value;
+                          const selectionMin = Math.min(this.selectionStart, this.selectionEnd);
+                          const selectionMax = Math.max(this.selectionStart, this.selectionEnd);
+                          for (const { trigger, route, dropdownMenu } of dropdownMenus) {
+                            if (!dropdownMenu.state.isShown) {
+                              if (
+                                value[selectionMin - 1] !== trigger ||
+                                (selectionMin > 1 && value[selectionMin - 2].match(/\\w/) !== null)
+                              ) continue;
+                              anchorIndex = selectionMin;
+                              const caretCoordinates = textareaCaret(this, anchorIndex - 1);
+                              dropdownMenuTarget.style.top = String(caretCoordinates.top) + "px";
+                              dropdownMenuTarget.style.left = String(caretCoordinates.left) + "px";
+                              tippy.hideAll();
+                              dropdownMenu.show();
                             }
-                            break;
-                          case "Escape":
-                          case "ArrowLeft":
-                          case "ArrowRight":
-                          case "Home":
-                          case "End":
-                            dropdownMenu.hide();
-                            break;
+                            if (selectionMin < anchorIndex || value[anchorIndex - 1] !== trigger || value[anchorIndex] === " ") {
+                              dropdownMenu.hide();
+                              continue;
+                            }
+                            if (isUpdating) {
+                              shouldUpdateAgain = true;
+                              continue;
+                            }
+                            isUpdating = true;
+                            shouldUpdateAgain = false;
+                            const content = dropdownMenu.props.content;
+                            const searchResults = content.querySelector('[key="search-results"]');
+                            const search = value.slice(anchorIndex, selectionMax).trim();
+                            if (search === "") searchResults.innerHTML = "";
+                            else
+                              leafac.loadPartial(
+                                searchResults,
+                                await (await fetch(route + "?" + new URLSearchParams({ search }), { cache: "no-store" })).text()
+                              );
+                            const buttons = content.querySelectorAll(".button");
+                            for (const button of buttons) button.classList.remove("hover");
+                            if (buttons.length > 0) buttons[0].classList.add("hover");
+                            isUpdating = false;
+                            if (shouldUpdateAgain) this.oninput();
+                          }
+                        }
+                      })();
+    
+                      this.onkeydown = (event) => {
+                        for (const { dropdownMenu } of dropdownMenus) {
+                          if (!dropdownMenu.state.isShown) continue;
+                          const content = dropdownMenu.props.content;
+                          switch (event.code) {
+                            case "ArrowUp":
+                            case "ArrowDown":
+                              event.preventDefault();
+                              const buttons = [...content.querySelectorAll(".button")];
+                              if (buttons.length === 0) continue;    
+                              const currentHoverIndex = buttons.indexOf(content.querySelector(".button.hover"));
+                              if (
+                                currentHoverIndex === -1 ||
+                                (event.code === "ArrowUp" && currentHoverIndex === 0) ||
+                                (event.code === "ArrowDown" && currentHoverIndex === buttons.length - 1)
+                              ) continue;
+                              buttons[currentHoverIndex].classList.remove("hover");
+                              const buttonToHover = buttons[currentHoverIndex + (event.code === "ArrowUp" ? -1 : 1)];
+                              buttonToHover.classList.add("hover");
+                              scrollIntoViewIfNeeded(buttonToHover, { scrollMode: "if-needed" });
+                              break;
+                            case "Enter":
+                            case "Tab":
+                              const buttonHover = content.querySelector(".button.hover");
+                              if (buttonHover === null) dropdownMenu.hide();
+                              else {
+                                event.preventDefault();
+                                buttonHover.click();
+                              }
+                              break;
+                            case "Escape":
+                            case "ArrowLeft":
+                            case "ArrowRight":
+                            case "Home":
+                            case "End":
+                              dropdownMenu.hide();
+                              break;
+                          }
+                        }
+                      };
+    
+                      this.dropdownMenuComplete = (text) => {
+                        this.setSelectionRange(anchorIndex, Math.max(this.selectionStart, this.selectionEnd));
+                        textFieldEdit.insert(this, text + " ");
+                        tippy.hideAll();
+                        this.focus();
+                      };
+                    }
+                  `}"
+                >
+${contentSource}</textarea
+                >
+              </div>
+            </div>
+            $${compact
+              ? html`
+                  <button
+                    type="button"
+                    class="button button--transparent"
+                    css="${css`
+                      position: relative;
+                      justify-self: end;
+                      &:hover,
+                      &:focus-within {
+                        background-color: var(--color--gray--medium--300);
+                      }
+                      &:active {
+                        background-color: var(--color--gray--medium--400);
+                      }
+                      @media (prefers-color-scheme: dark) {
+                        &:hover,
+                        &:focus-within {
+                          background-color: var(--color--gray--medium--600);
+                        }
+                        &:active {
+                          background-color: var(--color--gray--medium--500);
                         }
                       }
-                    };
-  
-                    this.dropdownMenuComplete = (text) => {
-                      this.setSelectionRange(anchorIndex, Math.max(this.selectionStart, this.selectionEnd));
-                      textFieldEdit.insert(this, text + " ");
-                      tippy.hideAll();
-                      this.focus();
-                    };
-                  }
-                `}"
-              >
-  ${contentSource}</textarea
-              >
-            </div>
+                      width: var(--font-size--2xl);
+                      height: var(--font-size--2xl);
+                      padding: var(--space--0);
+                      border-radius: var(--border-radius--circle);
+                      margin: var(--space--1);
+                      align-items: center;
+                    `}"
+                    javascript="${javascript`
+                      leafac.setTippy({
+                        event,
+                        element: this,
+                        tippyProps: {
+                          touch: false,
+                          content: "Toolbar",
+                        },
+                      });
+
+                      this.onclick = () => {
+                        const toolbar = this.closest('[key="content-editor"]').querySelector('[key="content-editor--toolbar"]');
+                        toolbar.hidden = !toolbar.hidden;
+                      };
+                    `}"
+                  >
+                    <i class="bi bi-three-dots-vertical"></i>
+                  </button>
+                `
+              : html``}
           </div>
 
           <div

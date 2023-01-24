@@ -8863,13 +8863,7 @@ export default async (application: Application): Promise<void> => {
                       & > * {
                         grid-area: 1 / 1;
                       }
-                    `} ${response.locals.conversation.type === "chat"
-                      ? css`
-                          textarea {
-                            padding-right: var(--space--8);
-                          }
-                        `
-                      : css``}"
+                    `}"
                     javascript="${javascript`
                       leafac.saveFormInputValue(this.querySelector('[key="content-editor--write--textarea"]'), "new-message");
                     `}"
