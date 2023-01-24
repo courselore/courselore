@@ -902,6 +902,7 @@ export default async (application: Application): Promise<void> => {
                     this.closest('[key="content-editor"]').querySelector('[key="content-editor--write"]').hidden = false;
                     this.closest('[key="content-editor"]').querySelector('[key="content-editor--loading"]').hidden = true;
                     this.closest('[key="content-editor"]').querySelector('[key="content-editor--preview"]').hidden = true;  
+                    this.closest('[key="content-editor"]').querySelector('[key="content-editor--toolbar"]').hidden = false;
                   };
                 `}"
               />
@@ -922,6 +923,7 @@ export default async (application: Application): Promise<void> => {
                     const write = this.closest('[key="content-editor"]').querySelector('[key="content-editor--write"]');
                     const loading = this.closest('[key="content-editor"]').querySelector('[key="content-editor--loading"]');
                     const preview = this.closest('[key="content-editor"]').querySelector('[key="content-editor--preview"]');
+                    const toolbar = this.closest('[key="content-editor"]').querySelector('[key="content-editor--toolbar"]');
                     const textarea = write.querySelector("textarea");
                     const previousTextareaRequired = textarea.required;
                     textarea.required = true;
@@ -935,6 +937,7 @@ export default async (application: Application): Promise<void> => {
                     write.hidden = true;
                     loading.hidden = false;
                     preview.hidden = true;
+                    toolbar.hidden = true;
                     leafac.loadPartial(
                       preview,
                       await (
@@ -997,6 +1000,7 @@ export default async (application: Application): Promise<void> => {
             </label>
           </div>
           <div
+            key="content-editor--toolbar"
             css="${css`
               display: flex;
               margin-right: var(--space---1);
