@@ -65,6 +65,14 @@ export default async (application: Application): Promise<void> => {
                   </td>
                   </tr>
                   <tr>
+                  <td>\`Code\`</td>
+                  <td>
+                      
+                  \`Code\`
+                      
+                  </td>
+                  </tr>
+                  <tr>
                   <td>$$<br/>
                   L = \frac{1}{2} \rho v^2 S C_L<br/>
                   $$</td>
@@ -73,14 +81,6 @@ export default async (application: Application): Promise<void> => {
                   $$
                   L = \frac{1}{2} \rho v^2 S C_L
                   $$
-                      
-                  </td>
-                  </tr>
-                  <tr>
-                  <td>\`Code\`</td>
-                  <td>
-                      
-                  \`Code\`
                       
                   </td>
                   </tr>
