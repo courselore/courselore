@@ -822,12 +822,74 @@ export default async (application: Application): Promise<void> => {
             [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/)
             and include mathematical formulas with [LaTeX](https://katex.org/docs/supported.html), for example:
 
-            | You Write    | Result    |
-            | ------------ | --------- |
-            | \`**Bold**\`   | **Bold**  |
-            | \`_Italics_\`  | _Italics_ |
-            | \`\` \`Code\` \`\` | \`Code\`    |
-            | \`$E=mc^2$\`   | $E=mc^2$  |
+            <table>
+            <thead>
+            <tr>
+            <th>
+            You Write
+            </th>
+            <th>
+            Result
+            </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>
+            <pre>**Bold**</pre>
+            </td>
+            <td>
+
+            **Bold**
+
+            </td>
+            </tr>
+            <tr>
+            <td>
+            <pre>_Italics_</pre>
+            </td>
+            <td>
+
+            _Italics_
+
+            </td>
+            </tr>
+            <tr>
+            <td>
+            <pre>\`Code\`</pre>
+            </td>
+            <td>
+
+            \`Code\`
+
+            </td>
+            </tr>
+            <tr>
+            <td>
+            <pre>$E=mc^2$</pre>
+            </td>
+            <td>
+
+            $E=mc^2$
+
+            </td>
+            </tr>
+            <tr>
+            <td>
+            <pre>\`\`\`javascript
+            console.log("Courselore");
+            \`\`\`</pre>
+            </td>
+            <td>
+
+            ~~~javascript
+            console.log("Courselore");
+            ~~~
+
+            </td>
+            </tr>
+            </tbody>
+            </table>
 
             Use the toolbar to learn more options.
           `
