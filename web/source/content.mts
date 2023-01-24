@@ -852,6 +852,7 @@ export default async (application: Application): Promise<void> => {
         `}"
       >
         <div
+          key="content-editor--toolbar"
           ${compact ? html`hidden` : html``}
           css="${css`
             font-size: var(--font-size--xs);
@@ -902,7 +903,7 @@ export default async (application: Application): Promise<void> => {
                     this.closest('[key="content-editor"]').querySelector('[key="content-editor--write"]').hidden = false;
                     this.closest('[key="content-editor"]').querySelector('[key="content-editor--loading"]').hidden = true;
                     this.closest('[key="content-editor"]').querySelector('[key="content-editor--preview"]').hidden = true;  
-                    this.closest('[key="content-editor"]').querySelector('[key="content-editor--toolbar"]').hidden = false;
+                    this.closest('[key="content-editor"]').querySelector('[key="content-editor--toolbar--write"]').hidden = false;
                   };
                 `}"
               />
@@ -923,7 +924,7 @@ export default async (application: Application): Promise<void> => {
                     const write = this.closest('[key="content-editor"]').querySelector('[key="content-editor--write"]');
                     const loading = this.closest('[key="content-editor"]').querySelector('[key="content-editor--loading"]');
                     const preview = this.closest('[key="content-editor"]').querySelector('[key="content-editor--preview"]');
-                    const toolbar = this.closest('[key="content-editor"]').querySelector('[key="content-editor--toolbar"]');
+                    const toolbar = this.closest('[key="content-editor"]').querySelector('[key="content-editor--toolbar--write"]');
                     const textarea = write.querySelector("textarea");
                     const previousTextareaRequired = textarea.required;
                     textarea.required = true;
@@ -1000,7 +1001,7 @@ export default async (application: Application): Promise<void> => {
             </label>
           </div>
           <div
-            key="content-editor--toolbar"
+            key="content-editor--toolbar--write"
             css="${css`
               display: flex;
               margin-right: var(--space---1);
