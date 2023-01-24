@@ -8,7 +8,7 @@ export default async (application: Application): Promise<void> => {
     HTML,
     {},
     {},
-    Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
+    Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]
   >("/help/styling-content", (request, response) => {
     response.send(
       application.server.locals.layouts.main({
