@@ -57,18 +57,30 @@ export default async (application: Application): Promise<void> => {
                   </td>
                   </tr>
                   <tr>
-                  <td>\`Code\`</td>
-                  <td>
-                      
-                  \`Code\`
-                      
-                  </td>
-                  </tr>
-                  <tr>
                   <td>$E=mc^2$</td>
                   <td>
                       
                   $E=mc^2$
+                      
+                  </td>
+                  </tr>
+                  <tr>
+                  <td>$$<br/>
+                  L = \frac{1}{2} \rho v^2 S C_L<br/>
+                  $$</td>
+                  <td>
+                      
+                  $$
+                  L = \frac{1}{2} \rho v^2 S C_L
+                  $$
+                      
+                  </td>
+                  </tr>
+                  <tr>
+                  <td>\`Code\`</td>
+                  <td>
+                      
+                  \`Code\`
                       
                   </td>
                   </tr>

@@ -1336,6 +1336,7 @@ export default async (application: Application): Promise<void> => {
                   }
                   th {
                     font-weight: var(--font-weight--bold);
+                    text-align: left;
                     color: var(--color--gray--medium--800);
                     @media (prefers-color-scheme: dark) {
                       color: var(--color--gray--medium--100);
