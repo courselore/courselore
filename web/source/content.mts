@@ -865,14 +865,11 @@ export default async (application: Application): Promise<void> => {
                     display: flex;
                     gap: var(--space--1);
 
-                    /*
-                    TODO
                     .button {
                       padding-bottom: var(--space--4);
                       margin-bottom: var(--space---3);
-                    }
-                    & + * {
                       position: relative;
+                      z-index: var(--z-index---1);
                     }
 
                     :checked + .button--transparent {
@@ -889,7 +886,6 @@ export default async (application: Application): Promise<void> => {
                         background-color: var(--color--gray--medium--700);
                       }
                     }
-                    */
                   `}"
                 >
                   <label>
