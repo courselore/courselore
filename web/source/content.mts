@@ -865,6 +865,8 @@ export default async (application: Application): Promise<void> => {
                     display: flex;
                     gap: var(--space--1);
 
+                    /*
+                    TODO
                     .button {
                       padding-bottom: var(--space--4);
                       margin-bottom: var(--space---3);
@@ -887,6 +889,7 @@ export default async (application: Application): Promise<void> => {
                         background-color: var(--color--gray--medium--700);
                       }
                     }
+                    */
                   `}"
                 >
                   <label>
@@ -998,7 +1001,6 @@ export default async (application: Application): Promise<void> => {
                   </label>
                 </div>
                 <div
-                  $${compact ? html`hidden` : html``}
                   css="${css`
                     flex: 1;
                     display: flex;
