@@ -852,6 +852,7 @@ export default async (application: Application): Promise<void> => {
         `}"
       >
         <div
+          ${compact ? html`hidden` : html``}
           css="${css`
             font-size: var(--font-size--xs);
             line-height: var(--line-height--xs);
