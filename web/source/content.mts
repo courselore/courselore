@@ -85,6 +85,7 @@ export type ApplicationContent = {
           contentSource,
           required,
           compact,
+          modifiable,
         }: {
           request: express.Request<
             {},
@@ -113,6 +114,7 @@ export type ApplicationContent = {
           contentSource?: string;
           required?: boolean;
           compact?: boolean;
+          modifiable?: boolean;
         }): HTML;
       };
     };
@@ -817,6 +819,7 @@ export default async (application: Application): Promise<void> => {
     contentSource = "",
     required = true,
     compact = false,
+    modifiable = true,
   }) => html`
     <div
       key="content-editor"
@@ -2053,6 +2056,8 @@ export default async (application: Application): Promise<void> => {
                     `
                   : css``}"
                 javascript="${javascript`
+                  if (${!modifiable}) this.isModified = false;
+
                   autosize(this);
                   autosize.update(this);
   
