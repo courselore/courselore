@@ -856,6 +856,7 @@ export default async (application: Application): Promise<void> => {
                   font-size: var(--font-size--xs);
                   line-height: var(--line-height--xs);
                   display: flex;
+                  gap: var(--space--4);
                   align-items: baseline;
                 `}"
               >
@@ -999,46 +1000,12 @@ export default async (application: Application): Promise<void> => {
                 <div
                   $${compact ? html`hidden` : html``}
                   css="${css`
+                    flex: 1;
                     display: flex;
+                    justify-content: end;
+                    margin-right: var(--space---1);
                   `}"
                 >
-                  <button
-                    type="button"
-                    class="button button--tight button--transparent"
-                    javascript="${javascript`
-                      leafac.setTippy({
-                        event,
-                        element: this,
-                        tippyProps: {
-                          touch: false,
-                          content: "Help",
-                        },
-                      });
-
-                      leafac.setTippy({
-                        event,
-                        element: this,
-                        elementProperty: "dropdown",
-                        tippyProps: {
-                          trigger: "click",
-                          interactive: true,
-                          content: ${html`
-                            <div
-                              css="${css`
-                                max-height: 40vh;
-                                overflow: auto;
-                                padding: var(--space--2);
-                              `}"
-                            >
-                              $${help}
-                            </div>
-                          `},  
-                        },
-                      });
-                    `}"
-                  >
-                    <i class="bi bi-info-circle"></i>
-                  </button>
                   <button
                     type="button"
                     class="button button--tight button--transparent"
@@ -2024,6 +1991,43 @@ export default async (application: Application): Promise<void> => {
                     `}"
                   >
                     <i class="bi bi-textarea-t"></i>
+                  </button>
+                  <button
+                    type="button"
+                    class="button button--tight button--transparent"
+                    javascript="${javascript`
+                      leafac.setTippy({
+                        event,
+                        element: this,
+                        tippyProps: {
+                          touch: false,
+                          content: "Help",
+                        },
+                      });
+
+                      leafac.setTippy({
+                        event,
+                        element: this,
+                        elementProperty: "dropdown",
+                        tippyProps: {
+                          trigger: "click",
+                          interactive: true,
+                          content: ${html`
+                            <div
+                              css="${css`
+                                max-height: 40vh;
+                                overflow: auto;
+                                padding: var(--space--2);
+                              `}"
+                            >
+                              $${help}
+                            </div>
+                          `},  
+                        },
+                      });
+                    `}"
+                  >
+                    <i class="bi bi-info-circle"></i>
                   </button>
                 </div>
               </div>
