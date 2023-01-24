@@ -10,6 +10,8 @@
 
 ## Unreleased
 
+- Fixed the link in email notifications that directs the user to update notifications preferences. https://courselore.org/courses/8537410611/conversations/68
+
 ## 6.0.5
 
 **2023-01-18 · [Download](https://github.com/courselore/courselore/releases/tag/v6.0.5) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
