@@ -1972,6 +1972,124 @@ export default async (application: Application): Promise<void> => {
           >
             <i class="bi bi-textarea-t"></i>
           </button>
+          $${response.locals.course !== undefined
+            ? html`
+                <button
+                  type="button"
+                  class="button button--tight button--transparent"
+                  javascript="${javascript`
+                    leafac.setTippy({
+                      event,
+                      element: this,
+                      tippyProps: {
+                        touch: false,
+                        content: "Mentions & References",
+                      },
+                    });
+
+                    leafac.setTippy({
+                      event,
+                      element: this,
+                      elementProperty: "dropdown",
+                      tippyProps: {
+                        trigger: "click",
+                        interactive: true,
+                        content: ${html`
+                          <div
+                            css="${css`
+                              max-height: 40vh;
+                              overflow: auto;
+                              display: flex;
+                              flex-direction: column;
+                              gap: var(--space--2);
+                            `}"
+                          >
+                            <div class="dropdown--menu">
+                              <button
+                                type="button"
+                                class="dropdown--menu--item button button--transparent"
+                                javascript="${javascript`
+                                  const textarea = this.closest("[data-tippy-root]")._tippy.reference.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
+                
+                                  this.onclick = () => {
+                                    this.closest("[data-tippy-root]")._tippy.hide();
+                                    textFieldEdit.wrapSelection(textarea, " @", "");
+                                    textarea.focus();
+                                  };
+                                `}"
+                              >
+                                <i class="bi bi-at"></i>
+                                Mention Person
+                                <span class="keyboard-shortcut">@</span>
+                              </button>
+                              <button
+                                type="button"
+                                class="dropdown--menu--item button button--transparent"
+                                javascript="${javascript`
+                                  const textarea = this.closest("[data-tippy-root]")._tippy.reference.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
+                
+                                  this.onclick = () => {
+                                    this.closest("[data-tippy-root]")._tippy.hide();
+                                    textFieldEdit.wrapSelection(textarea, " #", "");
+                                    textarea.focus();
+                                  };
+                                `}"
+                              >
+                                <i class="bi bi-hash"></i>
+                                Refer to Conversation or Message
+                                <span class="keyboard-shortcut">#</span>
+                              </button>
+                            </div>
+                          </div>
+                        `},  
+                      },
+                    });
+                  `}"
+                >
+                  <i class="bi bi-at"></i>
+                </button>
+              `
+            : html``}
+          <label
+            class="button button--tight button--transparent"
+            javascript="${javascript`
+              leafac.setTippy({
+                event,
+                element: this,
+                tippyProps: {
+                  touch: false,
+                  content: ${html`
+                    Programmer Mode
+                    <span class="secondary">(Monospaced Font)</span>
+                  `},
+                },
+              });
+            `}"
+          >
+            <input
+              type="checkbox"
+              class="visually-hidden input--radio-or-checkbox--multilabel"
+              javascript="${javascript`
+                this.isModified = false;
+          
+                const textarea = this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
+          
+                this.onclick = () => {
+                  if (this.checked) textarea.classList.add("content-editor--write--textarea--programmer-mode");
+                  else textarea.classList.remove("content-editor--write--textarea--programmer-mode");
+                  localStorage.setItem("content-editor--write--textarea--programmer-mode", JSON.stringify(this.checked));
+                };
+          
+                if (JSON.parse(localStorage.getItem("content-editor--write--textarea--programmer-mode") ?? "false")) this.click();
+              `}"
+            />
+            <span>
+              <i class="bi bi-braces-asterisk"></i>
+            </span>
+            <span class="text--blue">
+              <i class="bi bi-braces-asterisk"></i>
+            </span>
+          </label>
           <a
             href="https://${application.configuration
               .hostname}/help/styling-content"
