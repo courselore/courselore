@@ -2623,7 +2623,7 @@ ${contentSource}</textarea
           key="content-editor--preview"
           hidden
           css="${css`
-            padding: var(--space--4);
+            padding: var(--space--2) var(--space--4);
           `}"
         ></div>
       </div>
