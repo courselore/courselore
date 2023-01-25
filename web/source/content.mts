@@ -2335,95 +2335,6 @@ export default async (application: Application): Promise<void> => {
                   if (${response.locals.course !== undefined}) {
                     const dropdownMenuTarget = this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea--dropdown-menu-target"]');
   
-                    leafac.setTippy({
-                      event,
-                      element: dropdownMenuTarget,
-                      elementProperty: "dropdownMenuMention",
-                      tippyProps: {
-                        placement: "bottom-start",
-                        trigger: "manual",
-                        interactive: true,
-                        content: ${html`
-                          <div
-                            css="${css`
-                              width: var(--space--56);
-                              max-height: var(--space--44);
-                              overflow: auto;
-                            `}"
-                          >
-                            <p class="heading">
-                              <i class="bi bi-at"></i>
-                              Mention Person
-                            </p>
-                            <div class="dropdown--menu">
-                              <div key="search-results"></div>
-                              <button
-                                type="button"
-                                class="dropdown--menu--item button button--transparent"
-                                javascript="${javascript`
-                                  this.onclick = () => {
-                                    this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete("everyone");
-                                  };
-                                `}"
-                              >
-                                Everyone in the Conversation
-                              </button>
-                              <button
-                                type="button"
-                                class="dropdown--menu--item button button--transparent"
-                                javascript="${javascript`
-                                  this.onclick = () => {
-                                    this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete("staff");
-                                  };
-                                `}"
-                              >
-                                Staff in the Conversation
-                              </button>
-                              <button
-                                type="button"
-                                class="dropdown--menu--item button button--transparent"
-                                javascript="${javascript`
-                                  this.onclick = () => {
-                                    this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete("students");
-                                  };
-                                `}"
-                              >
-                                Students in the Conversation
-                              </button>
-                            </div>
-                          </div>
-                        `},  
-                      },
-                    });
-  
-                    leafac.setTippy({
-                      event,
-                      element: dropdownMenuTarget,
-                      elementProperty: "dropdownMenuReference",
-                      tippyProps: {
-                        placement: "bottom-start",
-                        trigger: "manual",
-                        interactive: true,
-                        content: ${html`
-                          <div
-                            css="${css`
-                              width: var(--space--72);
-                              max-height: var(--space--44);
-                              overflow: auto;
-                            `}"
-                          >
-                            <p class="heading">
-                              <i class="bi bi-hash"></i>
-                              Refer to Conversation or Message
-                            </p>
-                            <div class="dropdown--menu">
-                              <div key="search-results"></div>
-                            </div>
-                          </div>
-                        `},  
-                      },
-                    });
-  
                     const dropdownMenus = [
                       {
                         trigger: "@",
@@ -2434,12 +2345,97 @@ export default async (application: Application): Promise<void> => {
                             ? `conversations/${response.locals.conversation.reference}/`
                             : ``
                         }content-editor/mention-user-search`},
-                        dropdownMenu: dropdownMenuTarget.dropdownMenuMention,
+                        dropdownMenu: leafac.setTippy({
+                          event,
+                          element: dropdownMenuTarget,
+                          elementProperty: "dropdownMenuMention",
+                          tippyProps: {
+                            placement: "bottom-start",
+                            trigger: "manual",
+                            interactive: true,
+                            content: ${html`
+                              <div
+                                css="${css`
+                                  width: var(--space--56);
+                                  max-height: var(--space--44);
+                                  overflow: auto;
+                                `}"
+                              >
+                                <p class="heading">
+                                  <i class="bi bi-at"></i>
+                                  Mention Person
+                                </p>
+                                <div class="dropdown--menu">
+                                  <div key="search-results"></div>
+                                  <button
+                                    type="button"
+                                    class="dropdown--menu--item button button--transparent"
+                                    javascript="${javascript`
+                                      this.onclick = () => {
+                                        this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete("everyone");
+                                      };
+                                    `}"
+                                  >
+                                    Everyone in the Conversation
+                                  </button>
+                                  <button
+                                    type="button"
+                                    class="dropdown--menu--item button button--transparent"
+                                    javascript="${javascript`
+                                      this.onclick = () => {
+                                        this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete("staff");
+                                      };
+                                    `}"
+                                  >
+                                    Staff in the Conversation
+                                  </button>
+                                  <button
+                                    type="button"
+                                    class="dropdown--menu--item button button--transparent"
+                                    javascript="${javascript`
+                                      this.onclick = () => {
+                                        this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete("students");
+                                      };
+                                    `}"
+                                  >
+                                    Students in the Conversation
+                                  </button>
+                                </div>
+                              </div>
+                            `},  
+                          },
+                        }),
                       },
                       {
                         trigger: "#",
                         route: ${`https://${application.configuration.hostname}/courses/${response.locals.course?.reference}/content-editor/refer-to-conversation-or-message-search`},
-                        dropdownMenu: dropdownMenuTarget.dropdownMenuReference,
+                        dropdownMenu: leafac.setTippy({
+                          event,
+                          element: dropdownMenuTarget,
+                          elementProperty: "dropdownMenuReference",
+                          tippyProps: {
+                            placement: "bottom-start",
+                            trigger: "manual",
+                            interactive: true,
+                            content: ${html`
+                              <div
+                                css="${css`
+                                  width: var(--space--72);
+                                  max-height: var(--space--44);
+                                  overflow: auto;
+                                `}"
+                              >
+                                <p class="heading">
+                                  <i class="bi bi-hash"></i>
+                                  Refer to Conversation or Message
+                                </p>
+                                <div class="dropdown--menu">
+                                  <div key="search-results"></div>
+                                </div>
+                              </div>
+                            `},  
+                          },
+                        }),
                       },
                     ];
   

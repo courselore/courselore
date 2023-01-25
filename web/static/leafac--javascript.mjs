@@ -565,6 +565,8 @@ export function setTippy({
     event,
     element: tippyContentElement,
   });
+
+  return element[elementProperty];
 }
 
 export function validate(element) {
