@@ -106,7 +106,7 @@ export default async (application: Application): Promise<void> => {
           $${application.server.locals.partials.contentEditor({
             request,
             response,
-            modifiable: false
+            modifiable: false,
           })}
         `,
       })
