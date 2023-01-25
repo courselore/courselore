@@ -2474,6 +2474,7 @@ export default async (application: Application): Promise<void> => {
                           const content = dropdownMenu.props.content;
                           const searchResults = content.querySelector('[key="search-results"]');
                           const search = value.slice(anchorIndex, selectionMax).trim();
+                          searchResults.partialParentElement = true;
                           if (search === "")
                             searchResults.innerHTML = ${html`
                               <p class="dropdown--menu--item secondary">
