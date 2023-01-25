@@ -2445,25 +2445,18 @@ export default async (application: Application): Promise<void> => {
                       let isUpdating = false;
                       let shouldUpdateAgain = false;
                       return async () => {
-                        const value = this.value;
-                        const selectionMin = Math.min(this.selectionStart, this.selectionEnd);
-                        const selectionMax = Math.max(this.selectionStart, this.selectionEnd);
                         for (const { trigger, route, dropdownMenu } of dropdownMenus) {
                           if (!dropdownMenu.state.isShown) {
                             if (
-                              value[selectionMin - 1] !== trigger ||
-                              (selectionMin > 1 && value[selectionMin - 2].match(/\\w/) !== null)
+                              this.value[this.selectionStart - 1] !== trigger ||
+                              (this.selectionStart > 1 && this.value[this.selectionStart - 2].match(/\\w/) !== null)
                             ) continue;
-                            anchorIndex = selectionMin;
+                            anchorIndex = this.selectionStart;
                             const caretCoordinates = textareaCaret(this, anchorIndex - 1);
                             dropdownMenuTarget.style.top = String(caretCoordinates.top) + "px";
                             dropdownMenuTarget.style.left = String(caretCoordinates.left) + "px";
                             tippy.hideAll();
                             dropdownMenu.show();
-                          }
-                          if (selectionMin < anchorIndex || value[anchorIndex - 1] !== trigger || value[anchorIndex] === " ") {
-                            dropdownMenu.hide();
-                            continue;
                           }
                           if (isUpdating) {
                             shouldUpdateAgain = true;
@@ -2473,7 +2466,7 @@ export default async (application: Application): Promise<void> => {
                           shouldUpdateAgain = false;
                           const content = dropdownMenu.props.content;
                           const searchResults = content.querySelector('[key="search-results"]');
-                          const search = value.slice(anchorIndex, selectionMax).trim();
+                          const search = this.value.slice(anchorIndex, this.selectionStart).trim();
                           searchResults.partialParentElement = true;
                           if (search === "")
                             searchResults.innerHTML = ${html`
