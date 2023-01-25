@@ -721,7 +721,9 @@ export function relativizeDateTimeElement(element, options = {}) {
       elementProperty: "relativizeDateTimeElementTooltip",
       tippyProps: {
         touch: false,
-        content: formatUTCDateTime(dateTime),
+        content: `${localizeDateTime(dateTime)} (${formatUTCDateTime(
+          dateTime
+        )})`,
       },
     });
     element.textContent = relativizeDateTime(dateTime, options);
