@@ -11,6 +11,7 @@
 ## Unreleased
 
 - Fixed the link in email notifications that directs the user to update notifications preferences. https://courselore.org/courses/8537410611/conversations/68
+- In relative dates (for example, “14 days ago”), the tooltip shows not only the original time in UTC, but in local time as well.
 
 ## 6.0.5
 
