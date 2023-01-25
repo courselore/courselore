@@ -853,17 +853,17 @@ export default async (application: Application): Promise<void> => {
             }
 
             :checked + .button--transparent {
-              background-color: var(--color--gray--medium--100);
+              background-color: var(--color--gray--medium--200);
             }
             :focus-within + .button--transparent {
-              background-color: var(--color--gray--medium--200);
+              background-color: var(--color--gray--medium--300);
             }
             @media (prefers-color-scheme: dark) {
               :checked + .button--transparent {
-                background-color: var(--color--gray--medium--800);
+                background-color: var(--color--gray--medium--700);
               }
               :focus-within + .button--transparent {
-                background-color: var(--color--gray--medium--700);
+                background-color: var(--color--gray--medium--600);
               }
             }
           `}"
@@ -2241,9 +2241,9 @@ export default async (application: Application): Promise<void> => {
       </div>
       <div
         css="${css`
-          background-color: var(--color--gray--medium--100);
+          background-color: var(--color--gray--medium--200);
           @media (prefers-color-scheme: dark) {
-            background-color: var(--color--gray--medium--800);
+            background-color: var(--color--gray--medium--700);
           }
           border-radius: var(--border-radius--lg);
         `}"

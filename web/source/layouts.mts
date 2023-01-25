@@ -1110,9 +1110,9 @@ export default async (application: Application): Promise<void> => {
 
                 hr {
                   border-top: var(--border-width--1) solid
-                    var(--color--gray--medium--200);
+                    var(--color--gray--medium--300);
                   @media (prefers-color-scheme: dark) {
-                    border-color: var(--color--gray--medium--700);
+                    border-color: var(--color--gray--medium--600);
                   }
                   margin: var(--space--2) var(--space--0);
                 }
@@ -1177,9 +1177,9 @@ export default async (application: Application): Promise<void> => {
                   font-family: "JetBrains MonoVariable",
                     var(--font-family--monospace);
                   font-variant-ligatures: none;
-                  background-color: var(--color--gray--medium--200);
+                  background-color: var(--color--gray--medium--300);
                   @media (prefers-color-scheme: dark) {
-                    background-color: var(--color--gray--medium--700);
+                    background-color: var(--color--gray--medium--600);
                   }
                   padding: var(--space--0) var(--space--0-5);
                   border-radius: var(--border-radius--base);
@@ -1277,13 +1277,13 @@ export default async (application: Application): Promise<void> => {
                   font-size: var(--font-size--2xs);
                   line-height: var(--line-height--2xs);
                   color: var(--color--transparent);
-                  background-color: var(--color--gray--medium--200);
+                  background-color: var(--color--gray--medium--300);
                   &:checked {
                     color: var(--color--blue--50);
                     background-color: var(--color--blue--600);
                   }
                   @media (prefers-color-scheme: dark) {
-                    background-color: var(--color--gray--medium--700);
+                    background-color: var(--color--gray--medium--600);
                     &:checked {
                       color: var(--color--blue--200);
                       background-color: var(--color--blue--700);
@@ -1312,10 +1312,10 @@ export default async (application: Application): Promise<void> => {
                   padding-left: var(--space--4);
                   color: var(--color--gray--medium--500);
                   border-left: var(--border-width--4) solid
-                    var(--color--gray--medium--200);
+                    var(--color--gray--medium--300);
                   @media (prefers-color-scheme: dark) {
                     color: var(--color--gray--medium--400);
-                    border-color: var(--color--gray--medium--700);
+                    border-color: var(--color--gray--medium--600);
                   }
                 }
 
@@ -1325,9 +1325,9 @@ export default async (application: Application): Promise<void> => {
                   overflow-x: auto;
                   tbody tr {
                     border-top: var(--border-width--1) solid
-                      var(--color--gray--medium--200);
+                      var(--color--gray--medium--300);
                     @media (prefers-color-scheme: dark) {
-                      border-color: var(--color--gray--medium--700);
+                      border-color: var(--color--gray--medium--600);
                     }
                   }
                   th,
@@ -1345,21 +1345,21 @@ export default async (application: Application): Promise<void> => {
                 }
 
                 details {
-                  background-color: var(--color--gray--medium--200);
+                  background-color: var(--color--gray--medium--300);
                   @media (prefers-color-scheme: dark) {
-                    background-color: var(--color--gray--medium--700);
+                    background-color: var(--color--gray--medium--600);
                   }
                   border-radius: var(--border-radius--xl);
                   padding: var(--space--0) var(--space--4);
                   & > summary {
                     &:hover,
                     &:focus-within {
-                      background-color: var(--color--gray--medium--300);
+                      background-color: var(--color--gray--medium--400);
                     }
                     @media (prefers-color-scheme: dark) {
                       &:hover,
                       &:focus-within {
-                        background-color: var(--color--gray--medium--600);
+                        background-color: var(--color--gray--medium--500);
                       }
                     }
                     padding: var(--space--2) var(--space--4);
