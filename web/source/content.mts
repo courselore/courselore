@@ -1025,7 +1025,12 @@ export default async (application: Application): Promise<void> => {
           
                             this.onclick = () => {
                               this.closest("[data-tippy-root]")._tippy.hide();
-                              textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "# ", "\\n\\n");
+                              if (textarea.selectionStart === textarea.selectionEnd) {
+                                textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "# ", "HEADING\\n\\n");
+                                textarea.selectionEnd += "HEADING".length;
+                              }
+                              else
+                                textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "# ", "\\n\\n");
                               textarea.focus();
                             };
 
@@ -1058,7 +1063,12 @@ export default async (application: Application): Promise<void> => {
           
                             this.onclick = () => {
                               this.closest("[data-tippy-root]")._tippy.hide();
-                              textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "## ", "\\n\\n");
+                              if (textarea.selectionStart === textarea.selectionEnd) {
+                                textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "## ", "HEADING\\n\\n");
+                                textarea.selectionEnd += "HEADING".length;
+                              }
+                              else
+                                textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "## ", "\\n\\n");
                               textarea.focus();  
                             };
 
@@ -1091,7 +1101,12 @@ export default async (application: Application): Promise<void> => {
           
                             this.onclick = () => {
                               this.closest("[data-tippy-root]")._tippy.hide();
-                              textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "### ", "\\n\\n");
+                              if (textarea.selectionStart === textarea.selectionEnd) {
+                                textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "### ", "HEADING\\n\\n");
+                                textarea.selectionEnd += "HEADING".length;
+                              }
+                              else
+                                textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "### ", "\\n\\n");
                               textarea.focus();  
                             };
 
@@ -1185,7 +1200,12 @@ export default async (application: Application): Promise<void> => {
           
                             this.onclick = () => {
                               this.closest("[data-tippy-root]")._tippy.hide();
-                              textFieldEdit.wrapSelection(textarea, "**");
+                              if (textarea.selectionStart === textarea.selectionEnd) {
+                                textFieldEdit.wrapSelection(textarea, "**", "TEXT**");
+                                textarea.selectionEnd += "TEXT".length;
+                              }
+                              else
+                                textFieldEdit.wrapSelection(textarea, "**");
                               textarea.focus();
                             };
                       
@@ -1217,7 +1237,12 @@ export default async (application: Application): Promise<void> => {
           
                             this.onclick = () => {
                               this.closest("[data-tippy-root]")._tippy.hide();
-                              textFieldEdit.wrapSelection(textarea, "_");
+                              if (textarea.selectionStart === textarea.selectionEnd) {
+                                textFieldEdit.wrapSelection(textarea, "_", "TEXT_");
+                                textarea.selectionEnd += "TEXT".length;
+                              }
+                              else
+                                textFieldEdit.wrapSelection(textarea, "_");
                               textarea.focus();
                             };
                         
@@ -1249,7 +1274,12 @@ export default async (application: Application): Promise<void> => {
           
                             this.onclick = () => {
                               this.closest("[data-tippy-root]")._tippy.hide();
-                              textFieldEdit.wrapSelection(textarea, "<u>", "</u>");
+                              if (textarea.selectionStart === textarea.selectionEnd) {
+                                textFieldEdit.wrapSelection(textarea, "<u>", "TEXT</u>");
+                                textarea.selectionEnd += "TEXT".length;
+                              }
+                              else
+                                textFieldEdit.wrapSelection(textarea, "<u>", "</u>");
                               textarea.focus();
                             };
                         
@@ -1281,7 +1311,12 @@ export default async (application: Application): Promise<void> => {
           
                             this.onclick = () => {
                               this.closest("[data-tippy-root]")._tippy.hide();
-                              textFieldEdit.wrapSelection(textarea, "~~");
+                              if (textarea.selectionStart === textarea.selectionEnd) {
+                                textFieldEdit.wrapSelection(textarea, "~~", "TEXT~~");
+                                textarea.selectionEnd += "TEXT".length;
+                              }
+                              else
+                                textFieldEdit.wrapSelection(textarea, "~~");
                               textarea.focus();
                             };
 
@@ -1319,7 +1354,12 @@ export default async (application: Application): Promise<void> => {
           
                             this.onclick = () => {
                               this.closest("[data-tippy-root]")._tippy.hide();
-                              textFieldEdit.wrapSelection(textarea, "[", "](https://example.com)");
+                              if (textarea.selectionStart === textarea.selectionEnd) {
+                                textFieldEdit.wrapSelection(textarea, "[", "TEXT](https://example.com)");
+                                textarea.selectionEnd += "TEXT".length;
+                              }
+                              else
+                                textFieldEdit.wrapSelection(textarea, "[", "](https://example.com)");
                               textarea.focus();
                             };
                         
@@ -1356,7 +1396,12 @@ export default async (application: Application): Promise<void> => {
           
                             this.onclick = () => {
                               this.closest("[data-tippy-root]")._tippy.hide();
-                              textFieldEdit.wrapSelection(textarea, "$");
+                              if (textarea.selectionStart === textarea.selectionEnd) {
+                                textFieldEdit.wrapSelection(textarea, "$", "LATEX$");
+                                textarea.selectionEnd += "LATEX".length;
+                              }
+                              else
+                                textFieldEdit.wrapSelection(textarea, "$");
                               textarea.focus();
                             };
                           
@@ -1389,7 +1434,12 @@ export default async (application: Application): Promise<void> => {
           
                             this.onclick = () => {
                               this.closest("[data-tippy-root]")._tippy.hide();
-                              textFieldEdit.wrapSelection(textarea, "\`");
+                              if (textarea.selectionStart === textarea.selectionEnd) {
+                                textFieldEdit.wrapSelection(textarea, "\`", "CODE\`");
+                                textarea.selectionEnd += "CODE".length;
+                              }
+                              else
+                                textFieldEdit.wrapSelection(textarea, "\`");
                               textarea.focus();
                             };
                         
@@ -1426,7 +1476,12 @@ export default async (application: Application): Promise<void> => {
           
                             this.onclick = () => {
                               this.closest("[data-tippy-root]")._tippy.hide();
-                              textFieldEdit.wrapSelection(textarea, "<ins>", "</ins>");
+                              if (textarea.selectionStart === textarea.selectionEnd) {
+                                textFieldEdit.wrapSelection(textarea, "<ins>", "TEXT</ins>");
+                                textarea.selectionEnd += "TEXT".length;
+                              }
+                              else
+                                textFieldEdit.wrapSelection(textarea, "<ins>", "</ins>");
                               textarea.focus();
                             };
                           `}"
@@ -1442,7 +1497,12 @@ export default async (application: Application): Promise<void> => {
           
                             this.onclick = () => {
                               this.closest("[data-tippy-root]")._tippy.hide();
-                              textFieldEdit.wrapSelection(textarea, "~~");
+                              if (textarea.selectionStart === textarea.selectionEnd) {
+                                textFieldEdit.wrapSelection(textarea, "~~", "TEXT~~");
+                                textarea.selectionEnd += "TEXT".length;
+                              }
+                              else
+                                textFieldEdit.wrapSelection(textarea, "~~");
                               textarea.focus();
                             };
                           `}"
@@ -1463,7 +1523,12 @@ export default async (application: Application): Promise<void> => {
           
                             this.onclick = () => {
                               this.closest("[data-tippy-root]")._tippy.hide();
-                              textFieldEdit.wrapSelection(textarea, "<sup>", "</sup>");
+                              if (textarea.selectionStart === textarea.selectionEnd) {
+                                textFieldEdit.wrapSelection(textarea, "<sup>", "TEXT</sup>");
+                                textarea.selectionEnd += "TEXT".length;
+                              }
+                              else
+                                textFieldEdit.wrapSelection(textarea, "<sup>", "</sup>");
                               textarea.focus();
                             };
                           `}"
@@ -1479,7 +1544,12 @@ export default async (application: Application): Promise<void> => {
           
                             this.onclick = () => {
                               this.closest("[data-tippy-root]")._tippy.hide();
-                              textFieldEdit.wrapSelection(textarea, "<sub>", "</sub>");
+                              if (textarea.selectionStart === textarea.selectionEnd) {
+                                textFieldEdit.wrapSelection(textarea, "<sub>", "TEXT</sub>");
+                                textarea.selectionEnd += "TEXT".length;
+                              }
+                              else
+                                textFieldEdit.wrapSelection(textarea, "<sub>", "</sub>");
                               textarea.focus();
                             };
                           `}"
@@ -1663,7 +1733,16 @@ export default async (application: Application): Promise<void> => {
           
                             this.onclick = () => {
                               this.closest("[data-tippy-root]")._tippy.hide();
-                              textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "- ", "\\n\\n");
+                              if (textarea.selectionStart === textarea.selectionEnd) {
+                                textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "- ", "TEXT\\n\\n");
+                                textarea.selectionEnd += "TEXT".length;
+                              } else {
+                                const replacement = textFieldEdit.getSelection(textarea).split("\\n").map((line) => "- " + line).join("\\n");
+                                const selectionStart = textarea.selectionStart + ((textarea.selectionStart > 0) ? "\\n\\n" : "").length;
+                                textFieldEdit.insert(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + replacement + "\\n\\n");
+                                textarea.selectionStart = selectionStart;
+                                textarea.selectionEnd = textarea.selectionStart + replacement.length;
+                              }
                               textarea.focus();
                             };
 
@@ -1696,7 +1775,16 @@ export default async (application: Application): Promise<void> => {
           
                             this.onclick = () => {
                               this.closest("[data-tippy-root]")._tippy.hide();
-                              textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "1. ", "\\n\\n");
+                              if (textarea.selectionStart === textarea.selectionEnd) {
+                                textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "1. ", "TEXT\\n\\n");
+                                textarea.selectionEnd += "TEXT".length;
+                              } else {
+                                const replacement = textFieldEdit.getSelection(textarea).split("\\n").map((line, index) => String(index + 1) + ". " + line).join("\\n");
+                                const selectionStart = textarea.selectionStart + ((textarea.selectionStart > 0) ? "\\n\\n" : "").length;
+                                textFieldEdit.insert(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + replacement + "\\n\\n");
+                                textarea.selectionStart = selectionStart;
+                                textarea.selectionEnd = textarea.selectionStart + replacement.length;
+                              }
                               textarea.focus();
                             };
 
@@ -1729,7 +1817,16 @@ export default async (application: Application): Promise<void> => {
           
                             this.onclick = () => {
                               this.closest("[data-tippy-root]")._tippy.hide();
-                              textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "- [ ] ", "\\n\\n");
+                              if (textarea.selectionStart === textarea.selectionEnd) {
+                                textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "- [ ] ", "TEXT (USE [X] TO MARK ITEM AS DONE)\\n\\n");
+                                textarea.selectionEnd += "TEXT (USE [X] TO MARK ITEM AS DONE)".length;
+                              } else {
+                                const replacement = textFieldEdit.getSelection(textarea).split("\\n").map((line) => "- [ ] " + line).join("\\n");
+                                const selectionStart = textarea.selectionStart + ((textarea.selectionStart > 0) ? "\\n\\n" : "").length;
+                                textFieldEdit.insert(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + replacement + "\\n\\n");
+                                textarea.selectionStart = selectionStart;
+                                textarea.selectionEnd = textarea.selectionStart + replacement.length;
+                              }
                               textarea.focus();
                             };
 
@@ -1767,7 +1864,16 @@ export default async (application: Application): Promise<void> => {
           
                             this.onclick = () => {
                               this.closest("[data-tippy-root]")._tippy.hide();
-                              textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "> ", "\\n\\n");
+                              if (textarea.selectionStart === textarea.selectionEnd) {
+                                textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "> ", "TEXT\\n\\n");
+                                textarea.selectionEnd += "TEXT".length;
+                              } else {
+                                const replacement = textFieldEdit.getSelection(textarea).split("\\n").map((line) => "> " + line).join("\\n");
+                                const selectionStart = textarea.selectionStart + ((textarea.selectionStart > 0) ? "\\n\\n" : "").length;
+                                textFieldEdit.insert(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + replacement + "\\n\\n");
+                                textarea.selectionStart = selectionStart;
+                                textarea.selectionEnd = textarea.selectionStart + replacement.length;
+                              }
                               textarea.focus();
                             };
 
@@ -1799,8 +1905,10 @@ export default async (application: Application): Promise<void> => {
           
                             this.onclick = () => {
                               this.closest("[data-tippy-root]")._tippy.hide();
-                              const gapLength = textarea.selectionEnd - textarea.selectionStart + 2;
-                              textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "| ", " |  |\\n|" + "-".repeat(gapLength) + "|--|\\n|" + " ".repeat(gapLength) + "|  |\\n\\n");
+                              const selectionStart = textarea.selectionStart + (textFieldEdit.getSelection(textarea) + ((textarea.selectionEnd > 0) ? "\\n\\n" : "") + "| ").length;
+                              textFieldEdit.insert(textarea, textFieldEdit.getSelection(textarea) + ((textarea.selectionEnd > 0) ? "\\n\\n" : "") + "| HEADING | HEADING |\\n|---------|---------|\\n| CONTENT | CONTENT |\\n\\n");
+                              textarea.selectionStart = selectionStart;
+                              textarea.selectionEnd = textarea.selectionStart + "HEADING".length;
                               textarea.focus();
                             };
                         
@@ -1833,7 +1941,12 @@ export default async (application: Application): Promise<void> => {
           
                             this.onclick = () => {
                               this.closest("[data-tippy-root]")._tippy.hide();
-                              textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "<details>\\n<summary>", "</summary>\\n\\nContent\\n\\n</details>\\n\\n");
+                              if (textarea.selectionStart === textarea.selectionEnd) {
+                                textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "<details>\\n<summary>", "SUMMARY</summary>\\n\\nCONTENT\\n\\n</details>\\n\\n");
+                                textarea.selectionEnd += "SUMMARY".length;
+                              }
+                              else
+                                textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "<details>\\n<summary>SUMMARY</summary>\\n\\n", "\\n\\n</details>\\n\\n");
                               textarea.focus();
                             };
                         
@@ -1866,7 +1979,13 @@ export default async (application: Application): Promise<void> => {
           
                             this.onclick = () => {
                               this.closest("[data-tippy-root]")._tippy.hide();
-                              textFieldEdit.wrapSelection(textarea, "[^", "<identifier>]\\n\\n[^<identifier>]: <footnote>");
+                              const identifier = Math.random().toString(36).slice(2);
+                              if (textarea.selectionStart === textarea.selectionEnd) {
+                                textFieldEdit.wrapSelection(textarea, "[^footnote--" + identifier + "]\\n\\n[^footnote--" + identifier + "]: ", "FOOTNOTE");
+                                textarea.selectionEnd += "FOOTNOTE".length;
+                              }
+                              else
+                                textFieldEdit.wrapSelection(textarea, "[^footnote--" + identifier + "]\\n\\n[^footnote--" + identifier + "]: ", "");
                               textarea.focus();
                             };
                         
@@ -1904,7 +2023,12 @@ export default async (application: Application): Promise<void> => {
           
                             this.onclick = () => {
                               this.closest("[data-tippy-root]")._tippy.hide();
-                              textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "$$\\n", "\\n$$\\n\\n");
+                              if (textarea.selectionStart === textarea.selectionEnd) {
+                                textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "$$\\n", "LATEX\\n$$\\n\\n");
+                                textarea.selectionEnd += "LATEX".length;
+                              }
+                              else
+                                textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "$$\\n", "\\n$$\\n\\n");
                               textarea.focus();
                             };
                         
@@ -1938,7 +2062,12 @@ export default async (application: Application): Promise<void> => {
           
                             this.onclick = () => {
                               this.closest("[data-tippy-root]")._tippy.hide();
-                              textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "\`\`\`language\\n", "\\n\`\`\`\\n\\n");
+                              if (textarea.selectionStart === textarea.selectionEnd) {
+                                textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "\`\`\`", "LANGUAGE\\nCODE\\n\`\`\`\\n\\n");
+                                textarea.selectionEnd += "LANGUAGE".length;
+                              }
+                              else
+                                textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "\`\`\`LANGUAGE\\n", "\\n\`\`\`\\n\\n");
                               textarea.focus();
                             };
                         
@@ -2013,7 +2142,7 @@ export default async (application: Application): Promise<void> => {
                 
                                   this.onclick = () => {
                                     this.closest("[data-tippy-root]")._tippy.hide();
-                                    textFieldEdit.wrapSelection(textarea, " @", "");
+                                    textFieldEdit.wrapSelection(textarea, " @", " ");
                                     textarea.focus();
                                   };
                                 `}"
@@ -2030,7 +2159,7 @@ export default async (application: Application): Promise<void> => {
                 
                                   this.onclick = () => {
                                     this.closest("[data-tippy-root]")._tippy.hide();
-                                    textFieldEdit.wrapSelection(textarea, " #", "");
+                                    textFieldEdit.wrapSelection(textarea, " #", " ");
                                     textarea.focus();
                                   };
                                 `}"
