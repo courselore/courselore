@@ -695,6 +695,8 @@ Other: @${lodash.sample(enrollments)!.reference}
 
 Non-existent: @1571024857
 
+Groups: @everyone, @staff, @students
+
 # \`#references\`
 
 Conversation self: #1

@@ -2478,7 +2478,12 @@ export default async (application: Application): Promise<void> => {
                           const content = dropdownMenu.props.content;
                           const searchResults = content.querySelector('[key="search-results"]');
                           const search = value.slice(anchorIndex, selectionMax).trim();
-                          if (search === "") searchResults.innerHTML = "";
+                          if (search === "")
+                            searchResults.innerHTML = ${html`
+                              <p class="dropdown--menu--item secondary">
+                                Start typing to search…
+                              </p>
+                            `};
                           else
                             leafac.loadPartial(
                               searchResults,
