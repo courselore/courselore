@@ -2345,6 +2345,44 @@ export default async (application: Application): Promise<void> => {
                             ? `conversations/${response.locals.conversation.reference}/`
                             : ``
                         }content-editor/mention-user-search`},
+                        emptySearch: ${html`
+                          <button
+                            type="button"
+                            class="dropdown--menu--item button button--transparent"
+                            javascript="${javascript`
+                                      this.onclick = () => {
+                                        this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete("everyone");
+                                      };
+                                    `}"
+                          >
+                            Everyone in the Conversation
+                          </button>
+                          <button
+                            type="button"
+                            class="dropdown--menu--item button button--transparent"
+                            javascript="${javascript`
+                                      this.onclick = () => {
+                                        this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete("staff");
+                                      };
+                                    `}"
+                          >
+                            Staff in the Conversation
+                          </button>
+                          <button
+                            type="button"
+                            class="dropdown--menu--item button button--transparent"
+                            javascript="${javascript`
+                                      this.onclick = () => {
+                                        this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete("students");
+                                      };
+                                    `}"
+                          >
+                            Students in the Conversation
+                          </button>
+                          <p class="dropdown--menu--item secondary">
+                            Start typing to search…
+                          </p>
+                        `},
                         dropdownMenu: leafac.setTippy({
                           event,
                           element: dropdownMenuTarget,
@@ -2365,42 +2403,10 @@ export default async (application: Application): Promise<void> => {
                                   <i class="bi bi-at"></i>
                                   Mention Person
                                 </p>
-                                <div class="dropdown--menu">
-                                  <div key="search-results"></div>
-                                  <button
-                                    type="button"
-                                    class="dropdown--menu--item button button--transparent"
-                                    javascript="${javascript`
-                                      this.onclick = () => {
-                                        this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete("everyone");
-                                      };
-                                    `}"
-                                  >
-                                    Everyone in the Conversation
-                                  </button>
-                                  <button
-                                    type="button"
-                                    class="dropdown--menu--item button button--transparent"
-                                    javascript="${javascript`
-                                      this.onclick = () => {
-                                        this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete("staff");
-                                      };
-                                    `}"
-                                  >
-                                    Staff in the Conversation
-                                  </button>
-                                  <button
-                                    type="button"
-                                    class="dropdown--menu--item button button--transparent"
-                                    javascript="${javascript`
-                                      this.onclick = () => {
-                                        this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete("students");
-                                      };
-                                    `}"
-                                  >
-                                    Students in the Conversation
-                                  </button>
-                                </div>
+                                <div
+                                  key="search-results"
+                                  class="dropdown--menu"
+                                ></div>
                               </div>
                             `},  
                           },
@@ -2409,6 +2415,11 @@ export default async (application: Application): Promise<void> => {
                       {
                         trigger: "#",
                         route: ${`https://${application.configuration.hostname}/courses/${response.locals.course?.reference}/content-editor/refer-to-conversation-or-message-search`},
+                        emptySearch: ${html`
+                          <p class="dropdown--menu--item secondary">
+                            Start typing to search…
+                          </p>
+                        `},
                         dropdownMenu: leafac.setTippy({
                           event,
                           element: dropdownMenuTarget,
@@ -2429,9 +2440,10 @@ export default async (application: Application): Promise<void> => {
                                   <i class="bi bi-hash"></i>
                                   Refer to Conversation or Message
                                 </p>
-                                <div class="dropdown--menu">
-                                  <div key="search-results"></div>
-                                </div>
+                                <div
+                                  key="search-results"
+                                  class="dropdown--menu"
+                                ></div>
                               </div>
                             `},  
                           },
@@ -2445,7 +2457,7 @@ export default async (application: Application): Promise<void> => {
                       let isUpdating = false;
                       let shouldUpdateAgain = false;
                       return async () => {
-                        for (const { trigger, route, dropdownMenu } of dropdownMenus) {
+                        for (const { trigger, route, emptySearch, dropdownMenu } of dropdownMenus) {
                           if (!dropdownMenu.state.isShown) {
                             if (
                               (this.selectionStart > 1 && this.value[this.selectionStart - 2].match(/^\\s$/) === null) ||
@@ -2473,11 +2485,7 @@ export default async (application: Application): Promise<void> => {
                           const searchResults = content.querySelector('[key="search-results"]');
                           searchResults.partialParentElement = true;
                           if (search === "")
-                            searchResults.innerHTML = ${html`
-                              <p class="dropdown--menu--item secondary">
-                                Start typing to search…
-                              </p>
-                            `};
+                            searchResults.innerHTML = emptySearch;
                           else
                             leafac.loadPartial(
                               searchResults,
@@ -3166,7 +3174,7 @@ ${contentSource}</textarea
             $${results === html``
               ? html`
                   <div class="dropdown--menu--item secondary">
-                    No conversation or message found.
+                    Conversation or message not found.
                   </div>
                 `
               : results}
