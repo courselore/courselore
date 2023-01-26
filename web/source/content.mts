@@ -2530,8 +2530,8 @@ export default async (application: Application): Promise<void> => {
                     };
   
                     this.dropdownMenuComplete = (text) => {
-                      this.setSelectionRange(anchorIndex, Math.max(this.selectionStart, this.selectionEnd));
-                      textFieldEdit.insert(this, text + " ");
+                      this.setSelectionRange(anchorIndex, this.selectionStart);
+                      textFieldEdit.insert(this, text);
                       tippy.hideAll();
                       this.focus();
                     };
