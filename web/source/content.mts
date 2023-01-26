@@ -2142,7 +2142,7 @@ export default async (application: Application): Promise<void> => {
                 
                                   this.onclick = () => {
                                     this.closest("[data-tippy-root]")._tippy.hide();
-                                    textFieldEdit.wrapSelection(textarea, " @", " ");
+                                    textFieldEdit.wrapSelection(textarea, " @", "");
                                     textarea.focus();
                                   };
                                 `}"
@@ -2159,7 +2159,7 @@ export default async (application: Application): Promise<void> => {
                 
                                   this.onclick = () => {
                                     this.closest("[data-tippy-root]")._tippy.hide();
-                                    textFieldEdit.wrapSelection(textarea, " #", " ");
+                                    textFieldEdit.wrapSelection(textarea, " #", "");
                                     textarea.focus();
                                   };
                                 `}"
