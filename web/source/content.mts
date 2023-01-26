@@ -436,12 +436,12 @@ export default async (application: Application): Promise<void> => {
           new RegExp(
             `^https://${escapeStringRegexp(
               application.configuration.hostname
-            )}/courses/(\\d+)/conversations/(\\d+)(?:\\?messages%5BmessageReference%5D=(\\d+))?$`
+            )}/courses/(?<courseReference>\\d+)/conversations/(?<conversationReference>\\d+)(?:\\?messages%5BmessageReference%5D=(?<messageReference>\\d+))?$`
           )
         );
-        if (match === null) continue;
-        const [courseReference, conversationReference, messageReference] =
-          match.slice(1);
+        if (match?.groups === undefined) continue;
+        const { courseReference, conversationReference, messageReference } =
+          match.groups;
         if (courseReference !== response.locals.course.reference) continue;
         const conversation = application.server.locals.helpers.getConversation({
           request: requestCourseEnrolled,
@@ -654,15 +654,15 @@ export default async (application: Application): Promise<void> => {
           new RegExp(
             `^https://${escapeStringRegexp(
               application.configuration.hostname
-            )}/courses/(\\d+)/conversations/(\\d+)(?:\\?messages%5BmessageReference%5D=(\\d+))?$`
+            )}/courses/(?<hrefCourseReference>\\d+)/conversations/(?<hrefConversationReference>\\d+)(?:\\?messages%5BmessageReference%5D=(?<hrefMessageReference>\\d+))?$`
           )
         );
-        if (hrefMatch === null) continue;
-        const [
+        if (hrefMatch?.groups === undefined) continue;
+        const {
           hrefCourseReference,
           hrefConversationReference,
           hrefMessageReference,
-        ] = hrefMatch.slice(1);
+        } = hrefMatch.groups;
         if (hrefCourseReference !== response.locals.course.reference) continue;
         const textContentMatch = element
           .textContent!.trim()
