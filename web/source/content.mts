@@ -490,7 +490,7 @@ export default async (application: Application): Promise<void> => {
           let newNodeHTML = html`${node.textContent}`;
 
           newNodeHTML = newNodeHTML.replace(
-            /(?<!\w)@(everyone|staff|students|anonymous|[0-9a-z-]+)(?!\w)/gi,
+            /(?<=^|\s)@([a-z0-9-]+)(?=[^a-z0-9-]|$)/gi,
             (match, mention) => {
               mention = mention.toLowerCase();
               let mentionHTML: HTML;
@@ -600,7 +600,7 @@ export default async (application: Application): Promise<void> => {
           );
 
           newNodeHTML = newNodeHTML.replace(
-            /(?<!\w)#(\d+)(?:\/(\d+))?(?!\w)/g,
+            /(?<=^|\s)#(\d+)(?:\/(\d+))?(?=[^\d]|$)/g,
             (match, conversationReference, messageReference) => {
               const conversation =
                 application.server.locals.helpers.getConversation({
