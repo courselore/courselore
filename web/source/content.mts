@@ -510,7 +510,7 @@ export default async (application: Application): Promise<void> => {
                         },
                       });
                     `}"
-                    >@${lodash.capitalize(mention)}</span
+                    >@${mention}</span
                   >`;
                   break;
                 case "anonymous":
@@ -2448,8 +2448,8 @@ export default async (application: Application): Promise<void> => {
                         for (const { trigger, route, dropdownMenu } of dropdownMenus) {
                           if (!dropdownMenu.state.isShown) {
                             if (
-                              this.value[this.selectionStart - 1] !== trigger ||
-                              (this.selectionStart > 1 && this.value[this.selectionStart - 2].match(/\\w/) !== null)
+                              (this.selectionStart > 1 && this.value[this.selectionStart - 2].match(/^\\s$/) === null) ||
+                              this.value[this.selectionStart - 1] !== trigger
                             ) continue;
                             anchorIndex = this.selectionStart;
                             const caretCoordinates = textareaCaret(this, anchorIndex - 1);
@@ -2457,6 +2457,11 @@ export default async (application: Application): Promise<void> => {
                             dropdownMenuTarget.style.left = String(caretCoordinates.left) + "px";
                             tippy.hideAll();
                             dropdownMenu.show();
+                          }
+                          const search = this.value.slice(anchorIndex, this.selectionStart);
+                          if (anchorIndex > this.selectionStart || search.match(/[^a-z0-9\\/]/i) !== null) {
+                            dropdownMenu.hide();
+                            continue;
                           }
                           if (isUpdating) {
                             shouldUpdateAgain = true;
@@ -2466,7 +2471,6 @@ export default async (application: Application): Promise<void> => {
                           shouldUpdateAgain = false;
                           const content = dropdownMenu.props.content;
                           const searchResults = content.querySelector('[key="search-results"]');
-                          const search = this.value.slice(anchorIndex, this.selectionStart).trim();
                           searchResults.partialParentElement = true;
                           if (search === "")
                             searchResults.innerHTML = ${html`
