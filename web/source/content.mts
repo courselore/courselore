@@ -2459,7 +2459,7 @@ export default async (application: Application): Promise<void> => {
                             dropdownMenu.show();
                           }
                           const search = this.value.slice(anchorIndex, this.selectionStart);
-                          if (anchorIndex > this.selectionStart || search.match(/[^a-z0-9\\/]/i) !== null) {
+                          if (this.selectionStart < anchorIndex || search.match(/[^a-z0-9\\/]/i) !== null) {
                             dropdownMenu.hide();
                             continue;
                           }
