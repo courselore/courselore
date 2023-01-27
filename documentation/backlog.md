@@ -314,6 +314,7 @@
 - Add option to receive email notifications for your own messages.
 - Allow replying to a message by replying to the email notification
   - Obfuscate email addresses in the message (like GitHub does).
+  - Use IMAP on an existing inbox instead of SMTP?
 - Other channels: Use the browser Notifications API & Push API; Desktop & phone applications.
 
 ```javascript
