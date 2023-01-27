@@ -668,16 +668,14 @@ export default async (application: Application): Promise<void> => {
                 request: request,
                 response: response,
                 contentSource: dedent`
-                  # Reasons to **Love** Courselore’s Message Editor
+                  # Reasons to _Love_ Courselore’s Content Editor
 
                   **Easy** to learn for people who are new to [Markdown](https://guides.github.com/features/mastering-markdown/).
 
                   Support for [mathematical formulas](https://katex.org/docs/supported.html):
 
                   $$
-
                   X_k = \sum_{n=0}^{N-1} x_n \cdot e^{-\frac{i2\pi}{N}kn}
-
                   $$
 
                   Gorgeous [syntax highlighter](https://shiki.matsu.io/):
@@ -691,7 +689,9 @@ export default async (application: Application): Promise<void> => {
                   console.log(highlighter.codeToHtml(\`console.log("shiki");\`, "js"));
                   \`\`\`
 
-                  Add images & attachments by simply drag-and-dropping or copy-and-pasting.
+                  Add images & attachments by drag-and-dropping or copy-and-pasting.
+
+                  And much more 🎉
                 `,
                 required: false,
               })}
