@@ -2663,7 +2663,28 @@ ${contentSource}</textarea
       )
         return next("Validation");
 
-      const enrollments = application.database
+      let result = html``;
+
+      for (const mention of ["everyone", "staff", "students"])
+        if (mention.startsWith(request.query.search.toLowerCase()))
+          result += html`
+            <button
+              type="button"
+              class="dropdown--menu--item button button--transparent"
+              javascript="${javascript`
+                this.onclick = () => {
+                  this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete(${mention});
+                };
+              `}"
+            >
+              <span>
+                <mark class="mark">${lodash.capitalize(mention)}</mark> in the
+                Conversation
+              </span>
+            </button>
+          `;
+
+      for (const enrollment of application.database
         .all<{
           id: number;
           userId: number;
@@ -2751,45 +2772,44 @@ ${contentSource}</textarea
           },
           reference: enrollment.reference,
           courseRole: enrollment.courseRole,
-        }));
+        })))
+        result += html`
+          <button
+            key="mention-user-search--${enrollment.reference}"
+            type="button"
+            class="dropdown--menu--item button button--transparent"
+            javascript="${javascript`
+              this.onclick = () => {
+                this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete(${`${
+                  enrollment.reference
+                }--${slugify(enrollment.user.name)}`});  
+              };
+          `}"
+          >
+            $${application.server.locals.partials.user({
+              request,
+              response,
+              enrollment,
+              name: enrollment.user.nameSearchResultHighlight,
+              tooltip: false,
+              size: "xs",
+              bold: false,
+            })}
+          </button>
+        `;
 
       response.send(
         application.server.locals.layouts.partial({
           request,
           response,
           body: html`
-            $${enrollments.length === 0
+            $${result === html``
               ? html`
                   <div class="dropdown--menu--item secondary">
                     Person not found.
                   </div>
                 `
-              : enrollments.map(
-                  (enrollment) => html`
-                    <button
-                      key="mention-user-search--${enrollment.reference}"
-                      type="button"
-                      class="dropdown--menu--item button button--transparent"
-                      javascript="${javascript`
-                        this.onclick = () => {
-                          this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete(${`${
-                            enrollment.reference
-                          }--${slugify(enrollment.user.name)}`});  
-                        };
-                    `}"
-                    >
-                      $${application.server.locals.partials.user({
-                        request,
-                        response,
-                        enrollment,
-                        name: enrollment.user.nameSearchResultHighlight,
-                        tooltip: false,
-                        size: "xs",
-                        bold: false,
-                      })}
-                    </button>
-                  `
-                )}
+              : result}
           `,
         })
       );
