@@ -977,6 +977,20 @@ export default async (application: Application): Promise<void> => {
                         <i class="bi bi-chat-text"></i>
                         ${String(course.conversationsCount)} conversations
                       </div>
+                      <div>
+                        <i class="bi bi-journal-plus"></i>
+                        <span>
+                          Created
+                          <time
+                            datetime="${new Date(
+                              course.createdAt
+                            ).toISOString()}"
+                            javascript="${javascript`
+                              leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
+                            `}"
+                          ></time>
+                        </span>
+                      </div>
                     </div>
                     $${course.archivedAt !== null
                       ? html`
