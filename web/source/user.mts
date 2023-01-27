@@ -1278,10 +1278,11 @@ export default async (application: Application): Promise<void> => {
       request.body.name.trim() === "" ||
       typeof request.body.avatar !== "string" ||
       (request.body.avatar.trim() !== "" &&
-        (!request.body.avatar.startsWith(
-          `https://${application.configuration.hostname}/files/`
-        ) ||
-          !request.body.avatar.endsWith(`--avatar.webp`))) ||
+        !(
+          request.body.avatar.startsWith(
+            `https://${application.configuration.hostname}/files/`
+          ) && request.body.avatar.endsWith(`--avatar.webp`)
+        )) ||
       typeof request.body.biography !== "string"
     )
       return next("Validation");
