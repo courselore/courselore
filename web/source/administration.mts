@@ -160,6 +160,18 @@ export default async (application: Application): Promise<void> => {
           ></i>
           Users
         </a>
+        <a
+          href="https://${application.configuration
+            .hostname}/administration/courses"
+          class="dropdown--menu--item menu-box--item button ${request.path.match(
+            /\/administration\/courses\/?$/i
+          )
+            ? "button--blue"
+            : "button--transparent"}"
+        >
+          <i class="bi bi bi-journal-text"></i>
+          Courses
+        </a>
       `,
       body,
     });
@@ -827,6 +839,178 @@ export default async (application: Application): Promise<void> => {
       isSelf
         ? `https://${application.configuration.hostname}`
         : `https://${application.configuration.hostname}/administration/users`
+    );
+  });
+
+  application.server.get<
+    { userReference: string },
+    HTML,
+    {},
+    {},
+    Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
+  >("/administration/courses", (request, response, next) => {
+    if (
+      response.locals.user === undefined ||
+      response.locals.user.emailVerifiedAt === null ||
+      response.locals.user.systemRole !== "administrator"
+    )
+      return next();
+
+    const courses = application.database.all<{
+      id: number;
+      createdAt: string;
+      reference: string;
+      name: string;
+      year: string | null;
+      term: string | null;
+      institution: string | null;
+      code: string | null;
+      archivedAt: string | null;
+      enrollmentsCount: number;
+      conversationsCount: number;
+    }>(
+      sql`
+        SELECT
+          "id",
+          "createdAt",
+          "reference",
+          "name",
+          "year",
+          "term",
+          "institution",
+          "code",
+          "archivedAt",
+          (
+            SELECT COUNT(*)
+            FROM "enrollments"
+            WHERE "courses"."id" = "enrollments"."course"
+          ) AS "enrollmentsCount",
+          (
+            SELECT COUNT(*)
+            FROM "conversations"
+            WHERE "courses"."id" = "conversations"."course"
+          ) AS "conversationsCount"
+        FROM "courses"
+        ORDER BY
+          "createdAt" DESC,
+          "name" ASC
+      `
+    );
+
+    response.send(
+      layoutAdministration({
+        request,
+        response,
+        head: html`<title>Courses · Administration · Courselore</title>`,
+        body: html`
+          <h2 class="heading">
+            <i class="bi bi-pc-display-horizontal"></i>
+            Administration ·
+            <i class="bi bi-people-fill"></i>
+            Courses
+          </h2>
+
+          $${courses.map(
+            (course) => html`
+              <div
+                key="course/${course.reference}"
+                css="${css`
+                  display: flex;
+                  gap: var(--space--2);
+                  align-items: baseline;
+                `}"
+              >
+                <div>
+                  <div
+                    class="button button--tight"
+                    css="${css`
+                      cursor: default;
+                    `}"
+                  >
+                    <i class="bi bi-journal-text"></i>
+                  </div>
+                </div>
+                <div>
+                  <div class="strong">${course.name}</div>
+                  <div
+                    class="secondary"
+                    css="${css`
+                      font-size: var(--font-size--xs);
+                      line-height: var(--line-height--xs);
+                    `}"
+                  >
+                    $${[
+                      [course.year, course.term],
+                      [course.institution, course.code],
+                    ].flatMap((row) => {
+                      row = row.filter((element) => element !== null);
+                      return row.length === 0
+                        ? []
+                        : [
+                            html`
+                              <div>
+                                $${row
+                                  .map((element) => html`${element!}`)
+                                  .join(" · ")}
+                              </div>
+                            `,
+                          ];
+                    })}
+                    <div
+                      css="${css`
+                        display: flex;
+                        flex-wrap: wrap;
+                        column-gap: var(--space--4);
+                        row-gap: var(--space--0-5);
+
+                        & > * {
+                          display: flex;
+                          gap: var(--space--1);
+                        }
+                      `}"
+                    >
+                      <div>
+                        <i class="bi bi-people"></i>
+                        ${String(course.enrollmentsCount)} enrollments
+                      </div>
+                      <div>
+                        <i class="bi bi-chat-text"></i>
+                        ${String(course.conversationsCount)} conversations
+                      </div>
+                    </div>
+                    $${course.archivedAt !== null
+                      ? html`
+                          <div>
+                            <span>
+                              $${application.server.locals.partials.courseArchived(
+                                {
+                                  request,
+                                  response,
+                                }
+                              )}
+                              <time
+                                datetime="${new Date(
+                                  course.archivedAt
+                                ).toISOString()}"
+                                css="${css`
+                                  font-size: var(--font-size--2xs);
+                                  line-height: var(--line-height--2xs);
+                                `}"
+                                javascript="${javascript`
+                                  leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
+                                `}"
+                              ></time>
+                            </span>
+                          </div>
+                        `
+                      : html``}
+                  </div>
+                </div>
+              </div>
+            `
+          )}
+        `,
+      })
     );
   });
 };
