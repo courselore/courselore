@@ -10,8 +10,14 @@
 
 ## Unreleased
 
-- Fixed the link in email notifications that directs the user to update notifications preferences. https://courselore.org/courses/8537410611/conversations/68
+- Redesigned the content editor.
+  - The toolbar occupies less space and doesn’t need horizontal scrolling. (At the cost of some options being two clicks away instead of one.)
+  - The toolbar has more options, for example, insertion/deletion, superscript/subscript, and so forth.
+  - The toolbar is available on chats. (Previously you had to: 1. know the syntax; and 2. upload attachments by dragging-and-dropping or copying-and-pasting. Now everything is much more discoverable.)
+  - Changed the content sanitization to be more restrictive. Before we were using GitHub’s sanitization, which is too permissive in some areas (for example, allowing deprecated HTML tags and allowing some attributes that affect appearance and could break Courselore’s layout).
+  - Changed the `@mention` and `#reference` widgets to show up and hide more intelligently as you’re typing.
 - In relative dates (for example, “14 days ago”), the tooltip shows not only the original time in UTC, but in local time as well.
+- Fixed the link in email notifications that directs the user to update notifications preferences. https://courselore.org/courses/8537410611/conversations/68
 
 ## 6.0.5
 
