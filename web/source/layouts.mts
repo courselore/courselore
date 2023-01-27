@@ -1511,9 +1511,7 @@ export default async (application: Application): Promise<void> => {
                     nonce: ${response.locals.liveConnectionNonce},
                     newServerVersionMessage: "Courselore has been updated. Please reload the page.",
                     offlineMessage: "Failed to connect to Courselore. Please check your internet connection and try reloading the page.",
-                    reconnectTimeout: ${
-                      application.configuration.environment === "development"
-                    } ? 200 : undefined,
+                    environment: ${application.configuration.environment},
                   });
               `;
             })()}"

@@ -234,7 +234,9 @@ export async function liveConnection({
   nonce,
   newServerVersionMessage = "There has been an update. Please reload the page.",
   offlineMessage = "Failed to connect. Please check your internet connection and try reloading the page.",
-  reconnectTimeout = 5 * 1000,
+  environment = "production",
+  reconnectTimeout = environment === "development" ? 200 : 5 * 1000,
+  liveReload = environment === "development",
 }) {
   const body = document.querySelector("body");
   const serverVersion = document
@@ -243,6 +245,7 @@ export async function liveConnection({
   let inLiveNavigation = false;
   let heartbeatTimeout;
   let abortController;
+  let liveReloadOnNextConnection = false;
 
   window.addEventListener(
     "livenavigate",
@@ -319,6 +322,12 @@ export async function liveConnection({
         return;
       }
 
+      if (liveReloadOnNextConnection) {
+        body.isModified = false;
+        location.reload();
+        return;
+      }
+
       const responseBodyReader = response.body.getReader();
       const textDecoder = new TextDecoder();
       let buffer = "";
@@ -361,7 +370,7 @@ export async function liveConnection({
             theme: "error",
             arrow: false,
             interactive: true,
-            content: offlineMessage,
+            content: liveReload ? "Live-Reloading…" : offlineMessage,
           },
         });
         body.liveConnectionOfflineTooltip.show();
@@ -372,6 +381,7 @@ export async function liveConnection({
     }
 
     nonce = Math.random().toString(36).slice(2);
+    liveReloadOnNextConnection = liveReload;
 
     await new Promise((resolve) => {
       window.setTimeout(
