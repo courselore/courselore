@@ -1279,9 +1279,14 @@ export default async (application: Application): Promise<void> => {
       typeof request.body.avatar !== "string" ||
       (request.body.avatar.trim() !== "" &&
         !(
-          request.body.avatar.startsWith(
+          (request.body.avatar.startsWith(
             `https://${application.configuration.hostname}/files/`
-          ) && request.body.avatar.endsWith(`--avatar.webp`)
+          ) &&
+            request.body.avatar.endsWith(`--avatar.webp`)) ||
+          (application.configuration.demonstration &&
+            request.body.avatar.startsWith(
+              `https://${application.configuration.hostname}/node_modules/fake-avatars/avatars/webp/`
+            ))
         )) ||
       typeof request.body.biography !== "string"
     )
