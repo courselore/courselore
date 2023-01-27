@@ -10,6 +10,10 @@
 
 ## Unreleased
 
+## 6.0.6
+
+**2023-01-27 · [Download](https://github.com/courselore/courselore/releases/tag/v6.0.6) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
+
 - Redesigned the content editor.
   - The toolbar occupies less space and doesn’t need horizontal scrolling. (At the cost of some options being two clicks away instead of one.)
   - The toolbar has more options, for example, insertion/deletion, superscript/subscript, and so forth.
