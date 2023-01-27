@@ -2379,9 +2379,9 @@ export default async (application: Application): Promise<void> => {
                           >
                             Students in the Conversation
                           </button>
-                          <p class="dropdown--menu--item secondary">
+                          <div class="dropdown--menu--item secondary">
                             Start typing to search…
-                          </p>
+                          </div>
                         `},
                         dropdownMenu: leafac.setTippy({
                           event,
@@ -2416,9 +2416,9 @@ export default async (application: Application): Promise<void> => {
                         trigger: "#",
                         route: ${`https://${application.configuration.hostname}/courses/${response.locals.course?.reference}/content-editor/refer-to-conversation-or-message-search`},
                         emptySearch: ${html`
-                          <p class="dropdown--menu--item secondary">
+                          <div class="dropdown--menu--item secondary">
                             Start typing to search…
-                          </p>
+                          </div>
                         `},
                         dropdownMenu: leafac.setTippy({
                           event,
