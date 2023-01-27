@@ -1423,6 +1423,80 @@ export default async (application: Application): Promise<void> => {
               background-color: var(--color--gray--medium--900);
             }
           `}"
+          javascript="${(() => {
+            const flash = application.server.locals.helpers.Flash.get({
+              request,
+              response,
+            });
+
+            return javascript`
+              if (${flash !== undefined}) {
+                leafac.setTippy({
+                  event,
+                  element: this,
+                  elementProperty: "flash",
+                  tippyProps: {
+                    appendTo: this,
+                    trigger: "manual",
+                    hideOnClick: false,
+                    theme: ${flash?.theme ?? ""},
+                    arrow: false,
+                    interactive: true,
+                    content: ${html`
+                      <div
+                        css="${css`
+                          padding: var(--space--1) var(--space--2);
+                          display: flex;
+                          gap: var(--space--2);
+                          align-items: flex-start;
+                        `}"
+                      >
+                        <div>$${flash?.content ?? html``}</div>
+                        <button
+                          class="button button--tight button--tight--inline button--transparent"
+                          javascript="${javascript`
+                            leafac.setTippy({
+                              event,
+                              element: this,
+                              tippyProps: {
+                                theme: "green",
+                                touch: false,
+                                content: "Close",
+                              },
+                            });
+
+                            this.onclick = () => {
+                              this.closest("[data-tippy-root]")._tippy.hide();
+                            };
+                          `}"
+                        >
+                          <i class="bi bi-x-circle"></i>
+                        </button>
+                      </div>
+                    `},  
+                  },
+                });
+                this.flash.show();
+              }
+
+              document.querySelector('[key="theme-color--light"]').setAttribute("content", getComputedStyle(document.documentElement).getPropertyValue(${`--color--${
+                response.locals.enrollment?.accentColor ?? ""
+              }--500`}));
+              document.querySelector('[key="theme-color--dark"]').setAttribute("content", getComputedStyle(document.documentElement).getPropertyValue(${`--color--${
+                response.locals.enrollment?.accentColor ?? ""
+              }--600`}));
+
+              if (${
+                typeof response.locals.liveConnectionNonce === "string"
+              } && event?.detail?.liveUpdate !== true)
+                leafac.liveConnection({
+                  nonce: ${response.locals.liveConnectionNonce},
+                  newServerVersionMessage: "Courselore has been updated. Please reload the page.",
+                  offlineMessage: "Failed to connect to Courselore. Please check your internet connection and try reloading the page.",
+                  environment: ${application.configuration.environment},
+                });
+            `;
+          })()}"
         >
           <div
             key="viewport"
@@ -1436,85 +1510,11 @@ export default async (application: Application): Promise<void> => {
               flex-direction: column;
               overflow: hidden;
             `}"
-            javascript="${(() => {
-              const flash = application.server.locals.helpers.Flash.get({
-                request,
-                response,
-              });
-
-              return javascript`
-                this.onscroll = () => {
-                  this.scroll(0, 0);
-                };
-
-                if (${flash !== undefined}) {
-                  const body = document.querySelector("body");
-                  leafac.setTippy({
-                    event,
-                    element: body,
-                    elementProperty: "flash",
-                    tippyProps: {
-                      appendTo: body,
-                      trigger: "manual",
-                      hideOnClick: false,
-                      theme: ${flash?.theme ?? ""},
-                      arrow: false,
-                      interactive: true,
-                      content: ${html`
-                        <div
-                          css="${css`
-                            padding: var(--space--1) var(--space--2);
-                            display: flex;
-                            gap: var(--space--2);
-                            align-items: flex-start;
-                          `}"
-                        >
-                          <div>$${flash?.content ?? html``}</div>
-                          <button
-                            class="button button--tight button--tight--inline button--transparent"
-                            javascript="${javascript`
-                              leafac.setTippy({
-                                event,
-                                element: this,
-                                tippyProps: {
-                                  theme: "green",
-                                  touch: false,
-                                  content: "Close",
-                                },
-                              });
-
-                              this.onclick = () => {
-                                this.closest("[data-tippy-root]")._tippy.hide();
-                              };
-                            `}"
-                          >
-                            <i class="bi bi-x-circle"></i>
-                          </button>
-                        </div>
-                      `},  
-                    },
-                  });
-                  body.flash.show();
-                }
-
-                document.querySelector('[key="theme-color--light"]').setAttribute("content", getComputedStyle(document.documentElement).getPropertyValue(${`--color--${
-                  response.locals.enrollment?.accentColor ?? ""
-                }--500`}));
-                document.querySelector('[key="theme-color--dark"]').setAttribute("content", getComputedStyle(document.documentElement).getPropertyValue(${`--color--${
-                  response.locals.enrollment?.accentColor ?? ""
-                }--600`}));
-
-                if (${
-                  typeof response.locals.liveConnectionNonce === "string"
-                } && event?.detail?.liveUpdate !== true)
-                  leafac.liveConnection({
-                    nonce: ${response.locals.liveConnectionNonce},
-                    newServerVersionMessage: "Courselore has been updated. Please reload the page.",
-                    offlineMessage: "Failed to connect to Courselore. Please check your internet connection and try reloading the page.",
-                    environment: ${application.configuration.environment},
-                  });
-              `;
-            })()}"
+            javascript="${javascript`
+              this.onscroll = () => {
+                this.scroll(0, 0);
+              };
+            `}"
           >
             $${response.locals.enrollment === undefined
               ? html``
