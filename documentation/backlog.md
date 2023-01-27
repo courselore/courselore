@@ -647,7 +647,7 @@ const { app, BrowserWindow } = require("electron");
 
 ## Design & Accessibility
 
-- Translate to other languages.
+- Translate to other languages: 30 languages.
 - Add a toggle to switch between light mode and dark mode, regardless of your operating system setting? I don’t like this idea, but lots of people do it. Investigate…
 - Test screen readers.
 - Test contrast.

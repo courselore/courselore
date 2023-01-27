@@ -3,6 +3,24 @@
 <details>
 <summary>2023-01-07</summary>
 
+- Deployed new strategy for static CSS/JavaScript that is as good as we can make it. 1.5x improvement in page size, more strict Content Security Policy, and so forth.
+- Started redesigning content editor: new sanitization rules, fixed style issues in content, new toolbar, a tutorial on how to use Markdown, and so forth.
+- Talked to Zach, who is generally positive about Courselore.
+- Have a contact at Google that may help us spread the word in Latin America.
+- Let pagination take the backseat.
+- List courses in administration panel.
+- Google Keywords.
+- Add “Change Conversation Type” to “Actions” menu.
+- Internationalization to reach world market: 30 languages.
+- Use AI to help staff answer questions.
+  - Promote the idea on home page.
+  - Do sentiment analysis on student’s follow-up to a question to detect “thank you” messages and don’t mark the question as unanswered.
+
+</details>
+
+<details>
+<summary>2023-01-07</summary>
+
 - We’re introducing a compiler pass that extracts static CSS & client JavaScript.
 - Killer feature to attract people: off-the-shelf AI
   - Reuse questions
