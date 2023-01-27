@@ -10,6 +10,8 @@
 
 ## Unreleased
 
+- Added a new administration page to see all courses.
+
 ## 6.0.6
 
 **2023-01-27 · [Download](https://github.com/courselore/courselore/releases/tag/v6.0.6) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
