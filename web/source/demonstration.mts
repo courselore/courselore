@@ -78,7 +78,10 @@ export default async (application: Application): Promise<void> => {
                     "emailNotificationsForAllMessagesDigestDeliveredAt",
                     "emailNotificationsForMentionsAt",
                     "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt",
-                    "emailNotificationsForMessagesInConversationsYouStartedAt"
+                    "emailNotificationsForMessagesInConversationsYouStartedAt",
+                    "preferContentEditorProgrammerModeAt",
+                    "preferContentEditorToolbarInCompactAt",
+                    "preferAnonymousAt"
                   )
                   VALUES (
                     ${new Date().toISOString()},
@@ -148,7 +151,10 @@ export default async (application: Application): Promise<void> => {
                       isEmailNotificationsForMessagesInConversationsYouStarted
                         ? new Date().toISOString()
                         : null
-                    }
+                    },
+                    ${Math.random() < 0.5 ? new Date().toISOString() : null},
+                    ${Math.random() < 0.5 ? new Date().toISOString() : null},
+                    ${Math.random() < 0.5 ? new Date().toISOString() : null}
                   )
                 `
               ).lastInsertRowid

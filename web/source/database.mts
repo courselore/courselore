@@ -1522,7 +1522,17 @@ export default async (application: Application): Promise<void> => {
       ALTER TABLE "users" ADD COLUMN "preferContentEditorProgrammerModeAt" TEXT NULL;
       ALTER TABLE "users" ADD COLUMN "preferContentEditorToolbarInCompactAt" TEXT NULL;
       ALTER TABLE "users" ADD COLUMN "preferAnonymousAt" TEXT NULL;
-    `,
+
+      CREATE TABLE "messageDrafts" (
+        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+        "createdAt" TEXT NOT NULL,
+        "conversation" INTEGER NOT NULL REFERENCES "conversations" ON DELETE CASCADE,
+        "enrollment" INTEGER NOT NULL REFERENCES "enrollments" ON DELETE CASCADE,
+        "contentSource" TEXT NOT NULL,
+        "answerAt" TEXT NULL,
+        UNIQUE ("conversation", "enrollment") ON CONFLICT REPLACE
+      );
+    `
   );
 
   application.database.run(
