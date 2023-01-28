@@ -382,6 +382,9 @@ export default async (application: Application): Promise<void> => {
         | string
         | null;
       emailNotificationsForMessagesInConversationsYouStartedAt: string | null;
+      preferContentEditorProgrammerModeAt: string | null;
+      preferContentEditorToolbarInChatAt: string | null;
+      preferAnonymousAt: string | null;
     }>(
       sql`
         SELECT
@@ -401,7 +404,10 @@ export default async (application: Application): Promise<void> => {
           "emailNotificationsForAllMessagesDigestDeliveredAt",
           "emailNotificationsForMentionsAt",
           "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt",
-          "emailNotificationsForMessagesInConversationsYouStartedAt"
+          "emailNotificationsForMessagesInConversationsYouStartedAt",
+          "preferContentEditorProgrammerModeAt",
+          "preferContentEditorToolbarInChatAt",
+          "preferAnonymousAt"
         FROM "users"
         WHERE "id" = ${userId}
       `
