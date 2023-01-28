@@ -8982,72 +8982,107 @@ export default async (application: Application): Promise<void> => {
                     : html``}
 
                   <div
-                    key="new-message"
                     css="${css`
-                      display: grid;
-                      & > * {
-                        grid-area: 1 / 1;
-                      }
+                      display: flex;
+                      flex-direction: column;
+                      gap: var(--space--2);
                     `}"
                   >
-                    $${application.server.locals.partials.contentEditor({
-                      request,
-                      response,
-                      contentSource:
-                        response.locals.messageDraft?.contentSource,
-                      compact: response.locals.conversation.type === "chat",
-                    })}
-                    $${response.locals.conversation.type === "chat"
-                      ? html`
-                          <button
-                            class="button button--blue"
-                            css="${css`
-                              position: relative;
-                              place-self: end;
-                              width: var(--font-size--2xl);
-                              height: var(--font-size--2xl);
-                              padding: var(--space--0);
-                              border-radius: var(--border-radius--circle);
-                              margin: var(--space--1);
-                              align-items: center;
-                            `}"
-                            javascript="${javascript`
-                              leafac.setTippy({
-                                event,
-                                element: this,
-                                tippyProps: {
-                                  touch: false,
-                                  content: ${html`
-                                    Send Message
-                                    <span class="keyboard-shortcut">
-                                      <span
-                                        javascript="${javascript`
-                                          this.hidden = leafac.isAppleDevice;
-                                        `}"
-                                        >Ctrl+Enter</span
-                                      ><span
-                                        class="keyboard-shortcut--cluster"
-                                        javascript="${javascript`
-                                          this.hidden = !leafac.isAppleDevice;
-                                        `}"
-                                        ><i class="bi bi-command"></i
-                                        ><i class="bi bi-arrow-return-left"></i
-                                      ></span>
-                                    </span>
-                                  `},
-                                },
-                              });
-                            `}"
-                          >
-                            <i
-                              class="bi bi-send-fill"
+                    <div
+                      key="new-message"
+                      css="${css`
+                        display: grid;
+                        & > * {
+                          grid-area: 1 / 1;
+                        }
+                      `}"
+                    >
+                      $${application.server.locals.partials.contentEditor({
+                        request,
+                        response,
+                        contentSource:
+                          response.locals.messageDraft?.contentSource,
+                        compact: response.locals.conversation.type === "chat",
+                      })}
+                      $${response.locals.conversation.type === "chat"
+                        ? html`
+                            <button
+                              class="button button--blue"
                               css="${css`
                                 position: relative;
-                                top: var(--space--px);
-                                right: var(--space--px);
+                                place-self: end;
+                                width: var(--font-size--2xl);
+                                height: var(--font-size--2xl);
+                                padding: var(--space--0);
+                                border-radius: var(--border-radius--circle);
+                                margin: var(--space--1);
+                                align-items: center;
                               `}"
-                            ></i>
-                          </button>
+                              javascript="${javascript`
+                                leafac.setTippy({
+                                  event,
+                                  element: this,
+                                  tippyProps: {
+                                    touch: false,
+                                    content: ${html`
+                                      Send Message
+                                      <span class="keyboard-shortcut">
+                                        <span
+                                          javascript="${javascript`
+                                            this.hidden = leafac.isAppleDevice;
+                                          `}"
+                                          >Ctrl+Enter</span
+                                        ><span
+                                          class="keyboard-shortcut--cluster"
+                                          javascript="${javascript`
+                                            this.hidden = !leafac.isAppleDevice;
+                                          `}"
+                                          ><i class="bi bi-command"></i
+                                          ><i
+                                            class="bi bi-arrow-return-left"
+                                          ></i
+                                        ></span>
+                                      </span>
+                                    `},
+                                  },
+                                });
+                              `}"
+                            >
+                              <i
+                                class="bi bi-send-fill"
+                                css="${css`
+                                  position: relative;
+                                  top: var(--space--px);
+                                  right: var(--space--px);
+                                `}"
+                              ></i>
+                            </button>
+                          `
+                        : html``}
+                    </div>
+
+                    $${response.locals.enrollmentsTyping.length > 0
+                      ? html`
+                          <div
+                            class="secondary"
+                            css="${css`
+                              font-size: var(--font-size--xs);
+                              line-height: var(--line-height--xs);
+                            `}"
+                          >
+                            Currently typing:
+                            $${response.locals.enrollmentsTyping
+                              .map((enrollment) =>
+                                application.server.locals.partials.user({
+                                  request,
+                                  response,
+                                  enrollment,
+                                  size: "xs",
+                                  bold: false,
+                                })
+                              )
+                              .join(", ")}
+                          </div>
                         `
                       : html``}
                   </div>
