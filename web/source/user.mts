@@ -2230,6 +2230,7 @@ export default async (application: Application): Promise<void> => {
     {
       preferContentEditorProgrammerMode?: "true" | "false";
       preferContentEditorToolbarInCompact?: "true" | "false";
+      preferAnonymous?: "true" | "false";
     },
     {},
     Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
@@ -2246,7 +2247,8 @@ export default async (application: Application): Promise<void> => {
       ) ||
       ![undefined, "true", "false"].includes(
         request.body.preferContentEditorToolbarInCompact
-      )
+      ) ||
+      ![undefined, "true", "false"].includes(request.body.preferAnonymous)
     )
       return next("Validation");
 
@@ -2271,6 +2273,20 @@ export default async (application: Application): Promise<void> => {
           SET
             "preferContentEditorToolbarInCompactAt" = ${
               request.body.preferContentEditorToolbarInCompact === "true"
+                ? new Date().toISOString()
+                : null
+            }
+          WHERE "id" = ${response.locals.user.id}
+        `
+      );
+
+    if (typeof request.body.preferAnonymous === "string")
+      application.database.run(
+        sql`
+          UPDATE "users"
+          SET
+            "preferAnonymousAt" = ${
+              request.body.preferAnonymous === "true"
                 ? new Date().toISOString()
                 : null
             }
