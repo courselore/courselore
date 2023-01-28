@@ -9070,18 +9070,31 @@ export default async (application: Application): Promise<void> => {
                               line-height: var(--line-height--xs);
                             `}"
                           >
-                            Typing:
-                            $${response.locals.enrollmentsTyping
-                              .map((enrollment) =>
-                                application.server.locals.partials.user({
-                                  request,
-                                  response,
-                                  enrollment,
-                                  size: "xs",
-                                  bold: false,
-                                })
-                              )
-                              .join(", ")}
+                            <span
+                              javascript="${javascript`
+                                leafac.setTippy({
+                                  event,
+                                  element: this,
+                                  tippyProps: {
+                                    touch: false,
+                                    content: "Typing…",
+                                  },
+                                });
+                              `}"
+                            >
+                              <i class="bi bi-keyboard"></i>
+                              $${response.locals.enrollmentsTyping
+                                .map((enrollment) =>
+                                  application.server.locals.partials.user({
+                                    request,
+                                    response,
+                                    enrollment,
+                                    size: "xs",
+                                    bold: false,
+                                  })
+                                )
+                                .join(", ")}
+                            </span>
                           </div>
                         `
                       : html``}
