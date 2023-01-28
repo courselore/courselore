@@ -9070,7 +9070,7 @@ export default async (application: Application): Promise<void> => {
                               line-height: var(--line-height--xs);
                             `}"
                           >
-                            Currently typing:
+                            Typing:
                             $${response.locals.enrollmentsTyping
                               .map((enrollment) =>
                                 application.server.locals.partials.user({
