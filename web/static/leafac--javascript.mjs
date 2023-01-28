@@ -901,13 +901,6 @@ export function stringToElement(string) {
   return parentElement.firstElementChild;
 }
 
-export function evaluate({
-  element = undefined,
-  elements = element.querySelectorAll("script"),
-}) {
-  for (const element of elements) new Function(element.textContent)();
-}
-
 export function javascript({
   event = undefined,
   element = undefined,

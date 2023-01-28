@@ -4268,15 +4268,21 @@ export default async (application: Application): Promise<void> => {
                             <input
                               type="checkbox"
                               name="isAnonymous"
+                              $${response.locals.user.preferAnonymousAt
+                                ? html`checked`
+                                : html``}
                               class="visually-hidden input--radio-or-checkbox--multilabel"
                               javascript="${javascript`
                                 this.isModified = false;
 
-                                this.onchange = () => {
-                                  localStorage.setItem("anonymity", JSON.stringify(this.checked));  
+                                this.onchange = async () => {
+                                  await fetch(${`https://${application.configuration.hostname}/preferences`}, {
+                                    cache: "no-store",
+                                    method: "PATCH",
+                                    headers: { "CSRF-Protection": "true", },
+                                    body: new URLSearchParams({ preferAnonymous: String(this.checked), }),
+                                  });
                                 };
-                                
-                                if (JSON.parse(localStorage.getItem("anonymity") ?? "false")) this.click();
                               `}"
                             />
                             <span
@@ -8946,15 +8952,21 @@ export default async (application: Application): Promise<void> => {
                               <input
                                 type="checkbox"
                                 name="isAnonymous"
+                                $${response.locals.user.preferAnonymousAt
+                                  ? html`checked`
+                                  : html``}
                                 class="visually-hidden input--radio-or-checkbox--multilabel"
                                 javascript="${javascript`
                                   this.isModified = false;
 
-                                  this.onchange = () => {
-                                    localStorage.setItem("anonymity", JSON.stringify(this.checked));  
+                                  this.onchange = async () => {
+                                    await fetch(${`https://${application.configuration.hostname}/preferences`}, {
+                                      cache: "no-store",
+                                      method: "PATCH",
+                                      headers: { "CSRF-Protection": "true", },
+                                      body: new URLSearchParams({ preferAnonymous: String(this.checked), }),
+                                    });
                                   };
-                                  
-                                  if (JSON.parse(localStorage.getItem("anonymity") ?? "false")) this.click();
                                 `}"
                               />
                               <span
