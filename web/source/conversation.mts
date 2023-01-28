@@ -8771,6 +8771,8 @@ export default async (application: Application): Promise<void> => {
                       padding-top: var(--space--4);
                     `}"
                 javascript="${javascript`
+                  this.isModified = false;
+
                   this.oninput = (() => {
                     let isUpdating = false;
                     let shouldUpdateAgain = false;
