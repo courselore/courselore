@@ -9070,7 +9070,11 @@ export default async (application: Application): Promise<void> => {
                               line-height: var(--line-height--xs);
                             `}"
                           >
-                            <span
+                            <i
+                              class="bi bi-keyboard"
+                              css="${css`
+                                margin-right: var(--space--2);
+                              `}"
                               javascript="${javascript`
                                 leafac.setTippy({
                                   event,
@@ -9081,20 +9085,18 @@ export default async (application: Application): Promise<void> => {
                                   },
                                 });
                               `}"
-                            >
-                              <i class="bi bi-keyboard"></i>
-                              $${response.locals.enrollmentsTyping
-                                .map((enrollment) =>
-                                  application.server.locals.partials.user({
-                                    request,
-                                    response,
-                                    enrollment,
-                                    size: "xs",
-                                    bold: false,
-                                  })
-                                )
-                                .join(", ")}
-                            </span>
+                            ></i>
+                            $${response.locals.enrollmentsTyping
+                              .map((enrollment) =>
+                                application.server.locals.partials.user({
+                                  request,
+                                  response,
+                                  enrollment,
+                                  size: "xs",
+                                  bold: false,
+                                })
+                              )
+                              .join(", ")}
                           </div>
                         `
                       : html``}
