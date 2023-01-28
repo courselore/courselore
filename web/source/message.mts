@@ -1197,6 +1197,49 @@ export default async (application: Application): Promise<void> => {
   application.server.post<
     { courseReference: string; conversationReference: string },
     HTML,
+    { isAnswer?: "on"; content?: string },
+    {},
+    Application["server"]["locals"]["ResponseLocals"]["Conversation"]
+  >(
+    "/courses/:courseReference/conversations/:conversationReference/messages/draft",
+    (request, response, next) => {
+      if (response.locals.conversation === undefined) return next();
+
+      if (
+        ![undefined, "on"].includes(request.body.isAnswer) ||
+        (request.body.isAnswer === "on" &&
+          response.locals.conversation.type !== "question") ||
+        typeof request.body.content !== "string" ||
+        request.body.content.trim() === ""
+      )
+        return next("Validation");
+
+      application.database.run(
+        sql`
+          INSERT INTO "messageDrafts" (
+            "createdAt",
+            "conversation",
+            "authorEnrollment",
+            "answerAt",
+            "contentSource"
+          )
+          VALUES (
+            ${new Date().toISOString()},
+            ${response.locals.conversation.id},
+            ${response.locals.enrollment.id},
+            ${request.body.isAnswer === "on" ? new Date().toISOString() : null},
+            ${request.body.content}
+          )
+        `
+      );
+
+      response.end();
+    }
+  );
+
+  application.server.post<
+    { courseReference: string; conversationReference: string },
+    HTML,
     { isAnswer?: "on"; content?: string; isAnonymous?: "on" },
     {
       conversations?: object;

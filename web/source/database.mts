@@ -1527,10 +1527,10 @@ export default async (application: Application): Promise<void> => {
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
         "createdAt" TEXT NOT NULL,
         "conversation" INTEGER NOT NULL REFERENCES "conversations" ON DELETE CASCADE,
-        "enrollment" INTEGER NOT NULL REFERENCES "enrollments" ON DELETE CASCADE,
-        "contentSource" TEXT NOT NULL,
+        "authorEnrollment" INTEGER NOT NULL REFERENCES "enrollments" ON DELETE CASCADE,
         "answerAt" TEXT NULL,
-        UNIQUE ("conversation", "enrollment") ON CONFLICT REPLACE
+        "contentSource" TEXT NOT NULL,
+        UNIQUE ("conversation", "authorEnrollment") ON CONFLICT REPLACE
       );
     `
   );
