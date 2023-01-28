@@ -28,6 +28,7 @@ export type ApplicationConversation = {
                 contentSource: string;
               }
             | undefined;
+          enrollmentsTyping: Application["server"]["locals"]["Types"]["Enrollment"][];
         };
       };
 
@@ -246,6 +247,74 @@ export default async (application: Application): Promise<void> => {
         `
       );
 
+      response.locals.enrollmentsTyping =
+        response.locals.enrollment.courseRole === "staff"
+          ? application.database
+              .all<{
+                enrollmentId: number;
+                userId: number;
+                userLastSeenOnlineAt: string;
+                userReference: string;
+                userEmail: string;
+                userName: string;
+                userAvatar: string | null;
+                userAvatarlessBackgroundColor: Application["server"]["locals"]["helpers"]["userAvatarlessBackgroundColors"][number];
+                userBiographySource: string | null;
+                userBiographyPreprocessed: HTML | null;
+                enrollmentReference: string;
+                enrollmentCourseRole: Application["server"]["locals"]["helpers"]["courseRoles"][number];
+              }>(
+                sql`
+                  SELECT
+                    "enrollments"."id" AS "enrollmentId",
+                    "users"."id" AS "userId",
+                    "users"."lastSeenOnlineAt" AS "userLastSeenOnlineAt",
+                    "users"."reference" AS "userReference",
+                    "users"."email" AS "userEmail",
+                    "users"."name" AS "userName",
+                    "users"."avatar" AS "userAvatar",
+                    "users"."avatarlessBackgroundColor" AS "userAvatarlessBackgroundColor",
+                    "users"."biographySource" AS "userBiographySource",
+                    "users"."biographyPreprocessed" AS "userBiographyPreprocessed",
+                    "enrollments"."reference" AS "enrollmentReference",
+                    "enrollments"."courseRole" AS "enrollmentCourseRole"
+                  FROM "enrollments"
+                  JOIN "users" ON "enrollments"."user" = "users"."id"
+                  JOIN "messageDrafts" ON
+                    "enrollments"."id" = "messageDrafts"."authorEnrollment" AND
+                    "messageDrafts"."conversation" = ${
+                      response.locals.conversation.id
+                    } AND
+                    ${new Date(
+                      Date.now() - 5 * 60 * 1000
+                    ).toISOString()} < "messageDrafts"."createdAt"
+                  WHERE
+                    "enrollments"."id" != ${response.locals.enrollment.id}
+                  ORDER BY
+                    "enrollments"."courseRole" = 'staff' DESC,
+                    "users"."name" ASC
+                `
+              )
+              .map((selectedParticipant) => ({
+                id: selectedParticipant.enrollmentId,
+                user: {
+                  id: selectedParticipant.userId,
+                  lastSeenOnlineAt: selectedParticipant.userLastSeenOnlineAt,
+                  reference: selectedParticipant.userReference,
+                  email: selectedParticipant.userEmail,
+                  name: selectedParticipant.userName,
+                  avatar: selectedParticipant.userAvatar,
+                  avatarlessBackgroundColor:
+                    selectedParticipant.userAvatarlessBackgroundColor,
+                  biographySource: selectedParticipant.userBiographySource,
+                  biographyPreprocessed:
+                    selectedParticipant.userBiographyPreprocessed,
+                },
+                reference: selectedParticipant.enrollmentReference,
+                courseRole: selectedParticipant.enrollmentCourseRole,
+              }))
+          : [];
+
       next();
     }
   );
@@ -417,7 +486,7 @@ export default async (application: Application): Promise<void> => {
                 JOIN "enrollments" ON "conversationSelectedParticipants"."enrollment" = "enrollments"."id"
                 JOIN "users" ON "enrollments"."user" = "users"."id"
                 WHERE
-                  "conversation" = ${conversation.id} AND
+                  "conversationSelectedParticipants"."conversation" = ${conversation.id} AND
                   "enrollments"."id" != ${response.locals.enrollment.id}
                 ORDER BY
                   "enrollments"."courseRole" = 'staff' DESC,
