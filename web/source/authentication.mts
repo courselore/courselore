@@ -38,6 +38,9 @@ export type ApplicationAuthentication = {
             emailNotificationsForMessagesInConversationsYouStartedAt:
               | string
               | null;
+            preferContentEditorProgrammerModeAt: string | null;
+            preferContentEditorToolbarInCompactAt: string | null;
+            preferAnonymousAt: string | null;
           };
 
           invitations: {
@@ -383,7 +386,7 @@ export default async (application: Application): Promise<void> => {
         | null;
       emailNotificationsForMessagesInConversationsYouStartedAt: string | null;
       preferContentEditorProgrammerModeAt: string | null;
-      preferContentEditorToolbarInChatAt: string | null;
+      preferContentEditorToolbarInCompactAt: string | null;
       preferAnonymousAt: string | null;
     }>(
       sql`
@@ -406,7 +409,7 @@ export default async (application: Application): Promise<void> => {
           "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt",
           "emailNotificationsForMessagesInConversationsYouStartedAt",
           "preferContentEditorProgrammerModeAt",
-          "preferContentEditorToolbarInChatAt",
+          "preferContentEditorToolbarInCompactAt",
           "preferAnonymousAt"
         FROM "users"
         WHERE "id" = ${userId}

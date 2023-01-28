@@ -1520,7 +1520,7 @@ export default async (application: Application): Promise<void> => {
 
     sql`
       ALTER TABLE "users" ADD COLUMN "preferContentEditorProgrammerModeAt" TEXT NULL;
-      ALTER TABLE "users" ADD COLUMN "preferContentEditorToolbarInChatAt" TEXT NULL;
+      ALTER TABLE "users" ADD COLUMN "preferContentEditorToolbarInCompactAt" TEXT NULL;
       ALTER TABLE "users" ADD COLUMN "preferAnonymousAt" TEXT NULL;
     `,
   );

@@ -832,7 +832,11 @@ export default async (application: Application): Promise<void> => {
     >
       <div
         key="content-editor--toolbar"
-        ${compact ? html`hidden` : html``}
+        ${compact &&
+        typeof response.locals.user?.preferContentEditorToolbarInCompactAt !==
+          "string"
+          ? html`hidden`
+          : html``}
         css="${css`
           font-size: var(--font-size--xs);
           line-height: var(--line-height--xs);
