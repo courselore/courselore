@@ -2227,7 +2227,10 @@ export default async (application: Application): Promise<void> => {
   application.server.patch<
     {},
     any,
-    { preferContentEditorToolbarInCompact?: "true" | "false" },
+    {
+      preferContentEditorProgrammerMode?: "true" | "false";
+      preferContentEditorToolbarInCompact?: "true" | "false";
+    },
     {},
     Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
   >("/preferences", (request, response, next) => {
@@ -2239,10 +2242,27 @@ export default async (application: Application): Promise<void> => {
 
     if (
       ![undefined, "true", "false"].includes(
+        request.body.preferContentEditorProgrammerMode
+      ) ||
+      ![undefined, "true", "false"].includes(
         request.body.preferContentEditorToolbarInCompact
       )
     )
       return next("Validation");
+
+    if (typeof request.body.preferContentEditorProgrammerMode === "string")
+      application.database.run(
+        sql`
+        UPDATE "users"
+        SET
+          "preferContentEditorProgrammerModeAt" = ${
+            request.body.preferContentEditorProgrammerMode === "true"
+              ? new Date().toISOString()
+              : null
+          }
+        WHERE "id" = ${response.locals.user.id}
+      `
+      );
 
     if (typeof request.body.preferContentEditorToolbarInCompact === "string")
       application.database.run(

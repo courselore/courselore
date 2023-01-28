@@ -2201,19 +2201,25 @@ export default async (application: Application): Promise<void> => {
           >
             <input
               type="checkbox"
+              $${typeof response.locals.user
+                ?.preferContentEditorProgrammerModeAt === "string"
+                ? html`checked`
+                : html``}
               class="visually-hidden input--radio-or-checkbox--multilabel"
               javascript="${javascript`
                 this.isModified = false;
           
                 const textarea = this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
           
-                this.onclick = () => {
-                  if (this.checked) textarea.classList.add("content-editor--write--textarea--programmer-mode");
-                  else textarea.classList.remove("content-editor--write--textarea--programmer-mode");
-                  localStorage.setItem("content-editor--write--textarea--programmer-mode", JSON.stringify(this.checked));
+                this.onclick = async () => {
+                  textarea.classList[this.checked ? "add" : "remove"]("content-editor--write--textarea--programmer-mode");
+                  await fetch(${`https://${application.configuration.hostname}/preferences`}, {
+                    cache: "no-store",
+                    method: "PATCH",
+                    headers: { "CSRF-Protection": "true", },
+                    body: new URLSearchParams({ preferContentEditorProgrammerMode: String(this.checked), }),
+                  });
                 };
-          
-                if (JSON.parse(localStorage.getItem("content-editor--write--textarea--programmer-mode") ?? "false")) this.click();
               `}"
             />
             <span>
@@ -2279,7 +2285,10 @@ export default async (application: Application): Promise<void> => {
                 key="content-editor--write--textarea"
                 name="${name}"
                 $${required ? html`required` : html``}
-                class="input--text input--text--textarea"
+                class="input--text input--text--textarea ${typeof response
+                  .locals.user?.preferContentEditorProgrammerModeAt === "string"
+                  ? "content-editor--write--textarea--programmer-mode"
+                  : ""}"
                 style="
                   --height: ${compact
                   ? `var(--space--14)`
