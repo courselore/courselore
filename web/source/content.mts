@@ -2599,9 +2599,15 @@ ${contentSource}</textarea
                       },
                     });
 
-                    this.onclick = () => {
+                    this.onclick = async () => {
                       const toolbar = this.closest('[key="content-editor"]').querySelector('[key="content-editor--toolbar"]');
                       toolbar.hidden = !toolbar.hidden;
+                      await fetch(${`https://${application.configuration.hostname}/preferences`}, {
+                        cache: "no-store",
+                        method: "PATCH",
+                        headers: { "CSRF-Protection": "true", },
+                        body: new URLSearchParams({ preferContentEditorToolbarInCompact: String(!toolbar.hidden), }),
+                      });
                     };
                   `}"
                 >

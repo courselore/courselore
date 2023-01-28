@@ -2223,4 +2223,41 @@ export default async (application: Application): Promise<void> => {
     }
   );
   */
+
+  application.server.patch<
+    {},
+    any,
+    { preferContentEditorToolbarInCompact?: "true" | "false" },
+    {},
+    Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
+  >("/preferences", (request, response, next) => {
+    if (
+      response.locals.user === undefined ||
+      response.locals.user.emailVerifiedAt === null
+    )
+      return next();
+
+    if (
+      ![undefined, "true", "false"].includes(
+        request.body.preferContentEditorToolbarInCompact
+      )
+    )
+      return next("Validation");
+
+    if (typeof request.body.preferContentEditorToolbarInCompact === "string")
+      application.database.run(
+        sql`
+          UPDATE "users"
+          SET
+            "preferContentEditorToolbarInCompactAt" = ${
+              request.body.preferContentEditorToolbarInCompact === "true"
+                ? new Date().toISOString()
+                : null
+            }
+          WHERE "id" = ${response.locals.user.id}
+        `
+      );
+
+    response.end();
+  });
 };
