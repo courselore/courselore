@@ -1406,6 +1406,14 @@ export default async (application: Application): Promise<void> => {
           );
         });
       }
+      application.database.run(
+        sql`
+          DELETE FROM "messageDrafts"
+          WHERE
+            "conversation" = ${response.locals.conversation.id} AND
+            "authorEnrollment" = ${response.locals.enrollment.id}
+        `
+      );
       application.server.locals.helpers.emailNotifications({
         request,
         response,
