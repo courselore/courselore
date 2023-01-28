@@ -20,6 +20,14 @@ export type ApplicationConversation = {
               Application["server"]["locals"]["helpers"]["getConversation"]
             >
           >;
+          messageDraft:
+            | {
+                id: number;
+                createdAt: string;
+                answerAt: string | null;
+                contentSource: string;
+              }
+            | undefined;
         };
       };
 
@@ -218,6 +226,25 @@ export default async (application: Application): Promise<void> => {
       });
       if (conversation === undefined) return next();
       response.locals.conversation = conversation;
+
+      response.locals.messageDraft = application.database.get<{
+        id: number;
+        createdAt: string;
+        answerAt: string | null;
+        contentSource: string;
+      }>(
+        sql`
+          SELECT
+            "id",
+            "createdAt",
+            "answerAt",
+            "contentSource"
+          FROM "messageDrafts"
+          WHERE
+            "conversation" = ${response.locals.conversation.id} AND
+            "authorEnrollment" = ${response.locals.enrollment.id}
+        `
+      );
 
       next();
     }
@@ -8839,10 +8866,13 @@ export default async (application: Application): Promise<void> => {
                               <input
                                 type="checkbox"
                                 name="isAnswer"
-                                $${response.locals.enrollment.courseRole ===
-                                "staff"
-                                  ? `checked`
-                                  : ``}
+                                $${typeof response.locals.messageDraft
+                                  ?.answerAt === "string" ||
+                                (response.locals.messageDraft === undefined &&
+                                  response.locals.enrollment.courseRole ===
+                                    "staff")
+                                  ? html`checked`
+                                  : html``}
                                 class="visually-hidden input--radio-or-checkbox--multilabel"
                               />
                               <span
@@ -8894,6 +8924,8 @@ export default async (application: Application): Promise<void> => {
                     $${application.server.locals.partials.contentEditor({
                       request,
                       response,
+                      contentSource:
+                        response.locals.messageDraft?.contentSource,
                       compact: response.locals.conversation.type === "chat",
                     })}
                     $${response.locals.conversation.type === "chat"
