@@ -2922,11 +2922,6 @@ export default async (application: Application): Promise<void> => {
                                   >
                                     <button
                                       class="dropdown--menu--item button button--transparent"
-                                      javascript="${javascript`
-                                        this.onclick = () => {
-                                          localStorage.clear();
-                                        };
-                                      `}"
                                     >
                                       <i class="bi bi-box-arrow-right"></i>
                                       Sign Out

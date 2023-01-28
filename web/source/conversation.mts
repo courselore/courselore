@@ -8771,6 +8771,27 @@ export default async (application: Application): Promise<void> => {
                       padding-top: var(--space--4);
                     `}"
                 javascript="${javascript`
+                  this.oninput = (() => {
+                    let isUpdating = false;
+                    let shouldUpdateAgain = false;
+                    return async () => {
+                      if (isUpdating) {
+                        shouldUpdateAgain = true;
+                        return;
+                      }
+                      isUpdating = true;
+                      shouldUpdateAgain = false;
+                      await fetch(${`https://${application.configuration.hostname}/courses/${response.locals.course.reference}/conversations/${response.locals.conversation.reference}/messages/draft`}, {
+                        cache: "no-store",
+                        method: "POST",
+                        headers: { "CSRF-Protection": "true", },
+                        body: new URLSearchParams(new FormData(this)),
+                      });
+                      isUpdating = false;
+                      if (shouldUpdateAgain) this.oninput();
+                    };
+                  })();
+
                   this.onsubmit = () => {
                     window.setTimeout(() => {
                       const placeholder = document.querySelector('[key="message--new-message--placeholder"]');
@@ -8821,9 +8842,6 @@ export default async (application: Application): Promise<void> => {
                                   ? `checked`
                                   : ``}
                                 class="visually-hidden input--radio-or-checkbox--multilabel"
-                                javascript="${javascript`
-                                  leafac.saveFormInputValue(this, "answer");
-                                `}"
                               />
                               <span
                                 javascript="${javascript`
@@ -8869,9 +8887,6 @@ export default async (application: Application): Promise<void> => {
                       & > * {
                         grid-area: 1 / 1;
                       }
-                    `}"
-                    javascript="${javascript`
-                      leafac.saveFormInputValue(this.querySelector('[key="content-editor--write--textarea"]'), "new-message");
                     `}"
                   >
                     $${application.server.locals.partials.contentEditor({

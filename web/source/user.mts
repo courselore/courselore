@@ -2170,11 +2170,6 @@ export default async (application: Application): Promise<void> => {
             <div>
               <button
                 class="button button--full-width-on-small-screen button--rose"
-                javascript="${javascript`
-                  this.onclick = () => {
-                    localStorage.clear();
-                  };
-                `}"
               >
                 <i class="bi bi-person-x-fill"></i>
                 Remove Your Account
