@@ -2211,7 +2211,7 @@ export default async (application: Application): Promise<void> => {
           
                 const textarea = this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
           
-                this.onclick = async () => {
+                this.onchange = async () => {
                   textarea.classList[this.checked ? "add" : "remove"]("content-editor--write--textarea--programmer-mode");
                   await fetch(${`https://${application.configuration.hostname}/preferences`}, {
                     cache: "no-store",
