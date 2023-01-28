@@ -931,16 +931,17 @@ export default async (application: Application): Promise<void> => {
               .tippy-box {
                 font-size: var(--font-size--sm);
                 line-height: var(--line-height--sm);
+                color: var(--color--gray--medium--700);
                 --background-color: var(--color--gray--medium--100);
+                background-color: var(--background-color);
                 --border-color: var(--color--gray--medium--400);
+                border: var(--border-width--1) solid var(--border-color);
+                border-radius: var(--border-radius--md);
                 @media (prefers-color-scheme: dark) {
+                  color: var(--color--gray--medium--200);
                   --background-color: var(--color--gray--medium--800);
                   --border-color: var(--color--gray--medium--400);
                 }
-                color: inherit;
-                background-color: var(--background-color);
-                border: var(--border-width--1) solid var(--border-color);
-                border-radius: var(--border-radius--md);
                 & > .tippy-svg-arrow > svg {
                   &:first-child {
                     fill: var(--border-color);
