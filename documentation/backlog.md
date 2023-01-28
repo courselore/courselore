@@ -284,12 +284,6 @@
 
 ---
 
-- Do `localStorage` on the server:
-  - It’ll work across devices, which is a “pleasant surprise.”
-  - It allows for features such as “currently typing.”
-
----
-
 - Add the notion of follow-up question, so that questions aren’t marked as “unresolved” as soon as a student sends a message. It makes sense for when the student just says “thanks.”
 - Let staff endorse other staff answers.
 - Add the notion of “staff considers this a good question.” Similar to the notion of “endorsement,” but for questions.
