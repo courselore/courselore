@@ -1214,6 +1214,23 @@ export default async (application: Application): Promise<void> => {
       )
         return next("Validation");
 
+      if (
+        application.database.get<{}>(
+          sql`
+          SELECT TRUE
+          FROM "messageDrafts"
+          WHERE
+            "conversation" = ${response.locals.conversation.id} AND
+            "authorEnrollment" = ${response.locals.enrollment.id}
+        `
+        ) === undefined
+      )
+        application.server.locals.helpers.liveUpdates({
+          request,
+          response,
+          url: `/courses/${response.locals.course.reference}/conversations/${response.locals.conversation.reference}`,
+        });
+
       application.database.run(
         sql`
           INSERT INTO "messageDrafts" (
