@@ -868,6 +868,7 @@ export default async (application: Application): Promise<void> => {
       archivedAt: string | null;
       enrollmentsCount: number;
       conversationsCount: number;
+      updatedAt: string;
     }>(
       sql`
         SELECT
@@ -889,7 +890,17 @@ export default async (application: Application): Promise<void> => {
             SELECT COUNT(*)
             FROM "conversations"
             WHERE "courses"."id" = "conversations"."course"
-          ) AS "conversationsCount"
+          ) AS "conversationsCount",
+          coalesce(
+            (
+              SELECT coalesce("conversations"."updatedAt", "conversations"."createdAt") AS "updatedAt"
+              FROM "conversations"
+              WHERE "conversations"."course" = "courses"."id"
+              ORDER BY coalesce("conversations"."updatedAt", "conversations"."createdAt") DESC
+              LIMIT 1
+            ),
+            "courses"."createdAt"
+          ) AS "updatedAt"
         FROM "courses"
         ORDER BY
           "createdAt" DESC,
@@ -984,6 +995,20 @@ export default async (application: Application): Promise<void> => {
                           <time
                             datetime="${new Date(
                               course.createdAt
+                            ).toISOString()}"
+                            javascript="${javascript`
+                              leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
+                            `}"
+                          ></time>
+                        </span>
+                      </div>
+                      <div>
+                        <i class="bi bi-fire"></i>
+                        <span>
+                          Updated
+                          <time
+                            datetime="${new Date(
+                              course.updatedAt
                             ).toISOString()}"
                             javascript="${javascript`
                               leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
