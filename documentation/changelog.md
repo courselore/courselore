@@ -10,6 +10,9 @@
 
 ## Unreleased
 
+- Changed message drafts from being stored in the browser to being stored in the server. This allows you to, for example, start drafting a message on the phone and finish it on the desktop.
+- Changed preferences such as whether Programmer Mode is enable in the content editor from being stored in the browser to being stored in the server. This makes the preferences consistent across devices.
+- Staff members can see who’s currently typing in a conversation.
 - Added a new administration page to see all courses.
 
 ## 6.0.6
