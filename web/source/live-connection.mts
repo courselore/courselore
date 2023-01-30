@@ -218,6 +218,43 @@ export default async (application: Application): Promise<void> => {
           }
         }
       })();
+      (async () => {
+        while (true) {
+          try {
+            await timers.setTimeout(
+              4.5 * 60 * 1000 + Math.random() * 0.5 * 60 * 1000,
+              undefined,
+              {
+                ref: false,
+                signal: heartbeatAbortController.signal,
+              }
+            );
+          } catch {
+            break;
+          }
+          application.database.run(
+            sql`
+              UPDATE "liveConnectionsMetadata"
+              SET "liveUpdateAt" = ${new Date().toISOString()}
+              WHERE "nonce" = ${nonce}
+            `
+          );
+          application.got
+            .post(
+              `http://127.0.0.1:${
+                application.ports.serverEvents[application.process.number]
+              }/live-updates`
+            )
+            .catch((error) => {
+              response.locals.log(
+                "LIVE-UPDATES",
+                "FAILED TO EMIT POST ‘/live-updates’ EVENT",
+                String(error),
+                error?.stack
+              );
+            });
+        }
+      })();
 
       response.setHeader = (name, value) => response;
 
