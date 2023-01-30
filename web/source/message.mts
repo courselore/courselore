@@ -1221,7 +1221,8 @@ export default async (application: Application): Promise<void> => {
           FROM "messageDrafts"
           WHERE
             "conversation" = ${response.locals.conversation.id} AND
-            "authorEnrollment" = ${response.locals.enrollment.id}
+            "authorEnrollment" = ${response.locals.enrollment.id} AND
+            ${new Date(Date.now() - 5 * 60 * 1000).toISOString()} < "createdAt"
         `
         ) === undefined
       )
