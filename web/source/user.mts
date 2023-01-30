@@ -467,52 +467,45 @@ export default async (application: Application): Promise<void> => {
             }[size]}"
           >
             $${userAvatar}
-            <span
-              hidden
-              css="${css`
-                background-color: var(--color--green--500);
-                @media (prefers-color-scheme: dark) {
-                  background-color: var(--color--green--600);
-                }
-                border-radius: var(--border-radius--circle);
-                place-self: end;
-              `} ${{
-                xs: css`
-                  width: var(--space--1);
-                  height: var(--space--1);
-                `,
-                sm: css`
-                  width: var(--space--1-5);
-                  height: var(--space--1-5);
-                `,
-                xl: css`
-                  width: var(--space--3);
-                  height: var(--space--3);
-                  transform: translate(-100%, -100%);
-                `,
-              }[size]}"
-              javascript="${javascript`
-                const element = this;
-
-                leafac.setTippy({
-                  event,
-                  element,
-                  tippyProps: {
-                    touch: false,
-                    content: "Online",
-                  },
-                });
-
-                window.clearTimeout(element.updateTimeout);
-                (function update() {
-                  if (!leafac.isConnected(element)) return;
-                  element.hidden = Date.now() - ${new Date(
-                    user.lastSeenOnlineAt
-                  ).getTime()} > 5 * 60 * 1000;
-                  element.updateTimeout = window.setTimeout(update, 60 * 1000 + Math.random() * 2 * 1000);
-                })();
-              `}"
-            ></span>
+            $${Date.now() - 5 * 60 * 1000 <
+            new Date(user.lastSeenOnlineAt).getTime()
+              ? html`
+                  <span
+                    css="${css`
+                      background-color: var(--color--green--500);
+                      @media (prefers-color-scheme: dark) {
+                        background-color: var(--color--green--600);
+                      }
+                      border-radius: var(--border-radius--circle);
+                      place-self: end;
+                    `} ${{
+                      xs: css`
+                        width: var(--space--1);
+                        height: var(--space--1);
+                      `,
+                      sm: css`
+                        width: var(--space--1-5);
+                        height: var(--space--1-5);
+                      `,
+                      xl: css`
+                        width: var(--space--3);
+                        height: var(--space--3);
+                        transform: translate(-100%, -100%);
+                      `,
+                    }[size]}"
+                    javascript="${javascript`
+                      leafac.setTippy({
+                        event,
+                        element: this,
+                        tippyProps: {
+                          touch: false,
+                          content: "Online",
+                        },
+                      });
+                    `}"
+                  ></span>
+                `
+              : html``}
           </span>`;
       }
 
