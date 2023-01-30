@@ -1,6 +1,22 @@
 # Meeting Notes
 
 <details>
+<summary>2023-01-28</summary>
+
+- Progress:
+  - Content editor redesign deployed.
+  - Store preferences (for example, whether to use Programmer Mode) on server, to be consistent across devices.
+  - Store message drafts on server as well (start drafting a message on phone and finish on desktop).
+  - “Currently typing.”
+  - Administrators can now see a list of courses.
+- Explain Programmer Mode in help for content editor.
+- Add helpers to other parts of the application.
+- Redesign the upper-left part of the interface.
+- Chat scrolling is glitchy.
+
+</details>
+
+<details>
 <summary>2023-01-21</summary>
 
 - Deployed new strategy for static CSS/JavaScript that is as good as we can make it. 1.5x improvement in page size, more strict Content Security Policy, and so forth.
