@@ -66,47 +66,49 @@
 **Conversations List on Sidebar**
 
 - Group conversations (similar to Piazza & Campuswire).
+  - Includes unread messages
   - Date
   - Pinned
   - Tags
   - Type
-- Separate the conversations in sections: One section for conversations with unread messages.
+- Conversations that are pinned & read may be collapsed after some time, but pinned & unread must be shown prominently.
 - Conversations are sorted by most recent activity, but that means when you send a message, the conversation moves to the top, which can be disorienting.
   - Wait for a little while, 10~30 minutes, before sorting.
 - Make the distinction between the types more prominent. Separate questions from chats in the list of conversations, for example.
-  - Change the visualization of “types” a little more, for example, make announcements pop up.
+  - Make the visualization of “types” a little more distinct, for example, make announcements pop up.
   - Improve display of endorsements & answers (on the sidebar, include number of answers).
   - Manage answer badges more intelligently (answered at all, answered by staff).
-- Conversations that are pinned & read may be collapsed after some time, but pinned & unread must be shown prominently.
 
 **Messages**
 
 - Higher contrast between background and text?
-- Blockquotes (replies) should have a faint background color to help differentiate them.
-- Collapse long blockquotes
+- Blockquotes
+  - Faint background color to help differentiate them?
+  - Collapse long blockquotes?
 - Add more options to the hover menu (besides the ellipses), similar to Slack & Discord.
 - Bigger font (15pt).
 - Wider columns
 - Include a “set as answer and endorse” button.
-- Show a widget similar to the Views (with person & time) to likes & endorsements.
-- Don’t show show endorsements for non-answers. (They show up at least for staff.)
+- Show a widget similar to the Views and Likes (with person & time) to endorsements.
+- Don’t show endorsements for messages that have been converted into non-answers. (They show up at least for staff.)
 
 **Chat**
 
-- More space between messages and less space between paragraphs
 - Move the avatar to the side, giving a clearer indication of where a message ends and another one starts
-- “Truncate” long messages.
-- Scroll to the bottom when sending chat message regardless of your scroll position?
+- More space between messages?
+- Collapse long messages.
 - Add a button to “Return to Bottom” when chat is scrolled up.
 - Images may break the scrolling to the bottom on chats.
-- If the textarea is autosizing, then the main messages pane scrolls up.
 
 **Content Editor**
 
 - Clarify that “Programmer Mode” is for your input only. Unlike other buttons on the toolbar, it doesn’t affect the rendered text.
 - When editing, and trying to send empty message, propose to delete (like Discord does).
 - When pressing up on an empty chat box, start editing the your most recently sent message (if it’s still the most recently sent message in the conversation) (like Discord does).
-- When you’re typing, there’s a weird scrollbar glitch: it shows up for a split second and hides back again. I observed this in Meta Courselore using Safari. Perhaps consider using other approaches to autosizing?
+- Issue with autosizing:
+  - Slows down the typing in iOS
+  - In chats, if the textarea is autosizing, then the main messages pane scrolls up.
+  - When you’re typing, there’s a weird scrollbar glitch: it shows up for a split second and hides back again. I observed this in Meta Courselore using Safari.
   - https://css-tricks.com/the-cleanest-trick-for-autogrowing-textareas/
   - https://github.com/fregante/fit-textarea **Use v2**.
 
@@ -121,20 +123,13 @@
 
 - On form submissions, for example, when you create an invitation, highlight the part of the page that changed (use the same yellow we use for permanent links to messages).
 
-**Live-Updates**
-
-- Avatar image on avatar tooltip flickers
-- Scrolling goes up on mobile when the page is big and you’re scrolled all the way to the bottom, interacting with the content editor
-
 **Other**
 
-- When an SVG is uploaded & resized (either as an avatar or as attachment on a message) its type changes to PNG, but we’re producing the wrong filename, ending in `.svg`.
 - Add the number of unread messages to the `<title>`.
   - Or change the favicon.
 - Detect old or otherwise unsupported browsers and alert, asking the user to update.
 - Make breadcrumbs (for example, under “User Settings”) clickable (they should expose the navigation menu, just like what happens in Visual Studio Code).
 - The anonymity button isn’t as clear as it should be.
-- The “Manage Tags” on “New Conversation” could happen inline, instead of taking you to course settings.
 
 ## Quality-of-Life Features
 
