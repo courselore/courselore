@@ -10,14 +10,13 @@
 
 ## Users
 
+- Allow people to remove their accounts.
 - Improvements to the workflow for when you change your email:
   - Don’t actually change the email until it’s verified. Otherwise an attacker with a compromised password could change your email and lock you out of the “Forgot your password?” flow.
+- Allow person to have multiple emails on their account?
 - Online indicators.
-  - Turn them on when someone who was offline becomes online.
-  - Don’t turn them off if person continues to be online.
+  - Turn them on as soon as someone who was offline becomes online (right now it may take up to 5 minutes in next periodic Live-Update).
   - Fade in and out.
-- Allow person to have multiple emails on their account.
-- Allow people to remove their accounts.
 - Authentication:
   - SSO with Hopkins ID (SAML) (https://glacial-plateau-47269.herokuapp.com/).
   - 2-Factor Authentication.
