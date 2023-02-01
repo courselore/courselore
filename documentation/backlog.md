@@ -28,10 +28,8 @@
 
 ## Courses
 
-- Course archival: Currently, when a course is archived, we continue to show all the forms and return an error message after submission. It’d be more elegant to disable the forms and inform the user before they try to submit. But this requires revisiting almost every form, input, and button in the application.
 - Remove course entirely.
 - Have a setting to either let students remove themselves from the course, or let them request the staff to be removed.
-- Control who’s able to create courses, which makes sense for people who self-host.
 - Upload roster and show differences.
 
 ## Invitations
@@ -39,7 +37,7 @@
 - Simplify the system by having a single invitation link per course role that you can enable/disable/reset.
 - Limit invitation links to certain email domains, for example, “this link may only be used by people whose emails end with `@jhu.edu`.”
 - Have an option to require approval of enrollment.
-- Have a public listing of courses in the system and allow people to request to join.
+- Have a public listing of courses in the system and allow people to request to join?
 - When the user signs up via an invitation, have a call to action to fill in profile (just like the one when you sign up without an invitation).
 - Allow staff to preview the email invitations they’re about to submit? (Think the problem with the “enroll” language.)
 
