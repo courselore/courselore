@@ -75,9 +75,18 @@
 - Make breadcrumbs (for example, under “User Settings”) clickable (they should expose the navigation menu, just like what happens in Visual Studio Code).
 - The anonymity button isn’t as clear as it should be.
 
-## Email Notifications
+## Notifications
 
+**Email**
+
+- Allow replying to a message by replying to the email notification
+  - Obfuscate email addresses in the message (like GitHub does).
+  - Use IMAP on an existing inbox instead of SMTP?
 - Don’t send notifications when the person is online and/or has seen the message.
+- More granular control over what to be notified about.
+  - Course-level configuration.
+  - Subscribe/unsubscribe to particular conversations of interest/disinterest.
+- Add option to receive email notifications for your own messages.
 - Email digests:
   - “Announcements” should be sent immediately, not as part of the digest.
 - Email contents:
@@ -87,6 +96,7 @@
   - Easier ways to unsubscribe:
     - Link to one-click unsubscription in message body.
     - `List-*` headers to allow one-click unsubscription.
+    - Don’t require user to be logged in to unsubscribe from notifications?
   - Decorate (with some special treatment for email notifications):
     - Avoid showing things like `@john-doe--201231`.
     - Code blocks are duplicated:
@@ -127,24 +137,9 @@
     </style>
     ```
 
-- More granular control over what to be notified about.
-  - Course-level configuration.
-  - Subscribe/unsubscribe to particular conversations of interest/disinterest.
+**Other**
 
-## Notifications
-
-- Add notification badges indicating the number of unread messages on the lists of courses (for example, the main page and the course switcher on the upper-left).
-- Add different notification badges for when you’re @mentioned.
-  - On badges on sidebar indicating that a conversation includes unread messages
-  - On badges on course list
-- A timeline-like list of unread messages and other things that require your attention.
-- Snooze.
-- Don’t require user to be logged in to unsubscribe from notifications?
-- Add option to receive email notifications for your own messages.
-- Allow replying to a message by replying to the email notification
-  - Obfuscate email addresses in the message (like GitHub does).
-  - Use IMAP on an existing inbox instead of SMTP?
-- Other channels: Use the browser Notifications API & Push API; Desktop & phone applications.
+- Browser Notifications API & Push API; Desktop & phone applications.
 
 ```javascript
 Notification.requestPermission();
@@ -268,10 +263,18 @@ new Notification('Example');
 - Add the notion of follow-up question, so that questions aren’t marked as “unresolved” as soon as a student sends a message. It makes sense for when the student just says “thanks.”
   - Have a dedicated button for this.
 - Let staff endorse other staff answers.
+- Introduce the notion of promoting a message into its own conversation (one example use case is when someone asks a question as a follow-up to an announcement).
+
+**Readings & Views**
+
 - Change the meaning of “views”: Instead of using “readings”, only count as “viewed” if the message has appeared on the person’s screen.
   - Tracking pixel on email for people who will read the notification on their email and just “mark as read” on Courselore?
 - Mark a message as unread.
-- Introduce the notion of promoting a message into its own conversation (one example use case is when someone asks a question as a follow-up to an announcement).
+- Add notification badges indicating the number of unread messages on the lists of courses (for example, the main page and the course switcher on the upper-left).
+- Add different notification badges for when you’re @mentioned.
+  - On badges on sidebar indicating that a conversation includes unread messages
+  - On badges on course list
+- A timeline-like list of unread messages and other things that require your attention.
 
 ## Chat
 
