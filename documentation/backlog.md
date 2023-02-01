@@ -8,166 +8,6 @@
 - Drafts
 - Pagination
 
-## User Interface Improvements
-
-**Top Menus**
-
-- Use hamburger menu instead of a couple separate menus
-  - It shouldn’t cover the whole page underneath (and shouldn’t push an entry into the history, naturally)
-
-**Conversations List on Sidebar**
-
-- Group conversations (similar to Piazza & Campuswire).
-  - Includes unread messages
-  - Date
-  - Pinned
-  - Tags
-  - Type
-- Conversations that are pinned & read may be collapsed after some time, but pinned & unread must be shown prominently.
-- Conversations are sorted by most recent activity, but that means when you send a message, the conversation moves to the top, which can be disorienting.
-  - Wait for a little while, 10~30 minutes, before sorting.
-- Make the distinction between the types more prominent. Separate questions from chats in the list of conversations, for example.
-  - Make the visualization of “types” a little more distinct, for example, make announcements pop up.
-  - Improve display of endorsements & answers (on the sidebar, include number of answers).
-  - Manage answer badges more intelligently (answered at all, answered by staff).
-
-**Messages**
-
-- Higher contrast between background and text?
-- Blockquotes
-  - Faint background color to help differentiate them?
-  - Collapse long blockquotes?
-- Add more options to the hover menu (besides the ellipses), similar to Slack & Discord.
-- Bigger font (15pt).
-- Wider columns
-- Include a “set as answer and endorse” button.
-- Show a widget similar to the Views and Likes (with person & time) to endorsements.
-- Don’t show endorsements for messages that have been converted into non-answers. (They show up at least for staff.)
-
-**Chat**
-
-- Move the avatar to the side, giving a clearer indication of where a message ends and another one starts
-- More space between messages?
-- Collapse long messages.
-- Add a button to “Return to Bottom” when chat is scrolled up.
-- Images may break the scrolling to the bottom on chats.
-
-**Content Editor**
-
-- Clarify that “Programmer Mode” is for your input only. Unlike other buttons on the toolbar, it doesn’t affect the rendered text.
-- When editing, and trying to send empty message, propose to delete (like Discord does).
-- When pressing up on an empty chat box, start editing the your most recently sent message (if it’s still the most recently sent message in the conversation) (like Discord does).
-- Issue with autosizing:
-  - Slows down the typing in iOS
-  - In chats, if the textarea is autosizing, then the main messages pane scrolls up.
-  - When you’re typing, there’s a weird scrollbar glitch: it shows up for a split second and hides back again. I observed this in Meta Courselore using Safari.
-  - https://css-tricks.com/the-cleanest-trick-for-autogrowing-textareas/
-  - https://github.com/fregante/fit-textarea **Use v2**.
-
-**New Conversation**
-
-- Keep all the material that is there, but present it differently to try and make the page cleaner.
-- Collapse tags (similar to what we do in the conversation page itself, and to what Reddit does).
-  - Change the widget that’s a tag: Instead of `icon text`, make the text look like it’s inside a tag.
-- Use different background colors, similar to Piazza.
-
-**Live-Navigation**
-
-- On form submissions, for example, when you create an invitation, highlight the part of the page that changed (use the same yellow we use for permanent links to messages).
-
-**Other**
-
-- Add the number of unread messages to the `<title>`.
-  - Or change the favicon.
-- Detect old or otherwise unsupported browsers and alert, asking the user to update.
-- Make breadcrumbs (for example, under “User Settings”) clickable (they should expose the navigation menu, just like what happens in Visual Studio Code).
-- The anonymity button isn’t as clear as it should be.
-
-## Notifications
-
-**Email**
-
-- Allow replying to a message by replying to the email notification
-  - Obfuscate email addresses in the message (like GitHub does).
-  - Use IMAP on an existing inbox instead of SMTP?
-- Don’t send notifications when the person is online and/or has seen the message.
-- More granular control over what to be notified about.
-  - Course-level configuration.
-  - Subscribe/unsubscribe to particular conversations of interest/disinterest.
-- Add option to receive email notifications for your own messages.
-- Email digests:
-  - “Announcements” should be sent immediately, not as part of the digest.
-- Email contents:
-
-  - Subjects could include the fact that you were mentioned, to make it easier to set up filters.
-    - Perhaps this could be more generalized and, like GitHub, include the reason why you were notified. (GitHub seems to do that with a custom header.)
-  - Easier ways to unsubscribe:
-    - Link to one-click unsubscription in message body.
-    - `List-*` headers to allow one-click unsubscription.
-    - Don’t require user to be logged in to unsubscribe from notifications?
-  - Decorate (with some special treatment for email notifications):
-    - Avoid showing things like `@john-doe--201231`.
-    - Code blocks are duplicated:
-      - Have a processor to remove one of the versions of code block from the email.
-  - Mathematics are rendered incorrectly.
-  - Add first-class support for Dark Mode in emails? Or continue relying on automatic Dark Mode? And, in general, style our emails more?
-
-    ```html
-    <meta name="color-scheme" content="light dark" />
-    <meta name="supported-color-schemes" content="light dark" />
-
-    <style type="text/css">
-      :root {
-          color-scheme: light dark;
-          supported-color-schemes: light dark;
-      }
-    </style>
-
-    <style>
-      /* Normal styles */
-      @media (prefers-color-scheme: dark) {
-        /* Dark mode styles */
-      }
-    </style>
-
-    <style>
-      .dark {
-        display: none !important;
-      }
-      @media (prefers-color-scheme: dark) {
-        .light {
-          display: none !important;
-        }
-        .dark {
-          display: block !important;
-        }
-      }
-    </style>
-    ```
-
-**Other**
-
-- Browser Notifications API & Push API; Desktop & phone applications.
-
-```javascript
-Notification.requestPermission();
-Notification.permission;
-new Notification('Example');
-
-<button
-  class="button button--transparent"
-  javascript="${javascript`
-    this.onclick = async () => {
-      if (await Notification.requestPermission() === "denied") return;
-      new Notification("Example");
-    };
-  `}"
->
-  <i class="bi bi-bell"></i>
-  Send Notification
-</button>
-```
-
 ## Users
 
 - Improvements to the workflow for when you change your email:
@@ -345,6 +185,166 @@ new Notification('Example');
 - Mermaid: https://github.blog/2022-02-14-include-diagrams-markdown-files-mermaid/
 - Once the chats have been redesigned with avatars on the margin to better establish a hierarchy and delimit messages, consider bringing back the full `partials.user()` widget to `@mentions`, with avatar and everything. (I think this will look good, but it’s a controversial point, given that people were very insistent on removing avatars from that context.)
 - Sanitize allowlist of attributes to prevent abuse (for example, `<code class="some-class-that-exists-in-the-system">`)
+
+## Notifications
+
+**Email**
+
+- Allow replying to a message by replying to the email notification
+  - Obfuscate email addresses in the message (like GitHub does).
+  - Use IMAP on an existing inbox instead of SMTP?
+- Don’t send notifications when the person is online and/or has seen the message.
+- More granular control over what to be notified about.
+  - Course-level configuration.
+  - Subscribe/unsubscribe to particular conversations of interest/disinterest.
+- Add option to receive email notifications for your own messages.
+- Email digests:
+  - “Announcements” should be sent immediately, not as part of the digest.
+- Email contents:
+
+  - Subjects could include the fact that you were mentioned, to make it easier to set up filters.
+    - Perhaps this could be more generalized and, like GitHub, include the reason why you were notified. (GitHub seems to do that with a custom header.)
+  - Easier ways to unsubscribe:
+    - Link to one-click unsubscription in message body.
+    - `List-*` headers to allow one-click unsubscription.
+    - Don’t require user to be logged in to unsubscribe from notifications?
+  - Decorate (with some special treatment for email notifications):
+    - Avoid showing things like `@john-doe--201231`.
+    - Code blocks are duplicated:
+      - Have a processor to remove one of the versions of code block from the email.
+  - Mathematics are rendered incorrectly.
+  - Add first-class support for Dark Mode in emails? Or continue relying on automatic Dark Mode? And, in general, style our emails more?
+
+    ```html
+    <meta name="color-scheme" content="light dark" />
+    <meta name="supported-color-schemes" content="light dark" />
+
+    <style type="text/css">
+      :root {
+          color-scheme: light dark;
+          supported-color-schemes: light dark;
+      }
+    </style>
+
+    <style>
+      /* Normal styles */
+      @media (prefers-color-scheme: dark) {
+        /* Dark mode styles */
+      }
+    </style>
+
+    <style>
+      .dark {
+        display: none !important;
+      }
+      @media (prefers-color-scheme: dark) {
+        .light {
+          display: none !important;
+        }
+        .dark {
+          display: block !important;
+        }
+      }
+    </style>
+    ```
+
+**Other**
+
+- Browser Notifications API & Push API; Desktop & phone applications.
+
+```javascript
+Notification.requestPermission();
+Notification.permission;
+new Notification('Example');
+
+<button
+  class="button button--transparent"
+  javascript="${javascript`
+    this.onclick = async () => {
+      if (await Notification.requestPermission() === "denied") return;
+      new Notification("Example");
+    };
+  `}"
+>
+  <i class="bi bi-bell"></i>
+  Send Notification
+</button>
+```
+
+## User Interface Improvements
+
+**Top Menus**
+
+- Use hamburger menu instead of a couple separate menus
+  - It shouldn’t cover the whole page underneath (and shouldn’t push an entry into the history, naturally)
+
+**Conversations List on Sidebar**
+
+- Group conversations (similar to Piazza & Campuswire).
+  - Includes unread messages
+  - Date
+  - Pinned
+  - Tags
+  - Type
+- Conversations that are pinned & read may be collapsed after some time, but pinned & unread must be shown prominently.
+- Conversations are sorted by most recent activity, but that means when you send a message, the conversation moves to the top, which can be disorienting.
+  - Wait for a little while, 10~30 minutes, before sorting.
+- Make the distinction between the types more prominent. Separate questions from chats in the list of conversations, for example.
+  - Make the visualization of “types” a little more distinct, for example, make announcements pop up.
+  - Improve display of endorsements & answers (on the sidebar, include number of answers).
+  - Manage answer badges more intelligently (answered at all, answered by staff).
+
+**Messages**
+
+- Higher contrast between background and text?
+- Blockquotes
+  - Faint background color to help differentiate them?
+  - Collapse long blockquotes?
+- Add more options to the hover menu (besides the ellipses), similar to Slack & Discord.
+- Bigger font (15pt).
+- Wider columns
+- Include a “set as answer and endorse” button.
+- Show a widget similar to the Views and Likes (with person & time) to endorsements.
+- Don’t show endorsements for messages that have been converted into non-answers. (They show up at least for staff.)
+
+**Chat**
+
+- Move the avatar to the side, giving a clearer indication of where a message ends and another one starts
+- More space between messages?
+- Collapse long messages.
+- Add a button to “Return to Bottom” when chat is scrolled up.
+- Images may break the scrolling to the bottom on chats.
+
+**Content Editor**
+
+- Clarify that “Programmer Mode” is for your input only. Unlike other buttons on the toolbar, it doesn’t affect the rendered text.
+- When editing, and trying to send empty message, propose to delete (like Discord does).
+- When pressing up on an empty chat box, start editing the your most recently sent message (if it’s still the most recently sent message in the conversation) (like Discord does).
+- Issue with autosizing:
+  - Slows down the typing in iOS
+  - In chats, if the textarea is autosizing, then the main messages pane scrolls up.
+  - When you’re typing, there’s a weird scrollbar glitch: it shows up for a split second and hides back again. I observed this in Meta Courselore using Safari.
+  - https://css-tricks.com/the-cleanest-trick-for-autogrowing-textareas/
+  - https://github.com/fregante/fit-textarea **Use v2**.
+
+**New Conversation**
+
+- Keep all the material that is there, but present it differently to try and make the page cleaner.
+- Collapse tags (similar to what we do in the conversation page itself, and to what Reddit does).
+  - Change the widget that’s a tag: Instead of `icon text`, make the text look like it’s inside a tag.
+- Use different background colors, similar to Piazza.
+
+**Live-Navigation**
+
+- On form submissions, for example, when you create an invitation, highlight the part of the page that changed (use the same yellow we use for permanent links to messages).
+
+**Other**
+
+- Add the number of unread messages to the `<title>`.
+  - Or change the favicon.
+- Detect old or otherwise unsupported browsers and alert, asking the user to update.
+- Make breadcrumbs (for example, under “User Settings”) clickable (they should expose the navigation menu, just like what happens in Visual Studio Code).
+- The anonymity button isn’t as clear as it should be.
 
 ## Pagination
 
