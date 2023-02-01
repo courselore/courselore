@@ -188,7 +188,7 @@ export default async (application: Application): Promise<void> => {
         ],
         attributes: {
           a: ["href", "id"],
-          img: ["src", "alt"],
+          img: ["src", "alt", "width"],
           video: ["src"],
           li: ["id"],
           input: [["type", "checkbox"], ["disabled", "true"], "checked"],
