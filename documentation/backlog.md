@@ -156,10 +156,12 @@
 ---
 
 - Add the notion of follow-up question, so that questions aren’t marked as “unresolved” as soon as a student sends a message. It makes sense for when the student just says “thanks.”
+  - Have a dedicated button for this.
 - Let staff endorse other staff answers.
 - Add the notion of “staff considers this a good question.” Similar to the notion of “endorsement,” but for questions.
 - Change the meaning of “views”: Instead of using “readings”, only count as “viewed” if the message has appeared on the person’s screen.
   - Tracking pixel on email for people who will read the notification on their email and just “mark as read” on Courselore?
+- Mark a message as unread.
 - Introduce the notion of locking a conversation.
 - Introduce the notion of promoting a message into its own conversation (one example use case is when someone asks a question as a follow-up to an announcement).
 
