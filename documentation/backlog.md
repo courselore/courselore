@@ -1,61 +1,5 @@
 # Backlog
 
-## Email Notifications
-
-- Don’t send notifications when the person is online and/or has seen the message.
-- Email digests:
-  - “Announcements” should be sent immediately, not as part of the digest.
-- Email contents:
-
-  - Subjects could include the fact that you were mentioned, to make it easier to set up filters.
-    - Perhaps this could be more generalized and, like GitHub, include the reason why you were notified. (GitHub seems to do that with a custom header.)
-  - Easier ways to unsubscribe:
-    - Link to one-click unsubscription in message body.
-    - `List-*` headers to allow one-click unsubscription.
-  - Decorate (with some special treatment for email notifications):
-    - Avoid showing things like `@john-doe--201231`.
-    - Code blocks are duplicated:
-      - Have a processor to remove one of the versions of code block from the email.
-  - Mathematics are rendered incorrectly.
-  - Add first-class support for Dark Mode in emails? Or continue relying on automatic Dark Mode? And, in general, style our emails more?
-
-    ```html
-    <meta name="color-scheme" content="light dark" />
-    <meta name="supported-color-schemes" content="light dark" />
-
-    <style type="text/css">
-      :root {
-          color-scheme: light dark;
-          supported-color-schemes: light dark;
-      }
-    </style>
-
-    <style>
-      /* Normal styles */
-      @media (prefers-color-scheme: dark) {
-        /* Dark mode styles */
-      }
-    </style>
-
-    <style>
-      .dark {
-        display: none !important;
-      }
-      @media (prefers-color-scheme: dark) {
-        .light {
-          display: none !important;
-        }
-        .dark {
-          display: block !important;
-        }
-      }
-    </style>
-    ```
-
-- More granular control over what to be notified about.
-  - Course-level configuration.
-  - Subscribe/unsubscribe to particular conversations of interest/disinterest.
-
 ## User Interface Improvements
 
 **Top Menus**
@@ -130,6 +74,62 @@
 - Detect old or otherwise unsupported browsers and alert, asking the user to update.
 - Make breadcrumbs (for example, under “User Settings”) clickable (they should expose the navigation menu, just like what happens in Visual Studio Code).
 - The anonymity button isn’t as clear as it should be.
+
+## Email Notifications
+
+- Don’t send notifications when the person is online and/or has seen the message.
+- Email digests:
+  - “Announcements” should be sent immediately, not as part of the digest.
+- Email contents:
+
+  - Subjects could include the fact that you were mentioned, to make it easier to set up filters.
+    - Perhaps this could be more generalized and, like GitHub, include the reason why you were notified. (GitHub seems to do that with a custom header.)
+  - Easier ways to unsubscribe:
+    - Link to one-click unsubscription in message body.
+    - `List-*` headers to allow one-click unsubscription.
+  - Decorate (with some special treatment for email notifications):
+    - Avoid showing things like `@john-doe--201231`.
+    - Code blocks are duplicated:
+      - Have a processor to remove one of the versions of code block from the email.
+  - Mathematics are rendered incorrectly.
+  - Add first-class support for Dark Mode in emails? Or continue relying on automatic Dark Mode? And, in general, style our emails more?
+
+    ```html
+    <meta name="color-scheme" content="light dark" />
+    <meta name="supported-color-schemes" content="light dark" />
+
+    <style type="text/css">
+      :root {
+          color-scheme: light dark;
+          supported-color-schemes: light dark;
+      }
+    </style>
+
+    <style>
+      /* Normal styles */
+      @media (prefers-color-scheme: dark) {
+        /* Dark mode styles */
+      }
+    </style>
+
+    <style>
+      .dark {
+        display: none !important;
+      }
+      @media (prefers-color-scheme: dark) {
+        .light {
+          display: none !important;
+        }
+        .dark {
+          display: block !important;
+        }
+      }
+    </style>
+    ```
+
+- More granular control over what to be notified about.
+  - Course-level configuration.
+  - Subscribe/unsubscribe to particular conversations of interest/disinterest.
 
 ## Quality-of-Life Features
 
