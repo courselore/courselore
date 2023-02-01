@@ -1,5 +1,13 @@
 # Backlog
 
+## Finish
+
+- User deletion
+- Merging feature branches
+- Email digests
+- Drafts
+- Pagination
+
 ## User Interface Improvements
 
 **Top Menus**
