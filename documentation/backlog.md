@@ -1,47 +1,5 @@
 # Backlog
 
-## Administrative Interface
-
-- Users
-  - See what courses people are on
-- Courses
-  - Access the course
-    - Have a quick link to the list of enrollments
-  - Have a quick way to archive a course directly from this list
-- When an administrator is creating a course, ask them if they want to be staff, because perhaps they’re creating a course for someone else.
-- Deal with the case in which you’re the administrator and also the staff/student on a course.
-  - Switch in out of administrator role and see the course differently.
-- Extract a partial for user in list of users (to be used in `/courses/___/settings/enrollments` & administrative interface list of users).
-- Administrators can have further control over user accounts:
-  - Create a password reset link (for people who forgot their password and can’t receive email with the registered address)
-  - Enroll people in courses
-  - Impersonate users & see the system just like the user sees it.
-  - Remove a person from the system entirely
-  - Manage sessions, for example, force a sign-out if it’s believed that an account is compromised
-  - Perhaps even some more personal settings, for example, preferences related to email notifications
-- Other ways to get administrators into the system:
-  - Invitations for installation-wide roles
-    - These would be similar to the invitations for a course. But email only, no invitation link.
-  - Administrators may create users.
-- Have some sort of visual indication of your own role in the system.
-- Introduce the notion of “institution”
-  - An institution may be a department, an university, and so forth.
-  - For simplicity, institution can be the only layer of abstraction, let’s not model the relationship between departments, schools, universities, and so forth.
-- Graph of use over time:
-  - Number of users
-  - Number of **active** courses (where an **active** course is a course that has seen recent activity, for example, a new conversation).
-  - Activity on conversations
-    - It’d be nice for the course staff to also have access to that
-- Low-level information:
-  - Machine statistics, for example, disk space
-  - Notifications: Disk running out of space, load average above normal, and so forth
-  - Run an update
-  - Run a backup
-  - Email server configuration & other things that currently live in configuration file
-  - Have a wizard to set things up the first time: It’d have to be something like a command-line application, because without the basic information the server can’t even start.
-  - Have a way to change configuration moving forward, by changing the configuration file and restarting the server (perhaps ask for confirmation and revert if necessary, similar to when you change the resolution of a display)
-- Take a look at other nice features from Discourse’s administrative interface
-
 ## Email Notifications
 
 - Don’t send notifications when the person is online and/or has seen the message.
@@ -507,6 +465,48 @@ const { app, BrowserWindow } = require("electron");
     - The spiritual predecessor of Capacitor.
     - Still more popular, but dreaded.
 - Have registry of Courselore instances. For example, in a phone application we could show a list of existing instances. (You could always not list yourself in the registry and enter the URL for your instance manually on the phone application.)
+
+## Administrative Interface
+
+- Users
+  - See what courses people are on
+- Courses
+  - Access the course
+    - Have a quick link to the list of enrollments
+  - Have a quick way to archive a course directly from this list
+- Bulk actions on users & courses?
+- When an administrator is creating a course, ask them if they want to be staff, because perhaps they’re creating a course for someone else.
+- Deal with the case in which you’re the administrator and also the staff/student on a course.
+  - Switch in out of administrator role and see the course differently.
+- Extract a partial for user in list of users (to be used in `/courses/___/settings/enrollments` & administrative interface list of users).
+- Administrators can have further control over user accounts:
+  - Create a password reset link (for people who forgot their password and can’t receive email with the registered address)
+  - Enroll people in courses
+  - Impersonate users & see the system just like the user sees it.
+  - Remove a person from the system entirely
+  - Manage sessions, for example, force a sign-out if it’s believed that an account is compromised
+  - Perhaps even some more personal settings, for example, preferences related to email notifications
+- Other ways to get administrators into the system:
+  - Invitations for installation-wide roles
+    - These would be similar to the invitations for a course. But email only, no invitation link.
+  - Administrators may create users.
+- Have some sort of visual indication of your own role in the system.
+- Introduce the notion of “institution”
+  - An institution may be a department, an university, and so forth.
+  - For simplicity, institution can be the only layer of abstraction, let’s not model the relationship between departments, schools, universities, and so forth.
+- Graph of use over time:
+  - Number of users
+  - Number of **active** courses (where an **active** course is a course that has seen recent activity, for example, a new conversation).
+  - Activity on conversations
+    - It’d be nice for the course staff to also have access to that
+- Low-level information:
+  - Machine statistics, for example, disk space
+  - Notifications: Disk running out of space, load average above normal, and so forth
+  - Run an update
+  - Run a backup
+  - Have a wizard to set things up the first time: It’d have to be something like a command-line application, because without the basic information the server can’t even start.
+  - Have a way to change configuration moving forward, by changing the configuration file and restarting the server (perhaps ask for confirmation and revert if necessary, similar to when you change the resolution of a display)
+- Take a look at other nice features from Discourse’s administrative interface
 
 ## API
 
