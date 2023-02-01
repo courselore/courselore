@@ -12,51 +12,45 @@
   - Easier ways to unsubscribe:
     - Link to one-click unsubscription in message body.
     - `List-*` headers to allow one-click unsubscription.
-  - Decorate:
-
-    - Motivation:
-
-      - Avoid showing things like `@john-doe--201231`.
-      - Code blocks are duplicated:
-        - Have Shiki generate classes instead of inline colors.
-          - Possible with the `css-variables` theme, but “is less granular than most other supported VSCode themes”.
-        - Have a processor to remove one of the versions of code block from the email.
-      - Add first-class support for Dark Mode in emails? Or continue relying on automatic Dark Mode? And, in general, style our emails more?
-
-        ```html
-        <meta name="color-scheme" content="light dark" />
-        <meta name="supported-color-schemes" content="light dark" />
-
-        <style type="text/css">
-          :root {
-              color-scheme: light dark;
-              supported-color-schemes: light dark;
-          }
-        </style>
-
-        <style>
-          /* Normal styles */
-          @media (prefers-color-scheme: dark) {
-            /* Dark mode styles */
-          }
-        </style>
-
-        <style>
-          .dark {
-            display: none !important;
-          }
-          @media (prefers-color-scheme: dark) {
-            .light {
-              display: none !important;
-            }
-            .dark {
-              display: block !important;
-            }
-          }
-        </style>
-        ```
-
+  - Decorate (with some special treatment for email notifications):
+    - Avoid showing things like `@john-doe--201231`.
+    - Code blocks are duplicated:
+      - Have a processor to remove one of the versions of code block from the email.
   - Mathematics are rendered incorrectly.
+  - Add first-class support for Dark Mode in emails? Or continue relying on automatic Dark Mode? And, in general, style our emails more?
+
+    ```html
+    <meta name="color-scheme" content="light dark" />
+    <meta name="supported-color-schemes" content="light dark" />
+
+    <style type="text/css">
+      :root {
+          color-scheme: light dark;
+          supported-color-schemes: light dark;
+      }
+    </style>
+
+    <style>
+      /* Normal styles */
+      @media (prefers-color-scheme: dark) {
+        /* Dark mode styles */
+      }
+    </style>
+
+    <style>
+      .dark {
+        display: none !important;
+      }
+      @media (prefers-color-scheme: dark) {
+        .light {
+          display: none !important;
+        }
+        .dark {
+          display: block !important;
+        }
+      }
+    </style>
+    ```
 
 - More granular control over what to be notified about.
   - Course-level configuration.
