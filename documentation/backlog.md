@@ -131,44 +131,6 @@
   - Course-level configuration.
   - Subscribe/unsubscribe to particular conversations of interest/disinterest.
 
-## Quality-of-Life Features
-
-- Drafts:
-  - Unhide buttons
-    - Perhaps don’t have them styled as links…
-  - Review database schema:
-    - Include `shouldNotify`.
-    - Include indices.
-    - Include search indices, because search should work over the content of drafts.
-  - Mix drafts with other conversations on sidebar.
-    - `TODO`
-    - Group them together
-    - Visually distinct (grayed out).
-    - Search.
-    - Filters.
-  - Adapt `partials.conversation` to support drafts (many fields become optional).
-  - Add a button to delete a draft directly from the sidebar.
-
----
-
-- Have a simple way to share “conversation templates,” which use the query parameters to pre-fill the “New Conversation” form.
-
----
-
-- Add the notion of follow-up question, so that questions aren’t marked as “unresolved” as soon as a student sends a message. It makes sense for when the student just says “thanks.”
-  - Have a dedicated button for this.
-- Let staff endorse other staff answers.
-- Add the notion of “staff considers this a good question.” Similar to the notion of “endorsement,” but for questions.
-- Change the meaning of “views”: Instead of using “readings”, only count as “viewed” if the message has appeared on the person’s screen.
-  - Tracking pixel on email for people who will read the notification on their email and just “mark as read” on Courselore?
-- Mark a message as unread.
-- Introduce the notion of locking a conversation.
-- Introduce the notion of promoting a message into its own conversation (one example use case is when someone asks a question as a follow-up to an announcement).
-
----
-
-- Investigate browser crashes on Android Chrome
-
 ## Notifications
 
 - Add notification badges indicating the number of unread messages on the lists of courses (for example, the main page and the course switcher on the upper-left).
@@ -270,6 +232,24 @@ new Notification('Example');
 
 ## Conversations
 
+- Drafts:
+  - Unhide buttons
+    - Perhaps don’t have them styled as links…
+  - Review database schema:
+    - Include `shouldNotify`.
+    - Include indices.
+    - Include search indices, because search should work over the content of drafts.
+  - Mix drafts with other conversations on sidebar.
+    - `TODO`
+    - Group them together
+    - Visually distinct (grayed out).
+    - Search.
+    - Filters.
+  - Adapt `partials.conversation` to support drafts (many fields become optional).
+  - Add a button to delete a draft directly from the sidebar.
+- Have a simple way to share “conversation templates,” which use the query parameters to pre-fill the “New Conversation” form.
+- Add the notion of “staff considers this a good question.” Similar to the notion of “endorsement,” but for questions.
+- Introduce the notion of locking a conversation.
 - Streamline the creation of DMs.
 - Highlights (similar to Slack’s pins, but we’re avoiding the word “pin” because it already means “pinned conversations”). The highlights are visible to everyone in the conversation.
 - Bookmarks / flags / saved items. These are personal, for example, for something you have to follow up on.
@@ -282,6 +262,16 @@ new Notification('Example');
 - Conversation templates, for example, for bug reports on Meta Courselore.
 - Let original question asker approve an answer.
 - Add a course-wide setting to make tags optional in all kinds of conversation (not only non-chats), even if there are tags.
+
+## Messages
+
+- Add the notion of follow-up question, so that questions aren’t marked as “unresolved” as soon as a student sends a message. It makes sense for when the student just says “thanks.”
+  - Have a dedicated button for this.
+- Let staff endorse other staff answers.
+- Change the meaning of “views”: Instead of using “readings”, only count as “viewed” if the message has appeared on the person’s screen.
+  - Tracking pixel on email for people who will read the notification on their email and just “mark as read” on Courselore?
+- Mark a message as unread.
+- Introduce the notion of promoting a message into its own conversation (one example use case is when someone asks a question as a follow-up to an announcement).
 
 ## Chat
 
@@ -700,6 +690,7 @@ const { app, BrowserWindow } = require("electron");
 
 ## Infrastructure
 
+- Investigate browser crashes on Android Chrome
 - Use esbuild to build server?
 
   - `npx esbuild ./server/index.mts --platform=node --packages=external --format=esm --bundle --minify --sourcemap --outfile=./build/server/index.mjs`
