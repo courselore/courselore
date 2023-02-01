@@ -9070,22 +9070,15 @@ export default async (application: Application): Promise<void> => {
                               line-height: var(--line-height--xs);
                             `}"
                           >
-                            <i
-                              class="bi bi-keyboard"
+                            <i class="bi bi-keyboard"></i>
+                            <span
                               css="${css`
+                                margin-left: var(--space--1);
                                 margin-right: var(--space--2);
                               `}"
-                              javascript="${javascript`
-                                leafac.setTippy({
-                                  event,
-                                  element: this,
-                                  tippyProps: {
-                                    touch: false,
-                                    content: "Typing…",
-                                  },
-                                });
-                              `}"
-                            ></i>
+                            >
+                              Typing:
+                            </span>
                             $${response.locals.enrollmentsTyping
                               .map((enrollment) =>
                                 application.server.locals.partials.user({
