@@ -1,88 +1,12 @@
 # Backlog
 
-## TO ORGANIZE
-
-- There’s a issue when running Courselore for the first time in the new multiprocess architecture: Caddy may ask for your password, but you may not see it.
-  - It still works if you see it and type in the password, even as other stuff has scrolled by.
-  - Potential solutions:
-    - Run Caddy before spawning children processes
-    - Document this quirk.
-- The HTML for latency-compensate sending a message could be embedded in the JavaScript, now that embedding HTML in JavaScript is a thing.
-- Issue: Using `enrollment.accentColor` in CSS
-  - Potential solutions:
-    - Inline `style=""` and CSS variables
-      - Could we automate this in compilation?
-        - Perhaps, the difficulty is that it needs to be aware of the `css="..."` stuff, because it’ll need to put a `style="..."` adjacent to it.
-          - That’s how astroturf does it, for example.
-          - For the time being, it seems like to too much magic and error-prone. Let’s do it by hand…
-    - JavaScript
-    - `switch`/`case` and lots of copy-and-paste
-- Idea: Minimize whitespace and whatnot from source CSS/JavaScript before computing the hash, to allow for even more reuse.
-- Maybe `stringToElement()` should return the surrounding `<div>`? We keep having to wrap the content in a `<div>` anyway…
-- Test that changing accent color works, because `morph()` doesn’t update inline `style`s.
-- Edge case: You have just created your account and you mistyped your email, so you can’t verify it. Additionally, you have forgotten your password, so you can’t go to “Forgot your password?” Now you’re locked out, but at the same time, how can you prove that you’re you…
-- Killer feature to attract people: off-the-shelf AI
-  - Reuse questions
-  - Reuse questions from previous year
-- https://www.partneradvantage.goog/
-- https://cloud.google.com/partners/become-a-partner/
-
----
-
-- Performance improvements:
-  - HTML sanitization is a significant overhead.
-  - `slugify` is expensive, and it may be cacheable.
-  - Lazy load parts of the page that don’t show up immediately, for example:
-    - User tooltip
-    - Content editor in “Edit Message”
-    - More…
-  - Cache rendered HTML
-  - Process content (which is CPU intensive) in worker thread (asynchronously)?
-  - We’re hitting the disk a lot, perhaps too much. More than Kill the Newsletter!
-- Rendering the sidebar is about 10% of the response time. When paginating, don’t include the sidebar.
-- Why does 0x need the prelude?
-  - Does not support cluster. Good thing we aren’t using it, I guess…
-  - Redirects `stdout`.
-  - Includes its own handlers for `SIGINT` & `SIGTERM` which `process.exit()`s right away.
-    - `⌃C` from the command line doesn’t seem to work when `npm run`ed.
-- There’s a small chance (once every tens of thousands of requests) that you’ll get an “SQLite busy” error. I observed it when creating `liveConnectionsMetadata`, which is the only write in a hot path of the application. Treat that case gracefully.
-- autocannon:
-  - Produce graphs (HDRHistogram)
-- Inconsistency: In the `liveConnectionsMetadata` (and possibly others) we store `expiredAt`, but in `session` (and possible others) we store `createdAt` and let the notion of expiration be represented in the code.
-- Content editor issue: Selecting multiple paragraphs and bolding doesn’t work (the same issue occurs in GitHub 🤷)
-- Improve the psychological factors that go into the perception of response time:
-  - Don’t bring the beach ball right away, or not at all
-  - Tweak the progress bar
-- Features from competitors, including Piazza, Ed, and so forth.
-  - Find features that people will ask for, and that we need to have.
-  - Table of comparison for home page.
-- Probably bad idea for reducing HTML size and improving performance: Have some “templates” as JavaScript strings at the global level that we reuse, for things like spinners. (Spooky action at a distance.)
-
-## Spring
-
-- “Import” conversations from previous semesters and from other platforms.
-- Notifications:
-  - Email notification digests
-  - Notifications API & Push API
-  - Mobile & desktop applications
-- Minimal integration with Learning Management Systems (identity, not grades).
-- SAML: Register our application with Hopkins to allow access to SAML.
-- Performance: Finish pagination, the measures that will reduce the size of HTML pages, and so forth
-- Smaller things:
-  - Lock a course for a period, for example, when a take-home exam is out.
-  - Polls.
-    - They’re a new type of message content, not something heavyweight like a new type of question. This follows the same lines as Discourse & Slack (where people use reactions (emojis) to do polls).
-    - Support multiple answers.
-    - Students may see aggregate results.
-    - Staff may see individual votes.
-    - Allow for closing a poll.
-
 ## Administrative Interface
 
-- List of people in the system
+- Users
   - See what courses people are on
-- List of courses in the system
+- Courses
   - Access the course
+    - Have a quick link to the list of enrollments
   - Have a quick way to archive a course directly from this list
 - When an administrator is creating a course, ask them if they want to be staff, because perhaps they’re creating a course for someone else.
 - Deal with the case in which you’re the administrator and also the staff/student on a course.
@@ -1185,3 +1109,79 @@ test("/preview (Text processor)", async () => {
 - Conferences
   - <https://openeducationconference.org>
   - <https://www.digitallyengagedlearning.net>
+
+## TO ORGANIZE
+
+- There’s a issue when running Courselore for the first time in the new multiprocess architecture: Caddy may ask for your password, but you may not see it.
+  - It still works if you see it and type in the password, even as other stuff has scrolled by.
+  - Potential solutions:
+    - Run Caddy before spawning children processes
+    - Document this quirk.
+- The HTML for latency-compensate sending a message could be embedded in the JavaScript, now that embedding HTML in JavaScript is a thing.
+- Issue: Using `enrollment.accentColor` in CSS
+  - Potential solutions:
+    - Inline `style=""` and CSS variables
+      - Could we automate this in compilation?
+        - Perhaps, the difficulty is that it needs to be aware of the `css="..."` stuff, because it’ll need to put a `style="..."` adjacent to it.
+          - That’s how astroturf does it, for example.
+          - For the time being, it seems like to too much magic and error-prone. Let’s do it by hand…
+    - JavaScript
+    - `switch`/`case` and lots of copy-and-paste
+- Idea: Minimize whitespace and whatnot from source CSS/JavaScript before computing the hash, to allow for even more reuse.
+- Maybe `stringToElement()` should return the surrounding `<div>`? We keep having to wrap the content in a `<div>` anyway…
+- Test that changing accent color works, because `morph()` doesn’t update inline `style`s.
+- Edge case: You have just created your account and you mistyped your email, so you can’t verify it. Additionally, you have forgotten your password, so you can’t go to “Forgot your password?” Now you’re locked out, but at the same time, how can you prove that you’re you…
+- Killer feature to attract people: off-the-shelf AI
+  - Reuse questions
+  - Reuse questions from previous year
+- https://www.partneradvantage.goog/
+- https://cloud.google.com/partners/become-a-partner/
+
+---
+
+- Performance improvements:
+  - HTML sanitization is a significant overhead.
+  - `slugify` is expensive, and it may be cacheable.
+  - Lazy load parts of the page that don’t show up immediately, for example:
+    - User tooltip
+    - Content editor in “Edit Message”
+    - More…
+  - Cache rendered HTML
+  - Process content (which is CPU intensive) in worker thread (asynchronously)?
+  - We’re hitting the disk a lot, perhaps too much. More than Kill the Newsletter!
+- Rendering the sidebar is about 10% of the response time. When paginating, don’t include the sidebar.
+- Why does 0x need the prelude?
+  - Does not support cluster. Good thing we aren’t using it, I guess…
+  - Redirects `stdout`.
+  - Includes its own handlers for `SIGINT` & `SIGTERM` which `process.exit()`s right away.
+    - `⌃C` from the command line doesn’t seem to work when `npm run`ed.
+- There’s a small chance (once every tens of thousands of requests) that you’ll get an “SQLite busy” error. I observed it when creating `liveConnectionsMetadata`, which is the only write in a hot path of the application. Treat that case gracefully.
+- autocannon:
+  - Produce graphs (HDRHistogram)
+- Inconsistency: In the `liveConnectionsMetadata` (and possibly others) we store `expiredAt`, but in `session` (and possible others) we store `createdAt` and let the notion of expiration be represented in the code.
+- Content editor issue: Selecting multiple paragraphs and bolding doesn’t work (the same issue occurs in GitHub 🤷)
+- Improve the psychological factors that go into the perception of response time:
+  - Don’t bring the beach ball right away, or not at all
+  - Tweak the progress bar
+- Features from competitors, including Piazza, Ed, and so forth.
+  - Find features that people will ask for, and that we need to have.
+  - Table of comparison for home page.
+- Probably bad idea for reducing HTML size and improving performance: Have some “templates” as JavaScript strings at the global level that we reuse, for things like spinners. (Spooky action at a distance.)
+
+## Priorities
+
+- Match features people like from other platforms.
+  - Lock a course for a period, for example, when a take-home exam is out.
+  - Polls.
+    - They’re a new type of message content, not something heavyweight like a new type of question. This follows the same lines as Discourse & Slack (where people use reactions (emojis) to do polls).
+    - Support multiple answers.
+    - Students may see aggregate results.
+    - Staff may see individual votes.
+    - Allow for closing a poll.
+- Notifications:
+  - Email notification digests
+  - Notifications API & Push API
+  - Mobile & desktop applications
+- SAML: Register our application with Hopkins to allow access to SAML.
+- Minimal integration with Learning Management Systems (identity, not grades).
+- Performance: Pagination, more lazily loaded components, and so forth.
