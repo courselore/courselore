@@ -160,35 +160,6 @@ new Notification('Example');
 </button>
 ```
 
-## Conversation Participants
-
-- Conversation partial should have a dropdown to show selected participants (similar to “Views”, except that you’d long-hover over it, like user tooltip).
-- Client-side filters like **Course Settings > Enrollments**, **Administration > Users**, Conversation Participants, and so forth:
-  - Extract and DRY.
-  - Treat more elegantly the case in which the filter removed all entries.
-- More elegant treatment of edge cases:
-  - You’re the only staff member
-  - You’re the only enrollment
-  - There are no students
-- When changing from “Everybody” to “Staff” or “Selected People”, pre-select people who are part of the conversation.
-- Consider removing selected participants from `getConversation()` as it’s probably expensive to retrieve and isn’t always necessary.
-- 1-to-1 conversation
-  - Use background color to distinguish between people, so you don’t have to show their names over and over.
-- Staff may allow or disallow people to have private conversations in which staff don’t participate (the default is to allow)
-- Whispers:
-  - Similar to Discourse
-  - Staff-only messages
-  - Disclosure button to show/hide all whispers
-    - On load, it’s showing
-    - On new whisper, show again
-    - The point is: Don’t let people miss whispers
-  - There’s no way to convert back and fort between regular messages & whispers. If necessary, delete and send another message.
-  - Style differences to highlight whispers: font (italics vs regular), font color, and a little icon. Do several such things. Perhaps don’t change the background color. It might be good to make it a little more obvious, e.g. label it as a "staff-only whisper, students cannot see this". Otherwise some new staff may not know what is going on.
-- Groups, for example, Graders, Project Advisors, Group members, different sections on courses.
-  - Some groups are available only to students, while others only to staff.
-  - People assign themselves to groups.
-  - Add mentions like `@group-3`.
-
 ## Users
 
 - Improvements to the workflow for when you change your email:
@@ -257,6 +228,35 @@ new Notification('Example');
 - Conversation templates, for example, for bug reports on Meta Courselore.
 - Let original question asker approve an answer.
 - Add a course-wide setting to make tags optional in all kinds of conversation (not only non-chats), even if there are tags.
+
+**Participants**
+
+- Conversation partial should have a dropdown to show selected participants (similar to “Views”, except that you’d long-hover over it, like user tooltip).
+- Client-side filters like **Course Settings > Enrollments**, **Administration > Users**, Conversation Participants, and so forth:
+  - Extract and DRY.
+  - Treat more elegantly the case in which the filter removed all entries.
+- More elegant treatment of edge cases:
+  - You’re the only staff member
+  - You’re the only enrollment
+  - There are no students
+- When changing from “Everybody” to “Staff” or “Selected People”, pre-select people who are part of the conversation.
+- Consider removing selected participants from `getConversation()` as it’s probably expensive to retrieve and isn’t always necessary.
+- 1-to-1 conversation
+  - Use background color to distinguish between people, so you don’t have to show their names over and over.
+- Staff may allow or disallow people to have private conversations in which staff don’t participate (the default is to allow)
+- Whispers:
+  - Similar to Discourse
+  - Staff-only messages
+  - Disclosure button to show/hide all whispers
+    - On load, it’s showing
+    - On new whisper, show again
+    - The point is: Don’t let people miss whispers
+  - There’s no way to convert back and fort between regular messages & whispers. If necessary, delete and send another message.
+  - Style differences to highlight whispers: font (italics vs regular), font color, and a little icon. Do several such things. Perhaps don’t change the background color. It might be good to make it a little more obvious, e.g. label it as a "staff-only whisper, students cannot see this". Otherwise some new staff may not know what is going on.
+- Groups, for example, Graders, Project Advisors, Group members, different sections on courses.
+  - Some groups are available only to students, while others only to staff.
+  - People assign themselves to groups.
+  - Add mentions like `@group-3`.
 
 ## Messages
 
