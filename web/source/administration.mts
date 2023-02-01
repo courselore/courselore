@@ -903,7 +903,7 @@ export default async (application: Application): Promise<void> => {
           ) AS "updatedAt"
         FROM "courses"
         ORDER BY
-          "createdAt" DESC,
+          "updatedAt" DESC,
           "name" ASC
       `
     );
