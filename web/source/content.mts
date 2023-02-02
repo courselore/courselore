@@ -690,6 +690,8 @@ export default async (application: Application): Promise<void> => {
                 element: this,
                 tippyProps: {
                   touch: false,
+                  interactive: true,
+                  appendTo: document.querySelector("body"),
                   content: ${html`
                     <div
                       css="${css`
@@ -724,6 +726,8 @@ export default async (application: Application): Promise<void> => {
               element: this,
               tippyProps: {
                 touch: false,
+                interactive: true,
+                appendTo: document.querySelector("body"),
                 content: ${html`
                   <div
                     css="${css`
