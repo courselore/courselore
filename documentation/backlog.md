@@ -565,7 +565,14 @@ const { app, BrowserWindow } = require("electron");
   - In chats, submitting a form collapses the `conversation--header--full`.
 - Scroll to URL `#hashes`, which may occur in the middle of a message.
 
-## Live-Updates
+## Live-Connection
+
+- Maybe don’t disconnect/reconnect the Live-Connection when a Live-Navigation will just return you to the same page?
+  - It only saves the creation of connection metadata on the database on the server and the cost of establishing the connection.
+  - A `POST` will already cause an update to the information on the page.
+  - The implementation gets a bit awkward. The trick is to introduce the URL to the identity of the connection on top of the token which already identifies it. The token becomes the identity of the browser tab, and the URL becomes its state. If you put the two together, you can disconnect/reconnect only when necessary. But there are plenty of edge cases to deal with, for example, a Live-Update coming in right in the middle of a `POST` Live-Navigation.
+
+**Live-Updates**
 
 - Live-Updates can freeze the user interface for a split second, as the morphing is happening.
   - Examples of issues:
@@ -582,22 +589,13 @@ const { app, BrowserWindow } = require("electron");
   - For example, when we have a tab open with a conversation and someone else deletes it.
 - Morphing on the server: Don’t send the whole page, only a diff to be applied on the client
 - Re-fetch partials in the background after a Live-Update? They may have gotten stale, for example, the “Views” component, if it’s open right as a Live-Update is happening.
-- Maybe don’t disconnect/reconnect the Live-Updates connection when a Live-Navigation will just return you to the same page?
-  - It only saves the creation of connection information on the database on the server and the cost of establishing the connection.
-  - A `POST` will already cause an update to the information on the page.
-  - The implementation gets a bit awkward. The trick is to introduce the URL to the identity of the connection on top of the token which already identifies it. The token becomes the identity of the browser tab, and the URL becomes its state. If you put the two together, you can disconnect/reconnect only when necessary. But there are plenty of edge cases to deal with, for example, a Live-Update coming in right in the middle of a `POST` Live-Navigation.
-- Currently, if a connection comes in with a token we don’t identify, we treat that as a browser tab that was offline for a while and just reconnected, which means it receives a Live-Update right away. This can be superfluous if no change actually took place. This may be a minor issue—or not an issue at all. And addressing it probably complicates the Live-Updates mechanisms quite a bit. But, in any case, one potential solution is, instead of keeping tokens on the server and scheduling events to them, keep a notion of when things were updated, this way upon reconnection the client can say when it was the last time it got a Live-Update, and the server can know if another Live-Update is necessary.
+- Currently, if a connection comes in with a token we don’t identify, we treat that as a browser tab that was offline for a while and just reconnected, which means it receives a Live-Update right away. This can be superfluous if no change actually took place. This may be a minor issue—or not an issue at all. And addressing it probably complicates the Live-Updates mechanisms quite a bit. But, in any case, one potential solution is, instead of keeping tokens on the server and scheduling events to them, keep a notion of when things were updated, this way upon reconnection the client can say when it was the last time it got a Live-Update, and the server can know if another Live-Update is necessary. But the notion of tracking which parts of which pages require which data sounds error-prone.
 
 ## Performance
 
 - Lazy loading & DRYing to reduce HTML payload
   - `userPartial` tooltip
   - `conversationPartial` tooltip on decorated content
-  - Edit message forms.
-    - Use `data-content-source` that’s already used by the quoting mechanism.
-    - Implement a more proper solution than the current use of `autosize.update()`
-  - Content processor should only attach position information that we’ll actually use.
-    - This also allows us to simplify the code that uses the position information, because we don’t have to discard positions from inner elements.
 
 ---
 
@@ -631,6 +629,7 @@ const { app, BrowserWindow } = require("electron");
 ---
 
 - Framing?
+  - Disadvantage: One more roundtrip to the server to complete the page.
   - Sidebar vs main content
     - On mobile may not need to load the sidebar at all
   - Pagination links.
@@ -646,17 +645,13 @@ const { app, BrowserWindow } = require("electron");
     - Cases:
       - `getConversation()`.
       - `getMessage()`.
-      - Treatment of @mentions in Content processor.
+      - Treatment of `@mentions` in Content Processor.
       - Finding which enrollments to notify (not exactly an n+1, but we’re filtering in JavaScript what could maybe filtered in SQL (if we’re willing to use the `IN` operator)).
     - Potential solutions:
       - Single follow-up query with `IN` operator (but then you end up with a bunch of prepared statements in the cache).
       - Use a temporary table instead of `IN`.
       - Nest first query as a subquery and bundle all the information together, then deduplicate the 1–N relationships in the code.
   - We’re doing pagination of conversations in sidebar using `OFFSET`, because the order and presence of conversations changes, so we can’t anchor a `WHERE` clause on the first/last conversation shown. Try and find a better approach. Maybe use window functions anchored on the `row_number`.
-
----
-
-- Try and optimize `html` tagged template literal, which sanitizes things over and over.
 
 ## Infrastructure
 
