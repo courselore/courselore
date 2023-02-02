@@ -165,8 +165,9 @@
   - Block quotes (especially replies)
 - Install extensions for Shiki, for example, for OCaml.
 - Mermaid: https://github.blog/2022-02-14-include-diagrams-markdown-files-mermaid/
+  - Isn’t made for server-side rendering: https://github.com/mermaid-js/mermaid/issues/3650
+  - The current workaround is to use `mermaid-cli`, which uses Puppeteer, but that’s slow and downloads a whole browser (~200MB) 🤦‍♂️
 - Once the chats have been redesigned with avatars on the margin to better establish a hierarchy and delimit messages, consider bringing back the full `partials.user()` widget to `@mentions`, with avatar and everything. (I think this will look good, but it’s a controversial point, given that people were very insistent on removing avatars from that context.)
-- Sanitize allowlist of attributes to prevent abuse (for example, `<code class="some-class-that-exists-in-the-system">`)
 
 ## Notifications
 
