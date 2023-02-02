@@ -1392,7 +1392,7 @@ export default async (application: Application): Promise<void> => {
                 }
 
                 .katex {
-                  overflow: auto;
+                  overflow-x: auto;
                 }
 
                 pre {

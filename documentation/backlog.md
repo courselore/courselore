@@ -75,7 +75,6 @@
 
 **Participants**
 
-- Conversation partial should have a dropdown to show selected participants (similar to “Views”, except that you’d long-hover over it, like user tooltip).
 - Client-side filters like **Course Settings > Enrollments**, **Administration > Users**, Conversation Participants, and so forth:
   - Extract and DRY.
   - Treat more elegantly the case in which the filter removed all entries.
@@ -122,7 +121,6 @@
 
 ## Chat
 
-- Currently typing.
 - Show accent colors for different people (for example, faint background colors), to help identify messages.
 - Nested replies (similar to Slack’s threads).
 
@@ -140,31 +138,23 @@
 
 ## Content Editor
 
-- On new conversation page, maybe adapt the `@mentions` widget according to the visibility that’s currently set.
+- On new conversation page, maybe adapt the `@mentions` widget according to the participants that are currently set. (This already happens on drafting messages on existing conversations.)
 - Have the `@mention` widget list people who aren’t in the conversation (suitably marked as so) (similar to Twitter DMs).
-- When you select multiple lines and click on the list options, turn each line into a list item.
-- Add more placeholders to things like tables to help explain how to use them.
 - Answer templates.
 - Paste tables from Excel and have them formatted as Markdown tables.
 - Add https://github.com/fregante/indent-textarea or CodeMirror in programmer mode.
   - Issue with indent-textarea is that it only supports tabs, not spaces https://github.com/fregante/indent-textarea/issues/21
   - CodeMirror is heavy-handed
 - If you’re in the middle of editing, and someone else edits a message (or the conversation title), then you’re going to overwrite their changes. Warn about this.
-- Dragging an image from another website and dropping it in the content editor results in a 422.
 - Dragging a directory from Finder makes the request fail without even an error code(!)
 - In programmer mode, change the behavior of when the `@mentions` and `#references` widgets appear and go away, particularly in code & mathematics blocks.
 
 ## Content Processor
 
 - Add a notion of “reply” that’s a first-class citizen, like Discord and unlike GitHub.
-- Lists of links are block but should be inline (look for “You can reach Michael at” in example text).
 - On the `partials.content()`, maybe don’t render `@mention` widget for people who aren’t in the conversation, given that we don’t give that person as option on the `@mentions` autocomplete widget in the content editor.
 - It’s possible to send messages that are visually empty, for example, `<!-- -->`
-- Syntax highlighter only works on top-level elements (https://github.com/leafac/rehype-shiki/issues/5)
 - `#references` into the same conversation don’t need to load the whole `partials.conversation()`, just the message part of it.
-- Add support for underline in Markdown.
-- The “quote” button on code blocks is showing up in the wrong place.
-- `.katex` is overflowing in the `y` axis unnecessarily. (See, for example, the example we give on the home page.)
 - Reference on more features ideas: <https://github.com/gjtorikian/html-pipeline>
 - Polls.
 - Lightbox modal:
