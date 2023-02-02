@@ -371,12 +371,11 @@ new Notification('Example');
 
 ## Statistics
 
+- How many questions & how fast they were answered.
 - A way to grade interactions on conversations, for example, for when the homework is to discuss a certain topic. (It seems that Canvas has this feature.)
 - Gamification
   - Badges (for example, first to answer a question)
   - Karma points for whole class and unlock achievements for everyone
-- How many questions & how fast they were answered.
-- Student engagement for courses in which participation is graded.
 
 ## Live Course Communication during the Lectures
 
@@ -388,6 +387,7 @@ new Notification('Example');
 
 - `NODE_EXTRA_CA_CERTS=".../Application Support/Caddy/pki/authorities/local/root.crt"`
 - PWA: https://checkvist.com/auth/mobile
+- Consider https://tauri.app
 - Desktop: Electron.
 
 ```javascript
@@ -505,38 +505,26 @@ const { app, BrowserWindow } = require("electron");
   - Use `maxlength`.
   - Keep the buttons disabled while the form isn’t in a valid state.
   - Use date pickers:
+    - DIY
     - https://github.com/jcgertig/date-input-polyfill
     - https://github.com/Pikaday/Pikaday
 
 ---
 
-- Do something to prevent flash of unstyled content on scrolling. It’s mostly an issue when loading a deeply-linked conversation for the first time, because otherwise live-navigation takes care of the issue.
-
----
-
 - Prevent the flash of unformatted datetime on fields using `validateLocalizedDateTime()`.
   - I tried to just reset all elements to the `valueInputByUser` at the end (which, incidentally, requires `window.setTimeout()` to not reset the value before the form data is actually sent to the server), but it doesn’t work. It seems like the only solution is to use an auxiliary `<input type="hidden">` that’s actually sent and an `<input type="text">` that drives it to show to the user.
-- Tooltip showing the views for a message:
-  - The counter is sometimes lagging behind the actual count, because we don’t send refresh events on every GET everyone ever does (’cause **that** would be silly 😛)
-    - Another consequence of not sending refresh events on every GET is that the number of unread messages on the sidebar becomes inconsistent when you have multiple tabs open and you read messages on one of them (the rest still show the unread indicator).
-  - It should live-update. (Or the cached content of the tooltip should be expired somehow.)
-- Have some kind of in-app guide for the first time you enter the system, or the first time you create a course, and that sort of thing. This should complement the videos.
+- Have some kind of in-app guide for the first time you enter the system, or the first time you create a course, and that sort of thing. This should complement the video tutorials that we also want to make.
 - Checkboxes that don’t have a visual indication may be confusing.
 - Right click menus on stuff?
   - For example, something like the “Actions” menu under the ellipses on messages.
   - But they can frustrate people who just want to interact with the browser right-click context menu.
 - Places where we show `administratorEmail` to report bugs could be forms instead.
-- Maybe updating the accent color should send a live-update to tabs by the same user.
-- The loading spinner keeps running forever in iOS because of streaming `fetch()`es.
-  - Different MIME Content-Types didn’t help.
-  - It appears that that icon only means “network activity is happening,” in which case, it’s true, and it’s actually the desired behavior.
 - In Safari iOS, the address bar never collapses because of the way we’re doing panes.
 - Add `-fill` to journal icons: https://github.com/twbs/icons/issues/1322
-- On `/settings/enrollments`, in iOS, if you filter, then manually backspace to remove the filter, then the little icon on the left jumps out of place(!)
 
 ---
 
-- Scrollbars:
+- Style scrollbars:
   - https://css-tricks.com/almanac/properties/s/scrollbar/
   - https://css-tricks.com/the-current-state-of-styling-scrollbars-in-css/
   - https://www.digitalocean.com/community/tutorials/css-scrollbars
