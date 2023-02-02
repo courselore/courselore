@@ -119,7 +119,7 @@
   - On badges on course list
 - A timeline-like list of unread messages and other things that require your attention.
 
-## Chat
+**Chat**
 
 - Show accent colors for different people (for example, faint background colors), to help identify messages.
 - Nested replies (similar to Slack’s threads).
@@ -136,20 +136,9 @@
 - Filter by date.
 - `@mentions` are awkward in search results, because they take in account the original `@<enrollment-reference>--<name-slug>` instead of the rendered person’s name.
 
-## Content Editor
+## Content
 
-- On new conversation page, maybe adapt the `@mentions` widget according to the participants that are currently set. (This already happens on drafting messages on existing conversations.)
-- Have the `@mention` widget list people who aren’t in the conversation (suitably marked as so) (similar to Twitter DMs).
-- Answer templates.
-- Paste tables from Excel and have them formatted as Markdown tables.
-- Add https://github.com/fregante/indent-textarea or CodeMirror in programmer mode.
-  - Issue with indent-textarea is that it only supports tabs, not spaces https://github.com/fregante/indent-textarea/issues/21
-  - CodeMirror is heavy-handed
-- If you’re in the middle of editing, and someone else edits a message (or the conversation title), then you’re going to overwrite their changes. Warn about this.
-- Dragging a directory from Finder makes the request fail without even an error code(!)
-- In programmer mode, change the behavior of when the `@mentions` and `#references` widgets appear and go away, particularly in code & mathematics blocks.
-
-## Content Processor
+**Processor**
 
 - Add a notion of “reply” that’s a first-class citizen, like Discord and unlike GitHub.
 - On the `partials.content()`, maybe don’t render `@mention` widget for people who aren’t in the conversation, given that we don’t give that person as option on the `@mentions` autocomplete widget in the content editor.
@@ -168,6 +157,19 @@
   - Isn’t made for server-side rendering: https://github.com/mermaid-js/mermaid/issues/3650
   - The current workaround is to use `mermaid-cli`, which uses Puppeteer, but that’s slow and downloads a whole browser (~200MB) 🤦‍♂️
 - Once the chats have been redesigned with avatars on the margin to better establish a hierarchy and delimit messages, consider bringing back the full `partials.user()` widget to `@mentions`, with avatar and everything. (I think this will look good, but it’s a controversial point, given that people were very insistent on removing avatars from that context.)
+
+**Editor**
+
+- On new conversation page, maybe adapt the `@mentions` widget according to the participants that are currently set. (This already happens on drafting messages on existing conversations.)
+- Have the `@mention` widget list people who aren’t in the conversation (suitably marked as so) (similar to Twitter DMs).
+- Answer templates.
+- Paste tables from Excel and have them formatted as Markdown tables.
+- Add https://github.com/fregante/indent-textarea or CodeMirror in programmer mode.
+  - Issue with indent-textarea is that it only supports tabs, not spaces https://github.com/fregante/indent-textarea/issues/21
+  - CodeMirror is heavy-handed
+- If you’re in the middle of editing, and someone else edits a message (or the conversation title), then you’re going to overwrite their changes. Warn about this.
+- Dragging a directory from Finder makes the request fail without even an error code(!)
+- In programmer mode, change the behavior of when the `@mentions` and `#references` widgets appear and go away, particularly in code & mathematics blocks.
 
 ## Notifications
 
