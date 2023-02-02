@@ -532,7 +532,6 @@ const { app, BrowserWindow } = require("electron");
 ## Design & Accessibility
 
 - Translate to other languages: 30 languages.
-- Add a toggle to switch between light mode and dark mode, regardless of your operating system setting? I don’t like this idea, but lots of people do it. Investigate…
 - Test screen readers.
 - Test contrast.
 
@@ -565,15 +564,10 @@ const { app, BrowserWindow } = require("electron");
   - On the list of enrollments (or list of users in administrative panel while it’s still naively implemented as a filter on the client side) the filter resets on form submission (for example, changing a person’s role).
   - In chats, submitting a form collapses the `conversation--header--full`.
 - Scroll to URL `#hashes`, which may occur in the middle of a message.
-- On main conversation page, when using a link like `#23/4` that’s a reference to another message in the conversation you’re in (say you’re conversation `#23` in this example), then there’s a weird scrolling glitch for a split second.
 
 ## Live-Updates
 
-- Scroll to `#anchored` element.
-- We’re leaking CSS. Maybe instead of just appending `local-css`, do some form of diffing, which only inserts and doesn’t delete (we want to keep the previous CSS because we may be preventing the deletion of some HTML, for example, the “NEW” separator).
-  - Note that modifying the `textContent` of a `<style>` tag has immediate effect—the browser applies the new styles.
-  - I ran live-updates every second for an hour, on mobile, and held itself okay, despite the leak of CSS. So maybe isn’t the biggest issue.
-- Live-updates can freeze the user interface for a split second, as the morphing is happening.
+- Live-Updates can freeze the user interface for a split second, as the morphing is happening.
   - Examples of issues:
     - Typing on an inbox lags.
     - Pressing buttons such as the “Conversations” disclosure button on mobile.
@@ -581,26 +575,21 @@ const { app, BrowserWindow } = require("electron");
     - Break the work up by introducing some `await`s, which hopefully would give the event loop an opportunity to process user interactions.
     - Minimize the work on the client-side by making the pages small, so there’s less to diff.
     - Minimize the work on the client-side by sending only the diffs.
-    - Throttle live-updates so that they can’t be super-frequent.
-- Be more selective about who receives a live-update:
-  - Right now everyone on the course receives a live-update for every action on the course.
-  - Check conversation id and only send updates to relevant connections.
-    - It gets a bit tricky, because some conversation modifications affect the sidebar, which should be updated for every tab with the course open.
+- Be more selective about who receives a Live-Update:
   - When we have pagination, take it a step further and only live update tabs with the affected message open.
-- Do something special on 404.
-  - For example, when we have a tab open with a conversation and someone else deletes it.
+- Do something special on Live-Updates that result in 404.
   - Right now we just show the 404 to the person, without much context, which can be confusing.
-  - One possible solution is to look at the `Live-Updates` header on the `GET` and set a flash.
+  - For example, when we have a tab open with a conversation and someone else deletes it.
 - Morphing on the server: Don’t send the whole page, only a diff to be applied on the client
 - Update tooltip content by morphing, instead of simply replacing, to preserve state:
   - Scrolling
   - In chats, the “Views” component in the “Actions” menu closes on live update.
 - Re-fetch partials in the background after a live update? They may have gotten stale, for example, the “Views” component, if it’s open right as a live update is happening.
-- Maybe don’t disconnect/reconnect the live-updates connection when a live-navigation will just return you to the same page?
+- Maybe don’t disconnect/reconnect the Live-Updates connection when a live-navigation will just return you to the same page?
   - It only saves the creation of connection information on the database on the server and the cost of establishing the connection.
   - A `POST` will already cause an update to the information on the page.
-  - The implementation gets a bit awkward. The trick is to introduce the URL to the identity of the connection on top of the token which already identifies it. The token becomes the identity of the browser tab, and the URL becomes its state. If you put the two together, you can disconnect/reconnect only when necessary. But there are plenty of edge cases to deal with, for example, a live-update coming in right in the middle of a `POST` live-navigation.
-- Currently, if a connection comes in with a token we don’t identify, we treat that as a browser tab that was offline for a while and just reconnected, which means it receives a live-update right away. This can be superfluous if no change actually took place. This may be a minor issue—or not an issue at all. And addressing it probably complicates the live-updates mechanisms quite a bit. But, in any case, one potential solution is, instead of keeping tokens on the server and scheduling events to them, keep a notion of when things were updated, this way upon reconnection the client can say when it was the last time it got a live-update, and the server can know if another live-update is necessary.
+  - The implementation gets a bit awkward. The trick is to introduce the URL to the identity of the connection on top of the token which already identifies it. The token becomes the identity of the browser tab, and the URL becomes its state. If you put the two together, you can disconnect/reconnect only when necessary. But there are plenty of edge cases to deal with, for example, a Live-Update coming in right in the middle of a `POST` live-navigation.
+- Currently, if a connection comes in with a token we don’t identify, we treat that as a browser tab that was offline for a while and just reconnected, which means it receives a Live-Update right away. This can be superfluous if no change actually took place. This may be a minor issue—or not an issue at all. And addressing it probably complicates the Live-Updates mechanisms quite a bit. But, in any case, one potential solution is, instead of keeping tokens on the server and scheduling events to them, keep a notion of when things were updated, this way upon reconnection the client can say when it was the last time it got a Live-Update, and the server can know if another Live-Update is necessary.
 
 ## Performance
 
@@ -617,7 +606,7 @@ const { app, BrowserWindow } = require("electron");
 
 - View caching on the server.
   - https://guides.rubyonrails.org/caching_with_rails.html
-  - This would interact in some way with server-side diffing on live-updates
+  - This would interact in some way with server-side diffing on Live-Updates
   - Elm seems to do something similar
 
 ---
@@ -736,7 +725,7 @@ const { app, BrowserWindow } = require("electron");
       - Caddy may do a better job at load balancing.
       - In theory the processes wouldn’t even have to be on the same machine. In practice, we’re using SQLite, so we probably want to stick to a single machine, otherwise we run into issues with networked file systems.
     - Use Node.js’s `cluster` module:
-      - There may be chance of sharing things like live-updates destinations, simplifying the messaging between an event changing the database and the listeners interested in those events.
+      - There may be chance of sharing things like Live-Updates destinations, simplifying the messaging between an event changing the database and the listeners interested in those events.
       - We’re probably painting ourselves in the corner even more in terms of scalability, given that all cluster processes are on a single machine.
 - Review all uses of `fetch()`:
   - Treat the error cases
