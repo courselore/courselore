@@ -107,6 +107,7 @@
   - Have a dedicated button for this.
 - Let staff endorse other staff answers.
 - Introduce the notion of promoting a message into its own conversation (one example use case is when someone asks a question as a follow-up to an announcement).
+- Add a notion of “reply” that’s a first-class citizen, like Discord and unlike GitHub.
 
 **Readings & Views**
 
@@ -140,7 +141,6 @@
 
 **Processor**
 
-- Add a notion of “reply” that’s a first-class citizen, like Discord and unlike GitHub.
 - On the `partials.content()`, maybe don’t render `@mention` widget for people who aren’t in the conversation, given that we don’t give that person as option on the `@mentions` autocomplete widget in the content editor.
 - It’s possible to send messages that are visually empty, for example, `<!-- -->`
 - `#references` into the same conversation don’t need to load the whole `partials.conversation()`, just the message part of it.
@@ -346,7 +346,7 @@ new Notification('Example');
   - `CAST("reference" AS INTEGER) >= CAST(${request.query.beforeMessageReference} AS INTEGER)`
     - Create indices for `CAST("reference" AS INTEGER)` or convert `"reference"` into number (and then create an index for that!).
 - On sending message on non-chat, it’s scrolling back to the first page.
-- The “mark as read” button doesn’t work because it doesn’t visit all pages.
+- The “mark as read” (not “mark **all** as read”) button doesn’t work because it doesn’t visit all pages.
 - Edge case: Show next/previous page on “no more messages”.
   - This is an edge case because people should only be able to get there when they manipulate the URL (or because they’re loading the next page right when an item has been deleted)
   - Difficult because we don’t have a “before” or “after” message to anchor to.
