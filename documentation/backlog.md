@@ -576,19 +576,16 @@ const { app, BrowserWindow } = require("electron");
     - Minimize the work on the client-side by making the pages small, so there’s less to diff.
     - Minimize the work on the client-side by sending only the diffs.
 - Be more selective about who receives a Live-Update:
-  - When we have pagination, take it a step further and only live update tabs with the affected message open.
+  - When we have pagination, take it a step further and only Live-Update tabs with the affected message open.
 - Do something special on Live-Updates that result in 404.
   - Right now we just show the 404 to the person, without much context, which can be confusing.
   - For example, when we have a tab open with a conversation and someone else deletes it.
 - Morphing on the server: Don’t send the whole page, only a diff to be applied on the client
-- Update tooltip content by morphing, instead of simply replacing, to preserve state:
-  - Scrolling
-  - In chats, the “Views” component in the “Actions” menu closes on live update.
-- Re-fetch partials in the background after a live update? They may have gotten stale, for example, the “Views” component, if it’s open right as a live update is happening.
-- Maybe don’t disconnect/reconnect the Live-Updates connection when a live-navigation will just return you to the same page?
+- Re-fetch partials in the background after a Live-Update? They may have gotten stale, for example, the “Views” component, if it’s open right as a Live-Update is happening.
+- Maybe don’t disconnect/reconnect the Live-Updates connection when a Live-Navigation will just return you to the same page?
   - It only saves the creation of connection information on the database on the server and the cost of establishing the connection.
   - A `POST` will already cause an update to the information on the page.
-  - The implementation gets a bit awkward. The trick is to introduce the URL to the identity of the connection on top of the token which already identifies it. The token becomes the identity of the browser tab, and the URL becomes its state. If you put the two together, you can disconnect/reconnect only when necessary. But there are plenty of edge cases to deal with, for example, a Live-Update coming in right in the middle of a `POST` live-navigation.
+  - The implementation gets a bit awkward. The trick is to introduce the URL to the identity of the connection on top of the token which already identifies it. The token becomes the identity of the browser tab, and the URL becomes its state. If you put the two together, you can disconnect/reconnect only when necessary. But there are plenty of edge cases to deal with, for example, a Live-Update coming in right in the middle of a `POST` Live-Navigation.
 - Currently, if a connection comes in with a token we don’t identify, we treat that as a browser tab that was offline for a while and just reconnected, which means it receives a Live-Update right away. This can be superfluous if no change actually took place. This may be a minor issue—or not an issue at all. And addressing it probably complicates the Live-Updates mechanisms quite a bit. But, in any case, one potential solution is, instead of keeping tokens on the server and scheduling events to them, keep a notion of when things were updated, this way upon reconnection the client can say when it was the last time it got a Live-Update, and the server can know if another Live-Update is necessary.
 
 ## Performance
@@ -779,10 +776,10 @@ const { app, BrowserWindow } = require("electron");
   - For users, who may want to migrate data from a hosted version to another.
     - Rewrite URLs in messages.
 - In some situations, we’re unnecessarily updating the boolean fields in the database that are represented as dates. For example, `"tags"."staffOnlyAt"` on `PUT /courses/:courseReference/settings/tags`.
-- Live updates with Server-Sent Events currently depend on the fact that we’re running in a single process. Use a message broker like ZeroMQ to support multiple processes.
+- Live-Updates with Server-Sent Events currently depend on the fact that we’re running in a single process. Use a message broker like ZeroMQ to support multiple processes.
 - Right now we’re allowing any other website to embed images. If we detect abuse, add an allowlist.
 - Caddy could silence logs **after** a successful startup.
-- Live-navigation usability issue: When there are multiple forms on the page, and you partially fill both of them, submitting one will lose inputs on the other.
+- Live-Navigation usability issue: When there are multiple forms on the page, and you partially fill both of them, submitting one will lose inputs on the other.
   - For example, when you’re filling in the “Start a New Conversation” form, and you do a search on the sidebar.
 
 ---
