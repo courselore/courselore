@@ -705,88 +705,17 @@ const { app, BrowserWindow } = require("electron");
 - Caddy could silence logs **after** a successful startup.
 - Live-Navigation usability issue: When there are multiple forms on the page, and you partially fill both of them, submitting one will lose inputs on the other.
   - For example, when you’re filling in the “Start a New Conversation” form, and you do a search on the sidebar.
-
----
-
 - Image proxy
-  - Good-to-have
-    - Max size 5242880
-    - Max number of redirects 4
-    - Timeout 10s
-    - Resizing
-    - Caching: Not only for performance, but also because third-party images may go away
-    - Include HMAC
-      - Perhaps not, because as far as I understand the purpose of HMAC is to prevent abuse, but hotlinked images can only be used from our website anyway due to Cross-Origin-Resource-Policy. In other words, you can’t hotlink a hotlinked (proxied) image. This saves us from having to compute & verify HMACs.
-    - Allow hotlinking from our proxy? This has implications on the decision to not use HMAC on the proxy, and also has implications on rendering hotlinked images on third-party websites, for example, the Outlook email client, as soon as we start sending email notifications with fully processed content (right now we send the pre-processed content, but we want to change that so that things like `@mentions` show up more properly.)
-      - This is necessary to 100% guarantee that people will be able to see images on Outlook
-
----
-
-- Automated tests:
-
-<details>
-
-```typescript
-import { test, expect, beforeEach, afterEach } from "@jest/globals";
-import os from "os";
-import path from "path";
-import http from "http";
-import fs from "fs-extra";
-import * as got from "got";
-import * as toughCookie from "tough-cookie";
-import { JSDOM } from "jsdom";
-import markdown from "tagged-template-noop";
-import courselore from ".";
-
-let server: http.Server;
-let client: got.Got;
-beforeEach(async () => {
-  const rootDirectory = await fs.mkdtemp(
-    path.join(os.tmpdir(), "courselore-test-")
-  );
-  const app = await courselore(rootDirectory);
-  server = app.listen(new URL(app.server.locals.settings.url).port);
-  client = got.default.extend({
-    prefixUrl: app.server.locals.settings.url,
-    cookieJar: new toughCookie.CookieJar(undefined, {
-      rejectPublicSuffixes: false,
-    }),
-    // FIXME:
-    followRedirect: false,
-  });
-  await client.post("authenticate", {
-    form: { email: "leandro@courselore.org" },
-  });
-  const demonstrationInbox = JSDOM.fragment(
-    (await client.get("demonstration-inbox")).body
-  );
-  const nonce = demonstrationInbox
-    .querySelector(
-      `a[href^="${app.server.locals.settings.url}/authenticate/"]`
-    )!
-    .getAttribute("href")!
-    .match(/\/authenticate\/(\d+)/)!
-    .pop();
-  await client.post("users", { form: { nonce, name: "Leandro Facchinetti" } });
-});
-afterEach(() => {
-  server.close();
-});
-
-test("/preview (Text processor)", async () => {
-  expect(
-    (
-      await client.post("preview", {
-        form: {
-          content: ``,
-        },
-      })
-    ).body
-  ).toMatchInlineSnapshot();
-});
-```
-
-</details>
+  - Max size 5242880
+  - Max number of redirects 4
+  - Timeout 10s
+  - Resizing?
+  - Caching? Not only for performance, but also because third-party images may go away
+  - Include HMAC
+    - Perhaps not, because as far as I understand the purpose of HMAC is to prevent abuse, but hotlinked images can only be used from our website anyway due to Cross-Origin-Resource-Policy. In other words, you can’t hotlink a hotlinked (proxied) image. This saves us from having to compute & verify HMACs.
+  - Allow hotlinking from our proxy? This has implications on the decision to not use HMAC on the proxy, and also has implications on rendering hotlinked images on third-party websites, for example, the Outlook email client, as soon as we start sending email notifications with fully processed content (right now we send the pre-processed content, but we want to change that so that things like `@mentions` show up more properly.)
+    - This is necessary to 100% guarantee that people will be able to see images on Outlook
+- Automated tests.
 
 ## Documentation
 
@@ -811,6 +740,7 @@ test("/preview (Text processor)", async () => {
 
 ## Marketing
 
+- Communicate that we’re in a free hosting period **for now**.
 - Invest more in marketing on spring.
   - Buy keywords on Google.
 - Goal: Double usage every semester for the first couple semesters.
@@ -820,7 +750,7 @@ test("/preview (Text processor)", async () => {
   - Better printscreens without `lorem ipsum`.
   - Example of design that we like: https://capacitorjs.com
   - At some point hire a designer to make it shinier
-  - Courselore vs Piazza, Campuswire, edstem, and so forth, comparison chart.
+  - Comparison chart: Courselore, Piazza, Campuswire, edstem, and so forth.
     - Make sure to mention that we’re open-source.
     - Piazza has LTI support (for identity only?).
 - User groups.
@@ -836,74 +766,6 @@ test("/preview (Text processor)", async () => {
   - Reddit.
 - Make a public page listing known issues.
 - Add a call-to-action on the bottom navigation bar that isn’t just about reporting bugs, but about providing feedback and joining the Courselore community.
-- In Meta Courselore, make a pinned announcement of how to report bugs.
-  - Use a pre-filled form, similar to what we do when reporting an issue via email or via GitHub.
-- Communicate that we’re in a free hosting period for now:
-
-```javascript
-            $${app.configuration.host === app.configuration.canonicalHost
-              ? html`
-                  <div
-                    css="${css`
-                      color: var(--color--green--700);
-                      background-color: var(--color--green--100);
-                      @media (prefers-color-scheme: dark) {
-                        color: var(--color--green--200);
-                        background-color: var(--color--green--900);
-                      }
-                      padding: var(--space--4);
-                      border-radius: var(--border-radius--lg);
-                      display: flex;
-                      gap: var(--space--4);
-
-                      .link {
-                        color: var(--color--green--600);
-                        &:hover,
-                        &:focus-within {
-                          color: var(--color--green--500);
-                        }
-                        &:active {
-                          color: var(--color--green--700);
-                        }
-                        @media (prefers-color-scheme: dark) {
-                          color: var(--color--green--100);
-                          &:hover,
-                          &:focus-within {
-                            color: var(--color--green--50);
-                          }
-                          &:active {
-                            color: var(--color--green--200);
-                          }
-                        }
-                      }
-                    `}"
-                  >
-                    <div
-                      css="${css`
-                        font-size: var(--font-size--4xl);
-                        line-height: var(--line-height--4xl);
-                      `}"
-                    >
-                      <i class="bi bi-gift-fill"></i>
-                    </div>
-                    <p>
-                      This is the hosted installation of Courselore managed by
-                      the Courselore developers. Enjoy the initial period of
-                      free hosting, during which you may create courses for
-                      free! Courselore is
-                      <a
-                        href="https://github.com/courselore/courselore"
-                        class="link"
-                        >open source</a
-                      >
-                      and you may install it on your own server, an option that
-                      will be free forever and guarantees maximum privacy &
-                      control.
-                    </p>
-                  </div>
-                `
-              : html``}
-```
 
 ## References
 
@@ -921,10 +783,10 @@ test("/preview (Text processor)", async () => {
   - <https://www.d2l.com/products/>
 - General-purpose communication platforms
   - <https://github.com>
-  - <https://slack.com>
   - <https://discourse.org>
-  - <https://basecamp.com>
   - <https://reddit.com>
+  - <https://basecamp.com>
+  - <https://slack.com>
 - Open-source communication platforms
   - <https://github.com/zulip/zulip>
   - <https://github.com/RocketChat/Rocket.Chat>
