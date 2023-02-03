@@ -656,37 +656,6 @@ const { app, BrowserWindow } = require("electron");
 ## Infrastructure
 
 - Investigate browser crashes on Android Chrome
-- Use esbuild to build server?
-
-  - `npx esbuild ./server/index.mts --platform=node --packages=external --format=esm --bundle --minify --sourcemap --outfile=./build/server/index.mjs`
-  - Pros:
-    - About 2~3x faster than `tsc` in our codebase.
-    - May generate a single file, minify, and so forth.
-  - Const:
-    - More complexity.
-    - Can’t typecheck (add `npx tsc --noEmit` to `npm test`).
-    - Can’t generate `.d.ts` (relevant for libraries).
-
-- Update GitHub Actions to use Node 16:
-  - https://github.com/softprops/action-gh-release
-  - https://github.com/webfactory/ssh-agent
-- Consider using esbuild to compile TypeScript on server.
-
-  - .
-
-    ```console
-    $ cd ./web/server/
-    $ npm i -D esbuild # Or perhaps pull esbuild up, since it’s needed by the ‘static/’ as well?
-    $ npx esbuild --outdir=../build/server/ --platform=node --format=esm --out-extension:.js=.mjs "--external:*.node" --external:canvas --bundle --minify --sourcemap index.mts
-    ```
-
-  - In `tsconfig`, set `"isolatedModules": true,` and deal with explicit `export type`s that become necessary.
-
-  - Use TypeScript only to check types: `tsc -noEmit`
-
-- Try other methods for prioritizing the queue for Live-Updates. More specifically, we want to make sure that the person who performed the action will receive feedback before we get the server busy with Live-Updates. Right now we’re simply delaying the Live-Updates by a fixed time.
-  - We could detect that the person has received their feedback and fire Live-Updates right away, instead of waiting for that fixed time, giving faster feedback on Live-Updates.
-  - We could answer the POST/PATCH/PUT with the material of the updated page, instead of redirecting. This is heavy-handed, because it affects many routes. But it saves one roundtrip.
 - Add synchronizer token as added security against CSRF.
   - Currently we’re defending from CSRF with a [custom header](https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html#use-of-custom-request-headers). This is the simplest viable protection, but it’s vulnerable to broken environments that let cross-site requests include custom headers (for example, an old version of Flash).
   - [Synchronizer tokens](https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html#synchronizer-token-pattern) are the most secure option.
@@ -699,26 +668,14 @@ const { app, BrowserWindow } = require("electron");
 - `filenamify` may generate long names in pathological cases in which the extension is long.
 - Things like `text--sky` and `mortarboard` are repeated throughout the application. DRY these up.
 - Windows development:
-  - `global.css` is regenerated (probably because of line endings)
   - `Ctrl+C` leaves the Caddy process behind, failing subsequent runs because the port is taken
-- Exclude `assets/` directory from build?
 - Sign-out is slow for some reason 🤷
-- When we start receiving code contributions, we might want to ask for people to sign a contributor’s agreement, because otherwise we locking ourselves out of the possibility of dual-licensing & perhaps selling closed-source extensions.
-- When a new version is deployed, force browsers to reload, which may be necessary for new assets (CSS, JavaScript, and so forth) to be picked up.
+- When we start receiving code contributions, we might want to ask for people to sign a contributor’s agreement, because otherwise we’re locking ourselves out of the possibility of dual-licensing & perhaps selling closed-source extensions.
 - Do things break if you’re trying to run Courselore from a directory that includes spaces & weird characters?
   - Note Caddy’s configuration and the serving of static files.
   - Test development.
   - Test binary.
   - Test on Windows.
-- Cluster mode:
-  - Right now we’re running with a single process, which doesn’t take advantage of all CPU cores.
-  - Approaches:
-    - Spawn separate Node.js processes and use Caddy to reverse proxy between them:
-      - Caddy may do a better job at load balancing.
-      - In theory the processes wouldn’t even have to be on the same machine. In practice, we’re using SQLite, so we probably want to stick to a single machine, otherwise we run into issues with networked file systems.
-    - Use Node.js’s `cluster` module:
-      - There may be chance of sharing things like Live-Updates destinations, simplifying the messaging between an event changing the database and the listeners interested in those events.
-      - We’re probably painting ourselves in the corner even more in terms of scalability, given that all cluster processes are on a single machine.
 - Review all uses of `fetch()`:
   - Treat the error cases
   - Have timeouts, because there may be no feedback if the internet goes down in the middle of an operation, and the connection may be left hanging, and we’ll be `await`ing forever.
@@ -729,49 +686,21 @@ const { app, BrowserWindow } = require("electron");
   - `class=`
   - `querySelector`
   - `map(`
-- Asset fingerprinting?
-  - Right now we’re relying on ETags, but they require a roundtrip to the server to get the 304. With asset fingerprinting, we could prevent the roundtrip by setting a long expiration time.
-  - Two ways to do it:
-    - Fingerprint on query param: Seems acceptable, probably easier to setup (when server starts, read file and compute fingerprint).
-    - Fingerprint on file names: It’s what Rails does (but their reason seems to be based on an article from 2008 which may no longer be relevant, and they compare it to a naïve implementation in which the fingerprint is the file modification timestamp), harder to setup.
-  - Consider that dependencies of dependencies don’t necessarily fingerprint (as far as I can tell, only bootstrap-icons does), so we’d have to use a module bundler to get this 100% right.
-- Minify assets?
-  - Right now we’re relying on gzip
-  - Potential solutions
-    - https://cssnano.co/ (based on PostCSS)
-    - https://github.com/clean-css/clean-css (most popular)
-    - https://github.com/parcel-bundler/parcel-css (seems faster, using Rust)
-    - https://github.com/css/csso
-- Use `` javascript(html`<script>...</script>`) `` instead of `` javascript`...` `` because it works with Prettier (and syntax highlighting, to some extent)?
-- `<script async>`?
 - Mark all conversations as read may be slow because it does a bunch of in `INSERT`s.
 - Move some of the non-application-specific server-side code into a library (for example, cookie settings, server-sent events, logging, and that sort of thing).
   - Maybe move @leafac/express-async-handler into that library as well.
-  - The runner in `binary.ts`
-  - Some common things from `configuration/*.mjs`.
 - Make Demonstration Data load faster by having a cache of pre-built data.
-- On deploy to production maybe backup the database like we do in staging.
-- `app.on("close")` stop workers.
-  - Or maybe unref them to begin with?
-- Test signal handling of shutdown process on Windows
 - Using `getConversation()` to enforce permissions may not be a great idea. It limits the number of search results in a weird way, that even leaks a bit of data. Also, it isn’t the most performant thing, probably (see point about n+1 queries). Maybe a better idea would be to `WHERE` the permissions everywhere, or use a database view.
 - Rate limiting.
-- Database transactions:
-  - Automatic: One transaction per request
-    - We shouldn’t keep the transaction open across ticks of the event loop, which entails that it would only work for request handlers that are synchronous.
-    - When to commit the transaction:
-      - Listen to the `response.once("finish", () => {...})` event. But I think that this goes across ticks of the event loop.
-      - Maybe just call `next()` and then look at the `response.statusCode`?
-      - Or maybe overwrite `response.send()` and `response.redirect()`, like we do for logging.
-  - Manual: Probably the only sensible approach, given the constraint above related to asynchronous handlers
-- Look into using `db.pragma("synchronous = NORMAL");` to improve performance. (<https://github.com/WiseLibs/better-sqlite3/issues/334>)
-- Auto-updater.
-- Backups.
-  - For us, as system administrators.
-  - For users, who may want to migrate data from a hosted version to another.
-    - Rewrite URLs in messages.
+- Find more places where we should be using database transactions.
+- Maintenance:
+- Automate:
+  - Updates.
+  - Backups.
+- Have a way for self-hosters to migrate domains.
+  - Rewrite avatars.
+  - Rewrite URLs in messages.
 - In some situations, we’re unnecessarily updating the boolean fields in the database that are represented as dates. For example, `"tags"."staffOnlyAt"` on `PUT /courses/:courseReference/settings/tags`.
-- Live-Updates with Server-Sent Events currently depend on the fact that we’re running in a single process. Use a message broker like ZeroMQ to support multiple processes.
 - Right now we’re allowing any other website to embed images. If we detect abuse, add an allowlist.
 - Caddy could silence logs **after** a successful startup.
 - Live-Navigation usability issue: When there are multiple forms on the page, and you partially fill both of them, submitting one will lose inputs on the other.
