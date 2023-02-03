@@ -817,7 +817,7 @@ const { app, BrowserWindow } = require("electron");
 - There’s a issue when running Courselore for the first time in the new multiprocess architecture: Caddy may ask for your password, but you may not see it.
   - It still works if you see it and type in the password, even as other stuff has scrolled by.
   - Potential solutions:
-    - Run Caddy before spawning children processes
+    - Run Caddy before spawning other children processes (but how do you know that Caddy is done?)
     - Document this quirk.
 - The HTML for latency-compensate sending a message could be embedded in the JavaScript, now that embedding HTML in JavaScript is a thing.
 - Issue: Using `enrollment.accentColor` in CSS
