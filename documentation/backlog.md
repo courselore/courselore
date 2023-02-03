@@ -709,8 +709,6 @@ const { app, BrowserWindow } = require("electron");
 ---
 
 - Image proxy
-  - Allowlist of response headers
-    - Content-type allowlist https://github.com/atmos/camo/blob/master/mime-types.json
     - Use Got hook
     - Use Transform in pipeline
   - Approaches

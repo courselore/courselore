@@ -795,6 +795,8 @@ export default async (application: Application): Promise<void> => {
       )
         return response.status(422).end();
 
+      delete response.locals.liveConnectionNonce;
+
       await stream.pipeline(
         application.got
           .stream(request.query.url, {
@@ -803,13 +805,26 @@ export default async (application: Application): Promise<void> => {
             timeout: { request: 10000 },
           })
           .on("response", (proxiedResponse) => {
-            for (const header of Object.keys(proxiedResponse.headers))
-              if (
-                !["content-type", "content-length"].includes(
-                  header.toLowerCase()
-                )
-              )
-                delete proxiedResponse.headers[header];
+            for (const [headerName, headerValue] of Object.entries(
+              proxiedResponse.headers
+            ))
+              switch (headerName.toLowerCase()) {
+                case "content-type":
+                  if (
+                    typeof headerValue !== "string" ||
+                    !(
+                      headerValue.startsWith("image/") ||
+                      headerValue.startsWith("video/")
+                    )
+                  )
+                    response.status(422).end();
+                  break;
+                case "content-length":
+                  break;
+                default:
+                  delete proxiedResponse.headers[headerName];
+                  break;
+              }
           }),
         response
       );
