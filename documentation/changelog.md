@@ -12,6 +12,8 @@
 
 ## Unreleased
 
+- Fixed an issue in which the image/video proxy could lead to execution of untrusted JavaScript. **This is a security issue so we recommend you to update as soon as possible.** We have no report of this issue having been explored by attackers.
+
 ## 6.0.7
 
 **2023-02-01 · [Download](https://github.com/courselore/courselore/releases/tag/v6.0.7) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
