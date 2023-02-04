@@ -31,6 +31,7 @@
 - Remove course entirely.
 - Have a setting to either let students remove themselves from the course, or let them request the staff to be removed.
 - Upload roster and show differences.
+- Lock a course for a period, for example, when a take-home exam is out.
 
 ## Invitations
 
@@ -145,6 +146,11 @@
 - It’s possible to send messages that are visually empty, for example, `<!-- -->`
 - `#references` into the same conversation don’t need to load the whole `partials.conversation()`, just the message part of it.
 - Polls.
+  - They’re a new type of message content, not something heavyweight like a new type of question. This follows the same lines as Discourse & Slack (where people use reactions (emojis) to do polls).
+  - Support multiple answers.
+  - Students may see aggregate results.
+  - Staff may see individual votes.
+  - Allow for closing a poll.
 - Lightbox modal:
   - Resized images
   - Code blocks
@@ -869,21 +875,3 @@ const { app, BrowserWindow } = require("electron");
   - Find features that people will ask for, and that we need to have.
   - Table of comparison for home page.
 - Probably bad idea for reducing HTML size and improving performance: Have some “templates” as JavaScript strings at the global level that we reuse, for things like spinners. (Spooky action at a distance.)
-
-## Priorities
-
-- Match features people like from other platforms.
-  - Lock a course for a period, for example, when a take-home exam is out.
-  - Polls.
-    - They’re a new type of message content, not something heavyweight like a new type of question. This follows the same lines as Discourse & Slack (where people use reactions (emojis) to do polls).
-    - Support multiple answers.
-    - Students may see aggregate results.
-    - Staff may see individual votes.
-    - Allow for closing a poll.
-- Notifications:
-  - Email notification digests
-  - Notifications API & Push API
-  - Mobile & desktop applications
-- SAML: Register our application with Hopkins to allow access to SAML.
-- Minimal integration with Learning Management Systems (identity, not grades).
-- Performance: Pagination, more lazily loaded components, and so forth.
