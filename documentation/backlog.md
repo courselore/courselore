@@ -73,6 +73,10 @@
 - “Mark all conversations as read” could work with search & filters, marking as read only the conversations that matched the search & filters.
 - Let original question asker approve an answer.
 - Add a course-wide setting to make tags optional in all kinds of conversation (not only non-chats), even if there are tags.
+- Killer feature to attract people: off-the-shelf AI
+  - Help staff write answers
+  - Reuse questions
+  - Reuse questions from previous year
 
 **Participants**
 
@@ -317,6 +321,8 @@ new Notification('Example');
   - When you’re typing, there’s a weird scrollbar glitch: it shows up for a split second and hides back again. I observed this in Meta Courselore using Safari.
   - https://css-tricks.com/the-cleanest-trick-for-autogrowing-textareas/
   - https://github.com/fregante/fit-textarea **Use v2**.
+- The HTML for latency-compensate sending a message could be embedded in the JavaScript, now that embedding HTML in JavaScript is a thing.
+- Selecting multiple paragraphs and bolding doesn’t work (the same issue occurs in GitHub 🤷)
 
 **New Conversation**
 
@@ -358,6 +364,7 @@ new Notification('Example');
   - Difficult because we don’t have a “before” or “after” message to anchor to.
 - Paginate other things, for example, Course Settings · Enrollments, and invitations.
 - Things like clearing search and filters may affect query parameters.
+- Rendering the sidebar is about 10% of the response time. When paginating, don’t include the sidebar.
 
 ## File Management
 
@@ -514,9 +521,6 @@ const { app, BrowserWindow } = require("electron");
     - DIY
     - https://github.com/jcgertig/date-input-polyfill
     - https://github.com/Pikaday/Pikaday
-
----
-
 - Prevent the flash of unformatted datetime on fields using `validateLocalizedDateTime()`.
   - I tried to just reset all elements to the `valueInputByUser` at the end (which, incidentally, requires `window.setTimeout()` to not reset the value before the form data is actually sent to the server), but it doesn’t work. It seems like the only solution is to use an auxiliary `<input type="hidden">` that’s actually sent and an `<input type="text">` that drives it to show to the user.
 - Have some kind of in-app guide for the first time you enter the system, or the first time you create a course, and that sort of thing. This should complement the video tutorials that we also want to make.
@@ -527,9 +531,6 @@ const { app, BrowserWindow } = require("electron");
 - Places where we show `administratorEmail` to report bugs could be forms instead.
 - In Safari iOS, the address bar never collapses because of the way we’re doing panes.
 - Add `-fill` to journal icons: https://github.com/twbs/icons/issues/1322
-
----
-
 - Style scrollbars:
   - https://css-tricks.com/almanac/properties/s/scrollbar/
   - https://css-tricks.com/the-current-state-of-styling-scrollbars-in-css/
@@ -602,16 +603,10 @@ const { app, BrowserWindow } = require("electron");
 - Lazy loading & DRYing to reduce HTML payload
   - `userPartial` tooltip
   - `conversationPartial` tooltip on decorated content
-
----
-
 - View caching on the server.
   - https://guides.rubyonrails.org/caching_with_rails.html
   - This would interact in some way with server-side diffing on Live-Updates
   - Elm seems to do something similar
-
----
-
 - Pre-fetching
   - There are some links that have side-effects (marking messages as read).
   - All links in viewport
@@ -622,18 +617,9 @@ const { app, BrowserWindow } = require("electron");
     - http://instantclick.io
   - References:
     - https://web.dev/speculative-prerendering/
-
----
-
 - Write a function to determine if processing content is even necessary. Most content doesn’t use extra features and could skip JSDOM entirely.
-
----
-
 - Investigate other potential bottlenecks:
   - Synchronous stuff that could be async.
-
----
-
 - Framing?
   - Disadvantage: One more roundtrip to the server to complete the page.
   - Sidebar vs main content
@@ -642,9 +628,6 @@ const { app, BrowserWindow } = require("electron");
     - Conversations in sidebar.
     - Messages in conversation.
   - Filters.
-
----
-
 - Database:
   - Look for more database indices that may be necessary.
   - n+1 queries:
@@ -658,9 +641,22 @@ const { app, BrowserWindow } = require("electron");
       - Use a temporary table instead of `IN`.
       - Nest first query as a subquery and bundle all the information together, then deduplicate the 1–N relationships in the code.
   - We’re doing pagination of conversations in sidebar using `OFFSET`, because the order and presence of conversations changes, so we can’t anchor a `WHERE` clause on the first/last conversation shown. Try and find a better approach. Maybe use window functions anchored on the `row_number`.
+- `slugify` is expensive, and it may be cacheable.
+- Process content (which is CPU intensive) in worker thread (asynchronously)?
+- We’re hitting the disk a lot, perhaps too much. More than Kill the Newsletter!
+- Probably bad idea for reducing HTML size and improving performance: Have some “templates” as JavaScript strings at the global level that we reuse, for things like spinners. (Spooky action at a distance.)
 
 ## Infrastructure
 
+- Inconsistency: In the `liveConnectionsMetadata` (and possibly others) we store `expiredAt`, but in `session` (and possible others) we store `createdAt` and let the notion of expiration be represented in the code.
+- autocannon: produce graphs (HDRHistogram)
+- There’s a small chance (once every tens of thousands of requests) that you’ll get an “SQLite busy” error. I observed it when creating `liveConnectionsMetadata`, which is the only write in a hot path of the application. Treat that case gracefully.
+- Maybe `stringToElement()` should return the surrounding `<div>`? We keep having to wrap the content in a `<div>` anyway…
+- There’s a issue when running for the first time: Caddy may ask for your password, but you may not see it.
+  - It still works if you see it and type in the password, even as other stuff has scrolled by.
+  - Potential solutions:
+    - Run Caddy before spawning other children processes (but how do you know that Caddy is done?)
+    - Document this quirk.
 - Investigate browser crashes on Android Chrome
 - Add synchronizer token as added security against CSRF.
   - Currently we’re defending from CSRF with a [custom header](https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html#use-of-custom-request-headers). This is the simplest viable protection, but it’s vulnerable to broken environments that let cross-site requests include custom headers (for example, an old version of Flash).
@@ -772,6 +768,10 @@ const { app, BrowserWindow } = require("electron");
   - Reddit.
 - Make a public page listing known issues.
 - Add a call-to-action on the bottom navigation bar that isn’t just about reporting bugs, but about providing feedback and joining the Courselore community.
+- Google
+  - https://www.partneradvantage.goog/
+  - https://cloud.google.com/partners/become-a-partner/
+- Look at other system to find features that people will ask for.
 
 ## References
 
@@ -817,61 +817,3 @@ const { app, BrowserWindow } = require("electron");
 - Conferences
   - <https://openeducationconference.org>
   - <https://www.digitallyengagedlearning.net>
-
-## TO ORGANIZE
-
-- There’s a issue when running Courselore for the first time in the new multiprocess architecture: Caddy may ask for your password, but you may not see it.
-  - It still works if you see it and type in the password, even as other stuff has scrolled by.
-  - Potential solutions:
-    - Run Caddy before spawning other children processes (but how do you know that Caddy is done?)
-    - Document this quirk.
-- The HTML for latency-compensate sending a message could be embedded in the JavaScript, now that embedding HTML in JavaScript is a thing.
-- Issue: Using `enrollment.accentColor` in CSS
-  - Potential solutions:
-    - Inline `style=""` and CSS variables
-      - Could we automate this in compilation?
-        - Perhaps, the difficulty is that it needs to be aware of the `css="..."` stuff, because it’ll need to put a `style="..."` adjacent to it.
-          - That’s how astroturf does it, for example.
-          - For the time being, it seems like to too much magic and error-prone. Let’s do it by hand…
-    - JavaScript
-    - `switch`/`case` and lots of copy-and-paste
-- Idea: Minimize whitespace and whatnot from source CSS/JavaScript before computing the hash, to allow for even more reuse.
-- Maybe `stringToElement()` should return the surrounding `<div>`? We keep having to wrap the content in a `<div>` anyway…
-- Test that changing accent color works, because `morph()` doesn’t update inline `style`s.
-- Edge case: You have just created your account and you mistyped your email, so you can’t verify it. Additionally, you have forgotten your password, so you can’t go to “Forgot your password?” Now you’re locked out, but at the same time, how can you prove that you’re you…
-- Killer feature to attract people: off-the-shelf AI
-  - Reuse questions
-  - Reuse questions from previous year
-- https://www.partneradvantage.goog/
-- https://cloud.google.com/partners/become-a-partner/
-
----
-
-- Performance improvements:
-  - HTML sanitization is a significant overhead.
-  - `slugify` is expensive, and it may be cacheable.
-  - Lazy load parts of the page that don’t show up immediately, for example:
-    - User tooltip
-    - Content editor in “Edit Message”
-    - More…
-  - Cache rendered HTML
-  - Process content (which is CPU intensive) in worker thread (asynchronously)?
-  - We’re hitting the disk a lot, perhaps too much. More than Kill the Newsletter!
-- Rendering the sidebar is about 10% of the response time. When paginating, don’t include the sidebar.
-- Why does 0x need the prelude?
-  - Does not support cluster. Good thing we aren’t using it, I guess…
-  - Redirects `stdout`.
-  - Includes its own handlers for `SIGINT` & `SIGTERM` which `process.exit()`s right away.
-    - `⌃C` from the command line doesn’t seem to work when `npm run`ed.
-- There’s a small chance (once every tens of thousands of requests) that you’ll get an “SQLite busy” error. I observed it when creating `liveConnectionsMetadata`, which is the only write in a hot path of the application. Treat that case gracefully.
-- autocannon:
-  - Produce graphs (HDRHistogram)
-- Inconsistency: In the `liveConnectionsMetadata` (and possibly others) we store `expiredAt`, but in `session` (and possible others) we store `createdAt` and let the notion of expiration be represented in the code.
-- Content editor issue: Selecting multiple paragraphs and bolding doesn’t work (the same issue occurs in GitHub 🤷)
-- Improve the psychological factors that go into the perception of response time:
-  - Don’t bring the beach ball right away, or not at all
-  - Tweak the progress bar
-- Features from competitors, including Piazza, Ed, and so forth.
-  - Find features that people will ask for, and that we need to have.
-  - Table of comparison for home page.
-- Probably bad idea for reducing HTML size and improving performance: Have some “templates” as JavaScript strings at the global level that we reuse, for things like spinners. (Spooky action at a distance.)
