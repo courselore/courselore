@@ -216,8 +216,8 @@
 
     <style type="text/css">
       :root {
-          color-scheme: light dark;
-          supported-color-schemes: light dark;
+        color-scheme: light dark;
+        supported-color-schemes: light dark;
       }
     </style>
 
@@ -313,8 +313,51 @@ new Notification('Example');
 - Collapse long messages.
 - Add a button to “Return to Bottom” when chat is scrolled up.
 - Scrolling is glitchy:
+
   - Images may break the scrolling to the bottom.
   - Safari window resize causes scrolling.
+  - Possible solutions:
+
+    - Mutation Observer & more JavaScript 🤷
+
+    - Wrapper with `flex-direction: column-reverse;` (<https://stackoverflow.com/a/72644230>)
+
+      - Safari desktop: Content scrolls if you’re up
+      - Safari iOS: Content isn’t pinned to the bottom if you scroll up and back down
+
+      ```html
+      <div
+        style="
+            background-color: cyan;
+            height: 200px;
+            overflow: auto;
+            display: flex;
+            flex-direction: column-reverse;
+          "
+      >
+        <div key="content"></div>
+      </div>
+      <button
+        onclick='document.querySelector(`[key="content"]`).insertAdjacentHTML("beforeend", `<p style="background-color: green;">${new Date().toISOString()}</p>`)'
+      >
+        Add
+      </button>
+      ```
+
+    - `overflow-anchor` (<https://css-tricks.com/books/greatest-css-tricks/pin-scrolling-to-bottom/>)
+
+      - Doesn’t work in Safari at all 🤦‍♂️
+
+      ```html
+      <div style="background-color: cyan; height: 200px; overflow: auto">
+        <div key="anchor" style="overflow-anchor: auto; height: 1px;"></div>
+      </div>
+      <button
+        onclick='document.querySelector(`[key="anchor"]`).insertAdjacentHTML("beforebegin", `<p style="background-color: green; overflow-anchor: none;">${new Date().toISOString()}</p>`)'
+      >
+        Add
+      </button>
+      ```
 
 **Content Editor**
 
