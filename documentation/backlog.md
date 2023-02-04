@@ -315,7 +315,7 @@ new Notification('Example');
 - Scrolling is glitchy:
 
   - Images may break the scrolling to the bottom.
-  - Safari window resize causes scrolling.
+  - Safari/Firefox window resize causes unwanted scrolling.
   - Possible solutions:
 
     - Mutation Observer & more JavaScript 🤷
@@ -648,7 +648,9 @@ const { app, BrowserWindow } = require("electron");
   - Right now we just show the 404 to the person, without much context, which can be confusing.
   - For example, when we have a tab open with a conversation and someone else deletes it.
 - Morphing on the server: Don’t send the whole page, only a diff to be applied on the client
-- Re-fetch partials in the background after a Live-Update? They may have gotten stale, for example, the “Views” component, if it’s open right as a Live-Update is happening.
+- Partials
+  - Relatively straightforward: Re-fetch partials in the background after a Live-Update? They may have gotten stale, for example, the “Views” component, if it’s open right as a Live-Update is happening.
+  - More principled: Partials remember their URLs and keep their own Live-Updates lifecycle.
 - Currently, if a connection comes in with a token we don’t identify, we treat that as a browser tab that was offline for a while and just reconnected, which means it receives a Live-Update right away. This can be superfluous if no change actually took place. This may be a minor issue—or not an issue at all. And addressing it probably complicates the Live-Updates mechanisms quite a bit. But, in any case, one potential solution is, instead of keeping tokens on the server and scheduling events to them, keep a notion of when things were updated, this way upon reconnection the client can say when it was the last time it got a Live-Update, and the server can know if another Live-Update is necessary. But the notion of tracking which parts of which pages require which data sounds error-prone.
 
 ## Performance
@@ -701,6 +703,7 @@ const { app, BrowserWindow } = require("electron");
 
 ## Infrastructure
 
+- DRY debounce that uses `isUpdating`
 - Inconsistency: In the `liveConnectionsMetadata` (and possibly others) we store `expiredAt`, but in `session` (and possible others) we store `createdAt` and let the notion of expiration be represented in the code.
 - autocannon: produce graphs (HDRHistogram)
 - There’s a small chance (once every tens of thousands of requests) that you’ll get an “SQLite busy” error. I observed it when creating `liveConnectionsMetadata`, which is the only write in a hot path of the application. Treat that case gracefully.
