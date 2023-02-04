@@ -172,6 +172,10 @@
   - The current workaround is to use `mermaid-cli`, which uses Puppeteer, but that’s slow and downloads a whole browser (~200MB) 🤦‍♂️
 - Once the chats have been redesigned with avatars on the margin to better establish a hierarchy and delimit messages, consider bringing back the full `partials.user()` widget to `@mentions`, with avatar and everything. (I think this will look good, but it’s a controversial point, given that people were very insistent on removing avatars from that context.)
 - Checklists: Make it easy to check/uncheck and move items (like GitHub) (only if you can edit the message).
+- Video:
+  - Convert to improve compatibility & performance?
+  - Poster image for `<video>` tag?
+  - How do they show up in email notifications?
 
 **Editor**
 
@@ -301,6 +305,7 @@ new Notification('Example');
 **Conversation**
 
 - Add “Change conversation type” and that sort of thing to the “Actions” menu?
+- First conversation for staff should default to being pinned.
 
 **Messages**
 
@@ -667,6 +672,7 @@ const { app, BrowserWindow } = require("electron");
 - Lazy loading & DRYing to reduce HTML payload
   - `userPartial` tooltip
   - `conversationPartial` tooltip on decorated content
+  - Selected participants widget
 - View caching on the server.
   - https://guides.rubyonrails.org/caching_with_rails.html
   - This would interact in some way with server-side diffing on Live-Updates
@@ -712,6 +718,7 @@ const { app, BrowserWindow } = require("electron");
 
 ## Infrastructure
 
+- In development, have a way to force jobs to run.
 - Edge case in which Tippy must be removed from element:
   1. Change an invitation from expired to not expired.
   2. Change the invitation role. The error tooltip about not being able to change the role of an expired invitation will show up for a split second.
