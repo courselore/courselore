@@ -70,7 +70,7 @@
 - Assign questions to CAs.
 - `position: sticky` headers (showing author name) in messages?
 - Different states: Open vs archived.
-- “Mark all conversations as read” could work with search & filters, marking as read only the conversations that matched the search & filters.
+- “Mark all conversations as read” could work with search & filters, marking as read only the conversations that matched the search & filters.
 - Let original question asker approve an answer.
 - Add a course-wide setting to make tags optional in all kinds of conversation (not only non-chats), even if there are tags.
 - Killer feature to attract people: off-the-shelf AI
@@ -108,7 +108,7 @@
 
 ## Messages
 
-- Add the notion of follow-up question, so that questions aren’t marked as “unresolved” as soon as a student sends a message. It makes sense for when the student just says “thanks.”
+- Add the notion of follow-up question, so that questions aren’t marked as “unresolved” as soon as a student sends a message. It makes sense for when the student just says “thanks.”
   - Have a dedicated button for this.
 - Let staff endorse other staff answers.
 - Introduce the notion of promoting a message into its own conversation (one example use case is when someone asks a question as a follow-up to an announcement).
@@ -194,7 +194,7 @@
   - Subscribe/unsubscribe to particular conversations of interest/disinterest.
 - Add option to receive email notifications for your own messages.
 - Email digests:
-  - “Announcements” should be sent immediately, not as part of the digest.
+  - “Announcements” should be sent immediately, not as part of the digest.
 - Email contents:
 
   - Subjects could include the fact that you were mentioned, to make it easier to set up filters.
@@ -216,8 +216,8 @@
 
     <style type="text/css">
       :root {
-          color-scheme: light dark;
-          supported-color-schemes: light dark;
+          color-scheme: light dark;
+          supported-color-schemes: light dark;
       }
     </style>
 
@@ -273,7 +273,11 @@ new Notification('Example');
 - Use hamburger menu instead of a couple separate menus
   - It shouldn’t cover the whole page underneath (and shouldn’t push an entry into the history, naturally)
 
-**Conversations List on Sidebar**
+**Sidebar · Actions**
+
+- Clean interface.
+
+**Sidebar · Conversations List**
 
 - Group conversations (similar to Piazza & Campuswire).
   - Includes unread messages
@@ -308,11 +312,15 @@ new Notification('Example');
 - More space between messages?
 - Collapse long messages.
 - Add a button to “Return to Bottom” when chat is scrolled up.
-- Images may break the scrolling to the bottom on chats.
+- Scrolling is glitchy:
+  - Images may break the scrolling to the bottom.
+  - Safari window resize causes scrolling.
 
 **Content Editor**
 
-- Clarify that “Programmer Mode” is for your input only. Unlike other buttons on the toolbar, it doesn’t affect the rendered text.
+- Help page
+  - Clarify that “Programmer Mode” is for your input only. Unlike other buttons on the toolbar, it doesn’t affect the rendered text.
+  - List of possible languages
 - When editing, and trying to send empty message, propose to delete (like Discord does).
 - When pressing up on an empty chat box, start editing the your most recently sent message (if it’s still the most recently sent message in the conversation) (like Discord does).
 - Issue with autosizing:
@@ -342,6 +350,8 @@ new Notification('Example');
 - Detect old or otherwise unsupported browsers and alert, asking the user to update.
 - Make breadcrumbs (for example, under “User Settings”) clickable (they should expose the navigation menu, just like what happens in Visual Studio Code).
 - The anonymity button isn’t as clear as it should be.
+- Add more help pages in other parts that may need them.
+- Replace `<i class="bi bi-info-circle"></i>` with `<i class="bi bi-question-circle"></i>`?
 
 ## Pagination
 
