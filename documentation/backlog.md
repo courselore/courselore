@@ -2,6 +2,7 @@
 
 ## Finish
 
+- Organize Meta Courselore.
 - User deletion
 - Merging feature branches
 - Email digests
@@ -28,6 +29,7 @@
 
 ## Courses
 
+- “Enrollment” → “Course Participant”
 - Remove course entirely.
 - Have a setting to either let students remove themselves from the course, or let them request the staff to be removed.
 - Upload roster and show differences.
@@ -77,6 +79,8 @@
   - Help staff write answers
   - Reuse questions
   - Reuse questions from previous year
+  - Sentiment analysis to avoid marking question as unresolved when student just said “thank you”
+  - Talk about this on home page.
 
 **Participants**
 
@@ -167,6 +171,7 @@
   - Isn’t made for server-side rendering: https://github.com/mermaid-js/mermaid/issues/3650
   - The current workaround is to use `mermaid-cli`, which uses Puppeteer, but that’s slow and downloads a whole browser (~200MB) 🤦‍♂️
 - Once the chats have been redesigned with avatars on the margin to better establish a hierarchy and delimit messages, consider bringing back the full `partials.user()` widget to `@mentions`, with avatar and everything. (I think this will look good, but it’s a controversial point, given that people were very insistent on removing avatars from that context.)
+- Checklists: Make it easy to check/uncheck and move items (like GitHub) (only if you can edit the message).
 
 **Editor**
 
@@ -292,6 +297,10 @@ new Notification('Example');
   - Make the visualization of “types” a little more distinct, for example, make announcements pop up.
   - Improve display of endorsements & answers (on the sidebar, include number of answers).
   - Manage answer badges more intelligently (answered at all, answered by staff).
+
+**Conversation**
+
+- Add “Change conversation type” and that sort of thing to the “Actions” menu?
 
 **Messages**
 
@@ -703,7 +712,13 @@ const { app, BrowserWindow } = require("electron");
 
 ## Infrastructure
 
+- Edge case in which Tippy must be removed from element:
+  1. Change an invitation from expired to not expired.
+  2. Change the invitation role. The error tooltip about not being able to change the role of an expired invitation will show up for a split second.
+  - Probably there are other cases like this.
 - DRY debounce that uses `isUpdating`
+- DRY lazy loading of tooltip
+- `key="...--<SOME-KIND-OF-REFERENCE>"` → `key=".../<SOME-KIND-OF-REFERENCE>"`
 - Inconsistency: In the `liveConnectionsMetadata` (and possibly others) we store `expiredAt`, but in `session` (and possible others) we store `createdAt` and let the notion of expiration be represented in the code.
 - autocannon: produce graphs (HDRHistogram)
 - There’s a small chance (once every tens of thousands of requests) that you’ll get an “SQLite busy” error. I observed it when creating `liveConnectionsMetadata`, which is the only write in a hot path of the application. Treat that case gracefully.
@@ -738,7 +753,10 @@ const { app, BrowserWindow } = require("electron");
   - Treat the error cases
   - Have timeouts, because there may be no feedback if the internet goes down in the middle of an operation, and the connection may be left hanging, and we’ll be `await`ing forever.
     - But maybe this only applies to event-stream type of requests, and we have them covered already. Maybe for regular kinds of requests this would be overkill…
-- Autosize is leaking resources because of the global `Map` of bound textareas. It should be using `WeakMap` instead.
+- Autosize issues:
+  - Leaks resources because of the global `Map` of bound textareas. It should be using `WeakMap` instead.
+  - Makes typing slow on big pages on iOS.
+  - Also slows down “Reply” of long messages, like the rich-text demonstration message.
   - Look into using `fit-textarea@2.0.0` instead.
 - Add missing `key`s:
   - `class=`
@@ -827,6 +845,8 @@ const { app, BrowserWindow } = require("electron");
 - Google
   - https://www.partneradvantage.goog/
   - https://cloud.google.com/partners/become-a-partner/
+  - Independent Software Vendor (ISV)
+  - $3000–$6000/year
 - Look at other system to find features that people will ask for.
 
 ## References
