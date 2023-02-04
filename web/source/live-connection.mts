@@ -171,7 +171,7 @@ export default async (application: Application): Promise<void> => {
     if (typeof nonce === "string") {
       response.locals.liveConnectionNonce = nonce;
 
-      const responseLocalsLog = response.locals.log;
+      const responseLocalsLog = response.locals.log.bind(response);
       response.locals.log = (...messageParts) => {
         responseLocalsLog("LIVE-CONNECTION", nonce, ...messageParts);
       };
@@ -452,7 +452,9 @@ export default async (application: Application): Promise<void> => {
           continue;
         }
 
-        const responseLocalsLog = liveConnection.response.locals.log;
+        const responseLocalsLog = liveConnection.response.locals.log.bind(
+          liveConnection.response
+        );
         const id = Math.random().toString(36).slice(2);
         const start = process.hrtime.bigint();
         liveConnection.response.locals.log = (...messageParts) => {

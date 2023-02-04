@@ -66,7 +66,7 @@ export default async (application: Application): Promise<void> => {
         ...messageParts
       );
     };
-    const log = response.locals.log;
+    const log = response.locals.log.bind(response);
 
     log("STARTING...");
 
