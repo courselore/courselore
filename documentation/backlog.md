@@ -795,6 +795,11 @@ const { app, BrowserWindow } = require("electron");
 - Make Demonstration Data load faster by having a cache of pre-built data.
 - Using `getConversation()` to enforce permissions may not be a great idea. It limits the number of search results in a weird way, that even leaks a bit of data. Also, it isn’t the most performant thing, probably (see point about n+1 queries). Maybe a better idea would be to `WHERE` the permissions everywhere, or use a database view.
 - Rate limiting.
+  - Caddy extensions are a possibility, but not a very good one, first because they don’t seem to be any good, and second because Caddy doesn’t know, for example, whether the user is signed in.
+  - Check
+    - Signed out → IP
+    - Signed in → user identifier
+  - Response: either a special HTTP status that means “rate limited,” or just delay the response.
 - Find more places where we should be using database transactions.
 - Maintenance:
 - Automate:
