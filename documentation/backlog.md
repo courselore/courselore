@@ -686,6 +686,10 @@ const { app, BrowserWindow } = require("electron");
   - Relatively straightforward: Re-fetch partials in the background after a Live-Update? They may have gotten stale, for example, the “Views” component, if it’s open right as a Live-Update is happening.
   - More principled: Partials remember their URLs and keep their own Live-Updates lifecycle.
 - Currently, if a connection comes in with a token we don’t identify, we treat that as a browser tab that was offline for a while and just reconnected, which means it receives a Live-Update right away. This can be superfluous if no change actually took place. This may be a minor issue—or not an issue at all. And addressing it probably complicates the Live-Updates mechanisms quite a bit. But, in any case, one potential solution is, instead of keeping tokens on the server and scheduling events to them, keep a notion of when things were updated, this way upon reconnection the client can say when it was the last time it got a Live-Update, and the server can know if another Live-Update is necessary. But the notion of tracking which parts of which pages require which data sounds error-prone.
+- Authentication:
+  - When the user signs out, send a Live-Update to all other browser tabs.
+    - Store user in Live-Updates metadata database table.
+  - When the user `Session.closeAllAndReopen()` (for example, when resetting the password), also send Live-Update, which will have the effect of signing you out to prevent personal information from being exposed.
 
 ## Performance
 
@@ -740,6 +744,8 @@ const { app, BrowserWindow } = require("electron");
 
 ## Infrastructure
 
+- Children processes could tell main process that they’re ready, this way we could do things like, for example, only start Caddy when the `web` processes are ready to receive requests. If we do that, then we can enable Caddy’s active health checks.
+- In the authentication workflow, there’s a query parameter called `invitation`, but it isn’t used only for invitations, so rename it to something like `user`.
 - If a child process crashes too many times in a short period, then crash the main process.
 - Extract libraries:
   - @leafac/javascript
@@ -857,6 +863,7 @@ const { app, BrowserWindow } = require("electron");
   - Google Cloud.
   - Microsoft Azure.
   - https://sandstorm.io.
+- Developer documentation: Project architecture and other things that new developers need to know.
 
 ## Marketing
 
