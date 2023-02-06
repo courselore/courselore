@@ -13,7 +13,7 @@ import argon2 from "argon2";
 import { Application } from "./index.mjs";
 
 export type ApplicationUser = {
-  server: {
+  web: {
     locals: {
       Types: {
         User: {
@@ -23,7 +23,7 @@ export type ApplicationUser = {
           email: string;
           name: string;
           avatar: string | null;
-          avatarlessBackgroundColor: Application["server"]["locals"]["helpers"]["userAvatarlessBackgroundColors"][number];
+          avatarlessBackgroundColor: Application["web"]["locals"]["helpers"]["userAvatarlessBackgroundColors"][number];
           biographySource: string | null;
           biographyPreprocessed: HTML | null;
         };
@@ -48,21 +48,21 @@ export type ApplicationUser = {
             any,
             {},
             {},
-            Application["server"]["locals"]["ResponseLocals"]["LiveConnection"] &
+            Application["web"]["locals"]["ResponseLocals"]["LiveConnection"] &
               Partial<
-                Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+                Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
               >
           >;
           response: express.Response<
             any,
-            Application["server"]["locals"]["ResponseLocals"]["LiveConnection"] &
+            Application["web"]["locals"]["ResponseLocals"]["LiveConnection"] &
               Partial<
-                Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+                Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
               >
           >;
-          enrollment?: Application["server"]["locals"]["Types"]["MaybeEnrollment"];
+          enrollment?: Application["web"]["locals"]["Types"]["MaybeEnrollment"];
           user?:
-            | Application["server"]["locals"]["Types"]["User"]
+            | Application["web"]["locals"]["Types"]["User"]
             | "no-longer-enrolled";
           anonymous?: boolean | "reveal";
           avatar?: boolean;
@@ -107,7 +107,7 @@ export type ApplicationUser = {
 };
 
 export default async (application: Application): Promise<void> => {
-  application.server.locals.helpers.userAvatarlessBackgroundColors = [
+  application.web.locals.helpers.userAvatarlessBackgroundColors = [
     "red",
     "orange",
     "amber",
@@ -127,7 +127,7 @@ export default async (application: Application): Promise<void> => {
     "rose",
   ];
 
-  application.server.locals.helpers.userEmailNotificationsForAllMessageses = [
+  application.web.locals.helpers.userEmailNotificationsForAllMessageses = [
     "none",
     "instant",
     "hourly-digests",
@@ -135,7 +135,7 @@ export default async (application: Application): Promise<void> => {
   ];
 
   // FIXME: https://github.com/DefinitelyTyped/DefinitelyTyped/discussions/63288
-  (application.serverEvents.on as any)(
+  (application.webEvents.on as any)(
     "liveConnectionOpened",
     ({
       request,
@@ -146,14 +146,14 @@ export default async (application: Application): Promise<void> => {
         any,
         {},
         {},
-        Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]
+        Application["web"]["locals"]["ResponseLocals"]["LiveConnection"]
       >;
       response: express.Response<
         any,
-        Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]
+        Application["web"]["locals"]["ResponseLocals"]["LiveConnection"]
       >;
     }) => {
-      const userId = application.server.locals.helpers.Session.get({
+      const userId = application.web.locals.helpers.Session.get({
         request,
         response,
       });
@@ -192,12 +192,12 @@ export default async (application: Application): Promise<void> => {
     }
   );
 
-  application.server.get<
+  application.web.get<
     {},
     HTML,
     {},
     {},
-    Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
+    Application["web"]["locals"]["ResponseLocals"]["SignedIn"]
   >("/settings", (request, response, next) => {
     if (
       response.locals.user === undefined ||
@@ -222,16 +222,16 @@ export default async (application: Application): Promise<void> => {
       any,
       {},
       {},
-      Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
+      Application["web"]["locals"]["ResponseLocals"]["SignedIn"]
     >;
     response: express.Response<
       any,
-      Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
+      Application["web"]["locals"]["ResponseLocals"]["SignedIn"]
     >;
     head: HTML;
     body: HTML;
   }): HTML =>
-    application.server.locals.layouts.settings({
+    application.web.locals.layouts.settings({
       request,
       response,
       head,
@@ -302,7 +302,7 @@ export default async (application: Application): Promise<void> => {
       body,
     });
 
-  application.server.locals.partials.user = ({
+  application.web.locals.partials.user = ({
     request,
     response,
     enrollment = undefined,
@@ -520,7 +520,7 @@ export default async (application: Application): Promise<void> => {
             $${name === true && user !== "no-longer-enrolled"
               ? html`
                   data-filterable-phrases="${JSON.stringify(
-                    application.server.locals.helpers.splitFilterablePhrases(
+                    application.web.locals.helpers.splitFilterablePhrases(
                       user.name
                     )
                   )}"
@@ -591,7 +591,7 @@ export default async (application: Application): Promise<void> => {
                     `}"
                   >
                     <div>
-                      $${application.server.locals.partials.user({
+                      $${application.web.locals.partials.user({
                         request,
                         response,
                         enrollment,
@@ -719,7 +719,7 @@ export default async (application: Application): Promise<void> => {
                   </div>
                   $${user !== "no-longer-enrolled" &&
                   user!.biographyPreprocessed !== null
-                    ? application.server.locals.partials.content({
+                    ? application.web.locals.partials.content({
                         request,
                         response,
                         contentPreprocessed: user!.biographyPreprocessed,
@@ -831,12 +831,12 @@ export default async (application: Application): Promise<void> => {
       : html``;
   };
 
-  application.server.get<
+  application.web.get<
     {},
     HTML,
     {},
     {},
-    Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
+    Application["web"]["locals"]["ResponseLocals"]["SignedIn"]
   >("/settings/profile", (request, response, next) => {
     if (
       response.locals.user === undefined ||
@@ -948,7 +948,7 @@ export default async (application: Application): Promise<void> => {
                         }
                       `}"
                     >
-                      $${application.server.locals.partials.user({
+                      $${application.web.locals.partials.user({
                         request,
                         response,
                         user: { ...response.locals.user, avatar: null },
@@ -1060,7 +1060,7 @@ export default async (application: Application): Promise<void> => {
                               gap: var(--space--2);
                             `}"
                           >
-                            $${application.server.locals.partials.spinner({
+                            $${application.web.locals.partials.spinner({
                               request,
                               response,
                             })}
@@ -1141,7 +1141,7 @@ export default async (application: Application): Promise<void> => {
 
             <div class="label">
               <p class="label--text">Biography</p>
-              $${application.server.locals.partials.contentEditor({
+              $${application.web.locals.partials.contentEditor({
                 request,
                 response,
                 name: "biography",
@@ -1164,12 +1164,12 @@ export default async (application: Application): Promise<void> => {
     );
   });
 
-  application.server.post<
+  application.web.post<
     {},
     HTML,
     {},
     {},
-    Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
+    Application["web"]["locals"]["ResponseLocals"]["SignedIn"]
   >(
     "/settings/profile/avatar",
     asyncHandler(async (request, response, next) => {
@@ -1253,12 +1253,12 @@ export default async (application: Application): Promise<void> => {
     })
   );
 
-  application.server.patch<
+  application.web.patch<
     {},
     any,
     { name?: string; avatar?: string; biography?: string },
     {},
-    Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
+    Application["web"]["locals"]["ResponseLocals"]["SignedIn"]
   >("/settings/profile", (request, response, next) => {
     if (
       response.locals.user === undefined ||
@@ -1300,7 +1300,7 @@ export default async (application: Application): Promise<void> => {
           "biographyPreprocessed" = ${
             request.body.biography.trim() === ""
               ? null
-              : application.server.locals.partials.contentPreprocessed(
+              : application.web.locals.partials.contentPreprocessed(
                   request.body.biography
                 ).contentPreprocessed
           }
@@ -1308,7 +1308,7 @@ export default async (application: Application): Promise<void> => {
       `
     );
 
-    application.server.locals.helpers.Flash.set({
+    application.web.locals.helpers.Flash.set({
       request,
       response,
       theme: "green",
@@ -1320,12 +1320,12 @@ export default async (application: Application): Promise<void> => {
     );
   });
 
-  application.server.get<
+  application.web.get<
     {},
     HTML,
     {},
     {},
-    Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
+    Application["web"]["locals"]["ResponseLocals"]["SignedIn"]
   >("/settings/email-and-password", (request, response, next) => {
     if (
       response.locals.user === undefined ||
@@ -1475,24 +1475,24 @@ export default async (application: Application): Promise<void> => {
     );
   });
 
-  application.server.patch<
+  application.web.patch<
     {},
     any,
     { email?: string; newPassword?: string; passwordConfirmation?: string },
     { redirect?: string },
-    Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
+    Application["web"]["locals"]["ResponseLocals"]["SignedIn"]
   >(
     "/settings/email-and-password",
     asyncHandler(async (request, response, next) => {
       if (response.locals.user === undefined) return next();
 
       if (
-        !(await application.server.locals.helpers.passwordConfirmation({
+        !(await application.web.locals.helpers.passwordConfirmation({
           request,
           response,
         }))
       ) {
-        application.server.locals.helpers.Flash.set({
+        application.web.locals.helpers.Flash.set({
           request,
           response,
           theme: "rose",
@@ -1511,7 +1511,7 @@ export default async (application: Application): Promise<void> => {
       if (typeof request.body.email === "string") {
         if (
           request.body.email.match(
-            application.server.locals.helpers.emailRegExp
+            application.web.locals.helpers.emailRegExp
           ) === null
         )
           return next("Validation");
@@ -1523,7 +1523,7 @@ export default async (application: Application): Promise<void> => {
             `
           ) !== undefined
         ) {
-          application.server.locals.helpers.Flash.set({
+          application.web.locals.helpers.Flash.set({
             request,
             response,
             theme: "rose",
@@ -1595,14 +1595,14 @@ export default async (application: Application): Promise<void> => {
               )
             `
           );
-        application.server.locals.helpers.emailVerification({
+        application.web.locals.helpers.emailVerification({
           request,
           response,
           userId: response.locals.user.id,
           userEmail: request.body.email,
         });
 
-        application.server.locals.helpers.Flash.set({
+        application.web.locals.helpers.Flash.set({
           request,
           response,
           theme: "green",
@@ -1622,7 +1622,7 @@ export default async (application: Application): Promise<void> => {
             UPDATE "users"
             SET "password" =  ${await argon2.hash(
               request.body.newPassword,
-              application.server.locals.configuration.argon2
+              application.web.locals.configuration.argon2
             )}
             WHERE "id" = ${response.locals.user.id}
           `
@@ -1681,13 +1681,13 @@ export default async (application: Application): Promise<void> => {
             );
           });
 
-        application.server.locals.helpers.Session.closeAllAndReopen({
+        application.web.locals.helpers.Session.closeAllAndReopen({
           request,
           response,
           userId: response.locals.user.id,
         });
 
-        application.server.locals.helpers.Flash.set({
+        application.web.locals.helpers.Flash.set({
           request,
           response,
           theme: "green",
@@ -1706,12 +1706,12 @@ export default async (application: Application): Promise<void> => {
     })
   );
 
-  application.server.get<
+  application.web.get<
     {},
     HTML,
     {},
     {},
-    Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
+    Application["web"]["locals"]["ResponseLocals"]["SignedIn"]
   >("/settings/notifications", (request, response, next) => {
     if (
       response.locals.user === undefined ||
@@ -1992,7 +1992,7 @@ export default async (application: Application): Promise<void> => {
     );
   });
 
-  application.server.patch<
+  application.web.patch<
     {},
     any,
     {
@@ -2006,7 +2006,7 @@ export default async (application: Application): Promise<void> => {
       isEmailNotificationsForMessagesInConversationsYouStarted?: "on";
     },
     {},
-    Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
+    Application["web"]["locals"]["ResponseLocals"]["SignedIn"]
   >("/settings/notifications", (request, response, next) => {
     if (
       response.locals.user === undefined ||
@@ -2082,7 +2082,7 @@ export default async (application: Application): Promise<void> => {
       `
     );
 
-    application.server.locals.helpers.Flash.set({
+    application.web.locals.helpers.Flash.set({
       request,
       response,
       theme: "green",
@@ -2095,12 +2095,12 @@ export default async (application: Application): Promise<void> => {
     );
   });
 
-  application.server.get<
+  application.web.get<
     {},
     HTML,
     {},
     {},
-    Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
+    Application["web"]["locals"]["ResponseLocals"]["SignedIn"]
   >("/settings/account", (request, response, next) => {
     if (
       response.locals.user === undefined ||
@@ -2212,7 +2212,7 @@ export default async (application: Application): Promise<void> => {
   );
   */
 
-  application.server.patch<
+  application.web.patch<
     {},
     any,
     {
@@ -2221,7 +2221,7 @@ export default async (application: Application): Promise<void> => {
       preferAnonymous?: "true" | "false";
     },
     {},
-    Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
+    Application["web"]["locals"]["ResponseLocals"]["SignedIn"]
   >("/preferences", (request, response, next) => {
     if (
       response.locals.user === undefined ||

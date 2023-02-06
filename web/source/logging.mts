@@ -4,7 +4,7 @@ import { Application } from "./index.mjs";
 export type ApplicationLogging = {
   log(...messageParts: string[]): void;
 
-  server: {
+  web: {
     locals: {
       ResponseLocals: {
         Logging: {
@@ -43,14 +43,14 @@ export default async (application: Application): Promise<void> => {
     application.log("STOPPED");
   });
 
-  application.server.enable("trust proxy");
+  application.web.enable("trust proxy");
 
-  application.server.use<
+  application.web.use<
     {},
     any,
     {},
     {},
-    Application["server"]["locals"]["ResponseLocals"]["Logging"]
+    Application["web"]["locals"]["ResponseLocals"]["Logging"]
   >((request, response, next) => {
     if (response.locals.log !== undefined) return next();
 

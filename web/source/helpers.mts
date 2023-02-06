@@ -3,7 +3,7 @@ import html, { HTML } from "@leafac/html";
 import { Application } from "./index.mjs";
 
 export type ApplicationHelpers = {
-  server: {
+  web: {
     locals: {
       helpers: {
         emailRegExp: RegExp;
@@ -25,17 +25,17 @@ export type ApplicationHelpers = {
 };
 
 export default async (application: Application): Promise<void> => {
-  application.server.locals.helpers.emailRegExp =
+  application.web.locals.helpers.emailRegExp =
     /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i;
 
-  application.server.locals.helpers.isDate = (string) =>
+  application.web.locals.helpers.isDate = (string) =>
     string.match(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/) !== null &&
     !isNaN(new Date(string).getTime());
 
-  application.server.locals.helpers.isExpired = (expiresAt) =>
+  application.web.locals.helpers.isExpired = (expiresAt) =>
     expiresAt !== null && new Date(expiresAt).getTime() <= Date.now();
 
-  application.server.locals.helpers.sanitizeSearch = (
+  application.web.locals.helpers.sanitizeSearch = (
     search,
     { prefix = false } = {}
   ) =>
@@ -43,7 +43,7 @@ export default async (application: Application): Promise<void> => {
       .map((phrase) => `"${phrase.replaceAll('"', '""')}"${prefix ? "*" : ""}`)
       .join(" ");
 
-  application.server.locals.helpers.highlightSearchResult = (
+  application.web.locals.helpers.highlightSearchResult = (
     searchResult,
     searchPhrases,
     { prefix = false } = {}
@@ -66,6 +66,6 @@ export default async (application: Application): Promise<void> => {
   const splitSearchPhrases = (search: string): string[] =>
     search.split(/\s+/).filter((searchPhrase) => searchPhrase.trim() !== "");
 
-  application.server.locals.helpers.splitFilterablePhrases = (filterable) =>
+  application.web.locals.helpers.splitFilterablePhrases = (filterable) =>
     filterable.split(/(?<=[^a-z0-9])(?=[a-z0-9])|(?<=[a-z0-9])(?=[^a-z0-9])/i);
 };

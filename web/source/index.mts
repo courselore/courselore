@@ -46,7 +46,7 @@ export type Application = {
   version: string;
   process: {
     id: string;
-    type: "main" | "server" | "worker";
+    type: "main" | "web" | "worker";
     number: number;
   };
   configuration: {
@@ -70,9 +70,9 @@ export type Application = {
     [path: string]: string;
   };
   ports: {
-    server: number[];
-    serverEventsAny: number;
-    serverEvents: number[];
+    web: number[];
+    webEventsAny: number;
+    webEvents: number[];
     workerEventsAny: number;
     workerEvents: number[];
   };
@@ -81,8 +81,8 @@ export type Application = {
     metaCourseloreInvitation: string;
     tryHostname: string;
   };
-  server: Omit<express.Express, "locals"> & Function;
-  serverEvents: Omit<express.Express, "locals"> & Function;
+  web: Omit<express.Express, "locals"> & Function;
+  webEvents: Omit<express.Express, "locals"> & Function;
   workerEvents: Omit<express.Express, "locals"> & Function;
   got: Got.Got;
 } & ApplicationLogging &
@@ -139,7 +139,7 @@ if (await node.isExecuted(import.meta.url)) {
           processType,
           processNumber,
         }: {
-          processType: "main" | "server" | "worker";
+          processType: "main" | "web" | "worker";
           processNumber: string;
         }
       ) => {
@@ -165,17 +165,17 @@ if (await node.isExecuted(import.meta.url)) {
             )
           ),
           ports: {
-            server: lodash.times(
+            web: lodash.times(
               // FIXME: https://github.com/DefinitelyTyped/DefinitelyTyped/pull/63824
               (os as any).availableParallelism(),
               (processNumber) => 6000 + processNumber
             ),
-            serverEvents: lodash.times(
+            webEvents: lodash.times(
               // FIXME: https://github.com/DefinitelyTyped/DefinitelyTyped/pull/63824
               (os as any).availableParallelism(),
               (processNumber) => 7000 + processNumber
             ),
-            serverEventsAny: 7999,
+            webEventsAny: 7999,
             workerEvents: lodash.times(
               // FIXME: https://github.com/DefinitelyTyped/DefinitelyTyped/pull/63824
               (os as any).availableParallelism(),
@@ -188,8 +188,8 @@ if (await node.isExecuted(import.meta.url)) {
             metaCourseloreInvitation: "https://meta.courselore.org",
             tryHostname: "try.courselore.org",
           },
-          server: express() as any,
-          serverEvents: express() as any,
+          web: express() as any,
+          webEvents: express() as any,
           workerEvents: express() as any,
         } as Application;
 
@@ -203,10 +203,10 @@ if (await node.isExecuted(import.meta.url)) {
 
         application.got = got.extend({ timeout: { request: 5 * 1000 } });
 
-        application.server.locals.configuration = {} as any;
-        application.server.locals.layouts = {} as any;
-        application.server.locals.partials = {} as any;
-        application.server.locals.helpers = {} as any;
+        application.web.locals.configuration = {} as any;
+        application.web.locals.layouts = {} as any;
+        application.web.locals.partials = {} as any;
+        application.web.locals.helpers = {} as any;
 
         await logging(application);
         await database(application);
@@ -233,7 +233,7 @@ if (await node.isExecuted(import.meta.url)) {
             const childProcesses = new Set<ExecaChildProcess>();
             let restartChildProcesses = true;
             for (const execaArguments of [
-              ...["server", "worker"].flatMap((processType) =>
+              ...["web", "worker"].flatMap((processType) =>
                 lodash.times(
                   // FIXME: https://github.com/DefinitelyTyped/DefinitelyTyped/pull/63824
                   (os as any).availableParallelism(),
@@ -377,7 +377,7 @@ if (await node.isExecuted(import.meta.url)) {
                             file_server
                           }
                         }
-                        reverse_proxy ${application.ports.server
+                        reverse_proxy ${application.ports.web
                           .map((port) => `http://127.0.0.1:${port}`)
                           .join(" ")} {
                             lb_retries 1
@@ -388,9 +388,9 @@ if (await node.isExecuted(import.meta.url)) {
                       }
                     }
 
-                    http://127.0.0.1:${application.ports.serverEventsAny} {
+                    http://127.0.0.1:${application.ports.webEventsAny} {
                       bind 127.0.0.1
-                      reverse_proxy ${application.ports.serverEvents
+                      reverse_proxy ${application.ports.webEvents
                         .map((port) => `http://127.0.0.1:${port}`)
                         .join(" ")} {
                           lb_retries 1
@@ -440,23 +440,23 @@ if (await node.isExecuted(import.meta.url)) {
             break;
           }
 
-          case "server": {
-            const serverApplication = application.server;
-            const eventsApplication = application.serverEvents;
-            serverApplication.emit("start");
+          case "web": {
+            const webApplication = application.web;
+            const eventsApplication = application.webEvents;
+            webApplication.emit("start");
             eventsApplication.emit("start");
-            const server = serverApplication.listen(
-              application.ports.server[application.process.number],
+            const server = webApplication.listen(
+              application.ports.web[application.process.number],
               "127.0.0.1"
             );
             const events = eventsApplication.listen(
-              application.ports.serverEvents[application.process.number],
+              application.ports.webEvents[application.process.number],
               "127.0.0.1"
             );
             await eventLoopActive;
             server.close();
             events.close();
-            serverApplication.emit("stop");
+            webApplication.emit("stop");
             eventsApplication.emit("stop");
             break;
           }

@@ -12,10 +12,10 @@ import lodash from "lodash";
 import { Application } from "./index.mjs";
 
 export type ApplicationAuthentication = {
-  server: {
+  web: {
     locals: {
       ResponseLocals: {
-        SignedIn: Application["server"]["locals"]["ResponseLocals"]["LiveConnection"] & {
+        SignedIn: Application["web"]["locals"]["ResponseLocals"]["LiveConnection"] & {
           user: {
             id: number;
             lastSeenOnlineAt: string;
@@ -25,11 +25,11 @@ export type ApplicationAuthentication = {
             emailVerifiedAt: string | null;
             name: string;
             avatar: string | null;
-            avatarlessBackgroundColor: Application["server"]["locals"]["helpers"]["userAvatarlessBackgroundColors"][number];
+            avatarlessBackgroundColor: Application["web"]["locals"]["helpers"]["userAvatarlessBackgroundColors"][number];
             biographySource: string | null;
             biographyPreprocessed: HTML | null;
-            systemRole: Application["server"]["locals"]["helpers"]["systemRoles"][number];
-            emailNotificationsForAllMessages: Application["server"]["locals"]["helpers"]["userEmailNotificationsForAllMessageses"][number];
+            systemRole: Application["web"]["locals"]["helpers"]["systemRoles"][number];
+            emailNotificationsForAllMessages: Application["web"]["locals"]["helpers"]["userEmailNotificationsForAllMessageses"][number];
             emailNotificationsForAllMessagesDigestDeliveredAt: string | null;
             emailNotificationsForMentionsAt: string | null;
             emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt:
@@ -57,7 +57,7 @@ export type ApplicationAuthentication = {
               nextConversationReference: number;
             };
             reference: string;
-            courseRole: Application["server"]["locals"]["helpers"]["courseRoles"][number];
+            courseRole: Application["web"]["locals"]["helpers"]["courseRoles"][number];
           }[];
 
           enrollments: {
@@ -74,13 +74,13 @@ export type ApplicationAuthentication = {
               nextConversationReference: number;
             };
             reference: string;
-            courseRole: Application["server"]["locals"]["helpers"]["courseRoles"][number];
-            accentColor: Application["server"]["locals"]["helpers"]["enrollmentAccentColors"][number];
+            courseRole: Application["web"]["locals"]["helpers"]["courseRoles"][number];
+            accentColor: Application["web"]["locals"]["helpers"]["enrollmentAccentColors"][number];
           }[];
 
           administrationOptions: {
             latestVersion: string;
-            userSystemRolesWhoMayCreateCourses: Application["server"]["locals"]["helpers"]["userSystemRolesWhoMayCreateCourseses"][number];
+            userSystemRolesWhoMayCreateCourses: Application["web"]["locals"]["helpers"]["userSystemRolesWhoMayCreateCourseses"][number];
           };
         };
       };
@@ -103,11 +103,11 @@ export type ApplicationAuthentication = {
               any,
               {},
               {},
-              Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]
+              Application["web"]["locals"]["ResponseLocals"]["LiveConnection"]
             >;
             response: express.Response<
               any,
-              Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]
+              Application["web"]["locals"]["ResponseLocals"]["LiveConnection"]
             >;
             userId: number;
           }) => void;
@@ -121,11 +121,11 @@ export type ApplicationAuthentication = {
               any,
               {},
               {},
-              Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]
+              Application["web"]["locals"]["ResponseLocals"]["LiveConnection"]
             >;
             response: express.Response<
               any,
-              Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]
+              Application["web"]["locals"]["ResponseLocals"]["LiveConnection"]
             >;
           }) => number | undefined;
 
@@ -138,11 +138,11 @@ export type ApplicationAuthentication = {
               any,
               {},
               {},
-              Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]
+              Application["web"]["locals"]["ResponseLocals"]["LiveConnection"]
             >;
             response: express.Response<
               any,
-              Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]
+              Application["web"]["locals"]["ResponseLocals"]["LiveConnection"]
             >;
           }) => void;
 
@@ -156,11 +156,11 @@ export type ApplicationAuthentication = {
               any,
               {},
               {},
-              Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]
+              Application["web"]["locals"]["ResponseLocals"]["LiveConnection"]
             >;
             response: express.Response<
               any,
-              Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]
+              Application["web"]["locals"]["ResponseLocals"]["LiveConnection"]
             >;
             userId: number;
           }) => void;
@@ -175,11 +175,11 @@ export type ApplicationAuthentication = {
             any,
             { passwordConfirmation?: string },
             {},
-            Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
+            Application["web"]["locals"]["ResponseLocals"]["SignedIn"]
           >;
           response: express.Response<
             any,
-            Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
+            Application["web"]["locals"]["ResponseLocals"]["SignedIn"]
           >;
         }) => Promise<boolean>;
 
@@ -192,11 +192,11 @@ export type ApplicationAuthentication = {
             any,
             {},
             {},
-            Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
+            Application["web"]["locals"]["ResponseLocals"]["SignedIn"]
           >;
           response: express.Response<
             any,
-            Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
+            Application["web"]["locals"]["ResponseLocals"]["SignedIn"]
           >;
         }) => boolean;
 
@@ -212,11 +212,11 @@ export type ApplicationAuthentication = {
             any,
             {},
             { redirect?: string },
-            Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]
+            Application["web"]["locals"]["ResponseLocals"]["LiveConnection"]
           >;
           response: express.Response<
             any,
-            Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]
+            Application["web"]["locals"]["ResponseLocals"]["LiveConnection"]
           >;
           userId: number;
           userEmail: string;
@@ -228,14 +228,14 @@ export type ApplicationAuthentication = {
 };
 
 export default async (application: Application): Promise<void> => {
-  application.server.locals.configuration.argon2 = {
+  application.web.locals.configuration.argon2 = {
     type: argon2.argon2id,
     memoryCost: 15 * 2 ** 10,
     timeCost: 2,
     parallelism: 1,
   };
 
-  application.server.locals.helpers.Session = {
+  application.web.locals.helpers.Session = {
     maxAge: 180 * 24 * 60 * 60 * 1000,
 
     open: ({ request, response, userId }) => {
@@ -260,8 +260,8 @@ export default async (application: Application): Promise<void> => {
 
       request.cookies["__Host-Session"] = session.token;
       response.cookie("__Host-Session", session.token, {
-        ...application.server.locals.configuration.cookies,
-        maxAge: application.server.locals.helpers.Session.maxAge,
+        ...application.web.locals.configuration.cookies,
+        maxAge: application.web.locals.helpers.Session.maxAge,
       });
     },
 
@@ -282,17 +282,17 @@ export default async (application: Application): Promise<void> => {
       if (
         session === undefined ||
         new Date(session.createdAt).getTime() <
-          Date.now() - application.server.locals.helpers.Session.maxAge
+          Date.now() - application.web.locals.helpers.Session.maxAge
       ) {
-        application.server.locals.helpers.Session.close({ request, response });
+        application.web.locals.helpers.Session.close({ request, response });
         return undefined;
       } else if (
         typeof request.header("Live-Connection") !== "string" &&
         new Date(session.createdAt).getTime() <
-          Date.now() - application.server.locals.helpers.Session.maxAge / 2
+          Date.now() - application.web.locals.helpers.Session.maxAge / 2
       ) {
-        application.server.locals.helpers.Session.close({ request, response });
-        application.server.locals.helpers.Session.open({
+        application.web.locals.helpers.Session.close({ request, response });
+        application.web.locals.helpers.Session.open({
           request,
           response,
           userId: session.user,
@@ -312,18 +312,18 @@ export default async (application: Application): Promise<void> => {
       delete request.cookies["__Host-Session"];
       response.clearCookie(
         "__Host-Session",
-        application.server.locals.configuration.cookies
+        application.web.locals.configuration.cookies
       );
     },
 
     closeAllAndReopen: ({ request, response, userId }) => {
-      application.server.locals.helpers.Session.close({ request, response });
+      application.web.locals.helpers.Session.close({ request, response });
 
       application.database.run(
         sql`DELETE FROM "sessions" WHERE "user" = ${userId}`
       );
 
-      application.server.locals.helpers.Session.open({
+      application.web.locals.helpers.Session.open({
         request,
         response,
         userId,
@@ -339,7 +339,7 @@ export default async (application: Application): Promise<void> => {
           sql`
             DELETE FROM "sessions"
             WHERE "createdAt" < ${new Date(
-              Date.now() - application.server.locals.helpers.Session.maxAge
+              Date.now() - application.web.locals.helpers.Session.maxAge
             ).toISOString()}
           `
         );
@@ -352,14 +352,14 @@ export default async (application: Application): Promise<void> => {
       }
     });
 
-  application.server.use<
+  application.web.use<
     {},
     any,
     {},
     {},
-    Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
+    Application["web"]["locals"]["ResponseLocals"]["SignedIn"]
   >((request, response, next) => {
-    const userId = application.server.locals.helpers.Session.get({
+    const userId = application.web.locals.helpers.Session.get({
       request,
       response,
     });
@@ -374,11 +374,11 @@ export default async (application: Application): Promise<void> => {
       emailVerifiedAt: string | null;
       name: string;
       avatar: string | null;
-      avatarlessBackgroundColor: Application["server"]["locals"]["helpers"]["userAvatarlessBackgroundColors"][number];
+      avatarlessBackgroundColor: Application["web"]["locals"]["helpers"]["userAvatarlessBackgroundColors"][number];
       biographySource: string | null;
       biographyPreprocessed: HTML | null;
-      systemRole: Application["server"]["locals"]["helpers"]["systemRoles"][number];
-      emailNotificationsForAllMessages: Application["server"]["locals"]["helpers"]["userEmailNotificationsForAllMessageses"][number];
+      systemRole: Application["web"]["locals"]["helpers"]["systemRoles"][number];
+      emailNotificationsForAllMessages: Application["web"]["locals"]["helpers"]["userEmailNotificationsForAllMessageses"][number];
       emailNotificationsForAllMessagesDigestDeliveredAt: string | null;
       emailNotificationsForMentionsAt: string | null;
       emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt:
@@ -429,7 +429,7 @@ export default async (application: Application): Promise<void> => {
         courseCode: string | null;
         courseNextConversationReference: number;
         reference: string;
-        courseRole: Application["server"]["locals"]["helpers"]["courseRoles"][number];
+        courseRole: Application["web"]["locals"]["helpers"]["courseRoles"][number];
       }>(
         sql`
           SELECT
@@ -486,8 +486,8 @@ export default async (application: Application): Promise<void> => {
         courseCode: string | null;
         courseNextConversationReference: number;
         reference: string;
-        courseRole: Application["server"]["locals"]["helpers"]["courseRoles"][number];
-        accentColor: Application["server"]["locals"]["helpers"]["enrollmentAccentColors"][number];
+        courseRole: Application["web"]["locals"]["helpers"]["courseRoles"][number];
+        accentColor: Application["web"]["locals"]["helpers"]["enrollmentAccentColors"][number];
       }>(
         sql`
           SELECT
@@ -531,7 +531,7 @@ export default async (application: Application): Promise<void> => {
     response.locals.administrationOptions =
       application.database.get<{
         latestVersion: string;
-        userSystemRolesWhoMayCreateCourses: Application["server"]["locals"]["helpers"]["userSystemRolesWhoMayCreateCourseses"][number];
+        userSystemRolesWhoMayCreateCourses: Application["web"]["locals"]["helpers"]["userSystemRolesWhoMayCreateCourseses"][number];
       }>(
         sql`
           SELECT "latestVersion", "userSystemRolesWhoMayCreateCourses"
@@ -545,7 +545,7 @@ export default async (application: Application): Promise<void> => {
     next();
   });
 
-  application.server.locals.helpers.passwordConfirmation = async ({
+  application.web.locals.helpers.passwordConfirmation = async ({
     request,
     response,
   }) =>
@@ -556,7 +556,7 @@ export default async (application: Application): Promise<void> => {
       request.body.passwordConfirmation
     ));
 
-  application.server.locals.helpers.mayCreateCourses = ({
+  application.web.locals.helpers.mayCreateCourses = ({
     request,
     response,
   }) =>
@@ -569,13 +569,13 @@ export default async (application: Application): Promise<void> => {
       .userSystemRolesWhoMayCreateCourses === "administrators" &&
       response.locals.user.systemRole === "administrator");
 
-  application.server.get<
+  application.web.get<
     {},
     HTML,
     {},
     { redirect?: string; invitation?: { email?: string; name?: string } },
-    Application["server"]["locals"]["ResponseLocals"]["LiveConnection"] &
-      Partial<Application["server"]["locals"]["ResponseLocals"]["SignedIn"]>
+    Application["web"]["locals"]["ResponseLocals"]["LiveConnection"] &
+      Partial<Application["web"]["locals"]["ResponseLocals"]["SignedIn"]>
   >(["/", "/sign-in"], (request, response, next) => {
     if (
       response.locals.user !== undefined ||
@@ -586,7 +586,7 @@ export default async (application: Application): Promise<void> => {
       return next();
 
     response.send(
-      application.server.locals.layouts.box({
+      application.web.locals.layouts.box({
         request,
         response,
         head: html`
@@ -690,13 +690,13 @@ export default async (application: Application): Promise<void> => {
     );
   });
 
-  application.server.post<
+  application.web.post<
     {},
     HTML,
     { email?: string; password?: string },
     { redirect?: string; invitation?: object },
-    Application["server"]["locals"]["ResponseLocals"]["LiveConnection"] &
-      Partial<Application["server"]["locals"]["ResponseLocals"]["SignedIn"]>
+    Application["web"]["locals"]["ResponseLocals"]["LiveConnection"] &
+      Partial<Application["web"]["locals"]["ResponseLocals"]["SignedIn"]>
   >(
     "/sign-in",
     asyncHandler(async (request, response, next) => {
@@ -705,7 +705,7 @@ export default async (application: Application): Promise<void> => {
       if (
         typeof request.body.email !== "string" ||
         request.body.email.match(
-          application.server.locals.helpers.emailRegExp
+          application.web.locals.helpers.emailRegExp
         ) === null ||
         typeof request.body.password !== "string" ||
         request.body.password.trim() === ""
@@ -720,7 +720,7 @@ export default async (application: Application): Promise<void> => {
         user === undefined ||
         !(await argon2.verify(user.password, request.body.password))
       ) {
-        application.server.locals.helpers.Flash.set({
+        application.web.locals.helpers.Flash.set({
           request,
           response,
           theme: "rose",
@@ -738,7 +738,7 @@ export default async (application: Application): Promise<void> => {
         );
       }
 
-      application.server.locals.helpers.Session.open({
+      application.web.locals.helpers.Session.open({
         request,
         response,
         userId: user.id,
@@ -821,18 +821,18 @@ export default async (application: Application): Promise<void> => {
       }
     });
 
-  application.server.get<
+  application.web.get<
     {},
     HTML,
     {},
     { redirect?: string; invitation?: { email?: string; name?: string } },
-    Application["server"]["locals"]["ResponseLocals"]["LiveConnection"] &
-      Partial<Application["server"]["locals"]["ResponseLocals"]["SignedIn"]>
+    Application["web"]["locals"]["ResponseLocals"]["LiveConnection"] &
+      Partial<Application["web"]["locals"]["ResponseLocals"]["SignedIn"]>
   >("/reset-password", (request, response, next) => {
     if (response.locals.user !== undefined) return next();
 
     response.send(
-      application.server.locals.layouts.box({
+      application.web.locals.layouts.box({
         request,
         response,
         head: html`
@@ -924,20 +924,20 @@ export default async (application: Application): Promise<void> => {
     );
   });
 
-  application.server.post<
+  application.web.post<
     {},
     HTML,
     { email?: string; resend?: "true" },
     { redirect?: string; invitation?: object },
-    Application["server"]["locals"]["ResponseLocals"]["LiveConnection"] &
-      Partial<Application["server"]["locals"]["ResponseLocals"]["SignedIn"]>
+    Application["web"]["locals"]["ResponseLocals"]["LiveConnection"] &
+      Partial<Application["web"]["locals"]["ResponseLocals"]["SignedIn"]>
   >("/reset-password", (request, response, next) => {
     if (response.locals.user !== undefined) return next();
 
     if (
       typeof request.body.email !== "string" ||
       request.body.email.match(
-        application.server.locals.helpers.emailRegExp
+        application.web.locals.helpers.emailRegExp
       ) === null
     )
       return next("Validation");
@@ -946,7 +946,7 @@ export default async (application: Application): Promise<void> => {
       sql`SELECT "id", "email" FROM "users" WHERE "email" = ${request.body.email}`
     );
     if (user === undefined) {
-      application.server.locals.helpers.Flash.set({
+      application.web.locals.helpers.Flash.set({
         request,
         response,
         theme: "rose",
@@ -1015,14 +1015,14 @@ export default async (application: Application): Promise<void> => {
       });
 
     if (request.body.resend === "true")
-      application.server.locals.helpers.Flash.set({
+      application.web.locals.helpers.Flash.set({
         request,
         response,
         theme: "green",
         content: html`Email resent.`,
       });
     response.send(
-      application.server.locals.layouts.box({
+      application.web.locals.layouts.box({
         request,
         response,
         head: html`
@@ -1059,16 +1059,16 @@ export default async (application: Application): Promise<void> => {
     );
   });
 
-  application.server.get<
+  application.web.get<
     { passwordResetNonce: string },
     HTML,
     {},
     { redirect?: string; invitation?: object },
-    Application["server"]["locals"]["ResponseLocals"]["LiveConnection"] &
-      Partial<Application["server"]["locals"]["ResponseLocals"]["SignedIn"]>
+    Application["web"]["locals"]["ResponseLocals"]["LiveConnection"] &
+      Partial<Application["web"]["locals"]["ResponseLocals"]["SignedIn"]>
   >("/reset-password/:passwordResetNonce", (request, response) => {
     if (response.locals.user !== undefined) {
-      application.server.locals.helpers.Flash.set({
+      application.web.locals.helpers.Flash.set({
         request,
         response,
         theme: "rose",
@@ -1097,7 +1097,7 @@ export default async (application: Application): Promise<void> => {
             `
           );
     if (user === undefined) {
-      application.server.locals.helpers.Flash.set({
+      application.web.locals.helpers.Flash.set({
         request,
         response,
         theme: "rose",
@@ -1118,7 +1118,7 @@ export default async (application: Application): Promise<void> => {
     }
 
     response.send(
-      application.server.locals.layouts.box({
+      application.web.locals.layouts.box({
         request,
         response,
         head: html`
@@ -1187,13 +1187,13 @@ export default async (application: Application): Promise<void> => {
     );
   });
 
-  application.server.post<
+  application.web.post<
     { passwordResetNonce: string },
     HTML,
     { password?: string },
     { redirect?: string; invitation?: object },
-    Application["server"]["locals"]["ResponseLocals"]["LiveConnection"] &
-      Partial<Application["server"]["locals"]["ResponseLocals"]["SignedIn"]>
+    Application["web"]["locals"]["ResponseLocals"]["LiveConnection"] &
+      Partial<Application["web"]["locals"]["ResponseLocals"]["SignedIn"]>
   >(
     "/reset-password/:passwordResetNonce",
     asyncHandler(async (request, response, next) => {
@@ -1216,7 +1216,7 @@ export default async (application: Application): Promise<void> => {
               `
             );
       if (user === undefined) {
-        application.server.locals.helpers.Flash.set({
+        application.web.locals.helpers.Flash.set({
           request,
           response,
           theme: "rose",
@@ -1246,7 +1246,7 @@ export default async (application: Application): Promise<void> => {
           UPDATE "users"
           SET "password" = ${await argon2.hash(
             request.body.password,
-            application.server.locals.configuration.argon2
+            application.web.locals.configuration.argon2
           )}
           WHERE "id" = ${user.id}
         `
@@ -1305,13 +1305,13 @@ export default async (application: Application): Promise<void> => {
           );
         });
 
-      application.server.locals.helpers.Session.closeAllAndReopen({
+      application.web.locals.helpers.Session.closeAllAndReopen({
         request,
         response,
         userId: user.id,
       });
 
-      application.server.locals.helpers.Flash.set({
+      application.web.locals.helpers.Flash.set({
         request,
         response,
         theme: "green",
@@ -1328,18 +1328,18 @@ export default async (application: Application): Promise<void> => {
     })
   );
 
-  application.server.get<
+  application.web.get<
     {},
     HTML,
     {},
     { redirect?: string; invitation?: { email?: string; name?: string } },
-    Application["server"]["locals"]["ResponseLocals"]["LiveConnection"] &
-      Partial<Application["server"]["locals"]["ResponseLocals"]["SignedIn"]>
+    Application["web"]["locals"]["ResponseLocals"]["LiveConnection"] &
+      Partial<Application["web"]["locals"]["ResponseLocals"]["SignedIn"]>
   >("/sign-up", (request, response, next) => {
     if (response.locals.user !== undefined) return next();
 
     response.send(
-      application.server.locals.layouts.box({
+      application.web.locals.layouts.box({
         request,
         response,
         head: html`
@@ -1465,13 +1465,13 @@ export default async (application: Application): Promise<void> => {
     );
   });
 
-  application.server.post<
+  application.web.post<
     {},
     HTML,
     { name?: string; email?: string; password?: string },
     { redirect?: string; invitation?: object },
-    Application["server"]["locals"]["ResponseLocals"]["LiveConnection"] &
-      Partial<Application["server"]["locals"]["ResponseLocals"]["SignedIn"]>
+    Application["web"]["locals"]["ResponseLocals"]["LiveConnection"] &
+      Partial<Application["web"]["locals"]["ResponseLocals"]["SignedIn"]>
   >(
     "/sign-up",
     asyncHandler(async (request, response, next) => {
@@ -1482,7 +1482,7 @@ export default async (application: Application): Promise<void> => {
         request.body.name.trim() === "" ||
         typeof request.body.email !== "string" ||
         request.body.email.match(
-          application.server.locals.helpers.emailRegExp
+          application.web.locals.helpers.emailRegExp
         ) === null ||
         typeof request.body.password !== "string" ||
         request.body.password.trim() === "" ||
@@ -1497,7 +1497,7 @@ export default async (application: Application): Promise<void> => {
           `
         ) !== undefined
       ) {
-        application.server.locals.helpers.Flash.set({
+        application.web.locals.helpers.Flash.set({
           request,
           response,
           theme: "rose",
@@ -1552,13 +1552,13 @@ export default async (application: Application): Promise<void> => {
                   ${request.body.email},
                   ${await argon2.hash(
                     request.body.password,
-                    application.server.locals.configuration.argon2
+                    application.web.locals.configuration.argon2
                   )},
                   ${null},
                   ${request.body.name},
                   ${html`${request.body.name}`},
                   ${lodash.sample(
-                    application.server.locals.helpers
+                    application.web.locals.helpers
                       .userAvatarlessBackgroundColors
                   )},
                   ${
@@ -1584,7 +1584,7 @@ export default async (application: Application): Promise<void> => {
         `
       )!;
 
-      application.server.locals.helpers.emailVerification({
+      application.web.locals.helpers.emailVerification({
         request,
         response,
         userId: user.id,
@@ -1592,7 +1592,7 @@ export default async (application: Application): Promise<void> => {
         welcome: true,
       });
 
-      application.server.locals.helpers.Session.open({
+      application.web.locals.helpers.Session.open({
         request,
         response,
         userId: user.id,
@@ -1609,7 +1609,7 @@ export default async (application: Application): Promise<void> => {
     })
   );
 
-  application.server.locals.helpers.emailVerification = ({
+  application.web.locals.helpers.emailVerification = ({
     request,
     response,
     userId,
@@ -1705,12 +1705,12 @@ export default async (application: Application): Promise<void> => {
       }
     });
 
-  application.server.post<
+  application.web.post<
     {},
     HTML,
     {},
     { redirect?: string },
-    Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
+    Application["web"]["locals"]["ResponseLocals"]["SignedIn"]
   >("/resend-email-verification", (request, response, next) => {
     if (
       response.locals.user === undefined ||
@@ -1718,14 +1718,14 @@ export default async (application: Application): Promise<void> => {
     )
       return next();
 
-    application.server.locals.helpers.emailVerification({
+    application.web.locals.helpers.emailVerification({
       request,
       response,
       userId: response.locals.user.id,
       userEmail: response.locals.user.email,
     });
 
-    application.server.locals.helpers.Flash.set({
+    application.web.locals.helpers.Flash.set({
       request,
       response,
       theme: "green",
@@ -1739,19 +1739,19 @@ export default async (application: Application): Promise<void> => {
     );
   });
 
-  application.server.get<
+  application.web.get<
     { emailVerificationNonce: string },
     HTML,
     {},
     { redirect?: string },
-    Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
+    Application["web"]["locals"]["ResponseLocals"]["SignedIn"]
   >(
     "/email-verification/:emailVerificationNonce",
     (request, response, next) => {
       if (response.locals.user === undefined) return next();
 
       if (response.locals.user.emailVerifiedAt !== null) {
-        application.server.locals.helpers.Flash.set({
+        application.web.locals.helpers.Flash.set({
           request,
           response,
           theme: "rose",
@@ -1773,7 +1773,7 @@ export default async (application: Application): Promise<void> => {
         `
       );
       if (emailVerification === undefined) {
-        application.server.locals.helpers.Flash.set({
+        application.web.locals.helpers.Flash.set({
           request,
           response,
           theme: "rose",
@@ -1790,7 +1790,7 @@ export default async (application: Application): Promise<void> => {
       }
 
       if (emailVerification.user !== response.locals.user.id) {
-        application.server.locals.helpers.Flash.set({
+        application.web.locals.helpers.Flash.set({
           request,
           response,
           theme: "rose",
@@ -1821,7 +1821,7 @@ export default async (application: Application): Promise<void> => {
         `
       );
 
-      application.server.locals.helpers.Flash.set({
+      application.web.locals.helpers.Flash.set({
         request,
         response,
         theme: "green",
@@ -1838,16 +1838,16 @@ export default async (application: Application): Promise<void> => {
     }
   );
 
-  application.server.delete<
+  application.web.delete<
     {},
     any,
     {},
     {},
-    Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
+    Application["web"]["locals"]["ResponseLocals"]["SignedIn"]
   >("/sign-out", (request, response, next) => {
     if (response.locals.user === undefined) return next();
 
-    application.server.locals.helpers.Session.close({ request, response });
+    application.web.locals.helpers.Session.close({ request, response });
 
     response
       .header(

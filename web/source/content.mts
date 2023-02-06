@@ -36,7 +36,7 @@ import lodash from "lodash";
 import { Application } from "./index.mjs";
 
 export type ApplicationContent = {
-  server: {
+  web: {
     locals: {
       partials: {
         contentPreprocessed: (contentSource: string) => {
@@ -57,16 +57,16 @@ export type ApplicationContent = {
             any,
             {},
             { conversations?: object },
-            Application["server"]["locals"]["ResponseLocals"]["LiveConnection"] &
+            Application["web"]["locals"]["ResponseLocals"]["LiveConnection"] &
               Partial<
-                Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+                Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
               >
           >;
           response: express.Response<
             any,
-            Application["server"]["locals"]["ResponseLocals"]["LiveConnection"] &
+            Application["web"]["locals"]["ResponseLocals"]["LiveConnection"] &
               Partial<
-                Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+                Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
               >
           >;
           id?: string;
@@ -92,22 +92,22 @@ export type ApplicationContent = {
             any,
             {},
             {},
-            Application["server"]["locals"]["ResponseLocals"]["LiveConnection"] &
+            Application["web"]["locals"]["ResponseLocals"]["LiveConnection"] &
               Partial<
-                Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+                Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
               > &
               Partial<
-                Application["server"]["locals"]["ResponseLocals"]["Conversation"]
+                Application["web"]["locals"]["ResponseLocals"]["Conversation"]
               >
           >;
           response: express.Response<
             any,
-            Application["server"]["locals"]["ResponseLocals"]["LiveConnection"] &
+            Application["web"]["locals"]["ResponseLocals"]["LiveConnection"] &
               Partial<
-                Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+                Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
               > &
               Partial<
-                Application["server"]["locals"]["ResponseLocals"]["Conversation"]
+                Application["web"]["locals"]["ResponseLocals"]["Conversation"]
               >
           >;
           name?: string;
@@ -122,7 +122,7 @@ export type ApplicationContent = {
 };
 
 export default async (application: Application): Promise<void> => {
-  application.server.locals.partials.contentPreprocessed = await (async () => {
+  application.web.locals.partials.contentPreprocessed = await (async () => {
     const unifiedProcessor = unified()
       .use(remarkParse)
       .use(remarkGfm, { singleTilde: false })
@@ -305,7 +305,7 @@ export default async (application: Application): Promise<void> => {
     };
   })();
 
-  application.server.locals.partials.content = ({
+  application.web.locals.partials.content = ({
     request,
     response,
     id = Math.random().toString(36).slice(2),
@@ -422,11 +422,11 @@ export default async (application: Application): Promise<void> => {
         any,
         {},
         {},
-        Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+        Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
       >;
       const responseCourseEnrolled = response as express.Response<
         any,
-        Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+        Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
       >;
 
       for (const element of contentElement.querySelectorAll("a")) {
@@ -443,7 +443,7 @@ export default async (application: Application): Promise<void> => {
         const { courseReference, conversationReference, messageReference } =
           match.groups;
         if (courseReference !== response.locals.course.reference) continue;
-        const conversation = application.server.locals.helpers.getConversation({
+        const conversation = application.web.locals.helpers.getConversation({
           request: requestCourseEnrolled,
           response: responseCourseEnrolled,
           conversationReference,
@@ -462,7 +462,7 @@ export default async (application: Application): Promise<void> => {
           element.textContent = `#${conversation.reference}`;
           continue;
         }
-        const message = application.server.locals.helpers.getMessage({
+        const message = application.web.locals.helpers.getMessage({
           request: requestCourseEnrolled,
           response: responseCourseEnrolled,
           conversation,
@@ -514,7 +514,7 @@ export default async (application: Application): Promise<void> => {
                   >`;
                   break;
                 case "anonymous":
-                  mentionHTML = html`@$${application.server.locals.partials.user(
+                  mentionHTML = html`@$${application.web.locals.partials.user(
                     {
                       request,
                       response,
@@ -532,11 +532,11 @@ export default async (application: Application): Promise<void> => {
                     userEmail: string;
                     userName: string;
                     userAvatar: string | null;
-                    userAvatarlessBackgroundColor: Application["server"]["locals"]["helpers"]["userAvatarlessBackgroundColors"][number];
+                    userAvatarlessBackgroundColor: Application["web"]["locals"]["helpers"]["userAvatarlessBackgroundColors"][number];
                     userBiographySource: string | null;
                     userBiographyPreprocessed: HTML | null;
                     reference: string;
-                    courseRole: Application["server"]["locals"]["helpers"]["courseRoles"][number];
+                    courseRole: Application["web"]["locals"]["helpers"]["courseRoles"][number];
                   }>(
                     sql`
                       SELECT
@@ -581,7 +581,7 @@ export default async (application: Application): Promise<void> => {
                     courseRole: enrollmentRow.courseRole,
                   };
                   mentions.add(enrollment.reference);
-                  mentionHTML = html`@$${application.server.locals.partials.user(
+                  mentionHTML = html`@$${application.web.locals.partials.user(
                     {
                       request,
                       response,
@@ -603,7 +603,7 @@ export default async (application: Application): Promise<void> => {
             /(?<=^|\s)#(\d+)(?:\/(\d+))?(?=[^\d]|$)/g,
             (match, conversationReference, messageReference) => {
               const conversation =
-                application.server.locals.helpers.getConversation({
+                application.web.locals.helpers.getConversation({
                   request: requestCourseEnrolled,
                   response: responseCourseEnrolled,
                   conversationReference,
@@ -620,7 +620,7 @@ export default async (application: Application): Promise<void> => {
                   )}"
                   >${match}</a
                 >`;
-              const message = application.server.locals.helpers.getMessage({
+              const message = application.web.locals.helpers.getMessage({
                 request: requestCourseEnrolled,
                 response: responseCourseEnrolled,
                 conversation,
@@ -675,7 +675,7 @@ export default async (application: Application): Promise<void> => {
           hrefMessageReference !== textContentMessageReference
         )
           continue;
-        const conversation = application.server.locals.helpers.getConversation({
+        const conversation = application.web.locals.helpers.getConversation({
           request: requestCourseEnrolled,
           response: responseCourseEnrolled,
           conversationReference: hrefConversationReference,
@@ -698,7 +698,7 @@ export default async (application: Application): Promise<void> => {
                         padding: var(--space--2);
                       `}"
                     >
-                      $${application.server.locals.partials.conversation({
+                      $${application.web.locals.partials.conversation({
                         request: requestCourseEnrolled,
                         response: responseCourseEnrolled,
                         conversation,
@@ -711,7 +711,7 @@ export default async (application: Application): Promise<void> => {
           );
           continue;
         }
-        const message = application.server.locals.helpers.getMessage({
+        const message = application.web.locals.helpers.getMessage({
           request: requestCourseEnrolled,
           response: responseCourseEnrolled,
           conversation,
@@ -737,7 +737,7 @@ export default async (application: Application): Promise<void> => {
                       gap: var(--space--2);
                     `}"
                   >
-                    $${application.server.locals.partials.conversation({
+                    $${application.web.locals.partials.conversation({
                       request: requestCourseEnrolled,
                       response: responseCourseEnrolled,
                       conversation,
@@ -762,7 +762,7 @@ export default async (application: Application): Promise<void> => {
           if (node.textContent === null || parentElement === null) return;
           parentElement.replaceChild(
             JSDOM.fragment(
-              application.server.locals.helpers.highlightSearchResult(
+              application.web.locals.helpers.highlightSearchResult(
                 html`${node.textContent}`,
                 search
               )
@@ -775,12 +775,12 @@ export default async (application: Application): Promise<void> => {
     return { contentProcessed: contentElement.outerHTML, mentions };
   };
 
-  application.server.get<
+  application.web.get<
     {},
     any,
     {},
     { url?: string },
-    Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]
+    Application["web"]["locals"]["ResponseLocals"]["LiveConnection"]
   >(
     "/content/proxy",
     asyncHandler(async (request, response) => {
@@ -831,7 +831,7 @@ export default async (application: Application): Promise<void> => {
     })
   );
 
-  application.server.locals.partials.contentEditor = ({
+  application.web.locals.partials.contentEditor = ({
     request,
     response,
     name = "content",
@@ -1698,7 +1698,7 @@ export default async (application: Application): Promise<void> => {
                         gap: var(--space--2);
                       `}"
                     >
-                      $${application.server.locals.partials.spinner({
+                      $${application.web.locals.partials.spinner({
                         request,
                         response,
                       })}
@@ -2657,7 +2657,7 @@ ${contentSource}</textarea
             gap: var(--space--2);
           `}"
         >
-          $${application.server.locals.partials.spinner({
+          $${application.web.locals.partials.spinner({
             request,
             response,
           })}
@@ -2675,13 +2675,13 @@ ${contentSource}</textarea
     </div>
   `;
 
-  application.server.get<
+  application.web.get<
     { courseReference: string; conversationReference?: string },
     any,
     {},
     { search?: string },
-    Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"] &
-      Partial<Application["server"]["locals"]["ResponseLocals"]["Conversation"]>
+    Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"] &
+      Partial<Application["web"]["locals"]["ResponseLocals"]["Conversation"]>
   >(
     [
       "/courses/:courseReference/content-editor/mention-user-search",
@@ -2731,12 +2731,12 @@ ${contentSource}</textarea
           userEmail: string;
           userName: string;
           userAvatar: string | null;
-          userAvatarlessBackgroundColor: Application["server"]["locals"]["helpers"]["userAvatarlessBackgroundColors"][number];
+          userAvatarlessBackgroundColor: Application["web"]["locals"]["helpers"]["userAvatarlessBackgroundColors"][number];
           userBiographySource: string | null;
           userBiographyPreprocessed: HTML | null;
           userNameSearchResultHighlight: string;
           reference: string;
-          courseRole: Application["server"]["locals"]["helpers"]["courseRoles"][number];
+          courseRole: Application["web"]["locals"]["helpers"]["courseRoles"][number];
         }>(
           sql`
             SELECT
@@ -2760,7 +2760,7 @@ ${contentSource}</textarea
               "users"."id" != ${response.locals.user.id}
             JOIN "usersNameSearchIndex" ON
               "users"."id" = "usersNameSearchIndex"."rowid" AND
-              "usersNameSearchIndex" MATCH ${application.server.locals.helpers.sanitizeSearch(
+              "usersNameSearchIndex" MATCH ${application.web.locals.helpers.sanitizeSearch(
                 request.query.search,
                 { prefix: true }
               )}
@@ -2824,7 +2824,7 @@ ${contentSource}</textarea
               };
           `}"
           >
-            $${application.server.locals.partials.user({
+            $${application.web.locals.partials.user({
               request,
               response,
               enrollment,
@@ -2837,7 +2837,7 @@ ${contentSource}</textarea
         `;
 
       response.send(
-        application.server.locals.layouts.partial({
+        application.web.locals.layouts.partial({
           request,
           response,
           body: html`
@@ -2854,12 +2854,12 @@ ${contentSource}</textarea
     }
   );
 
-  application.server.get<
+  application.web.get<
     { courseReference: string },
     any,
     {},
     { search?: string },
-    Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+    Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
   >(
     "/courses/:courseReference/content-editor/refer-to-conversation-or-message-search",
     (request, response, next) => {
@@ -2882,7 +2882,7 @@ ${contentSource}</textarea
             FROM "conversations"
             JOIN "conversationsReferenceIndex" ON
               "conversations"."id" = "conversationsReferenceIndex"."rowid" AND
-              "conversationsReferenceIndex" MATCH ${application.server.locals.helpers.sanitizeSearch(
+              "conversationsReferenceIndex" MATCH ${application.web.locals.helpers.sanitizeSearch(
                 request.query.search,
                 { prefix: true }
               )}
@@ -2892,7 +2892,7 @@ ${contentSource}</textarea
           `
         )) {
           const conversation =
-            application.server.locals.helpers.getConversation({
+            application.web.locals.helpers.getConversation({
               request,
               response,
               conversationReference: conversationRow.reference,
@@ -2911,7 +2911,7 @@ ${contentSource}</textarea
             >
               <span>
                 <span class="secondary">
-                  $${application.server.locals.helpers.highlightSearchResult(
+                  $${application.web.locals.helpers.highlightSearchResult(
                     `#${conversation.reference}`,
                     `#${request.query.search}`,
                     { prefix: true }
@@ -2928,7 +2928,7 @@ ${contentSource}</textarea
       if (messageReferenceSearchMatch !== null) {
         const [conversationReference, messageReferenceSearch] =
           messageReferenceSearchMatch.slice(1);
-        const conversation = application.server.locals.helpers.getConversation({
+        const conversation = application.web.locals.helpers.getConversation({
           request,
           response,
           conversationReference,
@@ -2946,7 +2946,7 @@ ${contentSource}</textarea
                   : sql`
                       JOIN "messagesReferenceIndex" ON
                         "messages"."id" = "messagesReferenceIndex"."rowid" AND
-                        "messagesReferenceIndex" MATCH ${application.server.locals.helpers.sanitizeSearch(
+                        "messagesReferenceIndex" MATCH ${application.web.locals.helpers.sanitizeSearch(
                           messageReferenceSearch,
                           { prefix: true }
                         )}
@@ -2957,7 +2957,7 @@ ${contentSource}</textarea
               LIMIT 5
             `
           )) {
-            const message = application.server.locals.helpers.getMessage({
+            const message = application.web.locals.helpers.getMessage({
               request,
               response,
               conversation,
@@ -2978,7 +2978,7 @@ ${contentSource}</textarea
                 <div>
                   <div>
                     <span class="secondary">
-                      $${application.server.locals.helpers.highlightSearchResult(
+                      $${application.web.locals.helpers.highlightSearchResult(
                         `#${conversation.reference}/${message.reference}`,
                         `#${request.query.search}`,
                         { prefix: true }
@@ -3008,7 +3008,7 @@ ${contentSource}</textarea
             >
               <span>
                 <span class="secondary">
-                  $${application.server.locals.helpers.highlightSearchResult(
+                  $${application.web.locals.helpers.highlightSearchResult(
                     `#${conversation.reference}`,
                     `#${conversationReference}`
                   )}
@@ -3031,7 +3031,7 @@ ${contentSource}</textarea
           FROM "conversations"
           JOIN "conversationsTitleSearchIndex" ON
             "conversations"."id" = "conversationsTitleSearchIndex"."rowid" AND
-            "conversationsTitleSearchIndex" MATCH ${application.server.locals.helpers.sanitizeSearch(
+            "conversationsTitleSearchIndex" MATCH ${application.web.locals.helpers.sanitizeSearch(
               request.query.search,
               { prefix: true }
             )}
@@ -3042,7 +3042,7 @@ ${contentSource}</textarea
           LIMIT 5
         `
       )) {
-        const conversation = application.server.locals.helpers.getConversation({
+        const conversation = application.web.locals.helpers.getConversation({
           request,
           response,
           conversationReference: conversationRow.reference,
@@ -3083,7 +3083,7 @@ ${contentSource}</textarea
           JOIN "enrollments" ON "messages"."authorEnrollment" = "enrollments"."id"
           JOIN "usersNameSearchIndex" ON
             "enrollments"."user" = "usersNameSearchIndex"."rowid" AND
-            "usersNameSearchIndex" MATCH ${application.server.locals.helpers.sanitizeSearch(
+            "usersNameSearchIndex" MATCH ${application.web.locals.helpers.sanitizeSearch(
               request.query.search,
               { prefix: true }
             )}
@@ -3106,13 +3106,13 @@ ${contentSource}</textarea
           LIMIT 5
         `
       )) {
-        const conversation = application.server.locals.helpers.getConversation({
+        const conversation = application.web.locals.helpers.getConversation({
           request,
           response,
           conversationReference: messageRow.conversationReference,
         });
         if (conversation === undefined) continue;
-        const message = application.server.locals.helpers.getMessage({
+        const message = application.web.locals.helpers.getMessage({
           request,
           response,
           conversation,
@@ -3139,7 +3139,7 @@ ${contentSource}</textarea
               </div>
               <div class="secondary">
                 <div>
-                  $${application.server.locals.partials.user({
+                  $${application.web.locals.partials.user({
                     request,
                     response,
                     enrollment: message.authorEnrollment,
@@ -3172,7 +3172,7 @@ ${contentSource}</textarea
           FROM "messages"
           JOIN "messagesContentSearchIndex" ON
             "messages"."id" = "messagesContentSearchIndex"."rowid" AND
-            "messagesContentSearchIndex" MATCH ${application.server.locals.helpers.sanitizeSearch(
+            "messagesContentSearchIndex" MATCH ${application.web.locals.helpers.sanitizeSearch(
               request.query.search,
               { prefix: true }
             )}
@@ -3185,13 +3185,13 @@ ${contentSource}</textarea
           LIMIT 5
         `
       )) {
-        const conversation = application.server.locals.helpers.getConversation({
+        const conversation = application.web.locals.helpers.getConversation({
           request,
           response,
           conversationReference: messageRow.conversationReference,
         });
         if (conversation === undefined) continue;
-        const message = application.server.locals.helpers.getMessage({
+        const message = application.web.locals.helpers.getMessage({
           request,
           response,
           conversation,
@@ -3225,7 +3225,7 @@ ${contentSource}</textarea
       }
 
       response.send(
-        application.server.locals.layouts.partial({
+        application.web.locals.layouts.partial({
           request,
           response,
           body: html`
@@ -3242,12 +3242,12 @@ ${contentSource}</textarea
     }
   );
 
-  application.server.post<
+  application.web.post<
     {},
     any,
     {},
     {},
-    Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
+    Application["web"]["locals"]["ResponseLocals"]["SignedIn"]
   >(
     "/content-editor/attachments",
     asyncHandler(async (request, response, next) => {
@@ -3373,15 +3373,15 @@ ${contentSource}</textarea
     })
   );
 
-  application.server.post<
+  application.web.post<
     { courseReference?: string },
     any,
     { content?: string },
     {},
-    Application["server"]["locals"]["ResponseLocals"]["LiveConnection"] &
-      Partial<Application["server"]["locals"]["ResponseLocals"]["SignedIn"]> &
+    Application["web"]["locals"]["ResponseLocals"]["LiveConnection"] &
+      Partial<Application["web"]["locals"]["ResponseLocals"]["SignedIn"]> &
       Partial<
-        Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+        Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
       >
   >(
     [
@@ -3402,14 +3402,14 @@ ${contentSource}</textarea
         return next("Validation");
 
       response.send(
-        application.server.locals.layouts.partial({
+        application.web.locals.layouts.partial({
           request,
           response,
-          body: application.server.locals.partials.content({
+          body: application.web.locals.partials.content({
             request,
             response,
             contentPreprocessed:
-              application.server.locals.partials.contentPreprocessed(
+              application.web.locals.partials.contentPreprocessed(
                 request.body.content
               ).contentPreprocessed,
             decorate: true,

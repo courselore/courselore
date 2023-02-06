@@ -11,19 +11,19 @@ import { Application } from "./index.mjs";
 export default async (application: Application): Promise<void> => {
   if (!application.configuration.demonstration) return;
 
-  application.server.post<
+  application.web.post<
     {},
     any,
     {},
     {},
-    Application["server"]["locals"]["ResponseLocals"]["LiveConnection"] &
-      Partial<Application["server"]["locals"]["ResponseLocals"]["SignedIn"]>
+    Application["web"]["locals"]["ResponseLocals"]["LiveConnection"] &
+      Partial<Application["web"]["locals"]["ResponseLocals"]["SignedIn"]>
   >(
     "/demonstration-data",
     asyncHandler(async (request, response) => {
       const password = await argon2.hash(
         "courselore",
-        application.server.locals.configuration.argon2
+        application.web.locals.configuration.argon2
       );
       const avatarIndices = lodash.shuffle(lodash.range(250));
       const users = lodash.times(151, (userIndex) => {
@@ -43,7 +43,7 @@ export default async (application: Application): Promise<void> => {
           isEmailNotificationsForMessagesInConversationsYouStarted &&
           Math.random() < 0.3
             ? lodash.sample(
-                application.server.locals.helpers
+                application.web.locals.helpers
                   .userEmailNotificationsForAllMessageses
               )!
             : "none";
@@ -108,12 +108,12 @@ export default async (application: Application): Promise<void> => {
                         : null
                     },
                     ${lodash.sample(
-                      application.server.locals.helpers
+                      application.web.locals.helpers
                         .userAvatarlessBackgroundColors
                     )!},
                     ${biographySource},
                     ${
-                      application.server.locals.partials.contentPreprocessed(
+                      application.web.locals.partials.contentPreprocessed(
                         biographySource
                       ).contentPreprocessed
                     },
@@ -179,25 +179,25 @@ export default async (application: Application): Promise<void> => {
         {
           name: "Principles of Programming Languages",
           code: "CS 601.426",
-          courseRole: application.server.locals.helpers.courseRoles[1],
+          courseRole: application.web.locals.helpers.courseRoles[1],
           accentColor:
-            application.server.locals.helpers.enrollmentAccentColors[0],
+            application.web.locals.helpers.enrollmentAccentColors[0],
           enrollmentsUsers: users.slice(0, 100),
         },
         {
           name: "Pharmacology",
           code: "MD 401.324",
-          courseRole: application.server.locals.helpers.courseRoles[0],
+          courseRole: application.web.locals.helpers.courseRoles[0],
           accentColor:
-            application.server.locals.helpers.enrollmentAccentColors[1],
+            application.web.locals.helpers.enrollmentAccentColors[1],
           enrollmentsUsers: users.slice(25, 125),
         },
         {
           name: "Object-Oriented Software Engineering",
           code: "EN 601.421",
-          courseRole: application.server.locals.helpers.courseRoles[1],
+          courseRole: application.web.locals.helpers.courseRoles[1],
           accentColor:
-            application.server.locals.helpers.enrollmentAccentColors[2],
+            application.web.locals.helpers.enrollmentAccentColors[2],
           enrollmentsUsers: users.slice(50, 150),
           isArchived: true,
         },
@@ -242,7 +242,7 @@ export default async (application: Application): Promise<void> => {
         const enrollment = application.database.get<{
           id: number;
           reference: string;
-          courseRole: Application["server"]["locals"]["helpers"]["courseRoles"][number];
+          courseRole: Application["web"]["locals"]["helpers"]["courseRoles"][number];
         }>(
           sql`
             SELECT * FROM "enrollments" WHERE "id" = ${
@@ -326,7 +326,7 @@ export default async (application: Application): Promise<void> => {
                 ${email},
                 ${name},
                 ${
-                  application.server.locals.helpers.courseRoles[
+                  application.web.locals.helpers.courseRoles[
                     Math.random() < 0.1 ? 1 : 0
                   ]
                 }
@@ -342,7 +342,7 @@ export default async (application: Application): Promise<void> => {
               application.database.get<{
                 id: number;
                 reference: string;
-                courseRole: Application["server"]["locals"]["helpers"]["courseRoles"][number];
+                courseRole: Application["web"]["locals"]["helpers"]["courseRoles"][number];
               }>(
                 sql`
                   SELECT * FROM "enrollments" WHERE "id" = ${
@@ -358,12 +358,12 @@ export default async (application: Application): Promise<void> => {
                             type: "numeric",
                           })},
                           ${
-                            application.server.locals.helpers.courseRoles[
+                            application.web.locals.helpers.courseRoles[
                               Math.random() < 0.1 ? 1 : 0
                             ]
                           },
                           ${lodash.sample(
-                            application.server.locals.helpers
+                            application.web.locals.helpers
                               .enrollmentAccentColors
                           )!}
                         )
@@ -752,7 +752,7 @@ Message non-existent permanent link turned reference: <https://${
             : Math.random() < 0.5
             ? "everyone"
             : lodash.sample(
-                application.server.locals.helpers.conversationParticipantses
+                application.web.locals.helpers.conversationParticipantses
               )!;
           const selectedParticipantEnrollments = lodash.uniq(
             participants === "everyone"
@@ -786,8 +786,8 @@ Message non-existent permanent link turned reference: <https://${
           const conversationAuthorEnrollment =
             Math.random() < 0.9 ? lodash.sample(participantEnrollments)! : null;
           const type = isExampleOfAllFeaturesInRichTextMessages
-            ? application.server.locals.helpers.conversationTypes[1]
-            : application.server.locals.helpers.conversationTypes[
+            ? application.web.locals.helpers.conversationTypes[1]
+            : application.web.locals.helpers.conversationTypes[
                 Math.random() < 0.5 ? 0 : Math.random() < 0.8 ? 1 : 2
               ];
           const title = isExampleOfAllFeaturesInRichTextMessages
@@ -819,9 +819,9 @@ Message non-existent permanent link turned reference: <https://${
           const conversation = application.database.get<{
             id: number;
             authorEnrollment: number | null;
-            participants: Application["server"]["locals"]["helpers"]["conversationParticipantses"][number];
+            participants: Application["web"]["locals"]["helpers"]["conversationParticipantses"][number];
             anonymousAt: string | null;
-            type: Application["server"]["locals"]["helpers"]["conversationTypes"][number];
+            type: Application["web"]["locals"]["helpers"]["conversationTypes"][number];
             title: string;
           }>(
             sql`
@@ -932,7 +932,7 @@ Message non-existent permanent link turned reference: <https://${
                   )
                   .join("\n\n");
             const contentPreprocessed =
-              application.server.locals.partials.contentPreprocessed(
+              application.web.locals.partials.contentPreprocessed(
                 contentSource
               );
             const message = application.database.get<{ id: number }>(
@@ -1052,13 +1052,13 @@ Message non-existent permanent link turned reference: <https://${
       }
 
       if (response.locals.user === undefined)
-        application.server.locals.helpers.Session.open({
+        application.web.locals.helpers.Session.open({
           request,
           response,
           userId: demonstrationUser.id,
         });
 
-      application.server.locals.helpers.Flash.set({
+      application.web.locals.helpers.Flash.set({
         request,
         response,
         theme: "green",

@@ -5,10 +5,10 @@ import sql from "@leafac/sqlite";
 import { Application } from "./index.mjs";
 
 export type ApplicationLiveConnection = {
-  server: {
+  web: {
     locals: {
       ResponseLocals: {
-        LiveConnection: Application["server"]["locals"]["ResponseLocals"]["Logging"] & {
+        LiveConnection: Application["web"]["locals"]["ResponseLocals"]["Logging"] & {
           liveConnectionNonce?: string;
         };
       };
@@ -24,11 +24,11 @@ export type ApplicationLiveConnection = {
             any,
             {},
             {},
-            Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]
+            Application["web"]["locals"]["ResponseLocals"]["LiveConnection"]
           >;
           response: express.Response<
             any,
-            Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]
+            Application["web"]["locals"]["ResponseLocals"]["LiveConnection"]
           >;
           url: string;
         }) => Promise<void>;
@@ -38,7 +38,7 @@ export type ApplicationLiveConnection = {
 };
 
 export default async (application: Application): Promise<void> => {
-  if (application.process.type === "server")
+  if (application.process.type === "web")
     application.database.run(
       sql`
         DELETE FROM "liveConnectionsMetadata" WHERE "processNumber" = ${application.process.number}
@@ -53,11 +53,11 @@ export default async (application: Application): Promise<void> => {
         any,
         {},
         {},
-        Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]
+        Application["web"]["locals"]["ResponseLocals"]["LiveConnection"]
       >;
       response: express.Response<
         any,
-        Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]
+        Application["web"]["locals"]["ResponseLocals"]["LiveConnection"]
       >;
     }
   >();
@@ -106,7 +106,7 @@ export default async (application: Application): Promise<void> => {
       }
     });
 
-  application.serverEvents.once("start", async () => {
+  application.webEvents.once("start", async () => {
     while (true) {
       await timers.setTimeout(
         10 * 60 * 1000 + Math.random() * 60 * 1000,
@@ -156,12 +156,12 @@ export default async (application: Application): Promise<void> => {
     }
   });
 
-  application.server.use<
+  application.web.use<
     {},
     any,
     {},
     {},
-    Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]
+    Application["web"]["locals"]["ResponseLocals"]["LiveConnection"]
   >((request, response, next) => {
     if (response.locals.liveConnectionNonce !== undefined) return next();
 
@@ -242,7 +242,7 @@ export default async (application: Application): Promise<void> => {
           application.got
             .post(
               `http://127.0.0.1:${
-                application.ports.serverEvents[application.process.number]
+                application.ports.webEvents[application.process.number]
               }/live-updates`
             )
             .catch((error) => {
@@ -322,7 +322,7 @@ export default async (application: Application): Promise<void> => {
         application.got
           .post(
             `http://127.0.0.1:${
-              application.ports.serverEvents[application.process.number]
+              application.ports.webEvents[application.process.number]
             }/live-updates`
           )
           .catch((error) => {
@@ -334,7 +334,7 @@ export default async (application: Application): Promise<void> => {
             );
           });
 
-      application.serverEvents.emit("liveConnectionOpened", liveConnection);
+      application.webEvents.emit("liveConnectionOpened", liveConnection);
 
       return;
     }
@@ -374,7 +374,7 @@ export default async (application: Application): Promise<void> => {
     next();
   });
 
-  application.server.locals.helpers.liveUpdates = async ({
+  application.web.locals.helpers.liveUpdates = async ({
     request,
     response,
     url,
@@ -391,7 +391,7 @@ export default async (application: Application): Promise<void> => {
       ref: false,
     });
 
-    for (const port of application.ports.serverEvents)
+    for (const port of application.ports.webEvents)
       application.got
         .post(`http://127.0.0.1:${port}/live-updates`)
         .catch((error) => {
@@ -406,7 +406,7 @@ export default async (application: Application): Promise<void> => {
 
   let liveUpdates: Function = () => {};
 
-  application.serverEvents.post<{}, any, {}, {}, {}>(
+  application.webEvents.post<{}, any, {}, {}, {}>(
     "/live-updates",
     (request, response) => {
       liveUpdates();
@@ -414,7 +414,7 @@ export default async (application: Application): Promise<void> => {
     }
   );
 
-  application.serverEvents.once("start", async () => {
+  application.webEvents.once("start", async () => {
     while (true) {
       await new Promise((resolve) => {
         liveUpdates = resolve;
@@ -471,9 +471,9 @@ export default async (application: Application): Promise<void> => {
           liveConnectionNonce:
             liveConnection.response.locals.liveConnectionNonce,
           log: liveConnection.response.locals.log,
-        } as Application["server"]["locals"]["ResponseLocals"]["LiveConnection"];
+        } as Application["web"]["locals"]["ResponseLocals"]["LiveConnection"];
 
-        application.server(liveConnection.request, liveConnection.response);
+        application.web(liveConnection.request, liveConnection.response);
 
         application.database.run(
           sql`
@@ -493,12 +493,12 @@ export default async (application: Application): Promise<void> => {
   });
 
   if (application.configuration.environment === "development")
-    application.server.get<
+    application.web.get<
       {},
       any,
       {},
       {},
-      Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]
+      Application["web"]["locals"]["ResponseLocals"]["LiveConnection"]
     >("/live-updates", (request, response) => {
       application.database.run(
         sql`
@@ -507,7 +507,7 @@ export default async (application: Application): Promise<void> => {
         `
       );
 
-      for (const port of application.ports.serverEvents)
+      for (const port of application.ports.webEvents)
         application.got
           .post(`http://127.0.0.1:${port}/live-updates`)
           .catch((error) => {
@@ -522,7 +522,7 @@ export default async (application: Application): Promise<void> => {
       response.end();
     });
 
-  application.serverEvents.once("stop", () => {
+  application.webEvents.once("stop", () => {
     for (const liveConnection of liveConnections.values())
       liveConnection.response.end();
   });

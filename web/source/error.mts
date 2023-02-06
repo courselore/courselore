@@ -7,13 +7,13 @@ import javascript from "@leafac/javascript";
 import { Application } from "./index.mjs";
 
 export default async (application: Application): Promise<void> => {
-  application.server.use<
+  application.web.use<
     {},
     HTML,
     {},
     { redirect?: string },
-    Application["server"]["locals"]["ResponseLocals"]["LiveConnection"] &
-      Partial<Application["server"]["locals"]["ResponseLocals"]["SignedIn"]>
+    Application["web"]["locals"]["ResponseLocals"]["LiveConnection"] &
+      Partial<Application["web"]["locals"]["ResponseLocals"]["SignedIn"]>
   >((request, response) => {
     if (typeof request.header("Live-Connection") !== "string") {
       if (response.locals.user === undefined)
@@ -34,7 +34,7 @@ export default async (application: Application): Promise<void> => {
 
     if (response.locals.user?.emailVerifiedAt === null)
       return response.send(
-        application.server.locals.layouts.box({
+        application.web.locals.layouts.box({
           request,
           response,
           head: html` <title>Email Verification · Courselore</title> `,
@@ -160,7 +160,7 @@ export default async (application: Application): Promise<void> => {
                     `
                   );
                   if (emailVerification === undefined) {
-                    application.server.locals.helpers.emailVerification({
+                    application.web.locals.helpers.emailVerification({
                       request,
                       response,
                       userId: response.locals.user.id,
@@ -202,7 +202,7 @@ export default async (application: Application): Promise<void> => {
       );
 
     response.status(404).send(
-      application.server.locals.layouts.box({
+      application.web.locals.layouts.box({
         request,
         response,
         head: html`<title>404 Not Found · Courselore</title>`,
@@ -215,7 +215,7 @@ export default async (application: Application): Promise<void> => {
             If you think there should be something here, please contact your
             course staff or the system administrator at
             <a
-              href="${application.server.locals.partials.reportIssueHref}"
+              href="${application.web.locals.partials.reportIssueHref}"
               target="_blank"
               class="link"
               >${application.configuration.administratorEmail}</a
@@ -226,7 +226,7 @@ export default async (application: Application): Promise<void> => {
     );
   });
 
-  application.server.use(((error, request, response, next) => {
+  application.web.use(((error, request, response, next) => {
     response.locals.log("ERROR", String(error), error?.stack);
 
     if (!["Cross-Site Request Forgery", "Validation"].includes(error))
@@ -241,7 +241,7 @@ export default async (application: Application): Promise<void> => {
           : 500
       )
       .send(
-        application.server.locals.layouts.box({
+        application.web.locals.layouts.box({
           request,
           response,
           head: html`<title>${error} Error · Courselore</title>`,
@@ -256,7 +256,7 @@ export default async (application: Application): Promise<void> => {
                 ? "This request doesn’t appear to have come from Courselore. Please try again. If the issue persists, please report to the system administrator at"
                 : "This is an issue in Courselore. Please report to the system administrator at"}
               <a
-                href="${application.server.locals.partials.reportIssueHref}"
+                href="${application.web.locals.partials.reportIssueHref}"
                 target="_blank"
                 class="link"
                 >${application.configuration.administratorEmail}</a
@@ -265,5 +265,5 @@ export default async (application: Application): Promise<void> => {
           `,
         })
       );
-  }) as express.ErrorRequestHandler<{}, any, {}, {}, Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]>);
+  }) as express.ErrorRequestHandler<{}, any, {}, {}, Application["web"]["locals"]["ResponseLocals"]["LiveConnection"]>);
 };

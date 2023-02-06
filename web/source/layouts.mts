@@ -11,7 +11,7 @@ import semver from "semver";
 import { Application } from "./index.mjs";
 
 export type ApplicationLayouts = {
-  server: {
+  web: {
     locals: {
       layouts: {
         base: ({
@@ -26,16 +26,16 @@ export type ApplicationLayouts = {
             any,
             {},
             {},
-            Application["server"]["locals"]["ResponseLocals"]["LiveConnection"] &
+            Application["web"]["locals"]["ResponseLocals"]["LiveConnection"] &
               Partial<
-                Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+                Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
               >
           >;
           response: express.Response<
             any,
-            Application["server"]["locals"]["ResponseLocals"]["LiveConnection"] &
+            Application["web"]["locals"]["ResponseLocals"]["LiveConnection"] &
               Partial<
-                Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+                Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
               >
           >;
           head: HTML;
@@ -54,16 +54,16 @@ export type ApplicationLayouts = {
             any,
             {},
             {},
-            Application["server"]["locals"]["ResponseLocals"]["LiveConnection"] &
+            Application["web"]["locals"]["ResponseLocals"]["LiveConnection"] &
               Partial<
-                Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+                Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
               >
           >;
           response: express.Response<
             any,
-            Application["server"]["locals"]["ResponseLocals"]["LiveConnection"] &
+            Application["web"]["locals"]["ResponseLocals"]["LiveConnection"] &
               Partial<
-                Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+                Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
               >
           >;
           head: HTML;
@@ -83,16 +83,16 @@ export type ApplicationLayouts = {
             any,
             {},
             {},
-            Application["server"]["locals"]["ResponseLocals"]["LiveConnection"] &
+            Application["web"]["locals"]["ResponseLocals"]["LiveConnection"] &
               Partial<
-                Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+                Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
               >
           >;
           response: express.Response<
             any,
-            Application["server"]["locals"]["ResponseLocals"]["LiveConnection"] &
+            Application["web"]["locals"]["ResponseLocals"]["LiveConnection"] &
               Partial<
-                Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+                Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
               >
           >;
           head: HTML;
@@ -113,16 +113,16 @@ export type ApplicationLayouts = {
             any,
             {},
             {},
-            Application["server"]["locals"]["ResponseLocals"]["LiveConnection"] &
+            Application["web"]["locals"]["ResponseLocals"]["LiveConnection"] &
               Partial<
-                Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+                Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
               >
           >;
           response: express.Response<
             any,
-            Application["server"]["locals"]["ResponseLocals"]["LiveConnection"] &
+            Application["web"]["locals"]["ResponseLocals"]["LiveConnection"] &
               Partial<
-                Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+                Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
               >
           >;
           head: HTML;
@@ -143,11 +143,11 @@ export type ApplicationLayouts = {
             any,
             {},
             {},
-            Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
+            Application["web"]["locals"]["ResponseLocals"]["SignedIn"]
           >;
           response: express.Response<
             any,
-            Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
+            Application["web"]["locals"]["ResponseLocals"]["SignedIn"]
           >;
           head: HTML;
           menuButton: HTML;
@@ -165,11 +165,11 @@ export type ApplicationLayouts = {
             any,
             {},
             {},
-            Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]
+            Application["web"]["locals"]["ResponseLocals"]["LiveConnection"]
           >;
           response: express.Response<
             any,
-            Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]
+            Application["web"]["locals"]["ResponseLocals"]["LiveConnection"]
           >;
           body: HTML;
         }) => HTML;
@@ -188,11 +188,11 @@ export type ApplicationLayouts = {
             any,
             {},
             {},
-            Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]
+            Application["web"]["locals"]["ResponseLocals"]["LiveConnection"]
           >;
           response: express.Response<
             any,
-            Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]
+            Application["web"]["locals"]["ResponseLocals"]["LiveConnection"]
           >;
           size?: number;
         }) => HTML;
@@ -215,11 +215,11 @@ export type ApplicationLayouts = {
               any,
               {},
               {},
-              Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]
+              Application["web"]["locals"]["ResponseLocals"]["LiveConnection"]
             >;
             response: express.Response<
               any,
-              Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]
+              Application["web"]["locals"]["ResponseLocals"]["LiveConnection"]
             >;
             theme: string;
             content: HTML;
@@ -234,11 +234,11 @@ export type ApplicationLayouts = {
               any,
               {},
               {},
-              Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]
+              Application["web"]["locals"]["ResponseLocals"]["LiveConnection"]
             >;
             response: express.Response<
               any,
-              Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]
+              Application["web"]["locals"]["ResponseLocals"]["LiveConnection"]
             >;
           }) => { theme: string; content: HTML } | undefined;
         };
@@ -248,7 +248,7 @@ export type ApplicationLayouts = {
 };
 
 export default async (application: Application): Promise<void> => {
-  application.server.locals.layouts.base = ({
+  application.web.locals.layouts.base = ({
     request,
     response,
     head,
@@ -1425,7 +1425,7 @@ export default async (application: Application): Promise<void> => {
             }
           `}"
           javascript="${(() => {
-            const flash = application.server.locals.helpers.Flash.get({
+            const flash = application.web.locals.helpers.Flash.get({
               request,
               response,
             });
@@ -1883,7 +1883,7 @@ export default async (application: Application): Promise<void> => {
                         interactive: true,
                         content: ${html`
                           <h3 class="heading">
-                            $${application.server.locals.partials.logo({
+                            $${application.web.locals.partials.logo({
                               size: 12 /* var(--space--3) */,
                             })}
                             <span>
@@ -1924,7 +1924,7 @@ export default async (application: Application): Promise<void> => {
                     });
                   `}"
                 >
-                  $${application.server.locals.partials.logo({
+                  $${application.web.locals.partials.logo({
                     size: 16 /* var(--space--4) */,
                   })}
                   Courselore
@@ -1990,13 +1990,13 @@ export default async (application: Application): Promise<void> => {
                                 align-items: center;
                               `}"
                             >
-                              $${application.server.locals.partials.logo({
+                              $${application.web.locals.partials.logo({
                                 size: 14 /* var(--space--3-5) */,
                               })}
                               Meta Courselore
                             </a>
                             <a
-                              href="${application.server.locals.partials
+                              href="${application.web.locals.partials
                                 .reportIssueHref}"
                               target="_blank"
                               class="dropdown--menu--item button button--transparent"
@@ -2215,15 +2215,15 @@ export default async (application: Application): Promise<void> => {
     `;
 
   if (application.configuration.environment !== "production")
-    application.server.delete<
+    application.web.delete<
       {},
       any,
       {},
       {},
-      Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]
+      Application["web"]["locals"]["ResponseLocals"]["LiveConnection"]
     >("/turn-off", (request, response) => {
       response.send(
-        application.server.locals.layouts.box({
+        application.web.locals.layouts.box({
           request,
           response,
           head: html`
@@ -2254,8 +2254,8 @@ export default async (application: Application): Promise<void> => {
       process.kill(process.ppid);
     });
 
-  application.server.locals.layouts.box = ({ request, response, head, body }) =>
-    application.server.locals.layouts.base({
+  application.web.locals.layouts.box = ({ request, response, head, body }) =>
+    application.web.locals.layouts.base({
       request,
       response,
       head,
@@ -2294,7 +2294,7 @@ export default async (application: Application): Promise<void> => {
                   align-items: center;
                 `}"
               >
-                $${application.server.locals.partials.logo()} Courselore
+                $${application.web.locals.partials.logo()} Courselore
               </a>
             </div>
             <div
@@ -2437,7 +2437,7 @@ export default async (application: Application): Promise<void> => {
       `,
     });
 
-  application.server.locals.layouts.application = ({
+  application.web.locals.layouts.application = ({
     request,
     response,
     head,
@@ -2445,7 +2445,7 @@ export default async (application: Application): Promise<void> => {
     extraHeaders = html``,
     body,
   }) =>
-    application.server.locals.layouts.base({
+    application.web.locals.layouts.base({
       request: request,
       response: response,
       head,
@@ -2475,7 +2475,7 @@ export default async (application: Application): Promise<void> => {
               });
             `}"
           >
-            $${application.server.locals.partials.logo()}
+            $${application.web.locals.partials.logo()}
           </a>
 
           $${response.locals.user !== undefined
@@ -2485,11 +2485,11 @@ export default async (application: Application): Promise<void> => {
                   any,
                   {},
                   {},
-                  Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
+                  Application["web"]["locals"]["ResponseLocals"]["SignedIn"]
                 >;
                 const responseNarrow = response as express.Response<
                   any,
-                  Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
+                  Application["web"]["locals"]["ResponseLocals"]["SignedIn"]
                 >;
 
                 return html`
@@ -2504,7 +2504,7 @@ export default async (application: Application): Promise<void> => {
                     $${(() => {
                       const courseSwitcher = html`
                         <div class="dropdown--menu">
-                          $${application.server.locals.partials.courses({
+                          $${application.web.locals.partials.courses({
                             request: requestNarrow,
                             response: responseNarrow,
                             tight: true,
@@ -2555,7 +2555,7 @@ export default async (application: Application): Promise<void> => {
                                                     );
                                                   `}"
                                                 >
-                                                  $${application.server.locals.partials.courseArchived(
+                                                  $${application.web.locals.partials.courseArchived(
                                                     { request, response }
                                                   )}
                                                 </div>
@@ -2631,7 +2631,7 @@ export default async (application: Application): Promise<void> => {
                               </span>
                               $${response.locals.course.archivedAt !== null
                                 ? html`
-                                    $${application.server.locals.partials.courseArchived(
+                                    $${application.web.locals.partials.courseArchived(
                                       {
                                         request,
                                         response,
@@ -2740,7 +2740,7 @@ export default async (application: Application): Promise<void> => {
                                                   .reference}/invitations/${invitation.reference}"
                                                 class="dropdown--menu--item button button--transparent"
                                               >
-                                                $${application.server.locals.partials.course(
+                                                $${application.web.locals.partials.course(
                                                   {
                                                     request,
                                                     response,
@@ -2772,7 +2772,7 @@ export default async (application: Application): Promise<void> => {
                                     <i class="bi bi-journal-arrow-down"></i>
                                     Enroll in an Existing Course
                                   </button>
-                                  $${application.server.locals.helpers.mayCreateCourses(
+                                  $${application.web.locals.helpers.mayCreateCourses(
                                     {
                                       request: requestNarrow,
                                       response: responseNarrow,
@@ -2935,7 +2935,7 @@ export default async (application: Application): Promise<void> => {
                         });
                       `}"
                     >
-                      $${application.server.locals.partials.user({
+                      $${application.web.locals.partials.user({
                         request,
                         response,
                         user: response.locals.user,
@@ -2954,14 +2954,14 @@ export default async (application: Application): Promise<void> => {
       body,
     });
 
-  application.server.locals.layouts.main = ({
+  application.web.locals.layouts.main = ({
     request,
     response,
     head,
     showCourseSwitcher = true,
     body,
   }) =>
-    application.server.locals.layouts.application({
+    application.web.locals.layouts.application({
       request,
       response,
       head,
@@ -2991,7 +2991,7 @@ export default async (application: Application): Promise<void> => {
       `,
     });
 
-  application.server.locals.layouts.settings = ({
+  application.web.locals.layouts.settings = ({
     request,
     response,
     head,
@@ -2999,7 +2999,7 @@ export default async (application: Application): Promise<void> => {
     menu,
     body,
   }) =>
-    application.server.locals.layouts.application({
+    application.web.locals.layouts.application({
       request,
       response,
       head,
@@ -3089,14 +3089,14 @@ export default async (application: Application): Promise<void> => {
       `,
     });
 
-  application.server.locals.layouts.partial = ({ request, response, body }) => {
+  application.web.locals.layouts.partial = ({ request, response, body }) => {
     if (typeof request.header("Live-Connection") !== "string")
       delete response.locals.liveConnectionNonce;
 
     return body;
   };
 
-  application.server.locals.partials.logo = (() => {
+  application.web.locals.partials.logo = (() => {
     // https://www.youtube.com/watch?v=dSK-MW-zuAc
     const order = 2;
     const viewBox = 24; /* var(--space--6) */
@@ -3146,7 +3146,7 @@ export default async (application: Application): Promise<void> => {
     `;
   })();
 
-  application.server.locals.partials.spinner = ({
+  application.web.locals.partials.spinner = ({
     request,
     response,
     size = 20,
@@ -3177,7 +3177,7 @@ export default async (application: Application): Promise<void> => {
     </svg>
   `;
 
-  application.server.locals.partials.reportIssueHref = `mailto:${
+  application.web.locals.partials.reportIssueHref = `mailto:${
     application.configuration.administratorEmail
   }${qs.stringify(
     {
@@ -3207,7 +3207,7 @@ export default async (application: Application): Promise<void> => {
     { addQueryPrefix: true }
   )}`;
 
-  application.server.locals.helpers.Flash = {
+  application.web.locals.helpers.Flash = {
     maxAge: 5 * 60 * 1000,
 
     set: ({ request, response, theme, content }) => {
@@ -3230,8 +3230,8 @@ export default async (application: Application): Promise<void> => {
       )!;
       request.cookies["__Host-Flash"] = flash.nonce;
       response.cookie("__Host-Flash", flash.nonce, {
-        ...application.server.locals.configuration.cookies,
-        maxAge: application.server.locals.helpers.Flash.maxAge,
+        ...application.web.locals.configuration.cookies,
+        maxAge: application.web.locals.helpers.Flash.maxAge,
       });
     },
 
@@ -3247,7 +3247,7 @@ export default async (application: Application): Promise<void> => {
       delete request.cookies["__Host-Flash"];
       response.clearCookie(
         "__Host-Flash",
-        application.server.locals.configuration.cookies
+        application.web.locals.configuration.cookies
       );
       if (flash === undefined) return undefined;
       application.database.run(
@@ -3267,7 +3267,7 @@ export default async (application: Application): Promise<void> => {
           sql`
             DELETE FROM "flashes"
             WHERE "createdAt" < ${new Date(
-              Date.now() - application.server.locals.helpers.Flash.maxAge
+              Date.now() - application.web.locals.helpers.Flash.maxAge
             ).toISOString()}
           `
         );

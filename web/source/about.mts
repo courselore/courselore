@@ -5,13 +5,13 @@ import dedent from "dedent";
 import { Application } from "./index.mjs";
 
 export default async (application: Application): Promise<void> => {
-  application.server.get<
+  application.web.get<
     {},
     HTML,
     {},
     {},
-    Application["server"]["locals"]["ResponseLocals"]["LiveConnection"] &
-      Partial<Application["server"]["locals"]["ResponseLocals"]["SignedIn"]>
+    Application["web"]["locals"]["ResponseLocals"]["LiveConnection"] &
+      Partial<Application["web"]["locals"]["ResponseLocals"]["SignedIn"]>
   >(["/", "/about"], (request, response, next) => {
     if (request.originalUrl === "/" && response.locals.user !== undefined)
       return next();
@@ -28,7 +28,7 @@ export default async (application: Application): Promise<void> => {
       );
 
     response.send(
-      application.server.locals.layouts.base({
+      application.web.locals.layouts.base({
         request,
         response,
         head: html`
@@ -66,7 +66,7 @@ export default async (application: Application): Promise<void> => {
                   align-items: center;
                 `}"
               >
-                $${application.server.locals.partials.logo({
+                $${application.web.locals.partials.logo({
                   size: 48 /* var(--space--12) */,
                 })}
                 Courselore
@@ -168,7 +168,7 @@ export default async (application: Application): Promise<void> => {
                       });
                     `}"
                   >
-                    $${application.server.locals.partials.logo({
+                    $${application.web.locals.partials.logo({
                       size: 16 /* var(--space--4) */,
                     })}
                     Meta Courselore
@@ -664,7 +664,7 @@ export default async (application: Application): Promise<void> => {
                 this.isModified = false;
               `}"
             >
-              $${application.server.locals.partials.contentEditor({
+              $${application.web.locals.partials.contentEditor({
                 request: request,
                 response: response,
                 contentSource: dedent`
@@ -930,7 +930,7 @@ export default async (application: Application): Promise<void> => {
                 });
               `}"
             >
-              $${application.server.locals.partials.logo({
+              $${application.web.locals.partials.logo({
                 size: 24 /* var(--space--6) */,
               })}
               Meta Courselore

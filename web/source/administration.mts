@@ -9,7 +9,7 @@ import semver from "semver";
 import { Application } from "./index.mjs";
 
 export type ApplicationAdministration = {
-  server: {
+  web: {
     locals: {
       helpers: {
         userSystemRolesWhoMayCreateCourseses: [
@@ -25,13 +25,13 @@ export type ApplicationAdministration = {
 };
 
 export default async (application: Application): Promise<void> => {
-  application.server.locals.helpers.userSystemRolesWhoMayCreateCourseses = [
+  application.web.locals.helpers.userSystemRolesWhoMayCreateCourseses = [
     "all",
     "staff-and-administrators",
     "administrators",
   ];
 
-  application.server.locals.helpers.systemRoles = [
+  application.web.locals.helpers.systemRoles = [
     "none",
     "staff",
     "administrator",
@@ -83,12 +83,12 @@ export default async (application: Application): Promise<void> => {
       }
     });
 
-  application.server.get<
+  application.web.get<
     {},
     HTML,
     {},
     {},
-    Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
+    Application["web"]["locals"]["ResponseLocals"]["SignedIn"]
   >("/administration", (request, response, next) => {
     if (
       response.locals.user === undefined ||
@@ -114,16 +114,16 @@ export default async (application: Application): Promise<void> => {
       any,
       {},
       {},
-      Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
+      Application["web"]["locals"]["ResponseLocals"]["SignedIn"]
     >;
     response: express.Response<
       any,
-      Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
+      Application["web"]["locals"]["ResponseLocals"]["SignedIn"]
     >;
     head: HTML;
     body: HTML;
   }): HTML =>
-    application.server.locals.layouts.settings({
+    application.web.locals.layouts.settings({
       request,
       response,
       head,
@@ -176,12 +176,12 @@ export default async (application: Application): Promise<void> => {
       body,
     });
 
-  application.server.get<
+  application.web.get<
     {},
     HTML,
     {},
     {},
-    Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
+    Application["web"]["locals"]["ResponseLocals"]["SignedIn"]
   >("/administration/system-settings", (request, response, next) => {
     if (
       response.locals.user === undefined ||
@@ -295,14 +295,14 @@ export default async (application: Application): Promise<void> => {
     );
   });
 
-  application.server.patch<
+  application.web.patch<
     {},
     any,
     {
-      userSystemRolesWhoMayCreateCourses?: Application["server"]["locals"]["helpers"]["userSystemRolesWhoMayCreateCourseses"][number];
+      userSystemRolesWhoMayCreateCourses?: Application["web"]["locals"]["helpers"]["userSystemRolesWhoMayCreateCourseses"][number];
     },
     {},
-    Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
+    Application["web"]["locals"]["ResponseLocals"]["SignedIn"]
   >("/administration/system-settings", (request, response, next) => {
     if (
       response.locals.user === undefined ||
@@ -313,7 +313,7 @@ export default async (application: Application): Promise<void> => {
 
     if (
       typeof request.body.userSystemRolesWhoMayCreateCourses !== "string" ||
-      !application.server.locals.helpers.userSystemRolesWhoMayCreateCourseses.includes(
+      !application.web.locals.helpers.userSystemRolesWhoMayCreateCourseses.includes(
         request.body.userSystemRolesWhoMayCreateCourses
       )
     )
@@ -326,7 +326,7 @@ export default async (application: Application): Promise<void> => {
       `
     )!;
 
-    application.server.locals.helpers.Flash.set({
+    application.web.locals.helpers.Flash.set({
       request,
       response,
       theme: "green",
@@ -339,12 +339,12 @@ export default async (application: Application): Promise<void> => {
     );
   });
 
-  application.server.get<
+  application.web.get<
     { userReference: string },
     HTML,
     {},
     {},
-    Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
+    Application["web"]["locals"]["ResponseLocals"]["SignedIn"]
   >("/administration/users", (request, response, next) => {
     if (
       response.locals.user === undefined ||
@@ -360,10 +360,10 @@ export default async (application: Application): Promise<void> => {
       email: string;
       name: string;
       avatar: string | null;
-      avatarlessBackgroundColor: Application["server"]["locals"]["helpers"]["userAvatarlessBackgroundColors"][number];
+      avatarlessBackgroundColor: Application["web"]["locals"]["helpers"]["userAvatarlessBackgroundColors"][number];
       biographySource: string | null;
       biographyPreprocessed: HTML | null;
-      systemRole: Application["server"]["locals"]["helpers"]["systemRoles"][number];
+      systemRole: Application["web"]["locals"]["helpers"]["systemRoles"][number];
     }>(
       sql`
         SELECT
@@ -467,7 +467,7 @@ export default async (application: Application): Promise<void> => {
                 `}"
               >
                 <div>
-                  $${application.server.locals.partials.user({
+                  $${application.web.locals.partials.user({
                     request,
                     response,
                     user,
@@ -488,7 +488,7 @@ export default async (application: Application): Promise<void> => {
                   <div>
                     <div
                       data-filterable-phrases="${JSON.stringify(
-                        application.server.locals.helpers.splitFilterablePhrases(
+                        application.web.locals.helpers.splitFilterablePhrases(
                           user.name
                         )
                       )}"
@@ -499,7 +499,7 @@ export default async (application: Application): Promise<void> => {
                     <div class="secondary">
                       <span
                         data-filterable-phrases="${JSON.stringify(
-                          application.server.locals.helpers.splitFilterablePhrases(
+                          application.web.locals.helpers.splitFilterablePhrases(
                             user.email
                           )
                         )}"
@@ -605,7 +605,7 @@ export default async (application: Application): Promise<void> => {
                               interactive: true,
                               content: ${html`
                                 <div class="dropdown--menu">
-                                  $${application.server.locals.helpers.systemRoles.map(
+                                  $${application.web.locals.helpers.systemRoles.map(
                                     (systemRole) =>
                                       html`
                                         <form
@@ -738,7 +738,7 @@ export default async (application: Application): Promise<void> => {
                     ? html`
                         <details class="details">
                           <summary>Biography</summary>
-                          $${application.server.locals.partials.content({
+                          $${application.web.locals.partials.content({
                             request,
                             response,
                             contentPreprocessed: user.biographyPreprocessed,
@@ -756,7 +756,7 @@ export default async (application: Application): Promise<void> => {
   });
 
   const iconsSystemRole: {
-    [systemRole in Application["server"]["locals"]["helpers"]["systemRoles"][number]]: HTML;
+    [systemRole in Application["web"]["locals"]["helpers"]["systemRoles"][number]]: HTML;
   } = {
     none: html`<i class="bi bi-dash-circle"></i>`,
     staff: html`<i class="bi bi-person-badge-fill"></i>`,
@@ -764,21 +764,21 @@ export default async (application: Application): Promise<void> => {
   };
 
   const textColorsSystemRole: {
-    [systemRole in Application["server"]["locals"]["helpers"]["systemRoles"][number]]: string;
+    [systemRole in Application["web"]["locals"]["helpers"]["systemRoles"][number]]: string;
   } = {
     none: "",
     staff: "text--teal",
     administrator: "text--rose",
   };
 
-  application.server.patch<
+  application.web.patch<
     { userReference: string },
     HTML,
     {
-      role?: Application["server"]["locals"]["helpers"]["systemRoles"][number];
+      role?: Application["web"]["locals"]["helpers"]["systemRoles"][number];
     },
     {},
-    Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
+    Application["web"]["locals"]["ResponseLocals"]["SignedIn"]
   >("/users/:userReference", (request, response, next) => {
     if (
       response.locals.user === undefined ||
@@ -813,7 +813,7 @@ export default async (application: Application): Promise<void> => {
 
     if (typeof request.body.role === "string") {
       if (
-        !application.server.locals.helpers.systemRoles.includes(
+        !application.web.locals.helpers.systemRoles.includes(
           request.body.role
         )
       )
@@ -828,7 +828,7 @@ export default async (application: Application): Promise<void> => {
       );
     }
 
-    application.server.locals.helpers.Flash.set({
+    application.web.locals.helpers.Flash.set({
       request,
       response,
       theme: "green",
@@ -842,12 +842,12 @@ export default async (application: Application): Promise<void> => {
     );
   });
 
-  application.server.get<
+  application.web.get<
     { userReference: string },
     HTML,
     {},
     {},
-    Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
+    Application["web"]["locals"]["ResponseLocals"]["SignedIn"]
   >("/administration/courses", (request, response, next) => {
     if (
       response.locals.user === undefined ||
@@ -1021,7 +1021,7 @@ export default async (application: Application): Promise<void> => {
                       ? html`
                           <div>
                             <span>
-                              $${application.server.locals.partials.courseArchived(
+                              $${application.web.locals.partials.courseArchived(
                                 {
                                   request,
                                   response,

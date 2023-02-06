@@ -6,7 +6,7 @@ import { asyncHandler } from "@leafac/express-async-handler";
 import { Application } from "./index.mjs";
 
 export type ApplicationBase = {
-  server: {
+  web: {
     locals: {
       configuration: {
         cookies: express.CookieOptions;
@@ -20,19 +20,19 @@ export default async (application: Application): Promise<void> => {
     process.env.SLOW === "true" &&
     application.configuration.environment === "development"
   )
-    application.server.use<{}, any, {}, {}, {}>(
+    application.web.use<{}, any, {}, {}, {}>(
       asyncHandler(async (request, response, next) => {
         await timers.setTimeout(5 * 1000, undefined, { ref: false });
         next();
       })
     );
 
-  application.server.use<
+  application.web.use<
     {},
     any,
     {},
     {},
-    Application["server"]["locals"]["ResponseLocals"]["Logging"]
+    Application["web"]["locals"]["ResponseLocals"]["Logging"]
   >((request, response, next) => {
     if (
       !["GET", "HEAD", "OPTIONS", "TRACE"].includes(request.method) &&
@@ -43,30 +43,30 @@ export default async (application: Application): Promise<void> => {
     next();
   });
 
-  application.server.use<
+  application.web.use<
     {},
     any,
     {},
     {},
-    Application["server"]["locals"]["ResponseLocals"]["Logging"]
+    Application["web"]["locals"]["ResponseLocals"]["Logging"]
   >(cookieParser());
 
-  application.server.locals.configuration.cookies = {
+  application.web.locals.configuration.cookies = {
     path: "/",
     secure: true,
     httpOnly: true,
     sameSite: "lax",
   };
 
-  application.server.use<
+  application.web.use<
     {},
     any,
     {},
     {},
-    Application["server"]["locals"]["ResponseLocals"]["Logging"]
+    Application["web"]["locals"]["ResponseLocals"]["Logging"]
   >(express.urlencoded({ extended: true }));
 
-  application.serverEvents.use<{}, any, {}, {}, {}>(
+  application.webEvents.use<{}, any, {}, {}, {}>(
     express.urlencoded({ extended: true })
   );
 
@@ -74,12 +74,12 @@ export default async (application: Application): Promise<void> => {
     express.urlencoded({ extended: true })
   );
 
-  application.server.use<
+  application.web.use<
     {},
     any,
     {},
     {},
-    Application["server"]["locals"]["ResponseLocals"]["Logging"]
+    Application["web"]["locals"]["ResponseLocals"]["Logging"]
   >(
     expressFileUpload({
       createParentPath: true,

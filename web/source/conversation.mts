@@ -11,13 +11,13 @@ import slugify from "@sindresorhus/slugify";
 import { Application } from "./index.mjs";
 
 export type ApplicationConversation = {
-  server: {
+  web: {
     locals: {
       ResponseLocals: {
-        Conversation: Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"] & {
+        Conversation: Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"] & {
           conversation: NonNullable<
             ReturnType<
-              Application["server"]["locals"]["helpers"]["getConversation"]
+              Application["web"]["locals"]["helpers"]["getConversation"]
             >
           >;
           messageDraft:
@@ -28,7 +28,7 @@ export type ApplicationConversation = {
                 contentSource: string;
               }
             | undefined;
-          enrollmentsTyping: Application["server"]["locals"]["Types"]["Enrollment"][];
+          enrollmentsTyping: Application["web"]["locals"]["Types"]["Enrollment"][];
         };
       };
 
@@ -52,10 +52,10 @@ export type ApplicationConversation = {
                 filters?: {
                   isQuick?: "true";
                   isUnread?: "true" | "false";
-                  types?: Application["server"]["locals"]["helpers"]["conversationTypes"][number][];
+                  types?: Application["web"]["locals"]["helpers"]["conversationTypes"][number][];
                   isResolved?: "true" | "false";
                   isAnnouncement?: "true" | "false";
-                  participantses?: Application["server"]["locals"]["helpers"]["conversationParticipantses"][number][];
+                  participantses?: Application["web"]["locals"]["helpers"]["conversationParticipantses"][number][];
                   isPinned?: "true" | "false";
                   tagsReferences?: string[];
                 };
@@ -63,16 +63,16 @@ export type ApplicationConversation = {
               messages?: object;
               newConversation?: object;
             },
-            Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"] &
+            Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"] &
               Partial<
-                Application["server"]["locals"]["ResponseLocals"]["Conversation"]
+                Application["web"]["locals"]["ResponseLocals"]["Conversation"]
               >
           >;
           response: express.Response<
             HTML,
-            Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"] &
+            Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"] &
               Partial<
-                Application["server"]["locals"]["ResponseLocals"]["Conversation"]
+                Application["web"]["locals"]["ResponseLocals"]["Conversation"]
               >
           >;
           head: HTML;
@@ -95,15 +95,15 @@ export type ApplicationConversation = {
             any,
             {},
             {},
-            Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+            Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
           >;
           response: express.Response<
             any,
-            Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+            Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
           >;
           conversation: NonNullable<
             ReturnType<
-              Application["server"]["locals"]["helpers"]["getConversation"]
+              Application["web"]["locals"]["helpers"]["getConversation"]
             >
           >;
           searchResult?:
@@ -115,7 +115,7 @@ export type ApplicationConversation = {
                 type: "messageAuthorUserName";
                 message: NonNullable<
                   ReturnType<
-                    Application["server"]["locals"]["helpers"]["getMessage"]
+                    Application["web"]["locals"]["helpers"]["getMessage"]
                   >
                 >;
                 highlight: HTML;
@@ -124,13 +124,13 @@ export type ApplicationConversation = {
                 type: "messageContent";
                 message: NonNullable<
                   ReturnType<
-                    Application["server"]["locals"]["helpers"]["getMessage"]
+                    Application["web"]["locals"]["helpers"]["getMessage"]
                   >
                 >;
                 snippet: HTML;
               };
           message?: NonNullable<
-            ReturnType<Application["server"]["locals"]["helpers"]["getMessage"]>
+            ReturnType<Application["web"]["locals"]["helpers"]["getMessage"]>
           >;
         }) => HTML;
       };
@@ -150,11 +150,11 @@ export type ApplicationConversation = {
             any,
             {},
             {},
-            Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+            Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
           >;
           response: express.Response<
             any,
-            Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+            Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
           >;
           conversationReference: string;
         }) =>
@@ -163,17 +163,17 @@ export type ApplicationConversation = {
               createdAt: string;
               updatedAt: string | null;
               reference: string;
-              authorEnrollment: Application["server"]["locals"]["Types"]["MaybeEnrollment"];
-              participants: Application["server"]["locals"]["helpers"]["conversationParticipantses"][number];
+              authorEnrollment: Application["web"]["locals"]["Types"]["MaybeEnrollment"];
+              participants: Application["web"]["locals"]["helpers"]["conversationParticipantses"][number];
               anonymousAt: string | null;
-              type: Application["server"]["locals"]["helpers"]["conversationTypes"][number];
+              type: Application["web"]["locals"]["helpers"]["conversationTypes"][number];
               resolvedAt: string | null;
               announcementAt: string | null;
               pinnedAt: string | null;
               title: string;
               titleSearch: string;
               nextMessageReference: number;
-              selectedParticipants: Application["server"]["locals"]["Types"]["Enrollment"][];
+              selectedParticipants: Application["web"]["locals"]["Types"]["Enrollment"][];
               taggings: {
                 id: number;
                 tag: {
@@ -187,7 +187,7 @@ export type ApplicationConversation = {
               readingsCount: number;
               endorsements: {
                 id: number;
-                enrollment: Application["server"]["locals"]["Types"]["MaybeEnrollment"];
+                enrollment: Application["web"]["locals"]["Types"]["MaybeEnrollment"];
               }[];
             }
           | undefined;
@@ -197,30 +197,30 @@ export type ApplicationConversation = {
 };
 
 export default async (application: Application): Promise<void> => {
-  application.server.locals.helpers.conversationParticipantses = [
+  application.web.locals.helpers.conversationParticipantses = [
     "everyone",
     "staff",
     "selected-people",
   ];
 
-  application.server.locals.helpers.conversationTypes = [
+  application.web.locals.helpers.conversationTypes = [
     "question",
     "note",
     "chat",
   ];
 
-  application.server.use<
+  application.web.use<
     { courseReference: string; conversationReference: string },
     HTML,
     {},
     {},
-    Application["server"]["locals"]["ResponseLocals"]["Conversation"]
+    Application["web"]["locals"]["ResponseLocals"]["Conversation"]
   >(
     "/courses/:courseReference/conversations/:conversationReference",
     (request, response, next) => {
       if (response.locals.course === undefined) return next();
 
-      const conversation = application.server.locals.helpers.getConversation({
+      const conversation = application.web.locals.helpers.getConversation({
         request,
         response,
         conversationReference: request.params.conversationReference,
@@ -258,11 +258,11 @@ export default async (application: Application): Promise<void> => {
                 userEmail: string;
                 userName: string;
                 userAvatar: string | null;
-                userAvatarlessBackgroundColor: Application["server"]["locals"]["helpers"]["userAvatarlessBackgroundColors"][number];
+                userAvatarlessBackgroundColor: Application["web"]["locals"]["helpers"]["userAvatarlessBackgroundColors"][number];
                 userBiographySource: string | null;
                 userBiographyPreprocessed: HTML | null;
                 enrollmentReference: string;
-                enrollmentCourseRole: Application["server"]["locals"]["helpers"]["courseRoles"][number];
+                enrollmentCourseRole: Application["web"]["locals"]["helpers"]["courseRoles"][number];
               }>(
                 sql`
                   SELECT
@@ -319,7 +319,7 @@ export default async (application: Application): Promise<void> => {
     }
   );
 
-  application.server.locals.helpers.getConversation = ({
+  application.web.locals.helpers.getConversation = ({
     request,
     response,
     conversationReference,
@@ -337,17 +337,17 @@ export default async (application: Application): Promise<void> => {
       authorUserName: string | null;
       authorUserAvatar: string | null;
       authorUserAvatarlessBackgroundColor:
-        | Application["server"]["locals"]["helpers"]["userAvatarlessBackgroundColors"][number]
+        | Application["web"]["locals"]["helpers"]["userAvatarlessBackgroundColors"][number]
         | null;
       authorUserBiographySource: string | null;
       authorUserBiographyPreprocessed: HTML | null;
       authorEnrollmentReference: string | null;
       authorEnrollmentCourseRole:
-        | Application["server"]["locals"]["helpers"]["courseRoles"][number]
+        | Application["web"]["locals"]["helpers"]["courseRoles"][number]
         | null;
-      participants: Application["server"]["locals"]["helpers"]["conversationParticipantses"][number];
+      participants: Application["web"]["locals"]["helpers"]["conversationParticipantses"][number];
       anonymousAt: string | null;
-      type: Application["server"]["locals"]["helpers"]["conversationTypes"][number];
+      type: Application["web"]["locals"]["helpers"]["conversationTypes"][number];
       resolvedAt: string | null;
       announcementAt: string | null;
       pinnedAt: string | null;
@@ -462,11 +462,11 @@ export default async (application: Application): Promise<void> => {
               userEmail: string;
               userName: string;
               userAvatar: string | null;
-              userAvatarlessBackgroundColor: Application["server"]["locals"]["helpers"]["userAvatarlessBackgroundColors"][number];
+              userAvatarlessBackgroundColor: Application["web"]["locals"]["helpers"]["userAvatarlessBackgroundColors"][number];
               userBiographySource: string | null;
               userBiographyPreprocessed: HTML | null;
               enrollmentReference: string;
-              enrollmentCourseRole: Application["server"]["locals"]["helpers"]["courseRoles"][number];
+              enrollmentCourseRole: Application["web"]["locals"]["helpers"]["courseRoles"][number];
             }>(
               sql`
                 SELECT
@@ -582,13 +582,13 @@ export default async (application: Application): Promise<void> => {
               userName: string | null;
               userAvatar: string | null;
               userAvatarlessBackgroundColor:
-                | Application["server"]["locals"]["helpers"]["userAvatarlessBackgroundColors"][number]
+                | Application["web"]["locals"]["helpers"]["userAvatarlessBackgroundColors"][number]
                 | null;
               userBiographySource: string | null;
               userBiographyPreprocessed: HTML | null;
               enrollmentReference: string | null;
               enrollmentCourseRole:
-                | Application["server"]["locals"]["helpers"]["courseRoles"][number]
+                | Application["web"]["locals"]["helpers"]["courseRoles"][number]
                 | null;
             }>(
               sql`
@@ -659,7 +659,7 @@ export default async (application: Application): Promise<void> => {
     };
   };
 
-  application.server.locals.layouts.conversation = ({
+  application.web.locals.layouts.conversation = ({
     request,
     response,
     head,
@@ -670,7 +670,7 @@ export default async (application: Application): Promise<void> => {
     const search =
       typeof request.query.conversations?.search === "string" &&
       request.query.conversations.search.trim() !== ""
-        ? application.server.locals.helpers.sanitizeSearch(
+        ? application.web.locals.helpers.sanitizeSearch(
             request.query.conversations.search
           )
         : undefined;
@@ -678,10 +678,10 @@ export default async (application: Application): Promise<void> => {
     const filters: {
       isQuick?: "true";
       isUnread?: "true" | "false";
-      types?: Application["server"]["locals"]["helpers"]["conversationTypes"][number][];
+      types?: Application["web"]["locals"]["helpers"]["conversationTypes"][number][];
       isResolved?: "true" | "false";
       isAnnouncement?: "true" | "false";
-      participantses?: Application["server"]["locals"]["helpers"]["conversationParticipantses"][number][];
+      participantses?: Application["web"]["locals"]["helpers"]["conversationParticipantses"][number][];
       isPinned?: "true" | "false";
       tagsReferences?: string[];
     } = {};
@@ -698,7 +698,7 @@ export default async (application: Application): Promise<void> => {
         const types = [
           ...new Set(
             request.query.conversations.filters.types.filter((type) =>
-              application.server.locals.helpers.conversationTypes.includes(type)
+              application.web.locals.helpers.conversationTypes.includes(type)
             )
           ),
         ];
@@ -727,7 +727,7 @@ export default async (application: Application): Promise<void> => {
           ...new Set(
             request.query.conversations.filters.participantses.filter(
               (conversationParticipants) =>
-                application.server.locals.helpers.conversationParticipantses.includes(
+                application.web.locals.helpers.conversationParticipantses.includes(
                   conversationParticipants
                 )
             )
@@ -972,7 +972,7 @@ export default async (application: Application): Promise<void> => {
         `
       )
       .map((conversationWithSearchResult) => {
-        const conversation = application.server.locals.helpers.getConversation({
+        const conversation = application.web.locals.helpers.getConversation({
           request,
           response,
           conversationReference: conversationWithSearchResult.reference,
@@ -993,7 +993,7 @@ export default async (application: Application): Promise<void> => {
                 "string"
             ? ({
                 type: "messageAuthorUserName",
-                message: application.server.locals.helpers.getMessage({
+                message: application.web.locals.helpers.getMessage({
                   request,
                   response,
                   conversation,
@@ -1009,7 +1009,7 @@ export default async (application: Application): Promise<void> => {
                 "string"
             ? ({
                 type: "messageContent",
-                message: application.server.locals.helpers.getMessage({
+                message: application.web.locals.helpers.getMessage({
                   request,
                   response,
                   conversation,
@@ -1121,7 +1121,7 @@ export default async (application: Application): Promise<void> => {
     //     })
     // );
 
-    return application.server.locals.layouts.application({
+    return application.web.locals.layouts.application({
       request,
       response,
       head,
@@ -1892,7 +1892,7 @@ export default async (application: Application): Promise<void> => {
                               row-gap: var(--space--2);
                             `}"
                           >
-                            $${application.server.locals.helpers.conversationTypes.map(
+                            $${application.web.locals.helpers.conversationTypes.map(
                               (conversationType) => html`
                                 <label
                                   class="button button--tight button--tight--inline button--transparent"
@@ -2121,7 +2121,7 @@ export default async (application: Application): Promise<void> => {
                               row-gap: var(--space--2);
                             `}"
                           >
-                            $${application.server.locals.helpers.conversationParticipantses.map(
+                            $${application.web.locals.helpers.conversationParticipantses.map(
                               (conversationParticipants) => html`
                                 <label
                                   class="button button--tight button--tight--inline button--transparent"
@@ -2533,7 +2533,7 @@ export default async (application: Application): Promise<void> => {
                                       max-width: 100%;
                                     `}"
                                   >
-                                    $${application.server.locals.partials.conversation(
+                                    $${application.web.locals.partials.conversation(
                                       {
                                         request,
                                         response,
@@ -2697,7 +2697,7 @@ export default async (application: Application): Promise<void> => {
     });
   };
 
-  application.server.locals.partials.conversation = ({
+  application.web.locals.partials.conversation = ({
     request,
     response,
     conversation,
@@ -2784,7 +2784,7 @@ export default async (application: Application): Promise<void> => {
                         align-items: center;
                       `}"
                     >
-                      $${application.server.locals.partials.spinner({
+                      $${application.web.locals.partials.spinner({
                         request,
                         response,
                       })}
@@ -2834,7 +2834,7 @@ export default async (application: Application): Promise<void> => {
           $${conversation.selectedParticipants.length === 1
             ? html`
                 <div>
-                  ($${application.server.locals.partials.user({
+                  ($${application.web.locals.partials.user({
                     request,
                     response,
                     enrollment: conversation.selectedParticipants[0],
@@ -2880,7 +2880,7 @@ export default async (application: Application): Promise<void> => {
           line-height: var(--line-height--xs);
         `}"
       >
-        $${application.server.locals.partials.user({
+        $${application.web.locals.partials.user({
           request,
           response,
           enrollment: conversation.authorEnrollment,
@@ -2996,7 +2996,7 @@ export default async (application: Application): Promise<void> => {
         ? html`
             <div>
               <div>
-                $${application.server.locals.partials.user({
+                $${application.web.locals.partials.user({
                   request,
                   response,
                   enrollment: searchResult.message.authorEnrollment,
@@ -3015,7 +3015,7 @@ export default async (application: Application): Promise<void> => {
         ? html`
             <div>
               <div>
-                $${application.server.locals.partials.user({
+                $${application.web.locals.partials.user({
                   request,
                   response,
                   enrollment: searchResult.message.authorEnrollment,
@@ -3038,7 +3038,7 @@ export default async (application: Application): Promise<void> => {
         ? html`
             <div>
               <div>
-                $${application.server.locals.partials.user({
+                $${application.web.locals.partials.user({
                   request,
                   response,
                   enrollment: message.authorEnrollment,
@@ -3066,7 +3066,7 @@ export default async (application: Application): Promise<void> => {
   `;
 
   const iconsConversationType: {
-    [conversationType in Application["server"]["locals"]["helpers"]["conversationTypes"][number]]: {
+    [conversationType in Application["web"]["locals"]["helpers"]["conversationTypes"][number]]: {
       regular: HTML;
       fill: HTML;
     };
@@ -3086,7 +3086,7 @@ export default async (application: Application): Promise<void> => {
   };
 
   const textColorsConversationType: {
-    [conversationType in Application["server"]["locals"]["helpers"]["conversationTypes"][number]]: string;
+    [conversationType in Application["web"]["locals"]["helpers"]["conversationTypes"][number]]: string;
   } = {
     question: "text--rose",
     note: "text--fuchsia",
@@ -3094,7 +3094,7 @@ export default async (application: Application): Promise<void> => {
   };
 
   const iconsConversationParticipants: {
-    [conversationParticipants in Application["server"]["locals"]["helpers"]["conversationParticipantses"][number]]: {
+    [conversationParticipants in Application["web"]["locals"]["helpers"]["conversationParticipantses"][number]]: {
       regular: HTML;
       fill: HTML;
     };
@@ -3114,7 +3114,7 @@ export default async (application: Application): Promise<void> => {
   };
 
   const textColorsConversationParticipants: {
-    [conversationParticipants in Application["server"]["locals"]["helpers"]["conversationParticipantses"][number]]: string;
+    [conversationParticipants in Application["web"]["locals"]["helpers"]["conversationParticipantses"][number]]: string;
   } = {
     everyone: "text--green",
     staff: "text--sky",
@@ -3122,19 +3122,19 @@ export default async (application: Application): Promise<void> => {
   };
 
   const labelsConversationParticipants: {
-    [conversationParticipants in Application["server"]["locals"]["helpers"]["conversationParticipantses"][number]]: string;
+    [conversationParticipants in Application["web"]["locals"]["helpers"]["conversationParticipantses"][number]]: string;
   } = {
     everyone: html`Everyone`,
     staff: html`Staff`,
     "selected-people": html`Selected People`,
   };
 
-  application.server.get<
+  application.web.get<
     { courseReference: string; conversationReference: string },
     HTML,
     {},
     {},
-    Application["server"]["locals"]["ResponseLocals"]["Conversation"]
+    Application["web"]["locals"]["ResponseLocals"]["Conversation"]
   >(
     "/courses/:courseReference/conversations/:conversationReference/selected-participants",
     (request, response, next) => {
@@ -3147,7 +3147,7 @@ export default async (application: Application): Promise<void> => {
         return next("Validation");
 
       response.send(
-        application.server.locals.layouts.partial({
+        application.web.locals.layouts.partial({
           request,
           response,
           body: html`
@@ -3163,7 +3163,7 @@ export default async (application: Application): Promise<void> => {
               $${response.locals.conversation.selectedParticipants.map(
                 (selectedParticipant) => html`
                   <div class="dropdown--menu--item">
-                    $${application.server.locals.partials.user({
+                    $${application.web.locals.partials.user({
                       request,
                       response,
                       enrollment: selectedParticipant,
@@ -3180,12 +3180,12 @@ export default async (application: Application): Promise<void> => {
     }
   );
 
-  application.server.post<
+  application.web.post<
     { courseReference: string },
     any,
     {},
     { redirect?: string },
-    Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+    Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
   >(
     "/courses/:courseReference/conversations/mark-all-conversations-as-read",
     (request, response, next) => {
@@ -3246,10 +3246,10 @@ export default async (application: Application): Promise<void> => {
     }
   );
 
-  application.server.get<
+  application.web.get<
     {
       courseReference: string;
-      type?: Application["server"]["locals"]["helpers"]["conversationTypes"][number];
+      type?: Application["web"]["locals"]["helpers"]["conversationTypes"][number];
     },
     HTML,
     {},
@@ -3261,15 +3261,15 @@ export default async (application: Application): Promise<void> => {
         title?: string;
         content?: string;
         tagsReferences?: string[];
-        participants?: Application["server"]["locals"]["helpers"]["conversationParticipantses"][number];
+        participants?: Application["web"]["locals"]["helpers"]["conversationParticipantses"][number];
         selectedParticipants?: string[];
         isAnnouncement?: "true";
         isPinned?: "true";
       };
     },
-    Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+    Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
   >(
-    `/courses/:courseReference/conversations/new(/:type(${application.server.locals.helpers.conversationTypes.join(
+    `/courses/:courseReference/conversations/new(/:type(${application.web.locals.helpers.conversationTypes.join(
       "|"
     )}))?`,
     (request, response, next) => {
@@ -3277,7 +3277,7 @@ export default async (application: Application): Promise<void> => {
         response.locals.course === undefined ||
         ![
           undefined,
-          ...application.server.locals.helpers.conversationTypes,
+          ...application.web.locals.helpers.conversationTypes,
         ].includes(request.params.type)
       )
         return next();
@@ -3321,8 +3321,8 @@ export default async (application: Application): Promise<void> => {
 
       response.send(
         (response.locals.conversationsCount === 0
-          ? application.server.locals.layouts.main
-          : application.server.locals.layouts.conversation)({
+          ? application.web.locals.layouts.main
+          : application.web.locals.layouts.conversation)({
           request,
           response,
           head: html`
@@ -3419,7 +3419,7 @@ export default async (application: Application): Promise<void> => {
                     row-gap: var(--space--2);
                   `}"
                 >
-                  $${application.server.locals.helpers.conversationTypes.map(
+                  $${application.web.locals.helpers.conversationTypes.map(
                     (conversationType) => html`
                       <label
                         class="button button--tight button--tight--inline button--transparent"
@@ -3499,7 +3499,7 @@ export default async (application: Application): Promise<void> => {
                 class="input--text"
               />
 
-              $${application.server.locals.partials.contentEditor({
+              $${application.web.locals.partials.contentEditor({
                 request,
                 response,
                 contentSource:
@@ -3687,11 +3687,11 @@ export default async (application: Application): Promise<void> => {
                     userEmail: string;
                     userName: string;
                     userAvatar: string | null;
-                    userAvatarlessBackgroundColor: Application["server"]["locals"]["helpers"]["userAvatarlessBackgroundColors"][number];
+                    userAvatarlessBackgroundColor: Application["web"]["locals"]["helpers"]["userAvatarlessBackgroundColors"][number];
                     userBiographySource: string | null;
                     userBiographyPreprocessed: HTML | null;
                     reference: string;
-                    courseRole: Application["server"]["locals"]["helpers"]["courseRoles"][number];
+                    courseRole: Application["web"]["locals"]["helpers"]["courseRoles"][number];
                   }>(
                     sql`
                       SELECT
@@ -3767,7 +3767,7 @@ export default async (application: Application): Promise<void> => {
                                   `}"
                                 >
                                   <div class="dropdown--menu">
-                                    $${application.server.locals.helpers.conversationParticipantses.map(
+                                    $${application.web.locals.helpers.conversationParticipantses.map(
                                       (conversationParticipants) => html`
                                         <label>
                                           <input
@@ -3997,7 +3997,7 @@ export default async (application: Application): Promise<void> => {
                                                   <span
                                                     class="dropdown--menu--item button button--transparent"
                                                   >
-                                                    $${application.server.locals.partials.user(
+                                                    $${application.web.locals.partials.user(
                                                       {
                                                         request,
                                                         response,
@@ -4012,7 +4012,7 @@ export default async (application: Application): Promise<void> => {
                                                   <span
                                                     class="dropdown--menu--item button button--blue"
                                                   >
-                                                    $${application.server.locals.partials.user(
+                                                    $${application.web.locals.partials.user(
                                                       {
                                                         request,
                                                         response,
@@ -4036,7 +4036,7 @@ export default async (application: Application): Promise<void> => {
                           });
                         `}"
                       >
-                        $${application.server.locals.helpers.conversationParticipantses.map(
+                        $${application.web.locals.helpers.conversationParticipantses.map(
                           (conversationParticipants) => html`
                             <input
                               type="radio"
@@ -4131,7 +4131,7 @@ export default async (application: Application): Promise<void> => {
                               };
                             `}"
                           >
-                            $${application.server.locals.partials.user({
+                            $${application.web.locals.partials.user({
                               request,
                               response,
                               enrollment,
@@ -4394,7 +4394,7 @@ export default async (application: Application): Promise<void> => {
                               `}"
                             >
                               <span>
-                                $${application.server.locals.partials.user({
+                                $${application.web.locals.partials.user({
                                   request,
                                   response,
                                   user: response.locals.user,
@@ -4424,7 +4424,7 @@ export default async (application: Application): Promise<void> => {
                               `}"
                             >
                               <span>
-                                $${application.server.locals.partials.user({
+                                $${application.web.locals.partials.user({
                                   request,
                                   response,
                                   name: false,
@@ -4634,15 +4634,15 @@ export default async (application: Application): Promise<void> => {
     }
   );
 
-  application.server.post<
+  application.web.post<
     { courseReference: string },
     HTML,
     {
-      type?: Application["server"]["locals"]["helpers"]["conversationTypes"][number];
+      type?: Application["web"]["locals"]["helpers"]["conversationTypes"][number];
       title?: string;
       content?: string;
       tagsReferences?: string[];
-      participants?: Application["server"]["locals"]["helpers"]["conversationParticipantses"][number];
+      participants?: Application["web"]["locals"]["helpers"]["conversationParticipantses"][number];
       selectedParticipantsReferences?: string[];
       isAnnouncement?: "on";
       isPinned?: "on";
@@ -4651,7 +4651,7 @@ export default async (application: Application): Promise<void> => {
       conversationDraftReference?: string;
     },
     { conversations?: object },
-    Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+    Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
   >("/courses/:courseReference/conversations", (request, response, next) => {
     if (response.locals.course === undefined) return next();
 
@@ -4788,7 +4788,7 @@ export default async (application: Application): Promise<void> => {
     request.body.selectedParticipantsReferences ??= [];
     if (
       typeof request.body.type !== "string" ||
-      !application.server.locals.helpers.conversationTypes.includes(
+      !application.web.locals.helpers.conversationTypes.includes(
         request.body.type
       ) ||
       typeof request.body.title !== "string" ||
@@ -4816,7 +4816,7 @@ export default async (application: Application): Promise<void> => {
               response.locals.tags.map((tag) => tag.reference)
             ).length)) ||
       typeof request.body.participants !== "string" ||
-      !application.server.locals.helpers.conversationParticipantses.includes(
+      !application.web.locals.helpers.conversationParticipantses.includes(
         request.body.participants
       ) ||
       !Array.isArray(request.body.selectedParticipantsReferences) ||
@@ -4846,7 +4846,7 @@ export default async (application: Application): Promise<void> => {
         ? []
         : application.database.all<{
             id: number;
-            courseRole: Application["server"]["locals"]["helpers"]["courseRoles"][number];
+            courseRole: Application["web"]["locals"]["helpers"]["courseRoles"][number];
           }>(
             sql`
               SELECT "id", "courseRole"
@@ -4895,8 +4895,8 @@ export default async (application: Application): Promise<void> => {
       const conversation = application.database.get<{
         id: number;
         reference: string;
-        participants: Application["server"]["locals"]["helpers"]["conversationParticipantses"][number];
-        type: Application["server"]["locals"]["helpers"]["conversationTypes"][number];
+        participants: Application["web"]["locals"]["helpers"]["conversationParticipantses"][number];
+        type: Application["web"]["locals"]["helpers"]["conversationTypes"][number];
         title: string;
       }>(
         sql`
@@ -4979,7 +4979,7 @@ export default async (application: Application): Promise<void> => {
 
       if (hasMessage) {
         const contentPreprocessed =
-          application.server.locals.partials.contentPreprocessed(
+          application.web.locals.partials.contentPreprocessed(
             request.body.content!
           );
         const message = application.database.get<{
@@ -5029,13 +5029,13 @@ export default async (application: Application): Promise<void> => {
             )
           `
         );
-        application.server.locals.helpers.emailNotifications({
+        application.web.locals.helpers.emailNotifications({
           request,
           response,
-          message: application.server.locals.helpers.getMessage({
+          message: application.web.locals.helpers.getMessage({
             request,
             response,
-            conversation: application.server.locals.helpers.getConversation({
+            conversation: application.web.locals.helpers.getConversation({
               request,
               response,
               conversationReference: conversation.reference,
@@ -5072,19 +5072,19 @@ export default async (application: Application): Promise<void> => {
       )}`
     );
 
-    application.server.locals.helpers.liveUpdates({
+    application.web.locals.helpers.liveUpdates({
       request,
       response,
       url: `/courses/${response.locals.course.reference}`,
     });
   });
 
-  application.server.delete<
+  application.web.delete<
     { courseReference: string },
     HTML,
     { conversationDraftReference?: string },
     { conversations?: object },
-    Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+    Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
   >(
     "/courses/:courseReference/conversations/new",
     (request, response, next) => {
@@ -5136,11 +5136,11 @@ export default async (application: Application): Promise<void> => {
       any,
       {},
       {},
-      Application["server"]["locals"]["ResponseLocals"]["Conversation"]
+      Application["web"]["locals"]["ResponseLocals"]["Conversation"]
     >;
     response: express.Response<
       any,
-      Application["server"]["locals"]["ResponseLocals"]["Conversation"]
+      Application["web"]["locals"]["ResponseLocals"]["Conversation"]
     >;
   }): boolean =>
     response.locals.enrollment.courseRole === "staff" ||
@@ -5148,7 +5148,7 @@ export default async (application: Application): Promise<void> => {
       response.locals.conversation.authorEnrollment.id ===
         response.locals.enrollment.id);
 
-  application.server.get<
+  application.web.get<
     { courseReference: string; conversationReference: string },
     HTML,
     {},
@@ -5164,7 +5164,7 @@ export default async (application: Application): Promise<void> => {
         };
       };
     },
-    Application["server"]["locals"]["ResponseLocals"]["Conversation"]
+    Application["web"]["locals"]["ResponseLocals"]["Conversation"]
   >(
     "/courses/:courseReference/conversations/:conversationReference",
     (request, response, next) => {
@@ -5237,7 +5237,7 @@ export default async (application: Application): Promise<void> => {
       if (messagesReverse) messagesRows.reverse();
       const messages = messagesRows.map(
         (message) =>
-          application.server.locals.helpers.getMessage({
+          application.web.locals.helpers.getMessage({
             request,
             response,
             conversation: response.locals.conversation,
@@ -5258,7 +5258,7 @@ export default async (application: Application): Promise<void> => {
         );
 
       response.send(
-        application.server.locals.layouts.conversation({
+        application.web.locals.layouts.conversation({
           request,
           response,
           head: html`
@@ -5339,7 +5339,7 @@ export default async (application: Application): Promise<void> => {
                               text-overflow: ellipsis;
                             `}"
                           >
-                            $${application.server.locals.helpers.highlightSearchResult(
+                            $${application.web.locals.helpers.highlightSearchResult(
                               html`${response.locals.conversation.title}`,
                               typeof request.query.conversations?.search ===
                                 "string" &&
@@ -5417,7 +5417,7 @@ export default async (application: Application): Promise<void> => {
                                         interactive: true,
                                         content: ${html`
                                           <div class="dropdown--menu">
-                                            $${application.server.locals.helpers.conversationTypes.map(
+                                            $${application.web.locals.helpers.conversationTypes.map(
                                               (conversationType) => html`
                                                 <form
                                                   key="conversation-type--${conversationType}"
@@ -5886,7 +5886,7 @@ export default async (application: Application): Promise<void> => {
                                                         );
                                                       `}"
                                                     >
-                                                      $${application.server.locals.partials.user(
+                                                      $${application.web.locals.partials.user(
                                                         {
                                                           request,
                                                           response,
@@ -5916,7 +5916,7 @@ export default async (application: Application): Promise<void> => {
                                                         );
                                                       `}"
                                                     >
-                                                      $${application.server.locals.partials.user(
+                                                      $${application.web.locals.partials.user(
                                                         {
                                                           request,
                                                           response,
@@ -5972,7 +5972,7 @@ export default async (application: Application): Promise<void> => {
                                                         align-items: center;
                                                       `}"
                                                     >
-                                                      $${application.server.locals.partials.spinner(
+                                                      $${application.web.locals.partials.spinner(
                                                         {
                                                           request,
                                                           response,
@@ -6117,7 +6117,7 @@ export default async (application: Application): Promise<void> => {
                         line-height: var(--line-height--lg);
                       `}"
                     >
-                      $${application.server.locals.helpers.highlightSearchResult(
+                      $${application.web.locals.helpers.highlightSearchResult(
                         html`${response.locals.conversation.title}`,
                         typeof request.query.conversations?.search ===
                           "string" &&
@@ -6614,11 +6614,11 @@ export default async (application: Application): Promise<void> => {
                               userEmail: string;
                               userName: string;
                               userAvatar: string | null;
-                              userAvatarlessBackgroundColor: Application["server"]["locals"]["helpers"]["userAvatarlessBackgroundColors"][number];
+                              userAvatarlessBackgroundColor: Application["web"]["locals"]["helpers"]["userAvatarlessBackgroundColors"][number];
                               userBiographySource: string | null;
                               userBiographyPreprocessed: HTML | null;
                               reference: string;
-                              courseRole: Application["server"]["locals"]["helpers"]["courseRoles"][number];
+                              courseRole: Application["web"]["locals"]["helpers"]["courseRoles"][number];
                             }>(
                               sql`
                                 SELECT
@@ -6718,7 +6718,7 @@ export default async (application: Application): Promise<void> => {
                                             `}"
                                           >
                                             <div class="dropdown--menu">
-                                              $${application.server.locals.helpers.conversationParticipantses.map(
+                                              $${application.web.locals.helpers.conversationParticipantses.map(
                                                 (
                                                   conversationParticipants
                                                 ) => html`
@@ -6955,7 +6955,7 @@ export default async (application: Application): Promise<void> => {
                                                             <span
                                                               class="dropdown--menu--item button button--transparent"
                                                             >
-                                                              $${application.server.locals.partials.user(
+                                                              $${application.web.locals.partials.user(
                                                                 {
                                                                   request,
                                                                   response,
@@ -6971,7 +6971,7 @@ export default async (application: Application): Promise<void> => {
                                                             <span
                                                               class="dropdown--menu--item button button--blue"
                                                             >
-                                                              $${application.server.locals.partials.user(
+                                                              $${application.web.locals.partials.user(
                                                                 {
                                                                   request,
                                                                   response,
@@ -6996,7 +6996,7 @@ export default async (application: Application): Promise<void> => {
                                     });
                                   `}"
                                 >
-                                  $${application.server.locals.helpers.conversationParticipantses.map(
+                                  $${application.web.locals.helpers.conversationParticipantses.map(
                                     (conversationParticipants) => html`
                                       <input
                                         type="radio"
@@ -7087,7 +7087,7 @@ export default async (application: Application): Promise<void> => {
                                         };
                                       `}"
                                     >
-                                      $${application.server.locals.partials.user(
+                                      $${application.web.locals.partials.user(
                                         {
                                           request,
                                           response,
@@ -7168,7 +7168,7 @@ export default async (application: Application): Promise<void> => {
                                   $${response.locals.conversation.selectedParticipants.map(
                                     (selectedParticipant) => html`
                                       <div>
-                                        $${application.server.locals.partials.user(
+                                        $${application.web.locals.partials.user(
                                           {
                                             request,
                                             response,
@@ -7642,7 +7642,7 @@ export default async (application: Application): Promise<void> => {
                                                             align-items: center;
                                                           `}"
                                                         >
-                                                          $${application.server.locals.partials.spinner(
+                                                          $${application.web.locals.partials.spinner(
                                                             {
                                                               request,
                                                               response,
@@ -7713,7 +7713,7 @@ export default async (application: Application): Promise<void> => {
                                           let header = html``;
 
                                           if (
-                                            application.server.locals.helpers.mayEditMessage(
+                                            application.web.locals.helpers.mayEditMessage(
                                               {
                                                 request,
                                                 response,
@@ -7815,7 +7815,7 @@ export default async (application: Application): Promise<void> => {
                                             `;
 
                                           if (
-                                            application.server.locals.helpers.mayEndorseMessage(
+                                            application.web.locals.helpers.mayEndorseMessage(
                                               {
                                                 request,
                                                 response,
@@ -8124,7 +8124,7 @@ export default async (application: Application): Promise<void> => {
                                                     );
                                                   `}"
                                                 >
-                                                  $${application.server.locals.partials.user(
+                                                  $${application.web.locals.partials.user(
                                                     {
                                                       request,
                                                       response,
@@ -8152,7 +8152,7 @@ export default async (application: Application): Promise<void> => {
                                                         message.authorEnrollment ===
                                                         "no-longer-enrolled"
                                                           ? undefined
-                                                          : application.server.locals.helpers.highlightSearchResult(
+                                                          : application.web.locals.helpers.highlightSearchResult(
                                                               html`${message
                                                                 .authorEnrollment
                                                                 .user.name}`,
@@ -8329,7 +8329,7 @@ export default async (application: Application): Promise<void> => {
                                                 };
                                               `}"
                                             >
-                                              $${application.server.locals.partials.content(
+                                              $${application.web.locals.partials.content(
                                                 {
                                                   request,
                                                   response,
@@ -8471,7 +8471,7 @@ export default async (application: Application): Promise<void> => {
                                                                       align-items: center;
                                                                     `}"
                                                                   >
-                                                                    $${application.server.locals.partials.spinner(
+                                                                    $${application.web.locals.partials.spinner(
                                                                       {
                                                                         request,
                                                                         response,
@@ -8548,7 +8548,7 @@ export default async (application: Application): Promise<void> => {
                                                               align-items: center;
                                                             `}"
                                                           >
-                                                            $${application.server.locals.partials.spinner(
+                                                            $${application.web.locals.partials.spinner(
                                                               {
                                                                 request,
                                                                 response,
@@ -8630,7 +8630,7 @@ export default async (application: Application): Promise<void> => {
                                               justify-content: center;
                                             `}"
                                           >
-                                            $${application.server.locals.partials.spinner(
+                                            $${application.web.locals.partials.spinner(
                                               {
                                                 request,
                                                 response,
@@ -8773,7 +8773,7 @@ export default async (application: Application): Promise<void> => {
                                           line-height: var(--line-height--sm);
                                         `}"
                                       >
-                                        $${application.server.locals.partials.user(
+                                        $${application.web.locals.partials.user(
                                           {
                                             request,
                                             response,
@@ -8798,7 +8798,7 @@ export default async (application: Application): Promise<void> => {
                                                 );
                                               `}"
                                             >
-                                              $${application.server.locals.partials.user(
+                                              $${application.web.locals.partials.user(
                                                 {
                                                   request,
                                                   response,
@@ -8813,7 +8813,7 @@ export default async (application: Application): Promise<void> => {
                                             </div>
                                           `}
                                       <span>Sending…</span>
-                                      $${application.server.locals.partials.spinner(
+                                      $${application.web.locals.partials.spinner(
                                         {
                                           request,
                                           response,
@@ -8997,7 +8997,7 @@ export default async (application: Application): Promise<void> => {
                         }
                       `}"
                     >
-                      $${application.server.locals.partials.contentEditor({
+                      $${application.web.locals.partials.contentEditor({
                         request,
                         response,
                         contentSource:
@@ -9081,7 +9081,7 @@ export default async (application: Application): Promise<void> => {
                             </span>
                             $${response.locals.enrollmentsTyping
                               .map((enrollment) =>
-                                application.server.locals.partials.user({
+                                application.web.locals.partials.user({
                                   request,
                                   response,
                                   enrollment,
@@ -9143,7 +9143,7 @@ export default async (application: Application): Promise<void> => {
                                 `}"
                               >
                                 <span>
-                                  $${application.server.locals.partials.user({
+                                  $${application.web.locals.partials.user({
                                     request,
                                     response,
                                     user: response.locals.user,
@@ -9173,7 +9173,7 @@ export default async (application: Application): Promise<void> => {
                                 `}"
                               >
                                 <span>
-                                  $${application.server.locals.partials.user({
+                                  $${application.web.locals.partials.user({
                                     request,
                                     response,
                                     name: false,
@@ -9244,14 +9244,14 @@ export default async (application: Application): Promise<void> => {
     }
   );
 
-  application.server.patch<
+  application.web.patch<
     { courseReference: string; conversationReference: string },
     HTML,
     {
-      participants?: Application["server"]["locals"]["helpers"]["conversationParticipantses"][number];
+      participants?: Application["web"]["locals"]["helpers"]["conversationParticipantses"][number];
       selectedParticipantsReferences?: string[];
       isAnonymous?: "true" | "false";
-      type?: Application["server"]["locals"]["helpers"]["conversationTypes"][number];
+      type?: Application["web"]["locals"]["helpers"]["conversationTypes"][number];
       isAnnouncement?: "true" | "false";
       isPinned?: "true" | "false";
       isResolved?: "true" | "false";
@@ -9261,7 +9261,7 @@ export default async (application: Application): Promise<void> => {
       conversations?: object;
       messages?: object;
     },
-    Application["server"]["locals"]["ResponseLocals"]["Conversation"]
+    Application["web"]["locals"]["ResponseLocals"]["Conversation"]
   >(
     "/courses/:courseReference/conversations/:conversationReference",
     (request, response, next) => {
@@ -9275,7 +9275,7 @@ export default async (application: Application): Promise<void> => {
         application.database.executeTransaction(() => {
           request.body.selectedParticipantsReferences ??= [];
           if (
-            !application.server.locals.helpers.conversationParticipantses.includes(
+            !application.web.locals.helpers.conversationParticipantses.includes(
               request.body.participants!
             ) ||
             !Array.isArray(request.body.selectedParticipantsReferences) ||
@@ -9305,7 +9305,7 @@ export default async (application: Application): Promise<void> => {
               ? []
               : application.database.all<{
                   id: number;
-                  courseRole: Application["server"]["locals"]["helpers"]["courseRoles"][number];
+                  courseRole: Application["web"]["locals"]["helpers"]["courseRoles"][number];
                 }>(
                   sql`
                     SELECT "id", "courseRole"
@@ -9408,7 +9408,7 @@ export default async (application: Application): Promise<void> => {
 
       if (typeof request.body.type === "string")
         if (
-          !application.server.locals.helpers.conversationTypes.includes(
+          !application.web.locals.helpers.conversationTypes.includes(
             request.body.type
           )
         )
@@ -9452,14 +9452,14 @@ export default async (application: Application): Promise<void> => {
             `
           );
           if (request.body.isAnnouncement === "true") {
-            const message = application.server.locals.helpers.getMessage({
+            const message = application.web.locals.helpers.getMessage({
               request,
               response,
               conversation: response.locals.conversation,
               messageReference: "1",
             });
             if (message !== undefined)
-              application.server.locals.helpers.emailNotifications({
+              application.web.locals.helpers.emailNotifications({
                 request,
                 response,
                 message,
@@ -9547,7 +9547,7 @@ export default async (application: Application): Promise<void> => {
         )}`
       );
 
-      application.server.locals.helpers.liveUpdates({
+      application.web.locals.helpers.liveUpdates({
         request,
         response,
         url: `/courses/${response.locals.course.reference}`,
@@ -9555,7 +9555,7 @@ export default async (application: Application): Promise<void> => {
     }
   );
 
-  application.server.delete<
+  application.web.delete<
     { courseReference: string; conversationReference: string },
     HTML,
     {},
@@ -9563,7 +9563,7 @@ export default async (application: Application): Promise<void> => {
       conversations?: object;
       messages?: object;
     },
-    Application["server"]["locals"]["ResponseLocals"]["Conversation"]
+    Application["web"]["locals"]["ResponseLocals"]["Conversation"]
   >(
     "/courses/:courseReference/conversations/:conversationReference",
     (request, response, next) => {
@@ -9577,7 +9577,7 @@ export default async (application: Application): Promise<void> => {
         sql`DELETE FROM "conversations" WHERE "id" = ${response.locals.conversation.id}`
       );
 
-      application.server.locals.helpers.Flash.set({
+      application.web.locals.helpers.Flash.set({
         request,
         response,
         theme: "green",
@@ -9596,7 +9596,7 @@ export default async (application: Application): Promise<void> => {
         )}`
       );
 
-      application.server.locals.helpers.liveUpdates({
+      application.web.locals.helpers.liveUpdates({
         request,
         response,
         url: `/courses/${response.locals.course.reference}`,
@@ -9604,7 +9604,7 @@ export default async (application: Application): Promise<void> => {
     }
   );
 
-  application.server.post<
+  application.web.post<
     {
       courseReference: string;
       conversationReference: string;
@@ -9615,7 +9615,7 @@ export default async (application: Application): Promise<void> => {
       conversations?: object;
       messages?: object;
     },
-    Application["server"]["locals"]["ResponseLocals"]["Conversation"]
+    Application["web"]["locals"]["ResponseLocals"]["Conversation"]
   >(
     "/courses/:courseReference/conversations/:conversationReference/taggings",
     (request, response, next) => {
@@ -9664,7 +9664,7 @@ export default async (application: Application): Promise<void> => {
         )}`
       );
 
-      application.server.locals.helpers.liveUpdates({
+      application.web.locals.helpers.liveUpdates({
         request,
         response,
         url: `/courses/${response.locals.course.reference}/conversations/${response.locals.conversation.reference}`,
@@ -9672,7 +9672,7 @@ export default async (application: Application): Promise<void> => {
     }
   );
 
-  application.server.delete<
+  application.web.delete<
     {
       courseReference: string;
       conversationReference: string;
@@ -9683,7 +9683,7 @@ export default async (application: Application): Promise<void> => {
       conversations?: object;
       messages?: object;
     },
-    Application["server"]["locals"]["ResponseLocals"]["Conversation"]
+    Application["web"]["locals"]["ResponseLocals"]["Conversation"]
   >(
     "/courses/:courseReference/conversations/:conversationReference/taggings",
     (request, response, next) => {
@@ -9729,7 +9729,7 @@ export default async (application: Application): Promise<void> => {
         )}`
       );
 
-      application.server.locals.helpers.liveUpdates({
+      application.web.locals.helpers.liveUpdates({
         request,
         response,
         url: `/courses/${response.locals.course.reference}/conversations/${response.locals.conversation.reference}`,

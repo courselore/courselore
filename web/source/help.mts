@@ -3,24 +3,24 @@ import markdown from "dedent";
 import { Application } from "./index.mjs";
 
 export default async (application: Application): Promise<void> => {
-  application.server.get<
+  application.web.get<
     {},
     HTML,
     {},
     {},
-    Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]
+    Application["web"]["locals"]["ResponseLocals"]["LiveConnection"]
   >("/help/styling-content", (request, response) => {
     response.send(
-      application.server.locals.layouts.main({
+      application.web.locals.layouts.main({
         request,
         response,
         head: html`<title>Styling Content · Help · Courselore</title>`,
         body: html`
-          $${application.server.locals.partials.content({
+          $${application.web.locals.partials.content({
             request,
             response,
             contentPreprocessed:
-              application.server.locals.partials.contentPreprocessed(
+              application.web.locals.partials.contentPreprocessed(
                 markdown`
                   # Styling Content
 
@@ -103,7 +103,7 @@ export default async (application: Application): Promise<void> => {
                 `
               ).contentPreprocessed,
           }).contentProcessed}
-          $${application.server.locals.partials.contentEditor({
+          $${application.web.locals.partials.contentEditor({
             request,
             response,
             modifiable: false,

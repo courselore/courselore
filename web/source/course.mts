@@ -12,25 +12,25 @@ import QRCode from "qrcode";
 import { Application } from "./index.mjs";
 
 export type ApplicationCourse = {
-  server: {
+  web: {
     locals: {
       Types: {
         Enrollment: {
           id: number;
-          user: Application["server"]["locals"]["Types"]["User"];
+          user: Application["web"]["locals"]["Types"]["User"];
           reference: string;
-          courseRole: Application["server"]["locals"]["helpers"]["courseRoles"][number];
+          courseRole: Application["web"]["locals"]["helpers"]["courseRoles"][number];
         };
 
         MaybeEnrollment:
-          | Application["server"]["locals"]["Types"]["Enrollment"]
+          | Application["web"]["locals"]["Types"]["Enrollment"]
           | "no-longer-enrolled";
       };
 
       ResponseLocals: {
-        CourseEnrolled: Application["server"]["locals"]["ResponseLocals"]["SignedIn"] & {
-          enrollment: Application["server"]["locals"]["ResponseLocals"]["SignedIn"]["enrollments"][number];
-          course: Application["server"]["locals"]["ResponseLocals"]["SignedIn"]["enrollments"][number]["course"];
+        CourseEnrolled: Application["web"]["locals"]["ResponseLocals"]["SignedIn"] & {
+          enrollment: Application["web"]["locals"]["ResponseLocals"]["SignedIn"]["enrollments"][number];
+          course: Application["web"]["locals"]["ResponseLocals"]["SignedIn"]["enrollments"][number]["course"];
           courseEnrollmentsCount: number;
           conversationsCount: number;
           tags: {
@@ -55,14 +55,14 @@ export type ApplicationCourse = {
             any,
             {},
             {},
-            Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]
+            Application["web"]["locals"]["ResponseLocals"]["LiveConnection"]
           >;
           response: express.Response<
             any,
-            Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]
+            Application["web"]["locals"]["ResponseLocals"]["LiveConnection"]
           >;
-          course: Application["server"]["locals"]["ResponseLocals"]["SignedIn"]["enrollments"][number]["course"];
-          enrollment?: Application["server"]["locals"]["ResponseLocals"]["SignedIn"]["enrollments"][number];
+          course: Application["web"]["locals"]["ResponseLocals"]["SignedIn"]["enrollments"][number]["course"];
+          enrollment?: Application["web"]["locals"]["ResponseLocals"]["SignedIn"]["enrollments"][number];
           tight?: boolean;
         }) => HTML;
 
@@ -77,16 +77,16 @@ export type ApplicationCourse = {
             any,
             {},
             {},
-            Application["server"]["locals"]["ResponseLocals"]["SignedIn"] &
+            Application["web"]["locals"]["ResponseLocals"]["SignedIn"] &
               Partial<
-                Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+                Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
               >
           >;
           response: express.Response<
             any,
-            Application["server"]["locals"]["ResponseLocals"]["SignedIn"] &
+            Application["web"]["locals"]["ResponseLocals"]["SignedIn"] &
               Partial<
-                Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+                Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
               >
           >;
           tight?: boolean;
@@ -102,11 +102,11 @@ export type ApplicationCourse = {
             any,
             {},
             {},
-            Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]
+            Application["web"]["locals"]["ResponseLocals"]["LiveConnection"]
           >;
           response: express.Response<
             any,
-            Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]
+            Application["web"]["locals"]["ResponseLocals"]["LiveConnection"]
           >;
         }) => HTML;
       };
@@ -128,9 +128,9 @@ export type ApplicationCourse = {
 };
 
 export default async (application: Application): Promise<void> => {
-  application.server.locals.helpers.courseRoles = ["student", "staff"];
+  application.web.locals.helpers.courseRoles = ["student", "staff"];
 
-  application.server.locals.helpers.enrollmentAccentColors = [
+  application.web.locals.helpers.enrollmentAccentColors = [
     "red",
     "yellow",
     "emerald",
@@ -139,12 +139,12 @@ export default async (application: Application): Promise<void> => {
     "pink",
   ];
 
-  application.server.get<
+  application.web.get<
     {},
     HTML,
     {},
     {},
-    Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
+    Application["web"]["locals"]["ResponseLocals"]["SignedIn"]
   >("/", (request, response, next) => {
     if (
       response.locals.user === undefined ||
@@ -155,7 +155,7 @@ export default async (application: Application): Promise<void> => {
     switch (response.locals.enrollments.length) {
       case 0:
         response.send(
-          application.server.locals.layouts.main({
+          application.web.locals.layouts.main({
             request,
             response,
             head: html`<title>Courselore</title>`,
@@ -171,7 +171,7 @@ export default async (application: Application): Promise<void> => {
                 <h2 class="heading--display">Welcome to Courselore!</h2>
 
                 <div class="decorative-icon">
-                  $${application.server.locals.partials.logo({
+                  $${application.web.locals.partials.logo({
                     size: 144 /* var(--space--36) */,
                   })}
                 </div>
@@ -201,7 +201,7 @@ export default async (application: Application): Promise<void> => {
                     <i class="bi bi-journal-arrow-down"></i>
                     Enroll in an Existing Course
                   </button>
-                  $${application.server.locals.helpers.mayCreateCourses({
+                  $${application.web.locals.helpers.mayCreateCourses({
                     request,
                     response,
                   })
@@ -232,7 +232,7 @@ export default async (application: Application): Promise<void> => {
 
       default:
         response.send(
-          application.server.locals.layouts.main({
+          application.web.locals.layouts.main({
             request,
             response,
             head: html`<title>Courselore</title>`,
@@ -258,7 +258,7 @@ export default async (application: Application): Promise<void> => {
                     max-width: var(--space--80);
                   `}"
                 >
-                  $${application.server.locals.partials.courses({
+                  $${application.web.locals.partials.courses({
                     request,
                     response,
                   })}
@@ -271,22 +271,22 @@ export default async (application: Application): Promise<void> => {
     }
   });
 
-  application.server.get<
+  application.web.get<
     {},
     HTML,
     {},
     {},
-    Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
+    Application["web"]["locals"]["ResponseLocals"]["SignedIn"]
   >("/courses/new", (request, response, next) => {
     if (
       response.locals.user === undefined ||
       response.locals.user.emailVerifiedAt === null ||
-      !application.server.locals.helpers.mayCreateCourses({ request, response })
+      !application.web.locals.helpers.mayCreateCourses({ request, response })
     )
       return next();
 
     response.send(
-      application.server.locals.layouts.main({
+      application.web.locals.layouts.main({
         request,
         response,
         head: html`<title>Create a New Course · Courselore</title>`,
@@ -391,7 +391,7 @@ export default async (application: Application): Promise<void> => {
     );
   });
 
-  application.server.post<
+  application.web.post<
     {},
     any,
     {
@@ -402,12 +402,12 @@ export default async (application: Application): Promise<void> => {
       code?: string;
     },
     {},
-    Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
+    Application["web"]["locals"]["ResponseLocals"]["SignedIn"]
   >("/courses", (request, response, next) => {
     if (
       response.locals.user === undefined ||
       response.locals.user.emailVerifiedAt === null ||
-      !application.server.locals.helpers.mayCreateCourses({ request, response })
+      !application.web.locals.helpers.mayCreateCourses({ request, response })
     )
       return next();
 
@@ -506,15 +506,15 @@ export default async (application: Application): Promise<void> => {
       any,
       {},
       {},
-      Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
+      Application["web"]["locals"]["ResponseLocals"]["SignedIn"]
     >;
     response: express.Response<
       any,
-      Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
+      Application["web"]["locals"]["ResponseLocals"]["SignedIn"]
     >;
-  }): Application["server"]["locals"]["helpers"]["enrollmentAccentColors"][number] => {
+  }): Application["web"]["locals"]["helpers"]["enrollmentAccentColors"][number] => {
     const accentColorsAvailable = new Set(
-      application.server.locals.helpers.enrollmentAccentColors
+      application.web.locals.helpers.enrollmentAccentColors
     );
     for (const enrollment of response.locals.enrollments) {
       accentColorsAvailable.delete(enrollment.accentColor);
@@ -523,12 +523,12 @@ export default async (application: Application): Promise<void> => {
     return [...accentColorsAvailable][0];
   };
 
-  application.server.use<
+  application.web.use<
     { courseReference: string },
     HTML,
     {},
     {},
-    Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+    Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
   >("/courses/:courseReference", (request, response, next) => {
     if (
       response.locals.user === undefined ||
@@ -602,7 +602,7 @@ export default async (application: Application): Promise<void> => {
     next();
   });
 
-  application.server.locals.partials.course = ({
+  application.web.locals.partials.course = ({
     request,
     response,
     course,
@@ -689,7 +689,7 @@ export default async (application: Application): Promise<void> => {
           $${course.archivedAt !== null
             ? html`
                 <div>
-                  $${application.server.locals.partials.courseArchived({
+                  $${application.web.locals.partials.courseArchived({
                     request,
                     response,
                   })}
@@ -701,7 +701,7 @@ export default async (application: Application): Promise<void> => {
     </div>
   `;
 
-  application.server.locals.partials.courses = ({
+  application.web.locals.partials.courses = ({
     request,
     response,
     tight = false,
@@ -731,7 +731,7 @@ export default async (application: Application): Promise<void> => {
                   ? "button--blue"
                   : "button--transparent"}"
               >
-                $${application.server.locals.partials.course({
+                $${application.web.locals.partials.course({
                   request,
                   response,
                   course: enrollment.course,
@@ -784,7 +784,7 @@ export default async (application: Application): Promise<void> => {
                   ? "button--blue"
                   : "button--transparent"}"
               >
-                $${application.server.locals.partials.course({
+                $${application.web.locals.partials.course({
                   request,
                   response,
                   course: enrollment.course,
@@ -799,7 +799,7 @@ export default async (application: Application): Promise<void> => {
     return courses;
   };
 
-  application.server.locals.partials.courseArchived = ({
+  application.web.locals.partials.courseArchived = ({
     request,
     response,
   }) => html`
@@ -818,7 +818,7 @@ export default async (application: Application): Promise<void> => {
   `;
 
   const iconsCourseRole: {
-    [courseRole in Application["server"]["locals"]["helpers"]["courseRoles"][number]]: {
+    [courseRole in Application["web"]["locals"]["helpers"]["courseRoles"][number]]: {
       regular: HTML;
       fill: HTML;
     };
@@ -834,24 +834,24 @@ export default async (application: Application): Promise<void> => {
   };
 
   const textColorsCourseRole: {
-    [courseRole in Application["server"]["locals"]["helpers"]["courseRoles"][number]]: string;
+    [courseRole in Application["web"]["locals"]["helpers"]["courseRoles"][number]]: string;
   } = {
     student: "",
     staff: "text--sky",
   };
 
-  application.server.get<
+  application.web.get<
     { courseReference: string },
     HTML,
     {},
     {},
-    Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+    Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
   >("/courses/:courseReference", (request, response, next) => {
     if (response.locals.course === undefined) return next();
 
     if (response.locals.conversationsCount === 0)
       return response.send(
-        application.server.locals.layouts.main({
+        application.web.locals.layouts.main({
           request,
           response,
           head: html`<title>
@@ -919,7 +919,7 @@ export default async (application: Application): Promise<void> => {
       );
 
     response.send(
-      application.server.locals.layouts.conversation({
+      application.web.locals.layouts.conversation({
         request,
         response,
         head: html`<title>${response.locals.course.name} · Courselore</title>`,
@@ -929,12 +929,12 @@ export default async (application: Application): Promise<void> => {
     );
   });
 
-  application.server.get<
+  application.web.get<
     { courseReference: string },
     HTML,
     {},
     {},
-    Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+    Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
   >("/courses/:courseReference/settings", (request, response, next) => {
     if (response.locals.course === undefined) return next();
 
@@ -961,16 +961,16 @@ export default async (application: Application): Promise<void> => {
       any,
       {},
       {},
-      Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+      Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
     >;
     response: express.Response<
       any,
-      Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+      Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
     >;
     head: HTML;
     body: HTML;
   }): HTML =>
-    application.server.locals.layouts.settings({
+    application.web.locals.layouts.settings({
       request,
       response,
       head,
@@ -1069,12 +1069,12 @@ export default async (application: Application): Promise<void> => {
       body,
     });
 
-  application.server.get<
+  application.web.get<
     { courseReference: string },
     HTML,
     {},
     {},
-    Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+    Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
   >(
     "/courses/:courseReference/settings/course-information",
     (request, response, next) => {
@@ -1254,7 +1254,7 @@ export default async (application: Application): Promise<void> => {
     }
   );
 
-  application.server.patch<
+  application.web.patch<
     { courseReference: string },
     HTML,
     {
@@ -1266,7 +1266,7 @@ export default async (application: Application): Promise<void> => {
       isArchived?: "true" | "false";
     },
     {},
-    Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+    Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
   >(
     "/courses/:courseReference/settings/course-information",
     (request, response, next) => {
@@ -1325,7 +1325,7 @@ export default async (application: Application): Promise<void> => {
           `
         );
 
-        application.server.locals.helpers.Flash.set({
+        application.web.locals.helpers.Flash.set({
           request,
           response,
           theme: "green",
@@ -1344,7 +1344,7 @@ export default async (application: Application): Promise<void> => {
           `
         );
 
-        application.server.locals.helpers.Flash.set({
+        application.web.locals.helpers.Flash.set({
           request,
           response,
           theme: "green",
@@ -1361,7 +1361,7 @@ export default async (application: Application): Promise<void> => {
         `https://${application.configuration.hostname}/courses/${response.locals.course.reference}/settings/course-information`
       );
 
-      application.server.locals.helpers.liveUpdates({
+      application.web.locals.helpers.liveUpdates({
         request,
         response,
         url: `/courses/${response.locals.course.reference}`,
@@ -1369,12 +1369,12 @@ export default async (application: Application): Promise<void> => {
     }
   );
 
-  application.server.get<
+  application.web.get<
     { courseReference: string },
     HTML,
     {},
     {},
-    Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+    Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
   >("/courses/:courseReference/settings/tags", (request, response, next) => {
     if (
       response.locals.course === undefined ||
@@ -1892,7 +1892,7 @@ export default async (application: Application): Promise<void> => {
     );
   });
 
-  application.server.put<
+  application.web.put<
     { courseReference: string },
     HTML,
     {
@@ -1904,7 +1904,7 @@ export default async (application: Application): Promise<void> => {
       }[];
     },
     {},
-    Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+    Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
   >("/courses/:courseReference/settings/tags", (request, response, next) => {
     if (
       response.locals.course === undefined ||
@@ -1966,7 +1966,7 @@ export default async (application: Application): Promise<void> => {
           `
         );
 
-    application.server.locals.helpers.Flash.set({
+    application.web.locals.helpers.Flash.set({
       request,
       response,
       theme: "green",
@@ -1978,19 +1978,19 @@ export default async (application: Application): Promise<void> => {
       `https://${application.configuration.hostname}/courses/${response.locals.course.reference}/settings/tags`
     );
 
-    application.server.locals.helpers.liveUpdates({
+    application.web.locals.helpers.liveUpdates({
       request,
       response,
       url: `/courses/${response.locals.course.reference}`,
     });
   });
 
-  application.server.get<
+  application.web.get<
     { courseReference: string },
     HTML,
     {},
     {},
-    Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+    Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
   >(
     "/courses/:courseReference/settings/invitations",
     (request, response, next) => {
@@ -2007,7 +2007,7 @@ export default async (application: Application): Promise<void> => {
         reference: string;
         email: string | null;
         name: string | null;
-        courseRole: Application["server"]["locals"]["helpers"]["courseRoles"][number];
+        courseRole: Application["web"]["locals"]["helpers"]["courseRoles"][number];
       }>(
         sql`
           SELECT "id", "expiresAt", "usedAt", "reference", "email", "name", "courseRole"
@@ -2203,7 +2203,7 @@ export default async (application: Application): Promise<void> => {
                     gap: var(--space--8);
                   `}"
                 >
-                  $${application.server.locals.helpers.courseRoles.map(
+                  $${application.web.locals.helpers.courseRoles.map(
                     (courseRole) =>
                       html`
                         <label
@@ -2352,7 +2352,7 @@ export default async (application: Application): Promise<void> => {
                   $${invitations.map((invitation) => {
                     const action = `https://${application.configuration.hostname}/courses/${response.locals.course.reference}/settings/invitations/${invitation.reference}`;
                     const isInvitationExpired =
-                      application.server.locals.helpers.isExpired(
+                      application.web.locals.helpers.isExpired(
                         invitation.expiresAt
                       );
                     const isUsed = invitation.usedAt !== null;
@@ -2690,7 +2690,7 @@ export default async (application: Application): Promise<void> => {
                                       interactive: true,
                                       content: ${html`
                                         <div class="dropdown--menu">
-                                          $${application.server.locals.helpers.courseRoles.map(
+                                          $${application.web.locals.helpers.courseRoles.map(
                                             (courseRole) =>
                                               html`
                                                 <form
@@ -3101,11 +3101,11 @@ export default async (application: Application): Promise<void> => {
       any,
       {},
       {},
-      Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]
+      Application["web"]["locals"]["ResponseLocals"]["LiveConnection"]
     >;
     response: express.Response<
       any,
-      Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]
+      Application["web"]["locals"]["ResponseLocals"]["LiveConnection"]
     >;
     invitation: ResponseLocalsInvitation["invitation"];
   }): void => {
@@ -3160,17 +3160,17 @@ export default async (application: Application): Promise<void> => {
       });
   };
 
-  application.server.post<
+  application.web.post<
     { courseReference: string },
     HTML,
     {
       type?: "link" | "email";
-      courseRole?: Application["server"]["locals"]["helpers"]["courseRoles"][number];
+      courseRole?: Application["web"]["locals"]["helpers"]["courseRoles"][number];
       expiresAt?: string;
       emails?: string;
     },
     {},
-    Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+    Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
   >(
     "/courses/:courseReference/settings/invitations",
     (request, response, next) => {
@@ -3182,13 +3182,13 @@ export default async (application: Application): Promise<void> => {
 
       if (
         typeof request.body.courseRole !== "string" ||
-        !application.server.locals.helpers.courseRoles.includes(
+        !application.web.locals.helpers.courseRoles.includes(
           request.body.courseRole
         ) ||
         (request.body.expiresAt !== undefined &&
           (typeof request.body.expiresAt !== "string" ||
-            !application.server.locals.helpers.isDate(request.body.expiresAt) ||
-            application.server.locals.helpers.isExpired(
+            !application.web.locals.helpers.isDate(request.body.expiresAt) ||
+            application.web.locals.helpers.isExpired(
               request.body.expiresAt
             ))) ||
         typeof request.body.type !== "string" ||
@@ -3217,7 +3217,7 @@ export default async (application: Application): Promise<void> => {
             `
           )!;
 
-          application.server.locals.helpers.Flash.set({
+          application.web.locals.helpers.Flash.set({
             request,
             response,
             theme: "green",
@@ -3262,7 +3262,7 @@ export default async (application: Application): Promise<void> => {
             emails.length === 0 ||
             emails.some(
               ({ email }) =>
-                email.match(application.server.locals.helpers.emailRegExp) ===
+                email.match(application.web.locals.helpers.emailRegExp) ===
                 null
             )
           )
@@ -3317,7 +3317,7 @@ export default async (application: Application): Promise<void> => {
               reference: string;
               email: string;
               name: string | null;
-              courseRole: Application["server"]["locals"]["helpers"]["courseRoles"][number];
+              courseRole: Application["web"]["locals"]["helpers"]["courseRoles"][number];
             }>(
               sql`
                 SELECT * FROM "invitations" WHERE "id" = ${
@@ -3349,7 +3349,7 @@ export default async (application: Application): Promise<void> => {
             });
           }
 
-          application.server.locals.helpers.Flash.set({
+          application.web.locals.helpers.Flash.set({
             request,
             response,
             theme: "green",
@@ -3366,7 +3366,7 @@ export default async (application: Application): Promise<void> => {
   );
 
   type ResponseLocalsInvitation =
-    Application["server"]["locals"]["ResponseLocals"]["LiveConnection"] & {
+    Application["web"]["locals"]["ResponseLocals"]["LiveConnection"] & {
       invitation: {
         id: number;
         expiresAt: string | null;
@@ -3385,11 +3385,11 @@ export default async (application: Application): Promise<void> => {
         reference: string;
         email: string | null;
         name: string | null;
-        courseRole: Application["server"]["locals"]["helpers"]["courseRoles"][number];
+        courseRole: Application["web"]["locals"]["helpers"]["courseRoles"][number];
       };
     };
 
-  application.server.use<
+  application.web.use<
     { courseReference: string; invitationReference: string },
     any,
     {},
@@ -3417,7 +3417,7 @@ export default async (application: Application): Promise<void> => {
         reference: string;
         email: string | null;
         name: string | null;
-        courseRole: Application["server"]["locals"]["helpers"]["courseRoles"][number];
+        courseRole: Application["web"]["locals"]["helpers"]["courseRoles"][number];
       }>(
         sql`
           SELECT
@@ -3470,18 +3470,18 @@ export default async (application: Application): Promise<void> => {
     }
   );
 
-  application.server.patch<
+  application.web.patch<
     { courseReference: string; invitationReference: string },
     HTML,
     {
       resend?: "true";
-      courseRole?: Application["server"]["locals"]["helpers"]["courseRoles"][number];
+      courseRole?: Application["web"]["locals"]["helpers"]["courseRoles"][number];
       expiresAt?: string;
       removeExpiration?: "true";
       expire?: "true";
     },
     {},
-    Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"] &
+    Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"] &
       ResponseLocalsInvitation
   >(
     "/courses/:courseReference/settings/invitations/:invitationReference",
@@ -3497,7 +3497,7 @@ export default async (application: Application): Promise<void> => {
 
       if (request.body.resend === "true") {
         if (
-          application.server.locals.helpers.isExpired(
+          application.web.locals.helpers.isExpired(
             response.locals.invitation.expiresAt
           ) ||
           response.locals.invitation.email === null
@@ -3510,7 +3510,7 @@ export default async (application: Application): Promise<void> => {
           invitation: response.locals.invitation,
         });
 
-        application.server.locals.helpers.Flash.set({
+        application.web.locals.helpers.Flash.set({
           request,
           response,
           theme: "green",
@@ -3520,10 +3520,10 @@ export default async (application: Application): Promise<void> => {
 
       if (request.body.courseRole !== undefined) {
         if (
-          application.server.locals.helpers.isExpired(
+          application.web.locals.helpers.isExpired(
             response.locals.invitation.expiresAt
           ) ||
-          !application.server.locals.helpers.courseRoles.includes(
+          !application.web.locals.helpers.courseRoles.includes(
             request.body.courseRole
           )
         )
@@ -3533,7 +3533,7 @@ export default async (application: Application): Promise<void> => {
           sql`UPDATE "invitations" SET "courseRole" = ${request.body.courseRole} WHERE "id" = ${response.locals.invitation.id}`
         );
 
-        application.server.locals.helpers.Flash.set({
+        application.web.locals.helpers.Flash.set({
           request,
           response,
           theme: "green",
@@ -3544,8 +3544,8 @@ export default async (application: Application): Promise<void> => {
       if (request.body.expiresAt !== undefined) {
         if (
           typeof request.body.expiresAt !== "string" ||
-          !application.server.locals.helpers.isDate(request.body.expiresAt) ||
-          application.server.locals.helpers.isExpired(request.body.expiresAt)
+          !application.web.locals.helpers.isDate(request.body.expiresAt) ||
+          application.web.locals.helpers.isExpired(request.body.expiresAt)
         )
           return next("Validation");
 
@@ -3553,7 +3553,7 @@ export default async (application: Application): Promise<void> => {
           sql`UPDATE "invitations" SET "expiresAt" = ${request.body.expiresAt} WHERE "id" = ${response.locals.invitation.id}`
         );
 
-        application.server.locals.helpers.Flash.set({
+        application.web.locals.helpers.Flash.set({
           request,
           response,
           theme: "green",
@@ -3570,7 +3570,7 @@ export default async (application: Application): Promise<void> => {
           `
         );
 
-        application.server.locals.helpers.Flash.set({
+        application.web.locals.helpers.Flash.set({
           request,
           response,
           theme: "green",
@@ -3587,7 +3587,7 @@ export default async (application: Application): Promise<void> => {
           `
         );
 
-        application.server.locals.helpers.Flash.set({
+        application.web.locals.helpers.Flash.set({
           request,
           response,
           theme: "green",
@@ -3602,19 +3602,19 @@ export default async (application: Application): Promise<void> => {
     }
   );
 
-  application.server.get<
+  application.web.get<
     { courseReference: string; invitationReference: string },
     HTML,
     {},
     { redirect?: string },
-    Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"] &
+    Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"] &
       ResponseLocalsInvitation
   >(
     "/courses/:courseReference/invitations/:invitationReference",
     asyncHandler(async (request, response, next) => {
       if (response.locals.invitation === undefined)
         return response.status(404).send(
-          application.server.locals.layouts.box({
+          application.web.locals.layouts.box({
             request,
             response,
             head: html` <title>Invitation · Courselore</title> `,
@@ -3631,7 +3631,7 @@ export default async (application: Application): Promise<void> => {
 
       if (response.locals.invitation.usedAt !== null)
         return response.send(
-          application.server.locals.layouts.box({
+          application.web.locals.layouts.box({
             request,
             response,
             head: html`
@@ -3645,7 +3645,7 @@ export default async (application: Application): Promise<void> => {
                 <i class="bi bi-journal-arrow-down"></i>
                 Invitation
               </h2>
-              $${application.server.locals.partials.course({
+              $${application.web.locals.partials.course({
                 request,
                 response,
                 course: response.locals.invitation.course,
@@ -3660,12 +3660,12 @@ export default async (application: Application): Promise<void> => {
         );
 
       if (
-        application.server.locals.helpers.isExpired(
+        application.web.locals.helpers.isExpired(
           response.locals.invitation.expiresAt
         )
       )
         return response.send(
-          application.server.locals.layouts.box({
+          application.web.locals.layouts.box({
             request,
             response,
             head: html`
@@ -3679,7 +3679,7 @@ export default async (application: Application): Promise<void> => {
                 <i class="bi bi-journal-arrow-down"></i>
                 Invitation
               </h2>
-              $${application.server.locals.partials.course({
+              $${application.web.locals.partials.course({
                 request,
                 response,
                 course: response.locals.invitation.course,
@@ -3694,7 +3694,7 @@ export default async (application: Application): Promise<void> => {
 
       if (response.locals.user === undefined)
         return response.send(
-          application.server.locals.layouts.box({
+          application.web.locals.layouts.box({
             request,
             response,
             head: html`
@@ -3708,7 +3708,7 @@ export default async (application: Application): Promise<void> => {
                 <i class="bi bi-journal-arrow-down"></i>
                 Invitation
               </h2>
-              $${application.server.locals.partials.course({
+              $${application.web.locals.partials.course({
                 request,
                 response,
                 course: response.locals.invitation.course,
@@ -3800,7 +3800,7 @@ export default async (application: Application): Promise<void> => {
           response.locals.user.email.toLowerCase()
       )
         return response.send(
-          application.server.locals.layouts.box({
+          application.web.locals.layouts.box({
             request,
             response,
             head: html`
@@ -3814,7 +3814,7 @@ export default async (application: Application): Promise<void> => {
                 <i class="bi bi-journal-arrow-down"></i>
                 Invitation
               </h2>
-              $${application.server.locals.partials.course({
+              $${application.web.locals.partials.course({
                 request,
                 response,
                 course: response.locals.invitation.course,
@@ -3842,7 +3842,7 @@ export default async (application: Application): Promise<void> => {
         else {
           const link = `https://${application.configuration.hostname}/courses/${response.locals.invitation.course.reference}/invitations/${response.locals.invitation.reference}`;
           return response.send(
-            application.server.locals.layouts.box({
+            application.web.locals.layouts.box({
               request,
               response,
               head: html`
@@ -3856,7 +3856,7 @@ export default async (application: Application): Promise<void> => {
                   <i class="bi bi-journal-arrow-down"></i>
                   Invitation
                 </h2>
-                $${application.server.locals.partials.course({
+                $${application.web.locals.partials.course({
                   request,
                   response,
                   course: response.locals.invitation.course,
@@ -3956,7 +3956,7 @@ export default async (application: Application): Promise<void> => {
         }
 
       response.send(
-        application.server.locals.layouts.box({
+        application.web.locals.layouts.box({
           request,
           response,
           head: html`
@@ -3970,7 +3970,7 @@ export default async (application: Application): Promise<void> => {
               <i class="bi bi-journal-arrow-down"></i>
               Invitation
             </h2>
-            $${application.server.locals.partials.course({
+            $${application.web.locals.partials.course({
               request,
               response,
               course: response.locals.invitation.course,
@@ -4002,14 +4002,14 @@ export default async (application: Application): Promise<void> => {
     })
   );
 
-  application.server.post<
+  application.web.post<
     { courseReference: string; invitationReference: string },
     HTML,
     {},
     { redirect?: string },
-    Application["server"]["locals"]["ResponseLocals"]["SignedIn"] &
+    Application["web"]["locals"]["ResponseLocals"]["SignedIn"] &
       Partial<
-        Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+        Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
       > &
       ResponseLocalsInvitation
   >(
@@ -4060,12 +4060,12 @@ export default async (application: Application): Promise<void> => {
     }
   );
 
-  application.server.get<
+  application.web.get<
     { courseReference: string },
     HTML,
     {},
     {},
-    Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+    Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
   >(
     "/courses/:courseReference/settings/enrollments",
     (request, response, next) => {
@@ -4084,11 +4084,11 @@ export default async (application: Application): Promise<void> => {
           userEmail: string;
           userName: string;
           userAvatar: string | null;
-          userAvatarlessBackgroundColor: Application["server"]["locals"]["helpers"]["userAvatarlessBackgroundColors"][number];
+          userAvatarlessBackgroundColor: Application["web"]["locals"]["helpers"]["userAvatarlessBackgroundColors"][number];
           userBiographySource: string | null;
           userBiographyPreprocessed: HTML | null;
           reference: string;
-          courseRole: Application["server"]["locals"]["helpers"]["courseRoles"][number];
+          courseRole: Application["web"]["locals"]["helpers"]["courseRoles"][number];
         }>(
           sql`
             SELECT
@@ -4216,7 +4216,7 @@ export default async (application: Application): Promise<void> => {
                   `}"
                 >
                   <div>
-                    $${application.server.locals.partials.user({
+                    $${application.web.locals.partials.user({
                       request,
                       response,
                       enrollment,
@@ -4238,7 +4238,7 @@ export default async (application: Application): Promise<void> => {
                       <div
                         class="strong"
                         data-filterable-phrases="${JSON.stringify(
-                          application.server.locals.helpers.splitFilterablePhrases(
+                          application.web.locals.helpers.splitFilterablePhrases(
                             enrollment.user.name
                           )
                         )}"
@@ -4251,7 +4251,7 @@ export default async (application: Application): Promise<void> => {
                             margin-right: var(--space--2);
                           `}"
                           data-filterable-phrases="${JSON.stringify(
-                            application.server.locals.helpers.splitFilterablePhrases(
+                            application.web.locals.helpers.splitFilterablePhrases(
                               enrollment.user.email
                             )
                           )}"
@@ -4355,7 +4355,7 @@ export default async (application: Application): Promise<void> => {
                                 interactive: true,
                                 content: ${html`
                                   <div class="dropdown--menu">
-                                    $${application.server.locals.helpers.courseRoles.map(
+                                    $${application.web.locals.helpers.courseRoles.map(
                                       (courseRole) =>
                                         html`
                                           <form
@@ -4580,7 +4580,7 @@ export default async (application: Application): Promise<void> => {
                       ? html`
                           <details class="details">
                             <summary>Biography</summary>
-                            $${application.server.locals.partials.content({
+                            $${application.web.locals.partials.content({
                               request,
                               response,
                               contentPreprocessed:
@@ -4600,7 +4600,7 @@ export default async (application: Application): Promise<void> => {
   );
 
   type ResponseLocalsManagedEnrollment =
-    Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"] & {
+    Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"] & {
       managedEnrollment: {
         id: number;
         reference: string;
@@ -4608,7 +4608,7 @@ export default async (application: Application): Promise<void> => {
       };
     };
 
-  application.server.use<
+  application.web.use<
     { courseReference: string; enrollmentReference: string },
     any,
     {},
@@ -4659,11 +4659,11 @@ export default async (application: Application): Promise<void> => {
     }
   );
 
-  application.server.patch<
+  application.web.patch<
     { courseReference: string; enrollmentReference: string },
     HTML,
     {
-      courseRole?: Application["server"]["locals"]["helpers"]["courseRoles"][number];
+      courseRole?: Application["web"]["locals"]["helpers"]["courseRoles"][number];
     },
     {},
     ResponseLocalsManagedEnrollment
@@ -4674,7 +4674,7 @@ export default async (application: Application): Promise<void> => {
 
       if (typeof request.body.courseRole === "string") {
         if (
-          !application.server.locals.helpers.courseRoles.includes(
+          !application.web.locals.helpers.courseRoles.includes(
             request.body.courseRole
           )
         )
@@ -4684,7 +4684,7 @@ export default async (application: Application): Promise<void> => {
           sql`UPDATE "enrollments" SET "courseRole" = ${request.body.courseRole} WHERE "id" = ${response.locals.managedEnrollment.id}`
         );
 
-        application.server.locals.helpers.Flash.set({
+        application.web.locals.helpers.Flash.set({
           request,
           response,
           theme: "green",
@@ -4699,7 +4699,7 @@ export default async (application: Application): Promise<void> => {
           : `https://${application.configuration.hostname}/courses/${response.locals.course.reference}/settings/enrollments`
       );
 
-      application.server.locals.helpers.liveUpdates({
+      application.web.locals.helpers.liveUpdates({
         request,
         response,
         url: `/courses/${response.locals.course.reference}`,
@@ -4707,7 +4707,7 @@ export default async (application: Application): Promise<void> => {
     }
   );
 
-  application.server.delete<
+  application.web.delete<
     { courseReference: string; enrollmentReference: string },
     HTML,
     {},
@@ -4722,7 +4722,7 @@ export default async (application: Application): Promise<void> => {
         sql`DELETE FROM "enrollments" WHERE "id" = ${response.locals.managedEnrollment.id}`
       );
 
-      application.server.locals.helpers.Flash.set({
+      application.web.locals.helpers.Flash.set({
         request,
         response,
         theme: "green",
@@ -4740,7 +4740,7 @@ export default async (application: Application): Promise<void> => {
           : `https://${application.configuration.hostname}/courses/${response.locals.course.reference}/settings/enrollments`
       );
 
-      application.server.locals.helpers.liveUpdates({
+      application.web.locals.helpers.liveUpdates({
         request,
         response,
         url: `/courses/${response.locals.course.reference}`,
@@ -4748,12 +4748,12 @@ export default async (application: Application): Promise<void> => {
     }
   );
 
-  application.server.get<
+  application.web.get<
     { courseReference: string },
     HTML,
     {},
     {},
-    Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+    Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
   >(
     "/courses/:courseReference/settings/your-enrollment",
     (request, response, next) => {
@@ -4816,7 +4816,7 @@ export default async (application: Application): Promise<void> => {
                     gap: var(--space--2);
                   `}"
                 >
-                  $${application.server.locals.helpers.enrollmentAccentColors.map(
+                  $${application.web.locals.helpers.enrollmentAccentColors.map(
                     (accentColor) => html`
                       <input
                         type="radio"
@@ -4874,14 +4874,14 @@ export default async (application: Application): Promise<void> => {
     }
   );
 
-  application.server.patch<
+  application.web.patch<
     { courseReference: string },
     HTML,
     {
-      accentColor?: Application["server"]["locals"]["helpers"]["enrollmentAccentColors"][number];
+      accentColor?: Application["web"]["locals"]["helpers"]["enrollmentAccentColors"][number];
     },
     {},
-    Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+    Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
   >(
     "/courses/:courseReference/settings/your-enrollment",
     (request, response, next) => {
@@ -4889,7 +4889,7 @@ export default async (application: Application): Promise<void> => {
 
       if (
         typeof request.body.accentColor !== "string" ||
-        !application.server.locals.helpers.enrollmentAccentColors.includes(
+        !application.web.locals.helpers.enrollmentAccentColors.includes(
           request.body.accentColor
         )
       )
@@ -4899,7 +4899,7 @@ export default async (application: Application): Promise<void> => {
         sql`UPDATE "enrollments" SET "accentColor" = ${request.body.accentColor} WHERE "id" = ${response.locals.enrollment.id}`
       );
 
-      application.server.locals.helpers.Flash.set({
+      application.web.locals.helpers.Flash.set({
         request,
         response,
         theme: "green",
