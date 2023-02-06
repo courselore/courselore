@@ -22,6 +22,8 @@
   - SSO with Hopkins ID (SAML) (https://glacial-plateau-47269.herokuapp.com/).
   - 2-Factor Authentication.
   - Look into SIS to get a list of courses
+  - Send an email on sign-in to alert of potentially suspicious activity
+  - On email verification page, add a sign out button.
 - Give visual indication on dragging-and-dropping avatar on `/settings/profile`.
 - Extra fields:
   - Pronoun.
@@ -39,6 +41,7 @@
   - Invitations per section.
   - Choose a section when joining the course or when already joined.
 - Introduce the notion of “groups”, for example, “group of TAs who work on grading”.
+- When switching between courses, go back to the same conversation where you’ve been.
 
 ## Invitations
 
