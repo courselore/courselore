@@ -6,8 +6,6 @@ import sql from "@leafac/sqlite";
 import filenamify from "filenamify";
 import { Application } from "./index.mjs";
 
-export type SendEmailWorker = () => Promise<void>;
-
 export default async (application: Application): Promise<void> => {
   let timerAbortController: AbortController;
 

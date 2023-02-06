@@ -33,7 +33,7 @@ export type ApplicationConversation = {
       };
 
       layouts: {
-        conversation({
+        conversation: ({
           request,
           response,
           head,
@@ -79,11 +79,11 @@ export type ApplicationConversation = {
           sidebarOnSmallScreen?: boolean;
           mainIsAScrollingPane?: boolean;
           body: HTML;
-        }): HTML;
+        }) => HTML;
       };
 
       partials: {
-        conversation({
+        conversation: ({
           request,
           response,
           conversation,
@@ -132,7 +132,7 @@ export type ApplicationConversation = {
           message?: NonNullable<
             ReturnType<Application["server"]["locals"]["helpers"]["getMessage"]>
           >;
-        }): HTML;
+        }) => HTML;
       };
 
       helpers: {
@@ -140,7 +140,7 @@ export type ApplicationConversation = {
 
         conversationTypes: ["question", "note", "chat"];
 
-        getConversation({
+        getConversation: ({
           request,
           response,
           conversationReference,
@@ -157,7 +157,7 @@ export type ApplicationConversation = {
             Application["server"]["locals"]["ResponseLocals"]["CourseEnrolled"]
           >;
           conversationReference: string;
-        }):
+        }) =>
           | {
               id: number;
               createdAt: string;

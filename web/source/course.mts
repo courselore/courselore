@@ -43,7 +43,7 @@ export type ApplicationCourse = {
       };
 
       partials: {
-        course({
+        course: ({
           request,
           response,
           course,
@@ -64,9 +64,9 @@ export type ApplicationCourse = {
           course: Application["server"]["locals"]["ResponseLocals"]["SignedIn"]["enrollments"][number]["course"];
           enrollment?: Application["server"]["locals"]["ResponseLocals"]["SignedIn"]["enrollments"][number];
           tight?: boolean;
-        }): HTML;
+        }) => HTML;
 
-        courses({
+        courses: ({
           request,
           response,
           tight,
@@ -91,9 +91,9 @@ export type ApplicationCourse = {
           >;
           tight?: boolean;
           hrefSuffix?: string;
-        }): HTML;
+        }) => HTML;
 
-        courseArchived({
+        courseArchived: ({
           request,
           response,
         }: {
@@ -108,7 +108,7 @@ export type ApplicationCourse = {
             any,
             Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]
           >;
-        }): HTML;
+        }) => HTML;
       };
 
       helpers: {

@@ -12,7 +12,7 @@ export type ApplicationMessage = {
   server: {
     locals: {
       helpers: {
-        getMessage({
+        getMessage: ({
           request,
           response,
           conversation,
@@ -35,7 +35,7 @@ export type ApplicationMessage = {
             >
           >;
           messageReference: string;
-        }):
+        }) =>
           | {
               id: number;
               createdAt: string;
@@ -65,7 +65,7 @@ export type ApplicationMessage = {
             }
           | undefined;
 
-        mayEditMessage({
+        mayEditMessage: ({
           request,
           response,
           message,
@@ -84,9 +84,9 @@ export type ApplicationMessage = {
           message: NonNullable<
             ReturnType<Application["server"]["locals"]["helpers"]["getMessage"]>
           >;
-        }): boolean;
+        }) => boolean;
 
-        mayEndorseMessage({
+        mayEndorseMessage: ({
           request,
           response,
           message,
@@ -108,9 +108,9 @@ export type ApplicationMessage = {
           message: NonNullable<
             ReturnType<Application["server"]["locals"]["helpers"]["getMessage"]>
           >;
-        }): boolean;
+        }) => boolean;
 
-        emailNotifications({
+        emailNotifications: ({
           request,
           response,
           message,
@@ -129,7 +129,7 @@ export type ApplicationMessage = {
           message: NonNullable<
             ReturnType<Application["server"]["locals"]["helpers"]["getMessage"]>
           >;
-        }): void;
+        }) => void;
       };
     };
   };

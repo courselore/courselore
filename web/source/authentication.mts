@@ -166,7 +166,7 @@ export type ApplicationAuthentication = {
           }) => void;
         };
 
-        passwordConfirmation({
+        passwordConfirmation: ({
           request,
           response,
         }: {
@@ -181,9 +181,9 @@ export type ApplicationAuthentication = {
             any,
             Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
           >;
-        }): Promise<boolean>;
+        }) => Promise<boolean>;
 
-        mayCreateCourses({
+        mayCreateCourses: ({
           request,
           response,
         }: {
@@ -198,9 +198,9 @@ export type ApplicationAuthentication = {
             any,
             Application["server"]["locals"]["ResponseLocals"]["SignedIn"]
           >;
-        }): boolean;
+        }) => boolean;
 
-        emailVerification({
+        emailVerification: ({
           request,
           response,
           userId,
@@ -221,7 +221,7 @@ export type ApplicationAuthentication = {
           userId: number;
           userEmail: string;
           welcome?: boolean;
-        }): void;
+        }) => void;
       };
     };
   };

@@ -39,12 +39,12 @@ export type ApplicationContent = {
   server: {
     locals: {
       partials: {
-        contentPreprocessed(contentSource: string): {
+        contentPreprocessed: (contentSource: string) => {
           contentPreprocessed: string;
           contentSearch: string;
         };
 
-        content({
+        content: ({
           request,
           response,
           id,
@@ -73,12 +73,12 @@ export type ApplicationContent = {
           contentPreprocessed: HTML;
           decorate?: boolean;
           search?: string | string[] | undefined;
-        }): {
+        }) => {
           contentProcessed: HTML;
           mentions: Set<string>;
         };
 
-        contentEditor({
+        contentEditor: ({
           request,
           response,
           name,
@@ -115,7 +115,7 @@ export type ApplicationContent = {
           required?: boolean;
           compact?: boolean;
           modifiable?: boolean;
-        }): HTML;
+        }) => HTML;
       };
     };
   };

@@ -14,7 +14,7 @@ export type ApplicationLiveConnection = {
       };
 
       helpers: {
-        liveUpdates({
+        liveUpdates: ({
           request,
           response,
           url,
@@ -31,7 +31,7 @@ export type ApplicationLiveConnection = {
             Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]
           >;
           url: string;
-        }): Promise<void>;
+        }) => Promise<void>;
       };
     };
   };

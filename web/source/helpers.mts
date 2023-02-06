@@ -7,15 +7,18 @@ export type ApplicationHelpers = {
     locals: {
       helpers: {
         emailRegExp: RegExp;
-        isDate(string: string): boolean;
-        isExpired(expiresAt: string | null): boolean;
-        sanitizeSearch(search: string, options?: { prefix?: boolean }): string;
-        highlightSearchResult(
+        isDate: (string: string) => boolean;
+        isExpired: (expiresAt: string | null) => boolean;
+        sanitizeSearch: (
+          search: string,
+          options?: { prefix?: boolean }
+        ) => string;
+        highlightSearchResult: (
           searchResult: string,
           searchPhrases: string | string[] | undefined,
           options?: { prefix?: boolean }
-        ): HTML;
-        splitFilterablePhrases(filterable: string): string[];
+        ) => HTML;
+        splitFilterablePhrases: (filterable: string) => string[];
       };
     };
   };

@@ -30,7 +30,7 @@ export type ApplicationUser = {
       };
 
       partials: {
-        user({
+        user: ({
           request,
           response,
           enrollment,
@@ -71,7 +71,7 @@ export type ApplicationUser = {
           tooltip?: boolean;
           size?: "xs" | "sm" | "xl";
           bold?: boolean;
-        }): HTML;
+        }) => HTML;
       };
 
       helpers: {

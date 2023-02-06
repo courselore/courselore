@@ -8,7 +8,7 @@ export type ApplicationLogging = {
     locals: {
       ResponseLocals: {
         Logging: {
-          log(...messageParts: string[]): void;
+          log: (...messageParts: string[]) => void;
         };
       };
     };

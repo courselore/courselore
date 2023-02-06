@@ -14,7 +14,7 @@ export type ApplicationLayouts = {
   server: {
     locals: {
       layouts: {
-        base({
+        base: ({
           request,
           response,
           head,
@@ -41,9 +41,9 @@ export type ApplicationLayouts = {
           head: HTML;
           extraHeaders?: HTML;
           body: HTML;
-        }): HTML;
+        }) => HTML;
 
-        box({
+        box: ({
           request,
           response,
           head,
@@ -68,9 +68,9 @@ export type ApplicationLayouts = {
           >;
           head: HTML;
           body: HTML;
-        }): HTML;
+        }) => HTML;
 
-        application({
+        application: ({
           request,
           response,
           head,
@@ -99,9 +99,9 @@ export type ApplicationLayouts = {
           showCourseSwitcher?: boolean;
           extraHeaders?: HTML;
           body: HTML;
-        }): HTML;
+        }) => HTML;
 
-        main({
+        main: ({
           request,
           response,
           head,
@@ -128,9 +128,9 @@ export type ApplicationLayouts = {
           head: HTML;
           showCourseSwitcher?: boolean;
           body: HTML;
-        }): HTML;
+        }) => HTML;
 
-        settings({
+        settings: ({
           request,
           response,
           head,
@@ -153,9 +153,9 @@ export type ApplicationLayouts = {
           menuButton: HTML;
           menu: HTML;
           body: HTML;
-        }): HTML;
+        }) => HTML;
 
-        partial({
+        partial: ({
           request,
           response,
           body,
@@ -172,13 +172,13 @@ export type ApplicationLayouts = {
             Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]
           >;
           body: HTML;
-        }): HTML;
+        }) => HTML;
       };
 
       partials: {
-        logo(options?: { size?: number }): HTML;
+        logo: (options?: { size?: number }) => HTML;
 
-        spinner({
+        spinner: ({
           request,
           response,
           size,
@@ -195,7 +195,7 @@ export type ApplicationLayouts = {
             Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]
           >;
           size?: number;
-        }): HTML;
+        }) => HTML;
 
         reportIssueHref: string;
       };
