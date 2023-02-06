@@ -77,8 +77,7 @@
 - Add a course-wide setting to make tags optional in all kinds of conversation (not only non-chats), even if there are tags.
 - Killer feature to attract people: off-the-shelf AI
   - Help staff write answers
-  - Reuse questions
-  - Reuse questions from previous year
+  - Find similar questions (this semester, previous semesters)
   - Sentiment analysis to avoid marking question as unresolved when student just said “thank you”
   - Talk about this on home page.
 
@@ -110,11 +109,6 @@
   - People assign themselves to groups.
   - Add mentions like `@group-3`.
 
-**Reuse**
-
-- Don’t use the URL to reuse a conversation, like we’re doing now, because there’s a size limit to the URL (for example, the demonstration data of rich text is too big and causes a 431 response). Instead, put course & message on query parameters and fetch straight from the database on `/new` route.
-- Have a way to mark several conversations in a course as reusable and reuse them all at the same time on a new course.
-
 ## Messages
 
 - Add the notion of follow-up question, so that questions aren’t marked as “unresolved” as soon as a student sends a message. It makes sense for when the student just says “thanks.”
@@ -138,6 +132,20 @@
 
 - Show accent colors for different people (for example, faint background colors), to help identify messages.
 - Nested replies (similar to Slack’s threads).
+
+**Reuse**
+
+- Import messages from Piazza in a structured way.
+- Don’t use the URL to reuse a message, like we’re doing now, because there’s a size limit to the URL (for example, the demonstration data of rich text is too big and causes a 431 response). Instead, put course/conversation/message on query parameters and fetch straight from the database on `/new` route.
+- Have a way to mark several messages in a course as reusable and reuse them all at the same time on a new course.
+  - The reusable messages could become “drafts” in the new course.
+- Have a way to schedule messages into the future, to have a timeline of things like homework handouts.
+  - Either automatically post, or just notify staff that it’s time to post (in case they want to double-check stuff)
+- Follow up with Jason
+  - Ask about other features he thinks may help Courselore stand out from email lists and other communication software.
+- Introduce the notion of course resources
+  - Superpinned conversation that people can’t post messages to.
+- Don’t introduce the notion of continuity between courses as a first-class concept in the application, because it would complicate things too much. Just have ways to “import” material from other courses conveniently.
 
 ## Anonymity
 
@@ -164,6 +172,7 @@
   - Students may see aggregate results.
   - Staff may see individual votes.
   - Allow for closing a poll.
+  - Edge case: Reusing a poll in a new course doesn’t work out of the box; we need some logic to duplicate the poll.
 - Lightbox modal:
   - Resized images
   - Code blocks
@@ -195,6 +204,8 @@
 - Dragging a directory from Finder makes the request fail without even an error code(!)
 - In programmer mode, change the behavior of when the `@mentions` and `#references` widgets appear and go away, particularly in code & mathematics blocks.
 - Load “Preview” on hover/focus to speed things up?
+- When pasting things like spreadsheets into the editor, turn them into Markdown tables.
+  - Do the same for links, bold, and other inline styles.
 
 ## Notifications
 
