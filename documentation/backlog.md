@@ -194,6 +194,7 @@
 **Editor**
 
 - On new conversation page, maybe adapt the `@mentions` widget according to the participants that are currently set. (This already happens on drafting messages on existing conversations.)
+- The `@mention` widget should sort by people who have recently participated in the conversation.
 - Have the `@mention` widget list people who aren’t in the conversation (suitably marked as so) (similar to Twitter DMs).
 - Answer templates.
 - Paste tables from Excel and have them formatted as Markdown tables.
@@ -852,6 +853,9 @@ const { app, BrowserWindow } = require("electron");
 - Automate:
   - Updates.
   - Backups.
+    - SQLite
+      - `VACUUM INTO`
+      - better-sqlite3’s `.backup()` method.
 - Have a way for self-hosters to migrate domains.
   - Rewrite avatars.
   - Rewrite URLs in messages.
