@@ -86,6 +86,7 @@
   - Sentiment analysis to avoid marking question as unresolved when student just said “thank you”
   - Talk about this on home page.
 - Introduce a helper to explain Conversation Participants. People aren’t getting, for example, that you can have “Staff + these few people I selected by hand.”
+- Introduce panes so you can have multiple conversations open on the same window, side-by-side (particularly useful on desktop application, maybe even on mobile application).
 
 **Participants**
 
