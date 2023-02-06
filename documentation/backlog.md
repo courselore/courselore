@@ -679,6 +679,8 @@ const { app, BrowserWindow } = require("electron");
   - `userPartial` tooltip
   - `conversationPartial` tooltip on decorated content
   - Selected participants widget
+    - New conversation
+    - Conversations page (edit participants)
 - View caching on the server.
   - https://guides.rubyonrails.org/caching_with_rails.html
   - This would interact in some way with server-side diffing on Live-Updates
