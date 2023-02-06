@@ -110,6 +110,11 @@
   - People assign themselves to groups.
   - Add mentions like `@group-3`.
 
+**Reuse**
+
+- Don’t use the URL to reuse a conversation, like we’re doing now, because there’s a size limit to the URL (for example, the demonstration data of rich text is too big and causes a 431 response). Instead, put course & message on query parameters and fetch straight from the database on `/new` route.
+- Have a way to mark several conversations in a course as reusable and reuse them all at the same time on a new course.
+
 ## Messages
 
 - Add the notion of follow-up question, so that questions aren’t marked as “unresolved” as soon as a student sends a message. It makes sense for when the student just says “thanks.”
@@ -189,6 +194,7 @@
 - If you’re in the middle of editing, and someone else edits a message (or the conversation title), then you’re going to overwrite their changes. Warn about this.
 - Dragging a directory from Finder makes the request fail without even an error code(!)
 - In programmer mode, change the behavior of when the `@mentions` and `#references` widgets appear and go away, particularly in code & mathematics blocks.
+- Load “Preview” on hover/focus to speed things up?
 
 ## Notifications
 
