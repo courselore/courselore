@@ -5798,24 +5798,24 @@ export default async (application: Application): Promise<void> => {
                                     <button
                                       class="dropdown--menu--item button button--transparent"
                                       javascript="${javascript`
-                                          leafac.setTippy({
-                                            event,
-                                            element: this,
-                                            elementProperty: "copied",
-                                            tippyProps: {
-                                              theme: "green",
-                                              trigger: "manual",
-                                              content: "Copied",
-                                            },
-                                          });
-  
-                                          this.onclick = async () => {
-                                            await navigator.clipboard.writeText(${`https://${application.configuration.hostname}/courses/${response.locals.course.reference}/conversations/${response.locals.conversation.reference}`});
-                                            this.copied.show();
-                                            await new Promise((resolve) => { window.setTimeout(resolve, 1000); });
-                                            this.copied.hide();
-                                          };
-                                        `}"
+                                        leafac.setTippy({
+                                          event,
+                                          element: this,
+                                          elementProperty: "copied",
+                                          tippyProps: {
+                                            theme: "green",
+                                            trigger: "manual",
+                                            content: "Copied",
+                                          },
+                                        });
+
+                                        this.onclick = async () => {
+                                          await navigator.clipboard.writeText(${`https://${application.configuration.hostname}/courses/${response.locals.course.reference}/conversations/${response.locals.conversation.reference}`});
+                                          this.copied.show();
+                                          await new Promise((resolve) => { window.setTimeout(resolve, 1000); });
+                                          this.copied.hide();
+                                        };
+                                      `}"
                                     >
                                       <i class="bi bi-link"></i>
                                       Copy Conversation Permanent Link
