@@ -556,10 +556,7 @@ export default async (application: Application): Promise<void> => {
       request.body.passwordConfirmation
     ));
 
-  application.web.locals.helpers.mayCreateCourses = ({
-    request,
-    response,
-  }) =>
+  application.web.locals.helpers.mayCreateCourses = ({ request, response }) =>
     response.locals.administrationOptions.userSystemRolesWhoMayCreateCourses ===
       "all" ||
     (response.locals.administrationOptions
@@ -704,9 +701,8 @@ export default async (application: Application): Promise<void> => {
 
       if (
         typeof request.body.email !== "string" ||
-        request.body.email.match(
-          application.web.locals.helpers.emailRegExp
-        ) === null ||
+        request.body.email.match(application.web.locals.helpers.emailRegExp) ===
+          null ||
         typeof request.body.password !== "string" ||
         request.body.password.trim() === ""
       )
@@ -936,9 +932,8 @@ export default async (application: Application): Promise<void> => {
 
     if (
       typeof request.body.email !== "string" ||
-      request.body.email.match(
-        application.web.locals.helpers.emailRegExp
-      ) === null
+      request.body.email.match(application.web.locals.helpers.emailRegExp) ===
+        null
     )
       return next("Validation");
 
@@ -1481,9 +1476,8 @@ export default async (application: Application): Promise<void> => {
         typeof request.body.name !== "string" ||
         request.body.name.trim() === "" ||
         typeof request.body.email !== "string" ||
-        request.body.email.match(
-          application.web.locals.helpers.emailRegExp
-        ) === null ||
+        request.body.email.match(application.web.locals.helpers.emailRegExp) ===
+          null ||
         typeof request.body.password !== "string" ||
         request.body.password.trim() === "" ||
         request.body.password.length < 8

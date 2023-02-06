@@ -813,9 +813,7 @@ export default async (application: Application): Promise<void> => {
 
     if (typeof request.body.role === "string") {
       if (
-        !application.web.locals.helpers.systemRoles.includes(
-          request.body.role
-        )
+        !application.web.locals.helpers.systemRoles.includes(request.body.role)
       )
         return next("Validation");
 

@@ -514,13 +514,11 @@ export default async (application: Application): Promise<void> => {
                   >`;
                   break;
                 case "anonymous":
-                  mentionHTML = html`@$${application.web.locals.partials.user(
-                    {
-                      request,
-                      response,
-                      avatar: false,
-                    }
-                  )}`;
+                  mentionHTML = html`@$${application.web.locals.partials.user({
+                    request,
+                    response,
+                    avatar: false,
+                  })}`;
                   break;
                 default:
                   const enrollmentReference = mention.split("--")[0];
@@ -581,14 +579,12 @@ export default async (application: Application): Promise<void> => {
                     courseRole: enrollmentRow.courseRole,
                   };
                   mentions.add(enrollment.reference);
-                  mentionHTML = html`@$${application.web.locals.partials.user(
-                    {
-                      request,
-                      response,
-                      enrollment,
-                      avatar: false,
-                    }
-                  )}`;
+                  mentionHTML = html`@$${application.web.locals.partials.user({
+                    request,
+                    response,
+                    enrollment,
+                    avatar: false,
+                  })}`;
                   if (enrollment.user.id === response.locals.user!.id)
                     mentionHTML = html`<mark class="mark"
                       >$${mentionHTML}</mark
@@ -2891,12 +2887,11 @@ ${contentSource}</textarea
             LIMIT 5
           `
         )) {
-          const conversation =
-            application.web.locals.helpers.getConversation({
-              request,
-              response,
-              conversationReference: conversationRow.reference,
-            });
+          const conversation = application.web.locals.helpers.getConversation({
+            request,
+            response,
+            conversationReference: conversationRow.reference,
+          });
           if (conversation === undefined) continue;
           results += html`
             <button
@@ -3380,9 +3375,7 @@ ${contentSource}</textarea
     {},
     Application["web"]["locals"]["ResponseLocals"]["LiveConnection"] &
       Partial<Application["web"]["locals"]["ResponseLocals"]["SignedIn"]> &
-      Partial<
-        Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
-      >
+      Partial<Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]>
   >(
     [
       "/content-editor/preview",

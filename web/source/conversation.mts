@@ -7087,17 +7087,15 @@ export default async (application: Application): Promise<void> => {
                                         };
                                       `}"
                                     >
-                                      $${application.web.locals.partials.user(
-                                        {
-                                          request,
-                                          response,
-                                          enrollment,
-                                          user: enrollment.user,
-                                          tooltip: false,
-                                          size: "xs",
-                                          bold: false,
-                                        }
-                                      )}
+                                      $${application.web.locals.partials.user({
+                                        request,
+                                        response,
+                                        enrollment,
+                                        user: enrollment.user,
+                                        tooltip: false,
+                                        size: "xs",
+                                        bold: false,
+                                      })}
                                     </button>
                                   `
                                 )}

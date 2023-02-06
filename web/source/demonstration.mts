@@ -180,24 +180,21 @@ export default async (application: Application): Promise<void> => {
           name: "Principles of Programming Languages",
           code: "CS 601.426",
           courseRole: application.web.locals.helpers.courseRoles[1],
-          accentColor:
-            application.web.locals.helpers.enrollmentAccentColors[0],
+          accentColor: application.web.locals.helpers.enrollmentAccentColors[0],
           enrollmentsUsers: users.slice(0, 100),
         },
         {
           name: "Pharmacology",
           code: "MD 401.324",
           courseRole: application.web.locals.helpers.courseRoles[0],
-          accentColor:
-            application.web.locals.helpers.enrollmentAccentColors[1],
+          accentColor: application.web.locals.helpers.enrollmentAccentColors[1],
           enrollmentsUsers: users.slice(25, 125),
         },
         {
           name: "Object-Oriented Software Engineering",
           code: "EN 601.421",
           courseRole: application.web.locals.helpers.courseRoles[1],
-          accentColor:
-            application.web.locals.helpers.enrollmentAccentColors[2],
+          accentColor: application.web.locals.helpers.enrollmentAccentColors[2],
           enrollmentsUsers: users.slice(50, 150),
           isArchived: true,
         },

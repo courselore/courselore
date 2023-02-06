@@ -3262,8 +3262,7 @@ export default async (application: Application): Promise<void> => {
             emails.length === 0 ||
             emails.some(
               ({ email }) =>
-                email.match(application.web.locals.helpers.emailRegExp) ===
-                null
+                email.match(application.web.locals.helpers.emailRegExp) === null
             )
           )
             return next("Validation");
