@@ -30,10 +30,15 @@
 ## Courses
 
 - “Enrollment” → “Course Participant”
+- “Staff” → “Course Staff”
 - Remove course entirely.
 - Have a setting to either let students remove themselves from the course, or let them request the staff to be removed.
 - Upload roster and show differences.
 - Lock a course for a period, for example, when a take-home exam is out.
+- Introduce the notion of sections:
+  - Invitations per section.
+  - Choose a section when joining the course or when already joined.
+- Introduce the notion of “groups”, for example, “group of TAs who work on grading”.
 
 ## Invitations
 
@@ -80,6 +85,7 @@
   - Find similar questions (this semester, previous semesters)
   - Sentiment analysis to avoid marking question as unresolved when student just said “thank you”
   - Talk about this on home page.
+- Introduce a helper to explain Conversation Participants. People aren’t getting, for example, that you can have “Staff + these few people I selected by hand.”
 
 **Participants**
 
