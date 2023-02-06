@@ -740,6 +740,7 @@ const { app, BrowserWindow } = require("electron");
 - Make top-level `await` available for `` javascript`...` ``.
   - Complication: many things, like `setTippy()` would become `async` as well.
   - Convert infinite loops with `update()` and `setTimeout()` into `while (true)` (search for `update(`).
+  - No other existing `` javascript`...` `` needs this right now.
 - Extract the logic to use SQLite as a job queue.
 - In development, have a way to force jobs to run.
 - Edge case in which Tippy must be removed from element:
