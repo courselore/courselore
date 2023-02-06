@@ -737,6 +737,7 @@ const { app, BrowserWindow } = require("electron");
 
 ## Infrastructure
 
+- Extract the logic to use SQLite as a job queue.
 - In development, have a way to force jobs to run.
 - Edge case in which Tippy must be removed from element:
   1. Change an invitation from expired to not expired.
