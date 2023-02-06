@@ -469,6 +469,9 @@ new Notification('Example');
 ## Statistics
 
 - How many questions & how fast they were answered.
+- Number of people who are online.
+- More statics from Piazza.
+- Staff that should be on call answering questions, but aren’t.
 - A way to grade interactions on conversations, for example, for when the homework is to discuss a certain topic. (It seems that Canvas has this feature.)
 - Gamification
   - Badges (for example, first to answer a question)
@@ -737,6 +740,11 @@ const { app, BrowserWindow } = require("electron");
 
 ## Infrastructure
 
+- If a child process crashes too many times in a short period, then crash the main process.
+- Extract libraries:
+  - @leafac/javascript
+  - @leafac/express
+  - @radically-straightforward
 - Make top-level `await` available for `` javascript`...` ``.
   - Complication: many things, like `setTippy()` would become `async` as well.
   - Convert infinite loops with `update()` and `setTimeout()` into `while (true)` (search for `update(`).
