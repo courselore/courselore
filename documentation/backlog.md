@@ -744,6 +744,19 @@ const { app, BrowserWindow } = require("electron");
 
 ## Infrastructure
 
+- Test process manager on Windows
+  - In development, `Ctrl+C`.
+  - Kill process
+    - Ways to kill
+      - Preventable (`SIGTERM`)
+      - Not preventable (`SIGKILL`)
+    - Processes to kill
+      - Main
+      - Web
+      - Worker
+      - Caddy
+  - Crash the server process
+- Extract auxiliary functions that need to be used by workers, for example, content processor. (Right now we make up fake request/response objects, which is prone to errors.)
 - Email system administrator in case of a crash.
 - Remove checks for redundancy of boolean actions.
   - Examples:
