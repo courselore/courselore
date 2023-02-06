@@ -95,6 +95,13 @@
 - 1-to-1 conversation
   - Use background color to distinguish between people, so you don’t have to show their names over and over.
 - Staff may allow or disallow people to have private conversations in which staff don’t participate (the default is to allow)
+- Groups, for example, Graders, Project Advisors, Group members, different sections on courses.
+  - Some groups are available only to students, while others only to staff.
+  - People assign themselves to groups.
+  - Add mentions like `@group-3`.
+
+## Messages
+
 - Whispers:
   - Similar to Discourse
   - Staff-only messages
@@ -104,13 +111,6 @@
     - The point is: Don’t let people miss whispers
   - There’s no way to convert back and fort between regular messages & whispers. If necessary, delete and send another message.
   - Style differences to highlight whispers: font (italics vs regular), font color, and a little icon. Do several such things. Perhaps don’t change the background color. It might be good to make it a little more obvious, e.g. label it as a "staff-only whisper, students cannot see this". Otherwise some new staff may not know what is going on.
-- Groups, for example, Graders, Project Advisors, Group members, different sections on courses.
-  - Some groups are available only to students, while others only to staff.
-  - People assign themselves to groups.
-  - Add mentions like `@group-3`.
-
-## Messages
-
 - Add the notion of follow-up question, so that questions aren’t marked as “unresolved” as soon as a student sends a message. It makes sense for when the student just says “thanks.”
   - Have a dedicated button for this.
 - Let staff endorse other staff answers.
