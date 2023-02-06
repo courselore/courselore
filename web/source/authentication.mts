@@ -93,7 +93,7 @@ export type ApplicationAuthentication = {
         Session: {
           maxAge: number;
 
-          open({
+          open: ({
             request,
             response,
             userId,
@@ -110,9 +110,9 @@ export type ApplicationAuthentication = {
               Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]
             >;
             userId: number;
-          }): void;
+          }) => void;
 
-          get({
+          get: ({
             request,
             response,
           }: {
@@ -127,9 +127,9 @@ export type ApplicationAuthentication = {
               any,
               Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]
             >;
-          }): number | undefined;
+          }) => number | undefined;
 
-          close({
+          close: ({
             request,
             response,
           }: {
@@ -144,9 +144,9 @@ export type ApplicationAuthentication = {
               any,
               Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]
             >;
-          }): void;
+          }) => void;
 
-          closeAllAndReopen({
+          closeAllAndReopen: ({
             request,
             response,
             userId,
@@ -163,7 +163,7 @@ export type ApplicationAuthentication = {
               Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]
             >;
             userId: number;
-          }): void;
+          }) => void;
         };
 
         passwordConfirmation({
@@ -238,7 +238,7 @@ export default async (application: Application): Promise<void> => {
   application.server.locals.helpers.Session = {
     maxAge: 180 * 24 * 60 * 60 * 1000,
 
-    open({ request, response, userId }) {
+    open: ({ request, response, userId }) => {
       const session = application.database.get<{
         token: string;
       }>(
@@ -265,7 +265,7 @@ export default async (application: Application): Promise<void> => {
       });
     },
 
-    get({ request, response }) {
+    get: ({ request, response }) => {
       if (request.cookies["__Host-Session"] === undefined) return undefined;
 
       const session = application.database.get<{
@@ -302,7 +302,7 @@ export default async (application: Application): Promise<void> => {
       return session.user;
     },
 
-    close({ request, response }) {
+    close: ({ request, response }) => {
       if (request.cookies["__Host-Session"] === undefined) return;
 
       application.database.run(
@@ -316,7 +316,7 @@ export default async (application: Application): Promise<void> => {
       );
     },
 
-    closeAllAndReopen({ request, response, userId }) {
+    closeAllAndReopen: ({ request, response, userId }) => {
       application.server.locals.helpers.Session.close({ request, response });
 
       application.database.run(
@@ -758,7 +758,7 @@ export default async (application: Application): Promise<void> => {
   const PasswordReset = {
     maxAge: 10 * 60 * 1000,
 
-    create(userId: number): string {
+    create: (userId: number): string => {
       application.database.run(
         sql`
           DELETE FROM "passwordResets" WHERE "user" = ${userId}
@@ -783,7 +783,7 @@ export default async (application: Application): Promise<void> => {
       )!.nonce;
     },
 
-    get(nonce: string): number | undefined {
+    get: (nonce: string): number | undefined => {
       return application.database.get<{
         user: number;
       }>(

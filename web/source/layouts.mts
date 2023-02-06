@@ -204,7 +204,7 @@ export type ApplicationLayouts = {
         Flash: {
           maxAge: number;
 
-          set({
+          set: ({
             request,
             response,
             theme,
@@ -223,9 +223,9 @@ export type ApplicationLayouts = {
             >;
             theme: string;
             content: HTML;
-          }): void;
+          }) => void;
 
-          get({
+          get: ({
             request,
             response,
           }: {
@@ -240,7 +240,7 @@ export type ApplicationLayouts = {
               any,
               Application["server"]["locals"]["ResponseLocals"]["LiveConnection"]
             >;
-          }): { theme: string; content: HTML } | undefined;
+          }) => { theme: string; content: HTML } | undefined;
         };
       };
     };
@@ -3210,7 +3210,7 @@ export default async (application: Application): Promise<void> => {
   application.server.locals.helpers.Flash = {
     maxAge: 5 * 60 * 1000,
 
-    set({ request, response, theme, content }) {
+    set: ({ request, response, theme, content }) => {
       const flash = application.database.get<{ nonce: string }>(
         sql`
           SELECT * FROM "flashes" WHERE "id" = ${
@@ -3235,7 +3235,7 @@ export default async (application: Application): Promise<void> => {
       });
     },
 
-    get({ request, response }) {
+    get: ({ request, response }) => {
       if (request.cookies["__Host-Flash"] === undefined) return undefined;
       const flash = application.database.get<{
         id: number;
