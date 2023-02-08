@@ -44,6 +44,7 @@
 - Remove course entirely.
 - Have a setting to either let students remove themselves from the course, or let them request the staff to be removed.
 - Upload roster and show differences.
+  - https://courselore.org/courses/8537410611/conversations/34
 - Lock a course for a period, for example, when a take-home exam is out.
   - Still allow students to ask private questions
   - Multiple locks, scheduled in advance?
@@ -52,6 +53,8 @@
   - Choose a section when joining the course or when already joined.
 - Introduce the notion of “groups”, for example, “group of TAs who work on grading”.
 - When switching between courses, go back to the same conversation where you’ve been.
+- Pretty URLs for courses (for example, `https://courselore.org/principles-of-programming-languages--2023`?
+  - https://courselore.org/courses/8537410611/conversations/44
 
 ## Invitations
 
@@ -81,6 +84,7 @@
   - Add a button to delete a draft directly from the sidebar.
 - Have a simple way to share “conversation templates,” which use the query parameters to pre-fill the “New Conversation” form.
 - Add the notion of “staff considers this a good question.” Similar to the notion of “endorsement,” but for questions.
+  - https://courselore.org/courses/8537410611/conversations/33
 - Introduce the notion of locking a conversation.
 - Streamline the creation of DMs.
 - Highlights (similar to Slack’s pins, but we’re avoiding the word “pin” because it already means “pinned conversations”). The highlights are visible to everyone in the conversation.
@@ -100,6 +104,8 @@
   - Talk about this on home page.
 - Introduce a helper to explain Conversation Participants. People aren’t getting, for example, that you can have “Staff + these few people I selected by hand.”
 - Introduce panes so you can have multiple conversations open on the same window, side-by-side (particularly useful on desktop application, maybe even on mobile application).
+- When navigating back and forth between conversations, go back to previous scrolling position.
+  - https://courselore.org/courses/8537410611/conversations/66
 
 **Participants**
 
@@ -129,7 +135,7 @@
     - On load, it’s showing
     - On new whisper, show again
     - The point is: Don’t let people miss whispers
-  - There’s no way to convert back and fort between regular messages & whispers. If necessary, delete and send another message.
+  - There’s no way to convert back and forth between regular messages & whispers. If necessary, delete and send another message.
   - Style differences to highlight whispers: font (italics vs regular), font color, and a little icon. Do several such things. Perhaps don’t change the background color. It might be good to make it a little more obvious, e.g. label it as a "staff-only whisper, students cannot see this". Otherwise some new staff may not know what is going on.
 - Add the notion of follow-up question, so that questions aren’t marked as “unresolved” as soon as a student sends a message. It makes sense for when the student just says “thanks.”
   - Have a dedicated button for this.
@@ -147,6 +153,7 @@
 - Add different notification badges for when you’re @mentioned.
   - On badges on sidebar indicating that a conversation includes unread messages
   - On badges on course list
+  - https://courselore.org/courses/8537410611/conversations/53
 - A timeline-like list of unread messages and other things that require your attention.
 
 **Chat**
@@ -204,6 +211,7 @@
     - Do a proper lightbox modal in full screen
     - Give option to wrap or not long lines
   - Block quotes (especially replies)
+  - https://courselore.org/courses/8537410611/conversations/6
 - Install extensions for Shiki, for example, for OCaml.
 - Mermaid: https://github.blog/2022-02-14-include-diagrams-markdown-files-mermaid/
   - Isn’t made for server-side rendering: https://github.com/mermaid-js/mermaid/issues/3650
@@ -214,6 +222,8 @@
   - Convert to improve compatibility & performance?
   - Poster image for `<video>` tag?
   - How do they show up in email notifications?
+- Let the “quote” selected text pick parts of paragraphs.
+  - https://courselore.org/courses/8537410611/conversations/63
 
 **Editor**
 
@@ -243,6 +253,7 @@
 - Grace period between sending a message and triggering the email notifications
   - Allow users to configure it?
   - The feature is effectively turned off with a grace period of zero
+  - https://courselore.org/courses/8537410611/conversations/28
 - Allow replying to a message by replying to the email notification
   - Obfuscate email addresses in the message (like GitHub does).
   - Use IMAP on an existing inbox instead of SMTP?
@@ -271,6 +282,7 @@
     - `startedAt` is used for timeout
   - Reenable digests in user interface
   - Add transaction to `emailNotificationMessageJobs`
+  - https://courselore.org/courses/8537410611/conversations/22
 - Email contents:
 
   - Subjects could include the fact that you were mentioned, to make it easier to set up filters.
@@ -284,6 +296,7 @@
     - Code blocks are duplicated:
       - Have a processor to remove one of the versions of code block from the email.
   - Mathematics are rendered incorrectly.
+  - https://courselore.org/courses/8537410611/conversations/7
   - Add first-class support for Dark Mode in emails? Or continue relying on automatic Dark Mode? And, in general, style our emails more?
 
     ```html
@@ -358,6 +371,8 @@ new Notification('Example');
   - Conversations I started
   - My questions
   - Conversations in which I participated.
+  - Conversations in which I’m mentioned
+    - https://courselore.org/courses/8537410611/conversations/65
 - Use a dropdown to occupy less space
 
 **Sidebar · Conversations List**
@@ -405,6 +420,7 @@ new Notification('Example');
 - Include a “set as answer and endorse” button.
 - Show a widget similar to the Views and Likes (with person & time) to endorsements.
 - Don’t show endorsements for messages that have been converted into non-answers. (They show up at least for staff.)
+- Staff endorsements should show a list of people similar to “Likes” and “Views”.
 
 **Chat**
 
@@ -472,8 +488,11 @@ new Notification('Example');
   - When you’re typing, there’s a weird scrollbar glitch: it shows up for a split second and hides back again. I observed this in Meta Courselore using Safari.
   - https://css-tricks.com/the-cleanest-trick-for-autogrowing-textareas/
   - https://github.com/fregante/fit-textarea **Use v2**.
+  - https://courselore.org/courses/8537410611/conversations/66
 - The HTML for latency-compensate sending a message could be embedded in the JavaScript, now that embedding HTML in JavaScript is a thing.
 - Selecting multiple paragraphs and bolding doesn’t work (the same issue occurs in GitHub 🤷)
+- Don’t let `@metions` and `#references` widgets appear if you’re in the middle of a code block.
+  - https://courselore.org/courses/8537410611/conversations/64
 
 **New Conversation**
 
@@ -490,6 +509,7 @@ new Notification('Example');
 
 - Add the number of unread messages to the `<title>`.
   - Or change the favicon.
+  - https://courselore.org/courses/8537410611/conversations/25
 - Detect old or otherwise unsupported browsers and alert, asking the user to update.
 - Make breadcrumbs (for example, under “User Settings”) clickable (they should expose the navigation menu, just like what happens in Visual Studio Code).
 - The anonymity button isn’t as clear as it should be.
@@ -549,6 +569,7 @@ new Notification('Example');
 - Gamification
   - Badges (for example, first to answer a question)
   - Karma points for whole class and unlock achievements for everyone
+- https://courselore.org/courses/8537410611/conversations/62
 
 ## Live Course Communication during the Lectures
 
