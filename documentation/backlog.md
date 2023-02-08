@@ -177,6 +177,7 @@
 - Filter by date.
 - `@mentions` are awkward in search results, because they take in account the original `@<enrollment-reference>--<name-slug>` instead of the rendered person’s name.
 - When filtering by “Selected People”, allow you to select **which** people.
+- Include tags in freeform search
 
 ## Content
 
