@@ -604,6 +604,7 @@ const { app, BrowserWindow } = require("electron");
     - Agnostic to front-end framework.
     - Excellent onboarding experience.
     - Isn’t super popular, but the smaller community is enthusiastic.
+    - It’s mostly for delivering a pre-bundled static website, but we want to use server-rendered HTML, and we want to connect to multiple servers.
   - https://reactnative.dev/
     - https://expo.dev/
     - Ties you to React.
@@ -611,6 +612,18 @@ const { app, BrowserWindow } = require("electron");
   - https://cordova.apache.org/
     - The spiritual predecessor of Capacitor.
     - Still more popular, but dreaded.
+  - Have a way to preview static part of the mobile application in the browser (without having to go though mobile simulators or actual devices)
+  - Review the treatment of notches
+  - Treat the case in which you’re offline
+  - Introduce a way for the web applicatoin to detect that we’re in the context of the mobile application.
+    - Use a cookie? That’s what PWABuilder does.
+  - Close and reopen the application should take you to where you were before
+  - Icon
+  - Certificate/signing/notarization
+  - Apple may reject our application based on clause 4.2, but what about Mattermost, Discourse, Discord, and so forth?
+    - They would probably have approved without questions if we had hidden our website from the internet 😛
+    - Rendering HTML from relatively untrusted sources doesn’t help our case 🤷
+  - Perhaps we should start by doing a PWA: See PWABuilder
 - Have registry of Courselore instances. For example, in a phone application we could show a list of existing instances. (You could always not list yourself in the registry and enter the URL for your instance manually on the phone application.)
 
 ## Administrative Interface
