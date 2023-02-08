@@ -39,11 +39,14 @@
 ## Courses
 
 - “Enrollment” → “Course Participant”
+  - “Enroll” → “Join”
 - “Staff” → “Course Staff”
 - Remove course entirely.
 - Have a setting to either let students remove themselves from the course, or let them request the staff to be removed.
 - Upload roster and show differences.
 - Lock a course for a period, for example, when a take-home exam is out.
+  - Still allow students to ask private questions
+  - Multiple locks, scheduled in advance?
 - Introduce the notion of sections:
   - Invitations per section.
   - Choose a section when joining the course or when already joined.
@@ -193,6 +196,7 @@
   - Staff may see individual votes.
   - Allow for closing a poll.
   - Edge case: Reusing a poll in a new course doesn’t work out of the box; we need some logic to duplicate the poll.
+  - Include text material in full-text search
 - Lightbox modal:
   - Resized images
   - Code blocks
@@ -265,6 +269,8 @@
   - `notificationDigestJobs`
     - Existence indicates active worker to avoid race condition
     - `startedAt` is used for timeout
+  - Reenable digests in user interface
+  - Add transaction to `emailNotificationMessageJobs`
 - Email contents:
 
   - Subjects could include the fact that you were mentioned, to make it easier to set up filters.
@@ -810,6 +816,7 @@ const { app, BrowserWindow } = require("electron");
 
 ## Infrastructure
 
+- Rename schema to be more explicit, for example, “likes” → “messageLikes”.
 - Test process manager on Windows
   - In development, `Ctrl+C`.
   - Kill process
