@@ -495,7 +495,10 @@ new Notification('Example');
 - The anonymity button isn’t as clear as it should be.
 - Add more help pages in other parts that may need them.
 - Replace `<i class="bi bi-info-circle"></i>` with `<i class="bi bi-question-circle"></i>`?
-- When there are multiple flashes (for example, you’ve just edited your profile **and** you become offline), let them stack on top of each other, instead of overlapping.
+- Flash:
+  - Anchor it to artificial element, instead of `<body>` hack
+  - When there are multiple (for example, you’ve just edited your profile **and** you become offline), let them stack on top of each other, instead of overlapping.
+- Consider using `position: absolute` for header and footer, to avoid them scrolling under any circumstance
 
 ## Pagination
 
@@ -600,6 +603,12 @@ const { app, BrowserWindow } = require("electron");
 - There’s also https://github.com/nativefier/nativefier, but it’s “minimally maintained,” and it may not have the features necessary to do things like badges.
 
 - Mobile:
+  - PWA
+    - PWABuilder
+    - Manifest
+    - Service worker (Cache API)
+    - Install to home screen
+    - Push API & Notifications API
   - https://capacitorjs.com/
     - Agnostic to front-end framework.
     - Excellent onboarding experience.
@@ -612,19 +621,28 @@ const { app, BrowserWindow } = require("electron");
   - https://cordova.apache.org/
     - The spiritual predecessor of Capacitor.
     - Still more popular, but dreaded.
+  - Warn users about untrusted content
+  - Before redirecting the user, let the server verify that the instance does seem like a Courselore installation
   - Have a way to preview static part of the mobile application in the browser (without having to go though mobile simulators or actual devices)
   - Review the treatment of notches
+    - Safe area padding
+    - Progress bar should be in safe area
+    - When the onscreen keyboard shows up, the bottom safe area gets large and the whole page shifts up
   - Treat the case in which you’re offline
-  - Introduce a way for the web applicatoin to detect that we’re in the context of the mobile application.
+  - Introduce a way for the web application to detect that we’re in the context of the mobile application.
     - Use a cookie? That’s what PWABuilder does.
+    - Use preload scripts (but then how does that information carry across to the context of HTML loaded from the server?)
   - Close and reopen the application should take you to where you were before
   - Icon
+    - Iconset creator
   - Certificate/signing/notarization
   - Apple may reject our application based on clause 4.2, but what about Mattermost, Discourse, Discord, and so forth?
     - They would probably have approved without questions if we had hidden our website from the internet 😛
     - Rendering HTML from relatively untrusted sources doesn’t help our case 🤷
-  - Perhaps we should start by doing a PWA: See PWABuilder
+  - Have a way to sign out
+  - Have a way to sign in to multiple Courselore instances
 - Have registry of Courselore instances. For example, in a phone application we could show a list of existing instances. (You could always not list yourself in the registry and enter the URL for your instance manually on the phone application.)
+  - Perhaps this would be paid, to support our work of verifying the validity of the instance
 
 ## Administrative Interface
 
