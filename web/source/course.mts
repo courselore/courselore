@@ -3855,11 +3855,21 @@ export default async (application: Application): Promise<void> => {
                   <i class="bi bi-journal-arrow-down"></i>
                   Invitation
                 </h2>
-                $${application.web.locals.partials.course({
-                  request,
-                  response,
-                  course: response.locals.invitation.course,
-                })}
+                <a
+                  href="https://${application.configuration
+                    .hostname}/courses/${response.locals.invitation.course
+                    .reference}"
+                  class="button button--tight button--tight--inline button--transparent"
+                  css="${css`
+                    justify-content: start;
+                  `}"
+                >
+                  $${application.web.locals.partials.course({
+                    request,
+                    response,
+                    course: response.locals.invitation.course,
+                  })}
+                </a>
                 <hr class="separator" />
                 <p class="strong">You’re already enrolled.</p>
 
