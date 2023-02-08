@@ -3,7 +3,14 @@
 ## Finish
 
 - Organize Meta Courselore.
-- User deletion
+- Deletion
+  - Require password confirmation
+    - Even for things that already exist, for example, when you’re a staff member removing an enrollment
+  - Cases
+    - Users
+    - Your own enrollment (instead of having staff do it)
+      - Allow even the last staff member to remove themselves
+    - Courses
 - Merging feature branches
 - Email digests
 - Drafts
@@ -219,16 +226,24 @@
 - Load “Preview” on hover/focus to speed things up?
 - When pasting things like spreadsheets into the editor, turn them into Markdown tables.
   - Do the same for links, bold, and other inline styles.
+  - @github/paste-markdown
+  - See what Discourse does for spreadsheets → tables.
+  - Paste from Piazza
+  - LaTeX
 
 ## Notifications
 
 **Email**
 
+- Grace period between sending a message and triggering the email notifications
+  - Allow users to configure it?
+  - The feature is effectively turned off with a grace period of zero
 - Allow replying to a message by replying to the email notification
   - Obfuscate email addresses in the message (like GitHub does).
   - Use IMAP on an existing inbox instead of SMTP?
   - There’s nothing we can do about replying to an email notifications digest, so it should still go to the system administrator, or perhaps have an automatic bounce reply.
 - Don’t send notifications when the person is online and/or has seen the message.
+  - Explain this in Notifications Settings page.
 - More granular control over what to be notified about.
   - Course-level configuration.
   - Subscribe/unsubscribe to particular conversations of interest/disinterest.
@@ -318,6 +333,11 @@ new Notification('Example');
 - Clean interface.
 - Don’t have an “Apply Filter” button, but apply the filters as soon as you click on them.
 - Search as you type.
+- New filters (and quick filters):
+  - Conversations I started
+  - My questions
+  - Conversations in which I participated.
+- Use a dropdown to occupy less space
 
 **Sidebar · Conversations List**
 
@@ -335,6 +355,9 @@ new Notification('Example');
   - Improve display of endorsements & answers (on the sidebar, include number of answers).
   - Manage answer badges more intelligently (answered at all, answered by staff).
 - Highlight conversations that include an `@mention` to you.
+- Quick Actions:
+  - Unpin
+  - Resolve a Question.
 
 **Conversation**
 
@@ -345,6 +368,12 @@ new Notification('Example');
 
 **Messages**
 
+- On conversation of type Question, have separate buttons for:
+  - Sending an answer
+  - Follow-up question (resets the resolved status)
+  - Regular message (doesn’t reset the resolved status)
+  - (Remove the “Type” selector for messages)
+  - (Introduce the notion of “message type” for follow-up question as a first class citizen and things like that?)
 - Higher contrast between background and text?
 - Blockquotes
   - Faint background color to help differentiate them?
@@ -445,6 +474,7 @@ new Notification('Example');
 - The anonymity button isn’t as clear as it should be.
 - Add more help pages in other parts that may need them.
 - Replace `<i class="bi bi-info-circle"></i>` with `<i class="bi bi-question-circle"></i>`?
+- When there are multiple flashes (for example, you’ve just edited your profile **and** you become offline), let them stack on top of each other, instead of overlapping.
 
 ## Pagination
 
@@ -677,6 +707,7 @@ const { app, BrowserWindow } = require("electron");
   - On the list of enrollments (or list of users in administrative panel while it’s still naively implemented as a filter on the client side) the filter resets on form submission (for example, changing a person’s role).
   - In chats, submitting a form collapses the `conversation--header--full`.
 - Scroll to URL `#hashes`, which may occur in the middle of a message.
+- Prevent event attempting a Live-Navigation if the Live-Connection determines that you’re offline.
 
 ## Live-Connection
 
