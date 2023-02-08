@@ -251,6 +251,20 @@
 - Add option to receive email notifications for your own messages.
 - Email digests:
   - “Announcements” should be sent immediately, not as part of the digest.
+  - What happens when you change your email notification settings and a digest is already being prepared for you?
+  - When it’s time to process a message:
+    - Process content with recipients perspective
+      - Extract out of `application.web` (Right now we make up fake request/response objects, which is prone to errors.)
+        - Are there other auxiliary functions that need to be extracted like that?
+      - Modify content processor to allow for taking an arbitrary user’s perspective
+    - If digest: enqueue in digests queue
+  - Periodically check digests queue and enqueue `sendEmailJobs` for delivery
+    - Enqueue hourly digests on the hour and daily digests at 07:00 UTC.
+  - Digests should use `contentSearch` truncated?
+  - Digests group messages from different courses
+  - `notificationDigestJobs`
+    - Existence indicates active worker to avoid race condition
+    - `startedAt` is used for timeout
 - Email contents:
 
   - Subjects could include the fact that you were mentioned, to make it easier to set up filters.
@@ -808,7 +822,6 @@ const { app, BrowserWindow } = require("electron");
       - Worker
       - Caddy
   - Crash the server process
-- Extract auxiliary functions that need to be used by workers, for example, content processor. (Right now we make up fake request/response objects, which is prone to errors.)
 - Email system administrator in case of a crash.
 - Remove checks for redundancy of boolean actions.
   - Examples:
