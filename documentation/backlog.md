@@ -131,6 +131,7 @@
 
 - Change the meaning of “views”: Instead of using “readings”, only count as “viewed” if the message has appeared on the person’s screen.
   - Tracking pixel on email for people who will read the notification on their email and just “mark as read” on Courselore?
+  - This should be the last instance of a GET request that makes changes on the server, which should unlock the possibility of prefetching on hover.
 - Mark a message as unread.
 - Add notification badges indicating the number of unread messages on the lists of courses (for example, the main page and the course switcher on the upper-left).
 - Add different notification badges for when you’re @mentioned.
@@ -162,12 +163,13 @@
 - Allow people to create Personas.
 - Have a completely anonymous mode in which not even the staff has access to the identity.
 
-## Search
+## Search & Filters
 
 - Search should display multiple messages in the same conversation. (Right now it’s only showing the highest ranked message and grouping by conversation.)
 - Search in all courses you’re taking (for example, search for `deadline extension`) (see how GitHub does it).
 - Filter by date.
 - `@mentions` are awkward in search results, because they take in account the original `@<enrollment-reference>--<name-slug>` instead of the rendered person’s name.
+- When filtering by “Selected People”, allow you to select **which** people.
 
 ## Content
 
@@ -225,6 +227,7 @@
 - Allow replying to a message by replying to the email notification
   - Obfuscate email addresses in the message (like GitHub does).
   - Use IMAP on an existing inbox instead of SMTP?
+  - There’s nothing we can do about replying to an email notifications digest, so it should still go to the system administrator, or perhaps have an automatic bounce reply.
 - Don’t send notifications when the person is online and/or has seen the message.
 - More granular control over what to be notified about.
   - Course-level configuration.
@@ -313,6 +316,8 @@ new Notification('Example');
 **Sidebar · Actions**
 
 - Clean interface.
+- Don’t have an “Apply Filter” button, but apply the filters as soon as you click on them.
+- Search as you type.
 
 **Sidebar · Conversations List**
 
@@ -329,11 +334,14 @@ new Notification('Example');
   - Make the visualization of “types” a little more distinct, for example, make announcements pop up.
   - Improve display of endorsements & answers (on the sidebar, include number of answers).
   - Manage answer badges more intelligently (answered at all, answered by staff).
+- Highlight conversations that include an `@mention` to you.
 
 **Conversation**
 
 - Add “Change conversation type” and that sort of thing to the “Actions” menu?
 - First conversation for staff should default to being pinned.
+- Editing tags should behave like “Selected Participants”. (You have to confirm your changes by clicking a button, the dropdown doesn’t go away on first click, and that kind of thing.)
+- Fix keyboard navigation on “Selected Participants” widget, which is a bunch of checkboxes acting as a `<select>`.
 
 **Messages**
 
@@ -701,6 +709,7 @@ const { app, BrowserWindow } = require("electron");
   - When the user signs out, send a Live-Update to all other browser tabs.
     - Store user in Live-Updates metadata database table.
   - When the user `Session.closeAllAndReopen()` (for example, when resetting the password), also send Live-Update, which will have the effect of signing you out to prevent personal information from being exposed.
+- Pause after some period of inactivity?
 
 ## Performance
 
@@ -923,6 +932,9 @@ const { app, BrowserWindow } = require("electron");
   - Comparison chart: Courselore, Piazza, Campuswire, edstem, and so forth.
     - Make sure to mention that we’re open-source.
     - Piazza has LTI support (for identity only?).
+  - Business model
+    - Open-source, so free forever.
+    - Hosting at <courselore.org> is free for a couple years.
 - User groups.
 - Newsletter.
   - For system administrators, including updates & so forth.
