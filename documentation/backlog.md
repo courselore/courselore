@@ -3,6 +3,9 @@
 ## Finish
 
 - Merge feature branches
+  - `icons`
+  - `poll`
+  - `app-mobile`
 - Email digests
 - Drafts
 - Pagination
