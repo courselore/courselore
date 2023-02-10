@@ -286,8 +286,6 @@ export default async (application: Application): Promise<void> => {
           Notifications
         </a>
         <a
-          hidden
-          TODO
           href="https://${application.configuration.hostname}/settings/account"
           class="dropdown--menu--item menu-box--item button ${request.path.match(
             /\/settings\/account\/?$/i
@@ -295,7 +293,11 @@ export default async (application: Application): Promise<void> => {
             ? "button--blue"
             : "button--transparent"}"
         >
-          <i class="bi bi-sliders"></i>
+          <i
+            class="bi ${request.path.match(/\/settings\/account\/?$/i)
+              ? "bi-person-fill-gear"
+              : "bi-person-gear"}"
+          ></i>
           Account
         </a>
       `,
@@ -1388,7 +1390,7 @@ export default async (application: Application): Promise<void> => {
                       element: this,
                       tippyProps: {
                         trigger: "click",
-                        content: "You must confirm your email because this is an important operation that affects your account.",
+                        content: "You must confirm your password because this is an important operation that affects your account.",
                       },
                     });
                   `}"
@@ -2117,7 +2119,7 @@ export default async (application: Application): Promise<void> => {
           <h2 class="heading">
             <i class="bi bi-sliders"></i>
             User Settings ·
-            <i class="bi bi-bell-fill"></i>
+            <i class="bi bi-person-fill-gear"></i>
             Account
           </h2>
 
@@ -2134,7 +2136,7 @@ export default async (application: Application): Promise<void> => {
           >
             <div class="label">
               <p class="label--text">
-                Password Confirmation
+                Email Confirmation
                 <button
                   type="button"
                   class="button button--tight button--tight--inline button--transparent"
@@ -2153,6 +2155,33 @@ export default async (application: Application): Promise<void> => {
                 </button>
               </p>
               <input
+                type="email"
+                name="emailConfirmation"
+                required
+                class="input--text"
+              />
+            </div>
+            <div class="label">
+              <p class="label--text">
+                Password Confirmation
+                <button
+                  type="button"
+                  class="button button--tight button--tight--inline button--transparent"
+                  javascript="${javascript`
+                    leafac.setTippy({
+                      event,
+                      element: this,
+                      tippyProps: {
+                        trigger: "click",
+                        content: "You must confirm your password because this is an important operation that affects your account.",
+                      },
+                    });
+                  `}"
+                >
+                  <i class="bi bi-info-circle"></i>
+                </button>
+              </p>
+              <input
                 type="password"
                 name="passwordConfirmation"
                 required
@@ -2162,7 +2191,55 @@ export default async (application: Application): Promise<void> => {
 
             <div>
               <button
+                type="button"
                 class="button button--full-width-on-small-screen button--rose"
+                javascript="${javascript`
+                  leafac.setTippy({
+                    event,
+                    element: this,
+                    elementProperty: "dropdown",
+                    tippyProps: {
+                      theme: "rose",
+                      trigger: "click",
+                      interactive: true,
+                      content: ${html`
+                        <div
+                          css="${css`
+                            padding: var(--space--2);
+                            display: flex;
+                            flex-direction: column;
+                            gap: var(--space--4);
+                          `}"
+                        >
+                          <p>Are you sure you want to remove your account?</p>
+                          <p>
+                            <strong
+                              css="${css`
+                                font-weight: var(--font-weight--bold);
+                              `}"
+                            >
+                              You may not undo this action!
+                            </strong>
+                          </p>
+                          <p>
+                            <strong
+                              css="${css`
+                                font-weight: var(--font-weight--bold);
+                              `}"
+                            >
+                              You’ll lose access to Courselore and all the
+                              courses in which you participate.
+                            </strong>
+                          </p>
+                          <button class="button button--rose">
+                            <i class="bi bi-person-x-fill"></i>
+                            Remove Your Account
+                          </button>
+                        </div>
+                      `},  
+                    },
+                  });
+                `}"
               >
                 <i class="bi bi-person-x-fill"></i>
                 Remove Your Account

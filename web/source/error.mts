@@ -124,7 +124,7 @@ export default async (application: Application): Promise<void> => {
                         element: this,
                         tippyProps: {
                           trigger: "click",
-                          content: "You must confirm your email because this is an important operation that affects your account.",
+                          content: "You must confirm your password because this is an important operation that affects your account.",
                         },
                       });
                     `}"
