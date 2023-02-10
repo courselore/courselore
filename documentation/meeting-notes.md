@@ -4,6 +4,21 @@
 <summary>2023-01-28</summary>
 
 - Progress:
+  - Backlog grooming.
+  - User deletion.
+- Questions:
+  - Deletion
+    - Courses
+    - Your own enrollment (instead of having staff do it)
+      - Allow even the last staff member to remove themselves
+  - Google meeting.
+
+</details>
+
+<details>
+<summary>2023-01-28</summary>
+
+- Progress:
   - Content editor redesign deployed.
   - Store preferences (for example, whether to use Programmer Mode) on server, to be consistent across devices.
   - Store message drafts on server as well (start drafting a message on phone and finish on desktop).

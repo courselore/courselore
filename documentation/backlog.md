@@ -2,14 +2,6 @@
 
 ## Finish
 
-- Deletion
-  - Require password confirmation
-    - Even for things that already exist, for example, when you’re a staff member removing an enrollment
-  - Cases
-    - Users
-    - Your own enrollment (instead of having staff do it)
-      - Allow even the last staff member to remove themselves
-    - Courses
 - Merge feature branches
 - Email digests
 - Drafts
