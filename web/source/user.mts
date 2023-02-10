@@ -6,6 +6,7 @@ import sql from "@leafac/sqlite";
 import html, { HTML } from "@leafac/html";
 import css from "@leafac/css";
 import javascript from "@leafac/javascript";
+import qs from "qs";
 import filenamify from "filenamify";
 import cryptoRandomString from "crypto-random-string";
 import sharp from "sharp";
@@ -2251,43 +2252,109 @@ export default async (application: Application): Promise<void> => {
     );
   });
 
-  /*
-  TODO
-  app.server.delete<{}, any, {}, {}, HasPasswordConfirmationLocals>(
+  application.web.delete<
+    {},
+    any,
+    { emailConfirmation?: string; passwordConfirmation?: string },
+    {},
+    Application["web"]["locals"]["ResponseLocals"]["SignedIn"]
+  >(
     "/settings/account",
-    (request, response, next) => {
-      response.locals.hasPasswordConfirmationRedirect = "settings/account";
-      next();
-    },
-    ...app.server.locals.middlewares.hasPasswordConfirmation,
-    (request, response) => {
-      app.database.run(
+    asyncHandler(async (request, response, next) => {
+      if (
+        response.locals.user === undefined ||
+        response.locals.user.emailVerifiedAt === null
+      )
+        return next();
+
+      if (
+        request.body.emailConfirmation !== response.locals.user.email ||
+        !(await application.web.locals.helpers.passwordConfirmation({
+          request,
+          response,
+        }))
+      ) {
+        application.web.locals.helpers.Flash.set({
+          request,
+          response,
+          theme: "rose",
+          content: html`Incorrect email/password confirmation.`,
+        });
+        return response.redirect(
+          303,
+          `https://${application.configuration.hostname}/settings/account`
+        );
+      }
+
+      application.database.run(
         sql`
           DELETE FROM "users"
           WHERE "id" = ${response.locals.user.id}
        `
       );
 
-      app.server.locals.helpers.Flash.set({
+      application.web.locals.helpers.Flash.set({
         request,
         response,
         theme: "green",
         content: html`
-          Account deleted successfully.<br />
-          Thanks for having used Courselore.
+          Account deleted successfully.<br /><br />
+          Thanks for having used Courselore.<br /><br />
+          If you wish to give us feedback, please reach out via
+          <a
+            href="${application.addresses
+              .metaCourseloreInvitation}${qs.stringify(
+              {
+                redirect: `conversations/new/note${qs.stringify(
+                  {
+                    newConversation: {
+                      title: "Feedback after having removed account",
+                      tagsReferences: ["5387659377"],
+                      participants: "staff",
+                      isAnnouncement: "false",
+                      isPinned: "false",
+                    },
+                  },
+                  { addQueryPrefix: true }
+                )}`,
+              },
+              { addQueryPrefix: true }
+            )}"
+            target="_blank"
+            class="link"
+            >Meta Courselore</a
+          >,
+          <a
+            href="mailto:${application.configuration
+              .administratorEmail}${qs.stringify(
+              { subject: "Feedback after having removed account" },
+              { addQueryPrefix: true }
+            )}"
+            target="_blank"
+            class="link"
+            >${application.configuration.administratorEmail}</a
+          >, or
+          <a
+            href="https://github.com/courselore/courselore/issues/new${qs.stringify(
+              { title: "Feedback after having removed account" },
+              { addQueryPrefix: true }
+            )}"
+            target="_blank"
+            class="link"
+            >GitHub</a
+          >.
         `,
       });
 
-      app.server.locals.helpers.Session.close({ request, response });
+      application.web.locals.helpers.Session.close({ request, response });
       response
         .header(
           "Clear-Site-Data",
           `"*", "cache", "cookies", "storage", "executionContexts"`
         )
-        .redirect(303, `https://${app.configuration.host}/`);
-    }
+        .redirect(303, `https://${application.configuration.hostname}/`);
+    })
   );
-  */
 
   application.web.patch<
     {},
