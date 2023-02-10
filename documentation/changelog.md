@@ -13,6 +13,7 @@
 ## Unreleased
 
 - Fixed an issue in which the image/video proxy could lead to execution of untrusted JavaScript. **This is a security issue so we recommend you to update as soon as possible.** We have no report of this issue having been explored by attackers.
+- Added the possibility of a user removing their account.
 
 ## 6.0.7
 
