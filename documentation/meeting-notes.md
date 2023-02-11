@@ -1,18 +1,11 @@
 # Meeting Notes
 
 <details>
-<summary>2023-01-28</summary>
+<summary>2023-02-11</summary>
 
 - Progress:
   - Backlog grooming.
   - User deletion.
-- Questions:
-  - Deletion
-    - Courses
-    - Your own enrollment (instead of having staff do it)
-      - Allow even the last staff member to remove themselves
-  - Google meeting.
-
 </details>
 
 <details>
