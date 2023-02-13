@@ -77,7 +77,7 @@
     "unified": "^10.1.2",
     "unist-util-visit": "^4.1.1"
   },
-  "caddy": "2.6.2",
+  "caddy": "2.6.3",
   "devDependencies": {
     "@babel/core": "^7.20.12",
     "@babel/preset-typescript": "^7.18.6",
