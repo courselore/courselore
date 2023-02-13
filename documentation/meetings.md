@@ -1,4 +1,4 @@
-# Meeting Notes
+# Meetings
 
 <details>
 <summary>2023-02-11</summary>
