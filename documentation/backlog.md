@@ -49,6 +49,7 @@
 - When switching between courses, go back to the same conversation where you’ve been.
 - Pretty URLs for courses (for example, `https://courselore.org/principles-of-programming-languages--2023`?
   - https://courselore.org/courses/8537410611/conversations/44
+- Have a way to delete a course entirely?
 
 ## Invitations
 
@@ -58,6 +59,12 @@
 - Have a public listing of courses in the system and allow people to request to join?
 - When the user signs up via an invitation, have a call to action to fill in profile (just like the one when you sign up without an invitation).
 - Allow staff to preview the email invitations they’re about to submit? (Think the problem with the “enroll” language.)
+
+## Enrollments
+
+- Have a way for a student to remove themselves from the course?
+  - Or at least have a structured way for the student to ask staff to remove them.
+- Allow the last staff member to remove themselves from the course?
 
 ## Conversations
 
