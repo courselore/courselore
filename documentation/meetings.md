@@ -4,8 +4,10 @@
 <summary>2023-02-11</summary>
 
 - Progress:
-  - Backlog grooming.
+  - Fixed a security issue related to image proxy.
   - User deletion.
+  - Backlog grooming.
+
 </details>
 
 <details>
