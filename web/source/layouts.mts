@@ -300,6 +300,17 @@ export default async (application: Application): Promise<void> => {
         <body
           css="${css`
             @at-root {
+              .grabbing {
+                &,
+                &::before,
+                &::after,
+                & *,
+                & *::before,
+                & *::after {
+                  cursor: grabbing !important;
+                }
+              }
+
               .label {
                 display: flex;
                 flex-direction: column;

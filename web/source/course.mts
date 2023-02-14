@@ -1438,11 +1438,6 @@ export default async (application: Application): Promise<void> => {
             >
               <div
                 key="tags"
-                css="${css`
-                  display: flex;
-                  flex-direction: column;
-                  gap: var(--space--4);
-                `}"
                 javascript="${javascript`
                   this.onbeforemorph = (event) => !event?.detail?.liveUpdate;
                 `}"
@@ -1452,272 +1447,346 @@ export default async (application: Application): Promise<void> => {
                     <div
                       key="tag/${tag.reference}"
                       css="${css`
-                        padding-bottom: var(--space--4);
                         border-bottom: var(--border-width--1) solid
                           var(--color--gray--medium--200);
                         @media (prefers-color-scheme: dark) {
                           border-color: var(--color--gray--medium--700);
                         }
-                        display: flex;
-                        gap: var(--space--2);
-                        align-items: baseline;
+                      `}"
+                      javascript="${javascript`
+                        const body = document.querySelector("body");
+                        const tags = this.closest('[key="tags"]');
+
+                        this.querySelector('[key="grab--handle"]').onmousedown = () => {
+                          tags.grabbed = this;
+                          this.classList.add("grabbed");
+                          body.classList.add("grabbing");
+
+                          body.addEventListener("mouseup", () => {
+                            delete tags.grabbed;
+                            this.classList.remove("grabbed");
+                            body.classList.remove("grabbing");
+                          }, { once: true });
+                        };
+
+                        this.onmousemove = (event) => {
+                          if ([undefined, this].includes(tags.grabbed)) return;
+                          const boundingClientRect = this.getBoundingClientRect();
+                          this[
+                            (event.clientY - boundingClientRect.top) / (boundingClientRect.bottom - boundingClientRect.top) < 0.5 ?
+                            "after" : "before"
+                          ](tags.grabbed);
+                        };
                       `}"
                     >
-                      <input
-                        type="hidden"
-                        name="tags[${index.toString()}][reference]"
-                        value="${tag.reference}"
-                      />
-                      <input
-                        type="hidden"
-                        name="tags[${index.toString()}][delete]"
-                        value="true"
-                        disabled
-                        javascript="${javascript`
-                          this.isModified = true;
-                        `}"
-                      />
-                      <div key="tag--icon" class="text--teal">
-                        <i class="bi bi-tag-fill"></i>
-                      </div>
                       <div
                         css="${css`
-                          flex: 1;
+                          padding: var(--space--4) var(--space--2);
+                          border-radius: var(--border-radius--lg);
+                          margin: var(--space--0) var(--space---2);
                           display: flex;
                           flex-direction: column;
                           gap: var(--space--2);
+
+                          transition-property: var(
+                            --transition-property--colors
+                          );
+                          transition-duration: var(--transition-duration--150);
+                          transition-timing-function: var(
+                            --transition-timing-function--in-out
+                          );
+
+                          .grabbed & {
+                            background-color: var(--color--gray--medium--100);
+                            @media (prefers-color-scheme: dark) {
+                              background-color: var(--color--gray--medium--800);
+                            }
+                          }
                         `}"
                       >
                         <input
-                          type="text"
-                          name="tags[${index.toString()}][name]"
-                          value="${tag.name}"
-                          required
-                          autocomplete="off"
-                          class="input--text"
-                          data-disable-on-delete="true"
+                          type="hidden"
+                          name="tags[${index.toString()}][reference]"
+                          value="${tag.reference}"
+                        />
+                        <input
+                          type="hidden"
+                          name="tags[${index.toString()}][delete]"
+                          value="true"
+                          disabled
+                          javascript="${javascript`
+                            this.isModified = true;
+                          `}"
                         />
                         <div
                           css="${css`
                             display: flex;
-                            flex-wrap: wrap;
-                            column-gap: var(--space--4);
-                            row-gap: var(--space--2);
+                            gap: var(--space--2);
+                            align-items: baseline;
                           `}"
                         >
-                          <div
-                            css="${css`
-                              width: var(--space--40);
-                            `}"
-                          >
-                            <label
-                              class="button button--tight button--tight--inline button--justify-start button--transparent"
-                            >
-                              <input
-                                type="checkbox"
-                                name="tags[${index.toString()}][isStaffOnly]"
-                                $${tag.staffOnlyAt === null
-                                  ? html``
-                                  : html`checked`}
-                                class="visually-hidden input--radio-or-checkbox--multilabel"
-                                data-disable-on-delete="true"
-                              />
-                              <span
-                                javascript="${javascript`
-                                  leafac.setTippy({
-                                    event,
-                                    element: this,
-                                    tippyProps: {
-                                      touch: false,
-                                      content: "Set as Visible by Staff Only",
-                                    },
-                                  });
-                                `}"
-                              >
-                                <i class="bi bi-eye"></i>
-                                Visible by Everyone
-                              </span>
-                              <span
-                                class="${textColorsCourseRole.staff}"
-                                javascript="${javascript`
-                                  leafac.setTippy({
-                                    event,
-                                    element: this,
-                                    tippyProps: {
-                                      touch: false,
-                                      content: "Set as Visible by Everyone",
-                                    },
-                                  });
-                                `}"
-                              >
-                                <i class="bi bi-mortarboard-fill"></i>
-                                Visible by Staff Only
-                              </span>
-                            </label>
+                          <div key="tag--icon" class="text--teal">
+                            <i class="bi bi-tag-fill"></i>
                           </div>
-                          <div
+                          <input
+                            type="text"
+                            name="tags[${index.toString()}][name]"
+                            value="${tag.name}"
+                            required
+                            autocomplete="off"
+                            class="input--text"
+                            data-disable-on-delete="true"
+                          />
+                        </div>
+                        <div
+                          css="${css`
+                            display: flex;
+                            gap: var(--space--2);
+                            align-items: baseline;
+                          `}"
+                        >
+                          <button
+                            key="grab--handle"
+                            type="button"
+                            class="button button--tight button--tight--inline"
                             css="${css`
-                              [key^="tag/"].deleted & {
-                                display: none;
-                              }
+                              cursor: grab;
+                            `}"
+                            javascript="${javascript`
+                              leafac.setTippy({
+                                event,
+                                element: this,
+                                tippyProps: {
+                                  touch: false,
+                                  content: "Drag to reorder",
+                                },
+                              });
                             `}"
                           >
-                            <button
-                              type="button"
-                              class="button button--tight button--tight--inline button--transparent"
-                              javascript="${javascript`
-                                leafac.setTippy({
-                                  event,
-                                  element: this,
-                                  tippyProps: {
-                                    theme: "rose",
-                                    touch: false,
-                                    content: "Remove Tag",
-                                  },
-                                });
-
-                                leafac.setTippy({
-                                  event,
-                                  element: this,
-                                  elementProperty: "dropdown",
-                                  tippyProps: {
-                                    theme: "rose",
-                                    trigger: "click",
-                                    interactive: true,
-                                    content: ${html`
-                                      <div
-                                        css="${css`
-                                          padding: var(--space--2)
-                                            var(--space--0);
-                                          display: flex;
-                                          flex-direction: column;
-                                          gap: var(--space--4);
-                                        `}"
-                                      >
-                                        <p>
-                                          Are you sure you want to remove this
-                                          tag?
-                                        </p>
-                                        <p>
-                                          <strong
-                                            css="${css`
-                                              font-weight: var(
-                                                --font-weight--bold
-                                              );
-                                            `}"
-                                          >
-                                            The tag will be removed from all
-                                            conversations and you may not undo
-                                            this action!
-                                          </strong>
-                                        </p>
-                                        <button
-                                          type="button"
-                                          class="button button--rose"
-                                          javascript="${javascript`
-                                            this.onclick = () => {
-                                              const tag = this.closest('[key^="tag/"]');
-                                              tag.classList.add("deleted");
-                                              const tagIconClassList = tag.querySelector('[key="tag--icon"]').classList;
-                                              tagIconClassList.remove("text--teal");
-                                              tagIconClassList.add("text--rose");
-                                              tag.querySelector('[name$="[delete]"]').disabled = false;
-                                              for (const element of tag.querySelectorAll('[data-disable-on-delete="true"]')) {
-                                                element.disabled = true;
-                                                const button = element.closest(".button");
-                                                if (button === null) continue;
-                                                button.classList.add("disabled");
-                                                for (const element of button.querySelectorAll("*"))
-                                                  if (element.tooltip !== undefined) element.tooltip.disable();
-                                              }
-                                            };
-                                          `}"
-                                        >
-                                          <i class="bi bi-trash-fill"></i>
-                                          Remove Tag
-                                        </button>
-                                      </div>
-                                    `},  
-                                  },
-                                });
+                            <i class="bi bi-grip-vertical"></i>
+                          </button>
+                          <div
+                            css="${css`
+                              display: flex;
+                              flex-wrap: wrap;
+                              column-gap: var(--space--4);
+                              row-gap: var(--space--2);
+                            `}"
+                          >
+                            <div
+                              css="${css`
+                                width: var(--space--40);
                               `}"
                             >
-                              <i class="bi bi-trash"></i>
-                            </button>
-                          </div>
-                          <div
-                            css="${css`
-                              [key^="tag/"]:not(.deleted) & {
-                                display: none;
-                              }
-                            `}"
-                          >
-                            <button
-                              type="button"
-                              class="button button--tight button--tight--inline button--transparent"
-                              javascript="${javascript`
-                                leafac.setTippy({
-                                  event,
-                                  element: this,
-                                  tippyProps: {
-                                    touch: false,
-                                    content: "Don’t Remove Tag",
-                                  },
-                                });
-
-                                this.onclick = () => {
-                                  const tag = this.closest('[key^="tag/"]');
-                                  tag.classList.remove("deleted");
-                                  const tagIconClassList = tag.querySelector('[key="tag--icon"]').classList;
-                                  tagIconClassList.remove("text--rose");
-                                  tagIconClassList.add("text--teal");
-                                  tag.querySelector('[name$="[delete]"]').disabled = true;
-                                  for (const element of tag.querySelectorAll('[data-disable-on-delete="true"]')) {
-                                    element.disabled = false;
-                                    const button = element.closest(".button");
-                                    if (button === null) continue;
-                                    button.classList.remove("disabled");
-                                    for (const element of button.querySelectorAll("*"))
-                                      if (element.tooltip !== undefined) element.tooltip.enable();
-                                  }
-                                };
-                              `}"
-                            >
-                              <i class="bi bi-recycle"></i>
-                            </button>
-                          </div>
-                          $${response.locals.conversationsCount > 0
-                            ? html`
-                                <a
-                                  href="https://${application.configuration
-                                    .hostname}/courses/${response.locals.course
-                                    .reference}${qs.stringify(
-                                    {
-                                      conversations: {
-                                        filters: {
-                                          tagsReferences: [tag.reference],
-                                        },
-                                      },
-                                    },
-                                    { addQueryPrefix: true }
-                                  )}"
-                                  target="_blank"
-                                  class="button button--tight button--tight--inline button--transparent"
+                              <label
+                                class="button button--tight button--tight--inline button--justify-start button--transparent"
+                              >
+                                <input
+                                  type="checkbox"
+                                  name="tags[${index.toString()}][isStaffOnly]"
+                                  $${tag.staffOnlyAt === null
+                                    ? html``
+                                    : html`checked`}
+                                  class="visually-hidden input--radio-or-checkbox--multilabel"
+                                  data-disable-on-delete="true"
+                                />
+                                <span
                                   javascript="${javascript`
                                     leafac.setTippy({
                                       event,
                                       element: this,
                                       tippyProps: {
                                         touch: false,
-                                        content: "See Conversations with This Tag",
+                                        content: "Set as Visible by Staff Only",
                                       },
                                     });
                                   `}"
                                 >
-                                  <i class="bi bi-chat-text"></i>
-                                </a>
-                              `
-                            : html``}
+                                  <i class="bi bi-eye"></i>
+                                  Visible by Everyone
+                                </span>
+                                <span
+                                  class="${textColorsCourseRole.staff}"
+                                  javascript="${javascript`
+                                    leafac.setTippy({
+                                      event,
+                                      element: this,
+                                      tippyProps: {
+                                        touch: false,
+                                        content: "Set as Visible by Everyone",
+                                      },
+                                    });
+                                  `}"
+                                >
+                                  <i class="bi bi-mortarboard-fill"></i>
+                                  Visible by Staff Only
+                                </span>
+                              </label>
+                            </div>
+                            <div
+                              css="${css`
+                                [key^="tag/"].deleted & {
+                                  display: none;
+                                }
+                              `}"
+                            >
+                              <button
+                                type="button"
+                                class="button button--tight button--tight--inline button--transparent"
+                                javascript="${javascript`
+                                  leafac.setTippy({
+                                    event,
+                                    element: this,
+                                    tippyProps: {
+                                      theme: "rose",
+                                      touch: false,
+                                      content: "Remove Tag",
+                                    },
+                                  });
+
+                                  leafac.setTippy({
+                                    event,
+                                    element: this,
+                                    elementProperty: "dropdown",
+                                    tippyProps: {
+                                      theme: "rose",
+                                      trigger: "click",
+                                      interactive: true,
+                                      content: ${html`
+                                        <div
+                                          css="${css`
+                                            padding: var(--space--2)
+                                              var(--space--0);
+                                            display: flex;
+                                            flex-direction: column;
+                                            gap: var(--space--4);
+                                          `}"
+                                        >
+                                          <p>
+                                            Are you sure you want to remove this
+                                            tag?
+                                          </p>
+                                          <p>
+                                            <strong
+                                              css="${css`
+                                                font-weight: var(
+                                                  --font-weight--bold
+                                                );
+                                              `}"
+                                            >
+                                              The tag will be removed from all
+                                              conversations and you may not undo
+                                              this action!
+                                            </strong>
+                                          </p>
+                                          <button
+                                            type="button"
+                                            class="button button--rose"
+                                            javascript="${javascript`
+                                              this.onclick = () => {
+                                                const tag = this.closest('[key^="tag/"]');
+                                                tag.classList.add("deleted");
+                                                const tagIconClassList = tag.querySelector('[key="tag--icon"]').classList;
+                                                tagIconClassList.remove("text--teal");
+                                                tagIconClassList.add("text--rose");
+                                                tag.querySelector('[name$="[delete]"]').disabled = false;
+                                                for (const element of tag.querySelectorAll('[data-disable-on-delete="true"]')) {
+                                                  element.disabled = true;
+                                                  const button = element.closest(".button");
+                                                  if (button === null) continue;
+                                                  button.classList.add("disabled");
+                                                  for (const element of button.querySelectorAll("*"))
+                                                    if (element.tooltip !== undefined) element.tooltip.disable();
+                                                }
+                                              };
+                                            `}"
+                                          >
+                                            <i class="bi bi-trash-fill"></i>
+                                            Remove Tag
+                                          </button>
+                                        </div>
+                                      `},  
+                                    },
+                                  });
+                                `}"
+                              >
+                                <i class="bi bi-trash"></i>
+                              </button>
+                            </div>
+                            <div
+                              css="${css`
+                                [key^="tag/"]:not(.deleted) & {
+                                  display: none;
+                                }
+                              `}"
+                            >
+                              <button
+                                type="button"
+                                class="button button--tight button--tight--inline button--transparent"
+                                javascript="${javascript`
+                                  leafac.setTippy({
+                                    event,
+                                    element: this,
+                                    tippyProps: {
+                                      touch: false,
+                                      content: "Don’t Remove Tag",
+                                    },
+                                  });
+
+                                  this.onclick = () => {
+                                    const tag = this.closest('[key^="tag/"]');
+                                    tag.classList.remove("deleted");
+                                    const tagIconClassList = tag.querySelector('[key="tag--icon"]').classList;
+                                    tagIconClassList.remove("text--rose");
+                                    tagIconClassList.add("text--teal");
+                                    tag.querySelector('[name$="[delete]"]').disabled = true;
+                                    for (const element of tag.querySelectorAll('[data-disable-on-delete="true"]')) {
+                                      element.disabled = false;
+                                      const button = element.closest(".button");
+                                      if (button === null) continue;
+                                      button.classList.remove("disabled");
+                                      for (const element of button.querySelectorAll("*"))
+                                        if (element.tooltip !== undefined) element.tooltip.enable();
+                                    }
+                                  };
+                                `}"
+                              >
+                                <i class="bi bi-recycle"></i>
+                              </button>
+                            </div>
+                            $${response.locals.conversationsCount > 0
+                              ? html`
+                                  <a
+                                    href="https://${application.configuration
+                                      .hostname}/courses/${response.locals
+                                      .course.reference}${qs.stringify(
+                                      {
+                                        conversations: {
+                                          filters: {
+                                            tagsReferences: [tag.reference],
+                                          },
+                                        },
+                                      },
+                                      { addQueryPrefix: true }
+                                    )}"
+                                    target="_blank"
+                                    class="button button--tight button--tight--inline button--transparent"
+                                    javascript="${javascript`
+                                      leafac.setTippy({
+                                        event,
+                                        element: this,
+                                        tippyProps: {
+                                          touch: false,
+                                          content: "See Conversations with This Tag",
+                                        },
+                                      });
+                                    `}"
+                                  >
+                                    <i class="bi bi-chat-text"></i>
+                                  </a>
+                                `
+                              : html``}
+                          </div>
                         </div>
                       </div>
                     </div>
