@@ -1454,17 +1454,14 @@ export default async (application: Application): Promise<void> => {
                       flex-direction: column;
                       gap: var(--space--2);
 
-                      transition-property: var(--transition-property--colors);
+                      transition-property: var(--transition-property--opacity);
                       transition-duration: var(--transition-duration--150);
                       transition-timing-function: var(
                         --transition-timing-function--in-out
                       );
 
                       &.highlight {
-                        background-color: var(--color--gray--medium--100);
-                        @media (prefers-color-scheme: dark) {
-                          background-color: var(--color--gray--medium--800);
-                        }
+                        opacity: var(--opacity--50);
                       }
 
                       & > div {
