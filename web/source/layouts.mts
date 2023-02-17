@@ -308,6 +308,8 @@ export default async (application: Application): Promise<void> => {
                 & *::before,
                 & *::after {
                   cursor: grabbing !important;
+                  touch-action: none !important;
+                  user-select: none !important;
                 }
               }
 

@@ -1449,7 +1449,7 @@ export default async (application: Application): Promise<void> => {
                     [key="tag--highlight"] {
                       padding: var(--space--4) var(--space--2);
                       border-radius: var(--border-radius--lg);
-                      margin: var(--space---px) var(--space---2);
+                      margin: var(--space--0) var(--space---2);
                       display: flex;
                       flex-direction: column;
                       gap: var(--space--2);
@@ -1479,7 +1479,7 @@ export default async (application: Application): Promise<void> => {
                 javascript="${javascript`
                   this.onbeforemorph = (event) => !event?.detail?.liveUpdate;
 
-                  this.onmousedown = (event) => {
+                  this.onpointerdown = (event) => {
                     const body = document.querySelector("body");
                     const tag = event.target.closest('[key^="tag/"]');
                     const tagHighlight = tag?.querySelector('[key="tag--highlight"]');
@@ -1489,15 +1489,17 @@ export default async (application: Application): Promise<void> => {
                     body.classList.add("grabbing");
                     tagHighlight.classList.add("highlight");
 
-                    body.addEventListener("mouseup", () => {
+                    body.addEventListener("pointerup", () => {
                       delete this.grabbed;
                       body.classList.remove("grabbing");
                       tagHighlight.classList.remove("highlight");
                     }, { once: true });
                   };
 
-                  this.onmousemove = (event) => {
-                    const tag = event.target.closest('[key^="tag/"]');
+                  this.onpointermove = (event) => {
+                    const tag = (
+                      event.pointerType === "touch" ? document.elementFromPoint(event.clientX, event.clientY) : event.target
+                    ).closest('[key^="tag/"]');
                     if (tag === null || [undefined, tag].includes(this.grabbed)) return;
 
                     const boundingClientRect = tag.getBoundingClientRect();
