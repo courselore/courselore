@@ -1532,7 +1532,82 @@ export default async (application: Application): Promise<void> => {
         "contentSource" TEXT NOT NULL,
         UNIQUE ("conversation", "authorEnrollment") ON CONFLICT REPLACE
       );
-    `
+    `,
+
+    () => {
+      application.database.execute(
+        sql`
+          CREATE TABLE "new_tags" (
+            "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+            "createdAt" TEXT NOT NULL,
+            "course" INTEGER NOT NULL REFERENCES "courses" ON DELETE CASCADE,
+            "reference" TEXT NOT NULL,
+            "order" INTEGER NOT NULL,
+            "name" TEXT NOT NULL,
+            "staffOnlyAt" TEXT NULL,
+            UNIQUE ("course", "reference"),
+            UNIQUE ("course", "order")
+          );
+        `
+      );
+
+      let previousCourse = -1;
+      let order = -1;
+      for (const tag of application.database.all<{
+        id: number;
+        createdAt: string;
+        course: number;
+        reference: string;
+        name: string;
+        staffOnlyAt: string | null;
+      }>(
+        sql`
+          SELECT
+            "id",
+            "createdAt",
+            "course",
+            "reference",
+            "name",
+            "staffOnlyAt"
+          FROM "tags"
+          ORDER BY "course" ASC, "id" ASC
+        `
+      )) {
+        if (previousCourse !== tag.course) order = 0;
+        application.database.run(
+          sql`
+            INSERT INTO "new_tags" (
+              "id",
+              "createdAt",
+              "course",
+              "reference",
+              "order",
+              "name",
+              "staffOnlyAt"
+            )
+            VALUES (
+              ${tag.id},
+              ${tag.createdAt},
+              ${tag.course},
+              ${tag.reference},
+              ${order},
+              ${tag.name},
+              ${tag.staffOnlyAt}
+            )
+          `
+        );
+        previousCourse = tag.course;
+        order++;
+      }
+
+      application.database.execute(
+        sql`
+          DROP TABLE "tags";
+          ALTER TABLE "new_tags" RENAME TO "tags";
+          CREATE INDEX "tagsCourseIndex" ON "tags" ("course");
+        `
+      );
+    }
   );
 
   application.database.run(
