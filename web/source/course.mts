@@ -1816,7 +1816,7 @@ export default async (application: Application): Promise<void> => {
                                 javascript="${javascript`
                                   this.isModified = true;
                                   this.disabled = false;
-                                  this.name = "tags[" + this.closest('[key^="tag"]').parentElement.children.length + "][name]";
+                                  this.name = "tags[" + this.closest('[key^="tag/"]').parentElement.children.length + "][name]";
                                 `}"
                               />
                             </div>
@@ -1861,7 +1861,7 @@ export default async (application: Application): Promise<void> => {
                                       javascript="${javascript`
                                         this.isModified = true;
                                         this.disabled = false;
-                                        this.name = "tags[" + this.closest('[key^="tag"]').parentElement.children.length + "][isStaffOnly]";
+                                        this.name = "tags[" + this.closest('[key^="tag/"]').parentElement.children.length + "][isStaffOnly]";
                                       `}"
                                     />
                                     <span
@@ -1912,7 +1912,7 @@ export default async (application: Application): Promise<void> => {
                                     });
 
                                     this.onclick = () => {
-                                      const tag = this.closest('[key^="tag"]');
+                                      const tag = this.closest('[key^="tag/"]');
                                       tag.replaceChildren();
                                       tag.hidden = true;
                                     };
