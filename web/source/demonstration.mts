@@ -398,17 +398,18 @@ export default async (application: Application): Promise<void> => {
             staffOnlyAt: new Date().toISOString(),
           },
         ].map(
-          ({ name, staffOnlyAt }) =>
+          ({ name, staffOnlyAt }, order) =>
             application.database.get<{ id: number }>(
               sql`
                 SELECT * FROM "tags" WHERE "id" = ${
                   application.database.run(
                     sql`
-                      INSERT INTO "tags" ("createdAt", "course", "reference", "name", "staffOnlyAt")
+                      INSERT INTO "tags" ("createdAt", "course", "reference", "order", "name", "staffOnlyAt")
                       VALUES (
                         ${new Date().toISOString()},
                         ${course.id},
                         ${cryptoRandomString({ length: 10, type: "numeric" })},
+                        ${order},
                         ${name},
                         ${staffOnlyAt}
                       )
