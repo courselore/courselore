@@ -582,11 +582,12 @@ export default async (application: Application): Promise<void> => {
     response.locals.tags = application.database.all<{
       id: number;
       reference: string;
+      order: number;
       name: string;
       staffOnlyAt: string | null;
     }>(
       sql`
-        SELECT "id", "reference", "name", "staffOnlyAt"
+        SELECT "id", "reference", "order", "name", "staffOnlyAt"
         FROM "tags"
         WHERE
           "course" = ${response.locals.course.id}
@@ -595,7 +596,7 @@ export default async (application: Application): Promise<void> => {
               ? sql`AND "staffOnlyAt" IS NULL`
               : sql``
           }
-        ORDER BY "id" ASC
+        ORDER BY "order" ASC
       `
     );
 
