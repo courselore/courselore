@@ -1471,7 +1471,7 @@ export default async (application: Application): Promise<void> => {
                         align-items: baseline;
                       }
 
-                      [key="tag--grab--handle"] {
+                      [key="tag--grab--handle"]:not(.disabled) {
                         cursor: grab;
                       }
                     }
@@ -1529,7 +1529,26 @@ export default async (application: Application): Promise<void> => {
                           value="${tag.reference}"
                         />
                         <div>
-                          <div key="tag--icon" class="text--teal">
+                          <div
+                            key="tag--icon"
+                            class="text--teal"
+                            css="${css`
+                              [key^="tag/"].removed & {
+                                display: none;
+                              }
+                            `}"
+                          >
+                            <i class="bi bi-tag-fill"></i>
+                          </div>
+                          <div
+                            key="tag--icon"
+                            class="text--rose"
+                            css="${css`
+                              [key^="tag/"]:not(.removed) & {
+                                display: none;
+                              }
+                            `}"
+                          >
                             <i class="bi bi-tag-fill"></i>
                           </div>
                           <input
@@ -1677,22 +1696,14 @@ export default async (application: Application): Promise<void> => {
                                             class="button button--rose"
                                             javascript="${javascript`
                                               this.onclick = () => {
-                                                // TODO
-                                                // const tag = this.closest('[key^="tag/"]');
-                                                // tag.classList.add("removed");
-                                                // const tagIconClassList = tag.querySelector('[key="tag--icon"]').classList;
-                                                // tagIconClassList.remove("text--teal");
-                                                // tagIconClassList.add("text--rose");
-                                                // tag.querySelector('[name$="[delete]"]').disabled = false;
-                                                // for (const element of tag.querySelectorAll('[data-disable-on-delete="true"]')) {
-                                                //   element.disabled = true;
-                                                //   const button = element.closest(".button");
-                                                //   if (button === null) continue;
-                                                //   button.classList.add("disabled");
-                                                //   for (const element of button.querySelectorAll("*"))
-                                                //     if (element.tooltip !== undefined) element.tooltip.disable();
-                                                // }
-                                                // tag.closest('[key="tags"]').reorder();
+                                                const tag = this.closest('[key^="tag/"]');
+                                                tag.classList.add("removed");
+                                                for (const element of leafac.descendants(tag)) {
+                                                  if (typeof element.disabled === "boolean") element.disabled = true;
+                                                  if (element.matches(".button")) element.classList.add("disabled");
+                                                  if (element.tooltip !== undefined) element.tooltip.disable();
+                                                }
+                                                tag.closest('[key="tags"]').reorder();
                                               };
                                             `}"
                                           >
