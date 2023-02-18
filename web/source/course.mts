@@ -1916,11 +1916,9 @@ export default async (application: Application): Promise<void> => {
                                     });
 
                                     this.onclick = () => {
-                                      // TODO
-                                      // const tag = this.closest('[key^="tag/"]');
-                                      // tag.replaceChildren();
-                                      // tag.hidden = true;
-                                      // tag.closest('[key="tags"]').reorder();
+                                      const tags = this.closest('[key="tags"]');
+                                      this.closest('[key^="tag/"]').remove();
+                                      tags.reorder();
                                     };
                                   `}"
                                 >
