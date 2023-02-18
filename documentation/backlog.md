@@ -6,6 +6,17 @@
   - `poll`
     - Features
       - Polls
+        - They’re a new type of message content, not something heavyweight like a new type of question. This follows the same lines as Discourse & Slack (where people use reactions (emojis) to do polls).
+        - Features
+          - Support multiple answers.
+          - Allow for closing a poll.
+            - Allow for scheduling the closing of a poll.
+        - Visualization
+          - Students may see aggregate results.
+          - Staff may see individual votes.
+        - Edge cases
+          - Reusing a poll in a new course doesn’t work out of the box; we need some logic to duplicate the poll.
+          - Include text material in full-text search.
       - Exam period
     - Files
       - `authentication.ts`
@@ -210,14 +221,6 @@
 - On the `partials.content()`, maybe don’t render `@mention` widget for people who aren’t in the conversation, given that we don’t give that person as option on the `@mentions` autocomplete widget in the content editor.
 - It’s possible to send messages that are visually empty, for example, `<!-- -->`
 - `#references` into the same conversation don’t need to load the whole `partials.conversation()`, just the message part of it.
-- Polls.
-  - They’re a new type of message content, not something heavyweight like a new type of question. This follows the same lines as Discourse & Slack (where people use reactions (emojis) to do polls).
-  - Support multiple answers.
-  - Students may see aggregate results.
-  - Staff may see individual votes.
-  - Allow for closing a poll.
-  - Edge case: Reusing a poll in a new course doesn’t work out of the box; we need some logic to duplicate the poll.
-  - Include text material in full-text search
 - Lightbox modal:
   - Resized images
   - Code blocks
