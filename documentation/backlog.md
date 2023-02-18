@@ -50,6 +50,7 @@
 - Pretty URLs for courses (for example, `https://courselore.org/principles-of-programming-languages--2023`?
   - https://courselore.org/courses/8537410611/conversations/44
 - Have a way to delete a course entirely?
+- On tags, `this.isModified = true;` in `this.reorder()` is heavy-handed, because it marks everything as modified even if you reorder back to original order or “recycle” a tag.
 
 ## Invitations
 

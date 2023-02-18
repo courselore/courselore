@@ -1594,7 +1594,7 @@ export default async (application: Application): Promise<void> => {
                                 element: this,
                                 tippyProps: {
                                   touch: false,
-                                  content: "Drag to reorder",
+                                  content: "Drag to Reorder",
                                 },
                               });
                             `}"
@@ -1861,7 +1861,7 @@ export default async (application: Application): Promise<void> => {
                                     element: this,
                                     tippyProps: {
                                       touch: false,
-                                      content: "Drag to reorder",
+                                      content: "Drag to Reorder",
                                     },
                                   });
                                 `}"
