@@ -1508,6 +1508,16 @@ export default async (application: Application): Promise<void> => {
                       (event.clientY - boundingClientRect.top) / (boundingClientRect.bottom - boundingClientRect.top) < 0.5 ?
                       "after" : "before"
                     ](this.grabbed);
+                    this.reorder();
+                  };
+
+                  this.reorder = () => {
+                    let order = 0;
+                    for (const tag of this.querySelectorAll('[key^="tag/"]')) {
+                      if (tag.hidden || tag.querySelector('[name$="[delete]"]')?.disabled === false) continue;
+                      tag.querySelector('[name$="[order]"]').value = String(order);
+                      order++;
+                    }
                   };
                 `}"
               >
@@ -1528,6 +1538,11 @@ export default async (application: Application): Promise<void> => {
                           javascript="${javascript`
                             this.isModified = true;
                           `}"
+                        />
+                        <input
+                          type="hidden"
+                          name="tags[${index.toString()}][order]"
+                          value="${index.toString()}"
                         />
                         <div>
                           <div key="tag--icon" class="text--teal">
@@ -1694,6 +1709,7 @@ export default async (application: Application): Promise<void> => {
                                                   for (const element of button.querySelectorAll("*"))
                                                     if (element.tooltip !== undefined) element.tooltip.disable();
                                                 }
+                                                tag.closest('[key="tags"]').reorder();
                                               };
                                             `}"
                                           >
@@ -1803,6 +1819,15 @@ export default async (application: Application): Promise<void> => {
                       const newTag = leafac.stringToElement(${html`
                         <div key="tag/new">
                           <div key="tag--highlight">
+                            <input
+                              type="hidden"
+                              disabled
+                              javascript="${javascript`
+                                this.isModified = true;
+                                this.disabled = false;
+                                this.name = "tags[" + this.closest('[key="tags"]').children.length + "][order]";
+                              `}"
+                            />
                             <div>
                               <div key="tag--icon" class="text--teal">
                                 <i class="bi bi-tag-fill"></i>
@@ -1817,7 +1842,7 @@ export default async (application: Application): Promise<void> => {
                                 javascript="${javascript`
                                   this.isModified = true;
                                   this.disabled = false;
-                                  this.name = "tags[" + this.closest('[key^="tag/"]').parentElement.children.length + "][name]";
+                                  this.name = "tags[" + this.closest('[key="tags"]').children.length + "][name]";
                                 `}"
                               />
                             </div>
@@ -1862,7 +1887,7 @@ export default async (application: Application): Promise<void> => {
                                       javascript="${javascript`
                                         this.isModified = true;
                                         this.disabled = false;
-                                        this.name = "tags[" + this.closest('[key^="tag/"]').parentElement.children.length + "][isStaffOnly]";
+                                        this.name = "tags[" + this.closest('[key="tags"]').children.length + "][isStaffOnly]";
                                       `}"
                                     />
                                     <span
@@ -1916,6 +1941,7 @@ export default async (application: Application): Promise<void> => {
                                       const tag = this.closest('[key^="tag/"]');
                                       tag.replaceChildren();
                                       tag.hidden = true;
+                                      tag.closest('[key="tags"]').reorder();
                                     };
                                   `}"
                                 >
@@ -1926,11 +1952,14 @@ export default async (application: Application): Promise<void> => {
                           </div>
                         </div>
                       `});
-                      this.closest("form").querySelector('[key="tags"]').insertAdjacentElement("beforeend", newTag);
+
+                      const tags = this.closest("form").querySelector('[key="tags"]');
+                      tags.insertAdjacentElement("beforeend", newTag);
                       leafac.javascript({
                         event,
                         element: newTag,
-                      })
+                      });
+                      tags.reorder();
                     };
 
                     this.onvalidate = () => {
@@ -1965,6 +1994,7 @@ export default async (application: Application): Promise<void> => {
       tags?: {
         reference?: string;
         delete?: "true";
+        order?: string;
         name?: string;
         isStaffOnly?: "on";
       }[];
@@ -1994,8 +2024,14 @@ export default async (application: Application): Promise<void> => {
               (tag.delete !== "true" &&
                 (typeof tag.name !== "string" ||
                   tag.name.trim() === "" ||
-                  ![undefined, "on"].includes(tag.isStaffOnly)))))
-      )
+                  ![undefined, "on"].includes(tag.isStaffOnly))))) ||
+          (tag.delete !== "true" &&
+            (typeof tag.order !== "string" || !tag.order.match(/^\d+$/)))
+      ) ||
+      request.body.tags
+        .filter((tag) => tag.delete !== "true")
+        .sort((a, b) => Number(a.order) - Number(b.order))
+        .some((tag, index) => Number(tag.order) !== index)
     )
       return next("Validation");
 
@@ -2003,12 +2039,13 @@ export default async (application: Application): Promise<void> => {
       if (tag.reference === undefined)
         application.database.run(
           sql`
-            INSERT INTO "tags" ("createdAt", "course", "reference", "name", "staffOnlyAt")
+            INSERT INTO "tags" ("createdAt", "course", "reference", "order", "name", "staffOnlyAt")
             VALUES (
               ${new Date().toISOString()},
               ${response.locals.course.id},
               ${cryptoRandomString({ length: 10, type: "numeric" })},
               ${tag.name},
+              ${Number(tag.order)},
               ${tag.isStaffOnly === "on" ? new Date().toISOString() : null}
             )
           `
@@ -2024,6 +2061,7 @@ export default async (application: Application): Promise<void> => {
           sql`
             UPDATE "tags"
             SET
+              "order" = ${tag.order},
               "name" = ${tag.name},
               "staffOnlyAt" = ${
                 tag.isStaffOnly === "on" ? new Date().toISOString() : null
