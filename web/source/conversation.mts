@@ -7306,7 +7306,7 @@ export default async (application: Application): Promise<void> => {
                                   ? "No more messages."
                                   : response.locals.conversation.type === "chat"
                                   ? "Start the chat by sending the first message!"
-                                  : "All messages in this conversation have been deleted."}
+                                  : "All messages in this conversation have been removed."}
                               </p>
                             </div>
                           `

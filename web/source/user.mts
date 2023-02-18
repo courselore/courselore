@@ -2298,7 +2298,7 @@ export default async (application: Application): Promise<void> => {
         response,
         theme: "green",
         content: html`
-          Account deleted successfully.<br /><br />
+          Account removed successfully.<br /><br />
           Thanks for having used Courselore.<br /><br />
           If you wish to give us feedback, please reach out via
           <a
