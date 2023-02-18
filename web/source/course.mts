@@ -1699,6 +1699,7 @@ export default async (application: Application): Promise<void> => {
                                                 const tag = this.closest('[key^="tag/"]');
                                                 tag.classList.add("removed");
                                                 for (const element of leafac.descendants(tag)) {
+                                                  if (element.skipDisable === true) continue;
                                                   if (typeof element.disabled === "boolean") element.disabled = true;
                                                   if (element.matches(".button")) element.classList.add("disabled");
                                                   if (element.tooltip !== undefined) element.tooltip.disable();
@@ -1730,6 +1731,8 @@ export default async (application: Application): Promise<void> => {
                                 type="button"
                                 class="button button--tight button--tight--inline button--transparent"
                                 javascript="${javascript`
+                                  this.skipDisable = true;
+
                                   leafac.setTippy({
                                     event,
                                     element: this,
