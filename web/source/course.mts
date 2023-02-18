@@ -1510,10 +1510,28 @@ export default async (application: Application): Promise<void> => {
                       "after" : "before"
                     ](this.grabbed);
                     this.reorder();
-                    this.isModified = true;
+                  };
+
+                  this.onkeydown = (event) => {
+                    if (event.target.closest('[key="tag--grab--handle"]') === null) return;
+
+                    const tag = event.target.closest('[key^="tag/"]');
+                    switch (event.code) {
+                      case "ArrowUp":
+                        event.preventDefault();
+                        tag.previousElementSibling?.before?.(tag);
+                        break;
+                      case "ArrowDown":
+                        event.preventDefault();
+                        tag.nextElementSibling?.after?.(tag);
+                        break;
+                    }
+                    tag.querySelector('[key="tag--grab--handle"]').focus();
+                    this.reorder();
                   };
 
                   this.reorder = () => {
+                    this.isModified = true;
                     for (const [order, tag] of this.querySelectorAll('[key^="tag/"]:not(.removed)').entries())
                       for (const element of tag.querySelectorAll('[name^="tags["]'))
                         element.setAttribute("name", element.getAttribute("name").replace(/\\d+/, String(order)));
@@ -1707,7 +1725,6 @@ export default async (application: Application): Promise<void> => {
                                                 }
                                                 const tags = this.closest('[key="tags"]');
                                                 tags.reorder();
-                                                tags.isModified = true;
                                               };
                                             `}"
                                           >
