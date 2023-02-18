@@ -1510,6 +1510,7 @@ export default async (application: Application): Promise<void> => {
                       "after" : "before"
                     ](this.grabbed);
                     this.reorder();
+                    this.isModified = true;
                   };
 
                   this.reorder = () => {
@@ -1704,7 +1705,9 @@ export default async (application: Application): Promise<void> => {
                                                   if (element.matches(".button")) element.classList.add("disabled");
                                                   if (element.tooltip !== undefined) element.tooltip.disable();
                                                 }
-                                                tag.closest('[key="tags"]').reorder();
+                                                const tags = this.closest('[key="tags"]');
+                                                tags.reorder();
+                                                tags.isModified = true;
                                               };
                                             `}"
                                           >
