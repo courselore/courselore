@@ -1740,21 +1740,14 @@ export default async (application: Application): Promise<void> => {
                                   });
 
                                   this.onclick = () => {
-                                    // TODO
-                                    // const tag = this.closest('[key^="tag/"]');
-                                    // tag.classList.remove("removed");
-                                    // const tagIconClassList = tag.querySelector('[key="tag--icon"]').classList;
-                                    // tagIconClassList.remove("text--rose");
-                                    // tagIconClassList.add("text--teal");
-                                    // tag.querySelector('[name$="[delete]"]').disabled = true;
-                                    // for (const element of tag.querySelectorAll('[data-disable-on-delete="true"]')) {
-                                    //   element.disabled = false;
-                                    //   const button = element.closest(".button");
-                                    //   if (button === null) continue;
-                                    //   button.classList.remove("disabled");
-                                    //   for (const element of button.querySelectorAll("*"))
-                                    //     if (element.tooltip !== undefined) element.tooltip.enable();
-                                    // }
+                                    const tag = this.closest('[key^="tag/"]');
+                                    tag.classList.remove("removed");
+                                    for (const element of leafac.descendants(tag)) {
+                                      if (typeof element.disabled === "boolean") element.disabled = false;
+                                      if (element.matches(".button")) element.classList.remove("disabled");
+                                      if (element.tooltip !== undefined) element.tooltip.enable();
+                                    }
+                                    tag.closest('[key="tags"]').reorder();
                                   };
                                 `}"
                               >
