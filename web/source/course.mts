@@ -1513,9 +1513,9 @@ export default async (application: Application): Promise<void> => {
                   };
 
                   this.reorder = () => {
-                    for (const [order, tag] of this.querySelectorAll('[key^="tag/"]:not(.removed)').entries()) {
-                      // TODO
-                    }
+                    for (const [order, tag] of this.querySelectorAll('[key^="tag/"]:not(.removed)').entries())
+                      for (const element of tag.querySelectorAll('[name^="tags["]'))
+                        element.setAttribute("name", element.getAttribute("name").replace(/\\d+/, String(order)));
                   };
                 `}"
               >
@@ -1809,7 +1809,7 @@ export default async (application: Application): Promise<void> => {
                               </div>
                               <input
                                 type="text"
-                                name="tags[][name]"
+                                name="tags[0][name]"
                                 placeholder=" "
                                 required
                                 autocomplete="off"
@@ -1855,7 +1855,7 @@ export default async (application: Application): Promise<void> => {
                                   >
                                     <input
                                       type="checkbox"
-                                      name="tags[][isStaffOnly]"
+                                      name="tags[0][isStaffOnly]"
                                       class="visually-hidden input--radio-or-checkbox--multilabel"
                                       javascript="${javascript`
                                         this.isModified = true;
