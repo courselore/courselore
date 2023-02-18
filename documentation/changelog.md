@@ -12,6 +12,12 @@
 
 ## Unreleased
 
+## 6.0.9
+
+**2023-02-18 · [Download](https://github.com/courselore/courselore/releases/tag/v6.0.9) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
+
+- Added the possibility of reordering tags.
+
 ## 6.0.8
 
 **2023-02-10 · [Download](https://github.com/courselore/courselore/releases/tag/v6.0.8) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
