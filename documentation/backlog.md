@@ -4,6 +4,19 @@
 
 - Merge feature branches
   - `poll`
+    - Features
+      - Polls
+      - Exam period
+    - Files
+      - `authentication.ts`
+      - `content.ts`
+      - `conversation.ts`
+      - `course.ts`
+      - `database.ts`
+      - `index.ts`
+      - `layouts.ts`
+      - `message.ts`
+      - `user.ts`
   - `app-mobile`
 - Email digests
 - Drafts
