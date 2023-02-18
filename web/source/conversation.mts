@@ -535,7 +535,7 @@ export default async (application: Application): Promise<void> => {
               : sql``
           }
           WHERE "taggings"."conversation" = ${conversation.id}
-          ORDER BY "tags"."id" ASC
+          ORDER BY "tags"."order" ASC
         `
       )
       .map((tagging) => ({
