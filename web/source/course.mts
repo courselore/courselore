@@ -1481,10 +1481,11 @@ export default async (application: Application): Promise<void> => {
                   this.onbeforemorph = (event) => !event?.detail?.liveUpdate;
 
                   this.onpointerdown = (event) => {
+                    if (event.target.closest('[key="tag--grab--handle"]') === null) return;
+
                     const body = document.querySelector("body");
                     const tag = event.target.closest('[key^="tag/"]');
-                    const tagHighlight = tag?.querySelector('[key="tag--highlight"]');
-                    if (event.target.closest('[key="tag--grab--handle"]') === null || tag === null) return;
+                    const tagHighlight = tag.querySelector('[key="tag--highlight"]');
 
                     this.grabbed = tag;
                     body.classList.add("grabbing");
@@ -1512,37 +1513,20 @@ export default async (application: Application): Promise<void> => {
                   };
 
                   this.reorder = () => {
-                    let order = 0;
-                    for (const tag of this.querySelectorAll('[key^="tag/"]')) {
-                      if (tag.hidden || tag.querySelector('[name$="[delete]"]')?.disabled === false) continue;
-                      tag.querySelector('[name$="[order]"]').value = String(order);
-                      order++;
+                    for (const [order, tag] of this.querySelectorAll('[key^="tag/"]:not(.removed)').entries()) {
+                      // TODO
                     }
                   };
                 `}"
               >
                 $${response.locals.tags.map(
-                  (tag, index) => html`
+                  (tag, order) => html`
                     <div key="tag/${tag.reference}">
                       <div key="tag--highlight">
                         <input
                           type="hidden"
-                          name="tags[${index.toString()}][reference]"
+                          name="tags[${String(order)}][reference]"
                           value="${tag.reference}"
-                        />
-                        <input
-                          type="hidden"
-                          name="tags[${index.toString()}][delete]"
-                          value="true"
-                          disabled
-                          javascript="${javascript`
-                            this.isModified = true;
-                          `}"
-                        />
-                        <input
-                          type="hidden"
-                          name="tags[${index.toString()}][order]"
-                          value="${index.toString()}"
                         />
                         <div>
                           <div key="tag--icon" class="text--teal">
@@ -1550,12 +1534,11 @@ export default async (application: Application): Promise<void> => {
                           </div>
                           <input
                             type="text"
-                            name="tags[${index.toString()}][name]"
+                            name="tags[${String(order)}][name]"
                             value="${tag.name}"
                             required
                             autocomplete="off"
                             class="input--text"
-                            data-disable-on-delete="true"
                           />
                         </div>
                         <div>
@@ -1594,12 +1577,11 @@ export default async (application: Application): Promise<void> => {
                               >
                                 <input
                                   type="checkbox"
-                                  name="tags[${index.toString()}][isStaffOnly]"
+                                  name="tags[${String(order)}][isStaffOnly]"
                                   $${tag.staffOnlyAt === null
                                     ? html``
                                     : html`checked`}
                                   class="visually-hidden input--radio-or-checkbox--multilabel"
-                                  data-disable-on-delete="true"
                                 />
                                 <span
                                   javascript="${javascript`
@@ -1636,7 +1618,7 @@ export default async (application: Application): Promise<void> => {
                             </div>
                             <div
                               css="${css`
-                                [key^="tag/"].deleted & {
+                                [key^="tag/"].removed & {
                                   display: none;
                                 }
                               `}"
@@ -1695,21 +1677,22 @@ export default async (application: Application): Promise<void> => {
                                             class="button button--rose"
                                             javascript="${javascript`
                                               this.onclick = () => {
-                                                const tag = this.closest('[key^="tag/"]');
-                                                tag.classList.add("deleted");
-                                                const tagIconClassList = tag.querySelector('[key="tag--icon"]').classList;
-                                                tagIconClassList.remove("text--teal");
-                                                tagIconClassList.add("text--rose");
-                                                tag.querySelector('[name$="[delete]"]').disabled = false;
-                                                for (const element of tag.querySelectorAll('[data-disable-on-delete="true"]')) {
-                                                  element.disabled = true;
-                                                  const button = element.closest(".button");
-                                                  if (button === null) continue;
-                                                  button.classList.add("disabled");
-                                                  for (const element of button.querySelectorAll("*"))
-                                                    if (element.tooltip !== undefined) element.tooltip.disable();
-                                                }
-                                                tag.closest('[key="tags"]').reorder();
+                                                // TODO
+                                                // const tag = this.closest('[key^="tag/"]');
+                                                // tag.classList.add("removed");
+                                                // const tagIconClassList = tag.querySelector('[key="tag--icon"]').classList;
+                                                // tagIconClassList.remove("text--teal");
+                                                // tagIconClassList.add("text--rose");
+                                                // tag.querySelector('[name$="[delete]"]').disabled = false;
+                                                // for (const element of tag.querySelectorAll('[data-disable-on-delete="true"]')) {
+                                                //   element.disabled = true;
+                                                //   const button = element.closest(".button");
+                                                //   if (button === null) continue;
+                                                //   button.classList.add("disabled");
+                                                //   for (const element of button.querySelectorAll("*"))
+                                                //     if (element.tooltip !== undefined) element.tooltip.disable();
+                                                // }
+                                                // tag.closest('[key="tags"]').reorder();
                                               };
                                             `}"
                                           >
@@ -1727,7 +1710,7 @@ export default async (application: Application): Promise<void> => {
                             </div>
                             <div
                               css="${css`
-                                [key^="tag/"]:not(.deleted) & {
+                                [key^="tag/"]:not(.removed) & {
                                   display: none;
                                 }
                               `}"
@@ -1746,20 +1729,21 @@ export default async (application: Application): Promise<void> => {
                                   });
 
                                   this.onclick = () => {
-                                    const tag = this.closest('[key^="tag/"]');
-                                    tag.classList.remove("deleted");
-                                    const tagIconClassList = tag.querySelector('[key="tag--icon"]').classList;
-                                    tagIconClassList.remove("text--rose");
-                                    tagIconClassList.add("text--teal");
-                                    tag.querySelector('[name$="[delete]"]').disabled = true;
-                                    for (const element of tag.querySelectorAll('[data-disable-on-delete="true"]')) {
-                                      element.disabled = false;
-                                      const button = element.closest(".button");
-                                      if (button === null) continue;
-                                      button.classList.remove("disabled");
-                                      for (const element of button.querySelectorAll("*"))
-                                        if (element.tooltip !== undefined) element.tooltip.enable();
-                                    }
+                                    // TODO
+                                    // const tag = this.closest('[key^="tag/"]');
+                                    // tag.classList.remove("removed");
+                                    // const tagIconClassList = tag.querySelector('[key="tag--icon"]').classList;
+                                    // tagIconClassList.remove("text--rose");
+                                    // tagIconClassList.add("text--teal");
+                                    // tag.querySelector('[name$="[delete]"]').disabled = true;
+                                    // for (const element of tag.querySelectorAll('[data-disable-on-delete="true"]')) {
+                                    //   element.disabled = false;
+                                    //   const button = element.closest(".button");
+                                    //   if (button === null) continue;
+                                    //   button.classList.remove("disabled");
+                                    //   for (const element of button.querySelectorAll("*"))
+                                    //     if (element.tooltip !== undefined) element.tooltip.enable();
+                                    // }
                                   };
                                 `}"
                               >
@@ -1819,30 +1803,19 @@ export default async (application: Application): Promise<void> => {
                       const newTag = leafac.stringToElement(${html`
                         <div key="tag/new">
                           <div key="tag--highlight">
-                            <input
-                              type="hidden"
-                              disabled
-                              javascript="${javascript`
-                                this.isModified = true;
-                                this.disabled = false;
-                                this.name = "tags[" + this.closest('[key="tags"]').children.length + "][order]";
-                              `}"
-                            />
                             <div>
                               <div key="tag--icon" class="text--teal">
                                 <i class="bi bi-tag-fill"></i>
                               </div>
                               <input
                                 type="text"
+                                name="tags[][name]"
                                 placeholder=" "
                                 required
                                 autocomplete="off"
-                                disabled
                                 class="input--text"
                                 javascript="${javascript`
                                   this.isModified = true;
-                                  this.disabled = false;
-                                  this.name = "tags[" + this.closest('[key="tags"]').children.length + "][name]";
                                 `}"
                               />
                             </div>
@@ -1882,12 +1855,10 @@ export default async (application: Application): Promise<void> => {
                                   >
                                     <input
                                       type="checkbox"
-                                      disabled
+                                      name="tags[][isStaffOnly]"
                                       class="visually-hidden input--radio-or-checkbox--multilabel"
                                       javascript="${javascript`
                                         this.isModified = true;
-                                        this.disabled = false;
-                                        this.name = "tags[" + this.closest('[key="tags"]').children.length + "][isStaffOnly]";
                                       `}"
                                     />
                                     <span
@@ -1938,10 +1909,11 @@ export default async (application: Application): Promise<void> => {
                                     });
 
                                     this.onclick = () => {
-                                      const tag = this.closest('[key^="tag/"]');
-                                      tag.replaceChildren();
-                                      tag.hidden = true;
-                                      tag.closest('[key="tags"]').reorder();
+                                      // TODO
+                                      // const tag = this.closest('[key^="tag/"]');
+                                      // tag.replaceChildren();
+                                      // tag.hidden = true;
+                                      // tag.closest('[key="tags"]').reorder();
                                     };
                                   `}"
                                 >
@@ -1955,11 +1927,11 @@ export default async (application: Application): Promise<void> => {
 
                       const tags = this.closest("form").querySelector('[key="tags"]');
                       tags.insertAdjacentElement("beforeend", newTag);
+                      tags.reorder();
                       leafac.javascript({
                         event,
                         element: newTag,
                       });
-                      tags.reorder();
                     };
 
                     this.onvalidate = () => {
