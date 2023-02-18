@@ -1545,7 +1545,7 @@ export default async (application: Application): Promise<void> => {
                           <button
                             key="tag--grab--handle"
                             type="button"
-                            class="button button--tight button--tight--inline"
+                            class="button button--tight button--tight--inline button--transparent"
                             javascript="${javascript`
                               leafac.setTippy({
                                 event,
@@ -1823,7 +1823,7 @@ export default async (application: Application): Promise<void> => {
                               <button
                                 key="tag--grab--handle"
                                 type="button"
-                                class="button button--tight button--tight--inline"
+                                class="button button--tight button--tight--inline button--transparent"
                                 javascript="${javascript`
                                   leafac.setTippy({
                                     event,
@@ -1927,11 +1927,11 @@ export default async (application: Application): Promise<void> => {
 
                       const tags = this.closest("form").querySelector('[key="tags"]');
                       tags.insertAdjacentElement("beforeend", newTag);
-                      tags.reorder();
                       leafac.javascript({
                         event,
                         element: newTag,
                       });
+                      tags.reorder();
                     };
 
                     this.onvalidate = () => {
