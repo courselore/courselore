@@ -1743,6 +1743,40 @@ export default async (application: Application): Promise<void> => {
                         gap: var(--space--2);
                       `}"
                     >
+                      $${response.locals.course !== undefined
+                        ? html`
+                            <div class="dropdown--menu">
+                              <button
+                                type="button"
+                                class="dropdown--menu--item button button--transparent"
+                                javascript="${javascript`
+                                  const textarea = this.closest("[data-tippy-root]")._tippy.reference.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
+                
+                                  this.onclick = () => {
+                                    this.closest("[data-tippy-root]")._tippy.hide();
+                                    if (textarea.selectionStart === textarea.selectionEnd) {
+                                      textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "- ", "TEXT\\n\\n");
+                                      textarea.selectionEnd += "TEXT".length;
+                                    } else {
+                                      const replacement = textFieldEdit.getSelection(textarea).split("\\n").map((line) => "- " + line).join("\\n");
+                                      const selectionStart = textarea.selectionStart + ((textarea.selectionStart > 0) ? "\\n\\n" : "").length;
+                                      textFieldEdit.insert(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + replacement + "\\n\\n");
+                                      textarea.selectionStart = selectionStart;
+                                      textarea.selectionEnd = textarea.selectionStart + replacement.length;
+                                    }
+                                    textarea.focus();
+                                  };
+                                `}"
+                              >
+                                <i class="bi bi-card-checklist"></i>
+                                Poll
+                              </button>
+                            </div>
+
+                            <hr class="dropdown--separator" />
+                          `
+                        : html``}
+
                       <div class="dropdown--menu">
                         <button
                           type="button"
