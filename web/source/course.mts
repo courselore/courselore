@@ -36,6 +36,7 @@ export type ApplicationCourse = {
           tags: {
             id: number;
             reference: string;
+            order: number;
             name: string;
             staffOnlyAt: string | null;
           }[];
@@ -1482,7 +1483,7 @@ export default async (application: Application): Promise<void> => {
                     const liveUpdate = event?.detail?.liveUpdate;
                     if (!liveUpdate) this.isModified = false;
                     return !liveUpdate;
-                  }
+                  };
 
                   this.onpointerdown = (event) => {
                     if (event.target.closest('[key="tag--grab--handle"]') === null) return;

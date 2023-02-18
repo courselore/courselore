@@ -1569,7 +1569,9 @@ export default async (application: Application): Promise<void> => {
             "name",
             "staffOnlyAt"
           FROM "tags"
-          ORDER BY "course" ASC, "id" ASC
+          ORDER BY
+            "course" ASC,
+            "id" ASC
         `
       )) {
         if (previousCourse !== tag.course) order = 0;
