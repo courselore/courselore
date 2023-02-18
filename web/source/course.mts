@@ -1478,7 +1478,11 @@ export default async (application: Application): Promise<void> => {
                   }
                 `}"
                 javascript="${javascript`
-                  this.onbeforemorph = (event) => !event?.detail?.liveUpdate;
+                  this.onbeforemorph = (event) => {
+                    const liveUpdate = event?.detail?.liveUpdate;
+                    if (!liveUpdate) this.isModified = false;
+                    return !liveUpdate;
+                  }
 
                   this.onpointerdown = (event) => {
                     if (event.target.closest('[key="tag--grab--handle"]') === null) return;
@@ -1990,8 +1994,6 @@ export default async (application: Application): Promise<void> => {
     {
       tags?: {
         reference?: string;
-        delete?: "true";
-        order?: string;
         name?: string;
         isStaffOnly?: "on";
       }[];
@@ -2005,67 +2007,65 @@ export default async (application: Application): Promise<void> => {
     )
       return next();
 
+    request.body.tags ??= [];
+
     if (
       !Array.isArray(request.body.tags) ||
-      request.body.tags.length === 0 ||
       request.body.tags.some(
         (tag) =>
-          (tag.reference === undefined &&
-            (typeof tag.name !== "string" ||
-              tag.name.trim() === "" ||
-              ![undefined, "on"].includes(tag.isStaffOnly))) ||
-          (tag.reference !== undefined &&
-            (!response.locals.tags.some(
-              (existingTag) => tag.reference === existingTag.reference
-            ) ||
-              (tag.delete !== "true" &&
-                (typeof tag.name !== "string" ||
-                  tag.name.trim() === "" ||
-                  ![undefined, "on"].includes(tag.isStaffOnly))))) ||
-          (tag.delete !== "true" &&
-            (typeof tag.order !== "string" || !tag.order.match(/^\d+$/)))
-      ) ||
-      request.body.tags
-        .filter((tag) => tag.delete !== "true")
-        .sort((a, b) => Number(a.order) - Number(b.order))
-        .some((tag, index) => Number(tag.order) !== index)
+          ![
+            undefined,
+            ...response.locals.tags.map((tag) => tag.reference),
+          ].includes(tag.reference) ||
+          typeof tag.name !== "string" ||
+          tag.name.trim() === "" ||
+          ![undefined, "on"].includes(tag.isStaffOnly)
+      )
     )
       return next("Validation");
 
-    for (const tag of request.body.tags)
-      if (tag.reference === undefined)
-        application.database.run(
-          sql`
-            INSERT INTO "tags" ("createdAt", "course", "reference", "order", "name", "staffOnlyAt")
-            VALUES (
-              ${new Date().toISOString()},
-              ${response.locals.course.id},
-              ${cryptoRandomString({ length: 10, type: "numeric" })},
-              ${tag.name},
-              ${Number(tag.order)},
-              ${tag.isStaffOnly === "on" ? new Date().toISOString() : null}
-            )
-          `
-        );
-      else if (tag.delete === "true")
+    application.database.executeTransaction(() => {
+      for (const [order, tag] of request.body.tags!.entries())
+        if (tag.reference === undefined)
+          application.database.run(
+            sql`
+              INSERT INTO "tags" ("createdAt", "course", "reference", "order", "name", "staffOnlyAt")
+              VALUES (
+                ${new Date().toISOString()},
+                ${response.locals.course.id},
+                ${cryptoRandomString({ length: 10, type: "numeric" })},
+                ${order},
+                ${tag.name},
+                ${tag.isStaffOnly === "on" ? new Date().toISOString() : null}
+              )
+            `
+          );
+        else
+          application.database.run(
+            sql`
+              UPDATE "tags"
+              SET
+                "order" = ${order},
+                "name" = ${tag.name},
+                "staffOnlyAt" = ${
+                  tag.isStaffOnly === "on" ? new Date().toISOString() : null
+                }
+              WHERE "reference" = ${tag.reference}
+            `
+          );
+
+      for (const tag of response.locals.tags.filter(
+        (tag) =>
+          !request.body
+            .tags!.map((tag) => tag.reference)
+            .includes(tag.reference)
+      ))
         application.database.run(
           sql`
             DELETE FROM "tags" WHERE "reference" = ${tag.reference}
           `
         );
-      else
-        application.database.run(
-          sql`
-            UPDATE "tags"
-            SET
-              "order" = ${tag.order},
-              "name" = ${tag.name},
-              "staffOnlyAt" = ${
-                tag.isStaffOnly === "on" ? new Date().toISOString() : null
-              }
-            WHERE "reference" = ${tag.reference}
-          `
-        );
+    });
 
     application.web.locals.helpers.Flash.set({
       request,

@@ -1545,8 +1545,7 @@ export default async (application: Application): Promise<void> => {
             "order" INTEGER NOT NULL,
             "name" TEXT NOT NULL,
             "staffOnlyAt" TEXT NULL,
-            UNIQUE ("course", "reference"),
-            UNIQUE ("course", "order")
+            UNIQUE ("course", "reference")
           );
         `
       );
