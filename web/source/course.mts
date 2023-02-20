@@ -1448,7 +1448,7 @@ export default async (application: Application): Promise<void> => {
                   [key^="tag/"] {
                     display: flex;
                     gap: var(--space--2);
-                    align-items: baseline;
+                    align-items: center;
 
                     transition-property: var(--transition-property--opacity);
                     transition-duration: var(--transition-duration--150);
