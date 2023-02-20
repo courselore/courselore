@@ -1905,7 +1905,7 @@ export default async (application: Application): Promise<void> => {
                     };
 
                     this.onvalidate = () => {
-                      if ([...this.closest("form").querySelector('[key="tags"]').children].filter((tag) => !tag.hidden).length === 0)
+                      if (this.closest("form").querySelector('[key="tags"]').children.length === 0)
                         return "Please add at least one tag.";
                     };
                   `}"
