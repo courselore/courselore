@@ -3,14 +3,6 @@
 - Simplify tags page
   - Inline the controls
   - Drag with three fingers
-  - Tags won’t have special behavior
-    - No nested tags
-- Polls
-  - Ranking
-  - One or multiple options
-  - https://civs1.civs.us
-- Whispers
-
 
 ## Finish
 
@@ -20,9 +12,11 @@
       - Polls
         - They’re a new type of message content, not something heavyweight like a new type of question. This follows the same lines as Discourse & Slack (where people use reactions (emojis) to do polls).
         - Features
-          - Support multiple answers.
+          - One or multiple options, but not (choose at most 2 options) (just radio or checkbox)
           - Allow for closing a poll.
             - Allow for scheduling the closing of a poll.
+          - Ranking
+            - https://civs1.civs.us
         - Visualization
           - Students may see aggregate results.
           - Staff may see individual votes.
@@ -127,8 +121,6 @@
 - Streamline the creation of DMs.
 - Highlights (similar to Slack’s pins, but we’re avoiding the word “pin” because it already means “pinned conversations”). The highlights are visible to everyone in the conversation.
 - Bookmarks / flags / saved items. These are personal, for example, for something you have to follow up on.
-- More sophisticated tag system: dependencies between tags, actions triggered by tags, and so forth.
-- Modify the order of tags.
 - Assign questions to CAs.
 - `position: sticky` headers (showing author name) in messages?
 - Different states: Open vs archived.
