@@ -324,6 +324,9 @@ export async function liveConnection({
 
       if (liveReloadOnNextConnection) {
         body.isModified = false;
+        await new Promise((resolve) => {
+          window.setTimeout(resolve, 300);
+        });
         location.reload();
         return;
       }

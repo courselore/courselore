@@ -2300,173 +2300,176 @@ export default async (application: Application): Promise<void> => {
             key="content-editor--write--poll"
             hidden
             css="${css`
-              padding: var(--space--2) var(--space--4);
-              display: flex;
-              flex-direction: column;
-              gap: var(--space--2);
+              padding: var(--space--2);
             `}"
           >
-            <h2 class="heading">
-              <i class="bi bi-card-checklist"></i>
-              Poll
-            </h2>
+            <div
+              css="${css`
+                background-color: var(--color--gray--medium--50);
+                @media (prefers-color-scheme: dark) {
+                  color: var(--color--gray--medium--200);
+                  background-color: var(--color--gray--medium--900);
+                }
+                padding: var(--space--2) var(--space--4);
+                border-radius: var(--border-radius--lg);
+                display: flex;
+                flex-direction: column;
+                gap: var(--space--2);
+              `}"
+            >
+              <h2 class="heading">
+                <i class="bi bi-card-checklist"></i>
+                Poll
+              </h2>
 
-            <div class="label">
-              <p class="label--text">Choices</p>
-              <div
-                css="${css`
-                  display: flex;
-                  gap: var(--space--8);
-                `}"
-              >
-                <label
-                  class="button button--tight button--tight--inline button--transparent"
-                >
-                  <input
-                    type="radio"
-                    name="choices"
-                    value="single"
-                    required
-                    class="visually-hidden input--radio-or-checkbox--multilabel"
-                  />
-                  <span>
-                    <i class="bi bi-ui-radios"></i>
-                    Single
-                  </span>
-                  <span class="text--blue">
-                    <i class="bi bi-ui-radios"></i>
-                    Single
-                  </span>
-                </label>
-                <label
-                  class="button button--tight button--tight--inline button--transparent"
-                >
-                  <input
-                    type="radio"
-                    name="choices"
-                    value="multiple"
-                    required
-                    class="visually-hidden input--radio-or-checkbox--multilabel"
-                  />
-                  <span>
-                    <i class="bi bi-ui-checks"></i>
-                    Multiple
-                  </span>
-                  <span class="text--blue">
-                    <i class="bi bi-ui-checks"></i>
-                    Multiple
-                  </span>
-                </label>
-              </div>
-            </div>
-
-            <div class="label">
-              <p class="label--text">Closing</p>
-              <div
-                css="${css`
-                  display: flex;
-                `}"
-              >
-                <label
-                  class="button button--tight button--tight--inline button--transparent"
-                >
-                  <input
-                    type="checkbox"
-                    class="visually-hidden input--radio-or-checkbox--multilabel"
-                    javascript="${javascript`
-                      this.onchange = () => {
-                        const closesAt = this.closest("form").querySelector('[key="closes-at"]');
-                        closesAt.hidden = !this.checked;
-                        for (const element of closesAt.querySelectorAll("*"))
-                          if (element.disabled !== undefined) element.disabled = !this.checked;
-                      };
-                    `}"
-                  />
-                  <span
-                    javascript="${javascript`
-                      leafac.setTippy({
-                        event,
-                        element: this,
-                        tippyProps: {
-                          touch: false,
-                          content: "Set as Closing",
-                        },
-                      });
-                    `}"
-                  >
-                    <i class="bi bi-calendar-minus"></i>
-                    Doesn’t Close
-                  </span>
-                  <span
-                    class="text--amber"
-                    javascript="${javascript`
-                      leafac.setTippy({
-                        event,
-                        element: this,
-                        tippyProps: {
-                          touch: false,
-                          content: "Set as Not Closing",
-                        },
-                      });
-                    `}"
-                  >
-                    <i class="bi bi-calendar-plus-fill"></i>
-                    Closes
-                  </span>
-                </label>
-              </div>
-            </div>
-
-            <div key="closes-at" hidden class="label">
-              <div class="label--text">
-                Closes at
-                <button
-                  type="button"
-                  class="button button--tight button--tight--inline button--transparent"
-                  javascript="${javascript`
-                    leafac.setTippy({
-                      event,
-                      element: this,
-                      tippyProps: {
-                        trigger: "click",
-                        content: "This datetime will be converted to UTC, which may lead to surprising off-by-one-hour differences if it crosses a daylight saving change.",
-                      },
-                    });
+              <div class="label">
+                <p class="label--text">Choices</p>
+                <div
+                  css="${css`
+                    display: flex;
+                    gap: var(--space--8);
                   `}"
                 >
-                  <i class="bi bi-info-circle"></i>
-                </button>
+                  <label
+                    class="button button--tight button--tight--inline button--transparent"
+                  >
+                    <input
+                      type="radio"
+                      name="choices"
+                      value="single"
+                      required
+                      class="visually-hidden input--radio-or-checkbox--multilabel"
+                    />
+                    <span>
+                      <i class="bi bi-ui-radios"></i>
+                      Single
+                    </span>
+                    <span class="text--blue">
+                      <i class="bi bi-ui-radios"></i>
+                      Single
+                    </span>
+                  </label>
+                  <label
+                    class="button button--tight button--tight--inline button--transparent"
+                  >
+                    <input
+                      type="radio"
+                      name="choices"
+                      value="multiple"
+                      required
+                      class="visually-hidden input--radio-or-checkbox--multilabel"
+                    />
+                    <span>
+                      <i class="bi bi-ui-checks"></i>
+                      Multiple
+                    </span>
+                    <span class="text--blue">
+                      <i class="bi bi-ui-checks"></i>
+                      Multiple
+                    </span>
+                  </label>
+                </div>
               </div>
-              <input
-                type="text"
-                name="closesAt"
-                value="${new Date().toISOString()}"
-                required
-                autocomplete="off"
-                disabled
-                class="input--text"
-                javascript="${javascript`
-                  this.value = this.defaultValue = leafac.localizeDateTime(this.defaultValue);
 
-                  this.onvalidate = () => {
-                    const error = leafac.validateLocalizedDateTime(this);
-                    if (typeof error === "string") return error;
-                    if (new Date(this.value).getTime() <= Date.now()) return "Must be in the future.";
-                  };
-                `}"
-              />
+              <div class="label">
+                <p class="label--text">Closing</p>
+                <div
+                  css="${css`
+                    display: flex;
+                  `}"
+                >
+                  <label
+                    class="button button--tight button--tight--inline button--transparent"
+                  >
+                    <input
+                      type="checkbox"
+                      class="visually-hidden input--radio-or-checkbox--multilabel"
+                      javascript="${javascript`
+                        this.onchange = () => {
+                          const closesAt = this.closest("form").querySelector('[key="closes-at"]');
+                          closesAt.hidden = !this.checked;
+                          for (const element of closesAt.querySelectorAll("*"))
+                            if (element.disabled !== undefined) element.disabled = !this.checked;
+                        };
+                      `}"
+                    />
+                    <span
+                      javascript="${javascript`
+                        leafac.setTippy({
+                          event,
+                          element: this,
+                          tippyProps: {
+                            touch: false,
+                            content: "Set as Closing",
+                          },
+                        });
+                      `}"
+                    >
+                      <i class="bi bi-calendar-minus"></i>
+                      Doesn’t Close
+                    </span>
+                    <span
+                      class="text--amber"
+                      javascript="${javascript`
+                        leafac.setTippy({
+                          event,
+                          element: this,
+                          tippyProps: {
+                            touch: false,
+                            content: "Set as Not Closing",
+                          },
+                        });
+                      `}"
+                    >
+                      <i class="bi bi-calendar-plus-fill"></i>
+                      Closes
+                    </span>
+                  </label>
+                </div>
+              </div>
+
+              <div key="closes-at" hidden class="label">
+                <div class="label--text">
+                  Closes at
+                  <button
+                    type="button"
+                    class="button button--tight button--tight--inline button--transparent"
+                    javascript="${javascript`
+                      leafac.setTippy({
+                        event,
+                        element: this,
+                        tippyProps: {
+                          trigger: "click",
+                          content: "This datetime will be converted to UTC, which may lead to surprising off-by-one-hour differences if it crosses a daylight saving change.",
+                        },
+                      });
+                    `}"
+                  >
+                    <i class="bi bi-info-circle"></i>
+                  </button>
+                </div>
+                <input
+                  type="text"
+                  name="closesAt"
+                  value="${new Date().toISOString()}"
+                  required
+                  autocomplete="off"
+                  disabled
+                  class="input--text"
+                  javascript="${javascript`
+                    this.value = this.defaultValue = leafac.localizeDateTime(this.defaultValue);
+
+                    this.onvalidate = () => {
+                      const error = leafac.validateLocalizedDateTime(this);
+                      if (typeof error === "string") return error;
+                      if (new Date(this.value).getTime() <= Date.now()) return "Must be in the future.";
+                    };
+                  `}"
+                />
+              </div>
             </div>
-
-            <hr
-              class="separator"
-              css="${css`
-                border-color: var(--color--gray--medium--300);
-                @media (prefers-color-scheme: dark) {
-                  border-color: var(--color--gray--medium--600);
-                }
-              `}"
-            />
           </div>
+
           <div
             css="${css`
               display: grid;
