@@ -1779,124 +1779,119 @@ export default async (application: Application): Promise<void> => {
                     this.onclick = () => {
                       const newTag = leafac.stringToElement(${html`
                         <div key="tag/new">
-                          <div key="tag--highlight">
-                            <div>
-                              <div key="tag--icon" class="text--teal">
-                                <i class="bi bi-tag-fill"></i>
-                              </div>
+                          <button
+                            key="tag--grab--handle"
+                            type="button"
+                            class="button button--tight button--tight--inline button--transparent"
+                            javascript="${javascript`
+                              leafac.setTippy({
+                                event,
+                                element: this,
+                                tippyProps: {
+                                  touch: false,
+                                  content: "Drag to Reorder",
+                                },
+                              });
+                            `}"
+                          >
+                            <i class="bi bi-grip-vertical"></i>
+                          </button>
+                          <input
+                            type="text"
+                            name="tags[0][name]"
+                            placeholder=" "
+                            required
+                            autocomplete="off"
+                            class="input--text"
+                            javascript="${javascript`
+                              this.isModified = true;
+                            `}"
+                          />
+                          <div
+                            css="${css`
+                              width: var(--space--72);
+                            `}"
+                          >
+                            <label
+                              class="button button--tight button--tight--inline button--justify-start button--transparent"
+                            >
                               <input
-                                type="text"
-                                name="tags[0][name]"
-                                placeholder=" "
-                                required
-                                autocomplete="off"
-                                class="input--text"
+                                type="checkbox"
+                                name="tags[0][isStaffOnly]"
+                                class="visually-hidden input--radio-or-checkbox--multilabel"
                                 javascript="${javascript`
                                   this.isModified = true;
                                 `}"
                               />
-                            </div>
-                            <div>
-                              <button
-                                key="tag--grab--handle"
-                                type="button"
-                                class="button button--tight button--tight--inline button--transparent"
+                              <span
                                 javascript="${javascript`
                                   leafac.setTippy({
                                     event,
                                     element: this,
                                     tippyProps: {
                                       touch: false,
-                                      content: "Drag to Reorder",
+                                      content: "Set as Visible by Staff Only",
                                     },
                                   });
                                 `}"
                               >
-                                <i class="bi bi-grip-vertical"></i>
-                              </button>
-                              <div
-                                css="${css`
-                                  display: flex;
-                                  flex-wrap: wrap;
-                                  column-gap: var(--space--4);
-                                  row-gap: var(--space--2);
+                                <i class="bi bi-eye"></i>
+                                Visible by Everyone
+                              </span>
+                              <span
+                                class="${textColorsCourseRole.staff}"
+                                javascript="${javascript`
+                                  leafac.setTippy({
+                                    event,
+                                    element: this,
+                                    tippyProps: {
+                                      touch: false,
+                                      content: "Set as Visible by Everyone",
+                                    },
+                                  });
                                 `}"
                               >
-                                <div
-                                  css="${css`
-                                    width: var(--space--40);
-                                  `}"
-                                >
-                                  <label
-                                    class="button button--tight button--tight--inline button--justify-start button--transparent"
-                                  >
-                                    <input
-                                      type="checkbox"
-                                      name="tags[0][isStaffOnly]"
-                                      class="visually-hidden input--radio-or-checkbox--multilabel"
-                                      javascript="${javascript`
-                                        this.isModified = true;
-                                      `}"
-                                    />
-                                    <span
-                                      javascript="${javascript`
-                                        leafac.setTippy({
-                                          event,
-                                          element: this,
-                                          tippyProps: {
-                                            touch: false,
-                                            content: "Set as Visible by Staff Only",
-                                          },
-                                        });
-                                      `}"
-                                    >
-                                      <i class="bi bi-eye"></i>
-                                      Visible by Everyone
-                                    </span>
-                                    <span
-                                      class="${textColorsCourseRole.staff}"
-                                      javascript="${javascript`
-                                        leafac.setTippy({
-                                          event,
-                                          element: this,
-                                          tippyProps: {
-                                            touch: false,
-                                            content: "Set as Visible by Everyone",
-                                          },
-                                        });
-                                      `}"
-                                    >
-                                      <i class="bi bi-mortarboard-fill"></i>
-                                      Visible by Staff Only
-                                    </span>
-                                  </label>
-                                </div>
+                                <i class="bi bi-mortarboard-fill"></i>
+                                Visible by Staff Only
+                              </span>
+                            </label>
+                          </div>
+                          <button
+                            type="button"
+                            class="button button--tight button--tight--inline button--transparent"
+                            javascript="${javascript`
+                              leafac.setTippy({
+                                event,
+                                element: this,
+                                tippyProps: {
+                                  theme: "rose",
+                                  touch: false,
+                                  content: "Remove Tag",
+                                },
+                              });
+
+                              this.onclick = () => {
+                                const tags = this.closest('[key="tags"]');
+                                this.closest('[key^="tag/"]').remove();
+                                tags.reorder();
+                              };
+                            `}"
+                          >
+                            <i class="bi bi-trash"></i>
+                          </button>
+                          $${response.locals.tags.length > 0
+                            ? html`
                                 <button
                                   type="button"
                                   class="button button--tight button--tight--inline button--transparent"
-                                  javascript="${javascript`
-                                    leafac.setTippy({
-                                      event,
-                                      element: this,
-                                      tippyProps: {
-                                        theme: "rose",
-                                        touch: false,
-                                        content: "Remove Tag",
-                                      },
-                                    });
-
-                                    this.onclick = () => {
-                                      const tags = this.closest('[key="tags"]');
-                                      this.closest('[key^="tag/"]').remove();
-                                      tags.reorder();
-                                    };
+                                  css="${css`
+                                    visibility: hidden;
                                   `}"
                                 >
-                                  <i class="bi bi-trash"></i>
+                                  <i class="bi bi-chat-text"></i>
                                 </button>
-                              </div>
-                            </div>
-                          </div>
+                              `
+                            : html``}
                         </div>
                       `});
 
