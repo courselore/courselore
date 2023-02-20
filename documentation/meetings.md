@@ -1,6 +1,13 @@
 # Meetings
 
 <details>
+<summary>2023-02-25</summary>
+
+- Drag with three fingers worked for me 🤔
+
+</details>
+
+<details>
 <summary>2023-02-18</summary>
 
 - Progress

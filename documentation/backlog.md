@@ -2,7 +2,6 @@
 
 - Simplify tags page
   - Inline the controls
-  - Drag with three fingers
 
 ## Finish
 
