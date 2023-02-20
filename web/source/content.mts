@@ -2688,7 +2688,15 @@ export default async (application: Application): Promise<void> => {
 
                 <div>
                   <button
+                    type="button"
                     class="button button--full-width-on-small-screen button--blue"
+                    javascript="${javascript`
+                      this.onclick = () => {
+                        const poll = this.closest('[key="content-editor--write--poll"]');
+                        if (!leafac.validate(poll)) return;
+                        console.log([...leafac.urlSearchParamsFromElement(poll)]);
+                      };
+                    `}"
                   >
                     <i class="bi bi-card-checklist"></i>
                     Create Poll

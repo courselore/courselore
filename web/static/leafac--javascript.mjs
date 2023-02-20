@@ -689,6 +689,24 @@ export function isModified(element) {
   return false;
 }
 
+export function urlSearchParamsFromElement(element) {
+  const urlSearchParams = new URLSearchParams();
+  const elementsToCheck = descendants(element);
+  for (const element of elementsToCheck) {
+    const name = element.getAttribute("name");
+    const value = element.value;
+    if (
+      typeof name === "string" &&
+      [undefined, false].includes(element.disabled) &&
+      // TODO: ‘<input>’s actually have ‘.checked === false’, so check tagName
+      [undefined, true].includes(element.checked) &&
+      typeof value === "string"
+    )
+      urlSearchParams.set(name, value);
+  }
+  return urlSearchParams;
+}
+
 export const relativizeDateTime = (() => {
   const relativeTimeFormat = new Intl.RelativeTimeFormat("en-US", {
     localeMatcher: "lookup",
