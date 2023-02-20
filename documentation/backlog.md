@@ -1,8 +1,5 @@
 # Backlog
 
-- Simplify tags page
-  - Inline the controls
-
 ## Finish
 
 - Merge feature branches
