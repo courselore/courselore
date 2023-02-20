@@ -17,6 +17,7 @@
           - Students may see aggregate results.
           - Staff may see individual votes.
         - Edge cases
+          - An option whose content includes a poll in an of itself
           - Reusing a poll in a new course doesn’t work out of the box; we need some logic to duplicate the poll.
           - Include text material in full-text search.
       - Exam period
@@ -886,6 +887,7 @@ const { app, BrowserWindow } = require("electron");
 
 ## Infrastructure
 
+- Extract component that does reordering (tags, poll options, and so forth).
 - Rename schema to be more explicit, for example, “likes” → “messageLikes”.
 - Test process manager on Windows
   - In development, `Ctrl+C`.

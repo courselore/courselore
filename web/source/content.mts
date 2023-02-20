@@ -2339,7 +2339,7 @@ export default async (application: Application): Promise<void> => {
                   `}"
                 >
                   <div class="label">
-                    <p class="label--text">Choices</p>
+                    <p class="label--text">Votes</p>
                     <div
                       css="${css`
                         display: flex;
@@ -2351,7 +2351,7 @@ export default async (application: Application): Promise<void> => {
                       >
                         <input
                           type="radio"
-                          name="choices"
+                          name="votes"
                           value="single"
                           required
                           class="visually-hidden input--radio-or-checkbox--multilabel"
@@ -2370,7 +2370,7 @@ export default async (application: Application): Promise<void> => {
                       >
                         <input
                           type="radio"
-                          name="choices"
+                          name="votes"
                           value="multiple"
                           required
                           class="visually-hidden input--radio-or-checkbox--multilabel"
@@ -2491,6 +2491,210 @@ export default async (application: Application): Promise<void> => {
                         </button>
                       </div>
                     </div>
+                  </div>
+                </div>
+                <div>
+                  <div class="label">
+                    <p class="label--text">Choices</p>
+                    <div
+                      css="${css`
+                        display: flex;
+                        flex-direction: column;
+                        gap: var(--space--2);
+                      `}"
+                    >
+                      <div
+                        key="choices"
+                        css="${css`
+                          display: flex;
+                          flex-direction: column;
+                          gap: var(--space--2);
+
+                          [key^="choice/"] {
+                            display: flex;
+                            gap: var(--space--2);
+                            align-items: center;
+
+                            transition-property: var(
+                              --transition-property--opacity
+                            );
+                            transition-duration: var(
+                              --transition-duration--150
+                            );
+                            transition-timing-function: var(
+                              --transition-timing-function--in-out
+                            );
+
+                            &.grabbed {
+                              opacity: var(--opacity--50);
+                            }
+
+                            [key="choice--grab--handle"]:not(.disabled) {
+                              cursor: grab;
+                            }
+                          }
+                        `}"
+                        javascript="${javascript`
+                          this.onbeforemorph = (event) => {
+                            const liveUpdate = event?.detail?.liveUpdate;
+                            if (!liveUpdate) this.isModified = false;
+                            return !liveUpdate;
+                          };
+
+                          this.onpointerdown = (event) => {
+                            if (event.target.closest('[key="choice--grab--handle"]') === null) return;
+
+                            const body = document.querySelector("body");
+                            const choice = event.target.closest('[key^="choice/"]');
+
+                            this.grabbed = choice;
+                            body.classList.add("grabbing");
+                            choice.classList.add("grabbed");
+
+                            body.addEventListener("pointerup", () => {
+                              delete this.grabbed;
+                              body.classList.remove("grabbing");
+                              choice.classList.remove("grabbed");
+                            }, { once: true });
+                          };
+
+                          this.onpointermove = (event) => {
+                            const choice = (
+                              event.pointerType === "touch" ? document.elementFromPoint(event.clientX, event.clientY) : event.target
+                            ).closest('[key^="choice/"]');
+                            if (choice === null || [undefined, choice].includes(this.grabbed)) return;
+
+                            const boundingClientRect = choice.getBoundingClientRect();
+                            choice[
+                              (event.clientY - boundingClientRect.top) / (boundingClientRect.bottom - boundingClientRect.top) < 0.5 ?
+                              "after" : "before"
+                            ](this.grabbed);
+                            this.reorder();
+                          };
+
+                          this.onkeydown = (event) => {
+                            if (event.target.closest('[key="choice--grab--handle"]') === null) return;
+
+                            const choice = event.target.closest('[key^="choice/"]');
+                            switch (event.code) {
+                              case "ArrowUp":
+                                event.preventDefault();
+                                choice.previousElementSibling?.before?.(choice);
+                                break;
+                              case "ArrowDown":
+                                event.preventDefault();
+                                choice.nextElementSibling?.after?.(choice);
+                                break;
+                            }
+                            choice.querySelector('[key="choice--grab--handle"]').focus();
+                            this.reorder();
+                          };
+
+                          this.reorder = () => {
+                            this.isModified = true;
+
+                            for (const [order, choice] of this.querySelectorAll('[key^="choice/"]:not(.removed)').entries())
+                              for (const element of choice.querySelectorAll('[name^="choices["]'))
+                                element.setAttribute("name", element.getAttribute("name").replace(/\\d+/, String(order)));
+                          };
+                        `}"
+                      ></div>
+                      <div
+                        css="${css`
+                          display: flex;
+                          justify-content: center;
+                        `}"
+                      >
+                        <button
+                          type="button"
+                          class="button button--transparent button--full-width-on-small-screen"
+                          javascript="${javascript`
+                            this.onclick = () => {
+                              const newChoice = leafac.stringToElement(${html`
+                                <div key="choice/new">
+                                  <button
+                                    key="choice--grab--handle"
+                                    type="button"
+                                    class="button button--tight button--tight--inline button--transparent"
+                                    javascript="${javascript`
+                                      leafac.setTippy({
+                                        event,
+                                        element: this,
+                                        tippyProps: {
+                                          touch: false,
+                                          content: "Drag to Reorder",
+                                        },
+                                      });
+                                    `}"
+                                  >
+                                    <i class="bi bi-grip-vertical"></i>
+                                  </button>
+                                  <input
+                                    type="text"
+                                    name="choices[0][name]"
+                                    placeholder=" "
+                                    required
+                                    autocomplete="off"
+                                    class="input--text"
+                                    javascript="${javascript`
+                                      this.isModified = true;
+                                    `}"
+                                  />
+                                  <button
+                                    type="button"
+                                    class="button button--tight button--tight--inline button--transparent"
+                                    javascript="${javascript`
+                                      leafac.setTippy({
+                                        event,
+                                        element: this,
+                                        tippyProps: {
+                                          theme: "rose",
+                                          touch: false,
+                                          content: "Remove Choice",
+                                        },
+                                      });
+
+                                      this.onclick = () => {
+                                        const choices = this.closest('[key="choices"]');
+                                        this.closest('[key^="choice/"]').remove();
+                                        choices.reorder();
+                                      };
+                                    `}"
+                                  >
+                                    <i class="bi bi-x-lg"></i>
+                                  </button>
+                                </div>
+                              `});
+
+                              const choices = this.closest("form").querySelector('[key="choices"]');
+                              choices.insertAdjacentElement("beforeend", newChoice);
+                              leafac.javascript({
+                                event,
+                                element: newChoice,
+                              });
+                              choices.reorder();
+                            };
+
+                            this.onvalidate = () => {
+                              if ([...this.closest("form").querySelector('[key="choices"]').children].filter((choice) => !choice.hidden).length === 0)
+                                return "Please add at least one choice.";
+                            };
+                          `}"
+                        >
+                          <i class="bi bi-plus-circle"></i>
+                          Add Choice
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <button
+                      class="button button--full-width-on-small-screen button--blue"
+                    >
+                      <i class="bi bi-card-checklist"></i>
+                      Create Poll
+                    </button>
                   </div>
                 </div>
               </div>
