@@ -1,6 +1,26 @@
 # Meetings
 
 <details>
+<summary>2023-02-18</summary>
+
+- Progress
+  - Finished the feature that allows you to reorder tags.
+  - Started polls.
+  - Didn’t meet with the people at Google 🤷
+- Simplify tags page
+  - Inline the controls
+  - Drag with three fingers
+  - Tags won’t have special behavior
+    - No nested tags
+- Polls
+  - Ranking
+  - One or multiple options
+  - https://civs1.civs.us
+- Whispers
+
+</details>
+
+<details>
 <summary>2023-02-11</summary>
 
 - Progress:
