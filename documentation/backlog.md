@@ -1,5 +1,17 @@
 # Backlog
 
+- Simplify tags page
+  - Inline the controls
+  - Drag with three fingers
+  - Tags won’t have special behavior
+    - No nested tags
+- Polls
+  - Ranking
+  - One or multiple options
+  - https://civs1.civs.us
+- Whispers
+
+
 ## Finish
 
 - Merge feature branches
@@ -28,6 +40,7 @@
       - `layouts.ts`
       - `message.ts`
       - `user.ts`
+  - Whispers
   - `app-mobile`
 - Email digests
 - Drafts
