@@ -2341,7 +2341,7 @@ export default async (application: Application): Promise<void> => {
                         element: this,
                         tippyProps: {
                           trigger: "click",
-                          content: "This datetime will be converted to UTC, which may lead to surprising off-by-one-hour differences if it crosses a daylight saving change.",
+                          content: "This datetime will be converted to UTC, which may lead to surprising off-by-one-hour differences if it crosses a daylight saving time change.",
                         },
                       });
                     `}"
