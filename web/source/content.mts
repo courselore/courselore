@@ -2339,7 +2339,7 @@ export default async (application: Application): Promise<void> => {
                   `}"
                 >
                   <div class="label">
-                    <p class="label--text">Votes</p>
+                    <p class="label--text">Choices</p>
                     <div
                       css="${css`
                         display: flex;
@@ -2351,7 +2351,7 @@ export default async (application: Application): Promise<void> => {
                       >
                         <input
                           type="radio"
-                          name="votes"
+                          name="choices"
                           value="single"
                           required
                           class="visually-hidden input--radio-or-checkbox--multilabel"
@@ -2370,7 +2370,7 @@ export default async (application: Application): Promise<void> => {
                       >
                         <input
                           type="radio"
-                          name="votes"
+                          name="choices"
                           value="multiple"
                           required
                           class="visually-hidden input--radio-or-checkbox--multilabel"
@@ -2495,7 +2495,7 @@ export default async (application: Application): Promise<void> => {
                 </div>
 
                 <div class="label">
-                  <p class="label--text">Choices</p>
+                  <p class="label--text">Options</p>
                   <div
                     css="${css`
                       display: flex;
@@ -2504,13 +2504,13 @@ export default async (application: Application): Promise<void> => {
                     `}"
                   >
                     <div
-                      key="choices"
+                      key="options"
                       css="${css`
                         display: flex;
                         flex-direction: column;
                         gap: var(--space--2);
 
-                        [key^="choice/"] {
+                        [key^="option/"] {
                           display: flex;
                           gap: var(--space--2);
                           align-items: center;
@@ -2527,7 +2527,7 @@ export default async (application: Application): Promise<void> => {
                             opacity: var(--opacity--50);
                           }
 
-                          [key="choice--grab--handle"]:not(.disabled) {
+                          [key="option--grab--handle"]:not(.disabled) {
                             cursor: grab;
                           }
                         }
@@ -2540,30 +2540,30 @@ export default async (application: Application): Promise<void> => {
                         };
 
                         this.onpointerdown = (event) => {
-                          if (event.target.closest('[key="choice--grab--handle"]') === null) return;
+                          if (event.target.closest('[key="option--grab--handle"]') === null) return;
 
                           const body = document.querySelector("body");
-                          const choice = event.target.closest('[key^="choice/"]');
+                          const option = event.target.closest('[key^="option/"]');
 
-                          this.grabbed = choice;
+                          this.grabbed = option;
                           body.classList.add("grabbing");
-                          choice.classList.add("grabbed");
+                          option.classList.add("grabbed");
 
                           body.addEventListener("pointerup", () => {
                             delete this.grabbed;
                             body.classList.remove("grabbing");
-                            choice.classList.remove("grabbed");
+                            option.classList.remove("grabbed");
                           }, { once: true });
                         };
 
                         this.onpointermove = (event) => {
-                          const choice = (
+                          const option = (
                             event.pointerType === "touch" ? document.elementFromPoint(event.clientX, event.clientY) : event.target
-                          ).closest('[key^="choice/"]');
-                          if (choice === null || [undefined, choice].includes(this.grabbed)) return;
+                          ).closest('[key^="option/"]');
+                          if (option === null || [undefined, option].includes(this.grabbed)) return;
 
-                          const boundingClientRect = choice.getBoundingClientRect();
-                          choice[
+                          const boundingClientRect = option.getBoundingClientRect();
+                          option[
                             (event.clientY - boundingClientRect.top) / (boundingClientRect.bottom - boundingClientRect.top) < 0.5 ?
                             "after" : "before"
                           ](this.grabbed);
@@ -2571,28 +2571,28 @@ export default async (application: Application): Promise<void> => {
                         };
 
                         this.onkeydown = (event) => {
-                          if (event.target.closest('[key="choice--grab--handle"]') === null) return;
+                          if (event.target.closest('[key="option--grab--handle"]') === null) return;
 
-                          const choice = event.target.closest('[key^="choice/"]');
+                          const option = event.target.closest('[key^="option/"]');
                           switch (event.code) {
                             case "ArrowUp":
                               event.preventDefault();
-                              choice.previousElementSibling?.before?.(choice);
+                              option.previousElementSibling?.before?.(option);
                               break;
                             case "ArrowDown":
                               event.preventDefault();
-                              choice.nextElementSibling?.after?.(choice);
+                              option.nextElementSibling?.after?.(option);
                               break;
                           }
-                          choice.querySelector('[key="choice--grab--handle"]').focus();
+                          option.querySelector('[key="option--grab--handle"]').focus();
                           this.reorder();
                         };
 
                         this.reorder = () => {
                           this.isModified = true;
 
-                          for (const [order, choice] of this.querySelectorAll('[key^="choice/"]').entries())
-                            for (const element of choice.querySelectorAll('[name^="choices["]'))
+                          for (const [order, option] of this.querySelectorAll('[key^="option/"]').entries())
+                            for (const element of option.querySelectorAll('[name^="options["]'))
                               element.setAttribute("name", element.getAttribute("name").replace(/\\d+/, String(order)));
                         };
                       `}"
@@ -2608,10 +2608,10 @@ export default async (application: Application): Promise<void> => {
                         class="button button--transparent button--full-width-on-small-screen"
                         javascript="${javascript`
                           this.onclick = () => {
-                            const newChoice = leafac.stringToElement(${html`
-                              <div key="choice/new">
+                            const newOption = leafac.stringToElement(${html`
+                              <div key="option/new">
                                 <button
-                                  key="choice--grab--handle"
+                                  key="option--grab--handle"
                                   type="button"
                                   class="button button--tight button--tight--inline button--transparent"
                                   javascript="${javascript`
@@ -2629,7 +2629,7 @@ export default async (application: Application): Promise<void> => {
                                 </button>
                                 <input
                                   type="text"
-                                  name="choices[0][content]"
+                                  name="options[0][content]"
                                   placeholder=" "
                                   required
                                   autocomplete="off"
@@ -2648,14 +2648,14 @@ export default async (application: Application): Promise<void> => {
                                       tippyProps: {
                                         theme: "rose",
                                         touch: false,
-                                        content: "Remove Choice",
+                                        content: "Remove Option",
                                       },
                                     });
 
                                     this.onclick = () => {
-                                      const choices = this.closest('[key="choices"]');
-                                      this.closest('[key^="choice/"]').remove();
-                                      choices.reorder();
+                                      const options = this.closest('[key="options"]');
+                                      this.closest('[key^="option/"]').remove();
+                                      options.reorder();
                                     };
                                   `}"
                                 >
@@ -2664,23 +2664,23 @@ export default async (application: Application): Promise<void> => {
                               </div>
                             `});
 
-                            const choices = this.closest("form").querySelector('[key="choices"]');
-                            choices.insertAdjacentElement("beforeend", newChoice);
+                            const options = this.closest("form").querySelector('[key="options"]');
+                            options.insertAdjacentElement("beforeend", newOption);
                             leafac.javascript({
                               event,
-                              element: newChoice,
+                              element: newOption,
                             });
-                            choices.reorder();
+                            options.reorder();
                           };
 
                           this.onvalidate = () => {
-                            if (this.closest("form").querySelector('[key="choices"]').children.length === 0)
-                              return "Please add at least one choice.";
+                            if (this.closest("form").querySelector('[key="options"]').children.length === 0)
+                              return "Please add at least one option.";
                           };
                         `}"
                       >
                         <i class="bi bi-plus-circle"></i>
-                        Add Choice
+                        Add Option
                       </button>
                     </div>
                   </div>
