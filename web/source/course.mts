@@ -1523,6 +1523,7 @@ export default async (application: Application): Promise<void> => {
 
                   this.reorder = () => {
                     this.isModified = true;
+
                     for (const [order, tag] of this.querySelectorAll('[key^="tag/"]:not(.removed)').entries())
                       for (const element of tag.querySelectorAll('[name^="tags["]'))
                         element.setAttribute("name", element.getAttribute("name").replace(/\\d+/, String(order)));
@@ -1676,8 +1677,7 @@ export default async (application: Application): Promise<void> => {
                                             if (element.matches(".button")) element.classList.add("disabled");
                                             if (element.tooltip !== undefined) element.tooltip.disable();
                                           }
-                                          const tags = this.closest('[key="tags"]');
-                                          tags.reorder();
+                                          this.closest('[key="tags"]').reorder();
                                         };
                                       `}"
                                     >
