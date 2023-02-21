@@ -8,11 +8,10 @@
       - Polls
         - Implementation notes:
           - Client-side templates
-            - In `@leafac/html`, migrate from `he` to [`entities`](https://github.com/fb55/entities) (more modern, faster, and smaller bundle size)
-            - Make `@leafac/html` available in the browser
             - Make Babel compiler remove `import css from "@leafac/css"` & `import javascript from "@leafac/javascript"`
             - Process `leafac--javascript.mjs` with Babel
           - Changes to the inputs related to creating a poll mustn’t submit message draft updates
+          - Use `node --test` in other projects
         - Features
           - They’re a new type of message content, not something heavyweight like a new type of question. This follows the same lines as Discourse & Slack (where people use reactions (emojis) to do polls).
           - One or multiple options (just radio or checkbox) (not “choose at most 2 options”)
