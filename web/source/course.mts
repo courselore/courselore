@@ -2277,6 +2277,8 @@ export default async (application: Application): Promise<void> => {
                 <div
                   css="${css`
                     display: flex;
+                    gap: var(--space--2);
+                    align-items: flex-start;
                   `}"
                 >
                   <label
@@ -2307,7 +2309,7 @@ export default async (application: Application): Promise<void> => {
                       `}"
                     >
                       <i class="bi bi-calendar-minus"></i>
-                      Doesn’t Expire
+                      Doesn’t Expire
                     </span>
                     <span
                       class="text--amber"
@@ -2323,19 +2325,43 @@ export default async (application: Application): Promise<void> => {
                       `}"
                     >
                       <i class="bi bi-calendar-plus-fill"></i>
-                      Expires
+                      Expires at
                     </span>
                   </label>
-                </div>
-              </div>
+                  <div
+                    key="expires-at"
+                    hidden
+                    css="${css`
+                      display: flex;
+                      gap: var(--space--2);
+                      align-items: flex-start;
+                    `}"
+                  >
+                    <input
+                      type="text"
+                      name="expiresAt"
+                      value="${new Date().toISOString()}"
+                      required
+                      autocomplete="off"
+                      disabled
+                      class="input--text"
+                      css="${css`
+                        margin-top: var(--space---2);
+                      `}"
+                      javascript="${javascript`
+                        this.value = this.defaultValue = leafac.localizeDateTime(this.defaultValue);
 
-              <div key="expires-at" hidden class="label">
-                <div class="label--text">
-                  Expires at
-                  <button
-                    type="button"
-                    class="button button--tight button--tight--inline button--transparent"
-                    javascript="${javascript`
+                        this.onvalidate = () => {
+                          const error = leafac.validateLocalizedDateTime(this);
+                          if (typeof error === "string") return error;
+                          if (new Date(this.value).getTime() <= Date.now()) return "Must be in the future.";
+                        };
+                      `}"
+                    />
+                    <button
+                      type="button"
+                      class="button button--tight button--tight--inline button--transparent"
+                      javascript="${javascript`
                       leafac.setTippy({
                         event,
                         element: this,
@@ -2345,28 +2371,11 @@ export default async (application: Application): Promise<void> => {
                         },
                       });
                     `}"
-                  >
-                    <i class="bi bi-info-circle"></i>
-                  </button>
+                    >
+                      <i class="bi bi-info-circle"></i>
+                    </button>
+                  </div>
                 </div>
-                <input
-                  type="text"
-                  name="expiresAt"
-                  value="${new Date().toISOString()}"
-                  required
-                  autocomplete="off"
-                  disabled
-                  class="input--text"
-                  javascript="${javascript`
-                    this.value = this.defaultValue = leafac.localizeDateTime(this.defaultValue);
-
-                    this.onvalidate = () => {
-                      const error = leafac.validateLocalizedDateTime(this);
-                      if (typeof error === "string") return error;
-                      if (new Date(this.value).getTime() <= Date.now()) return "Must be in the future.";
-                    };
-                  `}"
-                />
               </div>
 
               <div>
