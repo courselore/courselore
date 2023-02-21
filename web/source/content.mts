@@ -2694,7 +2694,7 @@ export default async (application: Application): Promise<void> => {
                       this.onclick = () => {
                         const poll = this.closest('[key="content-editor--write--poll"]');
                         if (!leafac.validate(poll)) return;
-                        console.log([...leafac.urlSearchParamsFromElement(poll)]);
+                        console.log([...leafac.serialize(poll)]);
                       };
                     `}"
                   >

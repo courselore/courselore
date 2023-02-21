@@ -689,20 +689,19 @@ export function isModified(element) {
   return false;
 }
 
-export function urlSearchParamsFromElement(element) {
+export function serialize(element) {
   const urlSearchParams = new URLSearchParams();
   const elementsToCheck = descendants(element);
   for (const element of elementsToCheck) {
     const name = element.getAttribute("name");
-    const value = element.value;
-    if (
-      typeof name === "string" &&
-      [undefined, false].includes(element.disabled) &&
-      // TODO: ‘<input>’s actually have ‘.checked === false’, so check tagName
-      [undefined, true].includes(element.checked) &&
-      typeof value === "string"
-    )
-      urlSearchParams.set(name, value);
+    if (typeof name !== "string" || element.closest("[disabled]") !== null)
+      continue;
+    if (element.type === "radio") {
+      if (element.checked) urlSearchParams.set(name, element.value);
+    } else if (element.type === "checkbox") {
+      if (element.checked) urlSearchParams.append(name, element.value ?? "on");
+    } else if (element.matches("input, textarea"))
+      urlSearchParams.set(name, element.value);
   }
   return urlSearchParams;
 }
