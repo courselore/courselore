@@ -13,10 +13,10 @@
           - One or multiple options (just radio or checkbox) (not “choose at most 2 options”)
           - Allow for closing a poll.
             - Allow for scheduling the closing of a poll.
-          - Control over whether students can see aggregate results
           - Ranking
             - https://civs1.civs.us
         - Visualization
+          - Explain who can see what.
           - Students may see aggregate results.
           - Staff may see individual votes.
         - Edge cases
@@ -25,6 +25,7 @@
           - Include text material in full-text search.
         - Later
           - Change creating invitations to use the “expires at” visual pattern of a single line, like poll closes at.
+          - Finer control over who can see what results
       - Exam period
     - Files
       - `authentication.ts`
