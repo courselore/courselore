@@ -24,6 +24,7 @@
           - Reusing a poll in a new course doesn’t work out of the box; we need some logic to duplicate the poll.
           - Include text material in full-text search.
         - Later
+          - Datetime picker
           - Finer control over who can see what results
       - Exam period
     - Files
