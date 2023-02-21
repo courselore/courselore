@@ -8,7 +8,6 @@
       - Polls
         - Implementation notes:
           - Client-side templates
-            - Make Babel compiler remove `import css from "@leafac/css"` & `import javascript from "@leafac/javascript"`
             - Process `leafac--javascript.mjs` with Babel
           - Changes to the inputs related to creating a poll mustn’t submit message draft updates
           - Use `node --test` in other projects
