@@ -29,6 +29,7 @@
         - Later
           - Datetime picker
           - Finer control over who can see what results
+          - Add header to `box` layout showing your face if you’re logged in.
       - Exam period
     - Files
       - `authentication.ts`
