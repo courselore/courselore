@@ -13,6 +13,7 @@
           - One or multiple options (just radio or checkbox) (not “choose at most 2 options”)
           - Allow for closing a poll.
             - Allow for scheduling the closing of a poll.
+          - Control over whether students can see aggregate results
           - Ranking
             - https://civs1.civs.us
         - Visualization
