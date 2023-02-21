@@ -2404,7 +2404,7 @@ export default async (application: Application): Promise<void> => {
                           class="visually-hidden input--radio-or-checkbox--multilabel"
                           javascript="${javascript`
                             this.onchange = () => {
-                              const closesAt = this.closest("form").querySelector('[key="closes-at"]');
+                              const closesAt = this.closest('[key="content-editor"]').querySelector('[key="closes-at"]');
                               closesAt.hidden = !this.checked;
                               for (const element of closesAt.querySelectorAll("*"))
                                 if (element.disabled !== undefined) element.disabled = !this.checked;
@@ -2664,7 +2664,7 @@ export default async (application: Application): Promise<void> => {
                               </div>
                             `});
 
-                            const options = this.closest("form").querySelector('[key="options"]');
+                            const options = this.closest('[key="content-editor"]').querySelector('[key="options"]');
                             options.insertAdjacentElement("beforeend", newOption);
                             leafac.javascript({
                               event,
@@ -2674,7 +2674,7 @@ export default async (application: Application): Promise<void> => {
                           };
 
                           this.onvalidate = () => {
-                            if (this.closest("form").querySelector('[key="options"]').children.length === 0)
+                            if (this.closest('[key="content-editor"]').querySelector('[key="options"]').children.length === 0)
                               return "Please add at least one option.";
                           };
                         `}"
