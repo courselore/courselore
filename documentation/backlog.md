@@ -7,6 +7,7 @@
     - Features
       - Polls
         - Implementation notes:
+          - Changes to the inputs related to creating a poll mustn’t submit message draft updates
         - Features
           - They’re a new type of message content, not something heavyweight like a new type of question. This follows the same lines as Discourse & Slack (where people use reactions (emojis) to do polls).
           - One or multiple options (just radio or checkbox) (not “choose at most 2 options”)
