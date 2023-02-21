@@ -706,6 +706,49 @@ export function serialize(element) {
   return urlSearchParams;
 }
 
+export const dateTimePicker = (element, { event }) => {
+  element.value = element.defaultValue = localizeDateTime(element.defaultValue);
+
+  setTippy({
+    event,
+    element: element,
+    elementProperty: "datetimePicker",
+    tippyProps: {
+      trigger: "click",
+      interactive: true,
+      content: html`
+        <div
+          key="datetime-picker"
+          css="${css`
+            display: flex;
+            flex-direction: column;
+            gap: var(--space--2);
+          `}"
+          javascript="${javascript`
+            this.year = new Date().getFullYear();
+            this.month = new Date().getMonth();
+
+            this.render = () => {
+              
+            };
+          `}"
+        >
+          <div>CONTROLS</div>
+          <table key="datetime-picker--calendar"></table>
+          <div>TIME</div>
+        </div>
+      `,
+    },
+  });
+
+  element.onvalidate = () => {
+    const error = validateLocalizedDateTime(element);
+    if (typeof error === "string") return error;
+    if (new Date(element.value).getTime() <= Date.now())
+      return "Must be in the future.";
+  };
+};
+
 export const relativizeDateTime = (() => {
   const relativeTimeFormat = new Intl.RelativeTimeFormat("en-US", {
     localeMatcher: "lookup",

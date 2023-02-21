@@ -2349,13 +2349,7 @@ export default async (application: Application): Promise<void> => {
                         margin-top: var(--space---2);
                       `}"
                       javascript="${javascript`
-                        this.value = this.defaultValue = leafac.localizeDateTime(this.defaultValue);
-
-                        this.onvalidate = () => {
-                          const error = leafac.validateLocalizedDateTime(this);
-                          if (typeof error === "string") return error;
-                          if (new Date(this.value).getTime() <= Date.now()) return "Must be in the future.";
-                        };
+                        leafac.dateTimePicker(this, { event });
                       `}"
                     />
                     <button
