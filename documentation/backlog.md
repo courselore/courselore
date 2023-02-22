@@ -10,7 +10,7 @@
           - Client-side templates
             - Process `leafac--javascript.mjs` with Babel
           - Changes to the inputs related to creating a poll mustn’t submit message draft updates
-          - Use `node --test` in other projects
+          - Use `node --test` in other projects: look for uses of the `TEST` environment variable
         - Features
           - They’re a new type of message content, not something heavyweight like a new type of question. This follows the same lines as Discourse & Slack (where people use reactions (emojis) to do polls).
           - One or multiple options (just radio or checkbox) (not “choose at most 2 options”)
