@@ -34,7 +34,7 @@
   },
   "dependencies": {
     "@leafac/caddy": "^1.0.5",
-    "@leafac/css": "^0.9.4",
+    "@leafac/css": "^0.9.5",
     "@leafac/express-async-handler": "^0.0.3",
     "@leafac/html": "^4.0.1",
     "@leafac/javascript": "^0.5.3",

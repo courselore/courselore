@@ -13,6 +13,120 @@ import baseX from "base-x";
 import css from "@leafac/css";
 import javascript from "@leafac/javascript";
 
+// This section is here for now because ‘leafac--javascript.mjs’ is still under development. It should be moved to https://github.com/leafac/javascript/
+// Remove from ‘.gitignore’ as well
+await (async () => {
+  let staticCSS = "";
+  let staticJavaScript = javascript``;
+
+  const staticCSSIdentifiers = new Set();
+  const staticJavaScriptIdentifiers = new Set();
+  const baseIdentifier = baseX("abcdefghijklmnopqrstuvwxyz");
+  const input = "./static/leafac--javascript.mjs";
+  const output = "./static/leafac--javascript/leafac--javascript.mjs";
+
+  const code = await fs.readFile(input, "utf-8");
+
+  const babelResult = await babel.transformAsync(code, {
+    filename: input,
+    sourceMaps: true,
+    sourceFileName: path.relative(path.dirname(output), input),
+    plugins: [
+      {
+        visitor: {
+          ImportDeclaration(path) {
+            if (
+              (path.node.specifiers[0]?.local?.name === "css" &&
+                path.node.source?.value === "@leafac/css") ||
+              (path.node.specifiers[0]?.local?.name === "javascript" &&
+                path.node.source?.value === "@leafac/javascript")
+            )
+              path.remove();
+          },
+
+          TaggedTemplateExpression(path) {
+            switch (path.node.tag.name) {
+              case "css": {
+                const css_ = prettier.format(
+                  new Function(
+                    "css",
+                    `return (${babelGenerator.default(path.node).code});`
+                  )(css),
+                  { parser: "css" }
+                );
+                const identifier = baseIdentifier.encode(
+                  xxhash.XXHash3.hash(Buffer.from(css_))
+                );
+                if (!staticCSSIdentifiers.has(identifier)) {
+                  staticCSSIdentifiers.add(identifier);
+                  staticCSS += `/********************************************************************************/\n\n${`[css~="${identifier}"]`.repeat(
+                    6
+                  )} {\n${css_}}\n\n`;
+                }
+                path.replaceWith(babel.types.stringLiteral(identifier));
+                break;
+              }
+
+              case "javascript": {
+                let javascript_ = "";
+                for (const [index, quasi] of path.node.quasi.quasis.entries())
+                  javascript_ +=
+                    (index === 0 ? `` : `$$${index - 1}`) + quasi.value.cooked;
+                javascript_ = prettier.format(javascript_, {
+                  parser: "babel",
+                });
+                const identifier = baseIdentifier.encode(
+                  xxhash.XXHash3.hash(Buffer.from(javascript_))
+                );
+                if (!staticJavaScriptIdentifiers.has(identifier)) {
+                  staticJavaScriptIdentifiers.add(identifier);
+                  staticJavaScript += `/********************************************************************************/\n\nleafac.javascript.functions.set("${identifier}", function (${[
+                    "event",
+                    ...path.node.quasi.expressions.map(
+                      (value, index) => `$$${index}`
+                    ),
+                  ].join(", ")}) {\n${javascript_}});\n\n`;
+                }
+                path.replaceWith(
+                  babel.template.ast`
+                      JSON.stringify({
+                        function: ${babel.types.stringLiteral(identifier)},
+                        arguments: ${babel.types.arrayExpression(
+                          path.node.quasi.expressions
+                        )},
+                      })
+                    `
+                );
+                break;
+              }
+            }
+          },
+        },
+      },
+    ],
+  });
+
+  await fs.mkdir(path.dirname(output), { recursive: true });
+  await fs.writeFile(
+    output,
+    `${
+      babelResult.code
+    }\n${staticJavaScript}\n//# sourceMappingURL=${path.basename(output)}.map`
+  );
+  await fs.writeFile(`${output}.map`, JSON.stringify(babelResult.map));
+
+  staticCSS = (
+    await postcss([postcssNested, autoprefixer]).process(staticCSS, {
+      from: undefined,
+    })
+  ).css;
+
+  await fs.writeFile(
+    "./static/leafac--javascript/leafac--javascript.css",
+    staticCSS
+  );
+})();
+
 let staticCSS = "";
 let staticJavaScript = javascript`
   import "@fontsource/public-sans/variable.css";
@@ -24,6 +138,8 @@ let staticJavaScript = javascript`
   import "tippy.js/dist/tippy.css";
   import "tippy.js/dist/svg-arrow.css";
   import "tippy.js/dist/border.css";
+  // import * as leafac from "@leafac/javascript/static/index.css";
+  import "./leafac--javascript/leafac--javascript.css";
   import "@leafac/css/static/index.css";
   import "./index.css";
 
@@ -34,7 +150,7 @@ let staticJavaScript = javascript`
   import textareaCaret from "textarea-caret";
   import * as textFieldEdit from "text-field-edit";
   // import * as leafac from "@leafac/javascript/static/index.mjs";
-  import * as leafac from "./leafac--javascript.mjs";
+  import * as leafac from "./leafac--javascript/leafac--javascript.mjs";
 
   leafac.customFormValidation();
   leafac.warnAboutLosingInputs();
