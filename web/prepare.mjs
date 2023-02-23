@@ -80,7 +80,7 @@ await (async () => {
                 );
                 if (!staticJavaScriptIdentifiers.has(identifier)) {
                   staticJavaScriptIdentifiers.add(identifier);
-                  staticJavaScript += javascript`/********************************************************************************/\n\nleafac.execute.functions.set("${identifier}", function (${[
+                  staticJavaScript += javascript`/********************************************************************************/\n\nexecute.functions.set("${identifier}", function (${[
                     "event",
                     ...path.node.quasi.expressions.map(
                       (value, index) => `$$${index}`
@@ -89,13 +89,13 @@ await (async () => {
                 }
                 path.replaceWith(
                   babel.template.ast`
-                      JSON.stringify({
-                        function: ${babel.types.stringLiteral(identifier)},
-                        arguments: ${babel.types.arrayExpression(
-                          path.node.quasi.expressions
-                        )},
-                      })
-                    `
+                    JSON.stringify({
+                      function: ${babel.types.stringLiteral(identifier)},
+                      arguments: ${babel.types.arrayExpression(
+                        path.node.quasi.expressions
+                      )},
+                    })
+                  `
                 );
                 break;
               }
