@@ -59,7 +59,7 @@ await (async () => {
                 );
                 if (!staticCSSIdentifiers.has(identifier)) {
                   staticCSSIdentifiers.add(identifier);
-                  staticCSS += `/********************************************************************************/\n\n${`[css~="${identifier}"]`.repeat(
+                  staticCSS += css`/********************************************************************************/\n\n${`[css~="${identifier}"]`.repeat(
                     6
                   )} {\n${css_}}\n\n`;
                 }
@@ -80,7 +80,7 @@ await (async () => {
                 );
                 if (!staticJavaScriptIdentifiers.has(identifier)) {
                   staticJavaScriptIdentifiers.add(identifier);
-                  staticJavaScript += `/********************************************************************************/\n\nleafac.javascript.functions.set("${identifier}", function (${[
+                  staticJavaScript += javascript`/********************************************************************************/\n\nleafac.javascript.functions.set("${identifier}", function (${[
                     "event",
                     ...path.node.quasi.expressions.map(
                       (value, index) => `$$${index}`
@@ -212,7 +212,7 @@ for (const input of await globby("./source/**/*.mts")) {
                   );
                   if (!staticCSSIdentifiers.has(identifier)) {
                     staticCSSIdentifiers.add(identifier);
-                    staticCSS += `/********************************************************************************/\n\n${`[css~="${identifier}"]`.repeat(
+                    staticCSS += css`/********************************************************************************/\n\n${`[css~="${identifier}"]`.repeat(
                       6
                     )} {\n${css_}}\n\n`;
                   }
@@ -234,7 +234,7 @@ for (const input of await globby("./source/**/*.mts")) {
                   );
                   if (!staticJavaScriptIdentifiers.has(identifier)) {
                     staticJavaScriptIdentifiers.add(identifier);
-                    staticJavaScript += `/********************************************************************************/\n\nleafac.javascript.functions.set("${identifier}", function (${[
+                    staticJavaScript += javascript`/********************************************************************************/\n\nleafac.javascript.functions.set("${identifier}", function (${[
                       "event",
                       ...path.node.quasi.expressions.map(
                         (value, index) => `$$${index}`
