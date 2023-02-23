@@ -13,6 +13,7 @@
 ## Unreleased
 
 - Redesigned the page in which you manage tags to make it more compact.
+- Added a list of programming languages supported by the syntax highlighter in the “Styling Content” help page.
 
 ## 6.0.9
 
