@@ -14,9 +14,9 @@ import css from "@leafac/css";
 import javascript from "@leafac/javascript";
 
 // This section is here for now because ‘leafac--javascript.mjs’ is still under development. It should be moved to https://github.com/leafac/javascript/
-// Remove from ‘.gitignore’ as well
+// Remove ‘/static/leafac--javascript/’ from ‘.gitignore’
 await (async () => {
-  let staticCSS = "";
+  let staticCSS = css``;
   let staticJavaScript = javascript``;
 
   const staticCSSIdentifiers = new Set();
@@ -127,7 +127,7 @@ await (async () => {
   );
 })();
 
-let staticCSS = "";
+let staticCSS = css``;
 let staticJavaScript = javascript`
   import "@fontsource/public-sans/variable.css";
   import "@fontsource/public-sans/variable-italic.css";
