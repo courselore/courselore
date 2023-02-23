@@ -507,7 +507,6 @@ new Notification('Example');
 
 - Help page
   - Clarify that “Programmer Mode” is for your input only. Unlike other buttons on the toolbar, it doesn’t affect the rendered text.
-  - List of possible languages
 - When editing, and trying to send empty message, propose to delete (like Discord does).
 - When pressing up on an empty chat box, start editing the your most recently sent message (if it’s still the most recently sent message in the conversation) (like Discord does).
 - Issue with autosizing:

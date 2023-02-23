@@ -1,5 +1,6 @@
 import html, { HTML } from "@leafac/html";
 import markdown from "dedent";
+import * as shiki from "shiki";
 import { Application } from "./index.mjs";
 
 export default async (application: Application): Promise<void> => {
@@ -98,6 +99,15 @@ export default async (application: Application): Promise<void> => {
                   </tr>
                   </tbody>
                   </table>
+
+                  <details>
+                  <summary>List of languages supported in code blocks (\`\`\`LANGUAGE)</summary>
+
+                  ${shiki.BUNDLED_LANGUAGES.map(
+                    (language) => markdown`- \`${language.id}\`\n`
+                  ).join("")}
+
+                  </details>
                       
                   The content editor includes a toolbar that helps you discover all the options. Try it out:
                 `
