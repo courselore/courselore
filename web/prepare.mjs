@@ -80,7 +80,7 @@ await (async () => {
                 );
                 if (!staticJavaScriptIdentifiers.has(identifier)) {
                   staticJavaScriptIdentifiers.add(identifier);
-                  staticJavaScript += javascript`/********************************************************************************/\n\nleafac.javascript.functions.set("${identifier}", function (${[
+                  staticJavaScript += javascript`/********************************************************************************/\n\nleafac.execute.functions.set("${identifier}", function (${[
                     "event",
                     ...path.node.quasi.expressions.map(
                       (value, index) => `$$${index}`
@@ -234,7 +234,7 @@ for (const input of await globby("./source/**/*.mts")) {
                   );
                   if (!staticJavaScriptIdentifiers.has(identifier)) {
                     staticJavaScriptIdentifiers.add(identifier);
-                    staticJavaScript += javascript`/********************************************************************************/\n\nleafac.javascript.functions.set("${identifier}", function (${[
+                    staticJavaScript += javascript`/********************************************************************************/\n\nleafac.execute.functions.set("${identifier}", function (${[
                       "event",
                       ...path.node.quasi.expressions.map(
                         (value, index) => `$$${index}`

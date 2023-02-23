@@ -160,7 +160,7 @@ export function liveNavigation() {
   };
 
   window.addEventListener("DOMContentLoaded", (event) => {
-    javascript({
+    execute({
       event,
       elements: [...document.querySelectorAll("[javascript]")].filter(
         (element) =>
@@ -420,7 +420,7 @@ export function loadPartial(parentElement, partialString) {
 
   parentElement.partialParentElement = true;
   parentElement.forceIsConnected = true;
-  javascript({ element: parentElement });
+  execute({ element: parentElement });
   parentElement.forceIsConnected = false;
 }
 
@@ -575,7 +575,7 @@ export function setTippy({
     stringToElement(`<div>${tippyContent}</div>`),
     event
   );
-  javascript({
+  execute({
     event,
     element: tippyContentElement,
   });
@@ -895,20 +895,20 @@ export function stringToElement(string) {
   return parentElement.firstElementChild;
 }
 
-export function javascript({
+export function execute({
   event = undefined,
   element = undefined,
   elements = element.querySelectorAll("[javascript]"),
 }) {
   for (const element of elements) {
     const javascript_ = JSON.parse(element.getAttribute("javascript"));
-    javascript.functions
+    execute.functions
       .get(javascript_.function)
       .call(element, event, ...javascript_.arguments);
   }
 }
 
-javascript.functions = new Map();
+execute.functions = new Map();
 
 export function ancestors(element) {
   const ancestors = [];

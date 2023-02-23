@@ -2666,7 +2666,7 @@ export default async (application: Application): Promise<void> => {
 
                             const options = this.closest('[key="content-editor"]').querySelector('[key="options"]');
                             options.insertAdjacentElement("beforeend", newOption);
-                            leafac.javascript({
+                            leafac.execute({
                               event,
                               element: newOption,
                             });
