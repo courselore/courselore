@@ -7,6 +7,7 @@
     - Features
       - Polls
         - Implementation notes:
+          - Datetime picker
           - Changes to the inputs related to creating a poll mustn’t submit message draft updates
           - Use `node --test` in other projects: look for uses of the `TEST` environment variable
         - Features
@@ -25,7 +26,6 @@
           - Reusing a poll in a new course doesn’t work out of the box; we need some logic to duplicate the poll.
           - Include text material in full-text search.
         - Later
-          - Datetime picker
           - Finer control over who can see what results
           - Add header to `box` layout showing your face if you’re logged in.
       - Exam period
