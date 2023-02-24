@@ -1893,7 +1893,7 @@ export default async (application: Application): Promise<void> => {
                               `
                             : html``}
                         </div>
-                      `});
+                      `}).querySelector('[key="tag/new"]');
 
                       const tags = this.closest("form").querySelector('[key="tags"]');
                       tags.insertAdjacentElement("beforeend", newTag);

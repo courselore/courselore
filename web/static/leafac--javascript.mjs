@@ -418,7 +418,7 @@ export function loadDocument(documentString, event) {
 }
 
 export function loadPartial(parentElement, partialString) {
-  morph(parentElement, stringToElement(`<div>${partialString}</div>`));
+  morph(parentElement, partialString);
 
   parentElement.partialParentElement = true;
   parentElement.forceIsConnected = true;
@@ -427,6 +427,8 @@ export function loadPartial(parentElement, partialString) {
 }
 
 export function morph(from, to, event = undefined) {
+  if (typeof to === "string") to = stringToElement(to);
+
   if (
     from.onbeforemorph?.(event) === false ||
     (event?.detail?.liveUpdate && from.partialParentElement === true)
@@ -567,16 +569,12 @@ export function setTippy({
   tippyProps: { content: tippyContent, ...tippyProps },
 }) {
   element[elementProperty] ??= tippy(element, {
-    content: stringToElement(`<div></div>`),
+    content: stringToElement(html``),
   });
   element[elementProperty].setProps(tippyProps);
 
   const tippyContentElement = element[elementProperty].props.content;
-  morph(
-    tippyContentElement,
-    stringToElement(`<div>${tippyContent}</div>`),
-    event
-  );
+  morph(tippyContentElement, tippyContent, event);
   execute({
     event,
     element: tippyContentElement,
@@ -737,15 +735,13 @@ export const dateTimePicker = (element, { event }) => {
           `}"
           javascript="${javascript`
             this.render = () => {
-              morph(this, stringToElement(html\`
-                <div>
+              morph(this, html\`
                   <div>CONTROLS</div>
                   <table key="datetime-picker--calendar">
                     \${this.date.toISOString()}
                   </table>
                   <div>TIME</div>
-                </div>
-              \`));
+              \`);
             };
           `}"
         ></div>
@@ -901,9 +897,9 @@ export function capitalize(text) {
 }
 
 export function stringToElement(string) {
-  const parentElement = document.createElement("div");
-  parentElement.innerHTML = string;
-  return parentElement.firstElementChild;
+  const element = document.createElement("div");
+  element.innerHTML = string;
+  return element;
 }
 
 export function execute({

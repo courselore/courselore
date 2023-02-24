@@ -2662,7 +2662,7 @@ export default async (application: Application): Promise<void> => {
                                   <i class="bi bi-x-lg"></i>
                                 </button>
                               </div>
-                            `});
+                            `}).querySelector('[key="option/new"]');
 
                             const options = this.closest('[key="content-editor"]').querySelector('[key="options"]');
                             options.insertAdjacentElement("beforeend", newOption);

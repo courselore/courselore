@@ -944,7 +944,6 @@ const { app, BrowserWindow } = require("electron");
 - Inconsistency: In the `liveConnectionsMetadata` (and possibly others) we store `expiredAt`, but in `session` (and possible others) we store `createdAt` and let the notion of expiration be represented in the code.
 - autocannon: produce graphs (HDRHistogram)
 - There’s a small chance (once every tens of thousands of requests) that you’ll get an “SQLite busy” error. I observed it when creating `liveConnectionsMetadata`, which is the only write in a hot path of the application. Treat that case gracefully.
-- Maybe `stringToElement()` should return the surrounding `<div>`? We keep having to wrap the content in a `<div>` anyway…
 - There’s a issue when running for the first time: Caddy may ask for your password, but you may not see it.
   - It still works if you see it and type in the password, even as other stuff has scrolled by.
   - Potential solutions:
