@@ -715,10 +715,18 @@ export const dateTimePicker = (element, { event }) => {
   setTippy({
     event,
     element: element,
-    elementProperty: "datetimePicker",
+    elementProperty: "dateTimePicker",
     tippyProps: {
       trigger: "click",
       interactive: true,
+      onShow: () => {
+        const dateTimePicker =
+          element.dateTimePicker.props.content.querySelector(
+            '[key="datetime-picker"]'
+          );
+        dateTimePicker.date = UTCizeDateTime(element.value) ?? new Date();
+        dateTimePicker.render();
+      },
       content: html`
         <div
           key="datetime-picker"
@@ -728,18 +736,17 @@ export const dateTimePicker = (element, { event }) => {
             gap: var(--space--2);
           `}"
           javascript="${javascript`
-            this.year = new Date().getFullYear();
-            this.month = new Date().getMonth();
-
             this.render = () => {
-              
+              leafac.morph(this, leafac.stringToElement(${html`
+                <div>CONTROLS</div>
+                <table key="datetime-picker--calendar">
+                  ${this.date.toISOString()}
+                </table>
+                <div>TIME</div>
+              `}));
             };
           `}"
-        >
-          <div>CONTROLS</div>
-          <table key="datetime-picker--calendar"></table>
-          <div>TIME</div>
-        </div>
+        ></div>
       `,
     },
   });
