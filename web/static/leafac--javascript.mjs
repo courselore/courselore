@@ -737,13 +737,15 @@ export const dateTimePicker = (element, { event }) => {
           `}"
           javascript="${javascript`
             this.render = () => {
-              leafac.morph(this, leafac.stringToElement(${html`
-                <div>CONTROLS</div>
-                <table key="datetime-picker--calendar">
-                  ${this.date.toISOString()}
-                </table>
-                <div>TIME</div>
-              `}));
+              morph(this, stringToElement(html\`
+                <div>
+                  <div>CONTROLS</div>
+                  <table key="datetime-picker--calendar">
+                    \${this.date.toISOString()}
+                  </table>
+                  <div>TIME</div>
+                </div>
+              \`));
             };
           `}"
         ></div>
