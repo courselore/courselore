@@ -2348,9 +2348,6 @@ export default async (application: Application): Promise<void> => {
                       css="${css`
                         margin-top: var(--space---2);
                       `}"
-                      javascript="${javascript`
-                        leafac.dateTimePicker(this, { event });
-                      `}"
                     />
                     <button
                       type="button"

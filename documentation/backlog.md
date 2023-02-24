@@ -2,11 +2,162 @@
 
 ## Finish
 
+```
+export const dateTimePicker = (element, { event }) => {
+  element.value = element.defaultValue = localizeDateTime(element.defaultValue);
+
+  setTippy({
+    event,
+    element: element,
+    elementProperty: "dateTimePicker",
+    tippyProps: {
+      trigger: "click",
+      interactive: true,
+      onShow: () => {
+        const dateTimePicker =
+          element.dateTimePicker.props.content.querySelector(
+            '[key="datetime-picker"]'
+          );
+        dateTimePicker.date = UTCizeDateTime(element.value) ?? new Date();
+        dateTimePicker.render();
+      },
+      content: html`
+        <div
+          key="datetime-picker"
+          css="${css`
+            display: flex;
+            flex-direction: column;
+            gap: var(--space--2);
+          `}"
+          javascript="${javascript`
+            this.render = () => {
+              morph(this, ${html`
+                <div
+                  css="${css`
+                    padding: var(--space--2);
+                    display: flex;
+                    flex-direction: column;
+                    gap: var(--space--4);
+                  `}"
+                >
+                  <div
+                    css="${css`
+                      display: flex;
+                      align-items: baseline;
+                      gap: var(--space--4);
+                      & > * {
+                        display: flex;
+                        gap: var(--space--2);
+                      }
+                    `}"
+                  >
+                    <div>
+                      <button
+                        type="button"
+                        class="button button--tight button--tight--inline button--transparent"
+                        javascript="${javascript`
+                          this.onclick = () => {
+                            const dateTimePicker = this.closest('[key="datetime-picker"]');
+                            dateTimePicker.date.setFullYear(dateTimePicker.date.getFullYear() - 1);
+                            dateTimePicker.render();
+                          };
+                        `}"
+                      >
+                        <i class="bi bi-chevron-left"></i>
+                      </button>
+                      <div
+                        css="${css`
+                          width: var(--space--10);
+                          text-align: center;
+                        `}"
+                        javascript="${javascript`
+                          this.textContent = String(this.closest('[key="datetime-picker"]').date.getFullYear())
+                        `}"
+                      ></div>
+                      <button
+                        type="button"
+                        class="button button--tight button--tight--inline button--transparent"
+                        javascript="${javascript`
+                          this.onclick = () => {
+                            const dateTimePicker = this.closest('[key="datetime-picker"]');
+                            dateTimePicker.date.setFullYear(dateTimePicker.date.getFullYear() + 1);
+                            dateTimePicker.render();
+                          };
+                        `}"
+                      >
+                        <i class="bi bi-chevron-right"></i>
+                      </button>
+                    </div>
+                    <div>
+                      <button
+                        type="button"
+                        class="button button--tight button--tight--inline button--transparent"
+                        javascript="${javascript`
+                          this.onclick = () => {
+                            const dateTimePicker = this.closest('[key="datetime-picker"]');
+                            dateTimePicker.date.setMonth(dateTimePicker.date.getMonth() - 1);
+                            dateTimePicker.render();
+                          };
+                        `}"
+                      >
+                        <i class="bi bi-chevron-left"></i>
+                      </button>
+                      <div
+                        css="${css`
+                          width: var(--space--20);
+                          text-align: center;
+                        `}"
+                        javascript="${javascript`
+                          this.textContent = new Intl.DateTimeFormat("en-US", {
+                            month: "long",
+                          }).format(this.closest('[key="datetime-picker"]').date);
+                        `}"
+                      ></div>
+                      <button
+                        type="button"
+                        class="button button--tight button--tight--inline button--transparent"
+                        javascript="${javascript`
+                          this.onclick = () => {
+                            const dateTimePicker = this.closest('[key="datetime-picker"]');
+                            dateTimePicker.date.setMonth(dateTimePicker.date.getMonth() + 1);
+                            dateTimePicker.render();
+                          };
+                        `}"
+                      >
+                        <i class="bi bi-chevron-right"></i>
+                      </button>
+                    </div>
+                  </div>
+
+                  <table key="datetime-picker--calendar"></table>
+
+                  <div>TIME</div>
+                </div>
+              `});
+              execute({ element: this });
+            };
+          `}"
+        ></div>
+      `,
+    },
+  });
+
+  element.onvalidate = () => {
+    const error = validateLocalizedDateTime(element);
+    if (typeof error === "string") return error;
+    if (new Date(element.value).getTime() <= Date.now())
+      return "Must be in the future.";
+  };
+};
+```
+
 - Merge feature branches
   - `poll`
     - Features
       - Polls
         - Implementation notes:
+          - Client-side templates:
+            - Don’t have client-side templates: use server-side skeleton and hidrate it on the client, similar to latency compensation for sending a message.
           - Datetime picker
           - Changes to the inputs related to creating a poll mustn’t submit message draft updates
           - Use `node --test` in other projects: look for uses of the `TEST` environment variable

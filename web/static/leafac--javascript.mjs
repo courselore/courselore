@@ -707,56 +707,6 @@ export function serialize(element) {
   return urlSearchParams;
 }
 
-export const dateTimePicker = (element, { event }) => {
-  element.value = element.defaultValue = localizeDateTime(element.defaultValue);
-
-  setTippy({
-    event,
-    element: element,
-    elementProperty: "dateTimePicker",
-    tippyProps: {
-      trigger: "click",
-      interactive: true,
-      onShow: () => {
-        const dateTimePicker =
-          element.dateTimePicker.props.content.querySelector(
-            '[key="datetime-picker"]'
-          );
-        dateTimePicker.date = UTCizeDateTime(element.value) ?? new Date();
-        dateTimePicker.render();
-      },
-      content: html`
-        <div
-          key="datetime-picker"
-          css="${css`
-            display: flex;
-            flex-direction: column;
-            gap: var(--space--2);
-          `}"
-          javascript="${javascript`
-            this.render = () => {
-              morph(this, html\`
-                  <div>CONTROLS</div>
-                  <table key="datetime-picker--calendar">
-                    \${this.date.toISOString()}
-                  </table>
-                  <div>TIME</div>
-              \`);
-            };
-          `}"
-        ></div>
-      `,
-    },
-  });
-
-  element.onvalidate = () => {
-    const error = validateLocalizedDateTime(element);
-    if (typeof error === "string") return error;
-    if (new Date(element.value).getTime() <= Date.now())
-      return "Must be in the future.";
-  };
-};
-
 export const relativizeDateTime = (() => {
   const relativeTimeFormat = new Intl.RelativeTimeFormat("en-US", {
     localeMatcher: "lookup",
