@@ -2,9 +2,6 @@
 
 import fastMyersDiff from "fast-myers-diff";
 import tippy, * as tippyStatic from "tippy.js";
-import html from "@leafac/html";
-import css from "@leafac/css";
-import javascript from "@leafac/javascript";
 
 export function customFormValidation() {
   document.addEventListener(
@@ -569,7 +566,7 @@ export function setTippy({
   tippyProps: { content: tippyContent, ...tippyProps },
 }) {
   element[elementProperty] ??= tippy(element, {
-    content: stringToElement(html``),
+    content: stringToElement(""),
   });
   element[elementProperty].setProps(tippyProps);
 
