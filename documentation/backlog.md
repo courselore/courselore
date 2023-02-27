@@ -20,7 +20,6 @@
 ---
 
 ```
-
                                             <button
                                               type="button"
                                               class="button button--tight button--tight--inline button--transparent"

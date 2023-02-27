@@ -2406,14 +2406,23 @@ export default async (application: Application): Promise<void> => {
                                             >
                                               <i class="bi bi-chevron-left"></i>
                                             </button>
-                                            <div
+                                            <select
+                                              class="button button--tight button--tight--inline button--transparent"
                                               css="\${${css`
                                                 width: var(--space--10);
                                                 text-align: center;
                                               `}}"
                                             >
-                                              \${String(this.closest('[key="datetime-picker"]').year)}
-                                            </div>
+                                              $\${(() => {
+                                                const year = this.closest('[key="datetime-picker"]').year;
+                                                let options = html\`\`;
+                                                for (let yearOption = year - 10; yearOption <= year + 10; yearOption++)
+                                                  options += html\`
+                                                    <option value="\${String(yearOption)}" \${yearOption === year ? html\`selected\` : html\`\`}>\${String(yearOption)}</option>
+                                                  \`;
+                                                return options;
+                                              })()}                                            
+                                            </select>
                                           </div>
                                         </div>
 
