@@ -2,6 +2,8 @@
 
 ## Finish
 
+- Make tag input even smaller
+
 ```
 export const dateTimePicker = (element, { event }) => {
   element.value = element.defaultValue = localizeDateTime(element.defaultValue);
