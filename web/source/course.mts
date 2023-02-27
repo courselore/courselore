@@ -2358,14 +2358,78 @@ export default async (application: Application): Promise<void> => {
                           tippyProps: {
                             trigger: "click",
                             interactive: true,
+                            onShow: () => {
+                              const dateTimePicker = this.dateTimePicker.props.content.querySelector('[key="datetime-picker"]');
+                              const date = leafac.UTCizeDateTime(this.value) ?? new Date();
+                              dateTimePicker.year = date.getFullYear();
+                              dateTimePicker.month = date.getMonth();
+                              dateTimePicker.day = date.getDate();
+                              dateTimePicker.hours = date.getHours();
+                              dateTimePicker.minutes = date.getMinutes();
+                              dateTimePicker.render();
+                            },
                             content: html\`
                               <div
-                                css="\${${css`
-                                  background-color: red;
+                                key="datetime-picker"
+                                javascript="\${${javascript`
+                                  this.render = () => {
+                                    leafac.morph(this, html\`
+                                      <div
+                                        css="\${${css`
+                                          display: flex;
+                                          flex-direction: column;
+                                          gap: var(--space--2);
+                                        `}}"
+                                      >
+                                        <div
+                                          css="\${${css`
+                                            display: flex;
+                                            align-items: baseline;
+                                            gap: var(--space--4);
+                                            & > * {
+                                              display: flex;
+                                              gap: var(--space--2);
+                                            }
+                                          `}}"
+                                        >
+                                          <div>
+                                            <button
+                                              type="button"
+                                              class="button button--tight button--tight--inline button--transparent"
+                                              javascript="\${${javascript`
+                                                this.onclick = () => {
+                                                  const dateTimePicker = this.closest('[key="datetime-picker"]');
+                                                  dateTimePicker.year -= 1;
+                                                  dateTimePicker.render();
+                                                };
+                                              `}}"
+                                            >
+                                              <i class="bi bi-chevron-left"></i>
+                                            </button>
+                                            <div
+                                              css="\${${css`
+                                                width: var(--space--10);
+                                                text-align: center;
+                                              `}}"
+                                            >
+                                              \${String(this.closest('[key="datetime-picker"]').year)}
+                                            </div>
+                                          </div>
+                                        </div>
+
+                                        <table
+                                          key="datetime-picker--calendar"
+                                        >
+                                          <tr><td>CALENDAR</td></tr>
+                                        </table>
+
+                                        <div>TIME</div>
+                                      </div>
+                                    \`);
+                                    leafac.execute({ element: this });
+                                  };
                                 `}}"
-                              >
-                                Hello
-                              </div>
+                              ></div>
                             \`,
                           },
                         });

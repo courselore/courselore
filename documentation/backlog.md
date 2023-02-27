@@ -4,10 +4,92 @@
 
 - Make tag input even smaller
 - `.length - 1` → `.at(-1)`
+- Should `morph()` call `execute()`?
+
+---
+
+- State
+  - Year
+  - Month
+  - Selected day
+  - Today
+  - Hours
+  - Minutes
+- Internal dateTimePicker state may be different from input, because, for example, you’re navigating between months/years to pick a day.
 
 ---
 
 ```
+
+                                            <button
+                                              type="button"
+                                              class="button button--tight button--tight--inline button--transparent"
+                                              javascript="${javascript`
+                                                this.onclick = () => {
+                                                  const dateTimePicker = this.closest('[key="datetime-picker"]');
+                                                  dateTimePicker.date.setFullYear(dateTimePicker.date.getFullYear() + 1);
+                                                  dateTimePicker.render();
+                                                };
+                                              `}"
+                                            >
+                                              <i
+                                                class="bi bi-chevron-right"
+                                              ></i>
+                                            </button>
+
+
+                                            <div>
+                                            <button
+                                              type="button"
+                                              class="button button--tight button--tight--inline button--transparent"
+                                              javascript="${javascript`
+                                                this.onclick = () => {
+                                                  const dateTimePicker = this.closest('[key="datetime-picker"]');
+                                                  dateTimePicker.date.setMonth(dateTimePicker.date.getMonth() - 1);
+                                                  dateTimePicker.render();
+                                                };
+                                              `}"
+                                            >
+                                              <i class="bi bi-chevron-left"></i>
+                                            </button>
+                                            <div
+                                              css="${css`
+                                                width: var(--space--20);
+                                                text-align: center;
+                                              `}"
+                                              javascript="${javascript`
+                                                this.textContent = new Intl.DateTimeFormat("en-US", {
+                                                  month: "long",
+                                                }).format(this.closest('[key="datetime-picker"]').date);
+                                              `}"
+                                            ></div>
+                                            <button
+                                              type="button"
+                                              class="button button--tight button--tight--inline button--transparent"
+                                              javascript="${javascript`
+                                                this.onclick = () => {
+                                                  const dateTimePicker = this.closest('[key="datetime-picker"]');
+                                                  dateTimePicker.date.setMonth(dateTimePicker.date.getMonth() + 1);
+                                                  dateTimePicker.render();
+                                                };
+                                              `}"
+                                            >
+                                              <i
+                                                class="bi bi-chevron-right"
+                                              ></i>
+                                            </button>
+                                          </div>
+
+
+
+
+
+
+
+
+
+
+
 const extractStaticCSSAndJavaScript = () => ({
   ImportDeclaration(path) {
     if (
@@ -86,148 +168,6 @@ const extractStaticCSSAndJavaScript = () => ({
     }
   },
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                            onShow: () => {
-                              const dateTimePicker =
-                                element.dateTimePicker.props.content.querySelector(
-                                  '[key="datetime-picker"]'
-                                );
-                              dateTimePicker.date = UTCizeDateTime(element.value) ?? new Date();
-                              dateTimePicker.render();
-                            },
-                            content: html`
-                              <div
-                                key="datetime-picker"
-                                css="${css`
-                                  display: flex;
-                                  flex-direction: column;
-                                  gap: var(--space--2);
-                                `}"
-                                javascript="${javascript`
-                                  this.render = () => {
-                                    morph(this, ${html`
-                                      <div
-                                        css="${css`
-                                          padding: var(--space--2);
-                                          display: flex;
-                                          flex-direction: column;
-                                          gap: var(--space--4);
-                                        `}"
-                                      >
-                                        <div
-                                          css="${css`
-                                            display: flex;
-                                            align-items: baseline;
-                                            gap: var(--space--4);
-                                            & > * {
-                                              display: flex;
-                                              gap: var(--space--2);
-                                            }
-                                          `}"
-                                        >
-                                          <div>
-                                            <button
-                                              type="button"
-                                              class="button button--tight button--tight--inline button--transparent"
-                                              javascript="${javascript`
-                                                this.onclick = () => {
-                                                  const dateTimePicker = this.closest('[key="datetime-picker"]');
-                                                  dateTimePicker.date.setFullYear(dateTimePicker.date.getFullYear() - 1);
-                                                  dateTimePicker.render();
-                                                };
-                                              `}"
-                                            >
-                                              <i class="bi bi-chevron-left"></i>
-                                            </button>
-                                            <div
-                                              css="${css`
-                                                width: var(--space--10);
-                                                text-align: center;
-                                              `}"
-                                              javascript="${javascript`
-                                                this.textContent = String(this.closest('[key="datetime-picker"]').date.getFullYear())
-                                              `}"
-                                            ></div>
-                                            <button
-                                              type="button"
-                                              class="button button--tight button--tight--inline button--transparent"
-                                              javascript="${javascript`
-                                                this.onclick = () => {
-                                                  const dateTimePicker = this.closest('[key="datetime-picker"]');
-                                                  dateTimePicker.date.setFullYear(dateTimePicker.date.getFullYear() + 1);
-                                                  dateTimePicker.render();
-                                                };
-                                              `}"
-                                            >
-                                              <i class="bi bi-chevron-right"></i>
-                                            </button>
-                                          </div>
-                                          <div>
-                                            <button
-                                              type="button"
-                                              class="button button--tight button--tight--inline button--transparent"
-                                              javascript="${javascript`
-                                                this.onclick = () => {
-                                                  const dateTimePicker = this.closest('[key="datetime-picker"]');
-                                                  dateTimePicker.date.setMonth(dateTimePicker.date.getMonth() - 1);
-                                                  dateTimePicker.render();
-                                                };
-                                              `}"
-                                            >
-                                              <i class="bi bi-chevron-left"></i>
-                                            </button>
-                                            <div
-                                              css="${css`
-                                                width: var(--space--20);
-                                                text-align: center;
-                                              `}"
-                                              javascript="${javascript`
-                                                this.textContent = new Intl.DateTimeFormat("en-US", {
-                                                  month: "long",
-                                                }).format(this.closest('[key="datetime-picker"]').date);
-                                              `}"
-                                            ></div>
-                                            <button
-                                              type="button"
-                                              class="button button--tight button--tight--inline button--transparent"
-                                              javascript="${javascript`
-                                                this.onclick = () => {
-                                                  const dateTimePicker = this.closest('[key="datetime-picker"]');
-                                                  dateTimePicker.date.setMonth(dateTimePicker.date.getMonth() + 1);
-                                                  dateTimePicker.render();
-                                                };
-                                              `}"
-                                            >
-                                              <i class="bi bi-chevron-right"></i>
-                                            </button>
-                                          </div>
-                                        </div>
-                      
-                                        <table key="datetime-picker--calendar"></table>
-                      
-                                        <div>TIME</div>
-                                      </div>
-                                    `});
-                                    execute({ element: this });
-                                  };
-                                `}"
-                              ></div>
-                            `,
-                          },
-                        });  
 ```
 
 ---
