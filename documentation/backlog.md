@@ -20,6 +20,33 @@
 ---
 
 ```
+<select
+  class="button button--tight button--tight--inline button--transparent"
+  css="\${${css`
+    min-width: var(--space--12);
+    text-align: center;
+  `}}"
+  javascript="\${${javascript`
+    this.onchange = () => {
+      const dateTimePicker = this.closest('[key="datetime-picker"]');
+      dateTimePicker.year = Number(this.value);
+      dateTimePicker.render();
+    };
+  `}}"
+>
+  $\${(() => {
+    const dateTimePicker = this.closest('[key="datetime-picker"]');
+    let options = html\`\`;
+    for (let year = dateTimePicker.year - 10; year <= dateTimePicker.year + 10; year++)
+      options += html\`
+        <option value="\${String(year)}" \${year === dateTimePicker.year ? html\`selected\` : html\`\`}>\${String(year)}</option>
+      \`;
+    return options;
+  })()}
+</select>
+
+
+
                                             <button
                                               type="button"
                                               class="button button--tight button--tight--inline button--transparent"

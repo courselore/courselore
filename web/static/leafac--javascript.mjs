@@ -544,14 +544,16 @@ export function morph(from, to, event = undefined) {
         case "input":
           for (const property of [
             "value",
-            "checked",
             "disabled",
+            "checked",
             "indeterminate",
           ])
             if (from[property] !== to[property]) from[property] = to[property];
           break;
         case "textarea":
-          if (from.value !== to.value) from.value = to.value;
+        case "select":
+          for (const property of ["value", "disabled"])
+            if (from[property] !== to[property]) from[property] = to[property];
           break;
       }
 
@@ -698,7 +700,7 @@ export function serialize(element) {
       if (element.checked) urlSearchParams.set(name, element.value);
     } else if (element.type === "checkbox") {
       if (element.checked) urlSearchParams.append(name, element.value ?? "on");
-    } else if (element.matches("input, textarea"))
+    } else if (element.matches("input, textarea, select"))
       urlSearchParams.set(name, element.value);
   }
   return urlSearchParams;

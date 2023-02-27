@@ -2359,7 +2359,7 @@ export default async (application: Application): Promise<void> => {
                             trigger: "click",
                             interactive: true,
                             onShow: () => {
-                              const dateTimePicker = this.dateTimePicker.props.content.querySelector('[key="datetime-picker"]');
+                              const dateTimePicker = this.dateTimePicker.props.content.querySelector('[key="date-time-picker"]');
                               const date = leafac.UTCizeDateTime(this.value) ?? new Date();
                               dateTimePicker.year = date.getFullYear();
                               dateTimePicker.month = date.getMonth();
@@ -2367,10 +2367,11 @@ export default async (application: Application): Promise<void> => {
                               dateTimePicker.hours = date.getHours();
                               dateTimePicker.minutes = date.getMinutes();
                               dateTimePicker.render();
+                              dateTimePicker.partialParentElement = true;
                             },
                             content: html\`
                               <div
-                                key="datetime-picker"
+                                key="date-time-picker"
                                 javascript="\${${javascript`
                                   this.render = () => {
                                     leafac.morph(this, html\`
@@ -2398,7 +2399,7 @@ export default async (application: Application): Promise<void> => {
                                               class="button button--tight button--tight--inline button--transparent"
                                               javascript="\${${javascript`
                                                 this.onclick = () => {
-                                                  const dateTimePicker = this.closest('[key="datetime-picker"]');
+                                                  const dateTimePicker = this.closest('[key="date-time-picker"]');
                                                   dateTimePicker.year -= 1;
                                                   dateTimePicker.render();
                                                 };
@@ -2406,28 +2407,84 @@ export default async (application: Application): Promise<void> => {
                                             >
                                               <i class="bi bi-chevron-left"></i>
                                             </button>
-                                            <select
+                                            <button
+                                              type="button"
                                               class="button button--tight button--tight--inline button--transparent"
                                               css="\${${css`
-                                                width: var(--space--10);
+                                                min-width: var(--space--12);
                                                 text-align: center;
                                               `}}"
+                                              javascript="\${${javascript`
+                                                leafac.setTippy({
+                                                  event,
+                                                  element: this,
+                                                  elementProperty: "dropdown",
+                                                  tippyProps: {
+                                                    trigger: "click",
+                                                    interactive: true,
+                                                    onShow: () => {
+                                                      const element = this.dropdown.props.content.querySelector('[key="date-time-picker--years-dropdown"]');
+                                                      element.scrollTo(0, element.scrollHeight / 3);
+                                                    },
+                                                    content: html\`
+                                                      <div
+                                                        key="date-time-picker--years-dropdown"
+                                                        class="dropdown--menu"
+                                                        css="\${${css`
+                                                          max-height: var(
+                                                            --space--40
+                                                          );
+                                                          overflow: auto;
+                                                        `}}"
+                                                      >
+                                                        $\${(() => {
+                                                          const dateTimePicker = this.closest('[key="date-time-picker"]');
+                                                          let options = html\`\`;
+                                                          for (let year = dateTimePicker.year - 10; year <= dateTimePicker.year + 10; year++)
+                                                            options += html\`
+                                                              <button
+                                                                type="button"
+                                                                class="dropdown--menu--item button \${year === dateTimePicker.year ? "button--blue" : "button--transparent"}"
+                                                                javascript="\${${javascript`
+                                                                  this.onclick = () => {
+                                                                    const dateTimePicker = this.closest('[key="date-time-picker"]');
+                                                                    const year = Number(this.textContent);
+                                                                    dateTimePicker.year = year;
+                                                                    dateTimePicker.render();
+                                                                  };
+                                                                `}}"
+                                                              >
+                                                                \${String(year)}
+                                                              </button>
+                                                            \`;
+                                                          return options;
+                                                        })()}
+                                                      </div>
+                                                    \`,
+                                                  },
+                                                });
+                                              `}}"
                                             >
-                                              $\${(() => {
-                                                const year = this.closest('[key="datetime-picker"]').year;
-                                                let options = html\`\`;
-                                                for (let yearOption = year - 10; yearOption <= year + 10; yearOption++)
-                                                  options += html\`
-                                                    <option value="\${String(yearOption)}" \${yearOption === year ? html\`selected\` : html\`\`}>\${String(yearOption)}</option>
-                                                  \`;
-                                                return options;
-                                              })()}                                            
-                                            </select>
+                                              \${String(this.year)}
+                                            </button>
+                                            <button
+                                              type="button"
+                                              class="button button--tight button--tight--inline button--transparent"
+                                              javascript="\${${javascript`
+                                                this.onclick = () => {
+                                                  const dateTimePicker = this.closest('[key="date-time-picker"]');
+                                                  dateTimePicker.year += 1;
+                                                  dateTimePicker.render();
+                                                };
+                                              `}}"
+                                            >
+                                              <i class="bi bi-chevron-right"></i>
+                                            </button>
                                           </div>
                                         </div>
 
                                         <table
-                                          key="datetime-picker--calendar"
+                                          key="date-time-picker--calendar"
                                         >
                                           <tr><td>CALENDAR</td></tr>
                                         </table>
