@@ -2351,6 +2351,25 @@ export default async (application: Application): Promise<void> => {
                       javascript="${javascript`
                         this.value = this.defaultValue = leafac.localizeDateTime(this.defaultValue);
 
+                        leafac.setTippy({
+                          event,
+                          element: this,
+                          elementProperty: "dateTimePicker",
+                          tippyProps: {
+                            trigger: "click",
+                            interactive: true,
+                            content: html\`
+                              <div
+                                css="\${${css`
+                                  background-color: red;
+                                `}}"
+                              >
+                                Hello
+                              </div>
+                            \`,
+                          },
+                        });
+
                         this.onvalidate = () => {
                           const error = leafac.validateLocalizedDateTime(this);
                           if (typeof error === "string") return error;
@@ -2362,15 +2381,15 @@ export default async (application: Application): Promise<void> => {
                       type="button"
                       class="button button--tight button--tight--inline button--transparent"
                       javascript="${javascript`
-                      leafac.setTippy({
-                        event,
-                        element: this,
-                        tippyProps: {
-                          trigger: "click",
-                          content: "This datetime will be converted to UTC, which may lead to surprising off-by-one-hour differences if it crosses a daylight saving time change.",
-                        },
-                      });
-                    `}"
+                        leafac.setTippy({
+                          event,
+                          element: this,
+                          tippyProps: {
+                            trigger: "click",
+                            content: "This datetime will be converted to UTC, which may lead to surprising off-by-one-hour differences if it crosses a daylight saving time change.",
+                          },
+                        });
+                      `}"
                     >
                       <i class="bi bi-info-circle"></i>
                     </button>
