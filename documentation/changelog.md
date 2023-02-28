@@ -12,6 +12,10 @@
 
 ## Unreleased
 
+## 6.0.10
+
+**2023-02-28 · [Download](https://github.com/courselore/courselore/releases/tag/v6.0.10) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
+
 - Redesigned the page in which you manage tags to make it more compact.
 - Added a list of programming languages supported by the syntax highlighter in the “Styling Content” help page.
 - Fixed an issue in which relative dates could be mistakenly shown as “yesterday” (https://courselore.org/courses/8537410611/conversations/71).
