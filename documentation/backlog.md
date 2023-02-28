@@ -352,7 +352,6 @@ const extractStaticCSSAndJavaScript = () => ({
 
 ---
 
-
 - Should `morph()` call `execute()`?
   - Improve `execute()`’s default `elements` to take `event` Live-Updates in account
     - Look at `DOMContentLoaded`
@@ -360,7 +359,8 @@ const extractStaticCSSAndJavaScript = () => ({
 - In `/settings/tags`, make tag input even smaller
 - Remove support for `<select>` & `<option>`
 - Use more `` html\`\` ``
-  - Add Tag
+  - “Add Tag”
+  - “Add Option” in polls
   - Latency compensation when sending message
 - Try TypeScript on client-side JavaScript
 
