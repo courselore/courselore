@@ -724,17 +724,28 @@ export const relativizeDateTime = (() => {
       capitalize: shouldCapitalize = false,
     } = {}
   ) => {
-    const difference = new Date(dateString.trim()).getTime() - Date.now();
-    const absoluteDifference = Math.abs(difference);
+    const dateTimeDifference =
+      new Date(dateString.trim()).getTime() - Date.now();
+    const absoluteDateTimeDifference = Math.abs(dateTimeDifference);
+    const dateDifference =
+      new Date(localizeDate(dateString)) -
+      new Date(localizeDate(new Date().toISOString()));
+    const absoluteDateDifference = Math.abs(dateDifference);
     const relativeDateTime =
-      absoluteDifference < minute
+      absoluteDateTimeDifference < minute
         ? "just now"
-        : absoluteDifference < hour
-        ? relativeTimeFormat.format(Math.trunc(difference / minute), "minutes")
-        : absoluteDifference < day
-        ? relativeTimeFormat.format(Math.trunc(difference / hour), "hours")
-        : absoluteDifference < month
-        ? relativeTimeFormat.format(Math.trunc(difference / day), "days")
+        : absoluteDateTimeDifference < hour
+        ? relativeTimeFormat.format(
+            Math.trunc(dateTimeDifference / minute),
+            "minutes"
+          )
+        : absoluteDateTimeDifference < day
+        ? relativeTimeFormat.format(
+            Math.trunc(dateTimeDifference / hour),
+            "hours"
+          )
+        : absoluteDateDifference < month
+        ? relativeTimeFormat.format(Math.trunc(dateDifference / day), "days")
         : `${preposition === undefined ? "" : `${preposition} `}${
             dateOnly ? localizeDate(dateString) : localizeDateTime(dateString)
           }`;
