@@ -2,6 +2,35 @@
 
 ## Finish
 
+**Poll**
+
+- Implementation notes:
+  - Poll mustn’t interfere with regular form submission
+  - Changes to the inputs related to creating a poll mustn’t submit message draft updates
+- Features
+  - Allow for closing a poll.
+- Visualization
+  - Explain who can see what.
+  - Students may see aggregate results.
+  - Staff may see individual votes.
+- Edge cases
+  - An option whose content includes a poll in an of itself
+  - Reusing a poll in a new course doesn’t work out of the box; we need some logic to duplicate the poll.
+  - Include text material in full-text search.
+- Later
+  - Finer control over who can see what results
+  - Add header to `box` layout showing your face if you’re logged in.
+  - Use `node --test` in other projects: look for uses of the `TEST` environment variable
+  - Ranking
+    - https://civs1.civs.us
+
+```
+
+
+                          for (const initialOptions of new Array(3))
+                            this.onclick();
+```
+
 **DateTimePicker**
 
 - State
@@ -368,28 +397,7 @@ const extractStaticCSSAndJavaScript = () => ({
 
 - Merge feature branches
   - `poll`
-    - Features
-      - Polls
-        - Implementation notes:
-          - Poll mustn’t interfere with regular form submission
-          - Changes to the inputs related to creating a poll mustn’t submit message draft updates
-        - Features
-          - Allow for closing a poll.
-        - Visualization
-          - Explain who can see what.
-          - Students may see aggregate results.
-          - Staff may see individual votes.
-        - Edge cases
-          - An option whose content includes a poll in an of itself
-          - Reusing a poll in a new course doesn’t work out of the box; we need some logic to duplicate the poll.
-          - Include text material in full-text search.
-        - Later
-          - Finer control over who can see what results
-          - Add header to `box` layout showing your face if you’re logged in.
-          - Use `node --test` in other projects: look for uses of the `TEST` environment variable
-          - Ranking
-            - https://civs1.civs.us
-      - Exam period
+    - Exam period
     - Files
       - `authentication.ts`
       - `content.ts`
