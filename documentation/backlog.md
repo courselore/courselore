@@ -2,369 +2,6 @@
 
 ## Finish
 
-- Should `morph()` call `execute()`?
-  - Improve `execute()`’s default `elements` to take `event` Live-Updates in account
-    - Look at `DOMContentLoaded`
-    - Double-check every use of `execute()`
-- Make tag input even smaller
-- Remove support for `<select>` & `<option>`
-- Use more `` html\`\` ``
-  - Add Tag
-  - Latency compensation when sending message
-- Try TypeScript on client-side JavaScript
-
----
-
-- State
-  - Year
-  - Month
-  - Selected day
-  - Today
-  - Hours
-  - Minutes
-- Internal dateTimePicker state may be different from input, because, for example, you’re navigating between months/years to pick a day.
-
----
-
-```
-  import html from "@leafac/html";
-
-
-
-leafac.setTippy({
-                          event,
-                          element: this,
-                          elementProperty: "dateTimePicker",
-                          tippyProps: {
-                            trigger: "click",
-                            interactive: true,
-                            onShow: () => {
-                              const dateTimePicker = this.dateTimePicker.props.content.querySelector('[key="date-time-picker"]');
-                              const date = leafac.UTCizeDateTime(this.value) ?? new Date();
-                              dateTimePicker.year = date.getFullYear();
-                              dateTimePicker.month = date.getMonth();
-                              dateTimePicker.day = date.getDate();
-                              dateTimePicker.hours = date.getHours();
-                              dateTimePicker.minutes = date.getMinutes();
-                              dateTimePicker.render();
-                              dateTimePicker.partialParentElement = true;
-                            },
-                            content: html\`
-                              <div
-                                key="date-time-picker"
-                                javascript="\${${javascript`
-                                  this.render = () => {
-                                    leafac.morph(this, html\`
-                                      <div
-                                        css="\${${css`
-                                          display: flex;
-                                          flex-direction: column;
-                                          gap: var(--space--2);
-                                        `}}"
-                                      >
-                                        <div
-                                          css="\${${css`
-                                            display: flex;
-                                            align-items: baseline;
-                                            gap: var(--space--4);
-                                            & > * {
-                                              display: flex;
-                                              gap: var(--space--2);
-                                            }
-                                          `}}"
-                                        >
-                                          <div>
-                                            <button
-                                              type="button"
-                                              class="button button--tight button--tight--inline button--transparent"
-                                              javascript="\${${javascript`
-                                                this.onclick = () => {
-                                                  const dateTimePicker = this.closest('[key="date-time-picker"]');
-                                                  dateTimePicker.year -= 1;
-                                                  dateTimePicker.render();
-                                                };
-                                              `}}"
-                                            >
-                                              <i class="bi bi-chevron-left"></i>
-                                            </button>
-                                            <button
-                                              type="button"
-                                              class="button button--tight button--tight--inline button--transparent"
-                                              css="\${${css`
-                                                min-width: var(--space--12);
-                                                text-align: center;
-                                              `}}"
-                                              javascript="\${${javascript`
-                                                leafac.setTippy({
-                                                  event,
-                                                  element: this,
-                                                  elementProperty: "dropdown",
-                                                  tippyProps: {
-                                                    trigger: "click",
-                                                    interactive: true,
-                                                    onShow: () => {
-                                                      const element = this.dropdown.props.content.querySelector('[key="date-time-picker--years-dropdown"]');
-                                                      element.scrollTo(0, element.scrollHeight / 3);
-                                                    },
-                                                    content: html\`
-                                                      <div
-                                                        key="date-time-picker--years-dropdown"
-                                                        class="dropdown--menu"
-                                                        css="\${${css`
-                                                          max-height: var(
-                                                            --space--40
-                                                          );
-                                                          overflow: auto;
-                                                        `}}"
-                                                      >
-                                                        $\${(() => {
-                                                          const dateTimePicker = this.closest('[key="date-time-picker"]');
-                                                          let options = html\`\`;
-                                                          for (let year = dateTimePicker.year - 10; year <= dateTimePicker.year + 10; year++)
-                                                            options += html\`
-                                                              <button
-                                                                type="button"
-                                                                class="dropdown--menu--item button \${year === dateTimePicker.year ? "button--blue" : "button--transparent"}"
-                                                                javascript="\${${javascript`
-                                                                  this.onclick = () => {
-                                                                    const dateTimePicker = this.closest('[key="date-time-picker"]');
-                                                                    const year = Number(this.textContent);
-                                                                    dateTimePicker.year = year;
-                                                                    dateTimePicker.render();
-                                                                  };
-                                                                `}}"
-                                                              >
-                                                                \${String(year)}
-                                                              </button>
-                                                            \`;
-                                                          return options;
-                                                        })()}
-                                                      </div>
-                                                    \`,
-                                                  },
-                                                });
-                                              `}}"
-                                            >
-                                              \${String(this.year)}
-                                            </button>
-                                            <button
-                                              type="button"
-                                              class="button button--tight button--tight--inline button--transparent"
-                                              javascript="\${${javascript`
-                                                this.onclick = () => {
-                                                  const dateTimePicker = this.closest('[key="date-time-picker"]');
-                                                  dateTimePicker.year += 1;
-                                                  dateTimePicker.render();
-                                                };
-                                              `}}"
-                                            >
-                                              <i class="bi bi-chevron-right"></i>
-                                            </button>
-                                          </div>
-                                        </div>
-
-                                        <table
-                                          key="date-time-picker--calendar"
-                                        >
-                                          <tr><td>CALENDAR</td></tr>
-                                        </table>
-
-                                        <div>TIME</div>
-                                      </div>
-                                    \`);
-                                    leafac.execute({ element: this });
-                                  };
-                                `}}"
-                              ></div>
-                            \`,
-                          },
-                        });
-
-
-
-
-
-
-
-
-<select
-  class="button button--tight button--tight--inline button--transparent"
-  css="\${${css`
-    min-width: var(--space--12);
-    text-align: center;
-  `}}"
-  javascript="\${${javascript`
-    this.onchange = () => {
-      const dateTimePicker = this.closest('[key="datetime-picker"]');
-      dateTimePicker.year = Number(this.value);
-      dateTimePicker.render();
-    };
-  `}}"
->
-  $\${(() => {
-    const dateTimePicker = this.closest('[key="datetime-picker"]');
-    let options = html\`\`;
-    for (let year = dateTimePicker.year - 10; year <= dateTimePicker.year + 10; year++)
-      options += html\`
-        <option value="\${String(year)}" \${year === dateTimePicker.year ? html\`selected\` : html\`\`}>\${String(year)}</option>
-      \`;
-    return options;
-  })()}
-</select>
-
-
-
-                                            <button
-                                              type="button"
-                                              class="button button--tight button--tight--inline button--transparent"
-                                              javascript="${javascript`
-                                                this.onclick = () => {
-                                                  const dateTimePicker = this.closest('[key="datetime-picker"]');
-                                                  dateTimePicker.date.setFullYear(dateTimePicker.date.getFullYear() + 1);
-                                                  dateTimePicker.render();
-                                                };
-                                              `}"
-                                            >
-                                              <i
-                                                class="bi bi-chevron-right"
-                                              ></i>
-                                            </button>
-
-
-                                            <div>
-                                            <button
-                                              type="button"
-                                              class="button button--tight button--tight--inline button--transparent"
-                                              javascript="${javascript`
-                                                this.onclick = () => {
-                                                  const dateTimePicker = this.closest('[key="datetime-picker"]');
-                                                  dateTimePicker.date.setMonth(dateTimePicker.date.getMonth() - 1);
-                                                  dateTimePicker.render();
-                                                };
-                                              `}"
-                                            >
-                                              <i class="bi bi-chevron-left"></i>
-                                            </button>
-                                            <div
-                                              css="${css`
-                                                width: var(--space--20);
-                                                text-align: center;
-                                              `}"
-                                              javascript="${javascript`
-                                                this.textContent = new Intl.DateTimeFormat("en-US", {
-                                                  month: "long",
-                                                }).format(this.closest('[key="datetime-picker"]').date);
-                                              `}"
-                                            ></div>
-                                            <button
-                                              type="button"
-                                              class="button button--tight button--tight--inline button--transparent"
-                                              javascript="${javascript`
-                                                this.onclick = () => {
-                                                  const dateTimePicker = this.closest('[key="datetime-picker"]');
-                                                  dateTimePicker.date.setMonth(dateTimePicker.date.getMonth() + 1);
-                                                  dateTimePicker.render();
-                                                };
-                                              `}"
-                                            >
-                                              <i
-                                                class="bi bi-chevron-right"
-                                              ></i>
-                                            </button>
-                                          </div>
-
-
-
-
-
-
-
-
-
-
-
-const extractStaticCSSAndJavaScript = () => ({
-  ImportDeclaration(path) {
-    if (
-      (path.node.specifiers[0]?.local?.name === "css" &&
-        path.node.source?.value === "@leafac/css") ||
-      (path.node.specifiers[0]?.local?.name === "javascript" &&
-        path.node.source?.value === "@leafac/javascript")
-    )
-      path.remove();
-  },
-
-  TaggedTemplateExpression(path) {
-    switch (path.node.tag.name) {
-      case "css": {
-        const css_ = prettier.format(
-          new Function(
-            "css",
-            `return (${babelGenerator.default(path.node).code});`
-          )(css),
-          { parser: "css" }
-        );
-        const identifier = baseIdentifier.encode(
-          xxhash.XXHash3.hash(Buffer.from(css_))
-        );
-        if (!staticCSSIdentifiers.has(identifier)) {
-          staticCSSIdentifiers.add(identifier);
-          staticCSS += css`/********************************************************************************/\n\n${`[css~="${identifier}"]`.repeat(
-            6
-          )} {\n${css_}}\n\n`;
-        }
-        path.replaceWith(babel.types.stringLiteral(identifier));
-        break;
-      }
-
-      case "javascript": {
-        let javascript_ = "";
-        const expressions = [];
-        for (const index of path.node.quasi.expressions.keys()) {
-          const quasi = path.node.quasi.quasis[index];
-          const expression = path.node.quasi.expressions[index];
-          if (quasi.value.cooked.endsWith("$")) {
-            const expression = path.get(`quasi.expressions.${index}`);
-            expression.traverse(extractStaticCSSAndJavaScript());
-            javascript_ +=
-              quasi.value.cooked.slice(0, -1) +
-              babelGenerator.default(expression.node).code;
-          } else {
-            javascript_ += quasi.value.cooked + `$$${expressions.length}`;
-            expressions.push(expression);
-          }
-        }
-        javascript_ += path.node.quasi.quasis.at(-1).value.cooked;
-        javascript_ = prettier.format(javascript_, {
-          parser: "babel",
-        });
-        const identifier = baseIdentifier.encode(
-          xxhash.XXHash3.hash(Buffer.from(javascript_))
-        );
-        if (!staticJavaScriptIdentifiers.has(identifier)) {
-          staticJavaScriptIdentifiers.add(identifier);
-          staticJavaScript += javascript`/********************************************************************************/\n\nleafac.execute.functions.set("${identifier}", function (${[
-            "event",
-            ...expressions.map((value, index) => `$$${index}`),
-          ].join(", ")}) {\n${javascript_}});\n\n`;
-        }
-        path.replaceWith(
-          babel.template.ast`
-            JSON.stringify({
-              function: ${babel.types.stringLiteral(identifier)},
-              arguments: ${babel.types.arrayExpression(expressions)},
-            })
-          `
-        );
-        break;
-      }
-    }
-  },
-});
-```
-
----
-
 ```
                       $${response.locals.course !== undefined
                         ? html`
@@ -817,6 +454,370 @@ const extractStaticCSSAndJavaScript = () => ({
 
 
 ```
+
+---
+
+**DateTimePicker**
+
+- State
+  - Year
+  - Month
+  - Selected day
+  - Today
+  - Hours
+  - Minutes
+- Internal dateTimePicker state may be different from input, because, for example, you’re navigating between months/years to pick a day.
+
+```
+  import html from "@leafac/html";
+
+
+
+leafac.setTippy({
+                          event,
+                          element: this,
+                          elementProperty: "dateTimePicker",
+                          tippyProps: {
+                            trigger: "click",
+                            interactive: true,
+                            onShow: () => {
+                              const dateTimePicker = this.dateTimePicker.props.content.querySelector('[key="date-time-picker"]');
+                              const date = leafac.UTCizeDateTime(this.value) ?? new Date();
+                              dateTimePicker.year = date.getFullYear();
+                              dateTimePicker.month = date.getMonth();
+                              dateTimePicker.day = date.getDate();
+                              dateTimePicker.hours = date.getHours();
+                              dateTimePicker.minutes = date.getMinutes();
+                              dateTimePicker.render();
+                              dateTimePicker.partialParentElement = true;
+                            },
+                            content: html\`
+                              <div
+                                key="date-time-picker"
+                                javascript="\${${javascript`
+                                  this.render = () => {
+                                    leafac.morph(this, html\`
+                                      <div
+                                        css="\${${css`
+                                          display: flex;
+                                          flex-direction: column;
+                                          gap: var(--space--2);
+                                        `}}"
+                                      >
+                                        <div
+                                          css="\${${css`
+                                            display: flex;
+                                            align-items: baseline;
+                                            gap: var(--space--4);
+                                            & > * {
+                                              display: flex;
+                                              gap: var(--space--2);
+                                            }
+                                          `}}"
+                                        >
+                                          <div>
+                                            <button
+                                              type="button"
+                                              class="button button--tight button--tight--inline button--transparent"
+                                              javascript="\${${javascript`
+                                                this.onclick = () => {
+                                                  const dateTimePicker = this.closest('[key="date-time-picker"]');
+                                                  dateTimePicker.year -= 1;
+                                                  dateTimePicker.render();
+                                                };
+                                              `}}"
+                                            >
+                                              <i class="bi bi-chevron-left"></i>
+                                            </button>
+                                            <button
+                                              type="button"
+                                              class="button button--tight button--tight--inline button--transparent"
+                                              css="\${${css`
+                                                min-width: var(--space--12);
+                                                text-align: center;
+                                              `}}"
+                                              javascript="\${${javascript`
+                                                leafac.setTippy({
+                                                  event,
+                                                  element: this,
+                                                  elementProperty: "dropdown",
+                                                  tippyProps: {
+                                                    trigger: "click",
+                                                    interactive: true,
+                                                    onShow: () => {
+                                                      const element = this.dropdown.props.content.querySelector('[key="date-time-picker--years-dropdown"]');
+                                                      element.scrollTo(0, element.scrollHeight / 3);
+                                                    },
+                                                    content: html\`
+                                                      <div
+                                                        key="date-time-picker--years-dropdown"
+                                                        class="dropdown--menu"
+                                                        css="\${${css`
+                                                          max-height: var(
+                                                            --space--40
+                                                          );
+                                                          overflow: auto;
+                                                        `}}"
+                                                      >
+                                                        $\${(() => {
+                                                          const dateTimePicker = this.closest('[key="date-time-picker"]');
+                                                          let options = html\`\`;
+                                                          for (let year = dateTimePicker.year - 10; year <= dateTimePicker.year + 10; year++)
+                                                            options += html\`
+                                                              <button
+                                                                type="button"
+                                                                class="dropdown--menu--item button \${year === dateTimePicker.year ? "button--blue" : "button--transparent"}"
+                                                                javascript="\${${javascript`
+                                                                  this.onclick = () => {
+                                                                    const dateTimePicker = this.closest('[key="date-time-picker"]');
+                                                                    const year = Number(this.textContent);
+                                                                    dateTimePicker.year = year;
+                                                                    dateTimePicker.render();
+                                                                  };
+                                                                `}}"
+                                                              >
+                                                                \${String(year)}
+                                                              </button>
+                                                            \`;
+                                                          return options;
+                                                        })()}
+                                                      </div>
+                                                    \`,
+                                                  },
+                                                });
+                                              `}}"
+                                            >
+                                              \${String(this.year)}
+                                            </button>
+                                            <button
+                                              type="button"
+                                              class="button button--tight button--tight--inline button--transparent"
+                                              javascript="\${${javascript`
+                                                this.onclick = () => {
+                                                  const dateTimePicker = this.closest('[key="date-time-picker"]');
+                                                  dateTimePicker.year += 1;
+                                                  dateTimePicker.render();
+                                                };
+                                              `}}"
+                                            >
+                                              <i class="bi bi-chevron-right"></i>
+                                            </button>
+                                          </div>
+                                        </div>
+
+                                        <table
+                                          key="date-time-picker--calendar"
+                                        >
+                                          <tr><td>CALENDAR</td></tr>
+                                        </table>
+
+                                        <div>TIME</div>
+                                      </div>
+                                    \`);
+                                    leafac.execute({ element: this });
+                                  };
+                                `}}"
+                              ></div>
+                            \`,
+                          },
+                        });
+
+
+
+
+
+
+
+
+<select
+  class="button button--tight button--tight--inline button--transparent"
+  css="\${${css`
+    min-width: var(--space--12);
+    text-align: center;
+  `}}"
+  javascript="\${${javascript`
+    this.onchange = () => {
+      const dateTimePicker = this.closest('[key="datetime-picker"]');
+      dateTimePicker.year = Number(this.value);
+      dateTimePicker.render();
+    };
+  `}}"
+>
+  $\${(() => {
+    const dateTimePicker = this.closest('[key="datetime-picker"]');
+    let options = html\`\`;
+    for (let year = dateTimePicker.year - 10; year <= dateTimePicker.year + 10; year++)
+      options += html\`
+        <option value="\${String(year)}" \${year === dateTimePicker.year ? html\`selected\` : html\`\`}>\${String(year)}</option>
+      \`;
+    return options;
+  })()}
+</select>
+
+
+
+                                            <button
+                                              type="button"
+                                              class="button button--tight button--tight--inline button--transparent"
+                                              javascript="${javascript`
+                                                this.onclick = () => {
+                                                  const dateTimePicker = this.closest('[key="datetime-picker"]');
+                                                  dateTimePicker.date.setFullYear(dateTimePicker.date.getFullYear() + 1);
+                                                  dateTimePicker.render();
+                                                };
+                                              `}"
+                                            >
+                                              <i
+                                                class="bi bi-chevron-right"
+                                              ></i>
+                                            </button>
+
+
+                                            <div>
+                                            <button
+                                              type="button"
+                                              class="button button--tight button--tight--inline button--transparent"
+                                              javascript="${javascript`
+                                                this.onclick = () => {
+                                                  const dateTimePicker = this.closest('[key="datetime-picker"]');
+                                                  dateTimePicker.date.setMonth(dateTimePicker.date.getMonth() - 1);
+                                                  dateTimePicker.render();
+                                                };
+                                              `}"
+                                            >
+                                              <i class="bi bi-chevron-left"></i>
+                                            </button>
+                                            <div
+                                              css="${css`
+                                                width: var(--space--20);
+                                                text-align: center;
+                                              `}"
+                                              javascript="${javascript`
+                                                this.textContent = new Intl.DateTimeFormat("en-US", {
+                                                  month: "long",
+                                                }).format(this.closest('[key="datetime-picker"]').date);
+                                              `}"
+                                            ></div>
+                                            <button
+                                              type="button"
+                                              class="button button--tight button--tight--inline button--transparent"
+                                              javascript="${javascript`
+                                                this.onclick = () => {
+                                                  const dateTimePicker = this.closest('[key="datetime-picker"]');
+                                                  dateTimePicker.date.setMonth(dateTimePicker.date.getMonth() + 1);
+                                                  dateTimePicker.render();
+                                                };
+                                              `}"
+                                            >
+                                              <i
+                                                class="bi bi-chevron-right"
+                                              ></i>
+                                            </button>
+                                          </div>
+
+
+
+
+
+
+
+
+
+
+
+const extractStaticCSSAndJavaScript = () => ({
+  ImportDeclaration(path) {
+    if (
+      (path.node.specifiers[0]?.local?.name === "css" &&
+        path.node.source?.value === "@leafac/css") ||
+      (path.node.specifiers[0]?.local?.name === "javascript" &&
+        path.node.source?.value === "@leafac/javascript")
+    )
+      path.remove();
+  },
+
+  TaggedTemplateExpression(path) {
+    switch (path.node.tag.name) {
+      case "css": {
+        const css_ = prettier.format(
+          new Function(
+            "css",
+            `return (${babelGenerator.default(path.node).code});`
+          )(css),
+          { parser: "css" }
+        );
+        const identifier = baseIdentifier.encode(
+          xxhash.XXHash3.hash(Buffer.from(css_))
+        );
+        if (!staticCSSIdentifiers.has(identifier)) {
+          staticCSSIdentifiers.add(identifier);
+          staticCSS += css`/********************************************************************************/\n\n${`[css~="${identifier}"]`.repeat(
+            6
+          )} {\n${css_}}\n\n`;
+        }
+        path.replaceWith(babel.types.stringLiteral(identifier));
+        break;
+      }
+
+      case "javascript": {
+        let javascript_ = "";
+        const expressions = [];
+        for (const index of path.node.quasi.expressions.keys()) {
+          const quasi = path.node.quasi.quasis[index];
+          const expression = path.node.quasi.expressions[index];
+          if (quasi.value.cooked.endsWith("$")) {
+            const expression = path.get(`quasi.expressions.${index}`);
+            expression.traverse(extractStaticCSSAndJavaScript());
+            javascript_ +=
+              quasi.value.cooked.slice(0, -1) +
+              babelGenerator.default(expression.node).code;
+          } else {
+            javascript_ += quasi.value.cooked + `$$${expressions.length}`;
+            expressions.push(expression);
+          }
+        }
+        javascript_ += path.node.quasi.quasis.at(-1).value.cooked;
+        javascript_ = prettier.format(javascript_, {
+          parser: "babel",
+        });
+        const identifier = baseIdentifier.encode(
+          xxhash.XXHash3.hash(Buffer.from(javascript_))
+        );
+        if (!staticJavaScriptIdentifiers.has(identifier)) {
+          staticJavaScriptIdentifiers.add(identifier);
+          staticJavaScript += javascript`/********************************************************************************/\n\nleafac.execute.functions.set("${identifier}", function (${[
+            "event",
+            ...expressions.map((value, index) => `$$${index}`),
+          ].join(", ")}) {\n${javascript_}});\n\n`;
+        }
+        path.replaceWith(
+          babel.template.ast`
+            JSON.stringify({
+              function: ${babel.types.stringLiteral(identifier)},
+              arguments: ${babel.types.arrayExpression(expressions)},
+            })
+          `
+        );
+        break;
+      }
+    }
+  },
+});
+```
+
+---
+
+
+- Should `morph()` call `execute()`?
+  - Improve `execute()`’s default `elements` to take `event` Live-Updates in account
+    - Look at `DOMContentLoaded`
+    - Double-check every use of `execute()`
+- In `/settings/tags`, make tag input even smaller
+- Remove support for `<select>` & `<option>`
+- Use more `` html\`\` ``
+  - Add Tag
+  - Latency compensation when sending message
+- Try TypeScript on client-side JavaScript
 
 ---
 
