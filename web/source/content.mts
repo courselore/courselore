@@ -2334,7 +2334,9 @@ export default async (application: Application): Promise<void> => {
                 <div
                   css="${css`
                     display: flex;
-                    gap: var(--space--10);
+                    flex-wrap: wrap;
+                    column-gap: var(--space--10);
+                    row-gap: var(--space--4);
                   `}"
                 >
                   <div class="label">
