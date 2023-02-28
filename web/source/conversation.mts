@@ -8674,8 +8674,7 @@ export default async (application: Application): Promise<void> => {
                                               ...request.query.messages,
                                               messagesPage: {
                                                 afterMessageReference:
-                                                  messages[messages.length - 1]
-                                                    .reference,
+                                                  messages.at(-1)!.reference,
                                               },
                                             },
                                           },

@@ -362,9 +362,7 @@ export default async (application: Application): Promise<void> => {
                 autocomplete="off"
                 placeholder="Your University"
                 value="${response.locals.enrollments.length > 0
-                  ? response.locals.enrollments[
-                      response.locals.enrollments.length - 1
-                    ].course.institution ?? ""
+                  ? response.locals.enrollments.at(-1)!.course.institution ?? ""
                   : ""}"
               />
             </label>

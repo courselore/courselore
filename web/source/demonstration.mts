@@ -808,9 +808,8 @@ Message non-existent permanent link turned reference: <https://${
               new Date(
                 Math.min(
                   Date.now(),
-                  new Date(
-                    messageCreatedAts[messageCreatedAts.length - 1]
-                  ).getTime() + lodash.random(12 * 60 * 60 * 1000)
+                  new Date(messageCreatedAts.at(-1)!).getTime() +
+                    lodash.random(12 * 60 * 60 * 1000)
                 )
               ).toISOString()
             );
@@ -844,7 +843,7 @@ Message non-existent permanent link turned reference: <https://${
                     )
                     VALUES (
                       ${conversationCreatedAt},
-                      ${messageCreatedAts[messageCreatedAts.length - 1]},
+                      ${messageCreatedAts.at(-1)},
                       ${course.id},
                       ${String(conversationReference)},
                       ${conversationAuthorEnrollment?.id},
