@@ -374,12 +374,7 @@ const extractStaticCSSAndJavaScript = () => ({
           - Poll mustn’t interfere with regular form submission
           - Changes to the inputs related to creating a poll mustn’t submit message draft updates
         - Features
-          - They’re a new type of message content, not something heavyweight like a new type of question. This follows the same lines as Discourse & Slack (where people use reactions (emojis) to do polls).
-          - One or multiple options (just radio or checkbox) (not “choose at most 2 options”)
           - Allow for closing a poll.
-            - Allow for scheduling the closing of a poll.
-          - Ranking
-            - https://civs1.civs.us
         - Visualization
           - Explain who can see what.
           - Students may see aggregate results.
@@ -392,6 +387,8 @@ const extractStaticCSSAndJavaScript = () => ({
           - Finer control over who can see what results
           - Add header to `box` layout showing your face if you’re logged in.
           - Use `node --test` in other projects: look for uses of the `TEST` environment variable
+          - Ranking
+            - https://civs1.civs.us
       - Exam period
     - Files
       - `authentication.ts`
