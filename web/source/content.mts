@@ -2355,6 +2355,7 @@ export default async (application: Application): Promise<void> => {
                           name="choices"
                           value="single"
                           required
+                          disabled
                           class="visually-hidden input--radio-or-checkbox--multilabel"
                         />
                         <span>
@@ -2374,6 +2375,7 @@ export default async (application: Application): Promise<void> => {
                           name="choices"
                           value="multiple"
                           required
+                          disabled
                           class="visually-hidden input--radio-or-checkbox--multilabel"
                         />
                         <span>
@@ -2403,6 +2405,7 @@ export default async (application: Application): Promise<void> => {
                         <input
                           type="checkbox"
                           class="visually-hidden input--radio-or-checkbox--multilabel"
+                          disabled
                           javascript="${javascript`
                             this.onchange = () => {
                               const closesAt = this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--poll--closes-at"]');
@@ -2678,11 +2681,8 @@ export default async (application: Application): Promise<void> => {
                             options.reorder();
                           };
 
-                          for (const initialOptions of new Array(3))
-                            this.onclick();
-
                           this.onvalidate = () => {
-                            if (this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--poll--options"]').children.length === 0)
+                            if (this.closest("[hidden]") === null && this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--poll--options"]').children.length === 0)
                               return "Please add at least one option.";
                           };
                         `}"
