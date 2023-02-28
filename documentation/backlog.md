@@ -2,10 +2,16 @@
 
 ## Finish
 
+- Should `morph()` call `execute()`?
+  - Improve `execute()`’s default `elements` to take `event` Live-Updates in account
+    - Look at `DOMContentLoaded`
+    - Double-check every use of `execute()`
 - Make tag input even smaller
 - `.length - 1` → `.at(-1)`
-- Should `morph()` call `execute()`?
 - Remove support for `<select>` & `<option>`
+- Use more `` html\`\` ``
+  - Add Tag
+  - Latency compensation when sending message
 
 ---
 
