@@ -33,7 +33,6 @@ let staticJavaScript = javascript`
   import * as tippy from "tippy.js";
   import textareaCaret from "textarea-caret";
   import * as textFieldEdit from "text-field-edit";
-  import html from "@leafac/html";
   // import * as leafac from "@leafac/javascript/static/index.mjs";
   import * as leafac from "./leafac--javascript.mjs";
 
