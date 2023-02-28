@@ -14,6 +14,7 @@
 
 - Redesigned the page in which you manage tags to make it more compact.
 - Added a list of programming languages supported by the syntax highlighter in the “Styling Content” help page.
+- Fixed an issue in which relative dates could be mistakenly shown as “yesterday” (https://courselore.org/courses/8537410611/conversations/71).
 
 ## 6.0.9
 
