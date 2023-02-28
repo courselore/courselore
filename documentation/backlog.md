@@ -371,11 +371,8 @@ const extractStaticCSSAndJavaScript = () => ({
     - Features
       - Polls
         - Implementation notes:
-          - Client-side templates:
-            - Don’t have client-side templates: use server-side skeleton and hidrate it on the client, similar to latency compensation for sending a message.
-          - Datetime picker
+          - Poll mustn’t interfere with regular form submission
           - Changes to the inputs related to creating a poll mustn’t submit message draft updates
-          - Use `node --test` in other projects: look for uses of the `TEST` environment variable
         - Features
           - They’re a new type of message content, not something heavyweight like a new type of question. This follows the same lines as Discourse & Slack (where people use reactions (emojis) to do polls).
           - One or multiple options (just radio or checkbox) (not “choose at most 2 options”)
@@ -394,6 +391,7 @@ const extractStaticCSSAndJavaScript = () => ({
         - Later
           - Finer control over who can see what results
           - Add header to `box` layout showing your face if you’re logged in.
+          - Use `node --test` in other projects: look for uses of the `TEST` environment variable
       - Exam period
     - Files
       - `authentication.ts`
