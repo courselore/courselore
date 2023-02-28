@@ -2403,7 +2403,7 @@ export default async (application: Application): Promise<void> => {
                           class="visually-hidden input--radio-or-checkbox--multilabel"
                           javascript="${javascript`
                             this.onchange = () => {
-                              const closesAt = this.closest('[key="content-editor"]').querySelector('[key="closes-at"]');
+                              const closesAt = this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--poll--closes-at"]');
                               closesAt.hidden = !this.checked;
                               for (const element of closesAt.querySelectorAll("*"))
                                 if (element.disabled !== undefined) element.disabled = !this.checked;
@@ -2443,7 +2443,7 @@ export default async (application: Application): Promise<void> => {
                         </span>
                       </label>
                       <div
-                        key="closes-at"
+                        key="content-editor--write--poll--closes-at"
                         hidden
                         css="${css`
                           display: flex;
@@ -2503,13 +2503,13 @@ export default async (application: Application): Promise<void> => {
                     `}"
                   >
                     <div
-                      key="options"
+                      key="content-editor--write--poll--options"
                       css="${css`
                         display: flex;
                         flex-direction: column;
                         gap: var(--space--2);
 
-                        [key^="option/"] {
+                        [key^="content-editor--write--poll--option/"] {
                           display: flex;
                           gap: var(--space--2);
                           align-items: center;
@@ -2526,7 +2526,9 @@ export default async (application: Application): Promise<void> => {
                             opacity: var(--opacity--50);
                           }
 
-                          [key="option--grab--handle"]:not(.disabled) {
+                          [key="content-editor--write--poll--option--grab--handle"]:not(
+                              .disabled
+                            ) {
                             cursor: grab;
                           }
                         }
@@ -2539,10 +2541,10 @@ export default async (application: Application): Promise<void> => {
                         };
 
                         this.onpointerdown = (event) => {
-                          if (event.target.closest('[key="option--grab--handle"]') === null) return;
+                          if (event.target.closest('[key="content-editor--write--poll--option--grab--handle"]') === null) return;
 
                           const body = document.querySelector("body");
-                          const option = event.target.closest('[key^="option/"]');
+                          const option = event.target.closest('[key^="content-editor--write--poll--option/"]');
 
                           this.grabbed = option;
                           body.classList.add("grabbing");
@@ -2558,7 +2560,7 @@ export default async (application: Application): Promise<void> => {
                         this.onpointermove = (event) => {
                           const option = (
                             event.pointerType === "touch" ? document.elementFromPoint(event.clientX, event.clientY) : event.target
-                          ).closest('[key^="option/"]');
+                          ).closest('[key^="content-editor--write--poll--option/"]');
                           if (option === null || [undefined, option].includes(this.grabbed)) return;
 
                           const boundingClientRect = option.getBoundingClientRect();
@@ -2570,9 +2572,9 @@ export default async (application: Application): Promise<void> => {
                         };
 
                         this.onkeydown = (event) => {
-                          if (event.target.closest('[key="option--grab--handle"]') === null) return;
+                          if (event.target.closest('[key="content-editor--write--poll--option--grab--handle"]') === null) return;
 
-                          const option = event.target.closest('[key^="option/"]');
+                          const option = event.target.closest('[key^="content-editor--write--poll--option/"]');
                           switch (event.code) {
                             case "ArrowUp":
                               event.preventDefault();
@@ -2583,14 +2585,14 @@ export default async (application: Application): Promise<void> => {
                               option.nextElementSibling?.after?.(option);
                               break;
                           }
-                          option.querySelector('[key="option--grab--handle"]').focus();
+                          option.querySelector('[key="content-editor--write--poll--option--grab--handle"]').focus();
                           this.reorder();
                         };
 
                         this.reorder = () => {
                           this.isModified = true;
 
-                          for (const [order, option] of this.querySelectorAll('[key^="option/"]').entries())
+                          for (const [order, option] of this.querySelectorAll('[key^="content-editor--write--poll--option/"]').entries())
                             for (const element of option.querySelectorAll('[name^="options["]'))
                               element.setAttribute("name", element.getAttribute("name").replace(/\\d+/, String(order)));
                         };
@@ -2608,9 +2610,11 @@ export default async (application: Application): Promise<void> => {
                         javascript="${javascript`
                           this.onclick = () => {
                             const newOption = leafac.stringToElement(${html`
-                              <div key="option/new">
+                              <div
+                                key="content-editor--write--poll--option/new"
+                              >
                                 <button
-                                  key="option--grab--handle"
+                                  key="content-editor--write--poll--option--grab--handle"
                                   type="button"
                                   class="button button--tight button--tight--inline button--transparent"
                                   javascript="${javascript`
@@ -2652,8 +2656,8 @@ export default async (application: Application): Promise<void> => {
                                     });
 
                                     this.onclick = () => {
-                                      const options = this.closest('[key="options"]');
-                                      this.closest('[key^="option/"]').remove();
+                                      const options = this.closest('[key="content-editor--write--poll--options"]');
+                                      this.closest('[key^="content-editor--write--poll--option/"]').remove();
                                       options.reorder();
                                     };
                                   `}"
@@ -2661,9 +2665,9 @@ export default async (application: Application): Promise<void> => {
                                   <i class="bi bi-x-lg"></i>
                                 </button>
                               </div>
-                            `}).querySelector('[key="option/new"]');
+                            `}).querySelector('[key="content-editor--write--poll--option/new"]');
 
-                            const options = this.closest('[key="content-editor"]').querySelector('[key="options"]');
+                            const options = this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--poll--options"]');
                             options.insertAdjacentElement("beforeend", newOption);
                             leafac.execute({
                               event,
@@ -2673,7 +2677,7 @@ export default async (application: Application): Promise<void> => {
                           };
 
                           this.onvalidate = () => {
-                            if (this.closest('[key="content-editor"]').querySelector('[key="options"]').children.length === 0)
+                            if (this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--poll--options"]').children.length === 0)
                               return "Please add at least one option.";
                           };
                         `}"
