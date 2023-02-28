@@ -2317,7 +2317,6 @@ export default async (application: Application): Promise<void> => {
                 css="${css`
                   background-color: var(--color--gray--medium--50);
                   @media (prefers-color-scheme: dark) {
-                    color: var(--color--gray--medium--200);
                     background-color: var(--color--gray--medium--900);
                   }
                   padding: var(--space--2) var(--space--4);
@@ -2461,7 +2460,7 @@ export default async (application: Application): Promise<void> => {
                           disabled
                           class="input--text"
                           css="${css`
-                            margin-top: var(--space---2);
+                            margin: var(--space---2) var(--space--0);
                           `}"
                           javascript="${javascript`
                             this.value = this.defaultValue = leafac.localizeDateTime(this.defaultValue);

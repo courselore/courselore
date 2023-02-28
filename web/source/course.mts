@@ -2345,7 +2345,7 @@ export default async (application: Application): Promise<void> => {
                       disabled
                       class="input--text"
                       css="${css`
-                        margin-top: var(--space---2);
+                        margin: var(--space---2) var(--space--0);
                       `}"
                       javascript="${javascript`
                         this.value = this.defaultValue = leafac.localizeDateTime(this.defaultValue);
