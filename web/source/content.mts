@@ -1757,6 +1757,8 @@ export default async (application: Application): Promise<void> => {
                                   for (const element of leafac.descendants(poll))
                                     if (element.disabled !== undefined && element.closest("[hidden]") === null)
                                       element.disabled = false;
+                                  for (const initialOptions of new Array(3))
+                                    poll.querySelector('[key="content-editor--write--poll--add-option"]').onclick();
                                 };
                               `}"
                               >
@@ -2615,6 +2617,7 @@ export default async (application: Application): Promise<void> => {
                       `}"
                     >
                       <button
+                        key="content-editor--write--poll--add-option"
                         type="button"
                         class="button button--transparent button--full-width-on-small-screen"
                         javascript="${javascript`
