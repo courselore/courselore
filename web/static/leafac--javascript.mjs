@@ -551,7 +551,6 @@ export function morph(from, to, event = undefined) {
             if (from[property] !== to[property]) from[property] = to[property];
           break;
         case "textarea":
-        case "select":
           for (const property of ["value", "disabled"])
             if (from[property] !== to[property]) from[property] = to[property];
           break;
@@ -678,8 +677,6 @@ export function isModified(element) {
       return true;
     if (["radio", "checkbox"].includes(element.type)) {
       if (element.checked !== element.defaultChecked) return true;
-    } else if (element.matches("option")) {
-      if (element.selected !== element.defaultSelected) return true;
     } else if (
       typeof element.value === "string" &&
       typeof element.defaultValue === "string"

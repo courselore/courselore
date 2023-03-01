@@ -378,7 +378,6 @@ const extractStaticCSSAndJavaScript = () => ({
     - Look at `DOMContentLoaded`
     - Double-check every use of `execute()`
 - In `/settings/tags`, make tag input even smaller
-- Remove support for `<select>` & `<option>`
 - Use more `` html\`\` ``
   - “Add Tag”
   - “Add Option” in polls
