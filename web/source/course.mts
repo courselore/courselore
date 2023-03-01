@@ -2345,6 +2345,7 @@ export default async (application: Application): Promise<void> => {
                       disabled
                       class="input--text"
                       css="${css`
+                        width: var(--space--40);
                         margin: var(--space---2) var(--space--0);
                       `}"
                       javascript="${javascript`

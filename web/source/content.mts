@@ -1752,7 +1752,11 @@ export default async (application: Application): Promise<void> => {
                                 javascript="${javascript`
                                 this.onclick = () => {
                                   this.closest("[data-tippy-root]")._tippy.hide();
-                                  this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--poll"]').hidden = false;
+                                  const poll = this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--poll"]');
+                                  poll.hidden = false;
+                                  for (const element of leafac.descendants(poll))
+                                    if (element.disabled !== undefined && element.closest("[hidden]") === null)
+                                      element.disabled = false;
                                 };
                               `}"
                               >
@@ -2465,6 +2469,7 @@ export default async (application: Application): Promise<void> => {
                           disabled
                           class="input--text"
                           css="${css`
+                            width: var(--space--40);
                             margin: var(--space---2) var(--space--0);
                           `}"
                           javascript="${javascript`
