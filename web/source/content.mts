@@ -2103,7 +2103,6 @@ export default async (application: Application): Promise<void> => {
                                                   `}"
                                                 >
                                                   <button
-                                                    key="content-editor--write--poll--add-option"
                                                     type="button"
                                                     class="button button--transparent button--full-width-on-small-screen"
                                                     javascript="${javascript`
