@@ -4,8 +4,6 @@
 
 **Poll**
 
-- Implementation notes:
-  - Changes to the inputs related to creating a poll mustn’t submit message draft updates
 - Features
   - Allow for closing a poll.
 - Visualization
@@ -18,6 +16,7 @@
   - Reusing a poll in a new course doesn’t work out of the box; we need some logic to duplicate the poll.
   - Include text material in full-text search.
 - Later
+  - Changes to the inputs related to creating a poll don’t need to submit message draft updates
   - Finer control over who can see what results
   - Add header to `box` layout showing your face if you’re logged in.
   - Use `node --test` in other projects: look for uses of the `TEST` environment variable
