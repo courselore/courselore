@@ -5,6 +5,9 @@
 **Poll**
 
 - Implementation notes:
+  - Instead of poll form being preloaded by hidden, let the “Poll” button add that markup dynamically (similar to what the “Add Option” button does)
+    - Slightly more contrived “Poll” button
+    - Don’t have to mess with juggling `disabled`, resetting the form, and that sort of thing
   - Poll mustn’t interfere with regular form submission
   - Changes to the inputs related to creating a poll mustn’t submit message draft updates
 - Features
@@ -14,6 +17,7 @@
   - Students may see aggregate results.
   - Staff may see individual votes.
 - Edge cases
+  - What should happen when you’re editing a poll and try to submit the message?
   - An option whose content includes a poll in an of itself
   - Reusing a poll in a new course doesn’t work out of the box; we need some logic to duplicate the poll.
   - Include text material in full-text search.
@@ -23,13 +27,6 @@
   - Use `node --test` in other projects: look for uses of the `TEST` environment variable
   - Ranking
     - https://civs1.civs.us
-
-```
-
-
-                          for (const initialOptions of new Array(3))
-                            this.onclick();
-```
 
 **DateTimePicker**
 
