@@ -1209,12 +1209,14 @@ export default async (application: Application): Promise<void> => {
         ![undefined, "on"].includes(request.body.isAnswer) ||
         (request.body.isAnswer === "on" &&
           response.locals.conversation.type !== "question") ||
-        typeof request.body.content !== "string" ||
-        request.body.content.trim() === ""
+        typeof request.body.content !== "string"
       )
         return next("Validation");
 
+      const removeDraft = request.body.content.trim() === "";
+
       if (
+        removeDraft ||
         application.database.get<{}>(
           sql`
           SELECT TRUE
@@ -1232,24 +1234,36 @@ export default async (application: Application): Promise<void> => {
           url: `/courses/${response.locals.course.reference}/conversations/${response.locals.conversation.reference}`,
         });
 
-      application.database.run(
-        sql`
-          INSERT INTO "messageDrafts" (
-            "createdAt",
-            "conversation",
-            "authorEnrollment",
-            "answerAt",
-            "contentSource"
-          )
-          VALUES (
-            ${new Date().toISOString()},
-            ${response.locals.conversation.id},
-            ${response.locals.enrollment.id},
-            ${request.body.isAnswer === "on" ? new Date().toISOString() : null},
-            ${request.body.content}
-          )
-        `
-      );
+      if (removeDraft)
+        application.database.run(
+          sql`
+            DELETE FROM "messageDrafts"
+            WHERE
+              "conversation" = ${response.locals.conversation.id} AND
+              "authorEnrollment" = ${response.locals.enrollment.id}
+          `
+        );
+      else
+        application.database.run(
+          sql`
+            INSERT INTO "messageDrafts" (
+              "createdAt",
+              "conversation",
+              "authorEnrollment",
+              "answerAt",
+              "contentSource"
+            )
+            VALUES (
+              ${new Date().toISOString()},
+              ${response.locals.conversation.id},
+              ${response.locals.enrollment.id},
+              ${
+                request.body.isAnswer === "on" ? new Date().toISOString() : null
+              },
+              ${request.body.content}
+            )
+          `
+        );
 
       response.end();
     }
