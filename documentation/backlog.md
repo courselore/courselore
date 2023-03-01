@@ -7,7 +7,6 @@
 **Poll**
 
 - Implementation notes:
-  - Poll mustn’t interfere with regular form submission
   - Changes to the inputs related to creating a poll mustn’t submit message draft updates
 - Features
   - Allow for closing a poll.
