@@ -1622,7 +1622,7 @@ export default async (application: Application): Promise<void> => {
                               searchAndFiltersForm.hidden = [...searchAndFilters.querySelectorAll('[key="search-and-filters--show-hide--search"], [key="search-and-filters--show-hide--filters"]')]
                                 .every((element) => !element.checked);
                               searchAndFiltersFormSection.hidden = !this.checked;
-                              for (const element of searchAndFiltersFormSection.querySelectorAll("*"))
+                              for (const element of leafac.descendants(searchAndFiltersFormSection))
                                 if (element.disabled !== null) element.disabled = !this.checked;
                               if (this.checked)
                                 searchAndFiltersFormSection.querySelector('[name="conversations[search]"]').focus();
@@ -1659,7 +1659,7 @@ export default async (application: Application): Promise<void> => {
                               searchAndFiltersForm.hidden = [...searchAndFilters.querySelectorAll('[key="search-and-filters--show-hide--search"], [key="search-and-filters--show-hide--filters"]')]
                                 .every((element) => !element.checked);
                               searchAndFiltersFormSection.hidden = !this.checked;
-                              for (const element of searchAndFiltersFormSection.querySelectorAll("*"))
+                              for (const element of leafac.descendants(searchAndFiltersFormSection))
                                 if (element.disabled !== null) element.disabled = !this.checked;
                             };
                           `}"
@@ -2358,16 +2358,16 @@ export default async (application: Application): Promise<void> => {
                           css="${css`
                             margin-top: var(--space--2);
                             display: flex;
-                            gap: var(--space--2);
+                            gap: var(--space--4);
                             & > * {
                               flex: 1;
                             }
                           `}"
                         >
                           <button
-                            class="button button--tight button--tight--inline button--transparent"
+                            class="button button--tight button--tight--inline button--blue"
                           >
-                            <i class="bi bi-funnel"></i>
+                            <i class="bi bi-funnel-fill"></i>
                             Apply Filters
                           </button>
                           $${Object.keys(filters).length > 0

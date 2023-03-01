@@ -2,7 +2,7 @@
 
 ## Finish
 
-- `"*"`
+- `disabled !== null`
 
 **Poll**
 

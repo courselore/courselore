@@ -1891,7 +1891,7 @@ export default async (application: Application): Promise<void> => {
                                                         this.onchange = () => {
                                                           const closesAt = this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--poll--closes-at"]');
                                                           closesAt.hidden = !this.checked;
-                                                          for (const element of closesAt.querySelectorAll("*"))
+                                                          for (const element of leafac.descendants(closesAt))
                                                             if (element.disabled !== undefined) element.disabled = !this.checked;
                                                         };
                                                       `}"
