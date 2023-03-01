@@ -2178,8 +2178,8 @@ export default async (application: Application): Promise<void> => {
                                                       for (const initialOptions of new Array(3)) this.onclick();
                             
                                                       this.onvalidate = () => {
-                                                        if (this.closest("[hidden]") === null && this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--poll--options"]').children.length === 0)
-                                                          return "Please add at least one option.";
+                                                        if (this.closest("[hidden]") === null && this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--poll--options"]').children.length <= 1)
+                                                          return "Please add at least two options.";
                                                       };
                                                     `}"
                                                   >
