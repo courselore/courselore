@@ -1896,10 +1896,7 @@ export default async (application: Application): Promise<void> => {
 
                       const tags = this.closest("form").querySelector('[key="tags"]');
                       tags.insertAdjacentElement("beforeend", newTag);
-                      leafac.execute({
-                        event,
-                        element: newTag,
-                      });
+                      leafac.execute({ event, element: newTag });
                       tags.reorder();
                     };
 
