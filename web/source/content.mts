@@ -2217,15 +2217,11 @@ export default async (application: Application): Promise<void> => {
                                               </button>
 
                                               <button
-                                                class="button button--full-width-on-small-screen button--transparent"
+                                                type="button"
+                                                class="button button--transparent"
                                                 javascript="${javascript`
                                                   this.onclick = () => {
-                                                    const poll = this.closest('[key="content-editor--write--poll"]');
-                                                    poll.hidden = true;
-                                                    leafac.reset(poll);
-                                                    poll.querySelector('[key="content-editor--write--poll--options"]').replaceChildren();
-                                                    for (const element of leafac.descendants(poll))
-                                                      if (element.disabled !== undefined) element.disabled = true;
+                                                    this.closest('[key="content-editor--write--poll"]').remove();
                                                   };
                                                 `}"
                                               >

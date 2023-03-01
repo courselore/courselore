@@ -8,9 +8,6 @@
 
 - Implementation notes:
   - Instead of poll form being preloaded by hidden, let the “Poll” button add that markup dynamically (similar to what the “Add Option” button does)
-    - Trade-offs
-      - Slightly more contrived “Poll” button
-      - Don’t have to mess with juggling `disabled`, resetting the form, and that sort of thing
     - Server-rendered or client-rendered?
   - Poll mustn’t interfere with regular form submission
   - Changes to the inputs related to creating a poll mustn’t submit message draft updates
