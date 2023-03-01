@@ -706,6 +706,20 @@ export function serialize(element) {
   return urlSearchParams;
 }
 
+export function reset(element) {
+  const elementsToCheck = descendants(element);
+  for (const element of elementsToCheck) {
+    if (element.value !== element.defaultValue) {
+      element.value = element.defaultValue;
+      element.onchange?.();
+    }
+    if (element.checked !== element.defaultChecked) {
+      element.checked = element.defaultChecked;
+      element.onchange?.();
+    }
+  }
+}
+
 export const relativizeDateTime = (() => {
   const relativeTimeFormat = new Intl.RelativeTimeFormat("en-US", {
     localeMatcher: "lookup",
