@@ -700,7 +700,7 @@ export function serialize(element) {
       if (element.checked) urlSearchParams.set(name, element.value);
     } else if (element.type === "checkbox") {
       if (element.checked) urlSearchParams.append(name, element.value ?? "on");
-    } else if (element.matches("input, textarea, select"))
+    } else if (element.matches("input, textarea"))
       urlSearchParams.set(name, element.value);
   }
   return urlSearchParams;
