@@ -1623,7 +1623,7 @@ export default async (application: Application): Promise<void> => {
                                 .every((element) => !element.checked);
                               searchAndFiltersFormSection.hidden = !this.checked;
                               for (const element of leafac.descendants(searchAndFiltersFormSection))
-                                if (element.disabled !== null) element.disabled = !this.checked;
+                                if (element.disabled !== undefined) element.disabled = !this.checked;
                               if (this.checked)
                                 searchAndFiltersFormSection.querySelector('[name="conversations[search]"]').focus();
                             };
@@ -1660,7 +1660,7 @@ export default async (application: Application): Promise<void> => {
                                 .every((element) => !element.checked);
                               searchAndFiltersFormSection.hidden = !this.checked;
                               for (const element of leafac.descendants(searchAndFiltersFormSection))
-                                if (element.disabled !== null) element.disabled = !this.checked;
+                                if (element.disabled !== undefined) element.disabled = !this.checked;
                             };
                           `}"
                         />

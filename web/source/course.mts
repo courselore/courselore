@@ -2108,7 +2108,7 @@ export default async (application: Application): Promise<void> => {
                           const emails = form.querySelector('[key="emails"]');
                           emails.hidden = true;
                           for (const element of leafac.descendants(emails))
-                            if (element.disabled !== null) element.disabled = true;
+                            if (element.disabled !== undefined) element.disabled = true;
                           form.querySelector('[key="button--create-invitation"]').hidden = false;
                           form.querySelector('[key="button--send-invitation-emails"]').hidden = true;
                         };
@@ -2138,7 +2138,7 @@ export default async (application: Application): Promise<void> => {
                           const emails = form.querySelector('[key="emails"]');
                           emails.hidden = false;
                           for (const element of leafac.descendants(emails))
-                            if (element.disabled !== null) element.disabled = false;
+                            if (element.disabled !== undefined) element.disabled = false;
                           form.querySelector('[key="button--create-invitation"]').hidden = true;
                           form.querySelector('[key="button--send-invitation-emails"]').hidden = false;
                         };

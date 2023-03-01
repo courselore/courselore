@@ -2,8 +2,6 @@
 
 ## Finish
 
-- `disabled !== null`
-
 **Poll**
 
 - Implementation notes:
