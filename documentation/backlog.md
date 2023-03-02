@@ -1,7 +1,5 @@
 # Backlog
 
-- `partialParentElement` → `this.onbeforemorph = (event) => !event?.detail?.liveUpdate;`?
-
 ## Finish
 
 **Poll**
@@ -375,6 +373,7 @@ const extractStaticCSSAndJavaScript = () => ({
 
 ---
 
+- `partialParentElement` → `this.onbeforemorph = (event) => !event?.detail?.liveUpdate;`?
 - Should `morph()` call `execute()`?
   - Improve `execute()`’s default `elements` to take `event` Live-Updates in account
     - Look at `DOMContentLoaded`
