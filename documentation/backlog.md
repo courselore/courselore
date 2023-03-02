@@ -1,5 +1,7 @@
 # Backlog
 
+- `partialParentElement` → `this.onbeforemorph = (event) => !event?.detail?.liveUpdate;`?
+
 ## Finish
 
 **Poll**
