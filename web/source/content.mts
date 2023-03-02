@@ -844,6 +844,9 @@ export default async (application: Application): Promise<void> => {
           position: relative;
         }
       `}"
+      javascript="${javascript`
+        this.onbeforemorph = (event) => !event?.detail?.liveUpdate;
+      `}"
     >
       <div
         key="content-editor--toolbar"
