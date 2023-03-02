@@ -4373,9 +4373,9 @@ export default async (application: Application): Promise<void> => {
 
                                 this.onchange = async () => {
                                   await fetch(${`https://${application.configuration.hostname}/preferences`}, {
-                                    cache: "no-store",
                                     method: "PATCH",
                                     headers: { "CSRF-Protection": "true", },
+                                    cache: "no-store",
                                     body: new URLSearchParams({ preferAnonymous: String(this.checked), }),
                                   });
                                 };
@@ -8877,9 +8877,9 @@ export default async (application: Application): Promise<void> => {
                       isUpdating = true;
                       shouldUpdateAgain = false;
                       await fetch(${`https://${application.configuration.hostname}/courses/${response.locals.course.reference}/conversations/${response.locals.conversation.reference}/messages/draft`}, {
-                        cache: "no-store",
                         method: "POST",
                         headers: { "CSRF-Protection": "true", },
+                        cache: "no-store",
                         body: new URLSearchParams(new FormData(this)),
                       });
                       isUpdating = false;
@@ -9119,9 +9119,9 @@ export default async (application: Application): Promise<void> => {
 
                                   this.onchange = async () => {
                                     await fetch(${`https://${application.configuration.hostname}/preferences`}, {
-                                      cache: "no-store",
                                       method: "PATCH",
                                       headers: { "CSRF-Protection": "true", },
+                                      cache: "no-store",
                                       body: new URLSearchParams({ preferAnonymous: String(this.checked), }),
                                     });
                                   };

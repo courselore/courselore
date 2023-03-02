@@ -267,8 +267,8 @@ export async function liveConnection({
 
     try {
       const response = await fetch(window.location.href, {
-        cache: "no-store",
         headers: { "Live-Connection": nonce },
+        cache: "no-store",
         signal: abortController.signal,
       });
 

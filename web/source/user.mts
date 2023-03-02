@@ -1088,9 +1088,9 @@ export default async (application: Application): Promise<void> => {
                       tippy.hideAll();
                       avatarChooser.uploadingIndicator.show();
                       const response = await fetch(${`https://${application.configuration.hostname}/settings/profile/avatar`}, {
-                        cache: "no-store",
                         method: "POST",
                         headers: { "CSRF-Protection": "true", },
+                        cache: "no-store",
                         body,
                       });
                       avatarChooser.uploadingIndicator.hide();

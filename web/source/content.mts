@@ -950,9 +950,9 @@ export default async (application: Application): Promise<void> => {
                           ? ""
                           : `/courses/${response.locals.course.reference}`
                       }/content-editor/preview`}, {
-                        cache: "no-store",
                         method: "POST",
                         headers: { "CSRF-Protection": "true", },
+                        cache: "no-store",
                         body: new URLSearchParams({ content: textarea.value, }),
                       })
                     ).text()
@@ -1649,9 +1649,9 @@ export default async (application: Application): Promise<void> => {
                 textarea.uploadingIndicator.show();
                 textarea.disabled = true;
                 const response = await (await fetch(${`https://${application.configuration.hostname}/content-editor/attachments`}, {
-                  cache: "no-store",
                   method: "POST",
                   headers: { "CSRF-Protection": "true", },
+                  cache: "no-store",
                   body,
                 })).text();
                 textarea.disabled = false;
@@ -2206,10 +2206,15 @@ export default async (application: Application): Promise<void> => {
                                                 type="button"
                                                 class="button button--blue"
                                                 javascript="${javascript`
-                                                  this.onclick = () => {
+                                                  this.onclick = async () => {
                                                     const poll = this.closest('[key="content-editor--write--poll"]');
                                                     if (!leafac.validate(poll)) return;
-                                                    console.log([...leafac.serialize(poll)]);
+                                                    await fetch(${`https://${application.configuration.hostname}/courses/${response.locals.course.reference}/polls`}, {
+                                                      method: "POST",
+                                                      headers: { "CSRF-Protection": "true", },
+                                                      cache: "no-store",
+                                                      body: leafac.serialize(poll),
+                                                    });
                                                   };
                                                 `}"
                                               >
@@ -2736,9 +2741,9 @@ export default async (application: Application): Promise<void> => {
                 this.onchange = async () => {
                   textarea.classList[this.checked ? "add" : "remove"]("content-editor--write--textarea--programmer-mode");
                   await fetch(${`https://${application.configuration.hostname}/preferences`}, {
-                    cache: "no-store",
                     method: "PATCH",
                     headers: { "CSRF-Protection": "true", },
+                    cache: "no-store",
                     body: new URLSearchParams({ preferContentEditorProgrammerMode: String(this.checked), }),
                   });
                 };
@@ -3135,9 +3140,9 @@ ${contentSource}</textarea
                         const toolbar = this.closest('[key="content-editor"]').querySelector('[key="content-editor--toolbar"]');
                         toolbar.hidden = !toolbar.hidden;
                         await fetch(${`https://${application.configuration.hostname}/preferences`}, {
-                          cache: "no-store",
                           method: "PATCH",
                           headers: { "CSRF-Protection": "true", },
+                          cache: "no-store",
                           body: new URLSearchParams({ preferContentEditorToolbarInCompact: String(!toolbar.hidden), }),
                         });
                       };
