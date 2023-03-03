@@ -6,7 +6,6 @@
 
 - Features
   - Vote.
-    - Server to receive vote.
     - Take closing in account.
       - Presentation.
       - Server.

@@ -4184,8 +4184,8 @@ ${contentSource}</textarea
           LEFT JOIN "enrollments" AS "authorEnrollment" ON "messagePolls"."authorEnrollment" = "authorEnrollment"."id"
           LEFT JOIN "users" AS "authorUser" ON "authorEnrollment"."user" = "authorUser"."id"
           WHERE
-            "course" = ${response.locals.course.id} AND
-            "reference" = ${request.params.pollReference}
+            "messagePolls"."course" = ${response.locals.course.id} AND
+            "messagePolls"."reference" = ${request.params.pollReference}
         `
       );
       if (pollRow === undefined) return next();
