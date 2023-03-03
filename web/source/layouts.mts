@@ -1258,8 +1258,13 @@ export default async (application: Application): Promise<void> => {
                   display: block;
                 }
 
-                .poll--vote > ul > li > label {
-                  cursor: pointer;
+                .poll--vote {
+                  display: flex;
+                  flex-direction: column;
+
+                  & > ul > li > label {
+                    cursor: pointer;
+                  }
                 }
 
                 ul {

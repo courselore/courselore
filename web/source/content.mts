@@ -824,6 +824,15 @@ export default async (application: Application): Promise<void> => {
                 `
               )}
             </ul>
+
+            <div>
+              <button
+                class="button button--full-width-on-small-screen button--blue"
+              >
+                <i class="bi bi-card-checklist"></i>
+                Vote
+              </button>
+            </div>
           </form>
         `;
       }
@@ -2189,7 +2198,7 @@ export default async (application: Application): Promise<void> => {
                                                 >
                                                   <button
                                                     type="button"
-                                                    class="button button--transparent button--full-width-on-small-screen"
+                                                    class="button button--full-width-on-small-screen button--transparent"
                                                     javascript="${javascript`
                                                       this.onclick = () => {
                                                         const newOption = leafac.stringToElement(${html`

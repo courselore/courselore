@@ -1772,7 +1772,7 @@ export default async (application: Application): Promise<void> => {
               >
                 <button
                   type="button"
-                  class="button button--transparent button--full-width-on-small-screen"
+                  class="button button--full-width-on-small-screen button--transparent"
                   javascript="${javascript`
                     this.onclick = () => {
                       const newTag = leafac.stringToElement(${html`
