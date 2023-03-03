@@ -1780,6 +1780,7 @@ export default async (application: Application): Promise<void> => {
                                           `}"
                                         >
                                           <div
+                                            key="content-editor--write--poll--content"
                                             css="${css`
                                               background-color: var(
                                                 --color--gray--medium--50
@@ -2212,11 +2213,33 @@ export default async (application: Application): Promise<void> => {
 
                                                     if (!leafac.validate(poll)) return;
 
+                                                    const body = leafac.serialize(poll);
+
+                                                    leafac.morph(poll.querySelector('[key="content-editor--write--poll--content"]'), ${html`
+                                                      <div
+                                                        class="strong"
+                                                        css="${css`
+                                                          display: flex;
+                                                          justify-content: center;
+                                                          align-items: center;
+                                                          gap: var(--space--2);
+                                                        `}"
+                                                      >
+                                                        $${application.web.locals.partials.spinner(
+                                                          {
+                                                            request,
+                                                            response,
+                                                          }
+                                                        )}
+                                                        Creating Poll…
+                                                      </div>
+                                                    `});
+
                                                     const content = await (await fetch(${`https://${application.configuration.hostname}/courses/${response.locals.course.reference}/polls`}, {
                                                       method: "POST",
                                                       headers: { "CSRF-Protection": "true", },
                                                       cache: "no-store",
-                                                      body: leafac.serialize(poll),
+                                                      body,
                                                     })).text();
 
                                                     poll.remove();

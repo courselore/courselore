@@ -5,8 +5,6 @@
 **Poll**
 
 - Features
-  - Insert poll tag when poll is created.
-    - “Loading” while creating the poll.
   - Demonstration data.
   - Vote.
   - Show results.
