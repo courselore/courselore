@@ -6,7 +6,6 @@
 
 - Features
   - Vote.
-    - Sanitization.
     - Content processor.
     - Server to receive vote.
   - Show results.
