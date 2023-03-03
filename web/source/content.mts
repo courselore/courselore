@@ -2208,13 +2208,20 @@ export default async (application: Application): Promise<void> => {
                                                 javascript="${javascript`
                                                   this.onclick = async () => {
                                                     const poll = this.closest('[key="content-editor--write--poll"]');
+                                                    const textarea = this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
+
                                                     if (!leafac.validate(poll)) return;
-                                                    await fetch(${`https://${application.configuration.hostname}/courses/${response.locals.course.reference}/polls`}, {
+
+                                                    const content = await (await fetch(${`https://${application.configuration.hostname}/courses/${response.locals.course.reference}/polls`}, {
                                                       method: "POST",
                                                       headers: { "CSRF-Protection": "true", },
                                                       cache: "no-store",
                                                       body: leafac.serialize(poll),
-                                                    });
+                                                    })).text();
+
+                                                    poll.remove();
+                                                    textFieldEdit.insert(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + content + "\\n\\n");
+                                                    textarea.focus();
                                                   };
                                                 `}"
                                               >
@@ -3915,7 +3922,69 @@ ${contentSource}</textarea
     )
       return next("Validation");
 
-    response.send(`\n\n\n\n`);
+    const poll = application.database.get<{
+      id: number;
+      reference: string;
+    }>(
+      sql`
+        SELECT * FROM "messagePolls" WHERE "id" = ${
+          application.database.run(
+            sql`
+              INSERT INTO "messagePolls" (
+                "createdAt",
+                "course",
+                "reference",
+                "authorEnrollment",
+                "multipleChoicesAt",
+                "closesAt"
+              )
+              VALUES (
+                ${new Date().toISOString()},
+                ${response.locals.course.id},
+                ${cryptoRandomString({ length: 20, type: "numeric" })},
+                ${response.locals.enrollment.id},
+                ${
+                  request.body.choices === "multiple"
+                    ? new Date().toISOString()
+                    : null
+                },
+                ${request.body.closesAt}
+              )
+            `
+          ).lastInsertRowid
+        }
+      `
+    )!;
+
+    for (const [order, option] of request.body.options.entries())
+      application.database.run(
+        sql`
+          INSERT INTO "messagePollOptions" (
+            "createdAt",
+            "messagePoll",
+            "reference",
+            "order",
+            "contentSource",
+            "contentSourcePreprocessed"
+          )
+          VALUES (
+            ${new Date().toISOString()},
+            ${poll.id},
+            ${cryptoRandomString({ length: 20, type: "numeric" })},
+            ${order},
+            ${option.content!},
+            ${
+              application.web.locals.partials.contentPreprocessed(
+                option.content!
+              ).contentPreprocessed
+            }
+          )
+        `
+      );
+
+    response.send(
+      `<courselore-poll reference="${poll.reference}"></courselore-poll>`
+    );
   });
 
   application.web.post<

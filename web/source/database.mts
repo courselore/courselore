@@ -1616,6 +1616,7 @@ export default async (application: Application): Promise<void> => {
         "createdAt" TEXT NOT NULL,
         "course" INTEGER NOT NULL REFERENCES "courses" ON DELETE CASCADE,
         "reference" TEXT NOT NULL,
+        "authorEnrollment" INTEGER NULL REFERENCES "enrollments" ON DELETE SET NULL,
         "multipleChoicesAt" TEXT NULL,
         "closesAt" TEXT NULL,
         UNIQUE ("course", "reference")

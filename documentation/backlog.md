@@ -5,8 +5,13 @@
 **Poll**
 
 - Features
-  - Server-side for creating poll.
-  - Allow for closing a poll.
+  - Insert poll tag when poll is created.
+    - “Loading” while creating the poll.
+  - Demonstration data.
+  - Vote.
+  - Show results.
+  - Edit poll.
+    - Close a poll.
 - Visualization
   - Explain who can see what.
   - Students may see aggregate results.
@@ -26,6 +31,9 @@
 
 **DateTimePicker**
 
+- Uses
+  - Invitation `expiresAt`
+  - Poll `closesAt`
 - State
   - Year
   - Month
