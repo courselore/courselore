@@ -5,7 +5,6 @@
 **Poll**
 
 - Features
-  - Demonstration data.
   - Vote.
   - Show results.
   - Edit poll.

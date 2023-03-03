@@ -435,6 +435,125 @@ export default async (application: Application): Promise<void> => {
             ).toISOString()
           );
 
+        const pollSingleChoice = application.database.get<{
+          id: number;
+          reference: string;
+        }>(
+          sql`
+            SELECT * FROM "messagePolls" WHERE "id" = ${
+              application.database.run(
+                sql`
+                  INSERT INTO "messagePolls" (
+                    "createdAt",
+                    "course",
+                    "reference",
+                    "authorEnrollment",
+                    "multipleChoicesAt",
+                    "closesAt"
+                  )
+                  VALUES (
+                    ${conversationCreatedAts[0]},
+                    ${course.id},
+                    ${cryptoRandomString({ length: 20, type: "numeric" })},
+                    ${enrollment.id},
+                    ${null},
+                    ${null}
+                  )
+                `
+              ).lastInsertRowid
+            }
+          `
+        )!;
+
+        for (const order of new Array(lodash.random(2, 6)).keys()) {
+          const contentSource = casual.sentences(lodash.random(1, 2));
+          application.database.run(
+            sql`
+              INSERT INTO "messagePollOptions" (
+                "createdAt",
+                "messagePoll",
+                "reference",
+                "order",
+                "contentSource",
+                "contentSourcePreprocessed"
+              )
+              VALUES (
+                ${conversationCreatedAts[0]},
+                ${pollSingleChoice.id},
+                ${cryptoRandomString({ length: 20, type: "numeric" })},
+                ${order},
+                ${contentSource},
+                ${
+                  application.web.locals.partials.contentPreprocessed(
+                    contentSource
+                  ).contentPreprocessed
+                }
+              )
+            `
+          );
+        }
+
+        const pollMultipleChoice = application.database.get<{
+          id: number;
+          reference: string;
+        }>(
+          sql`
+            SELECT * FROM "messagePolls" WHERE "id" = ${
+              application.database.run(
+                sql`
+                  INSERT INTO "messagePolls" (
+                    "createdAt",
+                    "course",
+                    "reference",
+                    "authorEnrollment",
+                    "multipleChoicesAt",
+                    "closesAt"
+                  )
+                  VALUES (
+                    ${conversationCreatedAts[0]},
+                    ${course.id},
+                    ${cryptoRandomString({ length: 20, type: "numeric" })},
+                    ${enrollment.id},
+                    ${new Date().toISOString()},
+                    ${new Date(
+                      Date.now() +
+                        lodash.random(-24 * 60 * 60 * 1000, 24 * 60 * 60 * 1000)
+                    ).toISOString()}
+                  )
+                `
+              ).lastInsertRowid
+            }
+          `
+        )!;
+
+        for (const order of new Array(lodash.random(2, 6)).keys()) {
+          const contentSource = casual.sentences(lodash.random(1, 2));
+          application.database.run(
+            sql`
+              INSERT INTO "messagePollOptions" (
+                "createdAt",
+                "messagePoll",
+                "reference",
+                "order",
+                "contentSource",
+                "contentSourcePreprocessed"
+              )
+              VALUES (
+                ${conversationCreatedAts[0]},
+                ${pollMultipleChoice.id},
+                ${cryptoRandomString({ length: 20, type: "numeric" })},
+                ${order},
+                ${contentSource},
+                ${
+                  application.web.locals.partials.contentPreprocessed(
+                    contentSource
+                  ).contentPreprocessed
+                }
+              )
+            `
+          );
+        }
+
         const exampleOfAllFeaturesInRichTextMessages = `
 **Edit to see source**
 
@@ -508,6 +627,12 @@ break.
 # Video
 
 <video src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4"></video>
+
+# Polls
+
+<courselore-poll reference="${pollSingleChoice.reference}"></courselore-poll>
+
+<courselore-poll reference="${pollMultipleChoice.reference}"></courselore-poll>
 
 # Lists
 
