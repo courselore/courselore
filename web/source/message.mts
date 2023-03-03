@@ -2335,7 +2335,6 @@ export default async (application: Application): Promise<void> => {
             typeof application.web.locals.partials.content
           >[0]["response"],
           contentPreprocessed: message.contentPreprocessed,
-          decorate: true,
         });
 
         const enrollments = application.database.all<{

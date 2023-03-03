@@ -49,7 +49,6 @@ export type ApplicationContent = {
           response,
           id,
           contentPreprocessed,
-          decorate,
           search,
         }: {
           request: express.Request<
@@ -71,7 +70,6 @@ export type ApplicationContent = {
           >;
           id?: string;
           contentPreprocessed: HTML;
-          decorate?: boolean;
           search?: string | string[] | undefined;
         }) => {
           contentProcessed: HTML;
@@ -312,7 +310,6 @@ export default async (application: Application): Promise<void> => {
     response,
     id = Math.random().toString(36).slice(2),
     contentPreprocessed,
-    decorate = false,
     search = undefined,
   }) => {
     const contentElement = JSDOM.fragment(html`
@@ -418,7 +415,7 @@ export default async (application: Application): Promise<void> => {
           html`<summary>See More</summary>`
         );
 
-    if (decorate && response.locals.course !== undefined) {
+    if (response.locals.course !== undefined) {
       const requestCourseEnrolled = request as express.Request<
         {},
         any,
@@ -4049,7 +4046,6 @@ ${contentSource}</textarea
               application.web.locals.partials.contentPreprocessed(
                 request.body.content
               ).contentPreprocessed,
-            decorate: true,
           }).contentProcessed,
         })
       );

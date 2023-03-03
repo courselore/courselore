@@ -8334,7 +8334,6 @@ export default async (application: Application): Promise<void> => {
                                                   id: `message--${message.reference}`,
                                                   contentPreprocessed:
                                                     message.contentPreprocessed,
-                                                  decorate: true,
                                                   search:
                                                     typeof request.query
                                                       .conversations?.search ===
