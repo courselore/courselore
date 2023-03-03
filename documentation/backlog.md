@@ -16,6 +16,8 @@
   - Students may see aggregate results.
   - Staff may see individual votes.
 - Edge cases
+  - User biography with a mention to themselves (should avoid infinite loop by preventing decoration)
+  - User biographies with polls
   - What should happen when you’re editing a poll and try to submit the message?
   - An option whose content includes a poll in an of itself
   - Reusing a poll in a new course doesn’t work out of the box; we need some logic to duplicate the poll.
