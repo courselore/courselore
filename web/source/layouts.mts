@@ -538,10 +538,10 @@ export default async (application: Application): Promise<void> => {
                   @media (prefers-color-scheme: dark) {
                     background-color: var(--color--gray--medium--200);
                   }
+                  display: block;
                   width: var(--space--3);
                   height: var(--space--3);
                   border-radius: var(--border-radius--circle);
-                  display: block;
                   transition-property: var(--transition-property--all);
                   transition-duration: var(--transition-duration--150);
                   transition-timing-function: var(
@@ -1231,6 +1231,7 @@ export default async (application: Application): Promise<void> => {
                 }
 
                 video,
+                .poll--vote,
                 ul,
                 ol,
                 blockquote,
@@ -1255,6 +1256,10 @@ export default async (application: Application): Promise<void> => {
 
                 video {
                   display: block;
+                }
+
+                .poll--vote > ul > li > label {
+                  cursor: pointer;
                 }
 
                 ul {
@@ -1287,20 +1292,151 @@ export default async (application: Application): Promise<void> => {
                   margin-top: var(--space--2);
                 }
 
+                input[type="radio"] {
+                  background-color: var(--color--gray--medium--200);
+                  &:hover,
+                  &:focus-within {
+                    background-color: var(--color--gray--medium--300);
+                  }
+                  &:active {
+                    background-color: var(--color--gray--medium--400);
+                  }
+                  &:disabled,
+                  &.disabled {
+                    background-color: var(--color--gray--medium--300);
+                  }
+                  &:checked {
+                    background-color: var(--color--blue--600);
+                    &:hover,
+                    &:focus-within {
+                      background-color: var(--color--blue--500);
+                    }
+                    &:active {
+                      background-color: var(--color--blue--700);
+                    }
+                    &:disabled,
+                    &.disabled {
+                      background-color: var(--color--blue--300);
+                    }
+                  }
+                  @media (prefers-color-scheme: dark) {
+                    background-color: var(--color--gray--medium--700);
+                    &:hover,
+                    &:focus-within {
+                      background-color: var(--color--gray--medium--600);
+                    }
+                    &:active {
+                      background-color: var(--color--gray--medium--500);
+                    }
+                    &:disabled,
+                    &.disabled {
+                      background-color: var(--color--gray--medium--600);
+                    }
+                    &:checked {
+                      background-color: var(--color--blue--700);
+                      &:hover,
+                      &:focus-within {
+                        background-color: var(--color--blue--600);
+                      }
+                      &:active {
+                        background-color: var(--color--blue--800);
+                      }
+                      &:disabled,
+                      &.disabled {
+                        background-color: var(--color--blue--500);
+                      }
+                    }
+                  }
+                  min-width: var(--space--3-5);
+                  width: var(--space--3-5);
+                  min-height: var(--space--3-5);
+                  height: var(--space--3-5);
+                  border-radius: var(--border-radius--circle);
+                  display: flex;
+                  justify-content: center;
+                  align-items: center;
+                  transition-property: var(--transition-property--colors);
+                  transition-duration: var(--transition-duration--150);
+                  transition-timing-function: var(
+                    --transition-timing-function--in-out
+                  );
+
+                  &::before {
+                    content: "";
+                    background-color: var(--color--gray--medium--50);
+                    @media (prefers-color-scheme: dark) {
+                      background-color: var(--color--gray--medium--200);
+                    }
+                    display: block;
+                    width: var(--space--1-5);
+                    height: var(--space--1-5);
+                    border-radius: var(--border-radius--circle);
+                    transition-property: var(--transition-property--transform);
+                    transition-duration: var(--transition-duration--150);
+                    transition-timing-function: var(
+                      --transition-timing-function--in-out
+                    );
+                  }
+                  &:not(:checked)::before {
+                    transform: scale(var(--scale--0));
+                  }
+                }
+
                 input[type="checkbox"] {
                   font-size: var(--font-size--2xs);
                   line-height: var(--line-height--2xs);
-                  color: var(--color--transparent);
-                  background-color: var(--color--gray--medium--300);
+                  background-color: var(--color--gray--medium--200);
+                  &:hover,
+                  &:focus-within {
+                    background-color: var(--color--gray--medium--300);
+                  }
+                  &:active {
+                    background-color: var(--color--gray--medium--400);
+                  }
+                  &:disabled,
+                  &.disabled {
+                    background-color: var(--color--gray--medium--300);
+                  }
                   &:checked {
-                    color: var(--color--blue--50);
                     background-color: var(--color--blue--600);
+                    &:hover,
+                    &:focus-within {
+                      background-color: var(--color--blue--500);
+                    }
+                    &:active {
+                      background-color: var(--color--blue--700);
+                    }
+                    &:disabled,
+                    &.disabled {
+                      background-color: var(--color--blue--300);
+                    }
                   }
                   @media (prefers-color-scheme: dark) {
-                    background-color: var(--color--gray--medium--600);
+                    background-color: var(--color--gray--medium--700);
+                    &:hover,
+                    &:focus-within {
+                      background-color: var(--color--gray--medium--600);
+                    }
+                    &:active {
+                      background-color: var(--color--gray--medium--500);
+                    }
+                    &:disabled,
+                    &.disabled {
+                      background-color: var(--color--gray--medium--600);
+                    }
                     &:checked {
-                      color: var(--color--blue--200);
                       background-color: var(--color--blue--700);
+                      &:hover,
+                      &:focus-within {
+                        background-color: var(--color--blue--600);
+                      }
+                      &:active {
+                        background-color: var(--color--blue--800);
+                      }
+                      &:disabled,
+                      &.disabled {
+                        background-color: var(--color--blue--500);
+                      }
                     }
                   }
                   width: var(--space--3-5);
@@ -1310,12 +1446,28 @@ export default async (application: Application): Promise<void> => {
                   display: inline-flex;
                   justify-content: center;
                   align-items: center;
-                  &::before {
+                  transition-property: var(--transition-property--colors);
+                  transition-duration: var(--transition-duration--150);
+                  transition-timing-function: var(
+                    --transition-timing-function--in-out
+                  );
+
+                  &:checked::before {
                     content: "\\f633";
                     font-family: "bootstrap-icons" !important;
+                    color: var(--color--gray--medium--50);
+                    @media (prefers-color-scheme: dark) {
+                      color: var(--color--gray--medium--200);
+                    }
                   }
                 }
 
+                .poll--vote > ul > li > label > input[type="radio"]:first-child,
+                .poll--vote
+                  > ul
+                  > li
+                  > label
+                  > input[type="checkbox"]:first-child,
                 li > input[type="checkbox"]:first-child {
                   position: absolute;
                   margin-left: var(--space---5);

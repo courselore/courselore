@@ -796,7 +796,7 @@ export default async (application: Application): Promise<void> => {
         );
 
         element.outerHTML = html`
-          <form>
+          <form class="poll--vote">
             <ul>
               $${options.map(
                 (option) => html`
