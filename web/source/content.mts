@@ -796,7 +796,17 @@ export default async (application: Application): Promise<void> => {
         );
 
         element.outerHTML = html`
-          <form class="poll--vote">
+          <form
+            method="POST"
+            action="https://${application.configuration
+              .hostname}/courses/${responseCourseEnrolled.locals.course
+              .reference}/polls/${poll.reference}/votes${qs.stringify(
+              { redirect: request.originalUrl.slice(1) },
+              { addQueryPrefix: true }
+            )}"
+            novalidate
+            class="poll--vote"
+          >
             <ul>
               $${options.map(
                 (option) => html`

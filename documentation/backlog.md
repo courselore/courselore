@@ -6,7 +6,6 @@
 
 - Features
   - Vote.
-    - Content processor.
     - Server to receive vote.
   - Show results.
   - Edit poll.
@@ -394,6 +393,7 @@ const extractStaticCSSAndJavaScript = () => ({
   - “Add Option” in polls
   - Latency compensation when sending message
 - Try TypeScript on client-side JavaScript
+- In routes like `/likes`, do a redirect back with `${qs.stringify( { redirect: request.originalUrl.slice(1) }, { addQueryPrefix: true } )}`
 
 ---
 
