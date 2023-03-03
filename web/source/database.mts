@@ -1629,7 +1629,7 @@ export default async (application: Application): Promise<void> => {
         "reference" TEXT NOT NULL,
         "order" INTEGER NOT NULL,
         "contentSource" TEXT NOT NULL,
-        "contentSourcePreprocessed" TEXT NOT NULL,
+        "contentPreprocessed" TEXT NOT NULL,
         UNIQUE ("messagePoll", "reference")
       );
       

@@ -475,7 +475,7 @@ export default async (application: Application): Promise<void> => {
                 "reference",
                 "order",
                 "contentSource",
-                "contentSourcePreprocessed"
+                "contentPreprocessed"
               )
               VALUES (
                 ${conversationCreatedAts[0]},
@@ -536,7 +536,7 @@ export default async (application: Application): Promise<void> => {
                 "reference",
                 "order",
                 "contentSource",
-                "contentSourcePreprocessed"
+                "contentPreprocessed"
               )
               VALUES (
                 ${conversationCreatedAts[0]},

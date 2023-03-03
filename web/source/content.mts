@@ -417,12 +417,7 @@ export default async (application: Application): Promise<void> => {
 
     if (response.locals.course === undefined) {
       for (const element of contentElement.querySelectorAll("courselore-poll"))
-        if (
-          element.parentElement?.matches?.("p") &&
-          element.parentElement.childNodes.length === 1
-        )
-          element.parentElement.remove();
-        else element.remove();
+        element.remove();
     } else {
       const requestCourseEnrolled = request as express.Request<
         {},
@@ -752,6 +747,85 @@ export default async (application: Application): Promise<void> => {
             });
           `
         );
+      }
+
+      for (const element of contentElement.querySelectorAll(
+        "courselore-poll"
+      )) {
+        const pollReference = element.getAttribute("reference");
+        if (pollReference === null) {
+          element.outerHTML = html`<div>POLL MISSING REFERENCE</div>`;
+          continue;
+        }
+
+        const poll = application.database.get<{
+          id: number;
+          reference: string;
+          multipleChoicesAt: string | null;
+          closesAt: string | null;
+        }>(
+          sql`
+            SELECT
+              "id",
+              "reference",
+              "multipleChoicesAt",
+              "closesAt"
+            FROM "messagePolls"
+            WHERE
+              "course" = ${responseCourseEnrolled.locals.course.id} AND
+              "reference" = ${pollReference}
+          `
+        );
+        if (poll === undefined) {
+          element.outerHTML = html`<div>POLL REFERENCE NOT FOUND</div>`;
+          continue;
+        }
+
+        const options = application.database.all<{
+          reference: string;
+          contentPreprocessed: string;
+        }>(
+          sql`
+            SELECT
+              "reference",
+              "contentPreprocessed"
+            FROM "messagePollOptions"
+            WHERE "messagePoll" = ${poll.id}
+            ORDER BY "order" ASC
+          `
+        );
+
+        element.outerHTML = html`
+          <form>
+            <ul>
+              $${options.map(
+                (option) => html`
+                  <li>
+                    <label>
+                      <input
+                        type="${poll.multipleChoicesAt === null
+                          ? "radio"
+                          : "checkbox"}"
+                        name="option${poll.multipleChoicesAt === null
+                          ? ""
+                          : "[]"}"
+                        value="${option.reference}"
+                        required
+                      />
+                      $${application.web.locals.partials.content({
+                        request,
+                        response,
+                        id: `${id}--${option.reference}`,
+                        contentPreprocessed: option.contentPreprocessed,
+                        search,
+                      }).contentProcessed}
+                    </label>
+                  </li>
+                `
+              )}
+            </ul>
+          </form>
+        `;
       }
     }
 
@@ -3995,7 +4069,7 @@ ${contentSource}</textarea
             "reference",
             "order",
             "contentSource",
-            "contentSourcePreprocessed"
+            "contentPreprocessed"
           )
           VALUES (
             ${new Date().toISOString()},
