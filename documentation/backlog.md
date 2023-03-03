@@ -5,6 +5,7 @@
 **Poll**
 
 - Features
+  - Server-side for creating poll.
   - Allow for closing a poll.
 - Visualization
   - Explain who can see what.

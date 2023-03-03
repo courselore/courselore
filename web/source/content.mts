@@ -3883,6 +3883,42 @@ ${contentSource}</textarea
   );
 
   application.web.post<
+    { courseReference: string },
+    any,
+    {
+      choices?: "single" | "multiple";
+      closesAt?: string;
+      options?: {
+        content?: string;
+      }[];
+    },
+    {},
+    Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+  >("/courses/:courseReference/polls", (request, response, next) => {
+    if (response.locals.course === undefined) return next();
+
+    request.body.options ??= [];
+
+    if (
+      typeof request.body.choices !== "string" ||
+      !["single", "multiple"].includes(request.body.choices) ||
+      (request.body.closesAt !== undefined &&
+        (typeof request.body.closesAt !== "string" ||
+          !application.web.locals.helpers.isDate(request.body.closesAt) ||
+          application.web.locals.helpers.isExpired(request.body.closesAt))) ||
+      !Array.isArray(request.body.options) ||
+      request.body.options.length <= 1 ||
+      request.body.options.some(
+        (option) =>
+          typeof option.content !== "string" || option.content.trim() === ""
+      )
+    )
+      return next("Validation");
+
+    response.send(`\n\n\n\n`);
+  });
+
+  application.web.post<
     { courseReference?: string },
     any,
     { content?: string },
