@@ -816,9 +816,7 @@ export default async (application: Application): Promise<void> => {
                         type="${poll.multipleChoicesAt === null
                           ? "radio"
                           : "checkbox"}"
-                        name="option${poll.multipleChoicesAt === null
-                          ? ""
-                          : "[]"}"
+                        name="optionsReferences[]"
                         value="${option.reference}"
                         required
                       />
@@ -4109,6 +4107,223 @@ ${contentSource}</textarea
       `<courselore-poll reference="${poll.reference}"></courselore-poll>`
     );
   });
+
+  type ResponseLocalsPoll =
+    Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"] & {
+      poll: {
+        id: number;
+        createdAt: string;
+        reference: string;
+        authorEnrollment: Application["web"]["locals"]["Types"]["MaybeEnrollment"];
+        multipleChoicesAt: string | null;
+        closesAt: string | null;
+        options: {
+          id: number;
+          createdAt: string;
+          reference: string;
+          contentSource: string;
+          contentPreprocessed: string;
+        }[];
+      };
+    };
+
+  application.web.use<
+    { courseReference: string; pollReference: string },
+    any,
+    {},
+    {},
+    ResponseLocalsPoll
+  >(
+    "/courses/:courseReference/polls/:pollReference",
+    (request, response, next) => {
+      if (response.locals.course === undefined) return next();
+
+      const pollRow = application.database.get<{
+        id: number;
+        createdAt: string;
+        reference: string;
+        authorEnrollmentId: number | null;
+        authorUserId: number | null;
+        authorUserLastSeenOnlineAt: string | null;
+        authorUserReference: string;
+        authorUserEmail: string | null;
+        authorUserName: string | null;
+        authorUserAvatar: string | null;
+        authorUserAvatarlessBackgroundColors:
+          | Application["web"]["locals"]["helpers"]["userAvatarlessBackgroundColors"][number]
+          | null;
+        authorUserBiographySource: string | null;
+        authorUserBiographyPreprocessed: HTML | null;
+        authorEnrollmentReference: string | null;
+        authorEnrollmentCourseRole:
+          | Application["web"]["locals"]["helpers"]["courseRoles"][number]
+          | null;
+        multipleChoicesAt: string | null;
+        closesAt: string | null;
+      }>(
+        sql`
+          SELECT
+            "messagePolls"."id",
+            "messagePolls"."createdAt",
+            "messagePolls"."reference",
+            "authorEnrollment"."id" AS "authorEnrollmentId",
+            "authorUser"."id" AS "authorUserId",
+            "authorUser"."lastSeenOnlineAt" AS "authorUserLastSeenOnlineAt",
+            "authorUser"."reference" AS "authorUserReference",
+            "authorUser"."email" AS "authorUserEmail",
+            "authorUser"."name" AS "authorUserName",
+            "authorUser"."avatar" AS "authorUserAvatar",
+            "authorUser"."avatarlessBackgroundColor" AS "authorUserAvatarlessBackgroundColors",
+            "authorUser"."biographySource" AS "authorUserBiographySource",
+            "authorUser"."biographyPreprocessed" AS "authorUserBiographyPreprocessed",
+            "authorEnrollment"."reference" AS "authorEnrollmentReference",
+            "authorEnrollment"."courseRole" AS "authorEnrollmentCourseRole",  
+            "messagePolls"."multipleChoicesAt",
+            "messagePolls"."closesAt"
+          FROM "messagePolls"
+          LEFT JOIN "enrollments" AS "authorEnrollment" ON "messagePolls"."authorEnrollment" = "authorEnrollment"."id"
+          LEFT JOIN "users" AS "authorUser" ON "authorEnrollment"."user" = "authorUser"."id"
+          WHERE
+            "course" = ${response.locals.course.id} AND
+            "reference" = ${request.params.pollReference}
+        `
+      );
+      if (pollRow === undefined) return next();
+      const poll = {
+        id: pollRow.id,
+        createdAt: pollRow.createdAt,
+        reference: pollRow.reference,
+        authorEnrollment:
+          pollRow.authorEnrollmentId !== null &&
+          pollRow.authorUserId !== null &&
+          pollRow.authorUserLastSeenOnlineAt !== null &&
+          pollRow.authorUserReference !== null &&
+          pollRow.authorUserEmail !== null &&
+          pollRow.authorUserName !== null &&
+          pollRow.authorUserAvatarlessBackgroundColors !== null &&
+          pollRow.authorEnrollmentReference !== null &&
+          pollRow.authorEnrollmentCourseRole !== null
+            ? {
+                id: pollRow.authorEnrollmentId,
+                user: {
+                  id: pollRow.authorUserId,
+                  lastSeenOnlineAt: pollRow.authorUserLastSeenOnlineAt,
+                  reference: pollRow.authorUserReference,
+                  email: pollRow.authorUserEmail,
+                  name: pollRow.authorUserName,
+                  avatar: pollRow.authorUserAvatar,
+                  avatarlessBackgroundColor:
+                    pollRow.authorUserAvatarlessBackgroundColors,
+                  biographySource: pollRow.authorUserBiographySource,
+                  biographyPreprocessed:
+                    pollRow.authorUserBiographyPreprocessed,
+                },
+                reference: pollRow.authorEnrollmentReference,
+                courseRole: pollRow.authorEnrollmentCourseRole,
+              }
+            : ("no-longer-enrolled" as const),
+        multipleChoicesAt: pollRow.multipleChoicesAt,
+        closesAt: pollRow.closesAt,
+      };
+
+      const pollOptions = application.database.all<{
+        id: number;
+        createdAt: string;
+        reference: string;
+        contentSource: string;
+        contentPreprocessed: string;
+      }>(
+        sql`
+          SELECT
+            "id",
+            "createdAt",
+            "reference",
+            "contentSource",
+            "contentPreprocessed"
+          FROM "messagePollOptions"
+          WHERE "messagePoll" = ${poll.id}
+          ORDER BY "order" ASC
+        `
+      );
+
+      response.locals.poll = {
+        ...poll,
+        options: pollOptions,
+      };
+
+      next();
+    }
+  );
+
+  application.web.post<
+    { courseReference: string; pollReference: string },
+    any,
+    { optionsReferences?: string[] },
+    { redirect?: string },
+    ResponseLocalsPoll
+  >(
+    "/courses/:courseReference/polls/:pollReference/votes",
+    (request, response, next) => {
+      if (response.locals.poll === undefined) return next();
+
+      request.body.optionsReferences ??= [];
+
+      if (
+        !Array.isArray(request.body.optionsReferences) ||
+        (response.locals.poll.multipleChoicesAt === null &&
+          request.body.optionsReferences.length !== 1) ||
+        (response.locals.poll.multipleChoicesAt !== null &&
+          request.body.optionsReferences.length === 0) ||
+        request.body.optionsReferences.some(
+          (option) =>
+            !response.locals.poll.options
+              .map((option) => option.reference)
+              .includes(option)
+        ) ||
+        application.database.get<{}>(
+          sql`
+            SELECT TRUE
+            FROM "messagePollVotes"
+            WHERE
+              "messagePollOption" IN ${response.locals.poll.options.map(
+                (option) => option.id
+              )} AND
+              "enrollment" = ${response.locals.enrollment.id}
+          `
+        ) !== undefined
+      )
+        return next("Validation");
+
+      for (const optionReference of request.body.optionsReferences)
+        application.database.run(
+          sql`
+            INSERT INTO "messagePollVotes" (
+              "createdAt",
+              "messagePollOption",
+              "enrollment"
+            )
+            VALUES (
+              ${new Date().toISOString()},
+              ${
+                response.locals.poll.options.find(
+                  (option) => option.reference === optionReference
+                )!.id
+              },
+              ${response.locals.enrollment.id}
+            )
+          `
+        );
+
+      response.redirect(
+        303,
+        `https://${application.configuration.hostname}/${
+          typeof request.query.redirect === "string"
+            ? request.query.redirect
+            : ""
+        }`
+      );
+    }
+  );
 
   application.web.post<
     { courseReference?: string },

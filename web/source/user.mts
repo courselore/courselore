@@ -1078,6 +1078,7 @@ export default async (application: Application): Promise<void> => {
                       tippyProps: {
                         theme: "rose",
                         trigger: "manual",
+                        content: "",
                       },
                     });
 

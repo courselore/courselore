@@ -7,9 +7,15 @@
 - Features
   - Vote.
     - Server to receive vote.
+    - Take closing in account.
+      - Presentation.
+      - Server.
+    - Demonstration data
   - Show results.
   - Edit poll.
     - Close a poll.
+  - Remove your vote.
+  - Database indices
 - Visualization
   - Explain who can see what.
   - Students may see aggregate results.
