@@ -415,7 +415,15 @@ export default async (application: Application): Promise<void> => {
           html`<summary>See More</summary>`
         );
 
-    if (response.locals.course !== undefined) {
+    if (response.locals.course === undefined) {
+      for (const element of contentElement.querySelectorAll("courselore-poll"))
+        if (
+          element.parentElement?.matches?.("p") &&
+          element.parentElement.childNodes.length === 1
+        )
+          element.parentElement.remove();
+        else element.remove();
+    } else {
       const requestCourseEnrolled = request as express.Request<
         {},
         any,
