@@ -763,17 +763,22 @@ export default async (application: Application): Promise<void> => {
           reference: string;
           multipleChoicesAt: string | null;
           closesAt: string | null;
+          votesCount: number;
         }>(
           sql`
             SELECT
-              "id",
-              "reference",
-              "multipleChoicesAt",
-              "closesAt"
+              "messagePolls"."id",
+              "messagePolls"."reference",
+              "messagePolls"."multipleChoicesAt",
+              "messagePolls"."closesAt",
+              COUNT("messagePollVotes"."id") AS "votesCount"
             FROM "messagePolls"
+            LEFT JOIN "messagePollOptions" ON "messagePolls"."id" = "messagePollOptions"."messagePoll"
+            LEFT JOIN "messagePollVotes" ON "messagePollOptions"."id" = "messagePollVotes"."messagePollOption"
             WHERE
-              "course" = ${responseCourseEnrolled.locals.course.id} AND
-              "reference" = ${pollReference}
+              "messagePolls"."course" = ${responseCourseEnrolled.locals.course.id} AND
+              "messagePolls"."reference" = ${pollReference}
+            GROUP BY "messagePolls"."id"
           `
         );
         if (poll === undefined) {
@@ -822,13 +827,17 @@ export default async (application: Application): Promise<void> => {
                 { addQueryPrefix: true }
               )}"
               novalidate
-              class="poll--vote"
+              class="poll"
             >
               <ul>
                 $${options.map(
                   (option) => html`
                     <li>
-                      <label>
+                      <label
+                        css="${css`
+                          cursor: pointer;
+                        `}"
+                      >
                         <input
                           type="${poll.multipleChoicesAt === null
                             ? "radio"
@@ -864,23 +873,71 @@ export default async (application: Application): Promise<void> => {
         }
 
         element.outerHTML = html`
-          <ul class="poll--results">
-            $${options.map(
-              (option) =>
-                html`
-                  <li>
-                    ${String(option.votesCount)}
-                    $${application.web.locals.partials.content({
-                      request,
-                      response,
-                      id: `${id}--${option.reference}`,
-                      contentPreprocessed: option.contentPreprocessed,
-                      search,
-                    }).contentProcessed}
-                  </li>
-                `
-            )}
-          </ul>
+          <div class="poll">
+            <ul>
+              $${options.map(
+                (option) =>
+                  html`
+                    <li
+                      css="${css`
+                        list-style: none;
+                      `}"
+                    >
+                      <div
+                        class="strong"
+                        css="${css`
+                          position: absolute;
+                          margin-left: var(--space---5);
+                          margin-top: var(--space--1);
+                          transform: translateX(-50%);
+                        `}"
+                      >
+                        ${String(option.votesCount)}
+                      </div>
+                      <div
+                        css="${css`
+                          display: grid;
+                          & > * {
+                            grid-area: 1 / 1;
+                          }
+                        `}"
+                      >
+                        <div
+                          style="
+                            --width: ${String(
+                            (option.votesCount / Math.max(poll.votesCount, 1)) *
+                              100
+                          )}%;
+                          "
+                          css="${css`
+                            background-color: var(--color--gray--medium--200);
+                            @media (prefers-color-scheme: dark) {
+                              background-color: var(--color--gray--medium--700);
+                            }
+                            width: var(--width);
+                            border-radius: var(--border-radius--md);
+                          `}"
+                        ></div>
+                        <div
+                          css="${css`
+                            padding: var(--space--1) var(--space--2);
+                          `}"
+                        >
+                          $${application.web.locals.partials.content({
+                            request,
+                            response,
+                            id: `${id}--${option.reference}`,
+                            contentPreprocessed: option.contentPreprocessed,
+                            search,
+                          }).contentProcessed}
+                        </div>
+                      </div>
+                    </li>
+                  `
+              )}
+            </ul>
+            <div>ACTIONS</div>
+          </div>
         `;
       }
     }

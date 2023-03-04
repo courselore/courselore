@@ -1231,8 +1231,7 @@ export default async (application: Application): Promise<void> => {
                 }
 
                 video,
-                .poll--vote,
-                .poll--results,
+                .poll,
                 ul,
                 ol,
                 blockquote,
@@ -1259,13 +1258,9 @@ export default async (application: Application): Promise<void> => {
                   display: block;
                 }
 
-                .poll--vote {
+                .poll {
                   display: flex;
                   flex-direction: column;
-
-                  & > ul > li > label {
-                    cursor: pointer;
-                  }
                 }
 
                 ul {
@@ -1468,12 +1463,8 @@ export default async (application: Application): Promise<void> => {
                   }
                 }
 
-                .poll--vote > ul > li > label > input[type="radio"]:first-child,
-                .poll--vote
-                  > ul
-                  > li
-                  > label
-                  > input[type="checkbox"]:first-child,
+                li > label > input[type="radio"]:first-child,
+                li > label > input[type="checkbox"]:first-child,
                 li > input[type="checkbox"]:first-child {
                   position: absolute;
                   margin-left: var(--space---5);
