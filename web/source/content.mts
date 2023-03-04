@@ -790,6 +790,7 @@ export default async (application: Application): Promise<void> => {
           id: number;
           reference: string;
           contentPreprocessed: string;
+          enrollmentVote: number | null;
           votesCount: number;
         }>(
           sql`
@@ -797,9 +798,13 @@ export default async (application: Application): Promise<void> => {
               "messagePollOptions"."id",
               "messagePollOptions"."reference",
               "messagePollOptions"."contentPreprocessed",
-              COUNT("messagePollVotes"."id") AS "votesCount"
+              "messagePollVotesEnrollmentVote"."id" AS "enrollmentVote",
+              COUNT("messagePollVotesCount"."id") AS "votesCount"
             FROM "messagePollOptions"
-            LEFT JOIN "messagePollVotes" ON "messagePollOptions"."id" = "messagePollVotes"."messagePollOption"
+            LEFT JOIN "messagePollVotes" AS "messagePollVotesEnrollmentVote" ON
+              "messagePollOptions"."id" = "messagePollVotesEnrollmentVote"."messagePollOption" AND
+              "messagePollVotesEnrollmentVote"."enrollment" = ${responseCourseEnrolled.locals.enrollment.id}
+            LEFT JOIN "messagePollVotes" AS "messagePollVotesCount" ON "messagePollOptions"."id" = "messagePollVotesCount"."messagePollOption"
             WHERE "messagePollOptions"."messagePoll" = ${poll.id}
             GROUP BY "messagePollOptions"."id"
             ORDER BY "messagePollOptions"."order" ASC
