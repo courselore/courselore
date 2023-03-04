@@ -4,6 +4,7 @@
 <summary>2023-03-04</summary>
 
 - Drag with three fingers worked for me 🤔
+- A vote should trigger a Live-Update?
 
 </details>
 

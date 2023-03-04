@@ -465,33 +465,64 @@ export default async (application: Application): Promise<void> => {
           `
         )!;
 
+        const pollSingleChoiceOptions: { id: number }[] = [];
         for (const order of new Array(lodash.random(2, 6)).keys()) {
           const contentSource = casual.sentences(lodash.random(1, 2));
+          pollSingleChoiceOptions.push(
+            application.database.get<{ id: number }>(
+              sql`
+                SELECT * FROM "messagePollOptions" WHERE "id" = ${
+                  application.database.run(
+                    sql`
+                      INSERT INTO "messagePollOptions" (
+                        "createdAt",
+                        "messagePoll",
+                        "reference",
+                        "order",
+                        "contentSource",
+                        "contentPreprocessed"
+                      )
+                      VALUES (
+                        ${conversationCreatedAts[0]},
+                        ${pollSingleChoice.id},
+                        ${cryptoRandomString({ length: 20, type: "numeric" })},
+                        ${order},
+                        ${contentSource},
+                        ${
+                          application.web.locals.partials.contentPreprocessed(
+                            contentSource
+                          ).contentPreprocessed
+                        }
+                      )
+                    `
+                  ).lastInsertRowid
+                }
+              `
+            )!
+          );
+        }
+
+        for (const enrollment of lodash.sampleSize(
+          enrollments,
+          lodash.random(0, 50)
+        ))
           application.database.run(
             sql`
-              INSERT INTO "messagePollOptions" (
+              INSERT INTO "messagePollVotes" (
                 "createdAt",
-                "messagePoll",
-                "reference",
-                "order",
-                "contentSource",
-                "contentPreprocessed"
+                "messagePollOption",
+                "enrollment"
               )
               VALUES (
-                ${conversationCreatedAts[0]},
-                ${pollSingleChoice.id},
-                ${cryptoRandomString({ length: 20, type: "numeric" })},
-                ${order},
-                ${contentSource},
-                ${
-                  application.web.locals.partials.contentPreprocessed(
-                    contentSource
-                  ).contentPreprocessed
-                }
+                ${new Date(
+                  new Date(conversationCreatedAts[0]).getTime() +
+                    lodash.random(60 * 1000, 12 * 60 * 60 * 1000)
+                ).toISOString()},
+                ${lodash.sample(pollSingleChoiceOptions)!.id},
+                ${enrollment.id}
               )
             `
           );
-        }
 
         const pollMultipleChoice = application.database.get<{
           id: number;
@@ -526,33 +557,68 @@ export default async (application: Application): Promise<void> => {
           `
         )!;
 
+        const pollMultipleChoiceOptions: { id: number }[] = [];
         for (const order of new Array(lodash.random(2, 6)).keys()) {
           const contentSource = casual.sentences(lodash.random(1, 2));
-          application.database.run(
-            sql`
-              INSERT INTO "messagePollOptions" (
-                "createdAt",
-                "messagePoll",
-                "reference",
-                "order",
-                "contentSource",
-                "contentPreprocessed"
-              )
-              VALUES (
-                ${conversationCreatedAts[0]},
-                ${pollMultipleChoice.id},
-                ${cryptoRandomString({ length: 20, type: "numeric" })},
-                ${order},
-                ${contentSource},
-                ${
-                  application.web.locals.partials.contentPreprocessed(
-                    contentSource
-                  ).contentPreprocessed
+          pollMultipleChoiceOptions.push(
+            application.database.get<{ id: number }>(
+              sql`
+                SELECT * FROM "messagePollOptions" WHERE "id" = ${
+                  application.database.run(
+                    sql`
+                      INSERT INTO "messagePollOptions" (
+                        "createdAt",
+                        "messagePoll",
+                        "reference",
+                        "order",
+                        "contentSource",
+                        "contentPreprocessed"
+                      )
+                      VALUES (
+                        ${conversationCreatedAts[0]},
+                        ${pollMultipleChoice.id},
+                        ${cryptoRandomString({ length: 20, type: "numeric" })},
+                        ${order},
+                        ${contentSource},
+                        ${
+                          application.web.locals.partials.contentPreprocessed(
+                            contentSource
+                          ).contentPreprocessed
+                        }
+                      )
+                    `
+                  ).lastInsertRowid
                 }
-              )
-            `
+              `
+            )!
           );
         }
+
+        for (const enrollment of lodash.sampleSize(
+          enrollments,
+          lodash.random(0, 50)
+        ))
+          for (const option of lodash.sampleSize(
+            pollMultipleChoiceOptions,
+            pollMultipleChoiceOptions.length
+          ))
+            application.database.run(
+              sql`
+                INSERT INTO "messagePollVotes" (
+                  "createdAt",
+                  "messagePollOption",
+                  "enrollment"
+                )
+                VALUES (
+                  ${new Date(
+                    new Date(conversationCreatedAts[0]).getTime() +
+                      lodash.random(60 * 1000, 12 * 60 * 60 * 1000)
+                  ).toISOString()},
+                  ${option.id},
+                  ${enrollment.id}
+                )
+              `
+            );
 
         const exampleOfAllFeaturesInRichTextMessages = `
 **Edit to see source**

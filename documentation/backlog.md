@@ -10,6 +10,7 @@
     - Take closing in account.
       - Presentation.
       - Server.
+    - A vote should trigger a Live-Update?
   - Edit poll.
     - Close a poll.
   - Database indices
