@@ -1258,11 +1258,6 @@ export default async (application: Application): Promise<void> => {
                   display: block;
                 }
 
-                .poll {
-                  display: flex;
-                  flex-direction: column;
-                }
-
                 ul {
                   padding-left: var(--space--8);
                   & > li {
@@ -1463,8 +1458,6 @@ export default async (application: Application): Promise<void> => {
                   }
                 }
 
-                li > label > input[type="radio"]:first-child,
-                li > label > input[type="checkbox"]:first-child,
                 li > input[type="checkbox"]:first-child {
                   position: absolute;
                   margin-left: var(--space---5);

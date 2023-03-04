@@ -828,36 +828,42 @@ export default async (application: Application): Promise<void> => {
               )}"
               novalidate
               class="poll"
+              css="${css`
+                display: flex;
+                flex-direction: column;
+                gap: var(--space--2);
+              `}"
             >
-              <ul>
-                $${options.map(
-                  (option) => html`
-                    <li>
-                      <label
-                        css="${css`
-                          cursor: pointer;
-                        `}"
-                      >
-                        <input
-                          type="${poll.multipleChoicesAt === null
-                            ? "radio"
-                            : "checkbox"}"
-                          name="optionsReferences[]"
-                          value="${option.reference}"
-                          required
-                        />
-                        $${application.web.locals.partials.content({
-                          request,
-                          response,
-                          id: `${id}--${option.reference}`,
-                          contentPreprocessed: option.contentPreprocessed,
-                          search,
-                        }).contentProcessed}
-                      </label>
-                    </li>
-                  `
-                )}
-              </ul>
+              $${options.map(
+                (option) => html`
+                  <label
+                    css="${css`
+                      display: flex;
+                      gap: var(--space--2);
+                      cursor: pointer;
+                    `}"
+                  >
+                    <input
+                      type="${poll.multipleChoicesAt === null
+                        ? "radio"
+                        : "checkbox"}"
+                      name="optionsReferences[]"
+                      value="${option.reference}"
+                      required
+                      css="${css`
+                        margin-top: var(--space--0-5);
+                      `}"
+                    />
+                    $${application.web.locals.partials.content({
+                      request,
+                      response,
+                      id: `${id}--${option.reference}`,
+                      contentPreprocessed: option.contentPreprocessed,
+                      search,
+                    }).contentProcessed}
+                  </label>
+                `
+              )}
 
               <div>
                 <button
@@ -873,70 +879,97 @@ export default async (application: Application): Promise<void> => {
         }
 
         element.outerHTML = html`
-          <div class="poll">
-            <ul>
-              $${options.map(
-                (option) =>
-                  html`
-                    <li
+          <div
+            class="poll"
+            css="${css`
+              display: flex;
+              flex-direction: column;
+              gap: var(--space--2);
+            `}"
+          >
+            $${options.map(
+              (option) =>
+                html`
+                  <div
+                    css="${css`
+                      display: flex;
+                      gap: var(--space--2);
+                    `}"
+                  >
+                    <div
+                      class="strong"
                       css="${css`
-                        list-style: none;
+                        width: var(--space--8);
+                        margin-top: var(--space--1);
+                      `}"
+                      javascript="${javascript`
+                        leafac.setTippy({
+                          event,
+                          element: this,
+                          tippyProps: {
+                            touch: false,
+                            content: ${`${option.votesCount} vote${
+                              option.votesCount === 1 ? "" : "s"
+                            }`},  
+                          },
+                        });
+                      `}"
+                    >
+                      ${option.votesCount < 1000
+                        ? String(option.votesCount)
+                        : "99+"}
+                    </div>
+                    <div
+                      css="${css`
+                        flex: 1;
+                        display: grid;
+                        & > * {
+                          grid-area: 1 / 1;
+                        }
                       `}"
                     >
                       <div
-                        class="strong"
+                        style="
+                            --width: ${String(
+                          (option.votesCount / Math.max(poll.votesCount, 1)) *
+                            100
+                        )}%;
+                          "
                         css="${css`
-                          position: absolute;
-                          margin-left: var(--space---5);
-                          margin-top: var(--space--1);
-                          transform: translateX(-50%);
+                          background-color: var(--color--gray--medium--200);
+                          @media (prefers-color-scheme: dark) {
+                            background-color: var(--color--gray--medium--700);
+                          }
+                          width: var(--width);
+                          border-radius: var(--border-radius--md);
                         `}"
-                      >
-                        ${String(option.votesCount)}
-                      </div>
+                      ></div>
                       <div
                         css="${css`
-                          display: grid;
-                          & > * {
-                            grid-area: 1 / 1;
-                          }
+                          padding: var(--space--1) var(--space--2);
                         `}"
                       >
-                        <div
-                          style="
-                            --width: ${String(
-                            (option.votesCount / Math.max(poll.votesCount, 1)) *
-                              100
-                          )}%;
-                          "
-                          css="${css`
-                            background-color: var(--color--gray--medium--200);
-                            @media (prefers-color-scheme: dark) {
-                              background-color: var(--color--gray--medium--700);
-                            }
-                            width: var(--width);
-                            border-radius: var(--border-radius--md);
-                          `}"
-                        ></div>
-                        <div
-                          css="${css`
-                            padding: var(--space--1) var(--space--2);
-                          `}"
-                        >
-                          $${application.web.locals.partials.content({
-                            request,
-                            response,
-                            id: `${id}--${option.reference}`,
-                            contentPreprocessed: option.contentPreprocessed,
-                            search,
-                          }).contentProcessed}
-                        </div>
+                        $${application.web.locals.partials.content({
+                          request,
+                          response,
+                          id: `${id}--${option.reference}`,
+                          contentPreprocessed: option.contentPreprocessed,
+                          search,
+                        }).contentProcessed}
                       </div>
-                    </li>
-                  `
-              )}
-            </ul>
-            <div>ACTIONS</div>
+                    </div>
+                  </div>
+                `
+            )}
+
+            <div>
+              <button
+                class="button button--full-width-on-small-screen button--blue"
+              >
+                <i class="bi bi-card-checklist"></i>
+                ACTIONS
+              </button>
+            </div>
           </div>
         `;
       }
