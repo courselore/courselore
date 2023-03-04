@@ -782,66 +782,105 @@ export default async (application: Application): Promise<void> => {
         }
 
         const options = application.database.all<{
+          id: number;
           reference: string;
           contentPreprocessed: string;
+          votesCount: number;
         }>(
           sql`
             SELECT
-              "reference",
-              "contentPreprocessed"
+              "messagePollOptions"."id",
+              "messagePollOptions"."reference",
+              "messagePollOptions"."contentPreprocessed",
+              COUNT("messagePollVotes"."id") AS "votesCount"
             FROM "messagePollOptions"
-            WHERE "messagePoll" = ${poll.id}
-            ORDER BY "order" ASC
+            LEFT JOIN "messagePollVotes" ON "messagePollOptions"."id" = "messagePollVotes"."messagePollOption"
+            WHERE "messagePollOptions"."messagePoll" = ${poll.id}
+            GROUP BY "messagePollOptions"."id"
+            ORDER BY "messagePollOptions"."order" ASC
           `
         );
 
+        if (
+          application.database.get<{}>(
+            sql`
+              SELECT TRUE
+              FROM "messagePollVotes"
+              WHERE
+              "messagePollOption" IN ${options.map((option) => option.id)} AND
+              "enrollment" = ${responseCourseEnrolled.locals.enrollment.id}
+            `
+          ) === undefined
+        ) {
+          element.outerHTML = html`
+            <form
+              method="POST"
+              action="https://${application.configuration
+                .hostname}/courses/${responseCourseEnrolled.locals.course
+                .reference}/polls/${poll.reference}/votes${qs.stringify(
+                { redirect: request.originalUrl.slice(1) },
+                { addQueryPrefix: true }
+              )}"
+              novalidate
+              class="poll--vote"
+            >
+              <ul>
+                $${options.map(
+                  (option) => html`
+                    <li>
+                      <label>
+                        <input
+                          type="${poll.multipleChoicesAt === null
+                            ? "radio"
+                            : "checkbox"}"
+                          name="optionsReferences[]"
+                          value="${option.reference}"
+                          required
+                        />
+                        $${application.web.locals.partials.content({
+                          request,
+                          response,
+                          id: `${id}--${option.reference}`,
+                          contentPreprocessed: option.contentPreprocessed,
+                          search,
+                        }).contentProcessed}
+                      </label>
+                    </li>
+                  `
+                )}
+              </ul>
+
+              <div>
+                <button
+                  class="button button--full-width-on-small-screen button--blue"
+                >
+                  <i class="bi bi-card-checklist"></i>
+                  Vote
+                </button>
+              </div>
+            </form>
+          `;
+          continue;
+        }
+
         element.outerHTML = html`
-          <form
-            method="POST"
-            action="https://${application.configuration
-              .hostname}/courses/${responseCourseEnrolled.locals.course
-              .reference}/polls/${poll.reference}/votes${qs.stringify(
-              { redirect: request.originalUrl.slice(1) },
-              { addQueryPrefix: true }
-            )}"
-            novalidate
-            class="poll--vote"
-          >
-            <ul>
-              $${options.map(
-                (option) => html`
+          <ul class="poll--results">
+            $${options.map(
+              (option) =>
+                html`
                   <li>
-                    <label>
-                      <input
-                        type="${poll.multipleChoicesAt === null
-                          ? "radio"
-                          : "checkbox"}"
-                        name="optionsReferences[]"
-                        value="${option.reference}"
-                        required
-                      />
-                      $${application.web.locals.partials.content({
-                        request,
-                        response,
-                        id: `${id}--${option.reference}`,
-                        contentPreprocessed: option.contentPreprocessed,
-                        search,
-                      }).contentProcessed}
-                    </label>
+                    ${String(option.votesCount)}
+                    $${application.web.locals.partials.content({
+                      request,
+                      response,
+                      id: `${id}--${option.reference}`,
+                      contentPreprocessed: option.contentPreprocessed,
+                      search,
+                    }).contentProcessed}
                   </li>
                 `
-              )}
-            </ul>
-
-            <div>
-              <button
-                class="button button--full-width-on-small-screen button--blue"
-              >
-                <i class="bi bi-card-checklist"></i>
-                Vote
-              </button>
-            </div>
-          </form>
+            )}
+          </ul>
         `;
       }
     }

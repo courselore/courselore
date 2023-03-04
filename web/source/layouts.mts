@@ -1232,6 +1232,7 @@ export default async (application: Application): Promise<void> => {
 
                 video,
                 .poll--vote,
+                .poll--results,
                 ul,
                 ol,
                 blockquote,
