@@ -892,8 +892,8 @@ export default async (application: Application): Promise<void> => {
                         background-color: var(--color--gray--medium--700);
                       }
                       width: var(--width);
-                      border-radius: var(--border-radius--md);
                       height: var(--line-height--sm);
+                      border-radius: var(--border-radius--md);
                     `}"
                   ></div>
                 </div>

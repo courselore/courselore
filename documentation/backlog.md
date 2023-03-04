@@ -5,12 +5,11 @@
 **Poll**
 
 - Features
-  - Show results.
   - Vote.
+    - Demonstration data
     - Take closing in account.
       - Presentation.
       - Server.
-    - Demonstration data
   - Edit poll.
     - Close a poll.
   - Database indices
@@ -20,11 +19,11 @@
   - Staff may see individual votes.
   - People who may edit the poll (staff & author) may see votes without having voted.
 - Edge cases
-  - “Preview” of polls could create a `<form>` within a `<form>` situation
+  - “Preview” of polls creates a `<form>` within a `<form>` situation
   - User biography with a mention to themselves (should avoid infinite loop by preventing decoration)
   - User biographies with polls
   - What should happen when you’re editing a poll and try to submit the message?
-  - An option whose content includes a poll in an of itself
+  - Poll within poll: An option whose content includes a poll in an of itself shouldn’t cause an infinite loop
   - Reusing a poll in a new course doesn’t work out of the box; we need some logic to duplicate the poll.
   - Include text material in full-text search.
 - Later
@@ -32,8 +31,7 @@
   - Finer control over who can see what results
   - Add header to `box` layout showing your face if you’re logged in.
   - Use `node --test` in other projects: look for uses of the `TEST` environment variable
-  - Ranking
-    - https://civs1.civs.us
+  - Ranking: https://civs1.civs.us
 
 ```
         const votes = application.database
