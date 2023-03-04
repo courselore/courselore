@@ -1455,10 +1455,14 @@ export default async (application: Application): Promise<void> => {
                     @media (prefers-color-scheme: dark) {
                       color: var(--color--gray--medium--200);
                     }
+                    transition-property: var(--transition-property--transform);
+                    transition-duration: var(--transition-duration--150);
+                    transition-timing-function: var(
+                      --transition-timing-function--in-out
+                    );
                   }
-
                   &:not(:checked)::before {
-                    visibility: hidden;
+                    transform: scale(var(--scale--0));
                   }
                 }
 
