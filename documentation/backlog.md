@@ -9,6 +9,8 @@
     - Take closing in account.
       - Presentation.
       - Server.
+        - Voting.
+        - Remove vote.
     - A vote should trigger a Live-Update?
   - Edit poll.
     - Close a poll.
