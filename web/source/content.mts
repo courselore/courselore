@@ -922,6 +922,26 @@ export default async (application: Application): Promise<void> => {
                   >
                     $${optionHTML}
                   </div>
+                  <div
+                    key="poll--option--votes/${option.reference}"
+                    hidden
+                    class="secondary"
+                    css="${css`
+                      font-size: var(--font-size--xs);
+                      line-height: var(--line-height--xs);
+                      padding-bottom: var(--space--2);
+                      border-bottom: var(--border-width--1) solid
+                        var(--color--gray--medium--300);
+                      @media (prefers-color-scheme: dark) {
+                        border-color: var(--color--gray--medium--600);
+                      }
+                      margin-bottom: var(--space--2);
+                      display: flex;
+                      column-gap: var(--space--4);
+                      row-gap: var(--space--1);
+                      flex-wrap: wrap;
+                    `}"
+                  ></div>
                 `
               : html`
                   <label
@@ -964,10 +984,61 @@ export default async (application: Application): Promise<void> => {
                   $${responseCourseEnrolled.locals.enrollment.courseRole ===
                   "staff"
                     ? html`
-                        <div>
-                          <button class="button button--transparent">
+                        <div
+                          key="poll--actions--show-votes"
+                          css="${css`
+                            display: flex;
+                            gap: var(--space--2);
+                            align-items: center;
+                          `}"
+                        >
+                          <button
+                            class="button button--transparent"
+                            javascript="${javascript`
+                              this.onclick = async () => {
+                                const poll = this.closest('[key="poll"]');
+                                const loading = poll.querySelector('[key="poll--actions--show-votes--loading"]');
+                                loading.hidden = false;
+                                const partial = leafac.stringToElement(await (await fetch(${`https://${application.configuration.hostname}/courses/${responseCourseEnrolled.locals.course.reference}/polls/${poll.reference}/votes`}, { cache: "no-store" })).text());
+                                for (const partialElement of partial.querySelectorAll('[key^="poll--option--votes/"]')) {
+                                  const element = poll.querySelector('[key="' + partialElement.getAttribute("key") + '"]');
+                                  leafac.morph(element, partialElement);
+                                  leafac.execute({ element });
+                                  element.hidden = false;
+                                }
+                                loading.hidden = true;
+                                poll.querySelector('[key="poll--actions--show-votes"]').hidden = true;
+                                poll.querySelector('[key="poll--actions--hide-votes"]').hidden = false;
+                              };
+                            `}"
+                          >
                             <i class="bi bi-eye"></i>
-                            See Votes
+                            Show Votes
+                          </button>
+
+                          <div key="poll--actions--show-votes--loading" hidden>
+                            $${application.web.locals.partials.spinner({
+                              request,
+                              response,
+                            })}
+                          </div>
+                        </div>
+
+                        <div key="poll--actions--hide-votes" hidden>
+                          <button
+                            class="button button--transparent"
+                            javascript="${javascript`
+                              this.onclick = async () => {
+                                const poll = this.closest('[key="poll"]');
+                                for (const element of poll.querySelectorAll('[key^="poll--option--votes/"]'))
+                                  element.hidden = true;
+                                poll.querySelector('[key="poll--actions--show-votes"]').hidden = false;
+                                poll.querySelector('[key="poll--actions--hide-votes"]').hidden = true;
+                              };
+                            `}"
+                          >
+                            <i class="bi bi-eye-slash"></i>
+                            Hide Votes
                           </button>
                         </div>
                       `
@@ -987,6 +1058,7 @@ export default async (application: Application): Promise<void> => {
         element.outerHTML = voted
           ? html`
               <div
+                key="poll"
                 class="poll"
                 css="${css`
                   display: flex;
@@ -999,6 +1071,7 @@ export default async (application: Application): Promise<void> => {
             `
           : html`
               <form
+                key="poll"
                 method="POST"
                 action="https://${application.configuration
                   .hostname}/courses/${responseCourseEnrolled.locals.course
@@ -4547,88 +4620,101 @@ ${contentSource}</textarea
       )
         return next();
 
-      const votes = application.database
-        .all<{
-          messagePollOptionsId: number;
-          messagePollOptionsReference: string;
-          messagePollOptionsContentPreprocessed: string;
-          enrollmentId: number | null;
-          userId: number | null;
-          userLastSeenOnlineAt: string | null;
-          userReference: string;
-          userEmail: string | null;
-          userName: string | null;
-          userAvatar: string | null;
-          userAvatarlessBackgroundColors:
-            | Application["web"]["locals"]["helpers"]["userAvatarlessBackgroundColors"][number]
-            | null;
-          userBiographySource: string | null;
-          userBiographyPreprocessed: HTML | null;
-          enrollmentReference: string | null;
-          enrollmentCourseRole:
-            | Application["web"]["locals"]["helpers"]["courseRoles"][number]
-            | null;
-        }>(
-          sql`
-            SELECT
-              "messagePollOptions"."id" AS "messagePollOptionsId",
-              "messagePollOptions"."reference" AS "messagePollOptionsReference",
-              "messagePollOptions"."contentPreprocessed" AS "messagePollOptionsContentPreprocessed",
-              "enrollment"."id" AS "enrollmentId",
-              "user"."id" AS "userId",
-              "user"."lastSeenOnlineAt" AS "userLastSeenOnlineAt",
-              "user"."reference" AS "userReference",
-              "user"."email" AS "userEmail",
-              "user"."name" AS "userName",
-              "user"."avatar" AS "userAvatar",
-              "user"."avatarlessBackgroundColor" AS "userAvatarlessBackgroundColors",
-              "user"."biographySource" AS "userBiographySource",
-              "user"."biographyPreprocessed" AS "userBiographyPreprocessed",
-              "enrollment"."reference" AS "enrollmentReference",
-              "enrollment"."courseRole" AS "enrollmentCourseRole"
-            FROM "messagePollVotes"
-            JOIN "messagePollOptions" ON "messagePollVotes"."messagePollOption" IN ${response.locals.poll.options.map(
-              (option) => option.id
+      response.send(
+        application.web.locals.layouts.partial({
+          request,
+          response,
+          body: html`
+            $${response.locals.poll.options.map(
+              (option) => html`
+                <div key="poll--option--votes/${option.reference}">
+                  $${application.database
+                    .all<{
+                      enrollmentId: number | null;
+                      userId: number | null;
+                      userLastSeenOnlineAt: string | null;
+                      userReference: string;
+                      userEmail: string | null;
+                      userName: string | null;
+                      userAvatar: string | null;
+                      userAvatarlessBackgroundColors:
+                        | Application["web"]["locals"]["helpers"]["userAvatarlessBackgroundColors"][number]
+                        | null;
+                      userBiographySource: string | null;
+                      userBiographyPreprocessed: HTML | null;
+                      enrollmentReference: string | null;
+                      enrollmentCourseRole:
+                        | Application["web"]["locals"]["helpers"]["courseRoles"][number]
+                        | null;
+                    }>(
+                      sql`
+                        SELECT
+                          "enrollments"."id" AS "enrollmentId",
+                          "users"."id" AS "userId",
+                          "users"."lastSeenOnlineAt" AS "userLastSeenOnlineAt",
+                          "users"."reference" AS "userReference",
+                          "users"."email" AS "userEmail",
+                          "users"."name" AS "userName",
+                          "users"."avatar" AS "userAvatar",
+                          "users"."avatarlessBackgroundColor" AS "userAvatarlessBackgroundColors",
+                          "users"."biographySource" AS "userBiographySource",
+                          "users"."biographyPreprocessed" AS "userBiographyPreprocessed",
+                          "enrollments"."reference" AS "enrollmentReference",
+                          "enrollments"."courseRole" AS "enrollmentCourseRole"
+                        FROM "messagePollVotes"
+                        LEFT JOIN "enrollments" ON "messagePollVotes"."enrollment" = "enrollments"."id"
+                        LEFT JOIN "users" ON "enrollments"."user" = "users"."id"
+                        WHERE "messagePollVotes"."messagePollOption" = ${option.id}
+                        ORDER BY "messagePollVotes"."createdAt" ASC
+                      `
+                    )
+                    .map((vote) => ({
+                      enrollment:
+                        vote.enrollmentId !== null &&
+                        vote.userId !== null &&
+                        vote.userLastSeenOnlineAt !== null &&
+                        vote.userReference !== null &&
+                        vote.userEmail !== null &&
+                        vote.userName !== null &&
+                        vote.userAvatarlessBackgroundColors !== null &&
+                        vote.enrollmentReference !== null &&
+                        vote.enrollmentCourseRole !== null
+                          ? {
+                              id: vote.enrollmentId,
+                              user: {
+                                id: vote.userId,
+                                lastSeenOnlineAt: vote.userLastSeenOnlineAt,
+                                reference: vote.userReference,
+                                email: vote.userEmail,
+                                name: vote.userName,
+                                avatar: vote.userAvatar,
+                                avatarlessBackgroundColor:
+                                  vote.userAvatarlessBackgroundColors,
+                                biographySource: vote.userBiographySource,
+                                biographyPreprocessed:
+                                  vote.userBiographyPreprocessed,
+                              },
+                              reference: vote.enrollmentReference,
+                              courseRole: vote.enrollmentCourseRole,
+                            }
+                          : ("no-longer-enrolled" as const),
+                    }))
+                    .map(
+                      (vote) => html`
+                        $${application.web.locals.partials.user({
+                          request,
+                          response,
+                          enrollment: vote.enrollment,
+                          size: "xs",
+                        })}
+                      `
+                    )}
+                </div>
+              `
             )}
-            LEFT JOIN "enrollments" ON "messagePollVotes"."enrollment" = "enrollments"."id"
-            LEFT JOIN "users" ON "enrollment"."user" = "users"."id"
-          `
-        )
-        .map((vote) => ({
-          option: {
-            id: vote.messagePollOptionsId,
-            reference: vote.messagePollOptionsReference,
-            contentPreprocessed: vote.messagePollOptionsContentPreprocessed,
-          },
-          enrollment:
-            vote.enrollmentId !== null &&
-            vote.userId !== null &&
-            vote.userLastSeenOnlineAt !== null &&
-            vote.userReference !== null &&
-            vote.userEmail !== null &&
-            vote.userName !== null &&
-            vote.userAvatarlessBackgroundColors !== null &&
-            vote.enrollmentReference !== null &&
-            vote.enrollmentCourseRole !== null
-              ? {
-                  id: vote.enrollmentId,
-                  user: {
-                    id: vote.userId,
-                    lastSeenOnlineAt: vote.userLastSeenOnlineAt,
-                    reference: vote.userReference,
-                    email: vote.userEmail,
-                    name: vote.userName,
-                    avatar: vote.userAvatar,
-                    avatarlessBackgroundColor:
-                      vote.userAvatarlessBackgroundColors,
-                    biographySource: vote.userBiographySource,
-                    biographyPreprocessed: vote.userBiographyPreprocessed,
-                  },
-                  reference: vote.enrollmentReference,
-                  courseRole: vote.enrollmentCourseRole,
-                }
-              : ("no-longer-enrolled" as const),
-        }));
+          `,
+        })
+      );
     }
   );
 

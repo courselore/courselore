@@ -5,7 +5,6 @@
 **Poll**
 
 - Features
-  - Staff may see individual votes.
   - Vote.
     - Take closing in account.
       - Presentation.
@@ -28,12 +27,107 @@
   - Poll within poll: An option whose content includes a poll in an of itself shouldn’t cause an infinite loop
   - Reusing a poll in a new course doesn’t work out of the box; we need some logic to duplicate the poll.
   - Include text material in full-text search.
+  - Test on mobile
 - Later
   - Changes to the inputs related to creating a poll don’t need to submit message draft updates
   - Finer control over who can see what results
   - Add header to `box` layout showing your face if you’re logged in.
   - Use `node --test` in other projects: look for uses of the `TEST` environment variable
   - Ranking: https://civs1.civs.us
+
+```
+
+                  css="${css`
+                    display: flex;
+                    flex-wrap: wrap;
+                    column-gap: var(--space--2);
+                    row-gap: var(--space--0-5);
+                  `}"
+
+
+const votes = application.database
+        .all<{
+          messagePollOptionsId: number;
+          messagePollOptionsReference: string;
+          messagePollOptionsContentPreprocessed: string;
+          enrollmentId: number | null;
+          userId: number | null;
+          userLastSeenOnlineAt: string | null;
+          userReference: string;
+          userEmail: string | null;
+          userName: string | null;
+          userAvatar: string | null;
+          userAvatarlessBackgroundColors:
+            | Application["web"]["locals"]["helpers"]["userAvatarlessBackgroundColors"][number]
+            | null;
+          userBiographySource: string | null;
+          userBiographyPreprocessed: HTML | null;
+          enrollmentReference: string | null;
+          enrollmentCourseRole:
+            | Application["web"]["locals"]["helpers"]["courseRoles"][number]
+            | null;
+        }>(
+          sql`
+            SELECT
+              "messagePollOptions"."id" AS "messagePollOptionsId",
+              "messagePollOptions"."reference" AS "messagePollOptionsReference",
+              "messagePollOptions"."contentPreprocessed" AS "messagePollOptionsContentPreprocessed",
+              "enrollment"."id" AS "enrollmentId",
+              "user"."id" AS "userId",
+              "user"."lastSeenOnlineAt" AS "userLastSeenOnlineAt",
+              "user"."reference" AS "userReference",
+              "user"."email" AS "userEmail",
+              "user"."name" AS "userName",
+              "user"."avatar" AS "userAvatar",
+              "user"."avatarlessBackgroundColor" AS "userAvatarlessBackgroundColors",
+              "user"."biographySource" AS "userBiographySource",
+              "user"."biographyPreprocessed" AS "userBiographyPreprocessed",
+              "enrollment"."reference" AS "enrollmentReference",
+              "enrollment"."courseRole" AS "enrollmentCourseRole"
+            FROM "messagePollVotes"
+            JOIN "messagePollOptions" ON "messagePollVotes"."messagePollOption" IN ${response.locals.poll.options.map(
+              (option) => option.id
+            )}
+            LEFT JOIN "enrollments" ON "messagePollVotes"."enrollment" = "enrollments"."id"
+            LEFT JOIN "users" ON "enrollment"."user" = "users"."id"
+          `
+        )
+        .map((vote) => ({
+          option: {
+            id: vote.messagePollOptionsId,
+            reference: vote.messagePollOptionsReference,
+            contentPreprocessed: vote.messagePollOptionsContentPreprocessed,
+          },
+          enrollment:
+            vote.enrollmentId !== null &&
+            vote.userId !== null &&
+            vote.userLastSeenOnlineAt !== null &&
+            vote.userReference !== null &&
+            vote.userEmail !== null &&
+            vote.userName !== null &&
+            vote.userAvatarlessBackgroundColors !== null &&
+            vote.enrollmentReference !== null &&
+            vote.enrollmentCourseRole !== null
+              ? {
+                  id: vote.enrollmentId,
+                  user: {
+                    id: vote.userId,
+                    lastSeenOnlineAt: vote.userLastSeenOnlineAt,
+                    reference: vote.userReference,
+                    email: vote.userEmail,
+                    name: vote.userName,
+                    avatar: vote.userAvatar,
+                    avatarlessBackgroundColor:
+                      vote.userAvatarlessBackgroundColors,
+                    biographySource: vote.userBiographySource,
+                    biographyPreprocessed: vote.userBiographyPreprocessed,
+                  },
+                  reference: vote.enrollmentReference,
+                  courseRole: vote.enrollmentCourseRole,
+                }
+              : ("no-longer-enrolled" as const),
+        }));
+```
 
 **DateTimePicker**
 
