@@ -887,7 +887,11 @@ export default async (application: Application): Promise<void> => {
                       : "0"}%;
                     "
                     css="${css`
-                      background: linear-gradient(to right, transparent, var(--color--gray--medium--200));
+                      background: linear-gradient(
+                        to right,
+                        transparent,
+                        var(--color--gray--medium--200)
+                      );
                       @media (prefers-color-scheme: dark) {
                         background-color: var(--color--gray--medium--700);
                       }
@@ -932,7 +936,14 @@ export default async (application: Application): Promise<void> => {
                 `;
           })}
 
-          <div>
+          <div
+            css="${css`
+              display: flex;
+              column-gap: var(--space--4);
+              row-gap: var(--space--2);
+              flex-wrap: wrap;
+            `}"
+          >
             $${voted
               ? html`
                   <form
@@ -944,21 +955,31 @@ export default async (application: Application): Promise<void> => {
                       { addQueryPrefix: true }
                     )}"
                   >
-                    <button
-                      class="button button--full-width-on-small-screen button--rose"
-                    >
+                    <button class="button button--rose">
                       <i class="bi bi-trash-fill"></i>
                       Remove Vote
                     </button>
                   </form>
+
+                  $${responseCourseEnrolled.locals.enrollment.courseRole ===
+                  "staff"
+                    ? html`
+                        <div>
+                          <button class="button button--transparent">
+                            <i class="bi bi-eye"></i>
+                            See Votes
+                          </button>
+                        </div>
+                      `
+                    : html``}
                 `
               : html`
-                  <button
-                    class="button button--full-width-on-small-screen button--blue"
-                  >
-                    <i class="bi bi-card-checklist"></i>
-                    Vote
-                  </button>
+                  <div>
+                    <button class="button button--blue">
+                      <i class="bi bi-card-checklist"></i>
+                      Vote
+                    </button>
+                  </div>
                 `}
           </div>
         `;

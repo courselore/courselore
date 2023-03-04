@@ -5,6 +5,7 @@
 **Poll**
 
 - Features
+  - Staff may see individual votes.
   - Vote.
     - Take closing in account.
       - Presentation.
@@ -18,7 +19,6 @@
 - Visualization
   - Explain who can see what.
   - Students may see aggregate results.
-  - Staff may see individual votes.
   - People who may edit the poll (staff & author) may see votes without having voted.
 - Edge cases
   - “Preview” of polls creates a `<form>` within a `<form>` situation
