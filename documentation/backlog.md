@@ -6,7 +6,6 @@
 
 - Features
   - Vote.
-    - Demonstration data
     - Take closing in account.
       - Presentation.
       - Server.
