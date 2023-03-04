@@ -811,96 +811,44 @@ export default async (application: Application): Promise<void> => {
           `
         );
 
-        if (
-          application.database.get<{}>(
-            sql`
-              SELECT TRUE
-              FROM "messagePollVotes"
-              WHERE
-              "messagePollOption" IN ${options.map((option) => option.id)} AND
-              "enrollment" = ${responseCourseEnrolled.locals.enrollment.id}
-            `
-          ) === undefined
-        ) {
-          element.outerHTML = html`
-            <form
-              method="POST"
-              action="https://${application.configuration
-                .hostname}/courses/${responseCourseEnrolled.locals.course
-                .reference}/polls/${poll.reference}/votes${qs.stringify(
-                { redirect: request.originalUrl.slice(1) },
-                { addQueryPrefix: true }
-              )}"
-              novalidate
-              class="poll"
-              css="${css`
-                display: flex;
-                flex-direction: column;
-                gap: var(--space--2);
-              `}"
-            >
-              $${options.map(
-                (option) => html`
-                  <label
-                    css="${css`
-                      display: flex;
-                      gap: var(--space--2);
-                      cursor: pointer;
-                    `}"
-                  >
-                    <input
-                      type="${poll.multipleChoicesAt === null
-                        ? "radio"
-                        : "checkbox"}"
-                      name="optionsReferences[]"
-                      value="${option.reference}"
-                      required
-                      css="${css`
-                        margin-top: var(--space--0-5);
-                      `}"
-                    />
-                    $${application.web.locals.partials.content({
-                      request,
-                      response,
-                      id: `${id}--${option.reference}`,
-                      contentPreprocessed: option.contentPreprocessed,
-                      search,
-                    }).contentProcessed}
-                  </label>
-                `
-              )}
+        const voted = options.some((option) => option.enrollmentVote !== null);
 
-              <div>
-                <button
-                  class="button button--full-width-on-small-screen button--blue"
-                >
-                  <i class="bi bi-card-checklist"></i>
-                  Vote
-                </button>
+        const pollHTML = html`
+          $${options.map((option) => {
+            const optionHTML = html`
+              <div
+                javascript="${javascript`
+                  if (${voted})
+                    leafac.setTippy({
+                      event,
+                      element: this,
+                      tippyProps: {
+                        touch: false,
+                        content: "Your Vote",  
+                      },
+                    });
+                `}"
+              >
+                <input
+                  type="${poll.multipleChoicesAt === null
+                    ? "radio"
+                    : "checkbox"}"
+                  name="optionsReferences[]"
+                  value="${option.reference}"
+                  required
+                  ${option.enrollmentVote ? html`checked` : html``}
+                  ${voted ? html`disabled` : html``}
+                  css="${poll.multipleChoicesAt === null
+                    ? css`
+                        position: relative;
+                        top: var(--space---0-5);
+                      `
+                    : css``}"
+                />
               </div>
-            </form>
-          `;
-          continue;
-        }
 
-        element.outerHTML = html`
-          <div
-            class="poll"
-            css="${css`
-              display: flex;
-              flex-direction: column;
-              gap: var(--space--2);
-            `}"
-          >
-            $${options.map(
-              (option) =>
-                html`
-                  <div
-                    css="${css`
-                      display: flex;
-                      gap: var(--space--2);
-                    `}"
-                  >
+              $${voted
+                ? html`
                     <div
                       class="strong"
                       css="${css`
@@ -925,59 +873,86 @@ export default async (application: Application): Promise<void> => {
                         ? String(option.votesCount)
                         : "99+"}
                     </div>
-                    <div
-                      css="${css`
-                        flex: 1;
-                        display: grid;
-                        & > * {
-                          grid-area: 1 / 1;
-                        }
-                      `}"
-                    >
-                      <div
-                        style="
-                            --width: ${String(
-                          (option.votesCount / Math.max(poll.votesCount, 1)) *
-                            100
-                        )}%;
-                          "
-                        css="${css`
-                          background-color: var(--color--gray--medium--200);
-                          @media (prefers-color-scheme: dark) {
-                            background-color: var(--color--gray--medium--700);
-                          }
-                          width: var(--width);
-                          border-radius: var(--border-radius--md);
-                        `}"
-                      ></div>
-                      <div
-                        css="${css`
-                          padding: var(--space--1) var(--space--2);
-                        `}"
-                      >
-                        $${application.web.locals.partials.content({
-                          request,
-                          response,
-                          id: `${id}--${option.reference}`,
-                          contentPreprocessed: option.contentPreprocessed,
-                          search,
-                        }).contentProcessed}
-                      </div>
-                    </div>
+                  `
+                : html``}
+              $${application.web.locals.partials.content({
+                request,
+                response,
+                id: `${id}--${option.reference}`,
+                contentPreprocessed: option.contentPreprocessed,
+                search,
+              }).contentProcessed}
+            `;
+
+            return voted
+              ? html`
+                  <div
+                    css="${css`
+                      display: flex;
+                      gap: var(--space--2);
+                      align-items: baseline;
+                    `}"
+                  >
+                    $${optionHTML}
                   </div>
                 `
-            )}
+              : html`
+                  <label
+                    css="${css`
+                      display: flex;
+                      gap: var(--space--2);
+                      align-items: baseline;
+                      cursor: pointer;
+                    `}"
+                  >
+                    $${optionHTML}
+                  </label>
+                `;
+          })}
 
-            <div>
-              <button
-                class="button button--full-width-on-small-screen button--blue"
-              >
-                <i class="bi bi-card-checklist"></i>
-                ACTIONS
-              </button>
-            </div>
+          <div>
+            <button
+              class="button button--full-width-on-small-screen button--blue"
+            >
+              <i class="bi bi-card-checklist"></i>
+              Vote
+            </button>
           </div>
         `;
+
+        element.outerHTML = voted
+          ? html`
+              <div
+                class="poll"
+                css="${css`
+                  display: flex;
+                  flex-direction: column;
+                  gap: var(--space--2);
+                `}"
+              >
+                $${pollHTML}
+              </div>
+            `
+          : html`
+              <form
+                method="POST"
+                action="https://${application.configuration
+                  .hostname}/courses/${responseCourseEnrolled.locals.course
+                  .reference}/polls/${poll.reference}/votes${qs.stringify(
+                  { redirect: request.originalUrl.slice(1) },
+                  { addQueryPrefix: true }
+                )}"
+                novalidate
+                class="poll"
+                css="${css`
+                  display: flex;
+                  flex-direction: column;
+                  gap: var(--space--2);
+                `}"
+              >
+                $${pollHTML}
+              </form>
+            `;
       }
     }
 
