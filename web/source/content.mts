@@ -931,12 +931,33 @@ export default async (application: Application): Promise<void> => {
           })}
 
           <div>
-            <button
-              class="button button--full-width-on-small-screen button--blue"
-            >
-              <i class="bi bi-card-checklist"></i>
-              Vote
-            </button>
+            $${voted
+              ? html`
+                  <form
+                    method="DELETE"
+                    action="https://${application.configuration
+                      .hostname}/courses/${responseCourseEnrolled.locals.course
+                      .reference}/polls/${poll.reference}/votes${qs.stringify(
+                      { redirect: request.originalUrl.slice(1) },
+                      { addQueryPrefix: true }
+                    )}"
+                  >
+                    <button
+                      class="button button--full-width-on-small-screen button--rose"
+                    >
+                      <i class="bi bi-trash-fill"></i>
+                      Remove Vote
+                    </button>
+                  </form>
+                `
+              : html`
+                  <button
+                    class="button button--full-width-on-small-screen button--blue"
+                  >
+                    <i class="bi bi-card-checklist"></i>
+                    Vote
+                  </button>
+                `}
           </div>
         `;
 
@@ -4443,6 +4464,39 @@ ${contentSource}</textarea
             )
           `
         );
+
+      response.redirect(
+        303,
+        `https://${application.configuration.hostname}/${
+          typeof request.query.redirect === "string"
+            ? request.query.redirect
+            : ""
+        }`
+      );
+    }
+  );
+
+  application.web.delete<
+    { courseReference: string; pollReference: string },
+    any,
+    {},
+    { redirect?: string },
+    ResponseLocalsPoll
+  >(
+    "/courses/:courseReference/polls/:pollReference/votes",
+    (request, response, next) => {
+      if (response.locals.poll === undefined) return next();
+
+      application.database.run(
+        sql`
+          DELETE FROM "messagePollVotes"
+          WHERE
+            "messagePollOption" IN ${response.locals.poll.options.map(
+              (option) => option.id
+            )} AND
+            "enrollment" = ${response.locals.enrollment.id}
+        `
+      );
 
       response.redirect(
         303,

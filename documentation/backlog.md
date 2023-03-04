@@ -13,7 +13,6 @@
     - Demonstration data
   - Edit poll.
     - Close a poll.
-  - Remove your vote.
   - Database indices
 - Visualization
   - Explain who can see what.
