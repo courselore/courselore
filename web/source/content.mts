@@ -838,12 +838,6 @@ export default async (application: Application): Promise<void> => {
                   required
                   ${option.enrollmentVote ? html`checked` : html``}
                   ${voted ? html`disabled` : html``}
-                  css="${poll.multipleChoicesAt === null
-                    ? css`
-                        position: relative;
-                        top: var(--space---0-5);
-                      `
-                    : css``}"
                 />
               </div>
 
@@ -854,7 +848,6 @@ export default async (application: Application): Promise<void> => {
                       css="${css`
                         text-align: center;
                         width: var(--space--8);
-                        margin-top: var(--space--1);
                       `}"
                       javascript="${javascript`
                         leafac.setTippy({
@@ -875,13 +868,42 @@ export default async (application: Application): Promise<void> => {
                     </div>
                   `
                 : html``}
-              $${application.web.locals.partials.content({
-                request,
-                response,
-                id: `${id}--${option.reference}`,
-                contentPreprocessed: option.contentPreprocessed,
-                search,
-              }).contentProcessed}
+
+              <div
+                css="${css`
+                  flex: 1;
+                  display: grid;
+                  & > * {
+                    grid-area: 1 / 1;
+                  }
+                `}"
+              >
+                <div
+                  style="
+                    --width: ${voted
+                    ? String(
+                        (option.votesCount / Math.max(poll.votesCount, 1)) * 100
+                      )
+                    : "0"}%;
+                  "
+                  css="${css`
+                    background-color: var(--color--gray--medium--200);
+                    @media (prefers-color-scheme: dark) {
+                      background-color: var(--color--gray--medium--700);
+                    }
+                    width: var(--width);
+                    border-radius: var(--border-radius--md);
+                  `}"
+                ></div>
+
+                $${application.web.locals.partials.content({
+                  request,
+                  response,
+                  id: `${id}--${option.reference}`,
+                  contentPreprocessed: option.contentPreprocessed,
+                  search,
+                }).contentProcessed}
+              </div>
             `;
 
             return voted
@@ -890,7 +912,6 @@ export default async (application: Application): Promise<void> => {
                     css="${css`
                       display: flex;
                       gap: var(--space--2);
-                      align-items: baseline;
                     `}"
                   >
                     $${optionHTML}
@@ -901,7 +922,6 @@ export default async (application: Application): Promise<void> => {
                     css="${css`
                       display: flex;
                       gap: var(--space--2);
-                      align-items: baseline;
                       cursor: pointer;
                     `}"
                   >

@@ -6,7 +6,6 @@
 
 - Features
   - Show results.
-    - Show what **you** voted on
   - Vote.
     - Take closing in account.
       - Presentation.
