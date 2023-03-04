@@ -1448,13 +1448,17 @@ export default async (application: Application): Promise<void> => {
                     --transition-timing-function--in-out
                   );
 
-                  &:checked::before {
+                  &::before {
                     content: "\\f633";
                     font-family: "bootstrap-icons" !important;
                     color: var(--color--gray--medium--50);
                     @media (prefers-color-scheme: dark) {
                       color: var(--color--gray--medium--200);
                     }
+                  }
+
+                  &:not(:checked)::before {
+                    visibility: hidden;
                   }
                 }
 
