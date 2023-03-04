@@ -899,6 +899,7 @@ export default async (application: Application): Promise<void> => {
                     <div
                       class="strong"
                       css="${css`
+                        text-align: center;
                         width: var(--space--8);
                         margin-top: var(--space--1);
                       `}"

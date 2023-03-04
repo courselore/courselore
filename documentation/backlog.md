@@ -5,12 +5,13 @@
 **Poll**
 
 - Features
+  - Show results.
+    - Show what **you** voted on
   - Vote.
     - Take closing in account.
       - Presentation.
       - Server.
     - Demonstration data
-  - Show results.
   - Edit poll.
     - Close a poll.
   - Remove your vote.
