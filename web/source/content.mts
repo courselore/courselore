@@ -838,6 +838,9 @@ export default async (application: Application): Promise<void> => {
                   required
                   ${option.enrollmentVote ? html`checked` : html``}
                   ${voted ? html`disabled` : html``}
+                  css="${css`
+                    margin-top: var(--space--0-5);
+                  `}"
                 />
               </div>
 
@@ -845,26 +848,21 @@ export default async (application: Application): Promise<void> => {
                 ? html`
                     <div
                       class="strong"
+                      style="
+                        --width: ${poll.votesCount < 10
+                        ? "var(--space--14)"
+                        : poll.votesCount < 100
+                        ? "var(--space--16)"
+                        : poll.votesCount < 1000
+                        ? "var(--space--18)"
+                        : "var(--space--24)"};
+                      "
                       css="${css`
-                        text-align: center;
-                        width: var(--space--8);
-                      `}"
-                      javascript="${javascript`
-                        leafac.setTippy({
-                          event,
-                          element: this,
-                          tippyProps: {
-                            touch: false,
-                            content: ${`${option.votesCount} vote${
-                              option.votesCount === 1 ? "" : "s"
-                            }`},  
-                          },
-                        });
+                        width: var(--width);
                       `}"
                     >
-                      ${option.votesCount < 1000
-                        ? String(option.votesCount)
-                        : "99+"}
+                      ${String(option.votesCount)}
+                      vote${option.votesCount === 1 ? "" : "s"}
                     </div>
                   `
                 : html``}
@@ -878,23 +876,27 @@ export default async (application: Application): Promise<void> => {
                   }
                 `}"
               >
-                <div
-                  style="
-                    --width: ${voted
-                    ? String(
-                        (option.votesCount / Math.max(poll.votesCount, 1)) * 100
-                      )
-                    : "0"}%;
-                  "
-                  css="${css`
-                    background-color: var(--color--gray--medium--200);
-                    @media (prefers-color-scheme: dark) {
-                      background-color: var(--color--gray--medium--700);
-                    }
-                    width: var(--width);
-                    border-radius: var(--border-radius--md);
-                  `}"
-                ></div>
+                <div>
+                  <div
+                    style="
+                      --width: ${voted
+                      ? String(
+                          (option.votesCount / Math.max(poll.votesCount, 1)) *
+                            100
+                        )
+                      : "0"}%;
+                    "
+                    css="${css`
+                      background: linear-gradient(to right, transparent, var(--color--gray--medium--200));
+                      @media (prefers-color-scheme: dark) {
+                        background-color: var(--color--gray--medium--700);
+                      }
+                      width: var(--width);
+                      border-radius: var(--border-radius--md);
+                      height: var(--line-height--sm);
+                    `}"
+                  ></div>
+                </div>
 
                 $${application.web.locals.partials.content({
                   request,
