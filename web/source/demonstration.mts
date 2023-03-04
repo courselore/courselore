@@ -503,7 +503,10 @@ export default async (application: Application): Promise<void> => {
         }
 
         for (const enrollment of lodash.sampleSize(
-          enrollments,
+          [
+            ...enrollments,
+            ...new Array(Math.floor(enrollments.length * 0.2)).fill(null),
+          ],
           lodash.random(0, 50)
         ))
           application.database.run(
@@ -519,7 +522,7 @@ export default async (application: Application): Promise<void> => {
                     lodash.random(60 * 1000, 12 * 60 * 60 * 1000)
                 ).toISOString()},
                 ${lodash.sample(pollSingleChoiceOptions)!.id},
-                ${enrollment.id}
+                ${enrollment?.id}
               )
             `
           );
@@ -595,7 +598,10 @@ export default async (application: Application): Promise<void> => {
         }
 
         for (const enrollment of lodash.sampleSize(
-          enrollments,
+          [
+            ...enrollments,
+            ...new Array(Math.floor(enrollments.length * 0.2)).fill(null),
+          ],
           lodash.random(0, 50)
         ))
           for (const option of lodash.sampleSize(
@@ -615,7 +621,7 @@ export default async (application: Application): Promise<void> => {
                       lodash.random(60 * 1000, 12 * 60 * 60 * 1000)
                   ).toISOString()},
                   ${option.id},
-                  ${enrollment.id}
+                  ${enrollment?.id}
                 )
               `
             );

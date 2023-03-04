@@ -4532,6 +4532,106 @@ ${contentSource}</textarea
     }
   );
 
+  application.web.get<
+    { courseReference: string; pollReference: string },
+    any,
+    {},
+    {},
+    ResponseLocalsPoll
+  >(
+    "/courses/:courseReference/polls/:pollReference/votes",
+    (request, response, next) => {
+      if (
+        response.locals.poll === undefined ||
+        response.locals.enrollment.courseRole !== "staff"
+      )
+        return next();
+
+      const votes = application.database
+        .all<{
+          messagePollOptionsId: number;
+          messagePollOptionsReference: string;
+          messagePollOptionsContentPreprocessed: string;
+          enrollmentId: number | null;
+          userId: number | null;
+          userLastSeenOnlineAt: string | null;
+          userReference: string;
+          userEmail: string | null;
+          userName: string | null;
+          userAvatar: string | null;
+          userAvatarlessBackgroundColors:
+            | Application["web"]["locals"]["helpers"]["userAvatarlessBackgroundColors"][number]
+            | null;
+          userBiographySource: string | null;
+          userBiographyPreprocessed: HTML | null;
+          enrollmentReference: string | null;
+          enrollmentCourseRole:
+            | Application["web"]["locals"]["helpers"]["courseRoles"][number]
+            | null;
+        }>(
+          sql`
+            SELECT
+              "messagePollOptions"."id" AS "messagePollOptionsId",
+              "messagePollOptions"."reference" AS "messagePollOptionsReference",
+              "messagePollOptions"."contentPreprocessed" AS "messagePollOptionsContentPreprocessed",
+              "enrollment"."id" AS "enrollmentId",
+              "user"."id" AS "userId",
+              "user"."lastSeenOnlineAt" AS "userLastSeenOnlineAt",
+              "user"."reference" AS "userReference",
+              "user"."email" AS "userEmail",
+              "user"."name" AS "userName",
+              "user"."avatar" AS "userAvatar",
+              "user"."avatarlessBackgroundColor" AS "userAvatarlessBackgroundColors",
+              "user"."biographySource" AS "userBiographySource",
+              "user"."biographyPreprocessed" AS "userBiographyPreprocessed",
+              "enrollment"."reference" AS "enrollmentReference",
+              "enrollment"."courseRole" AS "enrollmentCourseRole"
+            FROM "messagePollVotes"
+            JOIN "messagePollOptions" ON "messagePollVotes"."messagePollOption" IN ${response.locals.poll.options.map(
+              (option) => option.id
+            )}
+            LEFT JOIN "enrollments" ON "messagePollVotes"."enrollment" = "enrollments"."id"
+            LEFT JOIN "users" ON "enrollment"."user" = "users"."id"
+          `
+        )
+        .map((vote) => ({
+          option: {
+            id: vote.messagePollOptionsId,
+            reference: vote.messagePollOptionsReference,
+            contentPreprocessed: vote.messagePollOptionsContentPreprocessed,
+          },
+          enrollment:
+            vote.enrollmentId !== null &&
+            vote.userId !== null &&
+            vote.userLastSeenOnlineAt !== null &&
+            vote.userReference !== null &&
+            vote.userEmail !== null &&
+            vote.userName !== null &&
+            vote.userAvatarlessBackgroundColors !== null &&
+            vote.enrollmentReference !== null &&
+            vote.enrollmentCourseRole !== null
+              ? {
+                  id: vote.enrollmentId,
+                  user: {
+                    id: vote.userId,
+                    lastSeenOnlineAt: vote.userLastSeenOnlineAt,
+                    reference: vote.userReference,
+                    email: vote.userEmail,
+                    name: vote.userName,
+                    avatar: vote.userAvatar,
+                    avatarlessBackgroundColor:
+                      vote.userAvatarlessBackgroundColors,
+                    biographySource: vote.userBiographySource,
+                    biographyPreprocessed: vote.userBiographyPreprocessed,
+                  },
+                  reference: vote.enrollmentReference,
+                  courseRole: vote.enrollmentCourseRole,
+                }
+              : ("no-longer-enrolled" as const),
+        }));
+    }
+  );
+
   application.web.post<
     { courseReference?: string },
     any,
