@@ -5,6 +5,12 @@
 
 - Drag with three fingers worked for me 🤔
 - A vote should trigger a Live-Update?
+- Chat on side
+- Disable polls for students
+  - Default students can’t create polls
+- “What’s new”
+  - In application, not via email
+- No auto-updates for Courselore self-hosters
 
 </details>
 

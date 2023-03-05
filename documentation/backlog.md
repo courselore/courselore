@@ -2,6 +2,8 @@
 
 ## Finish
 
+- See meeting notes
+
 **Poll**
 
 - Features
