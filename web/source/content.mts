@@ -3266,10 +3266,10 @@ export default async (application: Application): Promise<void> => {
                               type="button"
                               class="dropdown--menu--item button button--transparent"
                               javascript="${javascript`
-                                        this.onclick = () => {
-                                          this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete("everyone");
-                                        };
-                                      `}"
+                                this.onclick = () => {
+                                  this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete("everyone");
+                                };
+                              `}"
                             >
                               Everyone in the Conversation
                             </button>
@@ -3277,10 +3277,10 @@ export default async (application: Application): Promise<void> => {
                               type="button"
                               class="dropdown--menu--item button button--transparent"
                               javascript="${javascript`
-                                        this.onclick = () => {
-                                          this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete("staff");
-                                        };
-                                      `}"
+                                this.onclick = () => {
+                                  this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete("staff");
+                                };
+                              `}"
                             >
                               Staff in the Conversation
                             </button>
@@ -3288,10 +3288,10 @@ export default async (application: Application): Promise<void> => {
                               type="button"
                               class="dropdown--menu--item button button--transparent"
                               javascript="${javascript`
-                                        this.onclick = () => {
-                                          this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete("students");
-                                        };
-                                      `}"
+                                this.onclick = () => {
+                                  this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete("students");
+                                };
+                              `}"
                             >
                               Students in the Conversation
                             </button>
