@@ -1002,6 +1002,7 @@ export default async (application: Application): Promise<void> => {
                                 const partial = leafac.stringToElement(await (await fetch(${`https://${application.configuration.hostname}/courses/${responseCourseEnrolled.locals.course.reference}/polls/${poll.reference}/votes`}, { cache: "no-store" })).text());
                                 for (const partialElement of partial.querySelectorAll('[key^="poll--option--votes/"]')) {
                                   const element = poll.querySelector('[key="' + partialElement.getAttribute("key") + '"]');
+                                  element.onbeforemorph = (event) => !event?.detail?.liveUpdate;
                                   leafac.morph(element, partialElement);
                                   leafac.execute({ element });
                                   element.hidden = false;
