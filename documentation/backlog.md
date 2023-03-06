@@ -6,6 +6,8 @@
 
 - Features
   - Visualization
+    - A Live-Update could wipe away the individual votes
+    - Bar on top to show number of votes, instead of bar behind text
     - Person who created may see individual votes
     - People who may edit the poll (staff & author) may see votes without having voted.
   - Vote.
@@ -28,6 +30,7 @@
       - When voting.
   - Database indices
 - Edge cases
+  - Sometimes the form to create a poll doesn’t come with three options already created
   - “Preview” of polls creates a `<form>` within a `<form>` situation
   - User biography with a mention to themselves (should avoid infinite loop by preventing decoration)
   - User biographies with polls
