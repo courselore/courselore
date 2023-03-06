@@ -709,7 +709,7 @@ break.
 # Lists
 
 - Banana
-- Pijama
+- Pyjamas
 - Phone
 
 ---
@@ -727,7 +727,7 @@ ${lodash
 ---
 
 1. Banana
-2. Pijama
+2. Pyjamas
 3. Phone
 
 ---
