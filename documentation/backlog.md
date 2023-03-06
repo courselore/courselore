@@ -5,22 +5,28 @@
 **Poll**
 
 - Features
+  - Visualization
+    - Person who created may see individual votes
+    - People who may edit the poll (staff & author) may see votes without having voted.
   - Vote.
+    - Trigger a Live-Update
     - Take closing in account.
       - Presentation.
       - Server.
         - Voting.
         - Remove vote.
-    - Trigger a Live-Update
   - Edit poll.
     - Close a poll.
   - Disable polls for students
     - Default students can’t create polls
+  - Document who can see what.
+    - Details
+      - Students may see aggregate results.
+      - Author and staff may see individual votes.
+    - Where
+      - When creating the poll.
+      - When voting.
   - Database indices
-- Visualization
-  - Explain who can see what.
-  - Students may see aggregate results.
-  - People who may edit the poll (staff & author) may see votes without having voted.
 - Edge cases
   - “Preview” of polls creates a `<form>` within a `<form>` situation
   - User biography with a mention to themselves (should avoid infinite loop by preventing decoration)
