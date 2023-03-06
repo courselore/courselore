@@ -48,12 +48,46 @@
 
 ```
 
-                  css="${css`
-                    display: flex;
-                    flex-wrap: wrap;
-                    column-gap: var(--space--2);
-                    row-gap: var(--space--0-5);
-                  `}"
+<div
+                css="${css`
+                  flex: 1;
+                  display: grid;
+                  & > * {
+                    grid-area: 1 / 1;
+                  }
+                `}"
+              >
+
+
+              </div>
+
+
+
+                  <div>
+                  <div
+                    style="
+                      --width: ${voted
+                      ? String(
+                          (option.votesCount / Math.max(poll.votesCount, 1)) *
+                            100
+                        )
+                      : "0"}%;
+                    "
+                    css="${css`
+                      background: linear-gradient(
+                        to right,
+                        transparent,
+                        var(--color--gray--medium--200)
+                      );
+                      @media (prefers-color-scheme: dark) {
+                        background-color: var(--color--gray--medium--700);
+                      }
+                      width: var(--width);
+                      height: var(--line-height--sm);
+                      border-radius: var(--border-radius--md);
+                    `}"
+                  ></div>
+                </div>
 
 
 const votes = application.database

@@ -870,38 +870,8 @@ export default async (application: Application): Promise<void> => {
               <div
                 css="${css`
                   flex: 1;
-                  display: grid;
-                  & > * {
-                    grid-area: 1 / 1;
-                  }
                 `}"
               >
-                <div>
-                  <div
-                    style="
-                      --width: ${voted
-                      ? String(
-                          (option.votesCount / Math.max(poll.votesCount, 1)) *
-                            100
-                        )
-                      : "0"}%;
-                    "
-                    css="${css`
-                      background: linear-gradient(
-                        to right,
-                        transparent,
-                        var(--color--gray--medium--200)
-                      );
-                      @media (prefers-color-scheme: dark) {
-                        background-color: var(--color--gray--medium--700);
-                      }
-                      width: var(--width);
-                      height: var(--line-height--sm);
-                      border-radius: var(--border-radius--md);
-                    `}"
-                  ></div>
-                </div>
-
                 $${application.web.locals.partials.content({
                   request,
                   response,
