@@ -886,32 +886,86 @@ export default async (application: Application): Promise<void> => {
               ? html`
                   <div
                     css="${css`
-                      display: flex;
-                      gap: var(--space--2);
+                      display: grid;
+                      & > * {
+                        grid-area: 1 / 1;
+                      }
                     `}"
                   >
-                    $${optionHTML}
+                    <div
+                      css="${css`
+                        background: var(--color--gray--medium--100);
+                        @media (prefers-color-scheme: dark) {
+                          background-color: var(--color--gray--medium--800);
+                        }
+                        width: calc(var(--space--1) + 100% + var(--space--1));
+                        height: calc(var(--space--6) + var(--space--0-5));
+                        margin-left: var(--space---1);
+                        margin-top: var(--space---1);
+                        border-radius: var(--border-radius--md);
+                      `}"
+                    ></div>
+
+                    <div
+                      style="
+                        --width: ${voted
+                        ? `calc(var(--space--1) + ${
+                            (option.votesCount / Math.max(poll.votesCount, 1)) *
+                            100
+                          }% + var(--space--1))`
+                        : "0%"};
+                      "
+                      css="${css`
+                        background: var(--color--gray--medium--200);
+                        @media (prefers-color-scheme: dark) {
+                          background-color: var(--color--gray--medium--700);
+                        }
+                        width: var(--width);
+                        height: calc(var(--space--6) + var(--space--0-5));
+                        margin-left: var(--space---1);
+                        margin-top: var(--space---1);
+                        border-radius: var(--border-radius--md);
+                      `}"
+                    ></div>
+
+                    <div
+                      css="${css`
+                        display: flex;
+                        flex-direction: column;
+                        gap: var(--space--2);
+                      `}"
+                    >
+                      <div
+                        css="${css`
+                          display: flex;
+                          gap: var(--space--2);
+                        `}"
+                      >
+                        $${optionHTML}
+                      </div>
+
+                      <div
+                        key="poll--option--votes/${option.reference}"
+                        hidden
+                        class="secondary"
+                        css="${css`
+                          font-size: var(--font-size--xs);
+                          line-height: var(--line-height--xs);
+                          padding-bottom: var(--space--2);
+                          border-bottom: var(--border-width--1) solid
+                            var(--color--gray--medium--300);
+                          @media (prefers-color-scheme: dark) {
+                            border-color: var(--color--gray--medium--600);
+                          }
+                          margin-bottom: var(--space--2);
+                          display: flex;
+                          column-gap: var(--space--4);
+                          row-gap: var(--space--1);
+                          flex-wrap: wrap;
+                        `}"
+                      ></div>
+                    </div>
                   </div>
-                  <div
-                    key="poll--option--votes/${option.reference}"
-                    hidden
-                    class="secondary"
-                    css="${css`
-                      font-size: var(--font-size--xs);
-                      line-height: var(--line-height--xs);
-                      padding-bottom: var(--space--2);
-                      border-bottom: var(--border-width--1) solid
-                        var(--color--gray--medium--300);
-                      @media (prefers-color-scheme: dark) {
-                        border-color: var(--color--gray--medium--600);
-                      }
-                      margin-bottom: var(--space--2);
-                      display: flex;
-                      column-gap: var(--space--4);
-                      row-gap: var(--space--1);
-                      flex-wrap: wrap;
-                    `}"
-                  ></div>
                 `
               : html`
                   <label
