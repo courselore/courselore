@@ -3,9 +3,14 @@
 <details>
 <summary>2023-03-04</summary>
 
+- Progress:
+  - Polls
+  - Date picker
+  - Client-side components
 - Drag with three fingers worked for me 🤔
-- A vote should trigger a Live-Update?
-- Chat on side
+  - It’s an issue with scrolling panes when you reach the edge.
+- A vote should trigger a Live-Update? Yes.
+- Chat on sidebar, similar to Discourse
 - Disable polls for students
   - Default students can’t create polls
 - “What’s new”

@@ -13,9 +13,11 @@
       - Server.
         - Voting.
         - Remove vote.
-    - A vote should trigger a Live-Update?
+    - Trigger a Live-Update
   - Edit poll.
     - Close a poll.
+  - Disable polls for students
+    - Default students can’t create polls
   - Database indices
 - Visualization
   - Explain who can see what.
@@ -36,6 +38,7 @@
   - Add header to `box` layout showing your face if you’re logged in.
   - Use `node --test` in other projects: look for uses of the `TEST` environment variable
   - Ranking: https://civs1.civs.us
+  - “What’s new” promoting polls
 
 ```
 
@@ -635,6 +638,10 @@ const extractStaticCSSAndJavaScript = () => ({
   - People assign themselves to groups.
   - Add mentions like `@group-3`.
 
+**Chats**
+
+- Have chats on a little sidebar thing, similar to Discourse.
+
 ## Messages
 
 - Whispers:
@@ -1019,6 +1026,9 @@ new Notification('Example');
   - Anchor it to artificial element, instead of `<body>` hack
   - When there are multiple (for example, you’ve just edited your profile **and** you become offline), let them stack on top of each other, instead of overlapping.
 - Consider using `position: absolute` for header and footer, to avoid them scrolling under any circumstance
+  - Also, you could probably scroll anywhere on the page, as opposed to now, when you must have your cursor in the scrolling pane.
+- On lists with reorderable items, scroll when your cursor is near the edge of the surrounding scrollable pane.
+  - In particular, test with three-fingers scroll in macOS.
 
 ## Pagination
 
