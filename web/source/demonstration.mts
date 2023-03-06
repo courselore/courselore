@@ -466,7 +466,7 @@ export default async (application: Application): Promise<void> => {
         )!;
 
         const pollSingleChoiceOptions: { id: number }[] = [];
-        for (const order of new Array(lodash.random(2, 6)).keys()) {
+        for (const order of new Array(lodash.random(4, 7)).keys()) {
           const contentSource = casual.sentences(lodash.random(1, 2));
           pollSingleChoiceOptions.push(
             application.database.get<{ id: number }>(
@@ -561,7 +561,7 @@ export default async (application: Application): Promise<void> => {
         )!;
 
         const pollMultipleChoiceOptions: { id: number }[] = [];
-        for (const order of new Array(lodash.random(2, 6)).keys()) {
+        for (const order of new Array(lodash.random(4, 7)).keys()) {
           const contentSource = casual.sentences(lodash.random(1, 2));
           pollMultipleChoiceOptions.push(
             application.database.get<{ id: number }>(
