@@ -6,7 +6,6 @@
 
 - Features
   - Visualization
-    - Bar on top to show number of votes, instead of bar behind text
     - Person who created may see individual votes
     - People who may edit the poll (staff & author) may see votes without having voted.
   - Vote.
