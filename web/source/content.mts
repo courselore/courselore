@@ -826,9 +826,9 @@ export default async (application: Application): Promise<void> => {
 
         const voted = options.some((option) => option.enrollmentVote !== null);
 
-        const pollHTML = html`
+        let pollHTML = html`
           $${options.map((option) => {
-            const optionHTML = html`
+            let optionHTML = html`
               <div
                 javascript="${javascript`
                   if (${voted})
@@ -857,9 +857,15 @@ export default async (application: Application): Promise<void> => {
                 />
               </div>
 
-              $${voted
+              $${voted ||
+              mayEditPoll({
+                request: requestCourseEnrolled,
+                response: responseCourseEnrolled,
+                poll,
+              })
                 ? html`
                     <div
+                      $${voted ? html`` : html`data-results="true" hidden`}
                       class="strong"
                       style="
                         --width: ${poll.votesCount < 10
@@ -895,89 +901,15 @@ export default async (application: Application): Promise<void> => {
               </div>
             `;
 
-            return voted
+            optionHTML = voted
               ? html`
                   <div
                     css="${css`
-                      display: grid;
-                      & > * {
-                        grid-area: 1 / 1;
-                      }
+                      display: flex;
+                      gap: var(--space--2);
                     `}"
                   >
-                    <div
-                      css="${css`
-                        background: var(--color--gray--medium--100);
-                        @media (prefers-color-scheme: dark) {
-                          background-color: var(--color--gray--medium--800);
-                        }
-                        width: calc(var(--space--1) + 100% + var(--space--1));
-                        height: calc(var(--space--6) + var(--space--0-5));
-                        margin-left: var(--space---1);
-                        margin-top: var(--space---1);
-                        border-radius: var(--border-radius--md);
-                      `}"
-                    ></div>
-
-                    <div
-                      style="
-                        --width: ${voted
-                        ? `calc(var(--space--1) + ${
-                            (option.votesCount / Math.max(poll.votesCount, 1)) *
-                            100
-                          }% + var(--space--1))`
-                        : "0%"};
-                      "
-                      css="${css`
-                        background: var(--color--blue--100);
-                        @media (prefers-color-scheme: dark) {
-                          background-color: var(--color--blue--900);
-                        }
-                        width: var(--width);
-                        height: calc(var(--space--6) + var(--space--0-5));
-                        margin-left: var(--space---1);
-                        margin-top: var(--space---1);
-                        border-radius: var(--border-radius--md);
-                      `}"
-                    ></div>
-
-                    <div
-                      css="${css`
-                        display: flex;
-                        flex-direction: column;
-                        gap: var(--space--2);
-                      `}"
-                    >
-                      <div
-                        css="${css`
-                          display: flex;
-                          gap: var(--space--2);
-                        `}"
-                      >
-                        $${optionHTML}
-                      </div>
-
-                      <div
-                        key="poll--option--votes/${option.reference}"
-                        hidden
-                        class="secondary"
-                        css="${css`
-                          font-size: var(--font-size--xs);
-                          line-height: var(--line-height--xs);
-                          padding-bottom: var(--space--2);
-                          border-bottom: var(--border-width--1) solid
-                            var(--color--gray--medium--300);
-                          @media (prefers-color-scheme: dark) {
-                            border-color: var(--color--gray--medium--600);
-                          }
-                          margin-bottom: var(--space--2);
-                          display: flex;
-                          column-gap: var(--space--4);
-                          row-gap: var(--space--1);
-                          flex-wrap: wrap;
-                        `}"
-                      ></div>
-                    </div>
+                    $${optionHTML}
                   </div>
                 `
               : html`
@@ -991,6 +923,99 @@ export default async (application: Application): Promise<void> => {
                     $${optionHTML}
                   </label>
                 `;
+
+            optionHTML =
+              voted ||
+              mayEditPoll({
+                request: requestCourseEnrolled,
+                response: responseCourseEnrolled,
+                poll,
+              })
+                ? html`
+                    <div
+                      css="${css`
+                        display: grid;
+                        & > * {
+                          grid-area: 1 / 1;
+                        }
+                      `}"
+                    >
+                      <div
+                        $${voted ? html`` : html`data-results="true" hidden`}
+                        css="${css`
+                          background: var(--color--gray--medium--100);
+                          @media (prefers-color-scheme: dark) {
+                            background-color: var(--color--gray--medium--800);
+                          }
+                          width: calc(var(--space--1) + 100% + var(--space--1));
+                          height: calc(var(--space--6) + var(--space--0-5));
+                          margin-left: var(--space---1);
+                          margin-top: var(--space---1);
+                          border-radius: var(--border-radius--md);
+                        `}"
+                      ></div>
+
+                      <div
+                        $${voted ? html`` : html`data-results="true" hidden`}
+                        style="
+                          --width: ${option.votesCount > 0
+                          ? `calc(var(--space--1) + ${
+                              (option.votesCount /
+                                Math.max(poll.votesCount, 1)) *
+                              100
+                            }% + var(--space--1))`
+                          : "0%"};
+                        "
+                        css="${css`
+                          background: var(--color--blue--100);
+                          @media (prefers-color-scheme: dark) {
+                            background-color: var(--color--blue--900);
+                          }
+                          width: var(--width);
+                          height: calc(var(--space--6) + var(--space--0-5));
+                          margin-left: var(--space---1);
+                          margin-top: var(--space---1);
+                          border-radius: var(--border-radius--md);
+                        `}"
+                      ></div>
+
+                      <div
+                        css="${css`
+                          display: flex;
+                          flex-direction: column;
+                          gap: var(--space--2);
+                        `}"
+                      >
+                        $${optionHTML}
+
+                        <div
+                          key="poll--option--votes/${option.reference}"
+                          data-results="true"
+                          data-results-votes="true"
+                          hidden
+                          class="secondary"
+                          css="${css`
+                            font-size: var(--font-size--xs);
+                            line-height: var(--line-height--xs);
+                            padding-bottom: var(--space--2);
+                            border-bottom: var(--border-width--1) solid
+                              var(--color--gray--medium--300);
+                            @media (prefers-color-scheme: dark) {
+                              border-color: var(--color--gray--medium--600);
+                            }
+                            margin-bottom: var(--space--2);
+                            display: flex;
+                            column-gap: var(--space--4);
+                            row-gap: var(--space--1);
+                            flex-wrap: wrap;
+                          `}"
+                        ></div>
+                      </div>
+                    </div>
+                  `
+                : html` $${optionHTML} `;
+
+            return optionHTML;
           })}
 
           <div
@@ -1017,73 +1042,6 @@ export default async (application: Application): Promise<void> => {
                       Remove Vote
                     </button>
                   </form>
-
-                  $${mayEditPoll({
-                    request: requestCourseEnrolled,
-                    response: responseCourseEnrolled,
-                    poll,
-                  })
-                    ? html`
-                        <div
-                          key="poll--actions--show-votes"
-                          css="${css`
-                            display: flex;
-                            gap: var(--space--2);
-                            align-items: center;
-                          `}"
-                        >
-                          <button
-                            class="button button--transparent"
-                            javascript="${javascript`
-                              this.onclick = async () => {
-                                const poll = this.closest('[key="poll"]');
-                                const loading = poll.querySelector('[key="poll--actions--show-votes--loading"]');
-                                loading.hidden = false;
-                                const partial = leafac.stringToElement(await (await fetch(${`https://${application.configuration.hostname}/courses/${responseCourseEnrolled.locals.course.reference}/polls/${poll.reference}/votes`}, { cache: "no-store" })).text());
-                                for (const partialElement of partial.querySelectorAll('[key^="poll--option--votes/"]')) {
-                                  const element = poll.querySelector('[key="' + partialElement.getAttribute("key") + '"]');
-                                  element.onbeforemorph = (event) => !event?.detail?.liveUpdate;
-                                  leafac.morph(element, partialElement);
-                                  leafac.execute({ element });
-                                  element.hidden = false;
-                                }
-                                loading.hidden = true;
-                                poll.querySelector('[key="poll--actions--show-votes"]').hidden = true;
-                                poll.querySelector('[key="poll--actions--hide-votes"]').hidden = false;
-                              };
-                            `}"
-                          >
-                            <i class="bi bi-eye"></i>
-                            Show Votes
-                          </button>
-
-                          <div key="poll--actions--show-votes--loading" hidden>
-                            $${application.web.locals.partials.spinner({
-                              request,
-                              response,
-                            })}
-                          </div>
-                        </div>
-
-                        <div key="poll--actions--hide-votes" hidden>
-                          <button
-                            class="button button--transparent"
-                            javascript="${javascript`
-                              this.onclick = async () => {
-                                const poll = this.closest('[key="poll"]');
-                                for (const element of poll.querySelectorAll('[key^="poll--option--votes/"]'))
-                                  element.hidden = true;
-                                poll.querySelector('[key="poll--actions--show-votes"]').hidden = false;
-                                poll.querySelector('[key="poll--actions--hide-votes"]').hidden = true;
-                              };
-                            `}"
-                          >
-                            <i class="bi bi-eye-slash"></i>
-                            Hide Votes
-                          </button>
-                        </div>
-                      `
-                    : html``}
                 `
               : html`
                   <div>
@@ -1092,11 +1050,126 @@ export default async (application: Application): Promise<void> => {
                       Vote
                     </button>
                   </div>
+
+                  $${mayEditPoll({
+                    request: requestCourseEnrolled,
+                    response: responseCourseEnrolled,
+                    poll,
+                  })
+                    ? html`
+                        <div key="poll--actions--show-results">
+                          <button
+                            type="button"
+                            class="button button--transparent"
+                            javascript="${javascript`
+                              this.onclick = async () => {
+                                const poll = this.closest('[key="poll"]');
+                                for (const element of poll.querySelectorAll('[data-results="true"]:not([data-results-votes="true"])'))
+                                  element.hidden = false;
+                                poll.querySelector('[key="poll--actions--show-results"]').hidden = true;
+                              };
+                            `}"
+                          >
+                            <i class="bi bi-eye"></i>
+                            Show Results
+                          </button>
+                        </div>
+
+                        <div data-results="true" hidden>
+                          <button
+                            type="button"
+                            class="button button--transparent"
+                            javascript="${javascript`
+                              this.onclick = async () => {
+                                const poll = this.closest('[key="poll"]');
+                                for (const element of poll.querySelectorAll('[data-results="true"]'))
+                                  element.hidden = true;
+                                poll.querySelector('[key="poll--actions--show-results"]').hidden = false;
+                              };
+                            `}"
+                          >
+                            <i class="bi bi-eye-slash"></i>
+                            Hide Results
+                          </button>
+                        </div>
+                      `
+                    : html``}
                 `}
+            $${mayEditPoll({
+              request: requestCourseEnrolled,
+              response: responseCourseEnrolled,
+              poll,
+            })
+              ? html`
+                  <div
+                    key="poll--actions--show-votes"
+                    $${voted ? html`` : html`data-results="true" hidden`}
+                    css="${css`
+                      display: flex;
+                      gap: var(--space--2);
+                      align-items: center;
+                    `}"
+                  >
+                    <button
+                      type="button"
+                      class="button button--transparent"
+                      javascript="${javascript`
+                        this.onclick = async () => {
+                          const poll = this.closest('[key="poll"]');
+                          const loading = poll.querySelector('[key="poll--actions--show-votes--loading"]');
+                          loading.hidden = false;
+                          const partial = leafac.stringToElement(await (await fetch(${`https://${application.configuration.hostname}/courses/${responseCourseEnrolled.locals.course.reference}/polls/${poll.reference}/votes`}, { cache: "no-store" })).text());
+                          for (const partialElement of partial.querySelectorAll('[key^="poll--option--votes/"]')) {
+                            const element = poll.querySelector('[key="' + partialElement.getAttribute("key") + '"]');
+                            element.onbeforemorph = (event) => !event?.detail?.liveUpdate;
+                            leafac.morph(element, partialElement);
+                            leafac.execute({ element });
+                            element.hidden = false;
+                          }
+                          loading.hidden = true;
+                          poll.querySelector('[key="poll--actions--show-votes"]').hidden = true;
+                          poll.querySelector('[key="poll--actions--hide-votes"]').hidden = false;
+                        };
+                      `}"
+                    >
+                      <i class="bi bi-eye"></i>
+                      Show Votes
+                    </button>
+
+                    <div key="poll--actions--show-votes--loading" hidden>
+                      $${application.web.locals.partials.spinner({
+                        request,
+                        response,
+                      })}
+                    </div>
+                  </div>
+
+                  <div key="poll--actions--hide-votes" hidden>
+                    <button
+                      type="button"
+                      data-results="true"
+                      data-results-votes="true"
+                      class="button button--transparent"
+                      javascript="${javascript`
+                        this.onclick = async () => {
+                          const poll = this.closest('[key="poll"]');
+                          for (const element of poll.querySelectorAll('[key^="poll--option--votes/"]'))
+                            element.hidden = true;
+                          poll.querySelector('[key="poll--actions--show-votes"]').hidden = false;
+                          poll.querySelector('[key="poll--actions--hide-votes"]').hidden = true;
+                        };
+                      `}"
+                    >
+                      <i class="bi bi-eye-slash"></i>
+                      Hide Votes
+                    </button>
+                  </div>
+                `
+              : html``}
           </div>
         `;
 
-        element.outerHTML = voted
+        pollHTML = voted
           ? html`
               <div
                 key="poll"
@@ -1131,6 +1204,8 @@ export default async (application: Application): Promise<void> => {
                 $${pollHTML}
               </form>
             `;
+
+        element.outerHTML = pollHTML;
       }
     }
 

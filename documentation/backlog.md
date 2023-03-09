@@ -7,8 +7,10 @@
 - Features
   - Visualization
     - People who may edit the poll (staff & author) may see votes without having voted.
+      - `data-result="true"`
   - Vote.
     - Trigger a Live-Update
+      - Live-Update should update results & options (in case the poll was edited)
     - Take closing in account.
       - Presentation.
       - Server.
