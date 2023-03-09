@@ -2683,12 +2683,13 @@ export default async (application: Application): Promise<void> => {
                             
                                                         const options = this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--poll--options"]');
                                                         options.insertAdjacentElement("beforeend", newOption);
-                                                        leafac.execute({ event, element: newOption });
+                                                        leafac.execute({ element: newOption });
                                                         options.reorder();
                                                       };
 
                                                       if (!event?.detail?.liveUpdate)
-                                                        for (const initialOptions of new Array(3)) this.onclick();
+                                                        for (const initialOptions of new Array(3))
+                                                          this.onclick();
                             
                                                       this.onvalidate = () => {
                                                         if (this.closest("[hidden]") === null && this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--poll--options"]').children.length <= 1)
@@ -2780,7 +2781,7 @@ export default async (application: Application): Promise<void> => {
                                       </div>
                                     `}).querySelector('[key="content-editor--write--poll"]');
                                     write.insertAdjacentElement("afterbegin", poll);
-                                    leafac.execute({ event, element: poll });
+                                    leafac.execute({ element: poll });
                                   };
                                 `}"
                               >
