@@ -1191,7 +1191,9 @@ export default async (application: Application): Promise<void> => {
                     `}"
                   >
                     <i
-                      class="bi ${closed ? "bi-eye-slash-fill" : "bi-eye-slash"}"
+                      class="bi ${closed
+                        ? "bi-eye-slash-fill"
+                        : "bi-eye-slash"}"
                     ></i>
                     Hide Votes
                   </button>
@@ -3626,6 +3628,19 @@ export default async (application: Application): Promise<void> => {
                         textFieldEdit.insert(this, text);
                         tippy.hideAll();
                         this.focus();
+                      };
+
+                      this.onclick = this.onkeyup = () => {
+                        for (const match of this.value.matchAll(/<courselore-poll\\s+reference="\\d+"><\\/courselore-poll>/g))
+                          if (match.index <= this.selectionStart && this.selectionStart <= match.index + match[0].length) {
+                            console.log("SHOW POLL EDIT DROPDOWN");
+                          }
+
+                        // const caretCoordinates = textareaCaret(this, anchorIndex - 1);
+                        // dropdownMenuTarget.style.top = String(caretCoordinates.top) + "px";
+                        // dropdownMenuTarget.style.left = String(caretCoordinates.left) + "px";
+                        // tippy.hideAll();
+                        // dropdownMenu.show();
                       };
                     }
                   `}"
