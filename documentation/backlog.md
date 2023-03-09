@@ -6,7 +6,6 @@
 
 - Features
   - Visualization
-    - Person who created may see individual votes
     - People who may edit the poll (staff & author) may see votes without having voted.
   - Vote.
     - Trigger a Live-Update
@@ -28,6 +27,7 @@
       - When voting.
   - Database indices
 - Edge cases
+  - Quoting picks up the positions from the rendered element within the poll option
   - Sometimes the form to create a poll doesn’t come with three options already created
   - “Preview” of polls creates a `<form>` within a `<form>` situation
   - User biography with a mention to themselves (should avoid infinite loop by preventing decoration)

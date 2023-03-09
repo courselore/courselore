@@ -758,9 +758,10 @@ export default async (application: Application): Promise<void> => {
           continue;
         }
 
-        const poll = application.database.get<{
+        const pollRow = application.database.get<{
           id: number;
           reference: string;
+          authorEnrollmentId: number | null;
           multipleChoicesAt: string | null;
           closesAt: string | null;
           votesCount: number;
@@ -769,6 +770,7 @@ export default async (application: Application): Promise<void> => {
             SELECT
               "messagePolls"."id",
               "messagePolls"."reference",
+              "messagePolls"."authorEnrollment" AS "authorEnrollmentId",
               "messagePolls"."multipleChoicesAt",
               "messagePolls"."closesAt",
               COUNT("messagePollVotes"."id") AS "votesCount"
@@ -781,10 +783,21 @@ export default async (application: Application): Promise<void> => {
             GROUP BY "messagePolls"."id"
           `
         );
-        if (poll === undefined) {
+        if (pollRow === undefined) {
           element.outerHTML = html`<div>POLL REFERENCE NOT FOUND</div>`;
           continue;
         }
+        const poll = {
+          id: pollRow.id,
+          reference: pollRow.reference,
+          authorEnrollment:
+            pollRow.authorEnrollmentId !== null
+              ? { id: pollRow.authorEnrollmentId }
+              : ("no-longer-enrolled" as const),
+          multipleChoicesAt: pollRow.multipleChoicesAt,
+          closesAt: pollRow.closesAt,
+          votesCount: pollRow.votesCount,
+        };
 
         const options = application.database.all<{
           id: number;
@@ -1005,8 +1018,11 @@ export default async (application: Application): Promise<void> => {
                     </button>
                   </form>
 
-                  $${responseCourseEnrolled.locals.enrollment.courseRole ===
-                  "staff"
+                  $${mayEditPoll({
+                    request: requestCourseEnrolled,
+                    response: responseCourseEnrolled,
+                    poll,
+                  })
                     ? html`
                         <div
                           key="poll--actions--show-votes"
@@ -4399,6 +4415,28 @@ ${contentSource}</textarea
       };
     };
 
+  const mayEditPoll = ({
+    request,
+    response,
+    poll,
+  }: {
+    request: express.Request<
+      {},
+      any,
+      {},
+      {},
+      Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+    >;
+    response: express.Response<
+      any,
+      Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+    >;
+    poll: { authorEnrollment: { id: number } | "no-longer-enrolled" };
+  }): boolean =>
+    response.locals.enrollment.courseRole === "staff" ||
+    (poll.authorEnrollment !== "no-longer-enrolled" &&
+      poll.authorEnrollment.id === response.locals.enrollment.id);
+
   application.web.use<
     { courseReference: string; pollReference: string },
     any,
@@ -4641,7 +4679,7 @@ ${contentSource}</textarea
     (request, response, next) => {
       if (
         response.locals.poll === undefined ||
-        response.locals.enrollment.courseRole !== "staff"
+        !mayEditPoll({ request, response, poll: response.locals.poll })
       )
         return next();
 
