@@ -7,13 +7,16 @@
 - Features
   - Vote.
     - Take closing in account.
-      - Presentation.
       - Server.
         - Voting.
         - Remove vote.
+      - Presentation.
   - Edit poll.
-    - Close a poll.
-    - Live-Update should update options (in case the poll was edited)
+    - In content editor.
+    - In poll display.
+    - Edit options.
+      - Live-Update should update options (in case the poll was edited)
+    - Edit closing.
   - Disable polls for students
     - Default students can’t create polls
   - Document who can see what.
