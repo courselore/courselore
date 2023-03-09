@@ -606,7 +606,7 @@ export default async (application: Application): Promise<void> => {
         ))
           for (const option of lodash.sampleSize(
             pollMultipleChoiceOptions,
-            pollMultipleChoiceOptions.length
+            lodash.random(1, pollMultipleChoiceOptions.length)
           ))
             application.database.run(
               sql`
