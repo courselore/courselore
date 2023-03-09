@@ -825,6 +825,7 @@ export default async (application: Application): Promise<void> => {
         );
 
         const voted = options.some((option) => option.enrollmentVote !== null);
+        const closed = application.web.locals.helpers.isExpired(poll.closesAt);
 
         let pollHTML = html`
           $${options.map((option) => {
