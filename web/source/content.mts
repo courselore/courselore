@@ -4714,6 +4714,12 @@ ${contentSource}</textarea
             : ""
         }`
       );
+
+      application.web.locals.helpers.liveUpdates({
+        request,
+        response,
+        url: `/courses/${response.locals.course.reference}`,
+      });
     }
   );
 
@@ -4747,6 +4753,12 @@ ${contentSource}</textarea
             : ""
         }`
       );
+
+      application.web.locals.helpers.liveUpdates({
+        request,
+        response,
+        url: `/courses/${response.locals.course.reference}`,
+      });
     }
   );
 

@@ -8,6 +8,7 @@
   - Vote.
     - Trigger a Live-Update
       - Live-Update should update results & options (in case the poll was edited)
+      - The bar graph doesn’t move because it uses `style`.
     - Take closing in account.
       - Presentation.
       - Server.
