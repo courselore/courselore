@@ -6,9 +6,6 @@
 
 - Features
   - Vote.
-    - Trigger a Live-Update
-      - Live-Update should update results & options (in case the poll was edited)
-      - The bar graph doesn’t move because it uses `style`.
     - Take closing in account.
       - Presentation.
       - Server.
@@ -16,6 +13,7 @@
         - Remove vote.
   - Edit poll.
     - Close a poll.
+    - Live-Update should update options (in case the poll was edited)
   - Disable polls for students
     - Default students can’t create polls
   - Document who can see what.

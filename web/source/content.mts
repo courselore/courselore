@@ -863,28 +863,34 @@ export default async (application: Application): Promise<void> => {
                 response: responseCourseEnrolled,
                 poll,
               })
-                ? html`
-                    <div
-                      data-results="true"
-                      $${voted ? html`` : html`hidden`}
-                      class="strong"
-                      style="
-                        --width: ${poll.votesCount < 10
+                ? (() => {
+                    const width =
+                      poll.votesCount < 10
                         ? "var(--space--14)"
                         : poll.votesCount < 100
                         ? "var(--space--16)"
                         : poll.votesCount < 1000
                         ? "var(--space--18)"
-                        : "var(--space--24)"};
-                      "
-                      css="${css`
-                        width: var(--width);
-                      `}"
-                    >
-                      ${String(option.votesCount)}
-                      vote${option.votesCount === 1 ? "" : "s"}
-                    </div>
-                  `
+                        : "var(--space--24)";
+
+                    return html`
+                      <div
+                        data-results="true"
+                        $${voted ? html`` : html`hidden`}
+                        class="strong"
+                        style="--width: ${width};"
+                        css="${css`
+                          width: var(--width);
+                        `}"
+                        javascript="${javascript`
+                          this.style.setProperty("--width", ${width});
+                        `}"
+                      >
+                        ${String(option.votesCount)}
+                        vote${option.votesCount === 1 ? "" : "s"}
+                      </div>
+                    `;
+                  })()
                 : html``}
 
               <div
@@ -957,30 +963,38 @@ export default async (application: Application): Promise<void> => {
                         `}"
                       ></div>
 
-                      <div
-                        data-results="true"
-                        $${voted ? html`` : html`hidden`}
-                        style="
-                          --width: ${option.votesCount > 0
-                          ? `calc(var(--space--1) + ${
-                              (option.votesCount /
-                                Math.max(poll.votesCount, 1)) *
-                              100
-                            }% + var(--space--1))`
-                          : "0%"};
-                        "
-                        css="${css`
-                          background: var(--color--blue--100);
-                          @media (prefers-color-scheme: dark) {
-                            background-color: var(--color--blue--900);
-                          }
-                          width: var(--width);
-                          height: calc(var(--space--6) + var(--space--0-5));
-                          margin-left: var(--space---1);
-                          margin-top: var(--space---1);
-                          border-radius: var(--border-radius--md);
-                        `}"
-                      ></div>
+                      $${(() => {
+                        const width =
+                          option.votesCount > 0
+                            ? `calc(var(--space--1) + ${
+                                (option.votesCount /
+                                  Math.max(poll.votesCount, 1)) *
+                                100
+                              }% + var(--space--1))`
+                            : "0%";
+
+                        return html`
+                          <div
+                            data-results="true"
+                            $${voted ? html`` : html`hidden`}
+                            style="--width: ${width};"
+                            css="${css`
+                              background: var(--color--blue--100);
+                              @media (prefers-color-scheme: dark) {
+                                background-color: var(--color--blue--900);
+                              }
+                              width: var(--width);
+                              height: calc(var(--space--6) + var(--space--0-5));
+                              margin-left: var(--space---1);
+                              margin-top: var(--space---1);
+                              border-radius: var(--border-radius--md);
+                            `}"
+                            javascript="${javascript`
+                              this.style.setProperty("--width", ${width});
+                            `}"
+                          ></div>
+                        `;
+                      })()}
 
                       <div
                         css="${css`
