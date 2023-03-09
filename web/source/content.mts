@@ -1191,7 +1191,7 @@ export default async (application: Application): Promise<void> => {
                     `}"
                   >
                     <i
-                      class="bi ${closed ? "bi-eye-slash-fill" : "bi-eye"}"
+                      class="bi ${closed ? "bi-eye-slash-fill" : "bi-eye-slash"}"
                     ></i>
                     Hide Votes
                   </button>
