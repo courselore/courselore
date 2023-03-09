@@ -2400,7 +2400,7 @@ export default async (application: Application): Promise<void> => {
                   $${invitations.map((invitation) => {
                     const action = `https://${application.configuration.hostname}/courses/${response.locals.course.reference}/settings/invitations/${invitation.reference}`;
                     const isInvitationExpired =
-                      application.web.locals.helpers.isExpired(
+                      application.web.locals.helpers.isPast(
                         invitation.expiresAt
                       );
                     const isUsed = invitation.usedAt !== null;
@@ -3236,9 +3236,7 @@ export default async (application: Application): Promise<void> => {
         (request.body.expiresAt !== undefined &&
           (typeof request.body.expiresAt !== "string" ||
             !application.web.locals.helpers.isDate(request.body.expiresAt) ||
-            application.web.locals.helpers.isExpired(
-              request.body.expiresAt
-            ))) ||
+            application.web.locals.helpers.isPast(request.body.expiresAt))) ||
         typeof request.body.type !== "string" ||
         !["link", "email"].includes(request.body.type)
       )
@@ -3544,7 +3542,7 @@ export default async (application: Application): Promise<void> => {
 
       if (request.body.resend === "true") {
         if (
-          application.web.locals.helpers.isExpired(
+          application.web.locals.helpers.isPast(
             response.locals.invitation.expiresAt
           ) ||
           response.locals.invitation.email === null
@@ -3567,7 +3565,7 @@ export default async (application: Application): Promise<void> => {
 
       if (request.body.courseRole !== undefined) {
         if (
-          application.web.locals.helpers.isExpired(
+          application.web.locals.helpers.isPast(
             response.locals.invitation.expiresAt
           ) ||
           !application.web.locals.helpers.courseRoles.includes(
@@ -3592,7 +3590,7 @@ export default async (application: Application): Promise<void> => {
         if (
           typeof request.body.expiresAt !== "string" ||
           !application.web.locals.helpers.isDate(request.body.expiresAt) ||
-          application.web.locals.helpers.isExpired(request.body.expiresAt)
+          application.web.locals.helpers.isPast(request.body.expiresAt)
         )
           return next("Validation");
 
@@ -3707,7 +3705,7 @@ export default async (application: Application): Promise<void> => {
         );
 
       if (
-        application.web.locals.helpers.isExpired(
+        application.web.locals.helpers.isPast(
           response.locals.invitation.expiresAt
         )
       )

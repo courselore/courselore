@@ -825,7 +825,7 @@ export default async (application: Application): Promise<void> => {
         );
 
         const voted = options.some((option) => option.enrollmentVote !== null);
-        const closed = application.web.locals.helpers.isExpired(poll.closesAt);
+        const closed = application.web.locals.helpers.isPast(poll.closesAt);
 
         let pollHTML = html`
           $${options.map((option) => {
@@ -4418,7 +4418,7 @@ ${contentSource}</textarea
       (request.body.closesAt !== undefined &&
         (typeof request.body.closesAt !== "string" ||
           !application.web.locals.helpers.isDate(request.body.closesAt) ||
-          application.web.locals.helpers.isExpired(request.body.closesAt))) ||
+          application.web.locals.helpers.isPast(request.body.closesAt))) ||
       !Array.isArray(request.body.options) ||
       request.body.options.length <= 1 ||
       request.body.options.some(
@@ -4676,9 +4676,7 @@ ${contentSource}</textarea
       request.body.optionsReferences ??= [];
 
       if (
-        application.web.locals.helpers.isExpired(
-          response.locals.poll.closesAt
-        ) ||
+        application.web.locals.helpers.isPast(response.locals.poll.closesAt) ||
         !Array.isArray(request.body.optionsReferences) ||
         (response.locals.poll.multipleChoicesAt === null &&
           request.body.optionsReferences.length !== 1) ||
@@ -4752,9 +4750,7 @@ ${contentSource}</textarea
     (request, response, next) => {
       if (response.locals.poll === undefined) return next();
 
-      if (
-        application.web.locals.helpers.isExpired(response.locals.poll.closesAt)
-      )
+      if (application.web.locals.helpers.isPast(response.locals.poll.closesAt))
         return next("Validation");
 
       application.database.run(
