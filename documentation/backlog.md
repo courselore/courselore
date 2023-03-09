@@ -5,9 +5,6 @@
 **Poll**
 
 - Features
-  - Vote.
-    - Take closing in account.
-      - Presentation.
   - Edit poll.
     - In content editor.
     - In poll display.
