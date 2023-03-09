@@ -1035,6 +1035,27 @@ export default async (application: Application): Promise<void> => {
 
             return optionHTML;
           })}
+          $${poll.closesAt !== null
+            ? html`
+                <div
+                  class="secondary"
+                  css="${css`
+                    font-size: var(--font-size--xs);
+                    line-height: var(--line-height--xs);
+                  `}"
+                >
+                  <span>
+                    ${closed ? "Closed" : "Closes"}
+                    <time
+                      datetime="${new Date(poll.closesAt).toISOString()}"
+                      javascript="${javascript`
+                        leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
+                      `}"
+                    ></time>
+                  </span>
+                </div>
+              `
+            : html``}
 
           <div
             css="${css`
