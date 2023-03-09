@@ -4675,6 +4675,9 @@ ${contentSource}</textarea
       request.body.optionsReferences ??= [];
 
       if (
+        application.web.locals.helpers.isExpired(
+          response.locals.poll.closesAt
+        ) ||
         !Array.isArray(request.body.optionsReferences) ||
         (response.locals.poll.multipleChoicesAt === null &&
           request.body.optionsReferences.length !== 1) ||
@@ -4747,6 +4750,11 @@ ${contentSource}</textarea
     "/courses/:courseReference/polls/:pollReference/votes",
     (request, response, next) => {
       if (response.locals.poll === undefined) return next();
+
+      if (
+        application.web.locals.helpers.isExpired(response.locals.poll.closesAt)
+      )
+        return next("Validation");
 
       application.database.run(
         sql`

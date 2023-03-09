@@ -7,9 +7,6 @@
 - Features
   - Vote.
     - Take closing in account.
-      - Server.
-        - Voting.
-        - Remove vote.
       - Presentation.
   - Edit poll.
     - In content editor.
