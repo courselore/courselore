@@ -1157,7 +1157,7 @@ export default async (application: Application): Promise<void> => {
                       };
                     `}"
                   >
-                    <i class="bi bi-eye"></i>
+                    <i class="bi ${closed ? "bi-eye-fill" : "bi-eye"}"></i>
                     Show Votes
                   </button>
 
@@ -1177,7 +1177,9 @@ export default async (application: Application): Promise<void> => {
                 >
                   <button
                     type="button"
-                    class="button button--transparent"
+                    class="button ${closed
+                      ? "button--blue"
+                      : "button--transparent"}"
                     javascript="${javascript`
                       this.onclick = async () => {
                         const poll = this.closest('[key="poll"]');
@@ -1188,7 +1190,9 @@ export default async (application: Application): Promise<void> => {
                       };
                     `}"
                   >
-                    <i class="bi bi-eye-slash"></i>
+                    <i
+                      class="bi ${closed ? "bi-eye-slash-fill" : "bi-eye"}"
+                    ></i>
                     Hide Votes
                   </button>
                 </div>
