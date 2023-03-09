@@ -1140,7 +1140,9 @@ export default async (application: Application): Promise<void> => {
                   >
                     <button
                       type="button"
-                      class="button button--transparent"
+                      class="button ${closed
+                        ? "button--blue"
+                        : "button--transparent"}"
                       javascript="${javascript`
                         this.onclick = async () => {
                           const poll = this.closest('[key="poll"]');
