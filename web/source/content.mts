@@ -1050,156 +1050,165 @@ export default async (application: Application): Promise<void> => {
                 </div>
               `
             : html``}
+          $${(() => {
+            let actions = html``;
 
-          <div
-            css="${css`
-              display: flex;
-              column-gap: var(--space--4);
-              row-gap: var(--space--2);
-              flex-wrap: wrap;
-            `}"
-          >
-            $${closed
-              ? html``
-              : voted
-              ? html`
-                  <form
-                    method="DELETE"
-                    action="https://${application.configuration
-                      .hostname}/courses/${responseCourseEnrolled.locals.course
-                      .reference}/polls/${poll.reference}/votes${qs.stringify(
-                      { redirect: request.originalUrl.slice(1) },
-                      { addQueryPrefix: true }
-                    )}"
-                  >
-                    <button class="button button--rose">
-                      <i class="bi bi-trash-fill"></i>
-                      Remove Vote
-                    </button>
-                  </form>
-                `
-              : html`
-                  <div>
-                    <button class="button button--blue">
-                      <i class="bi bi-card-checklist"></i>
-                      Vote
-                    </button>
-                  </div>
+            if (!closed)
+              actions += voted
+                ? html`
+                    <form
+                      method="DELETE"
+                      action="https://${application.configuration
+                        .hostname}/courses/${responseCourseEnrolled.locals
+                        .course
+                        .reference}/polls/${poll.reference}/votes${qs.stringify(
+                        { redirect: request.originalUrl.slice(1) },
+                        { addQueryPrefix: true }
+                      )}"
+                    >
+                      <button class="button button--rose">
+                        <i class="bi bi-trash-fill"></i>
+                        Remove Vote
+                      </button>
+                    </form>
+                  `
+                : html`
+                    <div>
+                      <button class="button button--blue">
+                        <i class="bi bi-card-checklist"></i>
+                        Vote
+                      </button>
+                    </div>
 
-                  $${mayEdit
-                    ? html`
-                        <div key="poll--actions--show-results">
-                          <button
-                            type="button"
-                            class="button button--transparent"
-                            javascript="${javascript`
-                              this.onclick = async () => {
-                                const poll = this.closest('[key="poll"]');
-                                for (const element of poll.querySelectorAll('[data-results="true"]:not([data-results-votes="true"])'))
-                                  element.hidden = false;
-                                poll.querySelector('[key="poll--actions--show-results"]').hidden = true;
-                              };
-                            `}"
-                          >
-                            <i class="bi bi-eye"></i>
-                            Show Results
-                          </button>
-                        </div>
+                    $${mayEdit
+                      ? html`
+                          <div key="poll--actions--show-results">
+                            <button
+                              type="button"
+                              class="button button--transparent"
+                              javascript="${javascript`
+                                this.onclick = async () => {
+                                  const poll = this.closest('[key="poll"]');
+                                  for (const element of poll.querySelectorAll('[data-results="true"]:not([data-results-votes="true"])'))
+                                    element.hidden = false;
+                                  poll.querySelector('[key="poll--actions--show-results"]').hidden = true;
+                                };
+                              `}"
+                            >
+                              <i class="bi bi-eye"></i>
+                              Show Results
+                            </button>
+                          </div>
 
-                        <div data-results="true" hidden>
-                          <button
-                            type="button"
-                            class="button button--transparent"
-                            javascript="${javascript`
-                              this.onclick = async () => {
-                                const poll = this.closest('[key="poll"]');
-                                for (const element of poll.querySelectorAll('[data-results="true"]'))
-                                  element.hidden = true;
-                                poll.querySelector('[key="poll--actions--show-results"]').hidden = false;
-                              };
-                            `}"
-                          >
-                            <i class="bi bi-eye-slash"></i>
-                            Hide Results
-                          </button>
-                        </div>
-                      `
-                    : html``}
-                `}
-            $${mayEdit
-              ? html`
-                  <div
-                    key="poll--actions--show-votes"
-                    data-results="true"
-                    $${voted || closed ? html`` : html`hidden`}
-                    css="${css`
-                      display: flex;
-                      gap: var(--space--2);
-                      align-items: center;
+                          <div data-results="true" hidden>
+                            <button
+                              type="button"
+                              class="button button--transparent"
+                              javascript="${javascript`
+                                this.onclick = async () => {
+                                  const poll = this.closest('[key="poll"]');
+                                  for (const element of poll.querySelectorAll('[data-results="true"]'))
+                                    element.hidden = true;
+                                  poll.querySelector('[key="poll--actions--show-results"]').hidden = false;
+                                };
+                              `}"
+                            >
+                              <i class="bi bi-eye-slash"></i>
+                              Hide Results
+                            </button>
+                          </div>
+                        `
+                      : html``}
+                  `;
+
+            if (mayEdit)
+              actions += html`
+                <div
+                  key="poll--actions--show-votes"
+                  data-results="true"
+                  $${voted || closed ? html`` : html`hidden`}
+                  css="${css`
+                    display: flex;
+                    gap: var(--space--2);
+                    align-items: center;
+                  `}"
+                >
+                  <button
+                    type="button"
+                    class="button ${closed
+                      ? "button--blue"
+                      : "button--transparent"}"
+                    javascript="${javascript`
+                      this.onclick = async () => {
+                        const poll = this.closest('[key="poll"]');
+                        const loading = poll.querySelector('[key="poll--actions--show-votes--loading"]');
+                        loading.hidden = false;
+                        const partial = leafac.stringToElement(await (await fetch(${`https://${application.configuration.hostname}/courses/${responseCourseEnrolled.locals.course.reference}/polls/${poll.reference}/votes`}, { cache: "no-store" })).text());
+                        for (const partialElement of partial.querySelectorAll('[key^="poll--option--votes/"]')) {
+                          const element = poll.querySelector('[key="' + partialElement.getAttribute("key") + '"]');
+                          element.onbeforemorph = (event) => !event?.detail?.liveUpdate;
+                          leafac.morph(element, partialElement);
+                          leafac.execute({ element });
+                          element.hidden = false;
+                        }
+                        loading.hidden = true;
+                        poll.querySelector('[key="poll--actions--show-votes"]').hidden = true;
+                        poll.querySelector('[key="poll--actions--hide-votes"]').hidden = false;
+                      };
                     `}"
                   >
-                    <button
-                      type="button"
-                      class="button ${closed
-                        ? "button--blue"
-                        : "button--transparent"}"
-                      javascript="${javascript`
-                        this.onclick = async () => {
-                          const poll = this.closest('[key="poll"]');
-                          const loading = poll.querySelector('[key="poll--actions--show-votes--loading"]');
-                          loading.hidden = false;
-                          const partial = leafac.stringToElement(await (await fetch(${`https://${application.configuration.hostname}/courses/${responseCourseEnrolled.locals.course.reference}/polls/${poll.reference}/votes`}, { cache: "no-store" })).text());
-                          for (const partialElement of partial.querySelectorAll('[key^="poll--option--votes/"]')) {
-                            const element = poll.querySelector('[key="' + partialElement.getAttribute("key") + '"]');
-                            element.onbeforemorph = (event) => !event?.detail?.liveUpdate;
-                            leafac.morph(element, partialElement);
-                            leafac.execute({ element });
-                            element.hidden = false;
-                          }
-                          loading.hidden = true;
-                          poll.querySelector('[key="poll--actions--show-votes"]').hidden = true;
-                          poll.querySelector('[key="poll--actions--hide-votes"]').hidden = false;
-                        };
-                      `}"
-                    >
-                      <i class="bi bi-eye"></i>
-                      Show Votes
-                    </button>
+                    <i class="bi bi-eye"></i>
+                    Show Votes
+                  </button>
 
-                    <div key="poll--actions--show-votes--loading" hidden>
-                      $${application.web.locals.partials.spinner({
-                        request,
-                        response,
-                      })}
-                    </div>
+                  <div key="poll--actions--show-votes--loading" hidden>
+                    $${application.web.locals.partials.spinner({
+                      request,
+                      response,
+                    })}
                   </div>
+                </div>
 
-                  <div
-                    key="poll--actions--hide-votes"
-                    data-results="true"
-                    data-results-votes="true"
-                    hidden
+                <div
+                  key="poll--actions--hide-votes"
+                  data-results="true"
+                  data-results-votes="true"
+                  hidden
+                >
+                  <button
+                    type="button"
+                    class="button button--transparent"
+                    javascript="${javascript`
+                      this.onclick = async () => {
+                        const poll = this.closest('[key="poll"]');
+                        for (const element of poll.querySelectorAll('[key^="poll--option--votes/"]'))
+                          element.hidden = true;
+                        poll.querySelector('[key="poll--actions--show-votes"]').hidden = false;
+                        poll.querySelector('[key="poll--actions--hide-votes"]').hidden = true;
+                      };
+                    `}"
                   >
-                    <button
-                      type="button"
-                      class="button button--transparent"
-                      javascript="${javascript`
-                        this.onclick = async () => {
-                          const poll = this.closest('[key="poll"]');
-                          for (const element of poll.querySelectorAll('[key^="poll--option--votes/"]'))
-                            element.hidden = true;
-                          poll.querySelector('[key="poll--actions--show-votes"]').hidden = false;
-                          poll.querySelector('[key="poll--actions--hide-votes"]').hidden = true;
-                        };
-                      `}"
-                    >
-                      <i class="bi bi-eye-slash"></i>
-                      Hide Votes
-                    </button>
+                    <i class="bi bi-eye-slash"></i>
+                    Hide Votes
+                  </button>
+                </div>
+              `;
+
+            return actions !== html``
+              ? html`
+                  <div
+                    css="${css`
+                      display: flex;
+                      column-gap: var(--space--4);
+                      row-gap: var(--space--2);
+                      flex-wrap: wrap;
+                    `}"
+                  >
+                    $${actions}
                   </div>
                 `
-              : html``}
-          </div>
+              : html``;
+          })()}
         `;
 
         pollHTML =
@@ -1207,8 +1216,8 @@ export default async (application: Application): Promise<void> => {
             ? html`
                 <div
                   key="poll"
-                  class="poll"
                   css="${css`
+                    margin: var(--space--8) var(--space--0);
                     display: flex;
                     flex-direction: column;
                     gap: var(--space--2);
@@ -1228,8 +1237,8 @@ export default async (application: Application): Promise<void> => {
                     { addQueryPrefix: true }
                   )}"
                   novalidate
-                  class="poll"
                   css="${css`
+                    margin: var(--space--8) var(--space--0);
                     display: flex;
                     flex-direction: column;
                     gap: var(--space--2);
