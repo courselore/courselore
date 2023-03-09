@@ -865,7 +865,8 @@ export default async (application: Application): Promise<void> => {
               })
                 ? html`
                     <div
-                      $${voted ? html`` : html`data-results="true" hidden`}
+                      data-results="true"
+                      $${voted ? html`` : html`hidden`}
                       class="strong"
                       style="
                         --width: ${poll.votesCount < 10
@@ -941,7 +942,8 @@ export default async (application: Application): Promise<void> => {
                       `}"
                     >
                       <div
-                        $${voted ? html`` : html`data-results="true" hidden`}
+                        data-results="true"
+                        $${voted ? html`` : html`hidden`}
                         css="${css`
                           background: var(--color--gray--medium--100);
                           @media (prefers-color-scheme: dark) {
@@ -956,7 +958,8 @@ export default async (application: Application): Promise<void> => {
                       ></div>
 
                       <div
-                        $${voted ? html`` : html`data-results="true" hidden`}
+                        data-results="true"
+                        $${voted ? html`` : html`hidden`}
                         style="
                           --width: ${option.votesCount > 0
                           ? `calc(var(--space--1) + ${
@@ -1103,7 +1106,8 @@ export default async (application: Application): Promise<void> => {
               ? html`
                   <div
                     key="poll--actions--show-votes"
-                    $${voted ? html`` : html`data-results="true" hidden`}
+                    data-results="true"
+                    $${voted ? html`` : html`hidden`}
                     css="${css`
                       display: flex;
                       gap: var(--space--2);
@@ -1144,11 +1148,14 @@ export default async (application: Application): Promise<void> => {
                     </div>
                   </div>
 
-                  <div key="poll--actions--hide-votes" hidden>
+                  <div
+                    key="poll--actions--hide-votes"
+                    data-results="true"
+                    data-results-votes="true"
+                    hidden
+                  >
                     <button
                       type="button"
-                      data-results="true"
-                      data-results-votes="true"
                       class="button button--transparent"
                       javascript="${javascript`
                         this.onclick = async () => {
