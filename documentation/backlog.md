@@ -8,6 +8,7 @@
 - Features
   - Edit poll.
     - In content editor.
+      - Create poll editor component.
       - Check what happens when you create a poll and the focus is brought back to the editor.
     - In poll display.
     - Edit options.
