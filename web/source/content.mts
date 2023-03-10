@@ -3795,7 +3795,7 @@ ${contentSource}</textarea
                     }/courses/${response.locals.course.reference}/polls${
                       poll !== undefined ? `/${poll.reference}` : ``
                     }`}, {
-                      method: ${poll === undefined ? "POST" : "PATCH"},
+                      method: ${poll === undefined ? "POST" : "PUT"},
                       headers: { "CSRF-Protection": "true", },
                       cache: "no-store",
                       body,
@@ -4828,6 +4828,132 @@ ${contentSource}</textarea
           }),
         })
       );
+    }
+  );
+
+  application.web.put<
+    { courseReference: string; pollReference: string },
+    any,
+    {
+      choices?: "single" | "multiple";
+      closesAt?: string;
+      options?: {
+        reference?: string | undefined;
+        content?: string;
+      }[];
+    },
+    {},
+    ResponseLocalsPoll
+  >(
+    "/courses/:courseReference/polls/:pollReference",
+    (request, response, next) => {
+      if (
+        response.locals.poll === undefined ||
+        !mayEditPoll({ request, response, poll: response.locals.poll })
+      )
+        return next();
+
+      request.body.options ??= [];
+
+      if (
+        typeof request.body.choices !== "string" ||
+        !["single", "multiple"].includes(request.body.choices) ||
+        (request.body.closesAt !== undefined &&
+          (typeof request.body.closesAt !== "string" ||
+            !application.web.locals.helpers.isDate(request.body.closesAt) ||
+            application.web.locals.helpers.isPast(request.body.closesAt))) ||
+        !Array.isArray(request.body.options) ||
+        request.body.options.length <= 1 ||
+        request.body.options.some(
+          (option) =>
+            (option.reference !== undefined &&
+              (typeof option.reference !== "string" ||
+                !response.locals.poll.options
+                  .map((option) => option.reference)
+                  .includes(option.reference))) ||
+            typeof option.content !== "string" ||
+            option.content.trim() === ""
+        )
+      )
+        return next("Validation");
+
+      application.database.executeTransaction(() => {
+        application.database.run(
+          sql`
+            UPDATE "messagePolls"
+            SET
+              "multipleChoicesAt" = ${
+                request.body.choices === "multiple"
+                  ? new Date().toISOString()
+                  : null
+              },
+              "closesAt" = ${request.body.closesAt}
+            WHERE
+              "id" = ${response.locals.poll.id}
+          `
+        );
+
+        for (const [order, option] of request.body.options!.entries())
+          if (option.reference === undefined)
+            application.database.run(
+              sql`
+                INSERT INTO "messagePollOptions" (
+                  "createdAt",
+                  "messagePoll",
+                  "reference",
+                  "order",
+                  "contentSource",
+                  "contentPreprocessed"
+                )
+                VALUES (
+                  ${new Date().toISOString()},
+                  ${response.locals.poll.id},
+                  ${cryptoRandomString({ length: 20, type: "numeric" })},
+                  ${order},
+                  ${option.content!},
+                  ${
+                    application.web.locals.partials.contentPreprocessed(
+                      option.content!
+                    ).contentPreprocessed
+                  }
+                )
+              `
+            );
+          else
+            application.database.run(
+              sql`
+                UPDATE "messagePollOptions"
+                SET
+                  "order" = ${order},
+                  "contentSource" = ${option.content!},
+                  "contentPreprocessed" = ${
+                    application.web.locals.partials.contentPreprocessed(
+                      option.content!
+                    ).contentPreprocessed
+                  }
+                WHERE
+                  "course" = ${response.locals.course.id},
+                  "reference" = ${option.reference}
+              `
+            );
+
+        for (const option of response.locals.poll.options.filter(
+          (option) =>
+            !request.body
+              .options!.map((option) => option.reference)
+              .includes(option.reference)
+        ))
+          application.database.run(
+            sql`
+              DELETE FROM "messagePollOptions"
+              WHERE
+                "course" = ${response.locals.course.id},
+                "reference" = ${option.reference}
+            `
+          );
+      });
+
+      response.end();
     }
   );
 

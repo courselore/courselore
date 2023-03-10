@@ -38,7 +38,7 @@ export default async (application: Application): Promise<void> => {
       !["GET", "HEAD", "OPTIONS", "TRACE"].includes(request.method) &&
       request.header("CSRF-Protection") !== "true"
     )
-      next("Cross-Site Request Forgery");
+      return next("Cross-Site Request Forgery");
 
     next();
   });

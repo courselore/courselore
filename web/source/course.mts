@@ -1853,7 +1853,7 @@ export default async (application: Application): Promise<void> => {
     HTML,
     {
       tags?: {
-        reference?: string;
+        reference?: string | undefined;
         name?: string;
         isStaffOnly?: "on";
       }[];
@@ -1910,7 +1910,9 @@ export default async (application: Application): Promise<void> => {
                 "staffOnlyAt" = ${
                   tag.isStaffOnly === "on" ? new Date().toISOString() : null
                 }
-              WHERE "reference" = ${tag.reference}
+              WHERE
+                "course" = ${response.locals.course.id},
+                "reference" = ${tag.reference}
             `
           );
 
@@ -1922,7 +1924,10 @@ export default async (application: Application): Promise<void> => {
       ))
         application.database.run(
           sql`
-            DELETE FROM "tags" WHERE "reference" = ${tag.reference}
+            DELETE FROM "tags"
+            WHERE
+              "course" = ${response.locals.course.id},
+              "reference" = ${tag.reference}
           `
         );
     });

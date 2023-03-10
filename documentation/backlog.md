@@ -2,6 +2,8 @@
 
 ## Finish
 
+- Test tag update & deletion
+
 **Poll**
 
 - Features
@@ -9,6 +11,7 @@
     - In content editor.
       - Create poll editor component.
       - Server for `PATCH` poll.
+        - Send Live-Update?
     - In poll display.
     - Check what happens when you create a poll and the focus is brought back to the editor.
     - Edit options.
@@ -26,6 +29,7 @@
       - When voting.
   - Database indices
 - Edge cases
+  - Should we lock the editing of a poll when it’s closed? (You’d have to unclose it, then edit it…)
   - The “Quote” dropdown menu shouldn’t show up when clicking on poll
   - Quoting picks up the positions from the rendered element within the poll option
   - Sometimes the form to create a poll doesn’t come with three options already created
