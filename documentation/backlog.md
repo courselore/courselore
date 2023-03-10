@@ -8,11 +8,12 @@
   - Edit poll.
     - In content editor.
       - Create poll editor component.
-      - Check what happens when you create a poll and the focus is brought back to the editor.
+      - Server for `PATCH` poll.
     - In poll display.
+    - Check what happens when you create a poll and the focus is brought back to the editor.
     - Edit options.
       - Live-Update should update options (in case the poll was edited)
-    - Edit closing.
+    - Shortcuts for closing the poll.
   - Test rich-text in poll options.
   - Disable polls for students
     - Default students can’t create polls
