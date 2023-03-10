@@ -2,14 +2,11 @@
 
 ## Finish
 
-- Test tag update & deletion
-
 **Poll**
 
 - Features
   - Edit poll.
     - In content editor.
-      - Create poll editor component.
       - Server for `PATCH` poll.
         - Send Live-Update?
     - In poll display.
