@@ -2,8 +2,6 @@
 
 ## Finish
 
-- Extract `tag` partial to DRY existing tags & new tags.
-
 **Poll**
 
 - Features
