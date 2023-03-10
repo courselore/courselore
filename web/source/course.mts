@@ -1911,7 +1911,7 @@ export default async (application: Application): Promise<void> => {
                   tag.isStaffOnly === "on" ? new Date().toISOString() : null
                 }
               WHERE
-                "course" = ${response.locals.course.id},
+                "course" = ${response.locals.course.id} AND
                 "reference" = ${tag.reference}
             `
           );
@@ -1926,7 +1926,7 @@ export default async (application: Application): Promise<void> => {
           sql`
             DELETE FROM "tags"
             WHERE
-              "course" = ${response.locals.course.id},
+              "course" = ${response.locals.course.id} AND
               "reference" = ${tag.reference}
           `
         );
