@@ -2,9 +2,6 @@
 
 ## Finish
 
-- Fix an issue when the content editor has scrolled and `textareaCaret()` gives you the position without taking the scrolling in account.
-  - It’s off to the right.
-  - It may not need `placement: "bottom-start"`.
 - Fix an issue when the content editor autoscrolls and the parent element seems to scroll as well 🤷
 
 **Poll**

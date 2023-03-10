@@ -3548,7 +3548,7 @@ export default async (application: Application): Promise<void> => {
                               anchorIndex = this.selectionStart;
                               const caretCoordinates = caretPos.position(this);
                               dropdownMenuTarget.style.top = String(caretCoordinates.top - this.scrollTop) + "px";
-                              dropdownMenuTarget.style.left = String(caretCoordinates.left) + "px";
+                              dropdownMenuTarget.style.left = String(caretCoordinates.left - 15) + "px";
                               tippy.hideAll();
                               dropdownMenu.show();
                             }
@@ -3642,7 +3642,6 @@ export default async (application: Application): Promise<void> => {
                               element: dropdownMenuTarget,
                               elementProperty: "dropdownPollEdit",
                               tippyProps: {
-                                placement: "bottom-start",
                                 trigger: "manual",
                                 interactive: true,
                                 content: ${html`
