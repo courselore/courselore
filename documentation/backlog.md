@@ -3,13 +3,14 @@
 ## Finish
 
 - Fix an issue when the content editor has scrolled and `textareaCaret()` gives you the position without taking the scrolling in account.
-  - `@mentions`/`#references`
-  - Edit poll
+  - It’s off to the right.
+  - It may not need `placement: "bottom-start"`.
 - Fix an issue when the content editor autoscrolls and the parent element seems to scroll as well 🤷
 
 **Poll**
 
 - Features
+  - Test rich-text in poll options.
   - Edit poll.
     - In content editor.
       - Check what happens when you create a poll and the focus is brought back to the editor.

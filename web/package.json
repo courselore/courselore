@@ -102,6 +102,7 @@
     "autosize": "^6.0.1",
     "base-x": "^4.0.0",
     "bootstrap-icons": "^1.10.3",
+    "caret-pos": "^2.0.0",
     "caxa": "^3.0.1",
     "cross-env": "^7.0.3",
     "esbuild": "^0.17.10",
@@ -118,7 +119,6 @@
     "scroll-into-view-if-needed": "^3.0.6",
     "shx": "^0.3.4",
     "text-field-edit": "^3.2.0",
-    "textarea-caret": "^3.1.0",
     "tippy.js": "^6.3.7",
     "typescript": "^4.9.5",
     "xxhash-addon": "^2.0.1"
