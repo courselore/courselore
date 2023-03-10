@@ -4932,7 +4932,7 @@ ${contentSource}</textarea
                     ).contentPreprocessed
                   }
                 WHERE
-                  "course" = ${response.locals.course.id} AND
+                  "messagePoll" = ${response.locals.poll.id} AND
                   "reference" = ${option.reference}
               `
             );
@@ -4947,7 +4947,7 @@ ${contentSource}</textarea
             sql`
               DELETE FROM "messagePollOptions"
               WHERE
-                "course" = ${response.locals.course.id} AND
+                "messagePoll" = ${response.locals.poll.id} AND
                 "reference" = ${option.reference}
             `
           );
