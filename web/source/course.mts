@@ -1382,6 +1382,278 @@ export default async (application: Application): Promise<void> => {
     )
       return next();
 
+    const tagPartial = ({
+      tag = undefined,
+      order = 0,
+    }: {
+      tag: (typeof response.locals.tags)[number] | undefined;
+      order: number;
+    }) => html`
+      <div key="tag/${tag?.reference ?? "new"}">
+        $${tag !== undefined
+          ? html`
+              <input
+                type="hidden"
+                name="tags[${String(order)}][reference]"
+                value="${tag.reference}"
+              />
+            `
+          : html``}
+
+        <button
+          key="tag--grab--handle"
+          type="button"
+          class="button button--tight button--tight--inline button--transparent"
+          javascript="${javascript`
+            leafac.setTippy({
+              event,
+              element: this,
+              tippyProps: {
+                touch: false,
+                content: "Drag to Reorder",
+              },
+            });
+          `}"
+        >
+          <i class="bi bi-grip-vertical"></i>
+        </button>
+
+        <input
+          type="text"
+          name="tags[${String(order)}][name]"
+          $${tag !== undefined
+            ? html`value="${tag.name}"`
+            : html`placeholder=" "`}
+          required
+          autocomplete="off"
+          class="input--text"
+          $${tag === undefined
+            ? html`
+                javascript="${javascript`
+                  this.isModified = true;
+                `}"
+              `
+            : html``}
+        />
+
+        <div
+          css="${css`
+            width: var(--space--72);
+          `}"
+        >
+          <label
+            class="button button--tight button--tight--inline button--justify-start button--transparent"
+          >
+            <input
+              type="checkbox"
+              name="tags[${String(order)}][isStaffOnly]"
+              $${typeof tag?.staffOnlyAt === "string" ? html`checked` : html``}
+              class="visually-hidden input--radio-or-checkbox--multilabel"
+              $${tag === undefined
+                ? html`
+                    javascript="${javascript`
+                      this.isModified = true;
+                    `}"
+                  `
+                : html``}
+            />
+            <span
+              javascript="${javascript`
+                leafac.setTippy({
+                  event,
+                  element: this,
+                  tippyProps: {
+                    touch: false,
+                    content: "Set as Visible by Staff Only",
+                  },
+                });
+              `}"
+            >
+              <i class="bi bi-eye"></i>
+              Visible by Everyone
+            </span>
+            <span
+              class="${textColorsCourseRole.staff}"
+              javascript="${javascript`
+                leafac.setTippy({
+                  event,
+                  element: this,
+                  tippyProps: {
+                    touch: false,
+                    content: "Set as Visible by Everyone",
+                  },
+                });
+              `}"
+            >
+              <i class="bi bi-mortarboard-fill"></i>
+              Visible by Staff Only
+            </span>
+          </label>
+        </div>
+
+        <div
+          css="${css`
+            [key^="tag/"].removed & {
+              display: none;
+            }
+          `}"
+        >
+          <button
+            type="button"
+            class="button button--tight button--tight--inline button--transparent"
+            javascript="${javascript`
+              leafac.setTippy({
+                event,
+                element: this,
+                tippyProps: {
+                  theme: "rose",
+                  touch: false,
+                  content: "Remove Tag",
+                },
+              });
+
+              if (${tag !== undefined})
+                leafac.setTippy({
+                  event,
+                  element: this,
+                  elementProperty: "dropdown",
+                  tippyProps: {
+                    theme: "rose",
+                    trigger: "click",
+                    interactive: true,
+                    content: ${html`
+                      <div
+                        css="${css`
+                          padding: var(--space--2) var(--space--0);
+                          display: flex;
+                          flex-direction: column;
+                          gap: var(--space--4);
+                        `}"
+                      >
+                        <p>Are you sure you want to remove this tag?</p>
+                        <p>
+                          <strong
+                            css="${css`
+                              font-weight: var(--font-weight--bold);
+                            `}"
+                          >
+                            The tag will be removed from all conversations and
+                            you may not undo this action!
+                          </strong>
+                        </p>
+                        <button
+                          type="button"
+                          class="button button--rose"
+                          javascript="${javascript`
+                            this.onclick = () => {
+                              const tag = this.closest('[key^="tag/"]');
+                              tag.classList.add("removed");
+                              for (const element of leafac.descendants(tag)) {
+                                if (element.skipDisable === true) continue;
+                                if (typeof element.disabled === "boolean") element.disabled = true;
+                                if (element.matches(".button")) element.classList.add("disabled");
+                                if (element.tooltip !== undefined) element.tooltip.disable();
+                              }
+                              this.closest('[key="tags"]').reorder();
+                            };
+                          `}"
+                        >
+                          <i class="bi bi-trash-fill"></i>
+                          Remove Tag
+                        </button>
+                      </div>
+                    `},  
+                  },
+                });
+              else
+                this.onclick = () => {
+                  const tags = this.closest('[key="tags"]');
+                  this.closest('[key^="tag/"]').remove();
+                  tags.reorder();
+                };
+            `}"
+          >
+            <i class="bi bi-trash"></i>
+          </button>
+        </div>
+
+        <div
+          css="${css`
+            [key^="tag/"]:not(.removed) & {
+              display: none;
+            }
+          `}"
+        >
+          <button
+            type="button"
+            class="button button--tight button--tight--inline button--transparent"
+            javascript="${javascript`
+              this.skipDisable = true;
+
+              leafac.setTippy({
+                event,
+                element: this,
+                tippyProps: {
+                  touch: false,
+                  content: "Don’t Remove Tag",
+                },
+              });
+
+              this.onclick = () => {
+                const tag = this.closest('[key^="tag/"]');
+                tag.classList.remove("removed");
+                for (const element of leafac.descendants(tag)) {
+                  if (typeof element.disabled === "boolean") element.disabled = false;
+                  if (element.matches(".button")) element.classList.remove("disabled");
+                  if (element.tooltip !== undefined) element.tooltip.enable();
+                }
+                tag.closest('[key="tags"]').reorder();
+              };
+            `}"
+          >
+            <i class="bi bi-recycle"></i>
+          </button>
+        </div>
+
+        $${response.locals.conversationsCount > 0 &&
+        response.locals.tags.length > 0
+          ? html`
+              <a
+                href="https://${application.configuration
+                  .hostname}/courses/${response.locals.course
+                  .reference}${qs.stringify(
+                  {
+                    conversations: {
+                      filters: { tagsReferences: [tag?.reference] },
+                    },
+                  },
+                  { addQueryPrefix: true }
+                )}"
+                target="_blank"
+                class="button button--tight button--tight--inline button--transparent"
+                css="${tag === undefined
+                  ? css`
+                      visibility: hidden;
+                    `
+                  : css``}"
+                javascript="${javascript`
+                  leafac.setTippy({
+                    event,
+                    element: this,
+                    tippyProps: {
+                      touch: false,
+                      content: "See Conversations with This Tag",
+                    },
+                  });
+                `}"
+              >
+                <i class="bi bi-chat-text"></i>
+              </a>
+            `
+          : html``}
+      </div>
+    `;
+
     response.send(
       layoutCourseSettings({
         request,
