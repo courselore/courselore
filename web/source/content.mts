@@ -2267,521 +2267,12 @@ export default async (application: Application): Promise<void> => {
                                     tippy.hideAll();
                                     const write = this.closest('[key="content-editor"]').querySelector('[key="content-editor--write"]');
                                     if (write.querySelector('[key="content-editor--write--poll"]') !== null) return;
-                                    const poll = leafac.stringToElement(${html`
-                                      <div
-                                        key="content-editor--write--poll"
-                                        css="${css`
-                                          padding: var(--space--2);
-                                        `}"
-                                      >
-                                        <div
-                                          css="${css`
-                                            padding-bottom: var(--space--2);
-                                            border-bottom: var(
-                                                --border-width--1
-                                              )
-                                              solid
-                                              var(--color--gray--medium--300);
-                                            @media (prefers-color-scheme: dark) {
-                                              border-color: var(
-                                                --color--gray--medium--600
-                                              );
-                                            }
-                                          `}"
-                                        >
-                                          <div
-                                            key="content-editor--write--poll--content"
-                                            css="${css`
-                                              background-color: var(
-                                                --color--gray--medium--50
-                                              );
-                                              @media (prefers-color-scheme: dark) {
-                                                background-color: var(
-                                                  --color--gray--medium--900
-                                                );
-                                              }
-                                              padding: var(--space--2)
-                                                var(--space--4);
-                                              border-radius: var(
-                                                --border-radius--lg
-                                              );
-                                              display: flex;
-                                              flex-direction: column;
-                                              gap: var(--space--4);
-                                            `}"
-                                          >
-                                            <h2 class="heading">
-                                              <i
-                                                class="bi bi-card-checklist"
-                                              ></i>
-                                              Poll
-                                            </h2>
-
-                                            <div
-                                              css="${css`
-                                                display: flex;
-                                                flex-wrap: wrap;
-                                                column-gap: var(--space--10);
-                                                row-gap: var(--space--4);
-                                              `}"
-                                            >
-                                              <div class="label">
-                                                <p class="label--text">
-                                                  Choices
-                                                </p>
-                                                <div
-                                                  css="${css`
-                                                    display: flex;
-                                                    gap: var(--space--8);
-                                                  `}"
-                                                >
-                                                  <label
-                                                    class="button button--tight button--tight--inline button--transparent"
-                                                  >
-                                                    <input
-                                                      type="radio"
-                                                      name="choices"
-                                                      value="single"
-                                                      required
-                                                      class="visually-hidden input--radio-or-checkbox--multilabel"
-                                                    />
-                                                    <span>
-                                                      <i
-                                                        class="bi bi-ui-radios"
-                                                      ></i>
-                                                      Single
-                                                    </span>
-                                                    <span class="text--blue">
-                                                      <i
-                                                        class="bi bi-ui-radios"
-                                                      ></i>
-                                                      Single
-                                                    </span>
-                                                  </label>
-                                                  <label
-                                                    class="button button--tight button--tight--inline button--transparent"
-                                                  >
-                                                    <input
-                                                      type="radio"
-                                                      name="choices"
-                                                      value="multiple"
-                                                      required
-                                                      class="visually-hidden input--radio-or-checkbox--multilabel"
-                                                    />
-                                                    <span>
-                                                      <i
-                                                        class="bi bi-ui-checks"
-                                                      ></i>
-                                                      Multiple
-                                                    </span>
-                                                    <span class="text--blue">
-                                                      <i
-                                                        class="bi bi-ui-checks"
-                                                      ></i>
-                                                      Multiple
-                                                    </span>
-                                                  </label>
-                                                </div>
-                                              </div>
-
-                                              <div class="label">
-                                                <p class="label--text">
-                                                  Closing
-                                                </p>
-                                                <div
-                                                  css="${css`
-                                                    display: flex;
-                                                    gap: var(--space--2);
-                                                    align-items: flex-start;
-                                                  `}"
-                                                >
-                                                  <label
-                                                    class="button button--tight button--tight--inline button--transparent"
-                                                  >
-                                                    <input
-                                                      type="checkbox"
-                                                      class="visually-hidden input--radio-or-checkbox--multilabel"
-                                                      javascript="${javascript`
-                                                        this.onchange = () => {
-                                                          const closesAt = this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--poll--closes-at"]');
-                                                          closesAt.hidden = !this.checked;
-                                                          for (const element of leafac.descendants(closesAt))
-                                                            if (element.disabled !== undefined) element.disabled = !this.checked;
-                                                        };
-                                                      `}"
-                                                    />
-                                                    <span
-                                                      javascript="${javascript`
-                                                        leafac.setTippy({
-                                                          event,
-                                                          element: this,
-                                                          tippyProps: {
-                                                            touch: false,
-                                                            content: "Set as Closing",
-                                                          },
-                                                        });
-                                                      `}"
-                                                    >
-                                                      <i
-                                                        class="bi bi-calendar-minus"
-                                                      ></i>
-                                                      Doesn’t Close
-                                                    </span>
-                                                    <span
-                                                      class="text--amber"
-                                                      javascript="${javascript`
-                                                        leafac.setTippy({
-                                                          event,
-                                                          element: this,
-                                                          tippyProps: {
-                                                            touch: false,
-                                                            content: "Set as Not Closing",
-                                                          },
-                                                        });
-                                                      `}"
-                                                    >
-                                                      <i
-                                                        class="bi bi-calendar-plus-fill"
-                                                      ></i>
-                                                      Closes at
-                                                    </span>
-                                                  </label>
-                                                  <div
-                                                    key="content-editor--write--poll--closes-at"
-                                                    hidden
-                                                    css="${css`
-                                                      display: flex;
-                                                      gap: var(--space--2);
-                                                      align-items: flex-start;
-                                                    `}"
-                                                  >
-                                                    <input
-                                                      type="text"
-                                                      name="closesAt"
-                                                      value="${new Date().toISOString()}"
-                                                      required
-                                                      autocomplete="off"
-                                                      disabled
-                                                      class="input--text"
-                                                      css="${css`
-                                                        width: var(--space--40);
-                                                        margin: var(--space---2)
-                                                          var(--space--0);
-                                                      `}"
-                                                      javascript="${javascript`
-                                                        this.value = this.defaultValue = leafac.localizeDateTime(this.defaultValue);
-                            
-                                                        this.onvalidate = () => {
-                                                          const error = leafac.validateLocalizedDateTime(this);
-                                                          if (typeof error === "string") return error;
-                                                          if (new Date(this.value).getTime() <= Date.now()) return "Must be in the future.";
-                                                        };
-                                                      `}"
-                                                    />
-                                                    <button
-                                                      type="button"
-                                                      class="button button--tight button--tight--inline button--transparent"
-                                                      javascript="${javascript`
-                                                        leafac.setTippy({
-                                                          event,
-                                                          element: this,
-                                                          tippyProps: {
-                                                            trigger: "click",
-                                                            content: "This datetime will be converted to UTC, which may lead to surprising off-by-one-hour differences if it crosses a daylight saving time change.",
-                                                          },
-                                                        });
-                                                      `}"
-                                                    >
-                                                      <i
-                                                        class="bi bi-info-circle"
-                                                      ></i>
-                                                    </button>
-                                                  </div>
-                                                </div>
-                                              </div>
-                                            </div>
-
-                                            <div class="label">
-                                              <p class="label--text">Options</p>
-                                              <div
-                                                css="${css`
-                                                  display: flex;
-                                                  flex-direction: column;
-                                                  gap: var(--space--2);
-                                                `}"
-                                              >
-                                                <div
-                                                  key="content-editor--write--poll--options"
-                                                  css="${css`
-                                                    display: flex;
-                                                    flex-direction: column;
-                                                    gap: var(--space--2);
-
-                                                    [key^="content-editor--write--poll--option/"] {
-                                                      display: flex;
-                                                      gap: var(--space--2);
-                                                      align-items: center;
-
-                                                      transition-property: var(
-                                                        --transition-property--opacity
-                                                      );
-                                                      transition-duration: var(
-                                                        --transition-duration--150
-                                                      );
-                                                      transition-timing-function: var(
-                                                        --transition-timing-function--in-out
-                                                      );
-
-                                                      &.grabbed {
-                                                        opacity: var(
-                                                          --opacity--50
-                                                        );
-                                                      }
-
-                                                      [key="content-editor--write--poll--option--grab--handle"]:not(
-                                                          .disabled
-                                                        ) {
-                                                        cursor: grab;
-                                                      }
-                                                    }
-                                                  `}"
-                                                  javascript="${javascript`
-                                                    this.onbeforemorph = (event) => {
-                                                      const liveUpdate = event?.detail?.liveUpdate;
-                                                      if (!liveUpdate) this.isModified = false;
-                                                      return !liveUpdate;
-                                                    };
-                            
-                                                    this.onpointerdown = (event) => {
-                                                      if (event.target.closest('[key="content-editor--write--poll--option--grab--handle"]') === null) return;
-                            
-                                                      const body = document.querySelector("body");
-                                                      const option = event.target.closest('[key^="content-editor--write--poll--option/"]');
-                            
-                                                      this.grabbed = option;
-                                                      body.classList.add("grabbing");
-                                                      option.classList.add("grabbed");
-                            
-                                                      body.addEventListener("pointerup", () => {
-                                                        delete this.grabbed;
-                                                        body.classList.remove("grabbing");
-                                                        option.classList.remove("grabbed");
-                                                      }, { once: true });
-                                                    };
-                            
-                                                    this.onpointermove = (event) => {
-                                                      const option = (
-                                                        event.pointerType === "touch" ? document.elementFromPoint(event.clientX, event.clientY) : event.target
-                                                      ).closest('[key^="content-editor--write--poll--option/"]');
-                                                      if (option === null || [undefined, option].includes(this.grabbed)) return;
-                            
-                                                      const boundingClientRect = option.getBoundingClientRect();
-                                                      option[
-                                                        (event.clientY - boundingClientRect.top) / (boundingClientRect.bottom - boundingClientRect.top) < 0.5 ?
-                                                        "after" : "before"
-                                                      ](this.grabbed);
-                                                      this.reorder();
-                                                    };
-                            
-                                                    this.onkeydown = (event) => {
-                                                      if (event.target.closest('[key="content-editor--write--poll--option--grab--handle"]') === null) return;
-                            
-                                                      const option = event.target.closest('[key^="content-editor--write--poll--option/"]');
-                                                      switch (event.code) {
-                                                        case "ArrowUp":
-                                                          event.preventDefault();
-                                                          option.previousElementSibling?.before?.(option);
-                                                          break;
-                                                        case "ArrowDown":
-                                                          event.preventDefault();
-                                                          option.nextElementSibling?.after?.(option);
-                                                          break;
-                                                      }
-                                                      option.querySelector('[key="content-editor--write--poll--option--grab--handle"]').focus();
-                                                      this.reorder();
-                                                    };
-                            
-                                                    this.reorder = () => {
-                                                      this.isModified = true;
-                            
-                                                      for (const [order, option] of this.querySelectorAll('[key^="content-editor--write--poll--option/"]').entries())
-                                                        for (const element of option.querySelectorAll('[name^="options["]'))
-                                                          element.setAttribute("name", element.getAttribute("name").replace(/\\d+/, String(order)));
-                                                    };
-                                                  `}"
-                                                ></div>
-                                                <div
-                                                  css="${css`
-                                                    display: flex;
-                                                    justify-content: center;
-                                                  `}"
-                                                >
-                                                  <button
-                                                    type="button"
-                                                    class="button button--full-width-on-small-screen button--transparent"
-                                                    javascript="${javascript`
-                                                      this.onclick = () => {
-                                                        const newOption = leafac.stringToElement(${html`
-                                                          <div
-                                                            key="content-editor--write--poll--option/new"
-                                                          >
-                                                            <button
-                                                              key="content-editor--write--poll--option--grab--handle"
-                                                              type="button"
-                                                              class="button button--tight button--tight--inline button--transparent"
-                                                              javascript="${javascript`
-                                                                leafac.setTippy({
-                                                                  event,
-                                                                  element: this,
-                                                                  tippyProps: {
-                                                                    touch: false,
-                                                                    content: "Drag to Reorder",
-                                                                  },
-                                                                });
-                                                              `}"
-                                                            >
-                                                              <i
-                                                                class="bi bi-grip-vertical"
-                                                              ></i>
-                                                            </button>
-                                                            <input
-                                                              type="text"
-                                                              name="options[0][content]"
-                                                              placeholder=" "
-                                                              required
-                                                              autocomplete="off"
-                                                              class="input--text"
-                                                              javascript="${javascript`
-                                                                this.isModified = true;
-                                                              `}"
-                                                            />
-                                                            <button
-                                                              type="button"
-                                                              class="button button--tight button--tight--inline button--transparent"
-                                                              javascript="${javascript`
-                                                                leafac.setTippy({
-                                                                  event,
-                                                                  element: this,
-                                                                  tippyProps: {
-                                                                    theme: "rose",
-                                                                    touch: false,
-                                                                    content: "Remove Option",
-                                                                  },
-                                                                });
-                            
-                                                                this.onclick = () => {
-                                                                  const options = this.closest('[key="content-editor--write--poll--options"]');
-                                                                  this.closest('[key^="content-editor--write--poll--option/"]').remove();
-                                                                  options.reorder();
-                                                                };
-                                                              `}"
-                                                            >
-                                                              <i
-                                                                class="bi bi-x-lg"
-                                                              ></i>
-                                                            </button>
-                                                          </div>
-                                                        `}).querySelector('[key="content-editor--write--poll--option/new"]');
-                            
-                                                        const options = this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--poll--options"]');
-                                                        options.insertAdjacentElement("beforeend", newOption);
-                                                        leafac.execute({ element: newOption });
-                                                        options.reorder();
-                                                      };
-
-                                                      if (!event?.detail?.liveUpdate)
-                                                        for (const initialOptions of new Array(3))
-                                                          this.onclick();
-                            
-                                                      this.onvalidate = () => {
-                                                        if (this.closest("[hidden]") === null && this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--poll--options"]').children.length <= 1)
-                                                          return "Please add at least two options.";
-                                                      };
-                                                    `}"
-                                                  >
-                                                    <i
-                                                      class="bi bi-plus-circle"
-                                                    ></i>
-                                                    Add Option
-                                                  </button>
-                                                </div>
-                                              </div>
-                                            </div>
-
-                                            <div
-                                              css="${css`
-                                                display: flex;
-                                                gap: var(--space--2);
-                                              `}"
-                                            >
-                                              <button
-                                                type="button"
-                                                class="button button--blue"
-                                                javascript="${javascript`
-                                                  this.onclick = async () => {
-                                                    const poll = this.closest('[key="content-editor--write--poll"]');
-                                                    const textarea = this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
-
-                                                    if (!leafac.validate(poll)) return;
-
-                                                    const body = leafac.serialize(poll);
-
-                                                    leafac.morph(poll.querySelector('[key="content-editor--write--poll--content"]'), ${html`
-                                                      <div
-                                                        class="strong"
-                                                        css="${css`
-                                                          display: flex;
-                                                          justify-content: center;
-                                                          align-items: center;
-                                                          gap: var(--space--2);
-                                                        `}"
-                                                      >
-                                                        $${application.web.locals.partials.spinner(
-                                                          {
-                                                            request,
-                                                            response,
-                                                          }
-                                                        )}
-                                                        Creating Poll…
-                                                      </div>
-                                                    `});
-
-                                                    const content = await (await fetch(${`https://${application.configuration.hostname}/courses/${response.locals.course.reference}/polls`}, {
-                                                      method: "POST",
-                                                      headers: { "CSRF-Protection": "true", },
-                                                      cache: "no-store",
-                                                      body,
-                                                    })).text();
-
-                                                    poll.remove();
-                                                    textFieldEdit.insert(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + content + "\\n\\n");
-                                                    textarea.focus();
-                                                  };
-                                                `}"
-                                              >
-                                                <i
-                                                  class="bi bi-card-checklist"
-                                                ></i>
-                                                Create Poll
-                                              </button>
-
-                                              <button
-                                                type="button"
-                                                class="button button--transparent"
-                                                javascript="${javascript`
-                                                  this.onclick = () => {
-                                                    this.closest('[key="content-editor--write--poll"]').remove();
-                                                  };
-                                                `}"
-                                              >
-                                                <i class="bi bi-x-lg"></i>
-                                                Cancel
-                                              </button>
-                                            </div>
-                                          </div>
-                                        </div>
-                                      </div>
-                                    `}).querySelector('[key="content-editor--write--poll"]');
+                                    const poll = leafac.stringToElement(${pollEditorPartial(
+                                      {
+                                        request: request as any,
+                                        response: response as any,
+                                      }
+                                    )}).querySelector('[key="content-editor--write--poll"]');
                                     write.insertAdjacentElement("afterbegin", poll);
                                     leafac.execute({ element: poll });
                                   };
@@ -3798,6 +3289,486 @@ ${contentSource}</textarea
             padding: var(--space--2) var(--space--4);
           `}"
         ></div>
+      </div>
+    </div>
+  `;
+
+  const pollEditorPartial = ({
+    request,
+    response,
+  }: {
+    request: express.Request<
+      {},
+      any,
+      {},
+      {},
+      Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+    >;
+    response: express.Response<
+      any,
+      Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+    >;
+  }): HTML => html`
+    <div
+      key="content-editor--write--poll"
+      css="${css`
+        padding: var(--space--2);
+      `}"
+    >
+      <div
+        css="${css`
+          padding-bottom: var(--space--2);
+          border-bottom: var(--border-width--1) solid
+            var(--color--gray--medium--300);
+          @media (prefers-color-scheme: dark) {
+            border-color: var(--color--gray--medium--600);
+          }
+        `}"
+      >
+        <div
+          key="content-editor--write--poll--content"
+          css="${css`
+            background-color: var(--color--gray--medium--50);
+            @media (prefers-color-scheme: dark) {
+              background-color: var(--color--gray--medium--900);
+            }
+            padding: var(--space--2) var(--space--4);
+            border-radius: var(--border-radius--lg);
+            display: flex;
+            flex-direction: column;
+            gap: var(--space--4);
+          `}"
+        >
+          <h2 class="heading">
+            <i class="bi bi-card-checklist"></i>
+            Poll
+          </h2>
+
+          <div
+            css="${css`
+              display: flex;
+              flex-wrap: wrap;
+              column-gap: var(--space--10);
+              row-gap: var(--space--4);
+            `}"
+          >
+            <div class="label">
+              <p class="label--text">Choices</p>
+              <div
+                css="${css`
+                  display: flex;
+                  gap: var(--space--8);
+                `}"
+              >
+                <label
+                  class="button button--tight button--tight--inline button--transparent"
+                >
+                  <input
+                    type="radio"
+                    name="choices"
+                    value="single"
+                    required
+                    class="visually-hidden input--radio-or-checkbox--multilabel"
+                  />
+                  <span>
+                    <i class="bi bi-ui-radios"></i>
+                    Single
+                  </span>
+                  <span class="text--blue">
+                    <i class="bi bi-ui-radios"></i>
+                    Single
+                  </span>
+                </label>
+                <label
+                  class="button button--tight button--tight--inline button--transparent"
+                >
+                  <input
+                    type="radio"
+                    name="choices"
+                    value="multiple"
+                    required
+                    class="visually-hidden input--radio-or-checkbox--multilabel"
+                  />
+                  <span>
+                    <i class="bi bi-ui-checks"></i>
+                    Multiple
+                  </span>
+                  <span class="text--blue">
+                    <i class="bi bi-ui-checks"></i>
+                    Multiple
+                  </span>
+                </label>
+              </div>
+            </div>
+
+            <div class="label">
+              <p class="label--text">Closing</p>
+              <div
+                css="${css`
+                  display: flex;
+                  gap: var(--space--2);
+                  align-items: flex-start;
+                `}"
+              >
+                <label
+                  class="button button--tight button--tight--inline button--transparent"
+                >
+                  <input
+                    type="checkbox"
+                    class="visually-hidden input--radio-or-checkbox--multilabel"
+                    javascript="${javascript`
+                      this.onchange = () => {
+                        const closesAt = this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--poll--closes-at"]');
+                        closesAt.hidden = !this.checked;
+                        for (const element of leafac.descendants(closesAt))
+                          if (element.disabled !== undefined) element.disabled = !this.checked;
+                      };
+                    `}"
+                  />
+                  <span
+                    javascript="${javascript`
+                      leafac.setTippy({
+                        event,
+                        element: this,
+                        tippyProps: {
+                          touch: false,
+                          content: "Set as Closing",
+                        },
+                      });
+                    `}"
+                  >
+                    <i class="bi bi-calendar-minus"></i>
+                    Doesn’t Close
+                  </span>
+                  <span
+                    class="text--amber"
+                    javascript="${javascript`
+                      leafac.setTippy({
+                        event,
+                        element: this,
+                        tippyProps: {
+                          touch: false,
+                          content: "Set as Not Closing",
+                        },
+                      });
+                    `}"
+                  >
+                    <i class="bi bi-calendar-plus-fill"></i>
+                    Closes at
+                  </span>
+                </label>
+                <div
+                  key="content-editor--write--poll--closes-at"
+                  hidden
+                  css="${css`
+                    display: flex;
+                    gap: var(--space--2);
+                    align-items: flex-start;
+                  `}"
+                >
+                  <input
+                    type="text"
+                    name="closesAt"
+                    value="${new Date().toISOString()}"
+                    required
+                    autocomplete="off"
+                    disabled
+                    class="input--text"
+                    css="${css`
+                      width: var(--space--40);
+                      margin: var(--space---2) var(--space--0);
+                    `}"
+                    javascript="${javascript`
+                      this.value = this.defaultValue = leafac.localizeDateTime(this.defaultValue);
+
+                      this.onvalidate = () => {
+                        const error = leafac.validateLocalizedDateTime(this);
+                        if (typeof error === "string") return error;
+                        if (new Date(this.value).getTime() <= Date.now()) return "Must be in the future.";
+                      };
+                    `}"
+                  />
+                  <button
+                    type="button"
+                    class="button button--tight button--tight--inline button--transparent"
+                    javascript="${javascript`
+                      leafac.setTippy({
+                        event,
+                        element: this,
+                        tippyProps: {
+                          trigger: "click",
+                          content: "This datetime will be converted to UTC, which may lead to surprising off-by-one-hour differences if it crosses a daylight saving time change.",
+                        },
+                      });
+                    `}"
+                  >
+                    <i class="bi bi-info-circle"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="label">
+            <p class="label--text">Options</p>
+            <div
+              css="${css`
+                display: flex;
+                flex-direction: column;
+                gap: var(--space--2);
+              `}"
+            >
+              <div
+                key="content-editor--write--poll--options"
+                css="${css`
+                  display: flex;
+                  flex-direction: column;
+                  gap: var(--space--2);
+
+                  [key^="content-editor--write--poll--option/"] {
+                    display: flex;
+                    gap: var(--space--2);
+                    align-items: center;
+
+                    transition-property: var(--transition-property--opacity);
+                    transition-duration: var(--transition-duration--150);
+                    transition-timing-function: var(
+                      --transition-timing-function--in-out
+                    );
+
+                    &.grabbed {
+                      opacity: var(--opacity--50);
+                    }
+
+                    [key="content-editor--write--poll--option--grab--handle"]:not(
+                        .disabled
+                      ) {
+                      cursor: grab;
+                    }
+                  }
+                `}"
+                javascript="${javascript`
+                  this.onbeforemorph = (event) => {
+                    const liveUpdate = event?.detail?.liveUpdate;
+                    if (!liveUpdate) this.isModified = false;
+                    return !liveUpdate;
+                  };
+
+                  this.onpointerdown = (event) => {
+                    if (event.target.closest('[key="content-editor--write--poll--option--grab--handle"]') === null) return;
+
+                    const body = document.querySelector("body");
+                    const option = event.target.closest('[key^="content-editor--write--poll--option/"]');
+
+                    this.grabbed = option;
+                    body.classList.add("grabbing");
+                    option.classList.add("grabbed");
+
+                    body.addEventListener("pointerup", () => {
+                      delete this.grabbed;
+                      body.classList.remove("grabbing");
+                      option.classList.remove("grabbed");
+                    }, { once: true });
+                  };
+
+                  this.onpointermove = (event) => {
+                    const option = (
+                      event.pointerType === "touch" ? document.elementFromPoint(event.clientX, event.clientY) : event.target
+                    ).closest('[key^="content-editor--write--poll--option/"]');
+                    if (option === null || [undefined, option].includes(this.grabbed)) return;
+
+                    const boundingClientRect = option.getBoundingClientRect();
+                    option[
+                      (event.clientY - boundingClientRect.top) / (boundingClientRect.bottom - boundingClientRect.top) < 0.5 ?
+                      "after" : "before"
+                    ](this.grabbed);
+                    this.reorder();
+                  };
+
+                  this.onkeydown = (event) => {
+                    if (event.target.closest('[key="content-editor--write--poll--option--grab--handle"]') === null) return;
+
+                    const option = event.target.closest('[key^="content-editor--write--poll--option/"]');
+                    switch (event.code) {
+                      case "ArrowUp":
+                        event.preventDefault();
+                        option.previousElementSibling?.before?.(option);
+                        break;
+                      case "ArrowDown":
+                        event.preventDefault();
+                        option.nextElementSibling?.after?.(option);
+                        break;
+                    }
+                    option.querySelector('[key="content-editor--write--poll--option--grab--handle"]').focus();
+                    this.reorder();
+                  };
+
+                  this.reorder = () => {
+                    this.isModified = true;
+
+                    for (const [order, option] of this.querySelectorAll('[key^="content-editor--write--poll--option/"]').entries())
+                      for (const element of option.querySelectorAll('[name^="options["]'))
+                        element.setAttribute("name", element.getAttribute("name").replace(/\\d+/, String(order)));
+                  };
+                `}"
+              ></div>
+              <div
+                css="${css`
+                  display: flex;
+                  justify-content: center;
+                `}"
+              >
+                <button
+                  type="button"
+                  class="button button--full-width-on-small-screen button--transparent"
+                  javascript="${javascript`
+                    this.onclick = () => {
+                      const newOption = leafac.stringToElement(${html`
+                        <div key="content-editor--write--poll--option/new">
+                          <button
+                            key="content-editor--write--poll--option--grab--handle"
+                            type="button"
+                            class="button button--tight button--tight--inline button--transparent"
+                            javascript="${javascript`
+                              leafac.setTippy({
+                                event,
+                                element: this,
+                                tippyProps: {
+                                  touch: false,
+                                  content: "Drag to Reorder",
+                                },
+                              });
+                            `}"
+                          >
+                            <i class="bi bi-grip-vertical"></i>
+                          </button>
+                          <input
+                            type="text"
+                            name="options[0][content]"
+                            placeholder=" "
+                            required
+                            autocomplete="off"
+                            class="input--text"
+                            javascript="${javascript`
+                              this.isModified = true;
+                            `}"
+                          />
+                          <button
+                            type="button"
+                            class="button button--tight button--tight--inline button--transparent"
+                            javascript="${javascript`
+                              leafac.setTippy({
+                                event,
+                                element: this,
+                                tippyProps: {
+                                  theme: "rose",
+                                  touch: false,
+                                  content: "Remove Option",
+                                },
+                              });
+
+                              this.onclick = () => {
+                                const options = this.closest('[key="content-editor--write--poll--options"]');
+                                this.closest('[key^="content-editor--write--poll--option/"]').remove();
+                                options.reorder();
+                              };
+                            `}"
+                          >
+                            <i class="bi bi-x-lg"></i>
+                          </button>
+                        </div>
+                      `}).querySelector('[key="content-editor--write--poll--option/new"]');
+
+                      const options = this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--poll--options"]');
+                      options.insertAdjacentElement("beforeend", newOption);
+                      leafac.execute({ element: newOption });
+                      options.reorder();
+                    };
+
+                    if (!event?.detail?.liveUpdate)
+                      for (const initialOptions of new Array(3))
+                        this.onclick();
+
+                    this.onvalidate = () => {
+                      if (this.closest("[hidden]") === null && this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--poll--options"]').children.length <= 1)
+                        return "Please add at least two options.";
+                    };
+                  `}"
+                >
+                  <i class="bi bi-plus-circle"></i>
+                  Add Option
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div
+            css="${css`
+              display: flex;
+              gap: var(--space--2);
+            `}"
+          >
+            <button
+              type="button"
+              class="button button--blue"
+              javascript="${javascript`
+                this.onclick = async () => {
+                  const poll = this.closest('[key="content-editor--write--poll"]');
+                  const textarea = this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
+
+                  if (!leafac.validate(poll)) return;
+
+                  const body = leafac.serialize(poll);
+
+                  leafac.morph(poll.querySelector('[key="content-editor--write--poll--content"]'), ${html`
+                    <div
+                      class="strong"
+                      css="${css`
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        gap: var(--space--2);
+                      `}"
+                    >
+                      $${application.web.locals.partials.spinner({
+                        request,
+                        response,
+                      })}
+                      Creating Poll…
+                    </div>
+                  `});
+
+                  const content = await (await fetch(${`https://${application.configuration.hostname}/courses/${response.locals.course.reference}/polls`}, {
+                    method: "POST",
+                    headers: { "CSRF-Protection": "true", },
+                    cache: "no-store",
+                    body,
+                  })).text();
+
+                  poll.remove();
+                  textFieldEdit.insert(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + content + "\\n\\n");
+                  textarea.focus();
+                };
+              `}"
+            >
+              <i class="bi bi-card-checklist"></i>
+              Create Poll
+            </button>
+
+            <button
+              type="button"
+              class="button button--transparent"
+              javascript="${javascript`
+                this.onclick = () => {
+                  this.closest('[key="content-editor--write--poll"]').remove();
+                };
+              `}"
+            >
+              <i class="bi bi-x-lg"></i>
+              Cancel
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   `;

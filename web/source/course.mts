@@ -1388,7 +1388,7 @@ export default async (application: Application): Promise<void> => {
     }: {
       tag?: (typeof response.locals.tags)[number] | undefined;
       order?: number;
-    } = {}) => html`
+    } = {}): HTML => html`
       <div key="tag/${tag?.reference ?? "new"}">
         $${tag !== undefined
           ? html`
