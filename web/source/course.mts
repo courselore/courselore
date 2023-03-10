@@ -1382,7 +1382,7 @@ export default async (application: Application): Promise<void> => {
     )
       return next();
 
-    const tagPartial = ({
+    const partialTag = ({
       tag = undefined,
       order = 0,
     }: {
@@ -1801,7 +1801,7 @@ export default async (application: Application): Promise<void> => {
                 `}"
               >
                 $${response.locals.tags.map((tag, order) =>
-                  tagPartial({ tag, order })
+                  partialTag({ tag, order })
                 )}
               </div>
               <div
@@ -1815,7 +1815,7 @@ export default async (application: Application): Promise<void> => {
                   class="button button--full-width-on-small-screen button--transparent"
                   javascript="${javascript`
                     this.onclick = () => {
-                      const newTag = leafac.stringToElement(${tagPartial()}).querySelector('[key="tag/new"]');
+                      const newTag = leafac.stringToElement(${partialTag()}).querySelector('[key="tag/new"]');
 
                       const tags = this.closest("form").querySelector('[key="tags"]');
                       tags.insertAdjacentElement("beforeend", newTag);

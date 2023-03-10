@@ -2267,7 +2267,7 @@ export default async (application: Application): Promise<void> => {
                                     tippy.hideAll();
                                     const write = this.closest('[key="content-editor"]').querySelector('[key="content-editor--write"]');
                                     if (write.querySelector('[key="content-editor--write--poll"]') !== null) return;
-                                    const poll = leafac.stringToElement(${pollEditorPartial(
+                                    const poll = leafac.stringToElement(${partialPollEditor(
                                       {
                                         request: request as any,
                                         response: response as any,
@@ -3293,9 +3293,10 @@ ${contentSource}</textarea
     </div>
   `;
 
-  const pollEditorPartial = ({
+  const partialPollEditor = ({
     request,
     response,
+    poll = undefined,
   }: {
     request: express.Request<
       {},
@@ -3308,6 +3309,7 @@ ${contentSource}</textarea
       any,
       Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
     >;
+    poll?: ResponseLocalsPoll["poll"];
   }): HTML => html`
     <div
       key="content-editor--write--poll"
@@ -4756,7 +4758,11 @@ ${contentSource}</textarea
         application.web.locals.layouts.partial({
           request,
           response,
-          body: pollEditorPartial({ request, response }),
+          body: partialPollEditor({
+            request,
+            response,
+            poll: response.locals.poll,
+          }),
         })
       );
     }
