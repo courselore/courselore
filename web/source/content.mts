@@ -3633,7 +3633,7 @@ export default async (application: Application): Promise<void> => {
                       this.onclick = this.onkeyup = () => {
                         if (this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--poll"]') !== null) return;
                         
-                        for (const match of this.value.matchAll(/<courselore-poll\\s+reference="\\d+"><\\/courselore-poll>/g))
+                        for (const match of this.value.matchAll(/<courselore-poll\\s+reference="(?<pollReference>\\d+)"><\\/courselore-poll>/g))
                           if (match.index <= this.selectionStart && this.selectionStart <= match.index + match[0].length) {
                             const caretCoordinates = caretPos.position(this);
                             dropdownMenuTarget.style.top = String(caretCoordinates.top - this.scrollTop) + "px";
@@ -3652,13 +3652,28 @@ export default async (application: Application): Promise<void> => {
                                       type="button"
                                       class="dropdown--menu--item button button--transparent"
                                       javascript="${javascript`
-                                        this.onclick = () => {
-                                          
+                                        this.onclick = async () => {
+                                          const loading = this.querySelector('[key="loading"]');
+                                          loading.hidden = false;
+                                          const poll = leafac.stringToElement(await (await fetch(${`https://${application.configuration.hostname}/courses/${response.locals.course?.reference}/polls/`} + match.groups.pollReference + ${`/edit`}, { cache: "no-store" })).text()).querySelector('[key="content-editor--write--poll"]');
+                                          this.closest('[key="content-editor"]').querySelector('[key="content-editor--write"]').insertAdjacentElement("afterbegin", poll);
+                                          leafac.execute({ element: poll });
+                                          loading.hidden = true;
+                                          tippy.hideAll();
                                         };
                                       `}"
                                     >
                                       <i class="bi bi-pencil"></i>
                                       Edit Poll
+                                      <div key="loading" hidden>
+                                        $${application.web.locals.partials.spinner(
+                                          {
+                                            request,
+                                            response,
+                                            size: 10,
+                                          }
+                                        )}
+                                      </div>
                                     </button>
                                   </div>
                                 `},  
