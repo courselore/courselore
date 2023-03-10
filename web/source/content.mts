@@ -3655,8 +3655,8 @@ export default async (application: Application): Promise<void> => {
                                         };
                                       `}"
                                     >
-                                      <i class="bi bi-chat-quote"></i>
-                                      Quote
+                                      <i class="bi bi-pencil"></i>
+                                      Edit Poll
                                     </button>
                                   </div>
                                 `},  
