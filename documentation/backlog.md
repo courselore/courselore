@@ -5,6 +5,7 @@
 - Fix an issue when the content editor has scrolled and `textareaCaret()` gives you the position without taking the scrolling in account.
   - `@mentions`/`#references`
   - Edit poll
+- Fix an issue when the content editor autoscrolls and the parent element seems to scroll as well 🤷
 
 **Poll**
 

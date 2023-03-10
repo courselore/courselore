@@ -3547,7 +3547,7 @@ export default async (application: Application): Promise<void> => {
                               ) continue;
                               anchorIndex = this.selectionStart;
                               const caretCoordinates = textareaCaret(this, anchorIndex - 1);
-                              dropdownMenuTarget.style.top = String(caretCoordinates.top) + "px";
+                              dropdownMenuTarget.style.top = String(caretCoordinates.top - this.scrollTop) + "px";
                               dropdownMenuTarget.style.left = String(caretCoordinates.left) + "px";
                               tippy.hideAll();
                               dropdownMenu.show();
@@ -3633,10 +3633,8 @@ export default async (application: Application): Promise<void> => {
                       this.onclick = this.onkeyup = () => {
                         for (const match of this.value.matchAll(/<courselore-poll\\s+reference="\\d+"><\\/courselore-poll>/g))
                           if (match.index <= this.selectionStart && this.selectionStart <= match.index + match[0].length) {
-                            if (dropdownMenuTarget.dropdownPollEdit !== undefined) return;
-
                             const caretCoordinates = textareaCaret(this, this.selectionStart);
-                            dropdownMenuTarget.style.top = String(caretCoordinates.top) + "px";
+                            dropdownMenuTarget.style.top = String(caretCoordinates.top - this.scrollTop) + "px";
                             dropdownMenuTarget.style.left = String(caretCoordinates.left) + "px";
 
                             leafac.setTippy({
@@ -3673,7 +3671,6 @@ export default async (application: Application): Promise<void> => {
                           }
 
                         dropdownMenuTarget.dropdownPollEdit?.hide?.();
-                        delete dropdownMenuTarget.dropdownPollEdit;
                       };
                     }
                   `}"
