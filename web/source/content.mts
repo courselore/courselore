@@ -4954,6 +4954,12 @@ ${contentSource}</textarea
       });
 
       response.end();
+
+      application.web.locals.helpers.liveUpdates({
+        request,
+        response,
+        url: `/courses/${response.locals.course.reference}`,
+      });
     }
   );
 
