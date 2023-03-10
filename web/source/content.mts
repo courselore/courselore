@@ -3639,6 +3639,8 @@ export default async (application: Application): Promise<void> => {
                             dropdownMenuTarget.style.top = String(caretCoordinates.top - this.scrollTop) + "px";
                             dropdownMenuTarget.style.left = String(caretCoordinates.left) + "px";
 
+                            (window.locals ??= {}).editPollReference = match.groups.pollReference;
+
                             leafac.setTippy({
                               event,
                               element: dropdownMenuTarget,
@@ -3655,10 +3657,25 @@ export default async (application: Application): Promise<void> => {
                                         this.onclick = async () => {
                                           const loading = this.querySelector('[key="loading"]');
                                           loading.hidden = false;
-                                          const poll = leafac.stringToElement(await (await fetch(${`https://${application.configuration.hostname}/courses/${response.locals.course?.reference}/polls/`} + match.groups.pollReference + ${`/edit`}, { cache: "no-store" })).text()).querySelector('[key="content-editor--write--poll"]');
+                                          const response = await fetch(${`https://${application.configuration.hostname}/courses/${response.locals.course?.reference}/polls/`} + window.locals.editPollReference + ${`/edit`}, { cache: "no-store" });
+                                          loading.hidden = true;
+                                          if (!response.ok) {
+                                            leafac.setTippy({
+                                              event,
+                                              element: this,
+                                              elementProperty: "errorTooltip",
+                                              tippyProps: {
+                                                theme: "rose",
+                                                trigger: "manual",
+                                                content: await response.text(),
+                                              },
+                                            });
+                                            this.errorTooltip.show();
+                                            return;
+                                          }
+                                          const poll = leafac.stringToElement(await response.text()).querySelector('[key="content-editor--write--poll"]');
                                           this.closest('[key="content-editor"]').querySelector('[key="content-editor--write"]').insertAdjacentElement("afterbegin", poll);
                                           leafac.execute({ element: poll });
-                                          loading.hidden = true;
                                           tippy.hideAll();
                                         };
                                       `}"
@@ -4746,6 +4763,25 @@ ${contentSource}</textarea
       };
 
       next();
+    }
+  );
+
+  application.web.get<
+    { courseReference: string; pollReference: string },
+    any,
+    {},
+    { redirect?: string },
+    ResponseLocalsPoll
+  >(
+    "/courses/:courseReference/polls/:pollReference/edit",
+    (request, response) => {
+      if (response.locals.poll === undefined)
+        return response.status(404).send("Poll not found");
+
+      if (!mayEditPoll({ request, response, poll: response.locals.poll }))
+        return response.status(403).send("You may not edit this poll");
+
+      response.send("POLL EDITOR");
     }
   );
 
