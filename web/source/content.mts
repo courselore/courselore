@@ -3633,14 +3633,47 @@ export default async (application: Application): Promise<void> => {
                       this.onclick = this.onkeyup = () => {
                         for (const match of this.value.matchAll(/<courselore-poll\\s+reference="\\d+"><\\/courselore-poll>/g))
                           if (match.index <= this.selectionStart && this.selectionStart <= match.index + match[0].length) {
-                            console.log("SHOW POLL EDIT DROPDOWN");
+                            if (dropdownMenuTarget.dropdownPollEdit !== undefined) return;
+
+                            const caretCoordinates = textareaCaret(this, this.selectionStart);
+                            dropdownMenuTarget.style.top = String(caretCoordinates.top) + "px";
+                            dropdownMenuTarget.style.left = String(caretCoordinates.left) + "px";
+
+                            dropdownMenuTarget.dropdownPollEdit = leafac.setTippy({
+                              event,
+                              element: dropdownMenuTarget,
+                              elementProperty: "dropdownPollEdit",
+                              tippyProps: {
+                                placement: "bottom-start",
+                                trigger: "manual",
+                                interactive: true,
+                                content: ${html`
+                                  <div class="dropdown--menu">
+                                    <button
+                                      type="button"
+                                      class="dropdown--menu--item button button--transparent"
+                                      javascript="${javascript`
+                                        this.onclick = () => {
+                                          
+                                        };
+                                      `}"
+                                    >
+                                      <i class="bi bi-chat-quote"></i>
+                                      Quote
+                                    </button>
+                                  </div>
+                                `},  
+                              },
+                            });
+
+                            tippy.hideAll();
+                            dropdownMenuTarget.dropdownPollEdit.show();
+                            
+                            return;
                           }
 
-                        // const caretCoordinates = textareaCaret(this, anchorIndex - 1);
-                        // dropdownMenuTarget.style.top = String(caretCoordinates.top) + "px";
-                        // dropdownMenuTarget.style.left = String(caretCoordinates.left) + "px";
-                        // tippy.hideAll();
-                        // dropdownMenu.show();
+                        dropdownMenuTarget.dropdownPollEdit?.hide?.();
+                        delete dropdownMenuTarget.dropdownPollEdit;
                       };
                     }
                   `}"
