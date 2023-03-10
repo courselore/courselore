@@ -6,7 +6,6 @@
 **Poll**
 
 - Features
-  - Test rich-text in poll options.
   - Edit poll.
     - In content editor.
       - Check what happens when you create a poll and the focus is brought back to the editor.
@@ -14,6 +13,7 @@
     - Edit options.
       - Live-Update should update options (in case the poll was edited)
     - Edit closing.
+  - Test rich-text in poll options.
   - Disable polls for students
     - Default students can’t create polls
   - Document who can see what.
