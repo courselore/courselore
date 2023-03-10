@@ -3639,7 +3639,7 @@ export default async (application: Application): Promise<void> => {
                             dropdownMenuTarget.style.top = String(caretCoordinates.top) + "px";
                             dropdownMenuTarget.style.left = String(caretCoordinates.left) + "px";
 
-                            dropdownMenuTarget.dropdownPollEdit = leafac.setTippy({
+                            leafac.setTippy({
                               event,
                               element: dropdownMenuTarget,
                               elementProperty: "dropdownPollEdit",
@@ -3668,7 +3668,7 @@ export default async (application: Application): Promise<void> => {
 
                             tippy.hideAll();
                             dropdownMenuTarget.dropdownPollEdit.show();
-                            
+
                             return;
                           }
 
