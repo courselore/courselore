@@ -3631,6 +3631,8 @@ export default async (application: Application): Promise<void> => {
                       };
 
                       this.onclick = this.onkeyup = () => {
+                        if (this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--poll"]') !== null) return;
+                        
                         for (const match of this.value.matchAll(/<courselore-poll\\s+reference="\\d+"><\\/courselore-poll>/g))
                           if (match.index <= this.selectionStart && this.selectionStart <= match.index + match[0].length) {
                             const caretCoordinates = caretPos.position(this);
