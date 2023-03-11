@@ -7,7 +7,6 @@
 **Poll**
 
 - Features
-  - Test rich-text in poll options.
   - Disable polls for students
     - Default students can’t create polls
   - Document who can see what.
