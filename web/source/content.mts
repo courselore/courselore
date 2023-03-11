@@ -2327,7 +2327,11 @@ export default async (application: Application): Promise<void> => {
                         gap: var(--space--2);
                       `}"
                     >
-                      $${response.locals.course !== undefined
+                      $${response.locals.course !== undefined &&
+                      !(
+                        response.locals.enrollment?.courseRole === "student" &&
+                        response.locals.course.studentsMayCreatePollsAt === null
+                      )
                         ? html`
                             <div class="dropdown--menu">
                               <button
@@ -4667,7 +4671,12 @@ ${contentSource}</textarea
     {},
     Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
   >("/courses/:courseReference/polls", (request, response, next) => {
-    if (response.locals.course === undefined) return next();
+    if (
+      response.locals.course === undefined ||
+      (response.locals.enrollment.courseRole === "student" &&
+        response.locals.course.studentsMayCreatePollsAt === null)
+    )
+      return next();
 
     request.body.options ??= [];
 

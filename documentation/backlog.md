@@ -5,11 +5,6 @@
 **Poll**
 
 - Features
-  - Disable polls for students
-    - Create.
-    - Edit
-      - On content editor (via dropdown menu)
-      - On poll visualization
   - Document who can see what.
     - Details
       - Students may see aggregate results.
