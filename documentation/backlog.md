@@ -2,6 +2,8 @@
 
 ## Finish
 
+- Caret position is still broken (long lines this time)
+
 **Poll**
 
 - Features
