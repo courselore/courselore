@@ -1266,7 +1266,7 @@ export default async (application: Application): Promise<void> => {
                   >
                     $${pollHTML}
                   </div>
-                  <div key="poll--edit" hidden></div>
+                  <form key="poll--edit" hidden></form>
                 </div>
               `
             : html`
@@ -1294,7 +1294,7 @@ export default async (application: Application): Promise<void> => {
                   >
                     $${pollHTML}
                   </form>
-                  <div key="poll--edit" hidden></div>
+                  <form key="poll--edit" hidden></form>
                 </div>
               `;
 

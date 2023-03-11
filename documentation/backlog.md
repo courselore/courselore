@@ -8,8 +8,6 @@
 
 - Features
   - Edit poll.
-    - Edit options.
-      - Live-Update should update options (in case the poll was edited)
     - Shortcuts for closing the poll.
   - Test rich-text in poll options.
   - Disable polls for students
