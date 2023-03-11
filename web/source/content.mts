@@ -1207,7 +1207,7 @@ export default async (application: Application): Promise<void> => {
                       this.onclick = async () => {
                         const loading = this.querySelector('[key="loading"]');
                         loading.hidden = false;
-                        const response = await fetch(${`https://${application.configuration.hostname}/courses/${response.locals.course?.reference}/polls/`} + window.locals.editPollReference + ${`/edit`}, { cache: "no-store" });
+                        const response = await fetch(${`https://${application.configuration.hostname}/courses/${response.locals.course.reference}/polls/${poll.reference}/edit`}, { cache: "no-store" });
                         loading.hidden = true;
                         if (!response.ok) {
                           leafac.setTippy({
@@ -1226,7 +1226,6 @@ export default async (application: Application): Promise<void> => {
                         const poll = leafac.stringToElement(await response.text()).querySelector('[key="content-editor--write--poll"]');
                         this.closest('[key="content-editor"]').querySelector('[key="content-editor--write"]').insertAdjacentElement("afterbegin", poll);
                         leafac.execute({ element: poll });
-                        tippy.hideAll();
                       };
                     `}"
                   >
