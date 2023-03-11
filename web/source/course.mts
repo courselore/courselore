@@ -1050,6 +1050,19 @@ export default async (application: Application): Promise<void> => {
               <a
                 href="https://${application.configuration
                   .hostname}/courses/${response.locals.course
+                  .reference}/settings/advanced"
+                class="dropdown--menu--item menu-box--item button ${request.path.match(
+                  /\/settings\/advanced\/?$/i
+                )
+                  ? "button--blue"
+                  : "button--transparent"}"
+              >
+                <i class="bi bi-journal-medical"></i>
+                Advanced
+              </a>
+              <a
+                href="https://${application.configuration
+                  .hostname}/courses/${response.locals.course
                   .reference}/settings/your-enrollment"
                 class="dropdown--menu--item menu-box--item button ${request.path.match(
                   /\/settings\/your-enrollment\/?$/i
@@ -1103,6 +1116,7 @@ export default async (application: Application): Promise<void> => {
               <i class="bi bi-journal-text"></i>
               Course Information
             </h2>
+
             <form
               method="PATCH"
               action="https://${application.configuration
@@ -1187,69 +1201,6 @@ export default async (application: Application): Promise<void> => {
                 </button>
               </div>
             </form>
-
-            <hr class="separator" />
-
-            <form
-              method="PATCH"
-              action="https://${application.configuration
-                .hostname}/courses/${response.locals.course
-                .reference}/settings/course-information"
-              css="${css`
-                display: flex;
-                flex-direction: column;
-                gap: var(--space--1);
-              `}"
-            >
-              $${response.locals.course.archivedAt === null
-                ? html`
-                    <input type="hidden" name="isArchived" value="true" />
-                    <div>
-                      <button class="button button--rose">
-                        <i class="bi bi-archive-fill"></i>
-                        Archive Course
-                      </button>
-                    </div>
-                    <div
-                      class="secondary"
-                      css="${css`
-                        font-size: var(--font-size--xs);
-                        line-height: var(--line-height--xs);
-                      `}"
-                    >
-                      You may unarchive a course at any time.
-                    </div>
-                  `
-                : html`
-                    <input type="hidden" name="isArchived" value="false" />
-                    <div>
-                      <button class="button button--rose">
-                        <i class="bi bi-archive-fill"></i>
-                        Unarchive Course
-                      </button>
-                    </div>
-                    <div
-                      class="secondary"
-                      css="${css`
-                        font-size: var(--font-size--xs);
-                        line-height: var(--line-height--xs);
-                      `}"
-                    >
-                      <span>
-                        Archived
-                        <time
-                          datetime="${new Date(
-                            response.locals.course.archivedAt
-                          ).toISOString()}"
-                          javascript="${javascript`
-                            leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
-                          `}"
-                        ></time
-                        >.
-                      </span>
-                    </div>
-                  `}
-            </form>
           `,
         })
       );
@@ -1265,7 +1216,6 @@ export default async (application: Application): Promise<void> => {
       term?: string;
       institution?: string;
       code?: string;
-      isArchived?: "true" | "false";
     },
     {},
     Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
@@ -1279,84 +1229,54 @@ export default async (application: Application): Promise<void> => {
         return next();
 
       if (
-        (typeof request.body.isArchived !== "string" &&
-          (typeof request.body.name !== "string" ||
-            request.body.name.trim() === "" ||
-            !["string", "undefined"].includes(typeof request.body.year) ||
-            !["string", "undefined"].includes(typeof request.body.term) ||
-            !["string", "undefined"].includes(
-              typeof request.body.institution
-            ) ||
-            !["string", "undefined"].includes(typeof request.body.code))) ||
-        (typeof request.body.isArchived === "string" &&
-          !["true", "false"].includes(request.body.isArchived))
+        typeof request.body.name !== "string" ||
+        request.body.name.trim() === "" ||
+        !["string", "undefined"].includes(typeof request.body.year) ||
+        !["string", "undefined"].includes(typeof request.body.term) ||
+        !["string", "undefined"].includes(typeof request.body.institution) ||
+        !["string", "undefined"].includes(typeof request.body.code)
       )
         return next("Validation");
 
-      if (typeof request.body.isArchived !== "string") {
-        application.database.run(
-          sql`
-            UPDATE "courses"
-            SET
-              "name" = ${request.body.name},
-              "year" = ${
-                typeof request.body.year === "string" &&
-                request.body.year.trim() !== ""
-                  ? request.body.year
-                  : null
-              },
-              "term" = ${
-                typeof request.body.term === "string" &&
-                request.body.term.trim() !== ""
-                  ? request.body.term
-                  : null
-              },
-              "institution" = ${
-                typeof request.body.institution === "string" &&
-                request.body.institution.trim() !== ""
-                  ? request.body.institution
-                  : null
-              },
-              "code" = ${
-                typeof request.body.code === "string" &&
-                request.body.code.trim() !== ""
-                  ? request.body.code
-                  : null
-              }
-            WHERE "id" = ${response.locals.course.id}
-          `
-        );
-
-        application.web.locals.helpers.Flash.set({
-          request,
-          response,
-          theme: "green",
-          content: html`Course information updated successfully.`,
-        });
-      } else {
-        application.database.run(
-          sql`
-            UPDATE "courses"
-            SET "archivedAt" = ${
-              request.body.isArchived === "true"
-                ? new Date().toISOString()
+      application.database.run(
+        sql`
+          UPDATE "courses"
+          SET
+            "name" = ${request.body.name},
+            "year" = ${
+              typeof request.body.year === "string" &&
+              request.body.year.trim() !== ""
+                ? request.body.year
+                : null
+            },
+            "term" = ${
+              typeof request.body.term === "string" &&
+              request.body.term.trim() !== ""
+                ? request.body.term
+                : null
+            },
+            "institution" = ${
+              typeof request.body.institution === "string" &&
+              request.body.institution.trim() !== ""
+                ? request.body.institution
+                : null
+            },
+            "code" = ${
+              typeof request.body.code === "string" &&
+              request.body.code.trim() !== ""
+                ? request.body.code
                 : null
             }
-            WHERE "id" = ${response.locals.course.id}
-          `
-        );
+          WHERE "id" = ${response.locals.course.id}
+        `
+      );
 
-        application.web.locals.helpers.Flash.set({
-          request,
-          response,
-          theme: "green",
-          content: html`
-            Course
-            ${request.body.isArchived === "true" ? "archived" : "unarchived"}
-            successfully.
-          `,
-        });
-      }
+      application.web.locals.helpers.Flash.set({
+        request,
+        response,
+        theme: "green",
+        content: html`Course information updated successfully.`,
+      });
 
       response.redirect(
         303,
@@ -4723,6 +4643,162 @@ export default async (application: Application): Promise<void> => {
         response.locals.managedEnrollment.isSelf
           ? `https://${application.configuration.hostname}/`
           : `https://${application.configuration.hostname}/courses/${response.locals.course.reference}/settings/enrollments`
+      );
+
+      application.web.locals.helpers.liveUpdates({
+        request,
+        response,
+        url: `/courses/${response.locals.course.reference}`,
+      });
+    }
+  );
+
+  application.web.get<
+    { courseReference: string },
+    HTML,
+    {},
+    {},
+    Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+  >(
+    "/courses/:courseReference/settings/advanced",
+    (request, response, next) => {
+      if (
+        response.locals.course === undefined ||
+        response.locals.enrollment.courseRole !== "staff"
+      )
+        return next();
+
+      response.send(
+        layoutCourseSettings({
+          request,
+          response,
+          head: html`
+            <title>
+              Advanced · Course Settings · ${response.locals.course.name} ·
+              Courselore
+            </title>
+          `,
+          body: html`
+            <h2 class="heading">
+              <i class="bi bi-sliders"></i>
+              Course Settings ·
+              <i class="bi bi-journal-medical"></i>
+              Advanced
+            </h2>
+
+            <hr class="separator" />
+
+            <form
+              method="PATCH"
+              action="https://${application.configuration
+                .hostname}/courses/${response.locals.course
+                .reference}/settings/advanced"
+              css="${css`
+                display: flex;
+                flex-direction: column;
+                gap: var(--space--1);
+              `}"
+            >
+              $${response.locals.course.archivedAt === null
+                ? html`
+                    <input type="hidden" name="isArchived" value="true" />
+                    <div>
+                      <button class="button button--rose">
+                        <i class="bi bi-archive-fill"></i>
+                        Archive Course
+                      </button>
+                    </div>
+                    <div
+                      class="secondary"
+                      css="${css`
+                        font-size: var(--font-size--xs);
+                        line-height: var(--line-height--xs);
+                      `}"
+                    >
+                      You may unarchive a course at any time.
+                    </div>
+                  `
+                : html`
+                    <input type="hidden" name="isArchived" value="false" />
+                    <div>
+                      <button class="button button--rose">
+                        <i class="bi bi-archive-fill"></i>
+                        Unarchive Course
+                      </button>
+                    </div>
+                    <div
+                      class="secondary"
+                      css="${css`
+                        font-size: var(--font-size--xs);
+                        line-height: var(--line-height--xs);
+                      `}"
+                    >
+                      <span>
+                        Archived
+                        <time
+                          datetime="${new Date(
+                            response.locals.course.archivedAt
+                          ).toISOString()}"
+                          javascript="${javascript`
+                            leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
+                          `}"
+                        ></time
+                        >.
+                      </span>
+                    </div>
+                  `}
+            </form>
+          `,
+        })
+      );
+    }
+  );
+
+  application.web.patch<
+    { courseReference: string },
+    HTML,
+    { isArchived?: "true" | "false" },
+    {},
+    Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+  >(
+    "/courses/:courseReference/settings/advanced",
+    (request, response, next) => {
+      if (
+        response.locals.course === undefined ||
+        response.locals.enrollment.courseRole !== "staff"
+      )
+        return next();
+
+      if (
+        typeof request.body.isArchived !== "string" ||
+        !["true", "false"].includes(request.body.isArchived)
+      )
+        return next("Validation");
+
+      application.database.run(
+        sql`
+          UPDATE "courses"
+          SET "archivedAt" = ${
+            request.body.isArchived === "true" ? new Date().toISOString() : null
+          }
+          WHERE "id" = ${response.locals.course.id}
+        `
+      );
+
+      application.web.locals.helpers.Flash.set({
+        request,
+        response,
+        theme: "green",
+        content: html`
+          Course
+          ${request.body.isArchived === "true" ? "archived" : "unarchived"}
+          successfully.
+        `,
+      });
+
+      response.redirect(
+        303,
+        `https://${application.configuration.hostname}/courses/${response.locals.course.reference}/settings/advanced`
       );
 
       application.web.locals.helpers.liveUpdates({
