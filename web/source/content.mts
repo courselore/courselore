@@ -5270,11 +5270,6 @@ ${contentSource}</textarea
     (request, response, next) => {
       if (response.locals.poll === undefined) return next();
 
-      console.log(response.locals.poll.closesAt);
-      console.log(
-        application.web.locals.helpers.isPast(response.locals.poll.closesAt)
-      );
-
       if (application.web.locals.helpers.isPast(response.locals.poll.closesAt))
         return next("Validation");
 
