@@ -1247,15 +1247,15 @@ export default async (application: Application): Promise<void> => {
           })()}
         `;
 
-        pollHTML =
-          voted || closed
-            ? html`
-                <div
-                  key="poll"
-                  css="${css`
-                    margin: var(--space--8) var(--space--0);
-                  `}"
-                >
+        pollHTML = html`
+          <div
+            key="poll"
+            css="${css`
+              margin: var(--space--8) var(--space--0);
+            `}"
+          >
+            $${voted || closed
+              ? html`
                   <div
                     key="poll--show"
                     css="${css`
@@ -1266,16 +1266,8 @@ export default async (application: Application): Promise<void> => {
                   >
                     $${pollHTML}
                   </div>
-                  <form key="poll--edit" hidden></form>
-                </div>
-              `
-            : html`
-                <div
-                  key="poll"
-                  css="${css`
-                    margin: var(--space--8) var(--space--0);
-                  `}"
-                >
+                `
+              : html`
                   <form
                     key="poll--show"
                     method="POST"
@@ -1294,9 +1286,22 @@ export default async (application: Application): Promise<void> => {
                   >
                     $${pollHTML}
                   </form>
-                  <form key="poll--edit" hidden></form>
-                </div>
-              `;
+                `}
+
+            <form
+              key="poll--edit"
+              method="PUT"
+              action="https://${application.configuration
+                .hostname}/courses/${responseCourseEnrolled.locals.course
+                .reference}/polls/${poll.reference}${qs.stringify(
+                { redirect: request.originalUrl.slice(1) },
+                { addQueryPrefix: true }
+              )}"
+              novalidate
+              hidden
+            ></form>
+          </div>
+        `;
 
         element.outerHTML = pollHTML;
       }
@@ -3806,13 +3811,15 @@ ${contentSource}</textarea
               `}"
             >
               <button
-                type="button"
                 class="button button--blue"
                 javascript="${javascript`
+                  if (this.closest('[key="poll"]') === null) return;
+                  
+                  this.setAttribute("type", "button");
+
                   this.onclick = async () => {
-                    const poll = this.closest('[key="poll"]');
                     const pollEditor = this.closest('[key="poll-editor"]');
-                    const textarea = this.closest('[key="content-editor"]')?.querySelector?.('[key="content-editor--write--textarea"]');
+                    const textarea = this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
 
                     if (!leafac.validate(pollEditor)) return;
 
@@ -3848,18 +3855,11 @@ ${contentSource}</textarea
                       body,
                     })).text();
 
-                    if (poll !== null) {
-                      poll.querySelector('[key="poll--show"]').hidden = false;
-                      poll.querySelector('[key="poll--edit"]').hidden = true;
-                    }
-
                     pollEditor.remove();
 
-                    if (textarea !== undefined) {
-                      if (${poll === undefined})
-                        textFieldEdit.insert(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + content + "\\n\\n");
-                      textarea.focus();
-                    }
+                    if (${poll === undefined})
+                      textFieldEdit.insert(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + content + "\\n\\n");
+                    textarea.focus();
                   };
                 `}"
               >
@@ -4902,7 +4902,7 @@ ${contentSource}</textarea
         content?: string;
       }[];
     },
-    {},
+    { redirect?: string },
     ResponseLocalsPoll
   >(
     "/courses/:courseReference/polls/:pollReference",
@@ -5013,7 +5013,12 @@ ${contentSource}</textarea
           );
       });
 
-      response.end();
+      if (typeof request.query.redirect === "string")
+        response.redirect(
+          303,
+          `https://${application.configuration.hostname}/${request.query.redirect}`
+        );
+      else response.end();
 
       application.web.locals.helpers.liveUpdates({
         request,
