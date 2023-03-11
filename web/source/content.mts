@@ -1208,6 +1208,7 @@ export default async (application: Application): Promise<void> => {
                         const edit = this.closest('[key="poll"]').querySelector('[key="poll--edit"]');
                         const loading = this.querySelector('[key="loading"]');
                         loading.hidden = false;
+                        edit.onbeforemorph = (event) => !event?.detail?.liveUpdate;
                         leafac.morph(edit, await (await fetch(${`https://${application.configuration.hostname}/courses/${response.locals.course.reference}/polls/${poll.reference}/edit`}, { cache: "no-store" })).text());
                         loading.hidden = true;
                         leafac.execute({ element: edit });
