@@ -7,8 +7,6 @@
 - Features
   - Edit poll.
     - In poll display.
-      - Scroll up
-        - Test that focus is still working the same
       - Appearance
         - Padding
         - Border bottom
