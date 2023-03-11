@@ -7,6 +7,12 @@
 - Features
   - Edit poll.
     - In poll display.
+      - Buttons aren’t working
+      - Appearance
+        - Padding
+        - Border bottom
+        - “Poll” heading
+      - “Cancel”
     - Check what happens when you create a poll and the focus is brought back to the editor.
     - Edit options.
       - Live-Update should update options (in case the poll was edited)

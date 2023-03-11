@@ -1207,25 +1207,12 @@ export default async (application: Application): Promise<void> => {
                       this.onclick = async () => {
                         const loading = this.querySelector('[key="loading"]');
                         loading.hidden = false;
-                        const response = await fetch(${`https://${application.configuration.hostname}/courses/${response.locals.course.reference}/polls/${poll.reference}/edit`}, { cache: "no-store" });
+                        const poll = leafac.stringToElement(await (await fetch(${`https://${application.configuration.hostname}/courses/${response.locals.course.reference}/polls/${poll.reference}/edit`}, { cache: "no-store" })).text());
                         loading.hidden = true;
-                        if (!response.ok) {
-                          leafac.setTippy({
-                            event,
-                            element: this,
-                            elementProperty: "errorTooltip",
-                            tippyProps: {
-                              theme: "rose",
-                              trigger: "manual",
-                              content: await response.text(),
-                            },
-                          });
-                          this.errorTooltip.show();
-                          return;
-                        }
-                        const poll = leafac.stringToElement(await response.text()).querySelector('[key="content-editor--write--poll"]');
-                        this.closest('[key="content-editor"]').querySelector('[key="content-editor--write"]').insertAdjacentElement("afterbegin", poll);
+                        leafac.morph(this.closest('[key="poll"]').querySelector('[key="poll--edit"]'), poll);
                         leafac.execute({ element: poll });
+                        this.closest('[key="poll"]').querySelector('[key="poll--show"]').hidden = true;
+                        this.closest('[key="poll"]').querySelector('[key="poll--edit"]').hidden = false;
                       };
                     `}"
                   >
