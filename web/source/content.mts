@@ -3810,14 +3810,15 @@ ${contentSource}</textarea
                 class="button button--blue"
                 javascript="${javascript`
                   this.onclick = async () => {
-                    const poll = this.closest('[key="poll-editor"]');
+                    const poll = this.closest('[key="poll"]');
+                    const pollEditor = this.closest('[key="poll-editor"]');
                     const textarea = this.closest('[key="content-editor"]')?.querySelector?.('[key="content-editor--write--textarea"]');
 
-                    if (!leafac.validate(poll)) return;
+                    if (!leafac.validate(pollEditor)) return;
 
-                    const body = leafac.serialize(poll);
+                    const body = leafac.serialize(pollEditor);
 
-                    leafac.morph(poll.querySelector('[key="poll-editor--content"]'), ${html`
+                    leafac.morph(pollEditor.querySelector('[key="poll-editor--content"]'), ${html`
                       <div
                         class="strong"
                         css="${css`
@@ -3847,7 +3848,12 @@ ${contentSource}</textarea
                       body,
                     })).text();
 
-                    poll.remove();
+                    if (poll !== null) {
+                      poll.querySelector('[key="poll--show"]').hidden = false;
+                      poll.querySelector('[key="poll--edit"]').hidden = true;
+                    }
+
+                    pollEditor.remove();
 
                     if (textarea !== undefined) {
                       if (${poll === undefined})
