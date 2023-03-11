@@ -1313,7 +1313,7 @@ export default async (application: Application): Promise<void> => {
               poll.closesAt === null
             )}/${String(voted)}"
             css="${css`
-              margin: var(--space--8) var(--space--0);
+              margin: var(--space--4) var(--space--0);
             `}"
           >
             <form
