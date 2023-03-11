@@ -7,9 +7,6 @@
 - Features
   - Edit poll.
     - In poll display.
-      - Appearance
-        - Padding
-        - Border bottom
       - “Cancel”
     - Check what happens when you create a poll and the focus is brought back to the editor.
     - Edit options.

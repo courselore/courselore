@@ -3439,28 +3439,34 @@ ${contentSource}</textarea
       <div
         key="poll-editor"
         css="${css`
-          padding: var(--space--2);
+          [key="content-editor"] & {
+            padding: var(--space--2);
+          }
         `}"
       >
         <div
           css="${css`
-            padding-bottom: var(--space--2);
-            border-bottom: var(--border-width--1) solid
-              var(--color--gray--medium--300);
-            @media (prefers-color-scheme: dark) {
-              border-color: var(--color--gray--medium--600);
+            [key="content-editor"] & {
+              padding-bottom: var(--space--2);
+              border-bottom: var(--border-width--1) solid
+                var(--color--gray--medium--300);
+              @media (prefers-color-scheme: dark) {
+                border-color: var(--color--gray--medium--600);
+              }
             }
           `}"
         >
           <div
             key="poll-editor--content"
             css="${css`
-              background-color: var(--color--gray--medium--50);
-              @media (prefers-color-scheme: dark) {
-                background-color: var(--color--gray--medium--900);
+              [key="content-editor"] & {
+                background-color: var(--color--gray--medium--50);
+                @media (prefers-color-scheme: dark) {
+                  background-color: var(--color--gray--medium--900);
+                }
+                padding: var(--space--2) var(--space--4);
+                border-radius: var(--border-radius--lg);
               }
-              padding: var(--space--2) var(--space--4);
-              border-radius: var(--border-radius--lg);
               display: flex;
               flex-direction: column;
               gap: var(--space--4);
