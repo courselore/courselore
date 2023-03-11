@@ -8,7 +8,9 @@
 
 - Features
   - Edit poll.
-    - Shortcuts for closing the poll.
+    - Shortcuts for closing/reopening the poll.
+      - In edit poll form.
+      - In poll display.
   - Test rich-text in poll options.
   - Disable polls for students
     - Default students can’t create polls

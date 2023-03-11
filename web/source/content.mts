@@ -1228,6 +1228,36 @@ export default async (application: Application): Promise<void> => {
                     </div>
                   </button>
                 </div>
+
+                <div>
+                  <button
+                    formmethod="PATCH"
+                    formaction="https://${application.configuration
+                      .hostname}/courses/${responseCourseEnrolled.locals.course
+                      .reference}/polls/${poll.reference}${qs.stringify(
+                      { redirect: request.originalUrl.slice(1) },
+                      { addQueryPrefix: true }
+                    )}"
+                    name="close"
+                    value="${closed ? "false" : "true"}"
+                    class="button button--transparent"
+                    javascript="${javascript`
+                      this.onclick = () => {
+                        this.closest("form").isValid = true;
+                      };
+                    `}"
+                  >
+                    $${closed
+                      ? html`
+                          <i class="bi bi-calendar-check"></i>
+                          Reopen Poll
+                        `
+                      : html`
+                          <i class="bi bi-calendar-x"></i>
+                          Close Poll
+                        `}
+                  </button>
+                </div>
               `;
 
             return actions !== html``
@@ -1254,39 +1284,24 @@ export default async (application: Application): Promise<void> => {
               margin: var(--space--8) var(--space--0);
             `}"
           >
-            $${voted || closed
-              ? html`
-                  <div
-                    key="poll--show"
-                    css="${css`
-                      display: flex;
-                      flex-direction: column;
-                      gap: var(--space--2);
-                    `}"
-                  >
-                    $${pollHTML}
-                  </div>
-                `
-              : html`
-                  <form
-                    key="poll--show"
-                    method="POST"
-                    action="https://${application.configuration
-                      .hostname}/courses/${responseCourseEnrolled.locals.course
-                      .reference}/polls/${poll.reference}/votes${qs.stringify(
-                      { redirect: request.originalUrl.slice(1) },
-                      { addQueryPrefix: true }
-                    )}"
-                    novalidate
-                    css="${css`
-                      display: flex;
-                      flex-direction: column;
-                      gap: var(--space--2);
-                    `}"
-                  >
-                    $${pollHTML}
-                  </form>
-                `}
+            <form
+              key="poll--show"
+              method="POST"
+              action="https://${application.configuration
+                .hostname}/courses/${responseCourseEnrolled.locals.course
+                .reference}/polls/${poll.reference}/votes${qs.stringify(
+                { redirect: request.originalUrl.slice(1) },
+                { addQueryPrefix: true }
+              )}"
+              novalidate
+              css="${css`
+                display: flex;
+                flex-direction: column;
+                gap: var(--space--2);
+              `}"
+            >
+              $${pollHTML}
+            </form>
 
             <form
               key="poll--edit"
@@ -4948,8 +4963,7 @@ ${contentSource}</textarea
                   : null
               },
               "closesAt" = ${request.body.closesAt}
-            WHERE
-              "id" = ${response.locals.poll.id}
+            WHERE "id" = ${response.locals.poll.id}
           `
         );
 
@@ -5019,6 +5033,50 @@ ${contentSource}</textarea
           `https://${application.configuration.hostname}/${request.query.redirect}`
         );
       else response.end();
+
+      application.web.locals.helpers.liveUpdates({
+        request,
+        response,
+        url: `/courses/${response.locals.course.reference}`,
+      });
+    }
+  );
+
+  application.web.patch<
+    { courseReference: string; pollReference: string },
+    any,
+    {
+      close?: "true" | "false";
+    },
+    { redirect?: string },
+    ResponseLocalsPoll
+  >(
+    "/courses/:courseReference/polls/:pollReference",
+    (request, response, next) => {
+      if (
+        response.locals.poll === undefined ||
+        !mayEditPoll({ request, response, poll: response.locals.poll })
+      )
+        return next();
+
+      if (typeof request.body.close === "string")
+        if (!["true", "false"].includes(request.body.close))
+          return next("Validation");
+        else
+          application.database.run(
+            sql`
+              UPDATE "messagePolls"
+              SET "closesAt" = ${
+                request.body.close === "true" ? new Date().toISOString() : null
+              }
+              WHERE "id" = ${response.locals.poll.id}
+            `
+          );
+
+      response.redirect(
+        303,
+        `https://${application.configuration.hostname}/${request.query.redirect}`
+      );
 
       application.web.locals.helpers.liveUpdates({
         request,
