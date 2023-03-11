@@ -2,13 +2,14 @@
 
 ## Finish
 
-- Caret position is still broken (long lines this time)
-
 **Poll**
 
 - Features
   - Disable polls for students
-    - Default students can’t create polls
+    - Create.
+    - Edit
+      - On content editor (via dropdown menu)
+      - On poll visualization
   - Document who can see what.
     - Details
       - Students may see aggregate results.
@@ -18,6 +19,7 @@
       - When voting.
   - Database indices
 - Edge cases
+  - Caret position is still broken (long lines this time)
   - Should we lock the editing of a poll when it’s closed? (You’d have to unclose it, then edit it…)
   - The “Quote” dropdown menu shouldn’t show up when clicking on poll
   - Quoting picks up the positions from the rendered element within the poll option
