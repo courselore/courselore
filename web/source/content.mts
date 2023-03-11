@@ -1205,14 +1205,14 @@ export default async (application: Application): Promise<void> => {
                     class="button button--transparent"
                     javascript="${javascript`
                       this.onclick = async () => {
+                        const edit = this.closest('[key="poll"]').querySelector('[key="poll--edit"]');
                         const loading = this.querySelector('[key="loading"]');
                         loading.hidden = false;
-                        const poll = leafac.stringToElement(await (await fetch(${`https://${application.configuration.hostname}/courses/${response.locals.course.reference}/polls/${poll.reference}/edit`}, { cache: "no-store" })).text());
+                        leafac.morph(edit, await (await fetch(${`https://${application.configuration.hostname}/courses/${response.locals.course.reference}/polls/${poll.reference}/edit`}, { cache: "no-store" })).text());
                         loading.hidden = true;
-                        leafac.morph(this.closest('[key="poll"]').querySelector('[key="poll--edit"]'), poll);
-                        leafac.execute({ element: poll });
+                        leafac.execute({ element: edit });
                         this.closest('[key="poll"]').querySelector('[key="poll--show"]').hidden = true;
-                        this.closest('[key="poll"]').querySelector('[key="poll--edit"]').hidden = false;
+                        edit.hidden = false;
                       };
                     `}"
                   >
