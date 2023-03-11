@@ -1198,6 +1198,49 @@ export default async (application: Application): Promise<void> => {
                     Hide Votes
                   </button>
                 </div>
+
+                <div>
+                  <button
+                    type="button"
+                    class="button button--transparent"
+                    javascript="${javascript`
+                      this.onclick = async () => {
+                        const loading = this.querySelector('[key="loading"]');
+                        loading.hidden = false;
+                        const response = await fetch(${`https://${application.configuration.hostname}/courses/${response.locals.course?.reference}/polls/`} + window.locals.editPollReference + ${`/edit`}, { cache: "no-store" });
+                        loading.hidden = true;
+                        if (!response.ok) {
+                          leafac.setTippy({
+                            event,
+                            element: this,
+                            elementProperty: "errorTooltip",
+                            tippyProps: {
+                              theme: "rose",
+                              trigger: "manual",
+                              content: await response.text(),
+                            },
+                          });
+                          this.errorTooltip.show();
+                          return;
+                        }
+                        const poll = leafac.stringToElement(await response.text()).querySelector('[key="content-editor--write--poll"]');
+                        this.closest('[key="content-editor"]').querySelector('[key="content-editor--write"]').insertAdjacentElement("afterbegin", poll);
+                        leafac.execute({ element: poll });
+                        tippy.hideAll();
+                      };
+                    `}"
+                  >
+                    <i class="bi bi-pencil"></i>
+                    Edit Poll
+                    <div key="loading" hidden>
+                      $${application.web.locals.partials.spinner({
+                        request,
+                        response,
+                        size: 10,
+                      })}
+                    </div>
+                  </button>
+                </div>
               `;
 
             return actions !== html``
