@@ -437,7 +437,8 @@ export default async (application: Application): Promise<void> => {
                   "term",
                   "institution",
                   "code",
-                  "nextConversationReference"
+                  "nextConversationReference",
+                  "studentsMayCreatePollsAt"
                 )
                 VALUES (
                   ${new Date().toISOString()},
@@ -467,7 +468,8 @@ export default async (application: Application): Promise<void> => {
                       ? request.body.code
                       : null
                   },
-                  ${1}
+                  ${1},
+                  ${new Date().toISOString()}
                 )
               `
             ).lastInsertRowid

@@ -217,7 +217,8 @@ export default async (application: Application): Promise<void> => {
                     "term",
                     "institution",
                     "code",      
-                    "nextConversationReference"
+                    "nextConversationReference",
+                    "studentsMayCreatePollsAt"
                   )
                   VALUES (
                     ${new Date().toISOString()},
@@ -228,7 +229,8 @@ export default async (application: Application): Promise<void> => {
                     ${term},
                     ${institution},
                     ${code},
-                    ${lodash.random(30, 50)}
+                    ${lodash.random(30, 50)},
+                    ${Math.random() < 0.5 ? new Date().toISOString() : null}
                   )
                 `
               ).lastInsertRowid
