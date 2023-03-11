@@ -1056,21 +1056,27 @@ export default async (application: Application): Promise<void> => {
             if (!closed)
               actions += voted
                 ? html`
-                    <form
-                      method="DELETE"
-                      action="https://${application.configuration
-                        .hostname}/courses/${responseCourseEnrolled.locals
-                        .course
-                        .reference}/polls/${poll.reference}/votes${qs.stringify(
-                        { redirect: request.originalUrl.slice(1) },
-                        { addQueryPrefix: true }
-                      )}"
-                    >
-                      <button class="button button--rose">
+                    <div>
+                      <button
+                        formmethod="DELETE"
+                        formaction="https://${application.configuration
+                          .hostname}/courses/${responseCourseEnrolled.locals
+                          .course
+                          .reference}/polls/${poll.reference}/votes${qs.stringify(
+                          { redirect: request.originalUrl.slice(1) },
+                          { addQueryPrefix: true }
+                        )}"
+                        class="button button--rose"
+                        javascript="${javascript`
+                          this.onclick = () => {
+                            this.closest("form").isValid = true;
+                          };
+                        `}"
+                      >
                         <i class="bi bi-trash-fill"></i>
                         Remove Vote
                       </button>
-                    </form>
+                    </div>
                   `
                 : html`
                     <div>
@@ -1303,7 +1309,9 @@ export default async (application: Application): Promise<void> => {
 
         pollHTML = html`
           <div
-            key="poll/${poll.reference}/${String(poll.closesAt === null)}"
+            key="poll/${poll.reference}/${String(
+              poll.closesAt === null
+            )}/${String(voted)}"
             css="${css`
               margin: var(--space--8) var(--space--0);
             `}"
@@ -5261,6 +5269,11 @@ ${contentSource}</textarea
     "/courses/:courseReference/polls/:pollReference/votes",
     (request, response, next) => {
       if (response.locals.poll === undefined) return next();
+
+      console.log(response.locals.poll.closesAt);
+      console.log(
+        application.web.locals.helpers.isPast(response.locals.poll.closesAt)
+      );
 
       if (application.web.locals.helpers.isPast(response.locals.poll.closesAt))
         return next("Validation");
