@@ -1205,14 +1205,14 @@ export default async (application: Application): Promise<void> => {
                     class="button button--transparent"
                     javascript="${javascript`
                       this.onclick = async () => {
-                        const edit = this.closest('[key="poll"]').querySelector('[key="poll--edit"]');
+                        const edit = this.closest('[key^="poll/"]').querySelector('[key="poll--edit"]');
                         const loading = this.querySelector('[key="loading"]');
                         loading.hidden = false;
                         edit.onbeforemorph = (event) => !event?.detail?.liveUpdate;
                         leafac.morph(edit, await (await fetch(${`https://${application.configuration.hostname}/courses/${response.locals.course.reference}/polls/${poll.reference}/edit`}, { cache: "no-store" })).text());
                         loading.hidden = true;
                         leafac.execute({ element: edit });
-                        this.closest('[key="poll"]').querySelector('[key="poll--show"]').hidden = true;
+                        this.closest('[key^="poll/"]').querySelector('[key="poll--show"]').hidden = true;
                         edit.hidden = false;
                       };
                     `}"
@@ -1279,7 +1279,7 @@ export default async (application: Application): Promise<void> => {
 
         pollHTML = html`
           <div
-            key="poll"
+            key="poll/${poll.reference}/${String(poll.closesAt === null)}"
             css="${css`
               margin: var(--space--8) var(--space--0);
             `}"
@@ -3828,7 +3828,7 @@ ${contentSource}</textarea
               <button
                 class="button button--blue"
                 javascript="${javascript`
-                  if (this.closest('[key="poll"]') !== null) return;
+                  if (this.closest('[key^="poll/"]') !== null) return;
                   
                   this.setAttribute("type", "button");
 
@@ -3894,7 +3894,7 @@ ${contentSource}</textarea
                 class="button button--transparent"
                 javascript="${javascript`
                   this.onclick = () => {
-                    const poll = this.closest('[key="poll"]');
+                    const poll = this.closest('[key^="poll/"]');
                     if (poll !== null) {
                       poll.querySelector('[key="poll--show"]').hidden = false;
                       poll.querySelector('[key="poll--edit"]').hidden = true;
