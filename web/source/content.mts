@@ -1263,37 +1263,51 @@ export default async (application: Application): Promise<void> => {
           voted || closed
             ? html`
                 <div
-                  key="poll--show"
+                  key="poll"
                   css="${css`
                     margin: var(--space--8) var(--space--0);
-                    display: flex;
-                    flex-direction: column;
-                    gap: var(--space--2);
                   `}"
                 >
-                  $${pollHTML}
+                  <div
+                    key="poll--show"
+                    css="${css`
+                      display: flex;
+                      flex-direction: column;
+                      gap: var(--space--2);
+                    `}"
+                  >
+                    $${pollHTML}
+                  </div>
+                  <div key="poll--edit" hidden></div>
                 </div>
               `
             : html`
-                <form
-                  key="poll--show"
-                  method="POST"
-                  action="https://${application.configuration
-                    .hostname}/courses/${responseCourseEnrolled.locals.course
-                    .reference}/polls/${poll.reference}/votes${qs.stringify(
-                    { redirect: request.originalUrl.slice(1) },
-                    { addQueryPrefix: true }
-                  )}"
-                  novalidate
+                <div
+                  key="poll"
                   css="${css`
                     margin: var(--space--8) var(--space--0);
-                    display: flex;
-                    flex-direction: column;
-                    gap: var(--space--2);
                   `}"
                 >
-                  $${pollHTML}
-                </form>
+                  <form
+                    key="poll--show"
+                    method="POST"
+                    action="https://${application.configuration
+                      .hostname}/courses/${responseCourseEnrolled.locals.course
+                      .reference}/polls/${poll.reference}/votes${qs.stringify(
+                      { redirect: request.originalUrl.slice(1) },
+                      { addQueryPrefix: true }
+                    )}"
+                    novalidate
+                    css="${css`
+                      display: flex;
+                      flex-direction: column;
+                      gap: var(--space--2);
+                    `}"
+                  >
+                    $${pollHTML}
+                  </form>
+                  <div key="poll--edit" hidden></div>
+                </div>
               `;
 
         element.outerHTML = pollHTML;
