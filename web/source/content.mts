@@ -1001,7 +1001,7 @@ export default async (application: Application): Promise<void> => {
                     $${optionHTML}
 
                     <div
-                      key="poll--option--votes/${option.reference}"
+                      key="poll--show--option--votes/${option.reference}"
                       data-results="true"
                       data-results-votes="true"
                       hidden
@@ -1082,16 +1082,16 @@ export default async (application: Application): Promise<void> => {
 
                     $${mayEdit
                       ? html`
-                          <div key="poll--actions--show-results">
+                          <div key="poll--show--actions--show-results">
                             <button
                               type="button"
                               class="button button--transparent"
                               javascript="${javascript`
                                 this.onclick = async () => {
-                                  const poll = this.closest('[key="poll"]');
+                                  const poll = this.closest('[key="poll--show"]');
                                   for (const element of poll.querySelectorAll('[data-results="true"]:not([data-results-votes="true"])'))
                                     element.hidden = false;
-                                  poll.querySelector('[key="poll--actions--show-results"]').hidden = true;
+                                  poll.querySelector('[key="poll--show--actions--show-results"]').hidden = true;
                                 };
                               `}"
                             >
@@ -1106,10 +1106,10 @@ export default async (application: Application): Promise<void> => {
                               class="button button--transparent"
                               javascript="${javascript`
                                 this.onclick = async () => {
-                                  const poll = this.closest('[key="poll"]');
+                                  const poll = this.closest('[key="poll--show"]');
                                   for (const element of poll.querySelectorAll('[data-results="true"]'))
                                     element.hidden = true;
-                                  poll.querySelector('[key="poll--actions--show-results"]').hidden = false;
+                                  poll.querySelector('[key="poll--show--actions--show-results"]').hidden = false;
                                 };
                               `}"
                             >
@@ -1124,7 +1124,7 @@ export default async (application: Application): Promise<void> => {
             if (mayEdit)
               actions += html`
                 <div
-                  key="poll--actions--show-votes"
+                  key="poll--show--actions--show-votes"
                   data-results="true"
                   $${voted || closed ? html`` : html`hidden`}
                   css="${css`
@@ -1140,11 +1140,11 @@ export default async (application: Application): Promise<void> => {
                       : "button--transparent"}"
                     javascript="${javascript`
                       this.onclick = async () => {
-                        const poll = this.closest('[key="poll"]');
-                        const loading = poll.querySelector('[key="poll--actions--show-votes--loading"]');
+                        const poll = this.closest('[key="poll--show"]');
+                        const loading = poll.querySelector('[key="poll--show--actions--show-votes--loading"]');
                         loading.hidden = false;
                         const partial = leafac.stringToElement(await (await fetch(${`https://${application.configuration.hostname}/courses/${responseCourseEnrolled.locals.course.reference}/polls/${poll.reference}/votes`}, { cache: "no-store" })).text());
-                        for (const partialElement of partial.querySelectorAll('[key^="poll--option--votes/"]')) {
+                        for (const partialElement of partial.querySelectorAll('[key^="poll--show--option--votes/"]')) {
                           const element = poll.querySelector('[key="' + partialElement.getAttribute("key") + '"]');
                           element.onbeforemorph = (event) => !event?.detail?.liveUpdate;
                           leafac.morph(element, partialElement);
@@ -1152,8 +1152,8 @@ export default async (application: Application): Promise<void> => {
                           element.hidden = false;
                         }
                         loading.hidden = true;
-                        poll.querySelector('[key="poll--actions--show-votes"]').hidden = true;
-                        poll.querySelector('[key="poll--actions--hide-votes"]').hidden = false;
+                        poll.querySelector('[key="poll--show--actions--show-votes"]').hidden = true;
+                        poll.querySelector('[key="poll--show--actions--hide-votes"]').hidden = false;
                       };
                     `}"
                   >
@@ -1161,7 +1161,7 @@ export default async (application: Application): Promise<void> => {
                     Show Votes
                   </button>
 
-                  <div key="poll--actions--show-votes--loading" hidden>
+                  <div key="poll--show--actions--show-votes--loading" hidden>
                     $${application.web.locals.partials.spinner({
                       request,
                       response,
@@ -1170,7 +1170,7 @@ export default async (application: Application): Promise<void> => {
                 </div>
 
                 <div
-                  key="poll--actions--hide-votes"
+                  key="poll--show--actions--hide-votes"
                   data-results="true"
                   data-results-votes="true"
                   hidden
@@ -1182,11 +1182,11 @@ export default async (application: Application): Promise<void> => {
                       : "button--transparent"}"
                     javascript="${javascript`
                       this.onclick = async () => {
-                        const poll = this.closest('[key="poll"]');
-                        for (const element of poll.querySelectorAll('[key^="poll--option--votes/"]'))
+                        const poll = this.closest('[key="poll--show"]');
+                        for (const element of poll.querySelectorAll('[key^="poll--show--option--votes/"]'))
                           element.hidden = true;
-                        poll.querySelector('[key="poll--actions--show-votes"]').hidden = false;
-                        poll.querySelector('[key="poll--actions--hide-votes"]').hidden = true;
+                        poll.querySelector('[key="poll--show--actions--show-votes"]').hidden = false;
+                        poll.querySelector('[key="poll--show--actions--hide-votes"]').hidden = true;
                       };
                     `}"
                   >
@@ -1263,7 +1263,7 @@ export default async (application: Application): Promise<void> => {
           voted || closed
             ? html`
                 <div
-                  key="poll"
+                  key="poll--show"
                   css="${css`
                     margin: var(--space--8) var(--space--0);
                     display: flex;
@@ -1276,7 +1276,7 @@ export default async (application: Application): Promise<void> => {
               `
             : html`
                 <form
-                  key="poll"
+                  key="poll--show"
                   method="POST"
                   action="https://${application.configuration
                     .hostname}/courses/${responseCourseEnrolled.locals.course
@@ -5146,7 +5146,7 @@ ${contentSource}</textarea
           body: html`
             $${response.locals.poll.options.map(
               (option) => html`
-                <div key="poll--option--votes/${option.reference}">
+                <div key="poll--show--option--votes/${option.reference}">
                   $${application.database
                     .all<{
                       enrollmentId: number | null;
