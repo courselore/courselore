@@ -2309,13 +2309,13 @@ export default async (application: Application): Promise<void> => {
                                   this.onclick = () => {
                                     tippy.hideAll();
                                     const write = this.closest('[key="content-editor"]').querySelector('[key="content-editor--write"]');
-                                    if (write.querySelector('[key="content-editor--write--poll"]') !== null) return;
+                                    if (write.querySelector('[key="poll-editor"]') !== null) return;
                                     const poll = leafac.stringToElement(${partialPollEditor(
                                       {
                                         request: request as any,
                                         response: response as any,
                                       }
-                                    )}).querySelector('[key="content-editor--write--poll"]');
+                                    )}).querySelector('[key="poll-editor"]');
                                     write.insertAdjacentElement("afterbegin", poll);
                                     leafac.execute({ element: poll });
                                   };
@@ -3165,7 +3165,7 @@ export default async (application: Application): Promise<void> => {
                       };
 
                       this.onclick = this.onkeyup = () => {
-                        if (this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--poll"]') !== null) return;
+                        if (this.closest('[key="content-editor"]').querySelector('[key="poll-editor"]') !== null) return;
                         
                         for (const match of this.value.matchAll(/<courselore-poll\\s+reference="(?<pollReference>\\d+)"><\\/courselore-poll>/g))
                           if (match.index <= this.selectionStart && this.selectionStart <= match.index + match[0].length) {
@@ -3207,7 +3207,7 @@ export default async (application: Application): Promise<void> => {
                                             this.errorTooltip.show();
                                             return;
                                           }
-                                          const poll = leafac.stringToElement(await response.text()).querySelector('[key="content-editor--write--poll"]');
+                                          const poll = leafac.stringToElement(await response.text()).querySelector('[key="poll-editor"]');
                                           this.closest('[key="content-editor"]').querySelector('[key="content-editor--write"]').insertAdjacentElement("afterbegin", poll);
                                           leafac.execute({ element: poll });
                                           tippy.hideAll();
@@ -3361,9 +3361,7 @@ ${contentSource}</textarea
       option?: ResponseLocalsPoll["poll"]["options"][number] | undefined;
       order?: number;
     } = {}): HTML => html`
-      <div
-        key="content-editor--write--poll--option/${option?.reference ?? "new"}"
-      >
+      <div key="poll-editor--option/${option?.reference ?? "new"}">
         $${option !== undefined
           ? html`
               <input
@@ -3375,7 +3373,7 @@ ${contentSource}</textarea
           : html``}
 
         <button
-          key="content-editor--write--poll--option--grab--handle"
+          key="poll-editor--option--grab--handle"
           type="button"
           class="button button--tight button--tight--inline button--transparent"
           javascript="${javascript`
@@ -3425,8 +3423,8 @@ ${contentSource}</textarea
             });
 
             this.onclick = () => {
-              const options = this.closest('[key="content-editor--write--poll--options"]');
-              this.closest('[key^="content-editor--write--poll--option/"]').remove();
+              const options = this.closest('[key="poll-editor--options"]');
+              this.closest('[key^="poll-editor--option/"]').remove();
               options.reorder();
             };
           `}"
@@ -3438,7 +3436,7 @@ ${contentSource}</textarea
 
     return html`
       <div
-        key="content-editor--write--poll"
+        key="poll-editor"
         css="${css`
           padding: var(--space--2);
         `}"
@@ -3454,7 +3452,7 @@ ${contentSource}</textarea
           `}"
         >
           <div
-            key="content-editor--write--poll--content"
+            key="poll-editor--content"
             css="${css`
               background-color: var(--color--gray--medium--50);
               @media (prefers-color-scheme: dark) {
@@ -3556,7 +3554,7 @@ ${contentSource}</textarea
                       class="visually-hidden input--radio-or-checkbox--multilabel"
                       javascript="${javascript`
                         this.onchange = () => {
-                          const closesAt = this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--poll--closes-at"]');
+                          const closesAt = this.closest('[key="poll-editor"]').querySelector('[key="poll-editor--closes-at"]');
                           closesAt.hidden = !this.checked;
                           for (const element of leafac.descendants(closesAt))
                             if (element.disabled !== undefined) element.disabled = !this.checked;
@@ -3596,7 +3594,7 @@ ${contentSource}</textarea
                     </span>
                   </label>
                   <div
-                    key="content-editor--write--poll--closes-at"
+                    key="poll-editor--closes-at"
                     $${poll === undefined || poll.closesAt === null
                       ? html`hidden`
                       : html``}
@@ -3661,13 +3659,13 @@ ${contentSource}</textarea
                 `}"
               >
                 <div
-                  key="content-editor--write--poll--options"
+                  key="poll-editor--options"
                   css="${css`
                     display: flex;
                     flex-direction: column;
                     gap: var(--space--2);
 
-                    [key^="content-editor--write--poll--option/"] {
+                    [key^="poll-editor--option/"] {
                       display: flex;
                       gap: var(--space--2);
                       align-items: center;
@@ -3682,9 +3680,7 @@ ${contentSource}</textarea
                         opacity: var(--opacity--50);
                       }
 
-                      [key="content-editor--write--poll--option--grab--handle"]:not(
-                          .disabled
-                        ) {
+                      [key="poll-editor--option--grab--handle"]:not(.disabled) {
                         cursor: grab;
                       }
                     }
@@ -3697,10 +3693,10 @@ ${contentSource}</textarea
                     };
 
                     this.onpointerdown = (event) => {
-                      if (event.target.closest('[key="content-editor--write--poll--option--grab--handle"]') === null) return;
+                      if (event.target.closest('[key="poll-editor--option--grab--handle"]') === null) return;
 
                       const body = document.querySelector("body");
-                      const option = event.target.closest('[key^="content-editor--write--poll--option/"]');
+                      const option = event.target.closest('[key^="poll-editor--option/"]');
 
                       this.grabbed = option;
                       body.classList.add("grabbing");
@@ -3716,7 +3712,7 @@ ${contentSource}</textarea
                     this.onpointermove = (event) => {
                       const option = (
                         event.pointerType === "touch" ? document.elementFromPoint(event.clientX, event.clientY) : event.target
-                      ).closest('[key^="content-editor--write--poll--option/"]');
+                      ).closest('[key^="poll-editor--option/"]');
                       if (option === null || [undefined, option].includes(this.grabbed)) return;
 
                       const boundingClientRect = option.getBoundingClientRect();
@@ -3728,9 +3724,9 @@ ${contentSource}</textarea
                     };
 
                     this.onkeydown = (event) => {
-                      if (event.target.closest('[key="content-editor--write--poll--option--grab--handle"]') === null) return;
+                      if (event.target.closest('[key="poll-editor--option--grab--handle"]') === null) return;
 
-                      const option = event.target.closest('[key^="content-editor--write--poll--option/"]');
+                      const option = event.target.closest('[key^="poll-editor--option/"]');
                       switch (event.code) {
                         case "ArrowUp":
                           event.preventDefault();
@@ -3741,14 +3737,14 @@ ${contentSource}</textarea
                           option.nextElementSibling?.after?.(option);
                           break;
                       }
-                      option.querySelector('[key="content-editor--write--poll--option--grab--handle"]').focus();
+                      option.querySelector('[key="poll-editor--option--grab--handle"]').focus();
                       this.reorder();
                     };
 
                     this.reorder = () => {
                       this.isModified = true;
 
-                      for (const [order, option] of this.querySelectorAll('[key^="content-editor--write--poll--option/"]').entries())
+                      for (const [order, option] of this.querySelectorAll('[key^="poll-editor--option/"]').entries())
                         for (const element of option.querySelectorAll('[name^="options["]'))
                           element.setAttribute("name", element.getAttribute("name").replace(/\\d+/, String(order)));
                     };
@@ -3771,9 +3767,9 @@ ${contentSource}</textarea
                     class="button button--full-width-on-small-screen button--transparent"
                     javascript="${javascript`
                       this.onclick = () => {
-                        const newOption = leafac.stringToElement(${partialOption()}).querySelector('[key="content-editor--write--poll--option/new"]');
+                        const newOption = leafac.stringToElement(${partialOption()}).querySelector('[key="poll-editor--option/new"]');
 
-                        const options = this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--poll--options"]');
+                        const options = this.closest('[key="poll-editor"]').querySelector('[key="poll-editor--options"]');
                         options.insertAdjacentElement("beforeend", newOption);
                         leafac.execute({ element: newOption });
                         options.reorder();
@@ -3784,7 +3780,7 @@ ${contentSource}</textarea
                           this.onclick();
 
                       this.onvalidate = () => {
-                        if (this.closest("[hidden]") === null && this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--poll--options"]').children.length <= 1)
+                        if (this.closest("[hidden]") === null && this.closest('[key="poll-editor"]').querySelector('[key="poll-editor--options"]').children.length <= 1)
                           return "Please add at least two options.";
                       };
                     `}"
@@ -3807,14 +3803,13 @@ ${contentSource}</textarea
                 class="button button--blue"
                 javascript="${javascript`
                   this.onclick = async () => {
-                    const poll = this.closest('[key="content-editor--write--poll"]');
-                    const textarea = this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
+                    const poll = this.closest('[key="poll-editor"]');
 
                     if (!leafac.validate(poll)) return;
 
                     const body = leafac.serialize(poll);
 
-                    leafac.morph(poll.querySelector('[key="content-editor--write--poll--content"]'), ${html`
+                    leafac.morph(poll.querySelector('[key="poll-editor--content"]'), ${html`
                       <div
                         class="strong"
                         css="${css`
@@ -3845,9 +3840,13 @@ ${contentSource}</textarea
                     })).text();
 
                     poll.remove();
-                    if (${poll === undefined})
-                      textFieldEdit.insert(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + content + "\\n\\n");
-                    textarea.focus();
+
+                    const textarea = this.closest('[key="content-editor"]')?.querySelector?.('[key="content-editor--write--textarea"]');
+                    if (textarea !== undefined) {
+                      if (${poll === undefined})
+                        textFieldEdit.insert(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + content + "\\n\\n");
+                      textarea.focus();
+                    }
                   };
                 `}"
               >
@@ -3867,7 +3866,7 @@ ${contentSource}</textarea
                 class="button button--transparent"
                 javascript="${javascript`
                   this.onclick = () => {
-                    this.closest('[key="content-editor--write--poll"]').remove();
+                    this.closest('[key="poll-editor"]').remove();
                   };
                 `}"
               >
