@@ -3811,6 +3811,7 @@ ${contentSource}</textarea
                 javascript="${javascript`
                   this.onclick = async () => {
                     const poll = this.closest('[key="poll-editor"]');
+                    const textarea = this.closest('[key="content-editor"]')?.querySelector?.('[key="content-editor--write--textarea"]');
 
                     if (!leafac.validate(poll)) return;
 
@@ -3848,7 +3849,6 @@ ${contentSource}</textarea
 
                     poll.remove();
 
-                    const textarea = this.closest('[key="content-editor"]')?.querySelector?.('[key="content-editor--write--textarea"]');
                     if (textarea !== undefined) {
                       if (${poll === undefined})
                         textFieldEdit.insert(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + content + "\\n\\n");
