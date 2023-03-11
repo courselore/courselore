@@ -6,8 +6,6 @@
 
 - Features
   - Edit poll.
-    - In poll display.
-      - “Cancel”
     - Check what happens when you create a poll and the focus is brought back to the editor.
     - Edit options.
       - Live-Update should update options (in case the poll was edited)

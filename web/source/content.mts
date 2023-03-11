@@ -3873,6 +3873,11 @@ ${contentSource}</textarea
                 class="button button--transparent"
                 javascript="${javascript`
                   this.onclick = () => {
+                    const poll = this.closest('[key="poll"]');
+                    if (poll !== null) {
+                      poll.querySelector('[key="poll--show"]').hidden = false;
+                      poll.querySelector('[key="poll--edit"]').hidden = true;
+                    }
                     this.closest('[key="poll-editor"]').remove();
                   };
                 `}"
