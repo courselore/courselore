@@ -1209,7 +1209,14 @@ export default async (application: Application): Promise<void> => {
                         const loading = this.querySelector('[key="loading"]');
                         loading.hidden = false;
                         edit.onbeforemorph = (event) => !event?.detail?.liveUpdate;
-                        leafac.morph(edit, await (await fetch(${`https://${application.configuration.hostname}/courses/${response.locals.course.reference}/polls/${poll.reference}/edit`}, { cache: "no-store" })).text());
+                        leafac.morph(edit, await (await fetch(${`https://${
+                          application.configuration.hostname
+                        }/courses/${response.locals.course.reference}/polls/${
+                          poll.reference
+                        }/edit${qs.stringify(
+                          { redirect: request.originalUrl.slice(1) },
+                          { addQueryPrefix: true }
+                        )}`}, { cache: "no-store" })).text());
                         loading.hidden = true;
                         leafac.execute({ element: edit });
                         this.closest('[key^="poll/"]').querySelector('[key="poll--show"]').hidden = true;
@@ -3212,7 +3219,13 @@ export default async (application: Application): Promise<void> => {
                                         this.onclick = async () => {
                                           const loading = this.querySelector('[key="loading"]');
                                           loading.hidden = false;
-                                          const response = await fetch(${`https://${application.configuration.hostname}/courses/${response.locals.course?.reference}/polls/`} + window.locals.editPollReference + ${`/edit`}, { cache: "no-store" });
+                                          const response = await fetch(${`https://${application.configuration.hostname}/courses/${response.locals.course?.reference}/polls/`} + window.locals.editPollReference + ${`/edit${qs.stringify(
+                                        {
+                                          redirect:
+                                            request.originalUrl.slice(1),
+                                        },
+                                        { addQueryPrefix: true }
+                                      )}`}, { cache: "no-store" });
                                           loading.hidden = true;
                                           if (!response.ok) {
                                             leafac.setTippy({
@@ -3366,7 +3379,7 @@ ${contentSource}</textarea
       {},
       any,
       {},
-      {},
+      { redirect?: string },
       Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
     >;
     response: express.Response<
@@ -3888,6 +3901,37 @@ ${contentSource}</textarea
                       Update Poll
                     `}
               </button>
+
+              $${poll !== undefined &&
+              (poll.closesAt === null ||
+                !application.web.locals.helpers.isPast(poll.closesAt))
+                ? html`
+                    <button
+                      formmethod="PATCH"
+                      formaction="https://${application.configuration
+                        .hostname}/courses/${response.locals.course
+                        .reference}/polls/${poll.reference}${qs.stringify(
+                        {
+                          redirect:
+                            request.query.redirect ??
+                            request.originalUrl.slice(1),
+                        },
+                        { addQueryPrefix: true }
+                      )}"
+                      name="close"
+                      value="true"
+                      class="button button--transparent"
+                      javascript="${javascript`
+                        this.onclick = () => {
+                          this.closest("form").isValid = true;
+                        };
+                      `}"
+                    >
+                      <i class="bi bi-calendar-x"></i>
+                      Close Poll
+                    </button>
+                  `
+                : html``}
 
               <button
                 type="button"
@@ -4881,7 +4925,7 @@ ${contentSource}</textarea
     { courseReference: string; pollReference: string },
     any,
     {},
-    {},
+    { redirect?: string },
     ResponseLocalsPoll
   >(
     "/courses/:courseReference/polls/:pollReference/edit",
