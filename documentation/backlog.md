@@ -8,9 +8,6 @@
 
 - Features
   - Edit poll.
-    - Poll edits don’t show up immediately (they take a couple seconds for the next Live-Update).
-      - Turn it into a normal form submission.
-      - Force a Live-Navigation.
     - Shortcuts for closing the poll.
   - Test rich-text in poll options.
   - Disable polls for students
