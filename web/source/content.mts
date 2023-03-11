@@ -3813,7 +3813,7 @@ ${contentSource}</textarea
               <button
                 class="button button--blue"
                 javascript="${javascript`
-                  if (this.closest('[key="poll"]') === null) return;
+                  if (this.closest('[key="poll"]') !== null) return;
                   
                   this.setAttribute("type", "button");
 
