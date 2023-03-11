@@ -7,7 +7,7 @@
 - Features
   - Edit poll.
     - In poll display.
-      - Buttons aren’t working
+      - Scroll up
       - Appearance
         - Padding
         - Border bottom
