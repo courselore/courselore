@@ -483,6 +483,13 @@ const extractStaticCSSAndJavaScript = () => ({
 
 ---
 
+**Next Priorities**
+
+- Whispers.
+- SAML.
+
+---
+
 - Merge feature branches
   - `poll`
     - Exam period
@@ -634,6 +641,7 @@ const extractStaticCSSAndJavaScript = () => ({
     - The point is: Don’t let people miss whispers
   - There’s no way to convert back and forth between regular messages & whispers. If necessary, delete and send another message.
   - Style differences to highlight whispers: font (italics vs regular), font color, and a little icon. Do several such things. Perhaps don’t change the background color. It might be good to make it a little more obvious, e.g. label it as a "staff-only whisper, students cannot see this". Otherwise some new staff may not know what is going on.
+  - Talk about it on home page.
 - Add the notion of follow-up question, so that questions aren’t marked as “unresolved” as soon as a student sends a message. It makes sense for when the student just says “thanks.”
   - Have a dedicated button for this.
 - Let staff endorse other staff answers.
