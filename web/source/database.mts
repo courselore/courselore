@@ -1640,6 +1640,11 @@ export default async (application: Application): Promise<void> => {
         "enrollment" INTEGER NULL REFERENCES "enrollments" ON DELETE SET NULL,
         UNIQUE ("messagePollOption", "enrollment")
       );
+      
+      ALTER TABLE "courses" ADD COLUMN "studentsMayCreatePollsAt" TEXT NULL;
+
+      UPDATE "courses"
+      SET "studentsMayCreatePollsAt" = ${new Date().toISOString()};
     `
   );
 
