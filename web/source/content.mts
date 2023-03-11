@@ -1080,6 +1080,23 @@ export default async (application: Application): Promise<void> => {
                       </button>
                     </div>
 
+                    <button
+                      type="button"
+                      class="button button--tight button--tight--inline button--transparent"
+                      javascript="${javascript`
+                      leafac.setTippy({
+                        event,
+                        element: this,
+                        tippyProps: {
+                          trigger: "click",
+                          content: "Staff and the poll creator may see individual votes. Students may see aggregate results.",
+                        },
+                      });
+                    `}"
+                    >
+                      <i class="bi bi-info-circle"></i>
+                    </button>
+
                     $${mayEdit
                       ? html`
                           <div key="poll--show--actions--show-results">
@@ -1272,9 +1289,9 @@ export default async (application: Application): Promise<void> => {
                   <div
                     css="${css`
                       display: flex;
-                      column-gap: var(--space--4);
-                      row-gap: var(--space--2);
+                      gap: var(--space--2);
                       flex-wrap: wrap;
+                      align-items: center;
                     `}"
                   >
                     $${actions}
@@ -3840,6 +3857,7 @@ ${contentSource}</textarea
               css="${css`
                 display: flex;
                 gap: var(--space--2);
+                align-items: center;
               `}"
             >
               <button
@@ -3904,6 +3922,23 @@ ${contentSource}</textarea
                       <i class="bi bi-pencil-fill"></i>
                       Update Poll
                     `}
+              </button>
+
+              <button
+                type="button"
+                class="button button--tight button--tight--inline button--transparent"
+                javascript="${javascript`
+                  leafac.setTippy({
+                    event,
+                    element: this,
+                    tippyProps: {
+                      trigger: "click",
+                      content: "Staff and the poll creator may see individual votes. Students may see aggregate results.",
+                    },
+                  });
+                `}"
+              >
+                <i class="bi bi-info-circle"></i>
               </button>
 
               $${poll !== undefined &&

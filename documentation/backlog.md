@@ -4,16 +4,8 @@
 
 **Poll**
 
-- Features
-  - Document who can see what.
-    - Details
-      - Students may see aggregate results.
-      - Author and staff may see individual votes.
-    - Where
-      - When creating the poll.
-      - When voting.
+- TODO
   - Database indices
-- Edge cases
   - Caret position is still broken (long lines this time)
   - Should we lock the editing of a poll when it’s closed? (You’d have to unclose it, then edit it…)
   - The “Quote” dropdown menu shouldn’t show up when clicking on poll
