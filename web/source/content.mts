@@ -1309,9 +1309,9 @@ export default async (application: Application): Promise<void> => {
 
         pollHTML = html`
           <div
-            key="poll/${poll.reference}/${String(
-              poll.closesAt === null
-            )}/${String(voted)}"
+            key="poll/${poll.reference}/${String(poll.closesAt)}/${String(
+              voted
+            )}"
             css="${css`
               margin: var(--space--4) var(--space--0);
             `}"
