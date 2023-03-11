@@ -4686,13 +4686,53 @@ export default async (application: Application): Promise<void> => {
               Advanced
             </h2>
 
-            <hr class="separator" />
-
             <form
               method="PATCH"
               action="https://${application.configuration
                 .hostname}/courses/${response.locals.course
                 .reference}/settings/advanced"
+              novalidate
+              css="${css`
+                display: flex;
+                flex-direction: column;
+                gap: var(--space--2);
+              `}"
+            >
+              <div
+                css="${css`
+                  display: flex;
+                `}"
+              >
+                <label class="button button--tight button--tight--inline">
+                  <input
+                    type="checkbox"
+                    name="studentsMayCreatePolls"
+                    $${typeof response.locals.course
+                      .studentsMayCreatePollsAt === "string"
+                      ? html`checked`
+                      : html``}
+                    class="input--checkbox"
+                  />
+                  Students may create polls
+                </label>
+              </div>
+              <div>
+                <button
+                  class="button button--full-width-on-small-screen button--blue"
+                >
+                  <i class="bi bi-pencil-fill"></i>
+                  Update Advanced Settings
+                </button>
+              </div>
+            </form>
+
+            <hr class="separator" />
+
+            <form
+              method="PUT"
+              action="https://${application.configuration
+                .hostname}/courses/${response.locals.course
+                .reference}/settings/advanced/archived"
               css="${css`
                 display: flex;
                 flex-direction: column;
@@ -4757,11 +4797,63 @@ export default async (application: Application): Promise<void> => {
   application.web.patch<
     { courseReference: string },
     HTML,
-    { isArchived?: "true" | "false" },
+    {
+      studentsMayCreatePolls?: "on";
+    },
     {},
     Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
   >(
     "/courses/:courseReference/settings/advanced",
+    (request, response, next) => {
+      if (
+        response.locals.course === undefined ||
+        response.locals.enrollment.courseRole !== "staff"
+      )
+        return next();
+
+      if (![undefined, "on"].includes(request.body.studentsMayCreatePolls))
+        return next("Validation");
+
+      application.database.run(
+        sql`
+          UPDATE "courses"
+          SET "studentsMayCreatePollsAt" = ${
+            request.body.studentsMayCreatePolls === "on"
+              ? new Date().toISOString()
+              : null
+          }
+          WHERE "id" = ${response.locals.course.id}
+        `
+      );
+
+      application.web.locals.helpers.Flash.set({
+        request,
+        response,
+        theme: "green",
+        content: html`Advanced settings updated successfully.`,
+      });
+
+      response.redirect(
+        303,
+        `https://${application.configuration.hostname}/courses/${response.locals.course.reference}/settings/advanced`
+      );
+
+      application.web.locals.helpers.liveUpdates({
+        request,
+        response,
+        url: `/courses/${response.locals.course.reference}`,
+      });
+    }
+  );
+
+  application.web.put<
+    { courseReference: string },
+    HTML,
+    { isArchived?: "true" | "false" },
+    {},
+    Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+  >(
+    "/courses/:courseReference/settings/advanced/archived",
     (request, response, next) => {
       if (
         response.locals.course === undefined ||

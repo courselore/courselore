@@ -72,6 +72,7 @@ export type ApplicationAuthentication = {
               institution: string | null;
               code: string | null;
               nextConversationReference: number;
+              studentsMayCreatePollsAt: string | null;
             };
             reference: string;
             courseRole: Application["web"]["locals"]["helpers"]["courseRoles"][number];
@@ -485,6 +486,7 @@ export default async (application: Application): Promise<void> => {
         courseInstitution: string | null;
         courseCode: string | null;
         courseNextConversationReference: number;
+        courseStudentsMayCreatePollsAt: string | null;
         reference: string;
         courseRole: Application["web"]["locals"]["helpers"]["courseRoles"][number];
         accentColor: Application["web"]["locals"]["helpers"]["enrollmentAccentColors"][number];
@@ -501,6 +503,7 @@ export default async (application: Application): Promise<void> => {
             "courses"."institution" AS "courseInstitution",
             "courses"."code" AS "courseCode",
             "courses"."nextConversationReference" AS "courseNextConversationReference",
+            "courses"."studentsMayCreatePollsAt" AS "courseStudentsMayCreatePollsAt",
             "enrollments"."reference",
             "enrollments"."courseRole",
             "enrollments"."accentColor"
@@ -522,6 +525,7 @@ export default async (application: Application): Promise<void> => {
           institution: enrollment.courseInstitution,
           code: enrollment.courseCode,
           nextConversationReference: enrollment.courseNextConversationReference,
+          studentsMayCreatePollsAt: enrollment.courseStudentsMayCreatePollsAt,
         },
         reference: enrollment.reference,
         courseRole: enrollment.courseRole,
