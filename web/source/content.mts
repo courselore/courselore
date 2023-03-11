@@ -3466,10 +3466,10 @@ ${contentSource}</textarea
               gap: var(--space--4);
             `}"
           >
-            <h2 class="heading">
+            <div class="heading">
               <i class="bi bi-card-checklist"></i>
               Poll
-            </h2>
+            </div>
 
             <div
               css="${css`
