@@ -1084,15 +1084,15 @@ export default async (application: Application): Promise<void> => {
                       type="button"
                       class="button button--tight button--tight--inline button--transparent"
                       javascript="${javascript`
-                      leafac.setTippy({
-                        event,
-                        element: this,
-                        tippyProps: {
-                          trigger: "click",
-                          content: "Staff and the poll creator may see individual votes. Students may see aggregate results.",
-                        },
-                      });
-                    `}"
+                        leafac.setTippy({
+                          event,
+                          element: this,
+                          tippyProps: {
+                            trigger: "click",
+                            content: "Staff and the poll creator may see individual votes. Students may see aggregate results.",
+                          },
+                        });
+                      `}"
                     >
                       <i class="bi bi-info-circle"></i>
                     </button>
