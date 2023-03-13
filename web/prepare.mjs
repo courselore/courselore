@@ -31,7 +31,7 @@ let staticJavaScript = javascript`
   import Mousetrap from "mousetrap";
   import scrollIntoViewIfNeeded from "scroll-into-view-if-needed";
   import * as tippy from "tippy.js";
-  import * as caretPos from "caret-pos";
+  import textareaCaret from "textarea-caret";
   import * as textFieldEdit from "text-field-edit";
   // import * as leafac from "@leafac/javascript/static/index.mjs";
   import * as leafac from "./leafac--javascript.mjs";

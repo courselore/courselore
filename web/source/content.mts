@@ -3137,9 +3137,9 @@ export default async (application: Application): Promise<void> => {
                                 this.value[this.selectionStart - 1] !== trigger
                               ) continue;
                               anchorIndex = this.selectionStart;
-                              const caretCoordinates = caretPos.position(this);
+                              const caretCoordinates = textareaCaret(this, this.selectionStart);
                               dropdownMenuTarget.style.top = String(caretCoordinates.top - this.scrollTop) + "px";
-                              dropdownMenuTarget.style.left = String(caretCoordinates.left - 15) + "px";
+                              dropdownMenuTarget.style.left = String(caretCoordinates.left - 14) + "px";
                               tippy.hideAll();
                               dropdownMenu.show();
                             }
@@ -3226,7 +3226,7 @@ export default async (application: Application): Promise<void> => {
                         
                         for (const match of this.value.matchAll(/<courselore-poll\\s+reference="(?<pollReference>\\d+)"><\\/courselore-poll>/g))
                           if (match.index <= this.selectionStart && this.selectionStart <= match.index + match[0].length) {
-                            const caretCoordinates = caretPos.position(this);
+                            const caretCoordinates = textareaCaret(this, this.selectionStart);
                             dropdownMenuTarget.style.top = String(caretCoordinates.top - this.scrollTop) + "px";
                             dropdownMenuTarget.style.left = String(caretCoordinates.left) + "px";
 
