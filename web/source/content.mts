@@ -3691,9 +3691,10 @@ ${contentSource}</textarea
                         this.value = this.defaultValue = leafac.localizeDateTime(this.defaultValue);
 
                         this.onvalidate = () => {
+                          const isModified = leafac.isModified(this);
                           const error = leafac.validateLocalizedDateTime(this);
                           if (typeof error === "string") return error;
-                          if (new Date(this.value).getTime() <= Date.now()) return "Must be in the future.";
+                          if (isModified && new Date(this.value).getTime() <= Date.now()) return "Must be in the future.";
                         };
                       `}"
                     />
@@ -5032,7 +5033,8 @@ ${contentSource}</textarea
         (request.body.closesAt !== undefined &&
           (typeof request.body.closesAt !== "string" ||
             !application.web.locals.helpers.isDate(request.body.closesAt) ||
-            application.web.locals.helpers.isPast(request.body.closesAt))) ||
+            (request.body.closesAt !== response.locals.poll.closesAt &&
+              application.web.locals.helpers.isPast(request.body.closesAt)))) ||
         !Array.isArray(request.body.options) ||
         request.body.options.length <= 1 ||
         request.body.options.some(
@@ -5163,7 +5165,9 @@ ${contentSource}</textarea
             sql`
               UPDATE "messagePolls"
               SET "closesAt" = ${
-                request.body.close === "true" ? new Date().toISOString() : null
+                request.body.close === "true"
+                  ? new Date(new Date().setSeconds(0, 0)).toISOString()
+                  : null
               }
               WHERE "id" = ${response.locals.poll.id}
             `

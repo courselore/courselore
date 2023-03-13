@@ -552,8 +552,13 @@ export default async (application: Application): Promise<void> => {
                     ${enrollment.id},
                     ${new Date().toISOString()},
                     ${new Date(
-                      Date.now() +
-                        lodash.random(-24 * 60 * 60 * 1000, 24 * 60 * 60 * 1000)
+                      new Date(
+                        Date.now() +
+                          lodash.random(
+                            -24 * 60 * 60 * 1000,
+                            24 * 60 * 60 * 1000
+                          )
+                      ).setSeconds(0, 0)
                     ).toISOString()}
                   )
                 `
