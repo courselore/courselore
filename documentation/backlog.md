@@ -20,6 +20,7 @@
   - Include text material in full-text search.
   - Test on mobile
 - Later
+  - Have a way to not even show the dropdown menu on the content editor when you may not edit a poll.
   - Fix an issue when the content editor autoscrolls a weird white space appears at the bottom 🤷
   - Changes to the inputs related to creating a poll don’t need to submit message draft updates
   - Finer control over who can see what results
