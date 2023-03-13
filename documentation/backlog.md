@@ -5,7 +5,6 @@
 **Poll**
 
 - TODO
-  - In demonstration data, do the seconds/milisseconds=0 thing on other stuff that could benefit from it.
   - The “Quote” dropdown menu shouldn’t show up when clicking on poll
   - Quoting picks up the positions from the rendered element within the poll option
   - Sometimes the form to create a poll doesn’t come with three options already created
