@@ -5166,7 +5166,7 @@ ${contentSource}</textarea
               UPDATE "messagePolls"
               SET "closesAt" = ${
                 request.body.close === "true"
-                  ? new Date(new Date().setSeconds(0, 0)).toISOString()
+                  ? new Date(new Date().setUTCSeconds(0, 0)).toISOString()
                   : null
               }
               WHERE "id" = ${response.locals.poll.id}

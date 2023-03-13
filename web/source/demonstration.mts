@@ -266,11 +266,13 @@ export default async (application: Application): Promise<void> => {
           const expiresAt =
             Math.random() < 0.3
               ? new Date(
-                  Date.now() +
-                    lodash.random(
-                      -30 * 24 * 60 * 60 * 1000,
-                      30 * 24 * 60 * 60 * 1000
-                    )
+                  new Date(
+                    Date.now() +
+                      lodash.random(
+                        -30 * 24 * 60 * 60 * 1000,
+                        30 * 24 * 60 * 60 * 1000
+                      )
+                  ).setUTCSeconds(0, 0)
                 ).toISOString()
               : null;
           const user = Math.random() < 0.5 ? lodash.sample(users)! : null;
@@ -558,7 +560,7 @@ export default async (application: Application): Promise<void> => {
                             -24 * 60 * 60 * 1000,
                             24 * 60 * 60 * 1000
                           )
-                      ).setSeconds(0, 0)
+                      ).setUTCSeconds(0, 0)
                     ).toISOString()}
                   )
                 `
