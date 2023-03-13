@@ -5,7 +5,6 @@
 **Poll**
 
 - TODO
-  - Database indices
   - Caret position is still broken (long lines this time)
   - Should we lock the editing of a poll when it’s closed? (You’d have to unclose it, then edit it…)
   - The “Quote” dropdown menu shouldn’t show up when clicking on poll
