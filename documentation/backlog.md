@@ -5,7 +5,7 @@
 **Poll**
 
 - TODO
-  - Should we lock the editing of a poll when it’s closed? (You’d have to unclose it, then edit it…)
+  - Glitch when updating a closed poll: don’t prevent update when `closesAt` hasn’t changed.
   - The “Quote” dropdown menu shouldn’t show up when clicking on poll
   - Quoting picks up the positions from the rendered element within the poll option
   - Sometimes the form to create a poll doesn’t come with three options already created
