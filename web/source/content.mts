@@ -72,7 +72,7 @@ export type ApplicationContent = {
           id?: string;
           contentPreprocessed: HTML;
           search?: string | string[] | undefined;
-          context?: "default" | "preview";
+          context?: "default" | "preview" | "plain";
         }) => {
           contentProcessed: HTML;
           mentions: Set<string>;
@@ -418,7 +418,7 @@ export default async (application: Application): Promise<void> => {
           html`<summary>See More</summary>`
         );
 
-    if (response.locals.course === undefined) {
+    if (response.locals.course === undefined || context === "plain") {
       for (const element of contentElement.querySelectorAll("courselore-poll"))
         element.remove();
     } else {

@@ -5,7 +5,7 @@
 **Poll**
 
 - TODO
-  - User biography with a mention to themselves (should avoid infinite loop by preventing decoration)
+  - Get rid of `setContent()` in favor of `setTippy()`
   - User biographies with polls
   - What should happen when you’re editing a poll and try to submit the message?
   - Poll within poll: An option whose content includes a poll in an of itself shouldn’t cause an infinite loop

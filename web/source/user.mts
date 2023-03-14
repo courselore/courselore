@@ -724,6 +724,7 @@ export default async (application: Application): Promise<void> => {
                         request,
                         response,
                         contentPreprocessed: user!.biographyPreprocessed,
+                        context: "plain",
                       }).contentProcessed
                     : html``}
                 </div>

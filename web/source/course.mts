@@ -4490,6 +4490,7 @@ export default async (application: Application): Promise<void> => {
                               response,
                               contentPreprocessed:
                                 enrollment.user.biographyPreprocessed,
+                              context: "plain",
                             }).contentProcessed}
                           </details>
                         `
