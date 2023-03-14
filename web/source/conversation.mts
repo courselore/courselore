@@ -8318,7 +8318,9 @@ export default async (application: Application): Promise<void> => {
                                                       anchorElement === undefined ||
                                                       focusElement === undefined ||
                                                       !this.contains(anchorElement) ||
-                                                      !this.contains(focusElement)
+                                                      !this.contains(focusElement) ||
+                                                      anchorElement.closest('[key^="poll/"]') !== null ||
+                                                      focusElement.closest('[key^="poll/"]') !== null
                                                     ) return;
                                                     dropdownMenuTarget.style.top = String(event.layerY) + "px";
                                                     dropdownMenuTarget.style.left = String(event.layerX) + "px";
