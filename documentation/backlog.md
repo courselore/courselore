@@ -5,10 +5,10 @@
 **Poll**
 
 - TODO
-  - Reusing a poll in a new course doesn’t work out of the box; we need some logic to duplicate the poll.
-  - Include text material in full-text search.
   - Test on mobile
 - Later
+  - Include options in full-text search. This is difficult because when you edit a poll we’d have to track every use of the poll and update it as well.
+  - Reusing a poll in a new course doesn’t work out of the box; we need some logic to duplicate the poll.
   - Use content editor for poll options? (Think of a poll in which the options are `@mentions`, or LaTeX formulas.)
   - When you’re editing a poll and submit the message, you lose the poll.
   - Have a way to not even show the dropdown menu on the content editor when you may not edit a poll.
