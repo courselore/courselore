@@ -3276,6 +3276,7 @@ export default async (application: Application): Promise<void> => {
           institution: string | null;
           code: string | null;
           nextConversationReference: number;
+          studentsMayCreatePollsAt: string | null;
         };
         reference: string;
         email: string | null;
@@ -3309,6 +3310,7 @@ export default async (application: Application): Promise<void> => {
         courseInstitution: string | null;
         courseCode: string | null;
         courseNextConversationReference: number;
+        courseStudentsMayCreatePollsAt: string | null;
         reference: string;
         email: string | null;
         name: string | null;
@@ -3328,6 +3330,7 @@ export default async (application: Application): Promise<void> => {
             "courses"."institution" AS "courseInstitution",
             "courses"."code" AS "courseCode",
             "courses"."nextConversationReference" AS "courseNextConversationReference",
+            "courses"."studentsMayCreatePollsAt" AS "courseStudentsMayCreatePollsAt",
             "invitations"."reference",
             "invitations"."email",
             "invitations"."name",
@@ -3354,6 +3357,7 @@ export default async (application: Application): Promise<void> => {
           institution: invitation.courseInstitution,
           code: invitation.courseCode,
           nextConversationReference: invitation.courseNextConversationReference,
+          studentsMayCreatePollsAt: invitation.courseStudentsMayCreatePollsAt,
         },
         reference: invitation.reference,
         email: invitation.email,

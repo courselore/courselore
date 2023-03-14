@@ -55,6 +55,7 @@ export type ApplicationAuthentication = {
               institution: string | null;
               code: string | null;
               nextConversationReference: number;
+              studentsMayCreatePollsAt: string | null;
             };
             reference: string;
             courseRole: Application["web"]["locals"]["helpers"]["courseRoles"][number];
@@ -429,6 +430,7 @@ export default async (application: Application): Promise<void> => {
         courseInstitution: string | null;
         courseCode: string | null;
         courseNextConversationReference: number;
+        courseStudentsMayCreatePollsAt: string | null;
         reference: string;
         courseRole: Application["web"]["locals"]["helpers"]["courseRoles"][number];
       }>(
@@ -444,6 +446,7 @@ export default async (application: Application): Promise<void> => {
             "courses"."institution" AS "courseInstitution",
             "courses"."code" AS "courseCode",
             "courses"."nextConversationReference" AS "courseNextConversationReference",
+            "courses"."studentsMayCreatePollsAt" AS "courseStudentsMayCreatePollsAt",
             "invitations"."reference",
             "invitations"."courseRole"
           FROM "invitations"
@@ -469,6 +472,7 @@ export default async (application: Application): Promise<void> => {
           institution: invitation.courseInstitution,
           code: invitation.courseCode,
           nextConversationReference: invitation.courseNextConversationReference,
+          studentsMayCreatePollsAt: invitation.courseStudentsMayCreatePollsAt,
         },
         reference: invitation.reference,
         courseRole: invitation.courseRole,
