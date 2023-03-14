@@ -1072,17 +1072,6 @@ export default async (application: Application): Promise<void> => {
                       },
                     });
 
-                    leafac.setTippy({
-                      event,
-                      element: avatarChooser,
-                      elementProperty: "uploadingError",
-                      tippyProps: {
-                        theme: "rose",
-                        trigger: "manual",
-                        content: "",
-                      },
-                    });
-
                     this.upload = async (fileList) => {
                       const body = new FormData();
                       body.append("avatar", fileList[0]);
@@ -1097,7 +1086,16 @@ export default async (application: Application): Promise<void> => {
                       });
                       avatarChooser.uploadingIndicator.hide();
                       if (!response.ok) {
-                        avatarChooser.uploadingError.setContent(await response.text());
+                        leafac.setTippy({
+                          event,
+                          element: avatarChooser,
+                          elementProperty: "uploadingError",
+                          tippyProps: {
+                            theme: "rose",
+                            trigger: "manual",
+                            content: await response.text(),
+                          },
+                        });
                         avatarChooser.uploadingError.show();
                         return;
                       }
