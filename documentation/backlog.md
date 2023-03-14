@@ -5,7 +5,6 @@
 **Poll**
 
 - TODO
-  - “Preview” of polls creates a `<form>` within a `<form>` situation
   - User biography with a mention to themselves (should avoid infinite loop by preventing decoration)
   - User biographies with polls
   - What should happen when you’re editing a poll and try to submit the message?

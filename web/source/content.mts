@@ -50,6 +50,7 @@ export type ApplicationContent = {
           id,
           contentPreprocessed,
           search,
+          context,
         }: {
           request: express.Request<
             {},
@@ -71,6 +72,7 @@ export type ApplicationContent = {
           id?: string;
           contentPreprocessed: HTML;
           search?: string | string[] | undefined;
+          context?: "default" | "preview";
         }) => {
           contentProcessed: HTML;
           mentions: Set<string>;
@@ -311,6 +313,7 @@ export default async (application: Application): Promise<void> => {
     id = Math.random().toString(36).slice(2),
     contentPreprocessed,
     search = undefined,
+    context = "default",
   }) => {
     const contentElement = JSDOM.fragment(html`
       <div key="content" class="content">$${contentPreprocessed}</div>
@@ -856,7 +859,9 @@ export default async (application: Application): Promise<void> => {
                   value="${option.reference}"
                   required
                   ${option.enrollmentVote ? html`checked` : html``}
-                  ${voted || closed ? html`disabled` : html``}
+                  ${voted || closed || context === "preview"
+                    ? html`disabled`
+                    : html``}
                   css="${css`
                     margin-top: var(--space--0-5);
                   `}"
@@ -910,7 +915,7 @@ export default async (application: Application): Promise<void> => {
             `;
 
             optionHTML =
-              voted || closed
+              voted || closed || context === "preview"
                 ? html`
                     <div
                       css="${css`
@@ -1050,261 +1055,267 @@ export default async (application: Application): Promise<void> => {
                 </div>
               `
             : html``}
-          $${(() => {
-            let actions = html``;
+          $${context !== "preview"
+            ? (() => {
+                let actions = html``;
 
-            if (!closed)
-              actions += voted
-                ? html`
+                if (!closed)
+                  actions += voted
+                    ? html`
+                        <div>
+                          <button
+                            formmethod="DELETE"
+                            formaction="https://${application.configuration
+                              .hostname}/courses/${responseCourseEnrolled.locals
+                              .course
+                              .reference}/polls/${poll.reference}/votes${qs.stringify(
+                              { redirect: request.originalUrl.slice(1) },
+                              { addQueryPrefix: true }
+                            )}"
+                            class="button button--rose"
+                            javascript="${javascript`
+                              this.onclick = () => {
+                                this.closest("form").isValid = true;
+                              };
+                            `}"
+                          >
+                            <i class="bi bi-trash-fill"></i>
+                            Remove Vote
+                          </button>
+                        </div>
+                      `
+                    : html`
+                        <div>
+                          <button class="button button--blue">
+                            <i class="bi bi-card-checklist"></i>
+                            Vote
+                          </button>
+                        </div>
+
+                        <button
+                          type="button"
+                          class="button button--tight button--tight--inline button--transparent"
+                          javascript="${javascript`
+                            leafac.setTippy({
+                              event,
+                              element: this,
+                              tippyProps: {
+                                trigger: "click",
+                                content: "Staff and the poll creator may see individual votes. Students may see aggregate results.",
+                              },
+                            });
+                          `}"
+                        >
+                          <i class="bi bi-info-circle"></i>
+                        </button>
+
+                        $${mayEdit
+                          ? html`
+                              <div key="poll--show--actions--show-results">
+                                <button
+                                  type="button"
+                                  class="button button--transparent"
+                                  javascript="${javascript`
+                                    this.onclick = async () => {
+                                      const poll = this.closest('[key="poll--show"]');
+                                      for (const element of poll.querySelectorAll('[data-results="true"]:not([data-results-votes="true"])'))
+                                        element.hidden = false;
+                                      poll.querySelector('[key="poll--show--actions--show-results"]').hidden = true;
+                                    };
+                                  `}"
+                                >
+                                  <i class="bi bi-eye"></i>
+                                  Show Results
+                                </button>
+                              </div>
+
+                              <div data-results="true" hidden>
+                                <button
+                                  type="button"
+                                  class="button button--transparent"
+                                  javascript="${javascript`
+                                    this.onclick = async () => {
+                                      const poll = this.closest('[key="poll--show"]');
+                                      for (const element of poll.querySelectorAll('[data-results="true"]'))
+                                        element.hidden = true;
+                                      poll.querySelector('[key="poll--show--actions--show-results"]').hidden = false;
+                                    };
+                                  `}"
+                                >
+                                  <i class="bi bi-eye-slash"></i>
+                                  Hide Results
+                                </button>
+                              </div>
+                            `
+                          : html``}
+                      `;
+
+                if (mayEdit)
+                  actions += html`
+                    <div
+                      key="poll--show--actions--show-votes"
+                      data-results="true"
+                      $${voted || closed ? html`` : html`hidden`}
+                      css="${css`
+                        display: flex;
+                        gap: var(--space--2);
+                        align-items: center;
+                      `}"
+                    >
+                      <button
+                        type="button"
+                        class="button ${closed
+                          ? "button--blue"
+                          : "button--transparent"}"
+                        javascript="${javascript`
+                          this.onclick = async () => {
+                            const poll = this.closest('[key="poll--show"]');
+                            const loading = poll.querySelector('[key="poll--show--actions--show-votes--loading"]');
+                            loading.hidden = false;
+                            const partial = leafac.stringToElement(await (await fetch(${`https://${application.configuration.hostname}/courses/${responseCourseEnrolled.locals.course.reference}/polls/${poll.reference}/votes`}, { cache: "no-store" })).text());
+                            for (const partialElement of partial.querySelectorAll('[key^="poll--show--option--votes/"]')) {
+                              const element = poll.querySelector('[key="' + partialElement.getAttribute("key") + '"]');
+                              element.onbeforemorph = (event) => !event?.detail?.liveUpdate;
+                              leafac.morph(element, partialElement);
+                              leafac.execute({ element });
+                              element.hidden = false;
+                            }
+                            loading.hidden = true;
+                            poll.querySelector('[key="poll--show--actions--show-votes"]').hidden = true;
+                            poll.querySelector('[key="poll--show--actions--hide-votes"]').hidden = false;
+                          };
+                        `}"
+                      >
+                        <i class="bi ${closed ? "bi-eye-fill" : "bi-eye"}"></i>
+                        Show Votes
+                      </button>
+
+                      <div
+                        key="poll--show--actions--show-votes--loading"
+                        hidden
+                      >
+                        $${application.web.locals.partials.spinner({
+                          request,
+                          response,
+                        })}
+                      </div>
+                    </div>
+
+                    <div
+                      key="poll--show--actions--hide-votes"
+                      data-results="true"
+                      data-results-votes="true"
+                      hidden
+                    >
+                      <button
+                        type="button"
+                        class="button ${closed
+                          ? "button--blue"
+                          : "button--transparent"}"
+                        javascript="${javascript`
+                          this.onclick = async () => {
+                            const poll = this.closest('[key="poll--show"]');
+                            for (const element of poll.querySelectorAll('[key^="poll--show--option--votes/"]'))
+                              element.hidden = true;
+                            poll.querySelector('[key="poll--show--actions--show-votes"]').hidden = false;
+                            poll.querySelector('[key="poll--show--actions--hide-votes"]').hidden = true;
+                          };
+                        `}"
+                      >
+                        <i
+                          class="bi ${closed
+                            ? "bi-eye-slash-fill"
+                            : "bi-eye-slash"}"
+                        ></i>
+                        Hide Votes
+                      </button>
+                    </div>
+
                     <div>
                       <button
-                        formmethod="DELETE"
+                        type="button"
+                        class="button button--transparent"
+                        javascript="${javascript`
+                          this.onclick = async () => {
+                            const edit = this.closest('[key^="poll/"]').querySelector('[key="poll--edit"]');
+                            const loading = this.querySelector('[key="loading"]');
+                            loading.hidden = false;
+                            edit.onbeforemorph = (event) => !event?.detail?.liveUpdate;
+                            leafac.morph(edit, await (await fetch(${`https://${
+                              application.configuration.hostname
+                            }/courses/${
+                              response.locals.course.reference
+                            }/polls/${poll.reference}/edit${qs.stringify(
+                              { redirect: request.originalUrl.slice(1) },
+                              { addQueryPrefix: true }
+                            )}`}, { cache: "no-store" })).text());
+                            loading.hidden = true;
+                            leafac.execute({ element: edit });
+                            this.closest('[key^="poll/"]').querySelector('[key="poll--show"]').hidden = true;
+                            edit.hidden = false;
+                          };
+                        `}"
+                      >
+                        <i class="bi bi-pencil"></i>
+                        Edit Poll
+                        <div key="loading" hidden>
+                          $${application.web.locals.partials.spinner({
+                            request,
+                            response,
+                            size: 10,
+                          })}
+                        </div>
+                      </button>
+                    </div>
+
+                    <div>
+                      <button
+                        formmethod="PATCH"
                         formaction="https://${application.configuration
                           .hostname}/courses/${responseCourseEnrolled.locals
                           .course
-                          .reference}/polls/${poll.reference}/votes${qs.stringify(
+                          .reference}/polls/${poll.reference}${qs.stringify(
                           { redirect: request.originalUrl.slice(1) },
                           { addQueryPrefix: true }
                         )}"
-                        class="button button--rose"
+                        name="close"
+                        value="${closed ? "false" : "true"}"
+                        class="button button--transparent"
                         javascript="${javascript`
                           this.onclick = () => {
                             this.closest("form").isValid = true;
                           };
                         `}"
                       >
-                        <i class="bi bi-trash-fill"></i>
-                        Remove Vote
+                        $${closed
+                          ? html`
+                              <i class="bi bi-calendar-check"></i>
+                              Reopen Poll
+                            `
+                          : html`
+                              <i class="bi bi-calendar-x"></i>
+                              Close Poll
+                            `}
                       </button>
                     </div>
-                  `
-                : html`
-                    <div>
-                      <button class="button button--blue">
-                        <i class="bi bi-card-checklist"></i>
-                        Vote
-                      </button>
-                    </div>
-
-                    <button
-                      type="button"
-                      class="button button--tight button--tight--inline button--transparent"
-                      javascript="${javascript`
-                        leafac.setTippy({
-                          event,
-                          element: this,
-                          tippyProps: {
-                            trigger: "click",
-                            content: "Staff and the poll creator may see individual votes. Students may see aggregate results.",
-                          },
-                        });
-                      `}"
-                    >
-                      <i class="bi bi-info-circle"></i>
-                    </button>
-
-                    $${mayEdit
-                      ? html`
-                          <div key="poll--show--actions--show-results">
-                            <button
-                              type="button"
-                              class="button button--transparent"
-                              javascript="${javascript`
-                                this.onclick = async () => {
-                                  const poll = this.closest('[key="poll--show"]');
-                                  for (const element of poll.querySelectorAll('[data-results="true"]:not([data-results-votes="true"])'))
-                                    element.hidden = false;
-                                  poll.querySelector('[key="poll--show--actions--show-results"]').hidden = true;
-                                };
-                              `}"
-                            >
-                              <i class="bi bi-eye"></i>
-                              Show Results
-                            </button>
-                          </div>
-
-                          <div data-results="true" hidden>
-                            <button
-                              type="button"
-                              class="button button--transparent"
-                              javascript="${javascript`
-                                this.onclick = async () => {
-                                  const poll = this.closest('[key="poll--show"]');
-                                  for (const element of poll.querySelectorAll('[data-results="true"]'))
-                                    element.hidden = true;
-                                  poll.querySelector('[key="poll--show--actions--show-results"]').hidden = false;
-                                };
-                              `}"
-                            >
-                              <i class="bi bi-eye-slash"></i>
-                              Hide Results
-                            </button>
-                          </div>
-                        `
-                      : html``}
                   `;
 
-            if (mayEdit)
-              actions += html`
-                <div
-                  key="poll--show--actions--show-votes"
-                  data-results="true"
-                  $${voted || closed ? html`` : html`hidden`}
-                  css="${css`
-                    display: flex;
-                    gap: var(--space--2);
-                    align-items: center;
-                  `}"
-                >
-                  <button
-                    type="button"
-                    class="button ${closed
-                      ? "button--blue"
-                      : "button--transparent"}"
-                    javascript="${javascript`
-                      this.onclick = async () => {
-                        const poll = this.closest('[key="poll--show"]');
-                        const loading = poll.querySelector('[key="poll--show--actions--show-votes--loading"]');
-                        loading.hidden = false;
-                        const partial = leafac.stringToElement(await (await fetch(${`https://${application.configuration.hostname}/courses/${responseCourseEnrolled.locals.course.reference}/polls/${poll.reference}/votes`}, { cache: "no-store" })).text());
-                        for (const partialElement of partial.querySelectorAll('[key^="poll--show--option--votes/"]')) {
-                          const element = poll.querySelector('[key="' + partialElement.getAttribute("key") + '"]');
-                          element.onbeforemorph = (event) => !event?.detail?.liveUpdate;
-                          leafac.morph(element, partialElement);
-                          leafac.execute({ element });
-                          element.hidden = false;
-                        }
-                        loading.hidden = true;
-                        poll.querySelector('[key="poll--show--actions--show-votes"]').hidden = true;
-                        poll.querySelector('[key="poll--show--actions--hide-votes"]').hidden = false;
-                      };
-                    `}"
-                  >
-                    <i class="bi ${closed ? "bi-eye-fill" : "bi-eye"}"></i>
-                    Show Votes
-                  </button>
-
-                  <div key="poll--show--actions--show-votes--loading" hidden>
-                    $${application.web.locals.partials.spinner({
-                      request,
-                      response,
-                    })}
-                  </div>
-                </div>
-
-                <div
-                  key="poll--show--actions--hide-votes"
-                  data-results="true"
-                  data-results-votes="true"
-                  hidden
-                >
-                  <button
-                    type="button"
-                    class="button ${closed
-                      ? "button--blue"
-                      : "button--transparent"}"
-                    javascript="${javascript`
-                      this.onclick = async () => {
-                        const poll = this.closest('[key="poll--show"]');
-                        for (const element of poll.querySelectorAll('[key^="poll--show--option--votes/"]'))
-                          element.hidden = true;
-                        poll.querySelector('[key="poll--show--actions--show-votes"]').hidden = false;
-                        poll.querySelector('[key="poll--show--actions--hide-votes"]').hidden = true;
-                      };
-                    `}"
-                  >
-                    <i
-                      class="bi ${closed
-                        ? "bi-eye-slash-fill"
-                        : "bi-eye-slash"}"
-                    ></i>
-                    Hide Votes
-                  </button>
-                </div>
-
-                <div>
-                  <button
-                    type="button"
-                    class="button button--transparent"
-                    javascript="${javascript`
-                      this.onclick = async () => {
-                        const edit = this.closest('[key^="poll/"]').querySelector('[key="poll--edit"]');
-                        const loading = this.querySelector('[key="loading"]');
-                        loading.hidden = false;
-                        edit.onbeforemorph = (event) => !event?.detail?.liveUpdate;
-                        leafac.morph(edit, await (await fetch(${`https://${
-                          application.configuration.hostname
-                        }/courses/${response.locals.course.reference}/polls/${
-                          poll.reference
-                        }/edit${qs.stringify(
-                          { redirect: request.originalUrl.slice(1) },
-                          { addQueryPrefix: true }
-                        )}`}, { cache: "no-store" })).text());
-                        loading.hidden = true;
-                        leafac.execute({ element: edit });
-                        this.closest('[key^="poll/"]').querySelector('[key="poll--show"]').hidden = true;
-                        edit.hidden = false;
-                      };
-                    `}"
-                  >
-                    <i class="bi bi-pencil"></i>
-                    Edit Poll
-                    <div key="loading" hidden>
-                      $${application.web.locals.partials.spinner({
-                        request,
-                        response,
-                        size: 10,
-                      })}
-                    </div>
-                  </button>
-                </div>
-
-                <div>
-                  <button
-                    formmethod="PATCH"
-                    formaction="https://${application.configuration
-                      .hostname}/courses/${responseCourseEnrolled.locals.course
-                      .reference}/polls/${poll.reference}${qs.stringify(
-                      { redirect: request.originalUrl.slice(1) },
-                      { addQueryPrefix: true }
-                    )}"
-                    name="close"
-                    value="${closed ? "false" : "true"}"
-                    class="button button--transparent"
-                    javascript="${javascript`
-                      this.onclick = () => {
-                        this.closest("form").isValid = true;
-                      };
-                    `}"
-                  >
-                    $${closed
-                      ? html`
-                          <i class="bi bi-calendar-check"></i>
-                          Reopen Poll
-                        `
-                      : html`
-                          <i class="bi bi-calendar-x"></i>
-                          Close Poll
-                        `}
-                  </button>
-                </div>
-              `;
-
-            return actions !== html``
-              ? html`
-                  <div
-                    css="${css`
-                      display: flex;
-                      gap: var(--space--2);
-                      flex-wrap: wrap;
-                      align-items: center;
-                    `}"
-                  >
-                    $${actions}
-                  </div>
-                `
-              : html``;
-          })()}
+                return actions !== html``
+                  ? html`
+                      <div
+                        css="${css`
+                          display: flex;
+                          gap: var(--space--2);
+                          flex-wrap: wrap;
+                          align-items: center;
+                        `}"
+                      >
+                        $${actions}
+                      </div>
+                    `
+                  : html``;
+              })()
+            : html``}
         `;
 
         pollHTML = html`
@@ -1316,37 +1327,58 @@ export default async (application: Application): Promise<void> => {
               margin: var(--space--4) var(--space--0);
             `}"
           >
-            <form
-              key="poll--show"
-              method="POST"
-              action="https://${application.configuration
-                .hostname}/courses/${responseCourseEnrolled.locals.course
-                .reference}/polls/${poll.reference}/votes${qs.stringify(
-                { redirect: request.originalUrl.slice(1) },
-                { addQueryPrefix: true }
-              )}"
-              novalidate
-              css="${css`
-                display: flex;
-                flex-direction: column;
-                gap: var(--space--2);
-              `}"
-            >
-              $${pollHTML}
-            </form>
+            $${context === "preview"
+              ? html`
+                  <div
+                    key="poll--show"
+                    css="${css`
+                      background-color: var(--color--gray--medium--50);
+                      @media (prefers-color-scheme: dark) {
+                        background-color: var(--color--gray--medium--900);
+                      }
+                      padding: var(--space--2) var(--space--4);
+                      border-radius: var(--border-radius--lg);
+                      display: flex;
+                      flex-direction: column;
+                      gap: var(--space--2);
+                    `}"
+                  >
+                    $${pollHTML}
+                  </div>
+                `
+              : html`
+                  <form
+                    key="poll--show"
+                    method="POST"
+                    action="https://${application.configuration
+                      .hostname}/courses/${responseCourseEnrolled.locals.course
+                      .reference}/polls/${poll.reference}/votes${qs.stringify(
+                      { redirect: request.originalUrl.slice(1) },
+                      { addQueryPrefix: true }
+                    )}"
+                    novalidate
+                    css="${css`
+                      display: flex;
+                      flex-direction: column;
+                      gap: var(--space--2);
+                    `}"
+                  >
+                    $${pollHTML}
+                  </form>
 
-            <form
-              key="poll--edit"
-              method="PUT"
-              action="https://${application.configuration
-                .hostname}/courses/${responseCourseEnrolled.locals.course
-                .reference}/polls/${poll.reference}${qs.stringify(
-                { redirect: request.originalUrl.slice(1) },
-                { addQueryPrefix: true }
-              )}"
-              novalidate
-              hidden
-            ></form>
+                  <form
+                    key="poll--edit"
+                    method="PUT"
+                    action="https://${application.configuration
+                      .hostname}/courses/${responseCourseEnrolled.locals.course
+                      .reference}/polls/${poll.reference}${qs.stringify(
+                      { redirect: request.originalUrl.slice(1) },
+                      { addQueryPrefix: true }
+                    )}"
+                    novalidate
+                    hidden
+                  ></form>
+                `}
           </div>
         `;
 
@@ -5455,6 +5487,7 @@ ${contentSource}</textarea
               application.web.locals.partials.contentPreprocessed(
                 request.body.content
               ).contentPreprocessed,
+            context: "preview",
           }).contentProcessed,
         })
       );
