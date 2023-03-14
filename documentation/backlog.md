@@ -4,12 +4,6 @@
 
 **Poll**
 
-- TODO
-  - Test (on mobile)
-    - Create poll
-    - Visualize poll
-    - Vote
-    - Edit poll
 - Later
   - Include options in full-text search. This is difficult because when you edit a poll we’d have to track every use of the poll and update it as well.
   - Reusing a poll in a new course doesn’t work out of the box; we need some logic to duplicate the poll.

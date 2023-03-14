@@ -3729,10 +3729,12 @@ ${contentSource}</textarea
                         this.value = this.defaultValue = leafac.localizeDateTime(this.defaultValue);
 
                         this.onvalidate = () => {
-                          const isModified = leafac.isModified(this);
+                          const mustBeInTheFuture = ${
+                            typeof poll?.closesAt !== "string"
+                          } || leafac.isModified(this);
                           const error = leafac.validateLocalizedDateTime(this);
                           if (typeof error === "string") return error;
-                          if (isModified && new Date(this.value).getTime() <= Date.now()) return "Must be in the future.";
+                          if (mustBeInTheFuture && new Date(this.value).getTime() <= Date.now()) return "Must be in the future.";
                         };
                       `}"
                     />
@@ -3905,6 +3907,7 @@ ${contentSource}</textarea
                 display: flex;
                 gap: var(--space--2);
                 align-items: center;
+                flex-wrap: wrap;
               `}"
             >
               <button
