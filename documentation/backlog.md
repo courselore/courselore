@@ -2,6 +2,12 @@
 
 ## Finish
 
+- Polls in email notifications
+  - At the very least, missing `request.originalUrl`
+  - Perhaps just use a different `context` for the time being
+
+---
+
 - “What’s new” promoting polls
 - Add header to `box` layout showing your face if you’re logged in.
 - Use `node --test` in other projects: look for uses of the `TEST` environment variable

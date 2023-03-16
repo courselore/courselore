@@ -198,7 +198,7 @@ for (const [javascriptBundle, { entryPoint, cssBundle }] of Object.entries(
   }
 
 const baseFileHash = baseX("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789");
-for (const source of await globby("./static/about/")) {
+for (const source of await globby(["./static/about/", "./static/news/"])) {
   const extension = path.extname(source);
   const destination = path.join(
     "./build",

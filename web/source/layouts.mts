@@ -2312,6 +2312,72 @@ export default async (application: Application): Promise<void> => {
                     </div>
                   `
                 : html``}
+
+              <div>
+                <button
+                  class="button button--transparent strong text--green"
+                  javascript="${javascript`
+                    leafac.setTippy({
+                      event,
+                      element: this,
+                      elementProperty: "dropdown",
+                      tippyProps: {
+                        trigger: "click",
+                        interactive: true,
+                        content: ${html`
+                          <div
+                            css="${css`
+                              max-height: var(--space--80);
+                              overflow: auto;
+                            `}"
+                          >
+                            <h3 class="heading">
+                              <i class="bi bi-newspaper"></i>
+                              News
+                            </h3>
+
+                            <div
+                              css="${css`
+                                padding: var(--space--2);
+                                display: flex;
+                                flex-direction: column;
+                                gap: var(--space--2);
+
+                                video {
+                                  max-width: 100%;
+                                  height: auto;
+                                  border-radius: var(--border-radius--xl);
+                                  display: block;
+                                }
+                              `}"
+                            >
+                              <h4 class="strong">6.0.11 · 2023-03-16</h4>
+
+                              <p>Polls</p>
+
+                              <div>
+                                <video
+                                  src="https://${application.configuration
+                                    .hostname}/${application.static[
+                                    "news/2023-03-16--polls.mp4"
+                                  ]}"
+                                  autoplay
+                                  loop
+                                  muted
+                                  playsinline
+                                ></video>
+                              </div>
+                            </div>
+                          </div>
+                        `},
+                      },
+                    });
+                  `}"
+                >
+                  <i class="bi bi-newspaper"></i>
+                  News
+                </button>
+              </div>
             </div>
           </div>
 
