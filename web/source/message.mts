@@ -2322,7 +2322,10 @@ export default async (application: Application): Promise<void> => {
           nextConversationReference: messageRow.courseNextConversationReference,
         };
         const contentProcessed = application.web.locals.partials.content({
-          request: { query: {} } as Parameters<
+          request: {
+            originalUrl: "/",
+            query: {},
+          } as Parameters<
             typeof application.web.locals.partials.content
           >[0]["request"],
           response: {
