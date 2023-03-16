@@ -8,18 +8,6 @@
 - Some `setTippy()`s don’t need the `event`, for example, those inside an `.onclick`. In fact, the `event` may be problematic because it’s the `event` in the closure of when the `.onclick` was set, and it’ll be passed down to `morph()` and `execute()`, which may lead to issues.
 - Be explicit about `<button type="button">` even when there’s no `<form>` around it: 1. To communicate intent; 2. To allow for the component to be used within different contexts without surprises.
 
-**Poll**
-
-- Later
-  - Include options in full-text search. This is difficult because when you edit a poll we’d have to track every use of the poll and update it as well.
-  - Reusing a poll in a new course doesn’t work out of the box; we need some logic to duplicate the poll.
-  - Use content editor for poll options? (Think of a poll in which the options are `@mentions`, or LaTeX formulas.)
-  - When you’re editing a poll and submit the message, you lose the poll.
-  - Have a way to not even show the “Edit Poll” dropdown menu on the content editor when you may not edit a poll.
-  - Changes to the inputs related to creating a poll don’t need to submit message draft updates
-  - Finer control over who can see what results
-  - Ranking: https://civs1.civs.us
-
 **DateTimePicker**
 
 - Uses
@@ -552,6 +540,15 @@ const extractStaticCSSAndJavaScript = () => ({
 - Let staff endorse other staff answers.
 - Introduce the notion of promoting a message into its own conversation (one example use case is when someone asks a question as a follow-up to an announcement).
 - Add a notion of “reply” that’s a first-class citizen, like Discord and unlike GitHub.
+- Polls
+  - Include options in full-text search. This is difficult because when you edit a poll we’d have to track every use of the poll and update it as well.
+  - Reusing a poll in a new course doesn’t work out of the box; we need some logic to duplicate the poll.
+  - Use content editor for poll options? (Think of a poll in which the options are `@mentions`, or LaTeX formulas.)
+  - When you’re editing a poll and submit the message, you lose the poll.
+  - Have a way to not even show the “Edit Poll” dropdown menu on the content editor when you may not edit a poll.
+  - Changes to the inputs related to creating a poll don’t need to submit message draft updates
+  - Finer control over who can see what results
+  - Ranking: https://civs1.civs.us
 
 **Readings & Views**
 
