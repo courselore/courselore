@@ -2385,15 +2385,15 @@ export default async (application: Application): Promise<void> => {
     if (typeof request.body.preferContentEditorProgrammerMode === "string")
       application.database.run(
         sql`
-        UPDATE "users"
-        SET
-          "preferContentEditorProgrammerModeAt" = ${
-            request.body.preferContentEditorProgrammerMode === "true"
-              ? new Date().toISOString()
-              : null
-          }
-        WHERE "id" = ${response.locals.user.id}
-      `
+          UPDATE "users"
+          SET
+            "preferContentEditorProgrammerModeAt" = ${
+              request.body.preferContentEditorProgrammerMode === "true"
+                ? new Date().toISOString()
+                : null
+            }
+          WHERE "id" = ${response.locals.user.id}
+        `
       );
 
     if (typeof request.body.preferContentEditorToolbarInCompact === "string")
@@ -2423,6 +2423,26 @@ export default async (application: Application): Promise<void> => {
           WHERE "id" = ${response.locals.user.id}
         `
       );
+
+    response.end();
+  });
+
+  application.web.patch<
+    {},
+    any,
+    {},
+    {},
+    Application["web"]["locals"]["ResponseLocals"]["SignedIn"]
+  >("/latest-news-version", (request, response, next) => {
+    if (response.locals.user === undefined) return next();
+
+    application.database.run(
+      sql`
+        UPDATE "users"
+        SET "latestNewsVersion" = ${application.version}
+        WHERE "id" = ${response.locals.user.id}
+      `
+    );
 
     response.end();
   });

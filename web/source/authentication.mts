@@ -41,6 +41,7 @@ export type ApplicationAuthentication = {
             preferContentEditorProgrammerModeAt: string | null;
             preferContentEditorToolbarInCompactAt: string | null;
             preferAnonymousAt: string | null;
+            latestNewsVersion: string;
           };
 
           invitations: {
@@ -390,6 +391,7 @@ export default async (application: Application): Promise<void> => {
       preferContentEditorProgrammerModeAt: string | null;
       preferContentEditorToolbarInCompactAt: string | null;
       preferAnonymousAt: string | null;
+      latestNewsVersion: string;
     }>(
       sql`
         SELECT
@@ -412,7 +414,8 @@ export default async (application: Application): Promise<void> => {
           "emailNotificationsForMessagesInConversationsYouStartedAt",
           "preferContentEditorProgrammerModeAt",
           "preferContentEditorToolbarInCompactAt",
-          "preferAnonymousAt"
+          "preferAnonymousAt",
+          "latestNewsVersion"
         FROM "users"
         WHERE "id" = ${userId}
       `
@@ -1545,7 +1548,8 @@ export default async (application: Application): Promise<void> => {
                   "emailNotificationsForAllMessagesDigestDeliveredAt",
                   "emailNotificationsForMentionsAt",
                   "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt",
-                  "emailNotificationsForMessagesInConversationsYouStartedAt"
+                  "emailNotificationsForMessagesInConversationsYouStartedAt",
+                  "latestNewsVersion"
                 )
                 VALUES (
                   ${new Date().toISOString()},
@@ -1578,7 +1582,8 @@ export default async (application: Application): Promise<void> => {
                   ${null},
                   ${new Date().toISOString()},
                   ${new Date().toISOString()},
-                  ${new Date().toISOString()}
+                  ${new Date().toISOString()},
+                  ${application.version}
                 )
               `
             ).lastInsertRowid

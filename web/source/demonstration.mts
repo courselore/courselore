@@ -81,7 +81,8 @@ export default async (application: Application): Promise<void> => {
                     "emailNotificationsForMessagesInConversationsYouStartedAt",
                     "preferContentEditorProgrammerModeAt",
                     "preferContentEditorToolbarInCompactAt",
-                    "preferAnonymousAt"
+                    "preferAnonymousAt",
+                    "latestNewsVersion"
                   )
                   VALUES (
                     ${new Date().toISOString()},
@@ -154,7 +155,8 @@ export default async (application: Application): Promise<void> => {
                     },
                     ${Math.random() < 0.5 ? new Date().toISOString() : null},
                     ${Math.random() < 0.5 ? new Date().toISOString() : null},
-                    ${Math.random() < 0.5 ? new Date().toISOString() : null}
+                    ${Math.random() < 0.5 ? new Date().toISOString() : null},
+                    ${application.version}
                   )
                 `
               ).lastInsertRowid

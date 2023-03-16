@@ -2315,7 +2315,14 @@ export default async (application: Application): Promise<void> => {
 
               <div>
                 <button
-                  class="button button--transparent strong text--green"
+                  class="button button--transparent ${response.locals.user !==
+                    undefined &&
+                  semver.gt(
+                    application.version,
+                    response.locals.user.latestNewsVersion
+                  )
+                    ? "strong text--green"
+                    : ""}"
                   javascript="${javascript`
                     leafac.setTippy({
                       event,
@@ -2372,6 +2379,17 @@ export default async (application: Application): Promise<void> => {
                         `},
                       },
                     });
+
+                    if (${response.locals.user !== undefined})
+                      this.onclick = async () => {
+                        this.classList.remove("strong");
+                        this.classList.remove("text--green");
+                        await fetch(${`https://${application.configuration.hostname}/latest-news-version`}, {
+                          method: "PATCH",
+                          headers: { "CSRF-Protection": "true", },
+                          cache: "no-store",
+                        });
+                      };
                   `}"
                 >
                   <i class="bi bi-newspaper"></i>
