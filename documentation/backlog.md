@@ -7,6 +7,20 @@
 - Some `setTippy()`s don’t need the `event`, for example, those inside an `.onclick`. In fact, the `event` may be problematic because it’s the `event` in the closure of when the `.onclick` was set, and it’ll be passed down to `morph()` and `execute()`, which may lead to issues.
 - Be explicit about `<button type="button">` even when there’s no `<form>` around it: 1. To communicate intent; 2. To allow for the component to be used within different contexts without surprises.
 
+**SAML**
+
+- https://support.cs.jhu.edu/wiki/Using_Shibboleth
+- https://support.cs.jhu.edu/wiki/Shibboleth
+- https://www.varonis.com/blog/what-is-saml
+- https://www.cloudflare.com/learning/access-management/what-is-saml/
+- https://www.oracle.com/pt/security/cloud-security/what-is-saml/
+- https://www.entrust.com/resources/faq/what-is-saml
+- https://github.com/Clever/saml2
+- https://github.com/tngan/samlify
+- https://github.com/node-saml/node-saml
+- https://github.com/auth0/node-samlp
+- https://github.com/mcguinness/saml-idp
+
 **DateTimePicker**
 
 - Uses
