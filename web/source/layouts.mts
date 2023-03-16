@@ -2216,99 +2216,101 @@ export default async (application: Application): Promise<void> => {
                 application.version
               )
                 ? html`
-                  <div>
-                    <button
-                      class="button button--transparent strong text--green"
-                      javascript="${javascript`
-                        leafac.setTippy({
-                          event,
-                          element: this,
-                          elementProperty: "dropdown",
-                          tippyProps: {
-                            trigger: "click",
-                            interactive: true,
-                            content: ${html`
-                              <h3 class="heading">
-                                <i class="bi bi-arrow-up-circle-fill"></i>
-                                <span>
-                                  Courselore
-                                  <span
-                                    javascript="${javascript`
-                                      leafac.setTippy({
-                                        event,
-                                        element: this,
-                                        tippyProps: {
-                                          touch: false,
-                                          content: "Current Courselore version",
-                                        },
-                                      });
-                                    `}"
-                                  >
-                                    ${application.version}
+                    <div>
+                      <button
+                        class="button button--transparent strong text--green"
+                        javascript="${javascript`
+                          leafac.setTippy({
+                            event,
+                            element: this,
+                            elementProperty: "dropdown",
+                            tippyProps: {
+                              trigger: "click",
+                              interactive: true,
+                              content: ${html`
+                                <h3 class="heading">
+                                  <i class="bi bi-arrow-up-circle-fill"></i>
+                                  <span>
+                                    Courselore
+                                    <span
+                                      javascript="${javascript`
+                                        leafac.setTippy({
+                                          event,
+                                          element: this,
+                                          tippyProps: {
+                                            touch: false,
+                                            content: "Current Courselore version",
+                                          },
+                                        });
+                                      `}"
+                                    >
+                                      ${application.version}
+                                    </span>
+                                    →
+                                    <span
+                                      javascript="${javascript`
+                                        leafac.setTippy({
+                                          event,
+                                          element: this,
+                                          tippyProps: {
+                                            touch: false,
+                                            content: "Latest Courselore version",
+                                          },
+                                        });
+                                      `}"
+                                    >
+                                      ${response.locals.administrationOptions!
+                                        .latestVersion}
+                                    </span>
                                   </span>
-                                  →
-                                  <span
-                                    javascript="${javascript`
-                                      leafac.setTippy({
-                                        event,
-                                        element: this,
-                                        tippyProps: {
-                                          touch: false,
-                                          content: "Latest Courselore version",
-                                        },
-                                      });
-                                    `}"
-                                  >
-                                    ${response.locals.administrationOptions!
-                                      .latestVersion}
-                                  </span>
-                                </span>
-                              </h3>
+                                </h3>
 
-                              <div class="dropdown--menu">
-                                <a
-                                  href="https://github.com/courselore/courselore/blob/main/documentation/changelog.md"
-                                  target="_blank"
-                                  class="dropdown--menu--item button button--transparent"
-                                >
-                                  <i class="bi bi-fire"></i>
-                                  Changelog
-                                </a>
-                                <a
-                                  href="https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#update"
-                                  target="_blank"
-                                  class="dropdown--menu--item button button--transparent"
-                                >
-                                  <i class="bi bi-book"></i>
-                                  Update Instructions
-                                </a>
-                                <a
-                                  href="https://github.com/courselore/courselore/releases/tag/v${response
-                                    .locals.administrationOptions!
-                                    .latestVersion}"
-                                  target="_blank"
-                                  class="dropdown--menu--item button button--green"
-                                >
-                                  <i class="bi bi-download"></i>
-                                  Download
-                                </a>
-                              </div>
-                            `},
-                          },
-                        });
-                      `}"
-                    >
-                    <span css="${css`
-                      display: flex;
-                      gap: var(--space--2);
-                      animation: bounce 1s 3;
-                    `}">
-                      <i class="bi bi-arrow-up-circle-fill"></i>
-                      Update Courselore
-                      <span>
-                    </button>
-                  </div>
-                `
+                                <div class="dropdown--menu">
+                                  <a
+                                    href="https://github.com/courselore/courselore/blob/main/documentation/changelog.md"
+                                    target="_blank"
+                                    class="dropdown--menu--item button button--transparent"
+                                  >
+                                    <i class="bi bi-fire"></i>
+                                    Changelog
+                                  </a>
+                                  <a
+                                    href="https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#update"
+                                    target="_blank"
+                                    class="dropdown--menu--item button button--transparent"
+                                  >
+                                    <i class="bi bi-book"></i>
+                                    Update Instructions
+                                  </a>
+                                  <a
+                                    href="https://github.com/courselore/courselore/releases/tag/v${response
+                                      .locals.administrationOptions!
+                                      .latestVersion}"
+                                    target="_blank"
+                                    class="dropdown--menu--item button button--green"
+                                  >
+                                    <i class="bi bi-download"></i>
+                                    Download
+                                  </a>
+                                </div>
+                              `},
+                            },
+                          });
+                        `}"
+                      >
+                        <span
+                          css="${css`
+                            display: flex;
+                            gap: var(--space--2);
+                            animation: bounce 1s 3;
+                          `}"
+                        >
+                          <i class="bi bi-arrow-up-circle-fill"></i>
+                          Update Courselore
+                        </span>
+                      </button>
+                    </div>
+                  `
                 : html``}
             </div>
           </div>
