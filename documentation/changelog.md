@@ -12,6 +12,12 @@
 
 ## Unreleased
 
+## 6.0.11
+
+**2023-03-16 · [Download](https://github.com/courselore/courselore/releases/tag/v6.0.11) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
+
+- Added polls.
+
 ## 6.0.10
 
 **2023-02-28 · [Download](https://github.com/courselore/courselore/releases/tag/v6.0.10) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
