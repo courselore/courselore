@@ -2,6 +2,12 @@
 
 ## Finish
 
+- “What’s new” promoting polls
+- Add header to `box` layout showing your face if you’re logged in.
+- Use `node --test` in other projects: look for uses of the `TEST` environment variable
+- Some `setTippy()`s don’t need the `event`, for example, those inside an `.onclick`. In fact, the `event` may be problematic because it’s the `event` in the closure of when the `.onclick` was set, and it’ll be passed down to `morph()` and `execute()`, which may lead to issues.
+- Be explicit about `<button type="button">` even when there’s no `<form>` around it: 1. To communicate intent; 2. To allow for the component to be used within different contexts without surprises.
+
 **Poll**
 
 - Later
@@ -9,101 +15,10 @@
   - Reusing a poll in a new course doesn’t work out of the box; we need some logic to duplicate the poll.
   - Use content editor for poll options? (Think of a poll in which the options are `@mentions`, or LaTeX formulas.)
   - When you’re editing a poll and submit the message, you lose the poll.
-  - Have a way to not even show the dropdown menu on the content editor when you may not edit a poll.
-  - Fix an issue when the content editor autoscrolls a weird white space appears at the bottom 🤷
+  - Have a way to not even show the “Edit Poll” dropdown menu on the content editor when you may not edit a poll.
   - Changes to the inputs related to creating a poll don’t need to submit message draft updates
   - Finer control over who can see what results
-  - Add header to `box` layout showing your face if you’re logged in.
-  - Use `node --test` in other projects: look for uses of the `TEST` environment variable
   - Ranking: https://civs1.civs.us
-  - “What’s new” promoting polls
-  - Some `setTippy()`s don’t need the `event`, for example, those inside an `.onclick`. In fact, the `event` may be problematic because it’s the `event` in the closure of when the `.onclick` was set, and it’ll be passed down to `morph()` and `execute()`, which may lead to issues.
-  - Be explicit about `<button type="button">` even when there’s no `<form>` around it: 1. To communicate intent; 2. To allow for the component to be used within different contexts without surprises.
-
-```
-const votes = application.database
-        .all<{
-          messagePollOptionsId: number;
-          messagePollOptionsReference: string;
-          messagePollOptionsContentPreprocessed: string;
-          enrollmentId: number | null;
-          userId: number | null;
-          userLastSeenOnlineAt: string | null;
-          userReference: string;
-          userEmail: string | null;
-          userName: string | null;
-          userAvatar: string | null;
-          userAvatarlessBackgroundColors:
-            | Application["web"]["locals"]["helpers"]["userAvatarlessBackgroundColors"][number]
-            | null;
-          userBiographySource: string | null;
-          userBiographyPreprocessed: HTML | null;
-          enrollmentReference: string | null;
-          enrollmentCourseRole:
-            | Application["web"]["locals"]["helpers"]["courseRoles"][number]
-            | null;
-        }>(
-          sql`
-            SELECT
-              "messagePollOptions"."id" AS "messagePollOptionsId",
-              "messagePollOptions"."reference" AS "messagePollOptionsReference",
-              "messagePollOptions"."contentPreprocessed" AS "messagePollOptionsContentPreprocessed",
-              "enrollment"."id" AS "enrollmentId",
-              "user"."id" AS "userId",
-              "user"."lastSeenOnlineAt" AS "userLastSeenOnlineAt",
-              "user"."reference" AS "userReference",
-              "user"."email" AS "userEmail",
-              "user"."name" AS "userName",
-              "user"."avatar" AS "userAvatar",
-              "user"."avatarlessBackgroundColor" AS "userAvatarlessBackgroundColors",
-              "user"."biographySource" AS "userBiographySource",
-              "user"."biographyPreprocessed" AS "userBiographyPreprocessed",
-              "enrollment"."reference" AS "enrollmentReference",
-              "enrollment"."courseRole" AS "enrollmentCourseRole"
-            FROM "messagePollVotes"
-            JOIN "messagePollOptions" ON "messagePollVotes"."messagePollOption" IN ${response.locals.poll.options.map(
-              (option) => option.id
-            )}
-            LEFT JOIN "enrollments" ON "messagePollVotes"."enrollment" = "enrollments"."id"
-            LEFT JOIN "users" ON "enrollment"."user" = "users"."id"
-          `
-        )
-        .map((vote) => ({
-          option: {
-            id: vote.messagePollOptionsId,
-            reference: vote.messagePollOptionsReference,
-            contentPreprocessed: vote.messagePollOptionsContentPreprocessed,
-          },
-          enrollment:
-            vote.enrollmentId !== null &&
-            vote.userId !== null &&
-            vote.userLastSeenOnlineAt !== null &&
-            vote.userReference !== null &&
-            vote.userEmail !== null &&
-            vote.userName !== null &&
-            vote.userAvatarlessBackgroundColors !== null &&
-            vote.enrollmentReference !== null &&
-            vote.enrollmentCourseRole !== null
-              ? {
-                  id: vote.enrollmentId,
-                  user: {
-                    id: vote.userId,
-                    lastSeenOnlineAt: vote.userLastSeenOnlineAt,
-                    reference: vote.userReference,
-                    email: vote.userEmail,
-                    name: vote.userName,
-                    avatar: vote.userAvatar,
-                    avatarlessBackgroundColor:
-                      vote.userAvatarlessBackgroundColors,
-                    biographySource: vote.userBiographySource,
-                    biographyPreprocessed: vote.userBiographyPreprocessed,
-                  },
-                  reference: vote.enrollmentReference,
-                  courseRole: vote.enrollmentCourseRole,
-                }
-              : ("no-longer-enrolled" as const),
-        }));
-```
 
 **DateTimePicker**
 
