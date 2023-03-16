@@ -1,5 +1,13 @@
 # Development
 
+## News
+
+- Prepare a video:
+
+```
+$ ffmpeg -i 2023-03-16--polls.mov -vf "crop=trunc(iw/2)*2:trunc(ih/2)*2" -f mp4 -vcodec libx264 -b:v 0 -crf 25 -pix_fmt yuv420p 2023-03-16--polls.mp4
+```
+
 ## Performance
 
 - autocannon uses negligible CPU.
