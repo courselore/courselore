@@ -3,6 +3,7 @@
 ## Finish
 
 - Add header to `box` layout showing your face if you’re signed in.
+  - `showHeaderMenu: false` some pages, for example, sign in and sign up.
   - Test
     - Each layout type
     - Signed out and signed in

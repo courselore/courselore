@@ -34,6 +34,7 @@ export default async (application: Application): Promise<void> => {
         head: html`
           <title>Courselore · Communication Platform for Education</title>
         `,
+        showHeaderMenu: response.locals.user !== undefined,
         body: html`
           <div
             css="${css`
@@ -103,8 +104,8 @@ export default async (application: Application): Promise<void> => {
                   $${response.locals.user === undefined
                     ? html`
                         <a
-                          href="https://${application.addresses
-                            .canonicalHostname}/sign-up"
+                          href="https://${application.configuration
+                            .hostname}/sign-up"
                           class="button button--blue"
                           javascript="${javascript`
                             leafac.setTippy({
@@ -121,8 +122,8 @@ export default async (application: Application): Promise<void> => {
                           Sign up
                         </a>
                         <a
-                          href="https://${application.addresses
-                            .canonicalHostname}/sign-in"
+                          href="https://${application.configuration
+                            .hostname}/sign-in"
                           class="button button--transparent"
                           javascript="${javascript`
                             leafac.setTippy({
@@ -868,8 +869,7 @@ export default async (application: Application): Promise<void> => {
             $${response.locals.user === undefined
               ? html`
                   <a
-                    href="https://${application.addresses
-                      .canonicalHostname}/sign-up"
+                    href="https://${application.configuration.hostname}/sign-up"
                     class="button button--blue"
                     javascript="${javascript`
                       leafac.setTippy({
@@ -886,8 +886,7 @@ export default async (application: Application): Promise<void> => {
                     Sign up
                   </a>
                   <a
-                    href="https://${application.addresses
-                      .canonicalHostname}/sign-in"
+                    href="https://${application.configuration.hostname}/sign-in"
                     class="button button--transparent"
                     javascript="${javascript`
                       leafac.setTippy({
