@@ -1,6 +1,19 @@
 # Meetings
 
 <details>
+<summary>2023-03-18</summary>
+
+- Deployed polls
+  - Little “News” button on the footer to explain the new feature
+- Single sign-on with SAML:
+  - Learned about how it works
+  - Curated tools we can use to mock the university part of things and to implement the Courselore part of things
+  - Edge cases, for example, how to avoid ending up with two accounts, one with email/password, and another with university credentials via SAML.
+  - What we’ll need to get Courselore on the list of authorized Service Providers at Hopkins.
+
+</details>
+
+<details>
 <summary>2023-03-11</summary>
 
 - Polls are almost finished, except for edge cases & testing.
