@@ -28,12 +28,18 @@ export type ApplicationLayouts = {
             {},
             Application["web"]["locals"]["ResponseLocals"]["LiveConnection"] &
               Partial<
+                Application["web"]["locals"]["ResponseLocals"]["SignedIn"]
+              > &
+              Partial<
                 Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
               >
           >;
           response: express.Response<
             any,
             Application["web"]["locals"]["ResponseLocals"]["LiveConnection"] &
+              Partial<
+                Application["web"]["locals"]["ResponseLocals"]["SignedIn"]
+              > &
               Partial<
                 Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
               >
@@ -56,12 +62,18 @@ export type ApplicationLayouts = {
             {},
             Application["web"]["locals"]["ResponseLocals"]["LiveConnection"] &
               Partial<
+                Application["web"]["locals"]["ResponseLocals"]["SignedIn"]
+              > &
+              Partial<
                 Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
               >
           >;
           response: express.Response<
             any,
             Application["web"]["locals"]["ResponseLocals"]["LiveConnection"] &
+              Partial<
+                Application["web"]["locals"]["ResponseLocals"]["SignedIn"]
+              > &
               Partial<
                 Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
               >
@@ -85,12 +97,18 @@ export type ApplicationLayouts = {
             {},
             Application["web"]["locals"]["ResponseLocals"]["LiveConnection"] &
               Partial<
+                Application["web"]["locals"]["ResponseLocals"]["SignedIn"]
+              > &
+              Partial<
                 Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
               >
           >;
           response: express.Response<
             any,
             Application["web"]["locals"]["ResponseLocals"]["LiveConnection"] &
+              Partial<
+                Application["web"]["locals"]["ResponseLocals"]["SignedIn"]
+              > &
               Partial<
                 Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
               >
@@ -115,12 +133,18 @@ export type ApplicationLayouts = {
             {},
             Application["web"]["locals"]["ResponseLocals"]["LiveConnection"] &
               Partial<
+                Application["web"]["locals"]["ResponseLocals"]["SignedIn"]
+              > &
+              Partial<
                 Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
               >
           >;
           response: express.Response<
             any,
             Application["web"]["locals"]["ResponseLocals"]["LiveConnection"] &
+              Partial<
+                Application["web"]["locals"]["ResponseLocals"]["SignedIn"]
+              > &
               Partial<
                 Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
               >
@@ -143,11 +167,23 @@ export type ApplicationLayouts = {
             any,
             {},
             {},
-            Application["web"]["locals"]["ResponseLocals"]["SignedIn"]
+            Application["web"]["locals"]["ResponseLocals"]["LiveConnection"] &
+              Partial<
+                Application["web"]["locals"]["ResponseLocals"]["SignedIn"]
+              > &
+              Partial<
+                Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+              >
           >;
           response: express.Response<
             any,
-            Application["web"]["locals"]["ResponseLocals"]["SignedIn"]
+            Application["web"]["locals"]["ResponseLocals"]["LiveConnection"] &
+              Partial<
+                Application["web"]["locals"]["ResponseLocals"]["SignedIn"]
+              > &
+              Partial<
+                Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+              >
           >;
           head: HTML;
           menuButton: HTML;
