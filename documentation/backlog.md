@@ -14,8 +14,8 @@
 
 - Testing tools
   - Lightweight
-    - https://github.com/boxyhq/mock-saml
     - https://github.com/mcguinness/saml-idp
+    - https://github.com/boxyhq/mock-saml
     - https://github.com/tngan/samlify
     - https://github.com/Clever/saml2
     - https://github.com/auth0/node-samlp
@@ -26,8 +26,9 @@
   - As a service
     - https://auth0.com
 - Implementation tools
-  - http://www.passportjs.org/packages/passport-saml/
   - https://github.com/node-saml/
+  - http://www.passportjs.org/packages/passport-saml/
+  - https://github.com/boxyhq/jackson (OAuth)
 - Examples
   - https://www.gradescope.com/saml
 - Johns Hopkins SAML
