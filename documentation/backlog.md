@@ -6,6 +6,7 @@
 
 ---
 
+- The textarea resize handle is showing up on the content editor in Safari.
 - Use `node --test` in other projects: look for uses of the `TEST` environment variable
 - Some `setTippy()`s don’t need the `event`, for example, those inside an `.onclick`. In fact, the `event` may be problematic because it’s the `event` in the closure of when the `.onclick` was set, and it’ll be passed down to `morph()` and `execute()`, which may lead to issues.
 - Be explicit about `<button type="button">` even when there’s no `<form>` around it: 1. To communicate intent; 2. To allow for the component to be used within different contexts without surprises.
@@ -24,6 +25,7 @@
     - https://www.shibboleth.net
     - https://www.keycloak.org
   - As a service
+    - https://mocksaml.com
     - https://auth0.com
 - Implementation tools
   - https://github.com/node-saml/
@@ -32,9 +34,15 @@
 - Examples
   - https://www.gradescope.com/saml
 - Johns Hopkins SAML
+  - Get an alumni account
   - Contact the Enterprise Auth team (http://www.it.johnshopkins.edu/services/directoryservices/jhea/Shibboleth/)
-  - Get a dummy account?
 - Issues
+  - Send an email saying “You signed in from a new device”
+  - Sign up via SAML
+  - Merge
+    - Keep both password and SAML
+    - Don’t merge, just use email address as the identity anchor
+    - If you create an account via SAML, can you create a password later?
   - Sign out may be tricky, because other service providers using the same identity provider won’t know that you logged out of Courselore.
 
 **DateTimePicker**
