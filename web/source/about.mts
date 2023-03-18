@@ -34,7 +34,6 @@ export default async (application: Application): Promise<void> => {
         head: html`
           <title>Courselore · Communication Platform for Education</title>
         `,
-        showHeaderMenu: response.locals.user !== undefined,
         body: html`
           <div
             css="${css`
