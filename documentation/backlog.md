@@ -12,17 +12,29 @@
 
 **SAML**
 
-- https://support.cs.jhu.edu/wiki/Using_Shibboleth
-- https://support.cs.jhu.edu/wiki/Shibboleth
-- https://www.varonis.com/blog/what-is-saml
-- https://www.cloudflare.com/learning/access-management/what-is-saml/
-- https://www.oracle.com/pt/security/cloud-security/what-is-saml/
-- https://www.entrust.com/resources/faq/what-is-saml
-- https://github.com/Clever/saml2
-- https://github.com/tngan/samlify
-- https://github.com/node-saml/node-saml
-- https://github.com/auth0/node-samlp
-- https://github.com/mcguinness/saml-idp
+- Testing tools
+  - Lightweight
+    - https://github.com/boxyhq/mock-saml
+    - https://github.com/mcguinness/saml-idp
+    - https://github.com/tngan/samlify
+    - https://github.com/Clever/saml2
+    - https://github.com/auth0/node-samlp
+    - https://github.com/bjorns/mock-idp
+  - Enterprisy
+    - https://www.shibboleth.net
+    - https://www.keycloak.org
+  - As a service
+    - https://auth0.com
+- Implementation tools
+  - http://www.passportjs.org/packages/passport-saml/
+  - https://github.com/node-saml/
+- Examples
+  - https://www.gradescope.com/saml
+- Johns Hopkins SAML
+  - Contact the Enterprise Auth team (http://www.it.johnshopkins.edu/services/directoryservices/jhea/Shibboleth/)
+  - Get a dummy account?
+- Issues
+  - Sign out may be tricky, because other service providers using the same identity provider won’t know that you logged out of Courselore.
 
 **DateTimePicker**
 
