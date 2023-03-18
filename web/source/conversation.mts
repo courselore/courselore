@@ -1121,7 +1121,7 @@ export default async (application: Application): Promise<void> => {
     //     })
     // );
 
-    return application.web.locals.layouts.application({
+    return application.web.locals.layouts.base({
       request,
       response,
       head,

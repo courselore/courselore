@@ -18,6 +18,7 @@ export type ApplicationLayouts = {
           request,
           response,
           head,
+          showCourseSwitcher,
           extraHeaders,
           body,
         }: {
@@ -45,6 +46,7 @@ export type ApplicationLayouts = {
               >
           >;
           head: HTML;
+          showCourseSwitcher?: boolean;
           extraHeaders?: HTML;
           body: HTML;
         }) => HTML;
@@ -79,43 +81,6 @@ export type ApplicationLayouts = {
               >
           >;
           head: HTML;
-          body: HTML;
-        }) => HTML;
-
-        application: ({
-          request,
-          response,
-          head,
-          showCourseSwitcher,
-          extraHeaders,
-          body,
-        }: {
-          request: express.Request<
-            {},
-            any,
-            {},
-            {},
-            Application["web"]["locals"]["ResponseLocals"]["LiveConnection"] &
-              Partial<
-                Application["web"]["locals"]["ResponseLocals"]["SignedIn"]
-              > &
-              Partial<
-                Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
-              >
-          >;
-          response: express.Response<
-            any,
-            Application["web"]["locals"]["ResponseLocals"]["LiveConnection"] &
-              Partial<
-                Application["web"]["locals"]["ResponseLocals"]["SignedIn"]
-              > &
-              Partial<
-                Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
-              >
-          >;
-          head: HTML;
-          showCourseSwitcher?: boolean;
-          extraHeaders?: HTML;
           body: HTML;
         }) => HTML;
 
@@ -288,6 +253,7 @@ export default async (application: Application): Promise<void> => {
     request,
     response,
     head,
+    showCourseSwitcher = true,
     extraHeaders = html``,
     body,
   }) =>
@@ -1995,6 +1961,538 @@ export default async (application: Application): Promise<void> => {
                   </div>
                 `;
 
+              header += html`
+                <div
+                  key="header--menu--primary"
+                  css="${css`
+                    && {
+                      padding-top: var(--space--1);
+                      padding-bottom: var(--space--1);
+                      gap: var(--space--4);
+                      align-items: center;
+                    }
+                  `}"
+                >
+                  <a
+                    href="https://${application.configuration.hostname}/"
+                    class="button button--tight button--tight--inline button--transparent"
+                    javascript="${javascript`
+                      leafac.setTippy({
+                        event,
+                        element: this,
+                        tippyProps: {
+                          touch: false,
+                          content: "Courselore",
+                        },
+                      });
+                    `}"
+                  >
+                    $${application.web.locals.partials.logo()}
+                  </a>
+
+                  $${response.locals.user !== undefined
+                    ? (() => {
+                        const requestNarrow = request as express.Request<
+                          {},
+                          any,
+                          {},
+                          {},
+                          Application["web"]["locals"]["ResponseLocals"]["SignedIn"]
+                        >;
+                        const responseNarrow = response as express.Response<
+                          any,
+                          Application["web"]["locals"]["ResponseLocals"]["SignedIn"]
+                        >;
+
+                        return html`
+                          <div
+                            css="${css`
+                              font-size: var(--font-size--sm);
+                              line-height: var(--line-height--sm);
+                              flex: 1;
+                              min-width: var(--width--0);
+                            `}"
+                          >
+                            $${(() => {
+                              const courseSwitcher = html`
+                                <div class="dropdown--menu">
+                                  $${application.web.locals.partials.courses({
+                                    request: requestNarrow,
+                                    response: responseNarrow,
+                                    tight: true,
+                                  })}
+                                </div>
+                              `;
+
+                              return response.locals.course !== undefined
+                                ? html`
+                                    <button
+                                      class="button button--tight button--tight--inline button--transparent strong"
+                                      css="${css`
+                                        max-width: 100%;
+                                      `}"
+                                      javascript="${javascript`
+                                        leafac.setTippy({
+                                          event,
+                                          element: this,
+                                          elementProperty: "dropdown",
+                                          tippyProps: {
+                                            trigger: "click",
+                                            interactive: true,
+                                            content: ${html`
+                                              <div
+                                                css="${css`
+                                                  max-height: var(--space--80);
+                                                  overflow: auto;
+                                                  display: flex;
+                                                  flex-direction: column;
+                                                  gap: var(--space--2);
+                                                `}"
+                                              >
+                                                <div>
+                                                  <h3 class="heading">
+                                                    <i
+                                                      class="bi bi-journal-text"
+                                                    ></i>
+                                                    ${response.locals.course
+                                                      .name}
+                                                  </h3>
+                                                  $${response.locals.course
+                                                    .archivedAt !== null
+                                                    ? html`
+                                                        <div
+                                                          css="${css`
+                                                            padding: var(
+                                                                --space--0
+                                                              )
+                                                              var(--space--2)
+                                                              var(--space--1);
+                                                            margin-top: var(
+                                                              --space---2
+                                                            );
+                                                          `}"
+                                                        >
+                                                          $${application.web.locals.partials.courseArchived(
+                                                            {
+                                                              request,
+                                                              response,
+                                                            }
+                                                          )}
+                                                        </div>
+                                                      `
+                                                    : html``}
+                                                  <div class="dropdown--menu">
+                                                    <a
+                                                      href="https://${application
+                                                        .configuration
+                                                        .hostname}/courses/${response
+                                                        .locals.course
+                                                        .reference}"
+                                                      class="dropdown--menu--item button ${request.path.includes(
+                                                        "/settings/"
+                                                      )
+                                                        ? "button--transparent"
+                                                        : "button--blue"}"
+                                                    >
+                                                      <i
+                                                        class="bi ${request.path.includes(
+                                                          "/settings/"
+                                                        )
+                                                          ? "bi-chat-text"
+                                                          : "bi-chat-text-fill"}"
+                                                      ></i>
+                                                      Conversations
+                                                    </a>
+                                                    <a
+                                                      href="https://${application
+                                                        .configuration
+                                                        .hostname}/courses/${response
+                                                        .locals.course
+                                                        .reference}/settings"
+                                                      class="dropdown--menu--item button ${request.path.includes(
+                                                        "/settings/"
+                                                      )
+                                                        ? "button--blue"
+                                                        : "button--transparent"}"
+                                                    >
+                                                      <i
+                                                        class="bi bi-sliders"
+                                                      ></i>
+                                                      Course Settings
+                                                    </a>
+                                                  </div>
+                                                </div>
+                                                $${responseNarrow.locals
+                                                  .enrollments.length > 1
+                                                  ? html`
+                                                      <div>
+                                                        <h3 class="heading">
+                                                          <i
+                                                            class="bi bi-arrow-left-right"
+                                                          ></i>
+                                                          Switch to Another
+                                                          Course
+                                                        </h3>
+                                                        $${courseSwitcher}
+                                                      </div>
+                                                    `
+                                                  : html``}
+                                              </div>
+                                            `},  
+                                          },
+                                        });
+                                      `}"
+                                    >
+                                      <i class="bi bi-journal-text"></i>
+                                      <span
+                                        css="${css`
+                                          white-space: nowrap;
+                                          overflow: hidden;
+                                          text-overflow: ellipsis;
+                                        `}"
+                                      >
+                                        ${response.locals.course.name}
+                                      </span>
+                                      $${response.locals.course.archivedAt !==
+                                      null
+                                        ? html`
+                                            $${application.web.locals.partials.courseArchived(
+                                              {
+                                                request,
+                                                response,
+                                              }
+                                            )}
+                                          `
+                                        : html``}
+                                      <i class="bi bi-chevron-down"></i>
+                                    </button>
+                                  `
+                                : showCourseSwitcher &&
+                                  responseNarrow.locals.enrollments.length > 0
+                                ? html`
+                                    <button
+                                      class="button button--tight button--tight--inline button--transparent"
+                                      css="${css`
+                                        max-width: 100%;
+                                      `}"
+                                      javascript="${javascript`
+                                        leafac.setTippy({
+                                          event,
+                                          element: this,
+                                          elementProperty: "dropdown",
+                                          tippyProps: {
+                                            trigger: "click",
+                                            interactive: true,
+                                            content: ${html`
+                                              <div
+                                                css="${css`
+                                                  max-height: var(--space--80);
+                                                  overflow: auto;
+                                                `}"
+                                              >
+                                                $${courseSwitcher}
+                                              </div>
+                                            `},  
+                                          },
+                                        });
+                                      `}"
+                                    >
+                                      Go to Your Courses
+                                      <i class="bi bi-chevron-down"></i>
+                                    </button>
+                                  `
+                                : html``;
+                            })()}
+                          </div>
+
+                          <div>
+                            <button
+                              class="button button--tight button--tight--inline button--transparent"
+                              javascript="${javascript`
+                                leafac.setTippy({
+                                  event,
+                                  element: this,
+                                  tippyProps: {
+                                    touch: false,
+                                    content: ${
+                                      response.locals.invitations!.length === 0
+                                        ? "Add"
+                                        : `${
+                                            response.locals.invitations!.length
+                                          } pending invitation${
+                                            response.locals.invitations!
+                                              .length === 1
+                                              ? ""
+                                              : "s"
+                                          }`
+                                    },  
+                                  },
+                                });
+
+                                leafac.setTippy({
+                                  event,
+                                  element: this,
+                                  elementProperty: "dropdown",
+                                  tippyProps: {
+                                    trigger: "click",
+                                    interactive: true,
+                                    content: ${html`
+                                      <div
+                                        css="${css`
+                                          display: flex;
+                                          flex-direction: column;
+                                          gap: var(--space--2);
+                                        `}"
+                                      >
+                                        $${response.locals.invitations!
+                                          .length === 0
+                                          ? html``
+                                          : html`
+                                              <div>
+                                                <h3 class="heading">
+                                                  <i
+                                                    class="bi bi-journal-arrow-down"
+                                                  ></i>
+                                                  Invitations
+                                                </h3>
+                                                <div class="dropdown--menu">
+                                                  $${response.locals.invitations!.map(
+                                                    (invitation) => html`
+                                                      <a
+                                                        key="invitation--${invitation.reference}"
+                                                        href="https://${application
+                                                          .configuration
+                                                          .hostname}/courses/${invitation
+                                                          .course
+                                                          .reference}/invitations/${invitation.reference}"
+                                                        class="dropdown--menu--item button button--transparent"
+                                                      >
+                                                        $${application.web.locals.partials.course(
+                                                          {
+                                                            request,
+                                                            response,
+                                                            course:
+                                                              invitation.course,
+                                                            tight: true,
+                                                          }
+                                                        )}
+                                                      </a>
+                                                    `
+                                                  )}
+                                                </div>
+                                              </div>
+                                              <hr class="dropdown--separator" />
+                                            `}
+                                        <div class="dropdown--menu">
+                                          <button
+                                            class="dropdown--menu--item button button--transparent"
+                                            javascript="${javascript`
+                                              leafac.setTippy({
+                                                event,
+                                                element: this,
+                                                tippyProps: {
+                                                  trigger: "click",
+                                                  content: "To enroll in an existing course you either have to follow an invitation link or be invited via email. Contact your course staff for more information.",
+                                                },
+                                              });
+                                            `}"
+                                          >
+                                            <i
+                                              class="bi bi-journal-arrow-down"
+                                            ></i>
+                                            Enroll in an Existing Course
+                                          </button>
+                                          $${application.web.locals.helpers.mayCreateCourses(
+                                            {
+                                              request: requestNarrow,
+                                              response: responseNarrow,
+                                            }
+                                          )
+                                            ? html`
+                                                <a
+                                                  href="https://${application
+                                                    .configuration
+                                                    .hostname}/courses/new"
+                                                  class="dropdown--menu--item button button--transparent"
+                                                >
+                                                  <i
+                                                    class="bi bi-journal-plus"
+                                                  ></i>
+                                                  Create a New Course
+                                                </a>
+                                              `
+                                            : html``}
+                                        </div>
+                                      </div>
+                                    `},  
+                                  },
+                                });
+                              `}"
+                            >
+                              <div
+                                css="${css`
+                                  display: grid;
+                                  & > * {
+                                    grid-area: 1 / 1;
+                                  }
+                                `}"
+                              >
+                                <div
+                                  css="${css`
+                                    font-size: var(--font-size--xl);
+                                    line-height: var(--line-height--xl);
+                                    font-weight: var(--font-weight--bold);
+                                    padding: var(--space--0) var(--space--1);
+                                    display: flex;
+                                    justify-content: center;
+                                    align-items: center;
+                                  `}"
+                                >
+                                  +
+                                </div>
+                                $${response.locals.invitations!.length === 0
+                                  ? html``
+                                  : html`
+                                      <div
+                                        css="${css`
+                                          background-color: var(
+                                            --color--rose--500
+                                          );
+                                          @media (prefers-color-scheme: dark) {
+                                            background-color: var(
+                                              --color--rose--600
+                                            );
+                                          }
+                                          width: var(--space--1-5);
+                                          height: var(--space--1-5);
+                                          border-radius: var(
+                                            --border-radius--circle
+                                          );
+                                          justify-self: end;
+                                          transform: translateY(50%);
+                                        `}"
+                                      ></div>
+                                    `}
+                              </div>
+                            </button>
+                          </div>
+
+                          <div>
+                            <button
+                              class="button button--tight button--tight--inline button--transparent"
+                              css="${css`
+                                padding: var(--space--1);
+                                border-radius: var(--border-radius--circle);
+                              `}"
+                              javascript="${javascript`
+                                leafac.setTippy({
+                                  event,
+                                  element: this,
+                                  tippyProps: {
+                                    touch: false,
+                                    content: ${response.locals.user.name},
+                                  },
+                                });
+
+                                leafac.setTippy({
+                                  event,
+                                  element: this,
+                                  elementProperty: "dropdown",
+                                  tippyProps: {
+                                    trigger: "click",
+                                    interactive: true,
+                                    content: ${html`
+                                      <div
+                                        css="${css`
+                                          display: flex;
+                                          flex-direction: column;
+                                          gap: var(--space--2);
+                                        `}"
+                                      >
+                                        <div
+                                          css="${css`
+                                            padding: var(--space--0)
+                                              var(--space--2);
+                                          `}"
+                                        >
+                                          <p class="strong">
+                                            ${response.locals.user.name}
+                                          </p>
+                                          <p class="secondary">
+                                            ${response.locals.user.email}
+                                          </p>
+                                        </div>
+
+                                        <hr class="dropdown--separator" />
+
+                                        $${response.locals.user.systemRole ===
+                                        "administrator"
+                                          ? html`
+                                              <div class="dropdown--menu">
+                                                <a
+                                                  class="dropdown--menu--item button button--transparent"
+                                                  href="https://${application
+                                                    .configuration
+                                                    .hostname}/administration"
+                                                >
+                                                  <i
+                                                    class="bi bi-pc-display-horizontal"
+                                                  ></i>
+                                                  Administration
+                                                </a>
+                                              </div>
+
+                                              <hr class="dropdown--separator" />
+                                            `
+                                          : html``}
+
+                                        <div class="dropdown--menu">
+                                          <a
+                                            class="dropdown--menu--item button button--transparent"
+                                            href="https://${application
+                                              .configuration.hostname}/settings"
+                                          >
+                                            <i class="bi bi-sliders"></i>
+                                            User Settings
+                                          </a>
+                                          <form
+                                            method="DELETE"
+                                            action="https://${application
+                                              .configuration.hostname}/sign-out"
+                                          >
+                                            <button
+                                              class="dropdown--menu--item button button--transparent"
+                                            >
+                                              <i
+                                                class="bi bi-box-arrow-right"
+                                              ></i>
+                                              Sign Out
+                                            </button>
+                                          </form>
+                                        </div>
+                                      </div>
+                                    `},  
+                                  },
+                                });
+                              `}"
+                            >
+                              $${application.web.locals.partials.user({
+                                request,
+                                response,
+                                user: response.locals.user,
+                                decorate: false,
+                                name: false,
+                              })}
+                            </button>
+                          </div>
+                        `;
+                      })()
+                    : html``}
+                </div>
+
+                $${extraHeaders}
+              `;
+
               header += extraHeaders;
 
               return header !== html``
@@ -2721,523 +3219,6 @@ export default async (application: Application): Promise<void> => {
       `,
     });
 
-  application.web.locals.layouts.application = ({
-    request,
-    response,
-    head,
-    showCourseSwitcher = true,
-    extraHeaders = html``,
-    body,
-  }) =>
-    application.web.locals.layouts.base({
-      request,
-      response,
-      head,
-      extraHeaders: html`
-        <div
-          key="header--menu--primary"
-          css="${css`
-            && {
-              padding-top: var(--space--1);
-              padding-bottom: var(--space--1);
-              gap: var(--space--4);
-              align-items: center;
-            }
-          `}"
-        >
-          <a
-            href="https://${application.configuration.hostname}/"
-            class="button button--tight button--tight--inline button--transparent"
-            javascript="${javascript`
-              leafac.setTippy({
-                event,
-                element: this,
-                tippyProps: {
-                  touch: false,
-                  content: "Courselore",
-                },
-              });
-            `}"
-          >
-            $${application.web.locals.partials.logo()}
-          </a>
-
-          $${response.locals.user !== undefined
-            ? (() => {
-                const requestNarrow = request as express.Request<
-                  {},
-                  any,
-                  {},
-                  {},
-                  Application["web"]["locals"]["ResponseLocals"]["SignedIn"]
-                >;
-                const responseNarrow = response as express.Response<
-                  any,
-                  Application["web"]["locals"]["ResponseLocals"]["SignedIn"]
-                >;
-
-                return html`
-                  <div
-                    css="${css`
-                      font-size: var(--font-size--sm);
-                      line-height: var(--line-height--sm);
-                      flex: 1;
-                      min-width: var(--width--0);
-                    `}"
-                  >
-                    $${(() => {
-                      const courseSwitcher = html`
-                        <div class="dropdown--menu">
-                          $${application.web.locals.partials.courses({
-                            request: requestNarrow,
-                            response: responseNarrow,
-                            tight: true,
-                          })}
-                        </div>
-                      `;
-
-                      return response.locals.course !== undefined
-                        ? html`
-                            <button
-                              class="button button--tight button--tight--inline button--transparent strong"
-                              css="${css`
-                                max-width: 100%;
-                              `}"
-                              javascript="${javascript`
-                                leafac.setTippy({
-                                  event,
-                                  element: this,
-                                  elementProperty: "dropdown",
-                                  tippyProps: {
-                                    trigger: "click",
-                                    interactive: true,
-                                    content: ${html`
-                                      <div
-                                        css="${css`
-                                          max-height: var(--space--80);
-                                          overflow: auto;
-                                          display: flex;
-                                          flex-direction: column;
-                                          gap: var(--space--2);
-                                        `}"
-                                      >
-                                        <div>
-                                          <h3 class="heading">
-                                            <i class="bi bi-journal-text"></i>
-                                            ${response.locals.course.name}
-                                          </h3>
-                                          $${response.locals.course
-                                            .archivedAt !== null
-                                            ? html`
-                                                <div
-                                                  css="${css`
-                                                    padding: var(--space--0)
-                                                      var(--space--2)
-                                                      var(--space--1);
-                                                    margin-top: var(
-                                                      --space---2
-                                                    );
-                                                  `}"
-                                                >
-                                                  $${application.web.locals.partials.courseArchived(
-                                                    { request, response }
-                                                  )}
-                                                </div>
-                                              `
-                                            : html``}
-                                          <div class="dropdown--menu">
-                                            <a
-                                              href="https://${application
-                                                .configuration
-                                                .hostname}/courses/${response
-                                                .locals.course.reference}"
-                                              class="dropdown--menu--item button ${request.path.includes(
-                                                "/settings/"
-                                              )
-                                                ? "button--transparent"
-                                                : "button--blue"}"
-                                            >
-                                              <i
-                                                class="bi ${request.path.includes(
-                                                  "/settings/"
-                                                )
-                                                  ? "bi-chat-text"
-                                                  : "bi-chat-text-fill"}"
-                                              ></i>
-                                              Conversations
-                                            </a>
-                                            <a
-                                              href="https://${application
-                                                .configuration
-                                                .hostname}/courses/${response
-                                                .locals.course
-                                                .reference}/settings"
-                                              class="dropdown--menu--item button ${request.path.includes(
-                                                "/settings/"
-                                              )
-                                                ? "button--blue"
-                                                : "button--transparent"}"
-                                            >
-                                              <i class="bi bi-sliders"></i>
-                                              Course Settings
-                                            </a>
-                                          </div>
-                                        </div>
-                                        $${responseNarrow.locals.enrollments
-                                          .length > 1
-                                          ? html`
-                                              <div>
-                                                <h3 class="heading">
-                                                  <i
-                                                    class="bi bi-arrow-left-right"
-                                                  ></i>
-                                                  Switch to Another Course
-                                                </h3>
-                                                $${courseSwitcher}
-                                              </div>
-                                            `
-                                          : html``}
-                                      </div>
-                                    `},  
-                                  },
-                                });
-                              `}"
-                            >
-                              <i class="bi bi-journal-text"></i>
-                              <span
-                                css="${css`
-                                  white-space: nowrap;
-                                  overflow: hidden;
-                                  text-overflow: ellipsis;
-                                `}"
-                              >
-                                ${response.locals.course.name}
-                              </span>
-                              $${response.locals.course.archivedAt !== null
-                                ? html`
-                                    $${application.web.locals.partials.courseArchived(
-                                      {
-                                        request,
-                                        response,
-                                      }
-                                    )}
-                                  `
-                                : html``}
-                              <i class="bi bi-chevron-down"></i>
-                            </button>
-                          `
-                        : showCourseSwitcher &&
-                          responseNarrow.locals.enrollments.length > 0
-                        ? html`
-                            <button
-                              class="button button--tight button--tight--inline button--transparent"
-                              css="${css`
-                                max-width: 100%;
-                              `}"
-                              javascript="${javascript`
-                                leafac.setTippy({
-                                  event,
-                                  element: this,
-                                  elementProperty: "dropdown",
-                                  tippyProps: {
-                                    trigger: "click",
-                                    interactive: true,
-                                    content: ${html`
-                                      <div
-                                        css="${css`
-                                          max-height: var(--space--80);
-                                          overflow: auto;
-                                        `}"
-                                      >
-                                        $${courseSwitcher}
-                                      </div>
-                                    `},  
-                                  },
-                                });
-                              `}"
-                            >
-                              Go to Your Courses
-                              <i class="bi bi-chevron-down"></i>
-                            </button>
-                          `
-                        : html``;
-                    })()}
-                  </div>
-
-                  <div>
-                    <button
-                      class="button button--tight button--tight--inline button--transparent"
-                      javascript="${javascript`
-                        leafac.setTippy({
-                          event,
-                          element: this,
-                          tippyProps: {
-                            touch: false,
-                            content: ${
-                              response.locals.invitations!.length === 0
-                                ? "Add"
-                                : `${
-                                    response.locals.invitations!.length
-                                  } pending invitation${
-                                    response.locals.invitations!.length === 1
-                                      ? ""
-                                      : "s"
-                                  }`
-                            },  
-                          },
-                        });
-
-                        leafac.setTippy({
-                          event,
-                          element: this,
-                          elementProperty: "dropdown",
-                          tippyProps: {
-                            trigger: "click",
-                            interactive: true,
-                            content: ${html`
-                              <div
-                                css="${css`
-                                  display: flex;
-                                  flex-direction: column;
-                                  gap: var(--space--2);
-                                `}"
-                              >
-                                $${response.locals.invitations!.length === 0
-                                  ? html``
-                                  : html`
-                                      <div>
-                                        <h3 class="heading">
-                                          <i
-                                            class="bi bi-journal-arrow-down"
-                                          ></i>
-                                          Invitations
-                                        </h3>
-                                        <div class="dropdown--menu">
-                                          $${response.locals.invitations!.map(
-                                            (invitation) => html`
-                                              <a
-                                                key="invitation--${invitation.reference}"
-                                                href="https://${application
-                                                  .configuration
-                                                  .hostname}/courses/${invitation
-                                                  .course
-                                                  .reference}/invitations/${invitation.reference}"
-                                                class="dropdown--menu--item button button--transparent"
-                                              >
-                                                $${application.web.locals.partials.course(
-                                                  {
-                                                    request,
-                                                    response,
-                                                    course: invitation.course,
-                                                    tight: true,
-                                                  }
-                                                )}
-                                              </a>
-                                            `
-                                          )}
-                                        </div>
-                                      </div>
-                                      <hr class="dropdown--separator" />
-                                    `}
-                                <div class="dropdown--menu">
-                                  <button
-                                    class="dropdown--menu--item button button--transparent"
-                                    javascript="${javascript`
-                                      leafac.setTippy({
-                                        event,
-                                        element: this,
-                                        tippyProps: {
-                                          trigger: "click",
-                                          content: "To enroll in an existing course you either have to follow an invitation link or be invited via email. Contact your course staff for more information.",
-                                        },
-                                      });
-                                    `}"
-                                  >
-                                    <i class="bi bi-journal-arrow-down"></i>
-                                    Enroll in an Existing Course
-                                  </button>
-                                  $${application.web.locals.helpers.mayCreateCourses(
-                                    {
-                                      request: requestNarrow,
-                                      response: responseNarrow,
-                                    }
-                                  )
-                                    ? html`
-                                        <a
-                                          href="https://${application
-                                            .configuration
-                                            .hostname}/courses/new"
-                                          class="dropdown--menu--item button button--transparent"
-                                        >
-                                          <i class="bi bi-journal-plus"></i>
-                                          Create a New Course
-                                        </a>
-                                      `
-                                    : html``}
-                                </div>
-                              </div>
-                            `},  
-                          },
-                        });
-                      `}"
-                    >
-                      <div
-                        css="${css`
-                          display: grid;
-                          & > * {
-                            grid-area: 1 / 1;
-                          }
-                        `}"
-                      >
-                        <div
-                          css="${css`
-                            font-size: var(--font-size--xl);
-                            line-height: var(--line-height--xl);
-                            font-weight: var(--font-weight--bold);
-                            padding: var(--space--0) var(--space--1);
-                            display: flex;
-                            justify-content: center;
-                            align-items: center;
-                          `}"
-                        >
-                          +
-                        </div>
-                        $${response.locals.invitations!.length === 0
-                          ? html``
-                          : html`
-                              <div
-                                css="${css`
-                                  background-color: var(--color--rose--500);
-                                  @media (prefers-color-scheme: dark) {
-                                    background-color: var(--color--rose--600);
-                                  }
-                                  width: var(--space--1-5);
-                                  height: var(--space--1-5);
-                                  border-radius: var(--border-radius--circle);
-                                  justify-self: end;
-                                  transform: translateY(50%);
-                                `}"
-                              ></div>
-                            `}
-                      </div>
-                    </button>
-                  </div>
-
-                  <div>
-                    <button
-                      class="button button--tight button--tight--inline button--transparent"
-                      css="${css`
-                        padding: var(--space--1);
-                        border-radius: var(--border-radius--circle);
-                      `}"
-                      javascript="${javascript`
-                        leafac.setTippy({
-                          event,
-                          element: this,
-                          tippyProps: {
-                            touch: false,
-                            content: ${response.locals.user.name},
-                          },
-                        });
-
-                        leafac.setTippy({
-                          event,
-                          element: this,
-                          elementProperty: "dropdown",
-                          tippyProps: {
-                            trigger: "click",
-                            interactive: true,
-                            content: ${html`
-                              <div
-                                css="${css`
-                                  display: flex;
-                                  flex-direction: column;
-                                  gap: var(--space--2);
-                                `}"
-                              >
-                                <div
-                                  css="${css`
-                                    padding: var(--space--0) var(--space--2);
-                                  `}"
-                                >
-                                  <p class="strong">
-                                    ${response.locals.user.name}
-                                  </p>
-                                  <p class="secondary">
-                                    ${response.locals.user.email}
-                                  </p>
-                                </div>
-
-                                <hr class="dropdown--separator" />
-
-                                $${response.locals.user.systemRole ===
-                                "administrator"
-                                  ? html`
-                                      <div class="dropdown--menu">
-                                        <a
-                                          class="dropdown--menu--item button button--transparent"
-                                          href="https://${application
-                                            .configuration
-                                            .hostname}/administration"
-                                        >
-                                          <i
-                                            class="bi bi-pc-display-horizontal"
-                                          ></i>
-                                          Administration
-                                        </a>
-                                      </div>
-
-                                      <hr class="dropdown--separator" />
-                                    `
-                                  : html``}
-
-                                <div class="dropdown--menu">
-                                  <a
-                                    class="dropdown--menu--item button button--transparent"
-                                    href="https://${application.configuration
-                                      .hostname}/settings"
-                                  >
-                                    <i class="bi bi-sliders"></i>
-                                    User Settings
-                                  </a>
-                                  <form
-                                    method="DELETE"
-                                    action="https://${application.configuration
-                                      .hostname}/sign-out"
-                                  >
-                                    <button
-                                      class="dropdown--menu--item button button--transparent"
-                                    >
-                                      <i class="bi bi-box-arrow-right"></i>
-                                      Sign Out
-                                    </button>
-                                  </form>
-                                </div>
-                              </div>
-                            `},  
-                          },
-                        });
-                      `}"
-                    >
-                      $${application.web.locals.partials.user({
-                        request,
-                        response,
-                        user: response.locals.user,
-                        decorate: false,
-                        name: false,
-                      })}
-                    </button>
-                  </div>
-                `;
-              })()
-            : html``}
-        </div>
-
-        $${extraHeaders}
-      `,
-      body,
-    });
-
   application.web.locals.layouts.main = ({
     request,
     response,
@@ -3245,7 +3226,7 @@ export default async (application: Application): Promise<void> => {
     showCourseSwitcher = true,
     body,
   }) =>
-    application.web.locals.layouts.application({
+    application.web.locals.layouts.base({
       request,
       response,
       head,
@@ -3283,7 +3264,7 @@ export default async (application: Application): Promise<void> => {
     menu,
     body,
   }) =>
-    application.web.locals.layouts.application({
+    application.web.locals.layouts.base({
       request,
       response,
       head,
