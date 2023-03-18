@@ -2407,8 +2407,17 @@ export default async (application: Application): Promise<void> => {
                                     if (write.querySelector('[key="poll-editor"]') !== null) return;
                                     const poll = leafac.stringToElement(${partialPollEditor(
                                       {
-                                        request: request as any,
-                                        response: response as any,
+                                        request: request as express.Request<
+                                          {},
+                                          any,
+                                          {},
+                                          { redirect?: string },
+                                          Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+                                        >,
+                                        response: response as express.Response<
+                                          any,
+                                          Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+                                        >,
                                       }
                                     )}).querySelector('[key="poll-editor"]');
                                     write.insertAdjacentElement("afterbegin", poll);
