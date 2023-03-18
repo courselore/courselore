@@ -2694,8 +2694,8 @@ export default async (application: Application): Promise<void> => {
     body,
   }) =>
     application.web.locals.layouts.base({
-      request: request,
-      response: response,
+      request,
+      response,
       head,
       extraHeaders: html`
         <div
