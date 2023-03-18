@@ -1992,14 +1992,14 @@ export default async (application: Application): Promise<void> => {
 
                   $${response.locals.user !== undefined
                     ? (() => {
-                        const requestNarrow = request as express.Request<
+                        const requestSignedIn = request as express.Request<
                           {},
                           any,
                           {},
                           {},
                           Application["web"]["locals"]["ResponseLocals"]["SignedIn"]
                         >;
-                        const responseNarrow = response as express.Response<
+                        const responseSignedIn = response as express.Response<
                           any,
                           Application["web"]["locals"]["ResponseLocals"]["SignedIn"]
                         >;
@@ -2017,8 +2017,8 @@ export default async (application: Application): Promise<void> => {
                               const courseSwitcher = html`
                                 <div class="dropdown--menu">
                                   $${application.web.locals.partials.courses({
-                                    request: requestNarrow,
-                                    response: responseNarrow,
+                                    request: requestSignedIn,
+                                    response: responseSignedIn,
                                     tight: true,
                                   })}
                                 </div>
@@ -2122,7 +2122,7 @@ export default async (application: Application): Promise<void> => {
                                                     </a>
                                                   </div>
                                                 </div>
-                                                $${responseNarrow.locals
+                                                $${responseSignedIn.locals
                                                   .enrollments.length > 1
                                                   ? html`
                                                       <div>
@@ -2168,7 +2168,7 @@ export default async (application: Application): Promise<void> => {
                                     </button>
                                   `
                                 : showCourseSwitcher &&
-                                  responseNarrow.locals.enrollments.length > 0
+                                  responseSignedIn.locals.enrollments.length > 0
                                 ? html`
                                     <button
                                       class="button button--tight button--tight--inline button--transparent"
@@ -2304,8 +2304,8 @@ export default async (application: Application): Promise<void> => {
                                           </button>
                                           $${application.web.locals.helpers.mayCreateCourses(
                                             {
-                                              request: requestNarrow,
-                                              response: responseNarrow,
+                                              request: requestSignedIn,
+                                              response: responseSignedIn,
                                             }
                                           )
                                             ? html`
