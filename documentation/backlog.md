@@ -15,9 +15,8 @@
 
 - Testing tools
   - Lightweight
-    - https://github.com/mcguinness/saml-idp
+    - **https://github.com/mcguinness/saml-idp**
     - https://github.com/boxyhq/mock-saml
-    - https://github.com/tngan/samlify
     - https://github.com/Clever/saml2
     - https://github.com/auth0/node-samlp
     - https://github.com/bjorns/mock-idp
@@ -28,14 +27,38 @@
     - https://mocksaml.com
     - https://auth0.com
 - Implementation tools
-  - https://github.com/node-saml/
-  - http://www.passportjs.org/packages/passport-saml/
-  - https://github.com/boxyhq/jackson (OAuth)
+  - https://github.com/tngan/samlify
+  - https://github.com/Clever/saml2
+  - https://github.com/node-saml/node-saml
+  - https://github.com/auth0/node-saml
+  - https://github.com/auth0/node-samlp
+  - https://github.com/auth0/samlp-logout
+  - https://github.com/node-saml/passport-saml
+    - http://www.passportjs.org/packages/passport-saml/
+    - https://github.com/jwalton/passport-api-docs
+    - https://github.com/gbraad/passport-saml-example/
+  - https://github.com/boxyhq/jackson (OAuth proxy)
+  - https://github.com/simov/grant (OAuth)
+  - https://github.com/ianstormtaylor/permit (for APIs)
 - Examples
   - https://www.gradescope.com/saml
+  - https://cs280fall20.github.io/jhu-sso/index.html
+  - https://www.samltool.com/generic_sso_req.php
+  - https://www.samltool.com/generic_sso_res.php
 - Johns Hopkins SAML
   - Get an alumni account
-  - Contact the Enterprise Auth team (http://www.it.johnshopkins.edu/services/directoryservices/jhea/Shibboleth/)
+  - Contact the Enterprise Auth team
+    - http://www.it.johnshopkins.edu/services/directoryservices/jhea/Shibboleth/
+    - enterpriseauth@jhmi.edu
+  - Metadata https://idp.jh.edu/idp/shibboleth
+    - Username: req.user.username (your JHED ID)
+    - Affiliation: req.user.user_field_affiliation (either STUDENT, FACULTY or STAFF)
+    - Job title: req.user.user_field_job_title (e.g. mine comes up as LECTURER)
+    - Last name: req.user.last_name
+    - First name: req.user.first_name
+    - Given name: req.user.given_name
+    - Email: req.user.email
+  - URL to redirect to: https://idp.jh.edu/idp/profile/SAML2/Redirect/SSO
 - Issues
   - Send an email saying “You signed in from a new device”
   - Sign up via SAML
@@ -44,6 +67,62 @@
     - Don’t merge, just use email address as the identity anchor
     - If you create an account via SAML, can you create a password later?
   - Sign out may be tricky, because other service providers using the same identity provider won’t know that you logged out of Courselore.
+
+```
+openssl req -x509 -new -newkey rsa:2048 -nodes -subj '/C=US/ST=California/L=San Francisco/O=JankyCo/CN=Test Identity Provider' -keyout idp-private-key.pem -out idp-public-cert.pem -days 7300
+openssl req -x509 -newkey rsa:2048 -keyout key.pem -out public.crt -sha256 -days 365000 -nodes
+
+
+
+
+openssl req -x509 -newkey rsa:2048 -nodes -days 365000 -subj "/C=US/ST=Maryland/L=Baltimore/O=Courselore/CN=Courselore SAML Test Identity Provider" -keyout saml--idp.key -out saml--idp.crt
+
+npx saml-idp --key saml--idp.key --cert saml--idp.crt --acs https://leafac--macbook.local/saml/assertion-consumer --slo https://leafac--macbook.local/saml/single-logout --audience https://leafac--macbook.local/saml/audience
+
+
+openssl req -x509 -newkey rsa:2048 -nodes -days 365000 -subj "/C=US/ST=Maryland/L=Baltimore/O=Courselore/CN=Courselore SAML Test Service Provider" -keyout saml--sp.key -out saml--sp.crt
+
+
+
+
+
+
+
+
+
+(async () => {
+  const { SAML } = require("@node-saml/node-saml");
+  const fs = require("fs");
+
+  const saml = new SAML({
+    callbackUrl: "https://leafac--macbook.local/saml/assertion-consumer",
+    issuer: "urn:example:sp",
+    privateKey: fs.readFileSync("./saml--sp.key", "utf-8"),
+    entryPoint: "http://localhost:7000/saml/sso",
+    cert: "MIIDcjCCAloCCQDcIEj4f//X8TANBgkqhkiG9w0BAQsFADB6MQswCQYDVQQGEwJVUzERMA8GA1UECAwITWFyeWxhbmQxEjAQBgNVBAcMCUJhbHRpbW9yZTETMBEGA1UECgwKQ291cnNlbG9yZTEvMC0GA1UEAwwmQ291cnNlbG9yZSBTQU1MIFRlc3QgSWRlbnRpdHkgUHJvdmlkZXIwIBcNMjMwMzIwMTExNjE5WhgPMzAyMjA3MjExMTE2MTlaMHoxCzAJBgNVBAYTAlVTMREwDwYDVQQIDAhNYXJ5bGFuZDESMBAGA1UEBwwJQmFsdGltb3JlMRMwEQYDVQQKDApDb3Vyc2Vsb3JlMS8wLQYDVQQDDCZDb3Vyc2Vsb3JlIFNBTUwgVGVzdCBJZGVudGl0eSBQcm92aWRlcjCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKo8TTCYpIL3eHCNX3qwqIVa1gpP/6tjGartxblDO5NhwrAiu4ni2I02hP+ua9UKKw/NlXOsrgFg8m2yJ6OpwzC/VLUj00jObgcHGyEJ7Aooiy1vdYcxXOONuYu5QzyIAFjHvkF8oEKj1LDKkxFYZNSQLeTAYko0Ph/1thDwAGD2LW8zxveXsYdB+5CnOYdcgcsSfy2T8rIA9i+h7EjtDvHyG8vUcYimcwuti8WEfl8paT9arO/CppnDp5Loa+BxytmskrANLNpLSTfP4tKoqZXzhqNYch9ydBE94kJhnmxB7MF0SI7oRTN2H1lHjumaDVZ4krAtLDRBXYEmBORhYsUCAwEAATANBgkqhkiG9w0BAQsFAAOCAQEAZav76U3BflMlKceMBIUZaAbwDRpPRCfkLQ3zJ/1im2SHI7vjWJPLtT/mW+mTaH9/HJuhokBQkXDh9WUdDoRKD2glCeIN8rOaxJnCthcU+lOf4uCI9z9jsKB02tYkXKBI81ASnd9RLh6RNOpF687YWfEuiwgBN5R951jzJIVjVIyQHAldnNjS6ilJqLDJGBe6/zqbFF/nZXO+N++YXzC9ADyuxbfhVwiKkeRA8ejE9uakonn0M5/qswYt2REpxBaNLZiULevjrnb62RjRR+qX73KwSVYDn47PiyK81I+WpkTekXVeOEc9HGtfG+k8ZRGzOJvguYWP41fnRlVFua2b5A==",
+  });
+
+  // console.log(
+  //   saml.generateServiceProviderMetadata(
+  //     undefined,
+  //     fs.readFileSync("./saml--sp.crt", "utf-8")
+  //   )
+  // );
+
+  // console.log(
+  //   await saml.getAuthorizeFormAsync(
+  //     undefined,
+  //     "http://localhost:7000/saml/sso"
+  //   )
+  // );
+
+  console.log(
+    await saml.getAuthorizeUrlAsync(undefined, "http://localhost:7000/saml/sso")
+  );
+})();
+
+
+```
 
 **DateTimePicker**
 
