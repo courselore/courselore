@@ -6,9 +6,9 @@
 
 ---
 
+- Be explicit about `<button type="button">` even when there’s no `<form>` around it: 1. To communicate intent; 2. To allow for the component to be used within different contexts without surprises.
 - Use `node --test` in other projects: look for uses of the `TEST` environment variable
 - Some `setTippy()`s don’t need the `event`, for example, those inside an `.onclick`. In fact, the `event` may be problematic because it’s the `event` in the closure of when the `.onclick` was set, and it’ll be passed down to `morph()` and `execute()`, which may lead to issues.
-- Be explicit about `<button type="button">` even when there’s no `<form>` around it: 1. To communicate intent; 2. To allow for the component to be used within different contexts without surprises.
 
 **SAML**
 
