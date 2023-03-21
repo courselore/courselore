@@ -12,6 +12,9 @@
 
 ## Unreleased
 
+- Fixed styling issues on scrollbars.
+- Added a sign out button to the screen asking you to confirm your email for the case in which you’re in a public computer where you don’t have access to your email and you need to sign out.
+
 ## 6.0.11
 
 **2023-03-16 · [Download](https://github.com/courselore/courselore/releases/tag/v6.0.11) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
