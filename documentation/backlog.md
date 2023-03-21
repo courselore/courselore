@@ -6,11 +6,6 @@
 
 ---
 
-- Content editor textarea glitches:
-  - Resize handle was showing up on the in Safari on MacBook, but I can’t reproduce.
-  - When autosizing, it’s showing a strip of white at the bottom in Safari on Mac Mini.
-    - It’s the horizontal scrollbar! It’s white! And `autosize` is using `overflow: scroll;` instead of `overflow[-y]: auto;`.
-    - Perhaps the most proper solution is to style the scrollbar.
 - Use `node --test` in other projects: look for uses of the `TEST` environment variable
 - Some `setTippy()`s don’t need the `event`, for example, those inside an `.onclick`. In fact, the `event` may be problematic because it’s the `event` in the closure of when the `.onclick` was set, and it’ll be passed down to `morph()` and `execute()`, which may lead to issues.
 - Be explicit about `<button type="button">` even when there’s no `<form>` around it: 1. To communicate intent; 2. To allow for the component to be used within different contexts without surprises.
@@ -1042,6 +1037,7 @@ new Notification('Example');
   - Also, you could probably scroll anywhere on the page, as opposed to now, when you must have your cursor in the scrolling pane.
 - On lists with reorderable items, scroll when your cursor is near the edge of the surrounding scrollable pane.
   - In particular, test with three-fingers scroll in macOS.
+- Test on Windows the styling of scrollbars. (Remember that autosizing the textarea in the content editor creates weird scrollbars, including a horizontal scrollbar because `autosize` is using `overflow: scroll;` instead of `overflow[-y]: auto;`, which may show up as a strip of white at the bottom on unstyled scrollbars.)
 
 ## Pagination
 

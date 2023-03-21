@@ -302,6 +302,48 @@ export default async (application: Application): Promise<void> => {
         <body
           css="${css`
             @at-root {
+              ::-webkit-scrollbar {
+                width: var(--space--2);
+                height: var(--space--2);
+              }
+
+              ::-webkit-scrollbar-button {
+                display: none;
+              }
+
+              ::-webkit-scrollbar-track {
+                display: none;
+              }
+
+              ::-webkit-scrollbar-track-piece {
+                display: none;
+              }
+
+              ::-webkit-scrollbar-thumb {
+                background-color: var(--color--gray--medium--400);
+                @media (prefers-color-scheme: dark) {
+                  background-color: var(--color--gray--medium--500);
+                }
+                border-radius: var(--border-radius--full);
+              }
+
+              ::-webkit-scrollbar-corner {
+                display: none;
+              }
+
+              ::-webkit-resizer {
+                display: none;
+              }
+
+              *,
+              ::before,
+              ::after {
+                scrollbar-color: var(--color--gray--medium--400) transparent;
+                @media (prefers-color-scheme: dark) {
+                  scrollbar-color: var(--color--gray--medium--500) transparent;
+                }
+              }
+
               .grabbing {
                 &,
                 &::before,
