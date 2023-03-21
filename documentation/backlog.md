@@ -1259,10 +1259,6 @@ const { app, BrowserWindow } = require("electron");
 - Places where we show `administratorEmail` to report bugs could be forms instead.
 - In Safari iOS, the address bar never collapses because of the way we’re doing panes.
 - Add `-fill` to journal icons: https://github.com/twbs/icons/issues/1322
-- Style scrollbars:
-  - https://css-tricks.com/almanac/properties/s/scrollbar/
-  - https://css-tricks.com/the-current-state-of-styling-scrollbars-in-css/
-  - https://www.digitalocean.com/community/tutorials/css-scrollbars
 
 ## Design & Accessibility
 
