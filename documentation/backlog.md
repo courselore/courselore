@@ -38,11 +38,17 @@
   - https://github.com/boxyhq/jackson (OAuth proxy)
   - https://github.com/simov/grant (OAuth)
   - https://github.com/ianstormtaylor/permit (for APIs)
+- Implementation
+  - Digest SAML response and sign-in
+  - Initiate sign-in flow with SAML request
+    - Redirect with `RelayState`
 - Examples
   - https://www.gradescope.com/saml
   - https://cs280fall20.github.io/jhu-sso/index.html
   - https://www.samltool.com/generic_sso_req.php
   - https://www.samltool.com/generic_sso_res.php
+- Documentation
+  - https://developer.okta.com/docs/concepts/saml/
 - Johns Hopkins SAML
   - Get an alumni account
   - Contact the Enterprise Auth team
@@ -57,6 +63,7 @@
     - Given name: req.user.given_name
     - Email: req.user.email
   - URL to redirect to: https://idp.jh.edu/idp/profile/SAML2/Redirect/SSO
+- Multiple providers
 - Issues
   - Send an email saying “You signed in from a new device”
   - Sign up via SAML
@@ -67,26 +74,10 @@
   - Sign out may be tricky, because other service providers using the same identity provider won’t know that you logged out of Courselore.
 
 ```
-openssl req -x509 -new -newkey rsa:2048 -nodes -subj '/C=US/ST=California/L=San Francisco/O=JankyCo/CN=Test Identity Provider' -keyout idp-private-key.pem -out idp-public-cert.pem -days 7300
-openssl req -x509 -newkey rsa:2048 -keyout key.pem -out public.crt -sha256 -days 365000 -nodes
+openssl req -x509 -newkey rsa:2048 -nodes -days 365000 -subj "/" -keyout saml--idp.key -out saml--idp.crt
+npx saml-idp --key saml--idp.key --cert saml--idp.crt --acs https://leafac--macbook.local/saml/assertion-consumer-service --slo https://leafac--macbook.local/saml/single-logout --audience https://leafac--macbook.local/saml/audience
 
-
-
-
-openssl req -x509 -newkey rsa:2048 -nodes -days 365000 -subj "/C=US/ST=Maryland/L=Baltimore/O=Courselore/CN=Courselore SAML Test Identity Provider" -keyout saml--idp.key -out saml--idp.crt
-
-npx saml-idp --key saml--idp.key --cert saml--idp.crt --acs https://leafac--macbook.local/saml/assertion-consumer --slo https://leafac--macbook.local/saml/single-logout --audience https://leafac--macbook.local/saml/audience
-
-
-openssl req -x509 -newkey rsa:2048 -nodes -days 365000 -subj "/C=US/ST=Maryland/L=Baltimore/O=Courselore/CN=Courselore SAML Test Service Provider" -keyout saml--sp.key -out saml--sp.crt
-
-
-
-
-
-
-
-
+---
 
 (async () => {
   const { SAML } = require("@node-saml/node-saml");
@@ -118,8 +109,6 @@ openssl req -x509 -newkey rsa:2048 -nodes -days 365000 -subj "/C=US/ST=Maryland/
     await saml.getAuthorizeUrlAsync(undefined, "http://localhost:7000/saml/sso")
   );
 })();
-
-
 ```
 
 **DateTimePicker**
