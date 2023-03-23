@@ -75,7 +75,9 @@
 
 ```
 openssl req -x509 -newkey rsa:2048 -nodes -days 365000 -subj "/" -keyout saml--idp.key -out saml--idp.crt
-npx saml-idp --key saml--idp.key --cert saml--idp.crt --acs https://leafac--macbook.local/saml/assertion-consumer-service --slo https://leafac--macbook.local/saml/single-logout --audience https://leafac--macbook.local/saml/audience
+npx saml-idp --key saml--idp.key --cert saml--idp.crt --audience "" --acs ""
+
+npx saml-idp --key saml--idp.key --cert saml--idp.crt --audience "https://leafac--macbook.local/saml/audience" --acs "https://leafac--macbook.local/saml/assertion-consumer-service" --slo "https://leafac--macbook.local/saml/single-logout"
 
 ---
 
