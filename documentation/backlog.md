@@ -67,6 +67,7 @@
 - Issues
   - Send an email saying “You signed in from a new device”
   - Sign up via SAML
+    - Interactions with email verification
   - Merge
     - Keep both password and SAML
     - Don’t merge, just use email address as the identity anchor
