@@ -72,13 +72,18 @@
     - Don’t merge, just use email address as the identity anchor
     - If you create an account via SAML, can you create a password later?
   - Sign out may be tricky, because other service providers using the same identity provider won’t know that you logged out of Courselore.
+  - How do you prevent, for example, Hopkins from providing the identity for `someone@another-university.edu`, forging their way into Courselore? Should we limit the authority of identity providers to a set of domains?
 
 ```
-openssl req -x509 -newkey rsa:2048 -nodes -days 365000 -subj "/" -keyout saml--idp.key -out saml--idp.crt
-npx saml-idp --key saml--idp.key --cert saml--idp.crt --audience "" --acs ""
+mkdir -p data/keys/
+openssl req -x509 -newkey rsa:2048 -nodes -days 365000 -subj "/" -keyout data/keys/saml--service-provider.key -out data/keys/saml--service-provider.crt
 
-npx saml-idp --key saml--idp.key --cert saml--idp.crt --audience "https://leafac--macbook.local/saml/audience" --acs "https://leafac--macbook.local/saml/assertion-consumer-service" --slo "https://leafac--macbook.local/saml/single-logout"
+openssl req -x509 -newkey rsa:2048 -nodes -days 365000 -subj "/" -keyout data/keys/saml--identity-provider.key -out data/keys/saml--identity-provider.crt
+npx saml-idp --key data/keys/saml--identity-provider.key --cert data/keys/saml--identity-provider.crt --audience "" --acs ""
 
+npx saml-idp --key data/keys/saml--identity-provider.key --cert data/keys/saml--identity-provider.crt --audience "https://leafac--macbook.local/saml/audience" --acs "https://leafac--macbook.local/saml/assertion-consumer-service" --slo "https://leafac--macbook.local/saml/single-logout"
+
+--serviceProviderId
 ---
 
 (async () => {
