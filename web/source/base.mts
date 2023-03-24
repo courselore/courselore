@@ -33,22 +33,6 @@ export default async (application: Application): Promise<void> => {
     {},
     {},
     Application["web"]["locals"]["ResponseLocals"]["Logging"]
-  >((request, response, next) => {
-    if (
-      !["GET", "HEAD", "OPTIONS", "TRACE"].includes(request.method) &&
-      request.header("CSRF-Protection") !== "true"
-    )
-      return next("Cross-Site Request Forgery");
-
-    next();
-  });
-
-  application.web.use<
-    {},
-    any,
-    {},
-    {},
-    Application["web"]["locals"]["ResponseLocals"]["Logging"]
   >(cookieParser());
 
   application.web.locals.configuration.cookies = {
@@ -86,4 +70,20 @@ export default async (application: Application): Promise<void> => {
       limits: { fileSize: 10 * 1024 * 1024 },
     })
   );
+
+  application.web.use<
+    {},
+    any,
+    {},
+    {},
+    Application["web"]["locals"]["ResponseLocals"]["Logging"]
+  >((request, response, next) => {
+    if (
+      !["GET", "HEAD", "OPTIONS", "TRACE"].includes(request.method) &&
+      request.header("CSRF-Protection") !== "true"
+    )
+      return next("Cross-Site Request Forgery");
+
+    next();
+  });
 };

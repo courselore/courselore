@@ -77,9 +77,8 @@
 ```
 mkdir -p data/keys/
 openssl req -x509 -newkey rsa:2048 -nodes -days 365000 -subj "/" -keyout data/keys/saml--service-provider.key -out data/keys/saml--service-provider.crt
-
 openssl req -x509 -newkey rsa:2048 -nodes -days 365000 -subj "/" -keyout data/keys/saml--identity-provider.key -out data/keys/saml--identity-provider.crt
-npx saml-idp --key data/keys/saml--identity-provider.key --cert data/keys/saml--identity-provider.crt --audience "" --acs ""
+npx saml-idp --key data/keys/saml--identity-provider.key --cert data/keys/saml--identity-provider.crt --audience "https://leafac--macbook.local/saml/metadata" --acs "https://leafac--macbook.local/saml/assertion-consumer-service"
 
 npx saml-idp --key data/keys/saml--identity-provider.key --cert data/keys/saml--identity-provider.crt --audience "https://leafac--macbook.local/saml/audience" --acs "https://leafac--macbook.local/saml/assertion-consumer-service" --slo "https://leafac--macbook.local/saml/single-logout"
 
