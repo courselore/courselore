@@ -1435,8 +1435,6 @@ export default async (application: Application): Promise<void> => {
       )
         return response.status(422).end();
 
-      delete response.locals.liveConnectionNonce;
-
       await stream.pipeline(
         application.got
           .stream(request.query.url, {

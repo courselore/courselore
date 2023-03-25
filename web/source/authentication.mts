@@ -1893,7 +1893,6 @@ export default async (application: Application): Promise<void> => {
     const samlInstance = saml[request.params.samlIdentifier];
     if (samlInstance === undefined) return next();
 
-    // TODO: Make sure this doesn’t generate a Live-Connection on the database
     response
       .contentType("application/xml")
       .send(samlInstance.serviceProvider.getMetadata());
