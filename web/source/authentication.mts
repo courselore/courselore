@@ -1879,7 +1879,7 @@ export default async (application: Application): Promise<void> => {
             entityID: `https://${application.configuration.hostname}/saml/${samlIdentifier}/metadata`,
             assertionConsumerService: [
               {
-                Binding: "post",
+                Binding: samlify.Constants.namespace.binding.post,
                 Location: `https://${application.configuration.hostname}/saml/${samlIdentifier}/assertion-consumer-service`,
               },
             ],
@@ -1948,7 +1948,7 @@ export default async (application: Application): Promise<void> => {
         );
       console.log(samlResponse);
 
-      response.end("SIGNED-IN?");
+      response.end("SIGNED-IN :)");
     })
   );
 };
