@@ -49,6 +49,7 @@
   - https://www.samltool.com/generic_sso_res.php
 - Documentation
   - https://developer.okta.com/docs/concepts/saml/
+  - https://github.com/authenio/react-samlify/blob/d36744c53f979e376b6380ae5368dd1ed70172a4/middleware/index.ts
 - Johns Hopkins SAML
   - Get an alumni account
   - Contact the Enterprise Auth team

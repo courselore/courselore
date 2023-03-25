@@ -15,6 +15,7 @@ import * as Got from "got";
 import * as node from "@leafac/node";
 import caddyfile from "dedent";
 import dedent from "dedent";
+import samlify from "samlify";
 import logging, { ApplicationLogging } from "./logging.mjs";
 import database, { ApplicationDatabase } from "./database.mjs";
 import base, { ApplicationBase } from "./base.mjs";
@@ -59,6 +60,13 @@ export type Application = {
       };
     };
     administratorEmail: string;
+    saml: {
+      [identifier: string]: {
+        domains: string[];
+        identityProvider: Parameters<typeof samlify.IdentityProvider>[0];
+        serviceProvider: Parameters<typeof samlify.ServiceProvider>[0];
+      };
+    };
     environment: "production" | "development" | "profile" | "other";
     demonstration: boolean;
     tunnel: boolean;
