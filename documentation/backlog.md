@@ -12,9 +12,6 @@
 **SAML**
 
 - Implementation
-  - Setup testing identity provider
-    - Create keys
-    - Provide information about service provider
   - Change configurations:
     - `development.mjs`
     - `example.mjs`
