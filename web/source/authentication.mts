@@ -1883,6 +1883,12 @@ export default async (application: Application): Promise<void> => {
                 Location: `https://${application.configuration.hostname}/saml/${samlIdentifier}/assertion-consumer-service`,
               },
             ],
+            singleLogoutService: [
+              {
+                Binding: samlify.Constants.namespace.binding.post,
+                Location: `https://${application.configuration.hostname}/saml/${samlIdentifier}/single-logout`,
+              },
+            ],
           }),
         },
       ]
