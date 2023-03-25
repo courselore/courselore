@@ -1,4 +1,5 @@
 import url from "node:url";
+import fs from "node:fs/promises";
 
 export default {
   hostname: process.env.TUNNEL ?? process.env.HOSTNAME ?? "localhost",
@@ -47,17 +48,23 @@ export default {
         `,
       },
       serviceProvider: {
-        signingCert: url.fileURLToPath(
-          new URL(
-            "./development--saml--service-provider--signing.crt",
-            import.meta.url
-          )
+        signingCert: await fs.readFile(
+          url.fileURLToPath(
+            new URL(
+              "./development--saml--service-provider--signing.crt",
+              import.meta.url
+            )
+          ),
+          "utf-8"
         ),
-        privateKey: url.fileURLToPath(
-          new URL(
-            "./development--saml--service-provider--signing.key",
-            import.meta.url
-          )
+        privateKey: await fs.readFile(
+          url.fileURLToPath(
+            new URL(
+              "./development--saml--service-provider--signing.key",
+              import.meta.url
+            )
+          ),
+          "utf-8"
         ),
       },
     },
