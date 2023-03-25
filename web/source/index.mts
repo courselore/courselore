@@ -424,6 +424,8 @@ if (await node.isExecuted(import.meta.url)) {
                     {
                       file: "saml-idp",
                       arguments: [
+                        "--port",
+                        "9000",
                         "--key",
                         url.fileURLToPath(
                           new URL(
@@ -439,11 +441,11 @@ if (await node.isExecuted(import.meta.url)) {
                           )
                         ),
                         "--audience",
-                        "",
+                        `https://${application.configuration.hostname}/saml/development/metadata`,
                         "--acs",
-                        "",
+                        `https://${application.configuration.hostname}/saml/development/assertion-consumer-service`,
                         "--slo",
-                        "",
+                        `https://${application.configuration.hostname}/saml/development/single-logout`,
                       ],
                       options: {
                         preferLocal: true,

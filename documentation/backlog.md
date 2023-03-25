@@ -15,6 +15,7 @@
   - Change configurations:
     - `development.mjs`
     - `example.mjs`
+      - Don’t set `entityID` for service provider.
     - `courselore.org.mjs`
   - Create SAML instances
   - Digest SAML response and sign-in
@@ -88,12 +89,6 @@ npx saml-idp --key data/keys/saml--identity-provider.key --cert data/keys/saml--
 npx saml-idp --key data/keys/saml--identity-provider.key --cert data/keys/saml--identity-provider.crt --audience "https://leafac--macbook.local/saml/audience" --acs "https://leafac--macbook.local/saml/assertion-consumer-service" --slo "https://leafac--macbook.local/saml/single-logout"
 
 --serviceProviderId
-
----
-
-                        // `https://${application.configuration.hostname}/saml/development/metadata`,
-                        // `https://${application.configuration.hostname}/saml/development/assertion-consumer-service`,
-                        // `https://${application.configuration.hostname}/saml/development/single-logout`,
 
 ---
 
