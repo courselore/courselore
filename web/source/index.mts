@@ -425,12 +425,24 @@ if (await node.isExecuted(import.meta.url)) {
                       file: "saml-idp",
                       arguments: [
                         "--key",
-                        "data/keys/saml--identity-provider.key",
+                        url.fileURLToPath(
+                          new URL(
+                            "../configuration/development--saml--identity-provider--signing.key",
+                            import.meta.url
+                          )
+                        ),
                         "--cert",
-                        "data/keys/saml--identity-provider.crt",
+                        url.fileURLToPath(
+                          new URL(
+                            "../configuration/development--saml--identity-provider--signing.crt",
+                            import.meta.url
+                          )
+                        ),
                         "--audience",
                         "",
                         "--acs",
+                        "",
+                        "--slo",
                         "",
                       ],
                       options: {
