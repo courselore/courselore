@@ -3,18 +3,22 @@
 <details>
 <summary>2023-03-25</summary>
 
-- How to show SAML to the user?
+- System administrator configuration (use text file)
+- Multiple providers
 - When creating account, do we ask for a password?
   - Do we allow them to create a password after the fact?
   - Administrator backdoor?
+- Reset password
+- How to show SAML to the user?
+- Upon first SAML sign in, ask for existing account
+  - Help documents
 - Allow for sign-in initiated by identity provider?
-- Example of Hopkins request and response?
-- System administrator configuration (use text file)
-- Multiple providers
+- Allowlist of `*.jhu.edu`
+- How do you prevent, for example, Hopkins from providing the identity for `someone@another-university.edu`, forging their way into Courselore? Should we limit the authority of identity providers to a set of domains?
 - Sign out
   - Initiated in Courselore: Sign out of Courselore only (leaving you signed in to the identity provider) or single sign out?
   - Initiated elsewhere: Do we sign out of Courselore as well?
-- How do you prevent, for example, Hopkins from providing the identity for `someone@another-university.edu`, forging their way into Courselore? Should we limit the authority of identity providers to a set of domains?
+- Example of Hopkins request and response?
 
 </details>
 
