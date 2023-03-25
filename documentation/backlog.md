@@ -17,12 +17,15 @@
   - Change configurations:
     - `development.mjs`
     - `example.mjs`
-      - Don’t set `entityID` for service provider.
+      - Don’t set for service provider:
+        - `entityID`
+        - `assertionConsumerService`
     - `courselore.org.mjs`
   - Create SAML instances
   - Digest SAML response and sign-in
   - Initiate sign-in flow with SAML request
     - Redirect with `RelayState`
+  - User interface
 - Testing tools
   - Lightweight
     - **https://github.com/mcguinness/saml-idp**

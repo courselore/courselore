@@ -1877,6 +1877,12 @@ export default async (application: Application): Promise<void> => {
           serviceProvider: samlify.ServiceProvider({
             ...options.serviceProvider,
             entityID: `https://${application.configuration.hostname}/saml/${samlIdentifier}/metadata`,
+            assertionConsumerService: [
+              {
+                Binding: "post",
+                Location: `https://${application.configuration.hostname}/saml/${samlIdentifier}/assertion-consumer-service`,
+              },
+            ],
           }),
         },
       ]
