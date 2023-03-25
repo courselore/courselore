@@ -14,11 +14,12 @@
 **SAML**
 
 - Implementation
-  - Create SAML instances
   - Digest SAML response and sign-in
+    - Security checks
   - Initiate sign-in flow with SAML request
     - Redirect with `RelayState`
   - User interface
+  - Sign up with SAML
   - Change configurations:
     - `development.mjs`
     - `example.mjs`
@@ -76,7 +77,6 @@
     - Given name: req.user.given_name
     - Email: req.user.email
   - URL to redirect to: https://idp.jh.edu/idp/profile/SAML2/Redirect/SSO
-- Multiple providers
 - Issues
   - Send an email saying “You signed in from a new device”
   - Sign up via SAML
@@ -84,9 +84,6 @@
   - Merge
     - Keep both password and SAML
     - Don’t merge, just use email address as the identity anchor
-    - If you create an account via SAML, can you create a password later?
-  - Sign out may be tricky, because other service providers using the same identity provider won’t know that you logged out of Courselore.
-  - How do you prevent, for example, Hopkins from providing the identity for `someone@another-university.edu`, forging their way into Courselore? Should we limit the authority of identity providers to a set of domains?
 
 ```
 npx saml-idp --key data/keys/saml--identity-provider.key --cert data/keys/saml--identity-provider.crt --audience "https://leafac--macbook.local/saml/metadata" --acs "https://leafac--macbook.local/saml/assertion-consumer-service"
@@ -96,6 +93,46 @@ npx saml-idp --key data/keys/saml--identity-provider.key --cert data/keys/saml--
 --serviceProviderId
 
 ---
+
+{
+  samlContent: '<samlp:Response xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol" ID="_a16c12d142b3e3434d60" InResponseTo="_494b0421-6735-4dc5-88c9-3b1c64d8d615" Version="2.0" IssueInstant="2023-03-25T13:39:42.251Z" Destination="https://leafac--macbook.local/saml/development/assertion-consumer-service"><saml:Issuer xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion">urn:example:idp</saml:Issuer><Signature xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo><CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/><SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"/><Reference URI="#_a16c12d142b3e3434d60"><Transforms><Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/><Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/></Transforms><DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><DigestValue>ZoarzUtEtX8zcJFNX1ZhiKtGUq8rNUlYUjYR1EHTKto=</DigestValue></Reference></SignedInfo><SignatureValue>cKT84cLR4o1u/Y3vTaSvqPyz1jy44CaUzaaiN2Hr1oT2hYfsXG0hOQsDxicmQGJ/NPhlDruMzd1zSegBxNOe0Xkn2RcUMl/qhQCy7by/S8vX7EwulhDByWCaMguwrb2SWWiMFPS+Pb60BokTpp5hnx9gR3ie1TeNz377bZvCTY3Iy0Ag3fcRUS0f0xZ41IeaVTdQ/ZVG65aMiyBDhxN+w2uygkXCsXLu1svT9+pT3SOPXXVTIyAiD10MS4goiMRAZstAwi04MrqQ1FA6YbEJjMFDkubNgZh/9m0zoW8IFndbg7zNrz2tRc58JQhETE69OLDAWrTB5+0b+Ypxy8gvVQ==</SignatureValue><KeyInfo><X509Data><X509Certificate>MIICfjCCAWYCCQD3t5kVTY1+tTANBgkqhkiG9w0BAQsFADAAMCAXDTIzMDMyNTEwMTI1OFoYDzMwMjIwNzI2MTAxMjU4WjAAMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA58fyl7XaFFrWQlVBFivFzoQKyZA0JULpY1cTLG+peDdj2T4masQM+ajMTiSHg1lTwDTN9EMyAcekLDa5ZAd8i46Z+bK52S4eEel3mPrVXYHxnisrq2RPGytL2xD2JCDHfRg5FoVoyGbXt9A1TyX8971JdKL4+UG3oGjt00EA6SSnhNPO45kA/VZzJMaewY3ssSbwYcDrMGnVjZblJQ7856CA2z7l+WMbfxzECMrIEmzd7Ye/QJJchxRiaazV64IQEYAtE/FVoMhNWEHQJrcViIXMYYXl0ZmTWyFZ8SDqajM++WZGTVt+MSGarfoph9UWlam8Ttd1eUwWHhjimeVabQIDAQABMA0GCSqGSIb3DQEBCwUAA4IBAQA95QL8Fpc2+5xsbSBi0hSVB4BYiAv540iYEyczHyf9im+H13EaaoCmnORmYRLoneQhMqw55KqjVVBb5qRLTJ2BMTrx4NWE/YnZ5vSgwef2QHtgy96AWOYAcRT6EMbf5FMmS43+HniTnW+HylkxvgqY9dlE0mP0sT6DCZTf0T7iX+XY6GEeC8gcpIx1zNUH+Y5exBCIb496tzJlBlpaZXEc9uIUOQdja5W++iRdTfCk5fvTxMAr4VwEmJH4lYplhexmokh2X2nP1pVGd4/hxGfbJIuBoH5qbfwKy6BoGOD5tdO4rr52RIK+mDij7vj1+G/D8cMCxKaMeduURCliJSeQ</X509Certificate></X509Data></KeyInfo></Signature><samlp:Status><samlp:StatusCode Value="urn:oasis:names:tc:SAML:2.0:status:Success"/></samlp:Status><saml:Assertion xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion" Version="2.0" ID="_nvYgPUYKkMLz1C7Qrd2HVaiyAB3mb9PA" IssueInstant="2023-03-25T13:39:42.225Z"><saml:Issuer>urn:example:idp</saml:Issuer><Signature xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo><CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/><SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"/><Reference URI="#_nvYgPUYKkMLz1C7Qrd2HVaiyAB3mb9PA"><Transforms><Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/><Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/></Transforms><DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><DigestValue>Kp/uEFvqMbUpXf8uFZj2VmAZ66KeqY5f3DUDDx3Uugo=</DigestValue></Reference></SignedInfo><SignatureValue>FF/lkDLl6qMSnCi0DGvJSjROK35b1ZflLmf57jYohVLxt+U/ol3j7Fp5UMG7pJdlxgmpqV8yCj6eTQ2jMz/5z+R34GzBxAN+t2okMCU5bsmIdTN5HRO3Xh1jPrMJrorn42jpsXNuL6Qki9ZQ9pHvqL+lQ1xoTrcw+ylaPUzLTr+cK7FgiwTYo6/zAZ/Ua3XjS9cmkU0YxGgMLRT1hWHERBOhBrpFtCj517QiCf7tl9lfNbQP+yrMtXva61M9qUoxBzj12bK7iOe1dXr/isQHdcra3oV9Abye9bfQIpLKEKNnQmBeaqonGtDr7vSoHVaFyxLyjuSEPaO2IxunYe6hkQ==</SignatureValue><KeyInfo><X509Data><X509Certificate>MIICfjCCAWYCCQD3t5kVTY1+tTANBgkqhkiG9w0BAQsFADAAMCAXDTIzMDMyNTEwMTI1OFoYDzMwMjIwNzI2MTAxMjU4WjAAMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA58fyl7XaFFrWQlVBFivFzoQKyZA0JULpY1cTLG+peDdj2T4masQM+ajMTiSHg1lTwDTN9EMyAcekLDa5ZAd8i46Z+bK52S4eEel3mPrVXYHxnisrq2RPGytL2xD2JCDHfRg5FoVoyGbXt9A1TyX8971JdKL4+UG3oGjt00EA6SSnhNPO45kA/VZzJMaewY3ssSbwYcDrMGnVjZblJQ7856CA2z7l+WMbfxzECMrIEmzd7Ye/QJJchxRiaazV64IQEYAtE/FVoMhNWEHQJrcViIXMYYXl0ZmTWyFZ8SDqajM++WZGTVt+MSGarfoph9UWlam8Ttd1eUwWHhjimeVabQIDAQABMA0GCSqGSIb3DQEBCwUAA4IBAQA95QL8Fpc2+5xsbSBi0hSVB4BYiAv540iYEyczHyf9im+H13EaaoCmnORmYRLoneQhMqw55KqjVVBb5qRLTJ2BMTrx4NWE/YnZ5vSgwef2QHtgy96AWOYAcRT6EMbf5FMmS43+HniTnW+HylkxvgqY9dlE0mP0sT6DCZTf0T7iX+XY6GEeC8gcpIx1zNUH+Y5exBCIb496tzJlBlpaZXEc9uIUOQdja5W++iRdTfCk5fvTxMAr4VwEmJH4lYplhexmokh2X2nP1pVGd4/hxGfbJIuBoH5qbfwKy6BoGOD5tdO4rr52RIK+mDij7vj1+G/D8cMCxKaMeduURCliJSeQ</X509Certificate></X509Data></KeyInfo></Signature><saml:Subject><saml:NameID Format="urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress">saml.jackson@example.com</saml:NameID><saml:SubjectConfirmation Method="urn:oasis:names:tc:SAML:2.0:cm:bearer"><saml:SubjectConfirmationData NotOnOrAfter="2023-03-25T14:39:42.225Z" Recipient="https://leafac--macbook.local/saml/development/assertion-consumer-service" InResponseTo="_494b0421-6735-4dc5-88c9-3b1c64d8d615"/></saml:SubjectConfirmation></saml:Subject><saml:Conditions NotBefore="2023-03-25T13:39:42.225Z" NotOnOrAfter="2023-03-25T14:39:42.225Z"><saml:AudienceRestriction><saml:Audience>https://leafac--macbook.local/saml/development/metadata</saml:Audience></saml:AudienceRestriction></saml:Conditions><saml:AuthnStatement AuthnInstant="2023-03-25T13:39:42.225Z" SessionIndex="430178925"><saml:AuthnContext><saml:AuthnContextClassRef>urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport</saml:AuthnContextClassRef></saml:AuthnContext></saml:AuthnStatement><saml:AttributeStatement xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><saml:Attribute Name="firstName" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:basic"><saml:AttributeValue xsi:type="xs:string">Saml</saml:AttributeValue></saml:Attribute><saml:Attribute Name="lastName" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:basic"><saml:AttributeValue xsi:type="xs:string">Jackson</saml:AttributeValue></saml:Attribute><saml:Attribute Name="displayName" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:basic"><saml:AttributeValue xsi:type="xs:string">saml jackson</saml:AttributeValue></saml:Attribute><saml:Attribute Name="email" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:basic"><saml:AttributeValue xsi:type="xs:string">saml.jackson@example.com</saml:AttributeValue></saml:Attribute><saml:Attribute Name="mobilePhone" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:basic"><saml:AttributeValue xsi:type="xs:string">+1-415-555-5141</saml:AttributeValue></saml:Attribute><saml:Attribute Name="groups" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:basic"><saml:AttributeValue xsi:type="xs:string">Simple IdP Users</saml:AttributeValue><saml:AttributeValue xsi:type="xs:string"> West Coast Users</saml:AttributeValue><saml:AttributeValue xsi:type="xs:string"> Cloud Users</saml:AttributeValue></saml:Attribute><saml:Attribute Name="userType" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:basic"><saml:AttributeValue xsi:type="xs:string">Admin</saml:AttributeValue></saml:Attribute></saml:AttributeStatement></saml:Assertion></samlp:Response>',
+  extract: {
+    conditions: {
+      notBefore: '2023-03-25T13:39:42.225Z',
+      notOnOrAfter: '2023-03-25T14:39:42.225Z'
+    },
+    response: {
+      id: '_a16c12d142b3e3434d60',
+      inResponseTo: '_494b0421-6735-4dc5-88c9-3b1c64d8d615',
+      issueInstant: '2023-03-25T13:39:42.251Z',
+      destination: 'https://leafac--macbook.local/saml/development/assertion-consumer-service'
+    },
+    audience: 'https://leafac--macbook.local/saml/development/metadata',
+    issuer: 'urn:example:idp',
+    nameID: 'saml.jackson@example.com',
+    sessionIndex: {
+      authnInstant: '2023-03-25T13:39:42.225Z',
+      sessionIndex: '430178925'
+    },
+    attributes: {
+      firstName: 'Saml',
+      lastName: 'Jackson',
+      displayName: 'saml jackson',
+      email: 'saml.jackson@example.com',
+      mobilePhone: '+1-415-555-5141',
+      groups: [Array],
+      userType: 'Admin'
+    }
+  }
+}
+
+
+
+
+
+
+
+
 
 (async () => {
   const { SAML } = require("@node-saml/node-saml");

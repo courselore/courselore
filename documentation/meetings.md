@@ -1,6 +1,24 @@
 # Meetings
 
 <details>
+<summary>2023-03-25</summary>
+
+- How to show SAML to the user?
+- When creating account, do we ask for a password?
+  - Do we allow them to create a password after the fact?
+  - Administrator backdoor?
+- Allow for sign-in initiated by identity provider?
+- Example of Hopkins request and response?
+- System administrator configuration (use text file)
+- Multiple providers
+- Sign out
+  - Initiated in Courselore: Sign out of Courselore only (leaving you signed in to the identity provider) or single sign out?
+  - Initiated elsewhere: Do we sign out of Courselore as well?
+- How do you prevent, for example, Hopkins from providing the identity for `someone@another-university.edu`, forging their way into Courselore? Should we limit the authority of identity providers to a set of domains?
+
+</details>
+
+<details>
 <summary>2023-03-18</summary>
 
 - Deployed polls

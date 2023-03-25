@@ -1952,7 +1952,21 @@ export default async (application: Application): Promise<void> => {
           "post",
           request
         );
-      console.log(samlResponse);
+      // if (
+      //   typeof samlResponse.extract?.conditions?.notBefore !== "string" ||
+      //   !application.web.locals.helpers.isDate(
+      //     samlResponse.extract.conditions.notBefore
+      //   ) ||
+      //   new Date().getTime() <
+      //     new Date(samlResponse.extract.conditions.notOnOrAfter).getTime() ||
+      //   typeof samlResponse.extract?.conditions?.notOnOrAfter !== "string" ||
+      //   !application.web.locals.helpers.isDate(
+      //     samlResponse.extract.conditions.notOnOrAfter
+      //   ) ||
+      //   new Date(samlResponse.extract.conditions.notOnOrAfter).getTime() <=
+      //     new Date().getTime()
+      // )
+      //   return next("Validation");
 
       response.end("SIGNED-IN :)");
     })
