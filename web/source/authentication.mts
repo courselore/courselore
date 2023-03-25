@@ -1898,6 +1898,25 @@ export default async (application: Application): Promise<void> => {
       .send(samlInstance.serviceProvider.getMetadata());
   });
 
+  application.web.get<
+    { samlIdentifier: string },
+    HTML,
+    {},
+    {},
+    Application["web"]["locals"]["ResponseLocals"]["LiveConnection"]
+  >("/saml/:samlIdentifier/sign-in", (request, response, next) => {
+    const samlInstance = saml[request.params.samlIdentifier];
+    if (samlInstance === undefined) return next();
+
+    return response.redirect(
+      303,
+      samlInstance.serviceProvider.createLoginRequest(
+        samlInstance.identityProvider,
+        "redirect"
+      ).context
+    );
+  });
+
   application.web.post<
     { samlIdentifier: string },
     any,
