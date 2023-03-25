@@ -201,6 +201,7 @@ if (await node.isExecuted(import.meta.url)) {
           workerEvents: express() as any,
         } as Application;
 
+        application.configuration.saml ??= {};
         application.configuration.environment ??= "production";
         application.configuration.demonstration ??=
           application.configuration.environment !== "production";
@@ -418,6 +419,28 @@ if (await node.isExecuted(import.meta.url)) {
                   `,
                 },
               },
+              ...(application.configuration.environment === "development"
+                ? [
+                    {
+                      file: "saml-idp",
+                      arguments: [
+                        "--key",
+                        "data/keys/saml--identity-provider.key",
+                        "--cert",
+                        "data/keys/saml--identity-provider.crt",
+                        "--audience",
+                        "",
+                        "--acs",
+                        "",
+                      ],
+                      options: {
+                        preferLocal: true,
+                        stdout: "ignore",
+                        stderr: "ignore",
+                      },
+                    },
+                  ]
+                : []),
             ])
               (async () => {
                 while (restartChildProcesses) {

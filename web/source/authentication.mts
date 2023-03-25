@@ -9,6 +9,9 @@ import javascript from "@leafac/javascript";
 import cryptoRandomString from "crypto-random-string";
 import argon2 from "argon2";
 import lodash from "lodash";
+import samlify from "samlify";
+import * as samlifyNodeXmllint from "@authenio/samlify-node-xmllint";
+samlify.setSchemaValidator(samlifyNodeXmllint);
 import { Application } from "./index.mjs";
 
 export type ApplicationAuthentication = {
@@ -1863,4 +1866,84 @@ export default async (application: Application): Promise<void> => {
       )
       .redirect(303, `https://${application.configuration.hostname}/`);
   });
+
+  // const saml = application.configuration.saml.map();
+
+  const identityProvider = samlify.IdentityProvider({
+    metadata: `
+    <EntityDescriptor xmlns="urn:oasis:names:tc:SAML:2.0:metadata" entityID="urn:example:idp">
+<IDPSSODescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
+<KeyDescriptor use="signing">
+<KeyInfo xmlns="http://www.w3.org/2000/09/xmldsig#">
+<X509Data>
+<X509Certificate>
+MIICfjCCAWYCCQDoNH5opQJWtzANBgkqhkiG9w0BAQsFADAAMCAXDTIzMDMyNDE1MTg1MloYDzMwMjIwNzI1MTUxODUyWjAAMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAuu/JeLMoB2xFk2STF55/HrWlz+LnuXG88liNmifmpfiuAMYXGX4AhDAVzUz69APnpG/pThJy6WRqwUEsm1s/EdV4J2yJTIn/JDyUV5wtV30yLwMZ+Gc/7TujK5SgF8F/jbH5ZNGazbnM3bKHWJ1ogEx2kHSQ1VgV76sOXNn3crJWQ17NHp6VVBIu/rUwIDzfw7ij4XzABPHb2q87XHuqqerRFD1hDhn/Tik2kipIHpXM9GP1kbVPOyyLx4j2whAoWqQ8czAXwMyzMIzApjMEpV7+OXwJmDXA0Uegl860PxMf8zEydnRDGK3lxD3/MP1RQYvmdoZ5PthdbhL5m+dE6wIDAQABMA0GCSqGSIb3DQEBCwUAA4IBAQACd5CwwvH7Ae2qC3Mh7p1LsUl4X5Z9fEa1SeSuFComoAIDDh+b0ekfdjCoSLRplkUcc/lczv+sP1BH7KgrPRWzkyVB/rbrY3BNzmcR+EXBDA8gWoc87ISfJ+w249be50q5ngh13zsjiUXuCKoa5dkcLZGnl6g4Wri8cZqFwgTo+bBahNpfW8jHlfrA0Lx5I8tSxvW5TuTNMcyzbdx1fHyXfU/X2QgEHWZxNOcnHnE/zrZfgUTP/CAIWQ3lpjCsxWFnGymu0GiWJ46Ed6/CdhjqCpfzIX8vh//HauSlH0oXrv+oZrh3RK07MuDFZiJkqk3YUIEwA29CR73+Azry/ixd
+</X509Certificate>
+</X509Data>
+</KeyInfo>
+</KeyDescriptor>
+<NameIDFormat>
+urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress
+</NameIDFormat>
+<NameIDFormat>
+urn:oasis:names:tc:SAML:2.0:nameid-format:persistent
+</NameIDFormat>
+<NameIDFormat>
+urn:oasis:names:tc:SAML:2.0:nameid-format:transient
+</NameIDFormat>
+<SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="http://localhost:7000/saml/sso"/>
+<SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="http://localhost:7000/saml/sso"/>
+<Attribute xmlns="urn:oasis:names:tc:SAML:2.0:assertion" Name="firstName" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri" FriendlyName="First Name"/>
+<Attribute xmlns="urn:oasis:names:tc:SAML:2.0:assertion" Name="lastName" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri" FriendlyName="Last Name"/>
+<Attribute xmlns="urn:oasis:names:tc:SAML:2.0:assertion" Name="displayName" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri" FriendlyName="Display Name"/>
+<Attribute xmlns="urn:oasis:names:tc:SAML:2.0:assertion" Name="email" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri" FriendlyName="E-Mail Address"/>
+<Attribute xmlns="urn:oasis:names:tc:SAML:2.0:assertion" Name="mobilePhone" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri" FriendlyName="Mobile Phone"/>
+<Attribute xmlns="urn:oasis:names:tc:SAML:2.0:assertion" Name="groups" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri" FriendlyName="Groups"/>
+<Attribute xmlns="urn:oasis:names:tc:SAML:2.0:assertion" Name="userType" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri" FriendlyName="User Type"/>
+</IDPSSODescriptor>
+</EntityDescriptor>
+    `,
+  });
+
+  const serviceProvider = samlify.ServiceProvider({
+    entityID: `https://${application.configuration.hostname}/saml/metadata`,
+  });
+
+  application.web.get<
+    {},
+    HTML,
+    {},
+    {},
+    Application["web"]["locals"]["ResponseLocals"]["LiveConnection"]
+  >("/saml/metadata", (request, response) => {
+    response.contentType("application/xml").send(
+      application.web.locals.layouts.partial({
+        request,
+        response,
+        body: serviceProvider.getMetadata(),
+      })
+    );
+  });
+
+  application.web.post<
+    {},
+    HTML,
+    {
+      SAMLResponse: string;
+      RelayState: string;
+    },
+    {},
+    Application["web"]["locals"]["ResponseLocals"]["LiveConnection"]
+  >(
+    "/saml/assertion-consumer-service",
+    asyncHandler(async (request, response) => {
+      const samlResponse = await serviceProvider.parseLoginResponse(
+        identityProvider,
+        "post",
+        request
+      );
+      console.log(samlResponse);
+      response.end("SIGNED-IN?");
+    })
+  );
 };

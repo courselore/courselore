@@ -11,6 +11,18 @@
 
 **SAML**
 
+- Implementation
+  - Setup testing identity provider
+    - Create keys
+    - Provide information about service provider
+  - Change configurations:
+    - `development.mjs`
+    - `example.mjs`
+    - `courselore.org.mjs`
+  - Create SAML instances
+  - Digest SAML response and sign-in
+  - Initiate sign-in flow with SAML request
+    - Redirect with `RelayState`
 - Testing tools
   - Lightweight
     - **https://github.com/mcguinness/saml-idp**
@@ -38,10 +50,6 @@
   - https://github.com/boxyhq/jackson (OAuth proxy)
   - https://github.com/simov/grant (OAuth)
   - https://github.com/ianstormtaylor/permit (for APIs)
-- Implementation
-  - Digest SAML response and sign-in
-  - Initiate sign-in flow with SAML request
-    - Redirect with `RelayState`
 - Examples
   - https://www.gradescope.com/saml
   - https://cs280fall20.github.io/jhu-sso/index.html

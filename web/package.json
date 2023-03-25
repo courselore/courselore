@@ -33,6 +33,7 @@
     "node": ">=19"
   },
   "dependencies": {
+    "@authenio/samlify-node-xmllint": "^2.0.0",
     "@leafac/caddy": "^1.0.5",
     "@leafac/css": "^0.9.6",
     "@leafac/express-async-handler": "^0.0.3",
@@ -70,6 +71,7 @@
     "remark-math": "^5.1.1",
     "remark-parse": "^10.0.1",
     "remark-rehype": "^10.1.0",
+    "samlify": "^2.8.10",
     "sanitize-xml-string": "^1.1.0",
     "semver": "^7.3.8",
     "sharp": "^0.31.3",
@@ -115,6 +117,7 @@
     "postcss": "^8.4.21",
     "postcss-nested": "^6.0.1",
     "prettier": "^2.8.4",
+    "saml-idp": "^1.2.1",
     "scroll-into-view-if-needed": "^3.0.6",
     "shx": "^0.3.4",
     "text-field-edit": "^3.2.0",
