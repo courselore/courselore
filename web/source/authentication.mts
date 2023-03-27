@@ -606,95 +606,143 @@ export default async (application: Application): Promise<void> => {
           </title>
         `,
         body: html`
-          <form
-            method="POST"
-            action="https://${application.configuration
-              .hostname}/sign-in${qs.stringify(
-              {
-                redirect: request.query.redirect,
-                invitation: request.query.invitation,
-              },
-              { addQueryPrefix: true }
-            )}"
-            novalidate
+          $${Object.keys(saml).length > 0
+            ? html`
+                <div
+                  key="sign-in--methods"
+                  css="${css`
+                    display: flex;
+                    flex-direction: column;
+                    gap: var(--space--2);
+                  `}"
+                >
+                  $${Object.entries(saml).map(
+                    ([samlIdentifier, options]) => html`
+                      <a
+                        href="https://${application.configuration
+                          .hostname}/saml/${samlIdentifier}/sign-in"
+                        class="button button--transparent"
+                      >
+                        ${options.name}
+                      </a>
+                    `
+                  )}
+                  <button
+                    class="button button--transparent"
+                    javascript="${javascript`
+                      this.onclick = () => {
+                        document.querySelector('[key="sign-in--methods"]').hidden = true;
+                        document.querySelector('[key="sign-in--email-and-password"]').hidden = false;
+                        document.querySelector('[key="sign-in--email-and-password"] [autofocus]').focus();
+                      }
+                    `}"
+                  >
+                    Email & Password
+                  </button>
+                </div>
+              `
+            : html``}
+
+          <div
+            key="sign-in--email-and-password"
+            $${Object.keys(saml).length > 0 ? html`hidden` : html``}
             css="${css`
               display: flex;
               flex-direction: column;
               gap: var(--space--4);
             `}"
           >
-            <label class="label">
-              <p class="label--text">Email</p>
-              <input
-                type="email"
-                name="email"
-                placeholder="you@educational-institution.edu"
-                value="${typeof request.query.invitation?.email === "string" &&
-                request.query.invitation.email.trim() !== ""
-                  ? request.query.invitation.email
-                  : ""}"
-                required
-                autofocus
-                class="input--text"
-                javascript="${javascript`
-                  this.isModified = false;
-                `}"
-              />
-            </label>
-            <label class="label">
-              <p class="label--text">Password</p>
-              <input
-                type="password"
-                name="password"
-                required
-                class="input--text"
-                javascript="${javascript`
-                  this.isModified = false;
-                `}"
-              />
-            </label>
-            <button class="button button--blue">
-              <i class="bi bi-box-arrow-in-right"></i>
-              Sign in
-            </button>
-          </form>
-          <div
-            css="${css`
-              display: flex;
-              flex-direction: column;
-              gap: var(--space--2);
-            `}"
-          >
-            <p>
-              Don’t have an account?
-              <a
-                href="https://${application.configuration
-                  .hostname}/sign-up${qs.stringify(
-                  {
-                    redirect: request.query.redirect,
-                    invitation: request.query.invitation,
-                  },
-                  { addQueryPrefix: true }
-                )}"
-                class="link"
-                >Sign up</a
-              >.
-            </p>
-            <p>
-              Forgot your password?
-              <a
-                href="https://${application.configuration
-                  .hostname}/reset-password${qs.stringify(
-                  {
-                    redirect: request.query.redirect,
-                    invitation: request.query.invitation,
-                  },
-                  { addQueryPrefix: true }
-                )}"
-                class="link"
-                >Reset password</a
-              >.
-            </p>
+            <form
+              method="POST"
+              action="https://${application.configuration
+                .hostname}/sign-in${qs.stringify(
+                {
+                  redirect: request.query.redirect,
+                  invitation: request.query.invitation,
+                },
+                { addQueryPrefix: true }
+              )}"
+              novalidate
+              css="${css`
+                display: flex;
+                flex-direction: column;
+                gap: var(--space--4);
+              `}"
+            >
+              <label class="label">
+                <p class="label--text">Email</p>
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="you@educational-institution.edu"
+                  value="${typeof request.query.invitation?.email ===
+                    "string" && request.query.invitation.email.trim() !== ""
+                    ? request.query.invitation.email
+                    : ""}"
+                  required
+                  autofocus
+                  class="input--text"
+                  javascript="${javascript`
+                    this.isModified = false;
+                  `}"
+                />
+              </label>
+              <label class="label">
+                <p class="label--text">Password</p>
+                <input
+                  type="password"
+                  name="password"
+                  required
+                  class="input--text"
+                  javascript="${javascript`
+                    this.isModified = false;
+                  `}"
+                />
+              </label>
+              <button class="button button--blue">
+                <i class="bi bi-box-arrow-in-right"></i>
+                Sign in
+              </button>
+            </form>
+
+            <div
+              css="${css`
+                display: flex;
+                flex-direction: column;
+                gap: var(--space--2);
+              `}"
+            >
+              <p>
+                Don’t have an account?
+                <a
+                  href="https://${application.configuration
+                    .hostname}/sign-up${qs.stringify(
+                    {
+                      redirect: request.query.redirect,
+                      invitation: request.query.invitation,
+                    },
+                    { addQueryPrefix: true }
+                  )}"
+                  class="link"
+                  >Sign up</a
+                >.
+              </p>
+              <p>
+                Forgot your password?
+                <a
+                  href="https://${application.configuration
+                    .hostname}/reset-password${qs.stringify(
+                    {
+                      redirect: request.query.redirect,
+                      invitation: request.query.invitation,
+                    },
+                    { addQueryPrefix: true }
+                  )}"
+                  class="link"
+                  >Reset password</a
+                >.
+              </p>
+            </div>
           </div>
         `,
       })
