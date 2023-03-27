@@ -2,10 +2,6 @@
 
 ## Finish
 
-- Review meeting notes.
-
----
-
 - Reviewed up to `63ab51c381cc94ad8b6f0f46acffd7c90a4c1db5`
 - Don’t rely on third-party server for demonstration data of MP4
   - But still have tests of `/content/proxy` for image & video
@@ -20,10 +16,20 @@
 - Implementation
   - Digest SAML response and sign-in
     - Security checks
+      - Should include subdomains (for example, if you configure `@jhu.edu`, it should match `@alumni.jhu.edu` as well)
   - Initiate sign-in flow with SAML request
     - Redirect with `RelayState`
   - User interface
   - Sign up with SAML
+    - When creating account, do we ask for a password? No
+      - Do we allow them to create a password after the fact? Yes
+      - Administrator backdoor? Yes
+    - Upon first SAML sign in, ask for existing account
+      - Help documents
+  - Reset password when you signed up with SAML and don’t have a password to begin with
+  - Sign out
+    - Initiated in Courselore: Sign out of Courselore only (leaving you signed in to the identity provider) or single sign out? Single sign-out.
+    - Initiated elsewhere: Do we sign out of Courselore as well? Yes.
   - Change configurations:
     - `development.mjs`
     - `example.mjs`
@@ -68,6 +74,7 @@
   - https://github.com/authenio/react-samlify/blob/d36744c53f979e376b6380ae5368dd1ed70172a4/middleware/index.ts
     - https://github.com/authenio/react-samlify/blob/d36744c53f979e376b6380ae5368dd1ed70172a4/server.ts
 - Johns Hopkins SAML
+  - Ask Ali for an example of Hopkins request and response
   - Get an alumni account
   - Contact the Enterprise Auth team
     - http://www.it.johnshopkins.edu/services/directoryservices/jhea/Shibboleth/
