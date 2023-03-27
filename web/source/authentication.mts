@@ -1895,19 +1895,20 @@ export default async (application: Application): Promise<void> => {
     )
   );
 
-  application.web.get<
-    { samlIdentifier: string },
-    HTML,
-    {},
-    {},
-    Application["web"]["locals"]["ResponseLocals"]["LiveConnection"]
-  >("/saml/:samlIdentifier/metadata", (request, response, next) => {
-    const samlInstance = saml[request.params.samlIdentifier];
-    if (samlInstance === undefined) return next();
+  type ResponseLocalsSAML =
+    Application["web"]["locals"]["ResponseLocals"]["LiveConnection"] & {
+      saml: (typeof saml)[string];
+    };
 
-    response
-      .contentType("application/xml")
-      .send(samlInstance.serviceProvider.getMetadata());
+  application.web.use<
+    { samlIdentifier: string },
+    any,
+    {},
+    {},
+    ResponseLocalsSAML
+  >("/saml/:samlIdentifier", (request, response, next) => {
+    response.locals.saml = saml[request.params.samlIdentifier];
+    next();
   });
 
   application.web.get<
@@ -1915,15 +1916,33 @@ export default async (application: Application): Promise<void> => {
     HTML,
     {},
     {},
-    Application["web"]["locals"]["ResponseLocals"]["LiveConnection"]
+    ResponseLocalsSAML
+  >("/saml/:samlIdentifier/metadata", (request, response, next) => {
+    if (response.locals.saml === undefined) return next();
+
+    response
+      .contentType("application/xml")
+      .send(response.locals.saml.serviceProvider.getMetadata());
+  });
+
+  application.web.get<
+    { samlIdentifier: string },
+    HTML,
+    {},
+    {},
+    ResponseLocalsSAML &
+      Partial<Application["web"]["locals"]["ResponseLocals"]["SignedIn"]>
   >("/saml/:samlIdentifier/sign-in", (request, response, next) => {
-    const samlInstance = saml[request.params.samlIdentifier];
-    if (samlInstance === undefined) return next();
+    if (
+      response.locals.saml === undefined ||
+      response.locals.user !== undefined
+    )
+      return next();
 
     return response.redirect(
       303,
-      samlInstance.serviceProvider.createLoginRequest(
-        samlInstance.identityProvider,
+      response.locals.saml.serviceProvider.createLoginRequest(
+        response.locals.saml.identityProvider,
         "redirect"
       ).context
     );
@@ -1937,18 +1956,20 @@ export default async (application: Application): Promise<void> => {
       RelayState: string;
     },
     {},
-    Application["web"]["locals"]["ResponseLocals"]["LiveConnection"] &
+    ResponseLocalsSAML &
       Partial<Application["web"]["locals"]["ResponseLocals"]["SignedIn"]>
   >(
     "/saml/:samlIdentifier/assertion-consumer-service",
     asyncHandler(async (request, response, next) => {
-      const samlInstance = saml[request.params.samlIdentifier];
-      if (samlInstance === undefined || response.locals.user !== undefined)
+      if (
+        response.locals.saml === undefined ||
+        response.locals.user !== undefined
+      )
         return next();
 
       const samlResponse =
-        await samlInstance.serviceProvider.parseLoginResponse(
-          samlInstance.identityProvider,
+        await response.locals.saml.serviceProvider.parseLoginResponse(
+          response.locals.saml.identityProvider,
           "post",
           request
         );
