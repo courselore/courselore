@@ -606,10 +606,14 @@ export default async (application: Application): Promise<void> => {
           </title>
         `,
         body: html`
+          <h2 class="heading">
+            <i class="bi bi-box-arrow-in-right"></i>
+            Sign in
+          </h2>
+
           $${Object.keys(saml).length > 0
             ? html`
                 <div
-                  key="sign-in--methods"
                   css="${css`
                     display: flex;
                     flex-direction: column;
@@ -621,25 +625,27 @@ export default async (application: Application): Promise<void> => {
                       <a
                         href="https://${application.configuration
                           .hostname}/saml/${samlIdentifier}/sign-in"
-                        class="button button--transparent"
+                        class="button button--justify-start button--transparent"
                         javascript="${javascript`
                           this.onbeforelivenavigate = () => false;
                         `}"
                       >
+                        <i class="bi bi-bank"></i>
                         ${options.name}
                       </a>
                     `
                   )}
                   <button
-                    class="button button--transparent"
+                    class="button button--justify-start button--transparent"
                     javascript="${javascript`
                       this.onclick = () => {
-                        document.querySelector('[key="sign-in--methods"]').hidden = true;
-                        document.querySelector('[key="sign-in--email-and-password"]').hidden = false;
-                        document.querySelector('[key="sign-in--email-and-password"] [autofocus]').focus();
+                        const signInEmailAndPassword = document.querySelector('[key="sign-in--email-and-password"]');
+                        signInEmailAndPassword.hidden = false;
+                        signInEmailAndPassword.querySelector("[autofocus]").focus();
                       }
                     `}"
                   >
+                    <i class="bi bi-key"></i>
                     Email & Password
                   </button>
                 </div>
@@ -655,6 +661,10 @@ export default async (application: Application): Promise<void> => {
               gap: var(--space--4);
             `}"
           >
+            $${Object.keys(saml).length > 0
+              ? html`<hr class="separator" />`
+              : html``}
+
             <form
               method="POST"
               action="https://${application.configuration
@@ -902,6 +912,11 @@ export default async (application: Application): Promise<void> => {
           </title>
         `,
         body: html`
+          <h2 class="heading">
+            <i class="bi bi-key"></i>
+            Reset Password
+          </h2>
+
           <form
             method="POST"
             action="https://${application.configuration
@@ -942,6 +957,7 @@ export default async (application: Application): Promise<void> => {
               Reset Password
             </button>
           </form>
+
           <div
             css="${css`
               display: flex;
@@ -1187,6 +1203,11 @@ export default async (application: Application): Promise<void> => {
           </title>
         `,
         body: html`
+          <h2 class="heading">
+            <i class="bi bi-key"></i>
+            Reset Password
+          </h2>
+
           <form
             method="POST"
             action="https://${application.configuration
@@ -1408,6 +1429,11 @@ export default async (application: Application): Promise<void> => {
           </title>
         `,
         body: html`
+          <h2 class="heading">
+            <i class="bi bi-person-plus"></i>
+            Sign up
+          </h2>
+
           <form
             method="POST"
             action="https://${application.configuration
@@ -1482,6 +1508,7 @@ export default async (application: Application): Promise<void> => {
               Sign up
             </button>
           </form>
+
           <div
             css="${css`
               display: flex;
