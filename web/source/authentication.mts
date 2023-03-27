@@ -622,6 +622,9 @@ export default async (application: Application): Promise<void> => {
                         href="https://${application.configuration
                           .hostname}/saml/${samlIdentifier}/sign-in"
                         class="button button--transparent"
+                        javascript="${javascript`
+                          this.onbeforelivenavigate = () => false;
+                        `}"
                       >
                         ${options.name}
                       </a>
