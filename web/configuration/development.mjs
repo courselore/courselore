@@ -19,6 +19,7 @@ export default {
   administratorEmail: "development@courselore.org",
   saml: {
     development: {
+      name: "Development SAML Identity Provider",
       domains: ["courselore.org"],
       identityProvider: {
         metadata: `

@@ -62,6 +62,7 @@ export type Application = {
     administratorEmail: string;
     saml: {
       [identifier: string]: {
+        name: string;
         domains: string[];
         identityProvider: Parameters<typeof samlify.IdentityProvider>[0];
         serviceProvider: Parameters<typeof samlify.ServiceProvider>[0];
