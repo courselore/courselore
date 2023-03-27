@@ -17,9 +17,13 @@ export default {
     },
   },
   administratorEmail: "development@courselore.org",
+  staticPaths: [
+    url.fileURLToPath(new URL("./development--static/", import.meta.url)),
+  ],
   saml: {
     development: {
-      name: "Development SAML Identity Provider",
+      // name: "Development SAML Identity Provider",
+      logo: "johns-hopkins.webp",
       domains: ["courselore.org"],
       identityProvider: {
         metadata: `

@@ -60,9 +60,11 @@ export type Application = {
       };
     };
     administratorEmail: string;
+    staticPaths: string[];
     saml: {
       [identifier: string]: {
-        name: string;
+        name?: string;
+        logo?: string;
         domains: string[];
         identityProvider: Parameters<typeof samlify.IdentityProvider>[0];
         serviceProvider: Parameters<typeof samlify.ServiceProvider>[0];
@@ -202,6 +204,7 @@ if (await node.isExecuted(import.meta.url)) {
           workerEvents: express() as any,
         } as Application;
 
+        application.configuration.staticPaths ??= [];
         application.configuration.saml ??= {};
         application.configuration.environment ??= "production";
         application.configuration.demonstration ??=
@@ -359,18 +362,25 @@ if (await node.isExecuted(import.meta.url)) {
                   } {
                       route {
                         import common
-                        route {
-                          root * ${JSON.stringify(
-                            url.fileURLToPath(
-                              new URL("./static/", import.meta.url)
-                            )
-                          )}
-                          @file_exists file
-                          route @file_exists {
-                            header Cache-Control "public, max-age=31536000, immutable"
-                            file_server
-                          }
-                        }
+                        ${[
+                          url.fileURLToPath(
+                            new URL("./static/", import.meta.url)
+                          ),
+                          ...application.configuration.staticPaths,
+                        ]
+                          .map(
+                            (staticPath) => caddyfile`
+                            route {
+                              root * ${JSON.stringify(path.resolve(staticPath))}
+                              @file_exists file
+                              route @file_exists {
+                                header Cache-Control "public, max-age=31536000, immutable"
+                                file_server
+                              }
+                            }
+                          `
+                          )
+                          .join("\n\n")}
                         route /files/* {
                           root * ${JSON.stringify(
                             path.resolve(

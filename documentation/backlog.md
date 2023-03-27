@@ -40,6 +40,12 @@
       - Don’t set for service provider:
         - `entityID`
         - `assertionConsumerService`
+      - Logo should be:
+        - Transparent
+        - WebP
+          - `npx sharp-cli -i johns-hopkins.png -o johns-hopkins.webp`
+        - Immutable
+        - A certain size
     - `courselore.org.mjs`
 - Testing tools
   - Lightweight

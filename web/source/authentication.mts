@@ -630,7 +630,18 @@ export default async (application: Application): Promise<void> => {
                           this.onbeforelivenavigate = () => false;
                         `}"
                       >
-                        <i class="bi bi-bank"></i>
+                        $${typeof options.logo === "string"
+                          ? html`
+                              <img
+                                src="https://${application.configuration
+                                  .hostname}/${options.logo}"
+                                css="${css`
+                                  width: var(--space--3-5);
+                                  height: var(--space--3-5);
+                                `}"
+                              />
+                            `
+                          : html`<i class="bi bi-bank"></i>`}
                         ${options.name}
                       </a>
                     `
