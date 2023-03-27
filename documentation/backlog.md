@@ -22,6 +22,7 @@
     - Redirect with `RelayState`
   - User interface
     - University logo
+      - Dark mode
     - Filter
   - Sign up with SAML
     - When creating account, do we ask for a password? No
