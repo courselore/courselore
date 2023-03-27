@@ -21,6 +21,8 @@
   - Initiate sign-in flow with SAML request
     - Redirect with `RelayState`
   - User interface
+    - University logo
+    - Filter
   - Sign up with SAML
     - When creating account, do we ask for a password? No
       - Do we allow them to create a password after the fact? Yes
