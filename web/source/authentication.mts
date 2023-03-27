@@ -617,7 +617,7 @@ export default async (application: Application): Promise<void> => {
                   css="${css`
                     display: flex;
                     flex-direction: column;
-                    gap: var(--space--2);
+                    gap: var(--space--4);
                   `}"
                 >
                   $${Object.entries(saml).map(
@@ -625,8 +625,16 @@ export default async (application: Application): Promise<void> => {
                       <a
                         href="https://${application.configuration
                           .hostname}/saml/${samlIdentifier}/sign-in"
-                        class="button button--justify-start button--transparent"
+                        class="button button--transparent"
                         javascript="${javascript`
+                          leafac.setTippy({
+                            event,
+                            element: this,
+                            tippyProps: {
+                              content: ${`Sign in with your credentials from ${options.name}.`},
+                            },
+                          });
+
                           this.onbeforelivenavigate = () => false;
                         `}"
                       >
@@ -635,28 +643,36 @@ export default async (application: Application): Promise<void> => {
                               <img
                                 src="https://${application.configuration
                                   .hostname}/${options.logo}"
+                                alt="${options.name}"
+                                class="img"
                                 css="${css`
-                                  width: var(--space--3-5);
-                                  height: var(--space--3-5);
+                                  width: var(--space--36);
+                                  background-color: transparent;
                                 `}"
                               />
                             `
-                          : html`<i class="bi bi-bank"></i>`}
-                        ${options.name}
+                          : html`
+                              <i class="bi bi-bank"></i>
+                              ${options.name}
+                            `}
                       </a>
                     `
                   )}
+
+                  <hr class="separator" />
+
                   <button
-                    class="button button--justify-start button--transparent"
+                    class="button button--justify-start button--blue"
                     javascript="${javascript`
                       this.onclick = () => {
                         const signInEmailAndPassword = document.querySelector('[key="sign-in--email-and-password"]');
                         signInEmailAndPassword.hidden = false;
                         signInEmailAndPassword.querySelector("[autofocus]").focus();
+                        this.hidden = true;
                       }
                     `}"
                   >
-                    <i class="bi bi-key"></i>
+                    <i class="bi bi-key-fill"></i>
                     Email & Password
                   </button>
                 </div>
@@ -672,10 +688,6 @@ export default async (application: Application): Promise<void> => {
               gap: var(--space--4);
             `}"
           >
-            $${Object.keys(saml).length > 0
-              ? html`<hr class="separator" />`
-              : html``}
-
             <form
               method="POST"
               action="https://${application.configuration

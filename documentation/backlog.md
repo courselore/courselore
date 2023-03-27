@@ -47,6 +47,7 @@
         - Immutable
         - A certain size
     - `courselore.org.mjs`
+  - Have a way for system administrators to turn off sign in via email and password
 - Testing tools
   - Lightweight
     - **https://github.com/mcguinness/saml-idp**

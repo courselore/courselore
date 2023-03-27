@@ -63,7 +63,7 @@ export type Application = {
     staticPaths: string[];
     saml: {
       [identifier: string]: {
-        name?: string;
+        name: string;
         logo?: string;
         domains: string[];
         identityProvider: Parameters<typeof samlify.IdentityProvider>[0];
