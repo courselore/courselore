@@ -9,9 +9,7 @@ import javascript from "@leafac/javascript";
 import cryptoRandomString from "crypto-random-string";
 import argon2 from "argon2";
 import lodash from "lodash";
-import samlify from "samlify";
-import * as samlifyNodeXmllint from "@authenio/samlify-node-xmllint";
-samlify.setSchemaValidator(samlifyNodeXmllint);
+import { SAML } from "@node-saml/node-saml";
 import { Application } from "./index.mjs";
 
 export type ApplicationAuthentication = {
@@ -1984,22 +1982,10 @@ export default async (application: Application): Promise<void> => {
         samlIdentifier,
         {
           ...options,
-          identityProvider: samlify.IdentityProvider(options.identityProvider),
-          serviceProvider: samlify.ServiceProvider({
-            ...options.serviceProvider,
-            entityID: `https://${application.configuration.hostname}/saml/${samlIdentifier}/metadata`,
-            assertionConsumerService: [
-              {
-                Binding: samlify.Constants.namespace.binding.post,
-                Location: `https://${application.configuration.hostname}/saml/${samlIdentifier}/assertion-consumer-service`,
-              },
-            ],
-            singleLogoutService: [
-              {
-                Binding: samlify.Constants.namespace.binding.post,
-                Location: `https://${application.configuration.hostname}/saml/${samlIdentifier}/single-logout`,
-              },
-            ],
+          saml: new SAML({
+            ...options.options,
+            issuer: `https://${application.configuration.hostname}/saml/${samlIdentifier}/metadata`,
+            callbackUrl: `https://${application.configuration.hostname}/saml/${samlIdentifier}/sign-in`,
           }),
         },
       ]
@@ -2033,7 +2019,7 @@ export default async (application: Application): Promise<void> => {
 
     response
       .contentType("application/xml")
-      .send(response.locals.saml.serviceProvider.getMetadata());
+      .send(response.locals.saml.saml.generateServiceProviderMetadata());
   });
 
   application.web.get<

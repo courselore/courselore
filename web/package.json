@@ -41,6 +41,7 @@
     "@leafac/javascript": "^0.5.3",
     "@leafac/node": "^0.0.2",
     "@leafac/sqlite": "^4.0.0",
+    "@node-saml/node-saml": "^4.0.3",
     "@sindresorhus/slugify": "^2.2.0",
     "argon2": "^0.30.3",
     "casual": "^1.6.2",
