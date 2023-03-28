@@ -20,10 +20,6 @@
       - Should include subdomains (for example, if you configure `@jhu.edu`, it should match `@alumni.jhu.edu` as well)
   - Initiate sign-in flow with SAML request
     - Redirect with `RelayState`
-  - User interface
-    - University logo
-      - Dark mode
-    - Filter
   - Sign up with SAML
     - When creating account, do we ask for a password? No
       - Do we allow them to create a password after the fact? Yes
@@ -107,6 +103,8 @@
   - Merge
     - Keep both password and SAML
     - Don’t merge, just use email address as the identity anchor
+- Later
+  - When there are many universities, add a filter, similar to Gradescope has, and similar to what we do in the list of enrollments.
 
 ```
 npx saml-idp --key data/keys/saml--identity-provider.key --cert data/keys/saml--identity-provider.crt --audience "https://leafac--macbook.local/saml/metadata" --acs "https://leafac--macbook.local/saml/assertion-consumer-service"
