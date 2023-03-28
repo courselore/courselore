@@ -2029,21 +2029,25 @@ export default async (application: Application): Promise<void> => {
     {},
     ResponseLocalsSAML &
       Partial<Application["web"]["locals"]["ResponseLocals"]["SignedIn"]>
-  >("/saml/:samlIdentifier/sign-in", (request, response, next) => {
-    if (
-      response.locals.saml === undefined ||
-      response.locals.user !== undefined
-    )
-      return next();
+  >(
+    "/saml/:samlIdentifier/sign-in",
+    asyncHandler(async (request, response, next) => {
+      if (
+        response.locals.saml === undefined ||
+        response.locals.user !== undefined
+      )
+        return next();
 
-    return response.redirect(
-      303,
-      response.locals.saml.serviceProvider.createLoginRequest(
-        response.locals.saml.identityProvider,
-        "redirect"
-      ).context
-    );
-  });
+      return response.redirect(
+        303,
+        await response.locals.saml.saml.getAuthorizeUrlAsync(
+          "THE-RELAY-STATE-WITH-A-CUSTOM-URL",
+          undefined,
+          {}
+        )
+      );
+    })
+  );
 
   application.web.post<
     { samlIdentifier: string },
