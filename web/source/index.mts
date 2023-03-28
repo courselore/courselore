@@ -375,7 +375,9 @@ if (await node.isExecuted(import.meta.url)) {
                           .map(
                             (staticPath) => caddyfile`
                             route {
-                              root * ${JSON.stringify(path.resolve(staticPath))}
+                                root * ${JSON.stringify(
+                                  path.resolve(staticPath)
+                                )}
                               @file_exists file
                               route @file_exists {
                                 header Cache-Control "public, max-age=31536000, immutable"
