@@ -23,7 +23,11 @@ export default {
   saml: {
     development: {
       name: "Development SAML Identity Provider",
-      logo: "johns-hopkins.png",
+      logo: {
+        light: "johns-hopkins-university--light--2023-03-28.webp",
+        dark: "johns-hopkins-university--dark--2023-03-28.webp",
+        width: 300,
+      },
       domains: ["courselore.org"],
       identityProvider: {
         metadata: `

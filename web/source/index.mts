@@ -64,7 +64,11 @@ export type Application = {
     saml: {
       [identifier: string]: {
         name: string;
-        logo?: string;
+        logo?: {
+          light: string;
+          dark: string;
+          width: number;
+        };
         domains: string[];
         identityProvider: Parameters<typeof samlify.IdentityProvider>[0];
         serviceProvider: Parameters<typeof samlify.ServiceProvider>[0];

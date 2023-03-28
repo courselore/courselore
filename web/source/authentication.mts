@@ -627,27 +627,35 @@ export default async (application: Application): Promise<void> => {
                           .hostname}/saml/${samlIdentifier}/sign-in"
                         class="button button--transparent"
                         javascript="${javascript`
-                          leafac.setTippy({
-                            event,
-                            element: this,
-                            tippyProps: {
-                              content: ${`Sign in with your credentials from ${options.name}.`},
-                            },
-                          });
-
                           this.onbeforelivenavigate = () => false;
                         `}"
                       >
-                        $${typeof options.logo === "string"
+                        $${options.logo !== undefined
                           ? html`
                               <img
                                 src="https://${application.configuration
-                                  .hostname}/${options.logo}"
+                                  .hostname}/${options.logo.light}"
                                 alt="${options.name}"
-                                class="img"
+                                class="light"
+                                style="width: ${String(
+                                  options.logo.width / 2
+                                )}px;"
                                 css="${css`
-                                  width: var(--space--36);
-                                  background-color: transparent;
+                                  max-width: 100%;
+                                  height: auto;
+                                `}"
+                              />
+                              <img
+                                src="https://${application.configuration
+                                  .hostname}/${options.logo.dark}"
+                                alt="${options.name}"
+                                class="dark"
+                                style="width: ${String(
+                                  options.logo.width / 2
+                                )}px;"
+                                css="${css`
+                                  max-width: 100%;
+                                  height: auto;
                                 `}"
                               />
                             `
