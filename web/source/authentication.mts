@@ -2084,23 +2084,20 @@ export default async (application: Application): Promise<void> => {
           "post",
           request
         );
-      // if (
-      //   typeof samlResponse.extract?.conditions?.notBefore !== "string" ||
-      //   !application.web.locals.helpers.isDate(
-      //     samlResponse.extract.conditions.notBefore
-      //   ) ||
-      //   new Date().getTime() <
-      //     new Date(samlResponse.extract.conditions.notOnOrAfter).getTime() ||
-      //   typeof samlResponse.extract?.conditions?.notOnOrAfter !== "string" ||
-      //   !application.web.locals.helpers.isDate(
-      //     samlResponse.extract.conditions.notOnOrAfter
-      //   ) ||
-      //   new Date(samlResponse.extract.conditions.notOnOrAfter).getTime() <=
-      //     new Date().getTime()
-      // )
-      //   return next("Validation");
 
-      response.end("SIGNED-IN :)");
+      const user = application.database.get<{ id: number; password: string }>(
+        sql`SELECT "id", "password" FROM "users" WHERE "email" = ${samlResponse.extract.nameID}`
+      );
+
+      if (user === undefined) return response.end("TODO: Sign up with SAML");
+
+      application.web.locals.helpers.Session.open({
+        request,
+        response,
+        userId: user.id,
+      });
+
+      response.redirect(303, `https://${application.configuration.hostname}/`);
     })
   );
 };

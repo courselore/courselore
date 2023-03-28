@@ -43,6 +43,7 @@
           - `npx sharp-cli -i johns-hopkins.png -o johns-hopkins.webp`
         - Immutable
         - A certain size around 300px of width
+      - `/saml/<identifier>/metadata`
     - `courselore.org.mjs`
   - Have a way for system administrators to turn off sign in via email and password
 - Testing tools
