@@ -459,6 +459,10 @@ if (await node.isExecuted(import.meta.url)) {
                             import.meta.url
                           )
                         ),
+                        "--issuer",
+                        `http://localhost:9000/metadata`,
+                        "--serviceProviderId",
+                        `https://${application.configuration.hostname}/saml/development/metadata`,
                         "--audience",
                         `https://${application.configuration.hostname}/saml/development/metadata`,
                         "--acs",

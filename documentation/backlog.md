@@ -20,6 +20,7 @@
 - `signatureAlgorithm: 'sha512'`
 - Test with different Name ID Formats
 - Test `cert` without `.replace()`s
+  - Test wrong cert
 
 ---
 
@@ -28,14 +29,13 @@
     - Security checks
       - Should include subdomains (for example, if you configure `@jhu.edu`, it should match `@alumni.jhu.edu` as well)
       - `InResponseTo` (use Cache Provider)
-  - Initiate sign-in flow with SAML request
-    - Redirect with `RelayState`
   - Sign up with SAML
     - When creating account, do we ask for a password? No
       - Do we allow them to create a password after the fact? Yes
       - Administrator backdoor? Yes
     - Upon first SAML sign in, ask for existing account
       - Help documents
+    - Interactions with email verification
   - Reset password when you signed up with SAML and don’t have a password to begin with
   - Sign out
     - Initiated in Courselore: Sign out of Courselore only (leaving you signed in to the identity provider) or single sign out? Single sign-out.
@@ -44,6 +44,7 @@
   - Identity-provider initiated sign in, but you’re already signed in
     - And to a different account.
   - Signatures & encryption on requests & responses
+  - Send an email saying “You signed in from a new device”
   - Change configurations:
     - `development.mjs`
     - `example.mjs`
@@ -114,44 +115,10 @@
     - Given name: req.user.given_name
     - Email: req.user.email
   - URL to redirect to: https://idp.jh.edu/idp/profile/SAML2/Redirect/SSO
-- Issues
-  - Send an email saying “You signed in from a new device”
-  - Sign up via SAML
-    - Interactions with email verification
-  - Merge
-    - Keep both password and SAML
-    - Don’t merge, just use email address as the identity anchor
 - Later
   - When there are many universities, add a filter, similar to Gradescope has, and similar to what we do in the list of enrollments.
 
 ```
-serviceProvider: samlify.ServiceProvider({
-  ...options.serviceProvider,
-  entityID: `https://${application.configuration.hostname}/saml/${samlIdentifier}/metadata`,
-  assertionConsumerService: [
-    {
-      Binding: samlify.Constants.namespace.binding.post,
-      Location: `https://${application.configuration.hostname}/saml/${samlIdentifier}/assertion-consumer-service`,
-    },
-  ],
-  singleLogoutService: [
-    {
-      Binding: samlify.Constants.namespace.binding.post,
-      Location: `https://${application.configuration.hostname}/saml/${samlIdentifier}/single-logout`,
-    },
-  ],
-}),
-
----
-
-npx saml-idp --key data/keys/saml--identity-provider.key --cert data/keys/saml--identity-provider.crt --audience "https://leafac--macbook.local/saml/metadata" --acs "https://leafac--macbook.local/saml/assertion-consumer-service"
-
-npx saml-idp --key data/keys/saml--identity-provider.key --cert data/keys/saml--identity-provider.crt --audience "https://leafac--macbook.local/saml/audience" --acs "https://leafac--macbook.local/saml/assertion-consumer-service" --slo "https://leafac--macbook.local/saml/single-logout"
-
---serviceProviderId
-
----
-
 {
   profile: {
     issuer: 'urn:example:idp',
@@ -182,39 +149,6 @@ npx saml-idp --key data/keys/saml--identity-provider.key --cert data/keys/saml--
     getSamlResponseXml: [Function (anonymous)]
   },
 }
-
----
-
-(async () => {
-  const { SAML } = require("@node-saml/node-saml");
-  const fs = require("fs");
-
-  const saml = new SAML({
-    callbackUrl: "https://leafac--macbook.local/saml/assertion-consumer",
-    issuer: "urn:example:sp",
-    privateKey: fs.readFileSync("./saml--sp.key", "utf-8"),
-    entryPoint: "http://localhost:7000/saml/sso",
-    cert: "MIIDcjCCAloCCQDcIEj4f//X8TANBgkqhkiG9w0BAQsFADB6MQswCQYDVQQGEwJVUzERMA8GA1UECAwITWFyeWxhbmQxEjAQBgNVBAcMCUJhbHRpbW9yZTETMBEGA1UECgwKQ291cnNlbG9yZTEvMC0GA1UEAwwmQ291cnNlbG9yZSBTQU1MIFRlc3QgSWRlbnRpdHkgUHJvdmlkZXIwIBcNMjMwMzIwMTExNjE5WhgPMzAyMjA3MjExMTE2MTlaMHoxCzAJBgNVBAYTAlVTMREwDwYDVQQIDAhNYXJ5bGFuZDESMBAGA1UEBwwJQmFsdGltb3JlMRMwEQYDVQQKDApDb3Vyc2Vsb3JlMS8wLQYDVQQDDCZDb3Vyc2Vsb3JlIFNBTUwgVGVzdCBJZGVudGl0eSBQcm92aWRlcjCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKo8TTCYpIL3eHCNX3qwqIVa1gpP/6tjGartxblDO5NhwrAiu4ni2I02hP+ua9UKKw/NlXOsrgFg8m2yJ6OpwzC/VLUj00jObgcHGyEJ7Aooiy1vdYcxXOONuYu5QzyIAFjHvkF8oEKj1LDKkxFYZNSQLeTAYko0Ph/1thDwAGD2LW8zxveXsYdB+5CnOYdcgcsSfy2T8rIA9i+h7EjtDvHyG8vUcYimcwuti8WEfl8paT9arO/CppnDp5Loa+BxytmskrANLNpLSTfP4tKoqZXzhqNYch9ydBE94kJhnmxB7MF0SI7oRTN2H1lHjumaDVZ4krAtLDRBXYEmBORhYsUCAwEAATANBgkqhkiG9w0BAQsFAAOCAQEAZav76U3BflMlKceMBIUZaAbwDRpPRCfkLQ3zJ/1im2SHI7vjWJPLtT/mW+mTaH9/HJuhokBQkXDh9WUdDoRKD2glCeIN8rOaxJnCthcU+lOf4uCI9z9jsKB02tYkXKBI81ASnd9RLh6RNOpF687YWfEuiwgBN5R951jzJIVjVIyQHAldnNjS6ilJqLDJGBe6/zqbFF/nZXO+N++YXzC9ADyuxbfhVwiKkeRA8ejE9uakonn0M5/qswYt2REpxBaNLZiULevjrnb62RjRR+qX73KwSVYDn47PiyK81I+WpkTekXVeOEc9HGtfG+k8ZRGzOJvguYWP41fnRlVFua2b5A==",
-  });
-
-  // console.log(
-  //   saml.generateServiceProviderMetadata(
-  //     undefined,
-  //     fs.readFileSync("./saml--sp.crt", "utf-8")
-  //   )
-  // );
-
-  // console.log(
-  //   await saml.getAuthorizeFormAsync(
-  //     undefined,
-  //     "http://localhost:7000/saml/sso"
-  //   )
-  // );
-
-  console.log(
-    await saml.getAuthorizeUrlAsync(undefined, "http://localhost:7000/saml/sso")
-  );
-})();
 ```
 
 **DateTimePicker**
