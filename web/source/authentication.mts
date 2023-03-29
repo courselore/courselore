@@ -2079,26 +2079,33 @@ export default async (application: Application): Promise<void> => {
       )
         return next();
 
-      const samlResponse =
-        await response.locals.saml.serviceProvider.parseLoginResponse(
-          response.locals.saml.identityProvider,
-          "post",
-          request
-        );
+      // const samlResponse =
+      //   await response.locals.saml.serviceProvider.parseLoginResponse(
+      //     response.locals.saml.identityProvider,
+      //     "post",
+      //     request
+      //   );
 
-      const user = application.database.get<{ id: number; password: string }>(
-        sql`SELECT "id", "password" FROM "users" WHERE "email" = ${samlResponse.extract.nameID}`
+      // const user = application.database.get<{ id: number; password: string }>(
+      //   sql`SELECT "id", "password" FROM "users" WHERE "email" = ${samlResponse.extract.nameID}`
+      // );
+
+      // if (user === undefined) return response.end("TODO: Sign up with SAML");
+
+      // application.web.locals.helpers.Session.open({
+      //   request,
+      //   response,
+      //   userId: user.id,
+      // });
+
+      response.redirect(
+        303,
+        `https://${application.configuration.hostname}/${
+          typeof request.body.RelayState === "string"
+            ? request.body.RelayState
+            : ""
+        }`
       );
-
-      if (user === undefined) return response.end("TODO: Sign up with SAML");
-
-      application.web.locals.helpers.Session.open({
-        request,
-        response,
-        userId: user.id,
-      });
-
-      response.redirect(303, `https://${application.configuration.hostname}/`);
     })
   );
 };
