@@ -622,7 +622,10 @@ export default async (application: Application): Promise<void> => {
                     ([samlIdentifier, options]) => html`
                       <a
                         href="https://${application.configuration
-                          .hostname}/saml/${samlIdentifier}/sign-in"
+                          .hostname}/saml/${samlIdentifier}/authentication-request${qs.stringify(
+                          { redirect: request.query.redirect },
+                          { addQueryPrefix: true }
+                        )}"
                         class="button ${options.logo === undefined
                           ? "button--justify-start"
                           : ""} button--transparent"
@@ -2032,11 +2035,11 @@ export default async (application: Application): Promise<void> => {
     { samlIdentifier: string },
     HTML,
     {},
-    {},
+    { redirect?: string },
     ResponseLocalsSAML &
       Partial<Application["web"]["locals"]["ResponseLocals"]["SignedIn"]>
   >(
-    "/saml/:samlIdentifier/sign-in",
+    "/saml/:samlIdentifier/authentication-request",
     asyncHandler(async (request, response, next) => {
       if (
         response.locals.saml === undefined ||
@@ -2047,7 +2050,9 @@ export default async (application: Application): Promise<void> => {
       return response.redirect(
         303,
         await response.locals.saml.saml.getAuthorizeUrlAsync(
-          "THE-RELAY-STATE-WITH-A-CUSTOM-URL",
+          typeof request.query.redirect === "string"
+            ? request.query.redirect
+            : "",
           undefined,
           {}
         )
