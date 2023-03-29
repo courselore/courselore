@@ -181,15 +181,9 @@ npx saml-idp --key data/keys/saml--identity-provider.key --cert data/keys/saml--
     getAssertion: [Function (anonymous)],
     getSamlResponseXml: [Function (anonymous)]
   },
-  loggedOut: false
 }
 
-
-
-
-
-
-
+---
 
 (async () => {
   const { SAML } = require("@node-saml/node-saml");

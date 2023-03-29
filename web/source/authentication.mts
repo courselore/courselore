@@ -2079,24 +2079,27 @@ export default async (application: Application): Promise<void> => {
       )
         return next();
 
-      // const samlResponse =
-      //   await response.locals.saml.serviceProvider.parseLoginResponse(
-      //     response.locals.saml.identityProvider,
-      //     "post",
-      //     request
-      //   );
+      const samlResponse =
+        await response.locals.saml.saml.validatePostResponseAsync(request.body);
+      if (
+        samlResponse.profile === null ||
+        samlResponse.profile.nameIDFormat !==
+          "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress" ||
+        samlResponse.loggedOut
+      )
+        return next("Validation");
 
-      // const user = application.database.get<{ id: number; password: string }>(
-      //   sql`SELECT "id", "password" FROM "users" WHERE "email" = ${samlResponse.extract.nameID}`
-      // );
+      const user = application.database.get<{ id: number; password: string }>(
+        sql`SELECT "id", "password" FROM "users" WHERE "email" = ${samlResponse.profile.nameID}`
+      );
 
-      // if (user === undefined) return response.end("TODO: Sign up with SAML");
+      if (user === undefined) return response.end("TODO: Sign up with SAML");
 
-      // application.web.locals.helpers.Session.open({
-      //   request,
-      //   response,
-      //   userId: user.id,
-      // });
+      application.web.locals.helpers.Session.open({
+        request,
+        response,
+        userId: user.id,
+      });
 
       response.redirect(
         303,
