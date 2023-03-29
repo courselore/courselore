@@ -35,6 +35,7 @@ export default {
       domains: ["courselore.org"],
       options: {
         entryPoint: "http://localhost:9000/saml/sso",
+        logoutUrl: "http://localhost:9000/saml/slo",
         cert: await fs.readFile(
           new URL(
             "./development--saml--identity-provider--signing.crt",

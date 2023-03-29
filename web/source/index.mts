@@ -70,7 +70,10 @@ export type Application = {
           width: number;
         };
         domains: string[];
-        options: ConstructorParameters<typeof SAML>[0];
+        options: ConstructorParameters<typeof SAML>[0] & {
+          decryptionCert?: string;
+          signingCert?: string;
+        };
       };
     };
     environment: "production" | "development" | "profile" | "other";

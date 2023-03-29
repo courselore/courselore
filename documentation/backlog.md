@@ -14,10 +14,19 @@
 
 **SAML**
 
+- `privateKey`
+- `decryptionPvk`: optional private key that will be used to attempt to decrypt any encrypted assertions that are received
+- `idpIssuer`: IdP issuer will be validated for incoming Logout Requests/Responses
+- `signatureAlgorithm: 'sha512'`
+- Test with different Name ID Formats
+
+---
+
 - Implementation
   - Digest SAML response and sign-in
     - Security checks
       - Should include subdomains (for example, if you configure `@jhu.edu`, it should match `@alumni.jhu.edu` as well)
+      - `InResponseTo` (use Cache Provider)
   - Initiate sign-in flow with SAML request
     - Redirect with `RelayState`
   - Sign up with SAML
@@ -40,6 +49,10 @@
       - Don’t set for service provider:
         - `issuer`
         - `callbackUrl`
+      - But you may provide:
+        - `decryptionCert`
+        - `signingCert`
+        - (For `generateServiceProviderMetadata()`)
       - Logo should be:
         - Transparent
         - WebP
@@ -158,7 +171,7 @@ identityProvider: {
   `,
 },
 serviceProvider: {
-  
+
   privateKey: await fs.readFile(
     url.fileURLToPath(
       new URL(

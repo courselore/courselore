@@ -609,7 +609,7 @@ export default async (application: Application): Promise<void> => {
             Sign in
           </h2>
 
-          $${Object.keys(saml).length > 0
+          $${Object.keys(samls).length > 0
             ? html`
                 <div
                   css="${css`
@@ -618,7 +618,7 @@ export default async (application: Application): Promise<void> => {
                     gap: var(--space--4);
                   `}"
                 >
-                  $${Object.entries(saml).map(
+                  $${Object.entries(samls).map(
                     ([samlIdentifier, options]) => html`
                       <a
                         href="https://${application.configuration
@@ -689,7 +689,7 @@ export default async (application: Application): Promise<void> => {
 
           <div
             key="sign-in--email-and-password"
-            $${Object.keys(saml).length > 0 ? html`hidden` : html``}
+            $${Object.keys(samls).length > 0 ? html`hidden` : html``}
             css="${css`
               display: flex;
               flex-direction: column;
@@ -1976,7 +1976,7 @@ export default async (application: Application): Promise<void> => {
       .redirect(303, `https://${application.configuration.hostname}/`);
   });
 
-  const saml = Object.fromEntries(
+  const samls = Object.fromEntries(
     Object.entries(application.configuration.saml).map(
       ([samlIdentifier, options]) => [
         samlIdentifier,
@@ -1985,7 +1985,8 @@ export default async (application: Application): Promise<void> => {
           saml: new SAML({
             ...options.options,
             issuer: `https://${application.configuration.hostname}/saml/${samlIdentifier}/metadata`,
-            callbackUrl: `https://${application.configuration.hostname}/saml/${samlIdentifier}/sign-in`,
+            callbackUrl: `https://${application.configuration.hostname}/saml/${samlIdentifier}/assertion-consumer-service`,
+            logoutCallbackUrl: `https://${application.configuration.hostname}/saml/${samlIdentifier}/single-logout-service`,
           }),
         },
       ]
@@ -1994,7 +1995,7 @@ export default async (application: Application): Promise<void> => {
 
   type ResponseLocalsSAML =
     Application["web"]["locals"]["ResponseLocals"]["LiveConnection"] & {
-      saml: (typeof saml)[string];
+      saml: (typeof samls)[string];
     };
 
   application.web.use<
@@ -2004,7 +2005,7 @@ export default async (application: Application): Promise<void> => {
     {},
     ResponseLocalsSAML
   >("/saml/:samlIdentifier", (request, response, next) => {
-    response.locals.saml = saml[request.params.samlIdentifier];
+    response.locals.saml = samls[request.params.samlIdentifier];
     next();
   });
 
@@ -2019,7 +2020,12 @@ export default async (application: Application): Promise<void> => {
 
     response
       .contentType("application/xml")
-      .send(response.locals.saml.saml.generateServiceProviderMetadata());
+      .send(
+        response.locals.saml.saml.generateServiceProviderMetadata(
+          response.locals.saml.options.decryptionCert ?? null,
+          response.locals.saml.options.signingCert ?? null
+        )
+      );
   });
 
   application.web.get<
