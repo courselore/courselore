@@ -468,7 +468,7 @@ if (await node.isExecuted(import.meta.url)) {
                         "--acs",
                         `https://${application.configuration.hostname}/saml/development/assertion-consumer-service`,
                         "--slo",
-                        `https://${application.configuration.hostname}/saml/development/single-logout`,
+                        `https://${application.configuration.hostname}/saml/development/single-logout-service`,
                       ],
                       options: {
                         preferLocal: true,

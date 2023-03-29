@@ -2111,4 +2111,31 @@ export default async (application: Application): Promise<void> => {
       );
     })
   );
+
+  application.web.post<
+    { samlIdentifier: string },
+    any,
+    {
+      SAMLResponse: string;
+      RelayState: string;
+    },
+    {},
+    ResponseLocalsSAML &
+      Partial<Application["web"]["locals"]["ResponseLocals"]["SignedIn"]>
+  >(
+    "/saml/:samlIdentifier/single-logout-service",
+    asyncHandler(async (request, response, next) => {
+      if (
+        response.locals.saml === undefined ||
+        response.locals.user === undefined
+      )
+        return next();
+
+      const samlResponse =
+        await response.locals.saml.saml.validatePostResponseAsync(request.body);
+      console.log(samlResponse);
+
+      response.end("TODO: Sign out");
+    })
+  );
 };
