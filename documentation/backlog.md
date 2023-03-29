@@ -19,6 +19,7 @@
 - `idpIssuer`: IdP issuer will be validated for incoming Logout Requests/Responses
 - `signatureAlgorithm: 'sha512'`
 - Test with different Name ID Formats
+- Test `cert` without `.replace()`s
 
 ---
 
