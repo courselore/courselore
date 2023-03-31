@@ -455,6 +455,21 @@ if (await node.isExecuted(import.meta.url)) {
                         `https://${application.configuration.hostname}/saml/development/assertion-consumer-service`,
                         "--slo",
                         `https://${application.configuration.hostname}/saml/development/single-logout-service`,
+                        "--encryptAssertion",
+                        "--encryptionCert",
+                        url.fileURLToPath(
+                          new URL(
+                            "../configuration/development--saml--service-provider--encryption.crt",
+                            import.meta.url
+                          )
+                        ),
+                        "--encryptionPublicKey",
+                        url.fileURLToPath(
+                          new URL(
+                            "../configuration/development--saml--service-provider--encryption.pub",
+                            import.meta.url
+                          )
+                        ),
                         "--key",
                         url.fileURLToPath(
                           new URL(
