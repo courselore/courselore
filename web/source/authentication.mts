@@ -2079,9 +2079,11 @@ export default async (application: Application): Promise<void> => {
       )
         return next();
 
-      const samlResponse =
-        await response.locals.saml.saml.validatePostResponseAsync(request.body);
+      const samlResponse = await response.locals.saml.saml
+        .validatePostResponseAsync(request.body)
+        .catch(() => undefined);
       if (
+        samlResponse === undefined ||
         samlResponse.profile === null ||
         samlResponse.profile.nameIDFormat !==
           "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress" ||

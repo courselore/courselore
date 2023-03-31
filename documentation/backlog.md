@@ -6,7 +6,6 @@
 
 **SAML**
 
-- Have a `try/catch` block around SAML response validation.
 - Test with different Name ID Formats
 
 ---
