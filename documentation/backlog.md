@@ -102,6 +102,8 @@
     - Given name: req.user.given_name
     - Email: req.user.email
   - URL to redirect to: https://idp.jh.edu/idp/profile/SAML2/Redirect/SSO
+- Swarthmore
+  - https://sid.swarthmore.edu/idp/shibboleth
 - Later
   - When there are many universities, add a filter, similar to Gradescope has, and similar to what we do in the list of enrollments.
 
