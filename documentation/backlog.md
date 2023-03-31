@@ -9,7 +9,6 @@
 - Implementation
   - Digest SAML response and sign-in
     - Security checks
-      - Should include subdomains (for example, if you configure `@jhu.edu`, it should match `@alumni.jhu.edu` as well)
       - `InResponseTo` (use Cache Provider)
   - Sign up with SAML
     - When creating account, do we ask for a password? No
