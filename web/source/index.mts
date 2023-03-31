@@ -456,6 +456,13 @@ if (await node.isExecuted(import.meta.url)) {
                         "--slo",
                         `https://${application.configuration.hostname}/saml/development/single-logout-service`,
                         "--encryptAssertion",
+                        "--configFile",
+                        url.fileURLToPath(
+                          new URL(
+                            "../configuration/development--saml--identity-provider--saml-idp.cjs",
+                            import.meta.url
+                          )
+                        ),
                         "--key",
                         url.fileURLToPath(
                           new URL(
