@@ -11,8 +11,6 @@
 - `idpIssuer`: IdP issuer will be validated for incoming Logout Requests/Responses
 - `signatureAlgorithm: 'sha512'`
 - Test with different Name ID Formats
-- Test `cert` without `.replace()`s
-  - Test wrong cert
 - Have a `try/catch` block around SAML response validation.
 
 ---

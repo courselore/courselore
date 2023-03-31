@@ -36,18 +36,13 @@ export default {
       options: {
         entryPoint: "http://localhost:9000/saml/sso",
         logoutUrl: "http://localhost:9000/saml/slo",
-        cert: (
-          await fs.readFile(
-            new URL(
-              "./development--saml--identity-provider--signing.crt",
-              import.meta.url
-            ),
-            "utf-8"
-          )
-        )
-          .replace("-----BEGIN CERTIFICATE-----", "")
-          .replace("-----END CERTIFICATE-----", "")
-          .replace(/\s/g, ""),
+        cert: await fs.readFile(
+          new URL(
+            "./development--saml--identity-provider--signing.crt",
+            import.meta.url
+          ),
+          "utf-8"
+        ),
       },
     },
   },
