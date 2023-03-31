@@ -4,11 +4,6 @@
 
 - Reviewed up to `63ab51c381cc94ad8b6f0f46acffd7c90a4c1db5`
 
----
-
-- Use `node --test` in other projects: look for uses of the `TEST` environment variable
-- Some `setTippy()`s don’t need the `event`, for example, those inside an `.onclick`. In fact, the `event` may be problematic because it’s the `event` in the closure of when the `.onclick` was set, and it’ll be passed down to `morph()` and `execute()`, which may lead to issues.
-
 **SAML**
 
 - `privateKey`
@@ -149,6 +144,11 @@
   },
 }
 ```
+
+---
+
+- Use `node --test` in other projects: look for uses of the `TEST` environment variable
+- Some `setTippy()`s don’t need the `event`, for example, those inside an `.onclick`. In fact, the `event` may be problematic because it’s the `event` in the closure of when the `.onclick` was set, and it’ll be passed down to `morph()` and `execute()`, which may lead to issues.
 
 **DateTimePicker**
 
