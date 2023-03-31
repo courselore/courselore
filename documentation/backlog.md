@@ -6,10 +6,6 @@
 
 **SAML**
 
-- Test with different Name ID Formats
-
----
-
 - Implementation
   - Digest SAML response and sign-in
     - Security checks
@@ -32,7 +28,8 @@
     - And to a different account.
   - Signatures & encryption on requests & responses
   - Send an email saying “You signed in from a new device”
-  - Change configurations:
+  - Different `NameIdFormat`s
+  - Finalize configurations:
     - `development.mjs`
     - `example.mjs`
       - Don’t set for service provider:
