@@ -2085,6 +2085,7 @@ export default async (application: Application): Promise<void> => {
       if (
         samlResponse === undefined ||
         samlResponse.profile === null ||
+        typeof samlResponse.profile.nameID !== "string" ||
         samlResponse.profile.nameIDFormat !==
           "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress" ||
         samlResponse.loggedOut
