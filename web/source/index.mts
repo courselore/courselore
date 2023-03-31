@@ -445,6 +445,16 @@ if (await node.isExecuted(import.meta.url)) {
                       arguments: [
                         "--port",
                         "9000",
+                        "--issuer",
+                        `http://localhost:9000/metadata`,
+                        "--serviceProviderId",
+                        `https://${application.configuration.hostname}/saml/development/metadata`,
+                        "--audience",
+                        `https://${application.configuration.hostname}/saml/development/metadata`,
+                        "--acs",
+                        `https://${application.configuration.hostname}/saml/development/assertion-consumer-service`,
+                        "--slo",
+                        `https://${application.configuration.hostname}/saml/development/single-logout-service`,
                         "--key",
                         url.fileURLToPath(
                           new URL(
@@ -459,16 +469,6 @@ if (await node.isExecuted(import.meta.url)) {
                             import.meta.url
                           )
                         ),
-                        "--issuer",
-                        `http://localhost:9000/metadata`,
-                        "--serviceProviderId",
-                        `https://${application.configuration.hostname}/saml/development/metadata`,
-                        "--audience",
-                        `https://${application.configuration.hostname}/saml/development/metadata`,
-                        "--acs",
-                        `https://${application.configuration.hostname}/saml/development/assertion-consumer-service`,
-                        "--slo",
-                        `https://${application.configuration.hostname}/saml/development/single-logout-service`,
                       ],
                       options: {
                         preferLocal: true,

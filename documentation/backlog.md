@@ -6,12 +6,8 @@
 
 **SAML**
 
-- `privateKey`
-- `decryptionPvk`: optional private key that will be used to attempt to decrypt any encrypted assertions that are received
-- `idpIssuer`: IdP issuer will be validated for incoming Logout Requests/Responses
-- `signatureAlgorithm: 'sha512'`
-- Test with different Name ID Formats
 - Have a `try/catch` block around SAML response validation.
+- Test with different Name ID Formats
 
 ---
 
