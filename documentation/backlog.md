@@ -21,6 +21,7 @@
 - Test with different Name ID Formats
 - Test `cert` without `.replace()`s
   - Test wrong cert
+- Have a `try/catch` block around SAML response validation.
 
 ---
 
