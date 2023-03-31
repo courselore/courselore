@@ -703,11 +703,21 @@ break.
 
 # Animated GIF
 
-[<video src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4"></video>](https://${
+[<video src="https://${
           application.configuration.hostname
-        }/node_modules/fake-avatars/avatars/webp/1.webp)
+        }/demonstration/video.mp4"></video>](https://${
+          application.configuration.hostname
+        }/demonstration/video.mp4)
 
 # Video
+
+<video src="https://${
+          application.configuration.hostname
+        }/demonstration/video.mp4"></video>
+
+# Image/Video Proxy
+
+![Proxied image](https://interactive-examples.mdn.mozilla.net/media/cc0-images/grapefruit-slice-332-332.jpg)
 
 <video src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4"></video>
 

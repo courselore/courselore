@@ -3,8 +3,6 @@
 ## Finish
 
 - Reviewed up to `63ab51c381cc94ad8b6f0f46acffd7c90a4c1db5`
-- Don’t rely on third-party server for demonstration data of MP4
-  - But still have tests of `/content/proxy` for image & video
 - Outlook’s feature of clicking on links may be verifying emails!
 
 ---

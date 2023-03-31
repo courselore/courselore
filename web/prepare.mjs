@@ -222,6 +222,7 @@ for (const source of [
   "./static/apple-touch-icon.png",
   "./static/favicon.ico",
   "./node_modules/fake-avatars/avatars/webp/",
+  "./static/demonstration/",
 ]) {
   const destination = path.join(
     "./build",
