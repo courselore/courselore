@@ -2235,164 +2235,181 @@ export default async (application: Application): Promise<void> => {
                       })()}
                     </div>
 
-                    <div>
-                      <button
-                        class="button button--tight button--tight--inline button--transparent"
-                        javascript="${javascript`
-                          leafac.setTippy({
-                            event,
-                            element: this,
-                            tippyProps: {
-                              touch: false,
-                              content: ${
-                                response.locals.invitations!.length === 0
-                                  ? "Add"
-                                  : `${
-                                      response.locals.invitations!.length
-                                    } pending invitation${
-                                      response.locals.invitations!.length === 1
-                                        ? ""
-                                        : "s"
-                                    }`
-                              },  
-                            },
-                          });
+                    $${typeof response.locals.user.emailVerifiedAt === "string"
+                      ? html`
+                          <div>
+                            <button
+                              class="button button--tight button--tight--inline button--transparent"
+                              javascript="${javascript`
+                                leafac.setTippy({
+                                  event,
+                                  element: this,
+                                  tippyProps: {
+                                    touch: false,
+                                    content: ${
+                                      response.locals.invitations!.length === 0
+                                        ? "Add"
+                                        : `${
+                                            response.locals.invitations!.length
+                                          } pending invitation${
+                                            response.locals.invitations!
+                                              .length === 1
+                                              ? ""
+                                              : "s"
+                                          }`
+                                    },  
+                                  },
+                                });
 
-                          leafac.setTippy({
-                            event,
-                            element: this,
-                            elementProperty: "dropdown",
-                            tippyProps: {
-                              trigger: "click",
-                              interactive: true,
-                              content: ${html`
-                                <div
-                                  css="${css`
-                                    display: flex;
-                                    flex-direction: column;
-                                    gap: var(--space--2);
-                                  `}"
-                                >
-                                  $${response.locals.invitations!.length === 0
-                                    ? html``
-                                    : html`
-                                        <div>
-                                          <h3 class="heading">
+                                leafac.setTippy({
+                                  event,
+                                  element: this,
+                                  elementProperty: "dropdown",
+                                  tippyProps: {
+                                    trigger: "click",
+                                    interactive: true,
+                                    content: ${html`
+                                      <div
+                                        css="${css`
+                                          display: flex;
+                                          flex-direction: column;
+                                          gap: var(--space--2);
+                                        `}"
+                                      >
+                                        $${response.locals.invitations!
+                                          .length === 0
+                                          ? html``
+                                          : html`
+                                              <div>
+                                                <h3 class="heading">
+                                                  <i
+                                                    class="bi bi-journal-arrow-down"
+                                                  ></i>
+                                                  Invitations
+                                                </h3>
+                                                <div class="dropdown--menu">
+                                                  $${response.locals.invitations!.map(
+                                                    (invitation) => html`
+                                                      <a
+                                                        key="invitation--${invitation.reference}"
+                                                        href="https://${application
+                                                          .configuration
+                                                          .hostname}/courses/${invitation
+                                                          .course
+                                                          .reference}/invitations/${invitation.reference}"
+                                                        class="dropdown--menu--item button button--transparent"
+                                                      >
+                                                        $${application.web.locals.partials.course(
+                                                          {
+                                                            request,
+                                                            response,
+                                                            course:
+                                                              invitation.course,
+                                                            tight: true,
+                                                          }
+                                                        )}
+                                                      </a>
+                                                    `
+                                                  )}
+                                                </div>
+                                              </div>
+                                              <hr class="dropdown--separator" />
+                                            `}
+                                        <div class="dropdown--menu">
+                                          <button
+                                            class="dropdown--menu--item button button--transparent"
+                                            javascript="${javascript`
+                                              leafac.setTippy({
+                                                event,
+                                                element: this,
+                                                tippyProps: {
+                                                  trigger: "click",
+                                                  content: "To enroll in an existing course you either have to follow an invitation link or be invited via email. Contact your course staff for more information.",
+                                                },
+                                              });
+                                            `}"
+                                          >
                                             <i
                                               class="bi bi-journal-arrow-down"
                                             ></i>
-                                            Invitations
-                                          </h3>
-                                          <div class="dropdown--menu">
-                                            $${response.locals.invitations!.map(
-                                              (invitation) => html`
+                                            Enroll in an Existing Course
+                                          </button>
+                                          $${application.web.locals.helpers.mayCreateCourses(
+                                            {
+                                              request: requestSignedIn,
+                                              response: responseSignedIn,
+                                            }
+                                          )
+                                            ? html`
                                                 <a
-                                                  key="invitation--${invitation.reference}"
                                                   href="https://${application
                                                     .configuration
-                                                    .hostname}/courses/${invitation
-                                                    .course
-                                                    .reference}/invitations/${invitation.reference}"
+                                                    .hostname}/courses/new"
                                                   class="dropdown--menu--item button button--transparent"
                                                 >
-                                                  $${application.web.locals.partials.course(
-                                                    {
-                                                      request,
-                                                      response,
-                                                      course: invitation.course,
-                                                      tight: true,
-                                                    }
-                                                  )}
+                                                  <i
+                                                    class="bi bi-journal-plus"
+                                                  ></i>
+                                                  Create a New Course
                                                 </a>
                                               `
-                                            )}
-                                          </div>
+                                            : html``}
                                         </div>
-                                        <hr class="dropdown--separator" />
-                                      `}
-                                  <div class="dropdown--menu">
-                                    <button
-                                      class="dropdown--menu--item button button--transparent"
-                                      javascript="${javascript`
-                                        leafac.setTippy({
-                                          event,
-                                          element: this,
-                                          tippyProps: {
-                                            trigger: "click",
-                                            content: "To enroll in an existing course you either have to follow an invitation link or be invited via email. Contact your course staff for more information.",
-                                          },
-                                        });
-                                      `}"
-                                    >
-                                      <i class="bi bi-journal-arrow-down"></i>
-                                      Enroll in an Existing Course
-                                    </button>
-                                    $${application.web.locals.helpers.mayCreateCourses(
-                                      {
-                                        request: requestSignedIn,
-                                        response: responseSignedIn,
-                                      }
-                                    )
-                                      ? html`
-                                          <a
-                                            href="https://${application
-                                              .configuration
-                                              .hostname}/courses/new"
-                                            class="dropdown--menu--item button button--transparent"
-                                          >
-                                            <i class="bi bi-journal-plus"></i>
-                                            Create a New Course
-                                          </a>
-                                        `
-                                      : html``}
-                                  </div>
-                                </div>
-                              `},  
-                            },
-                          });
-                        `}"
-                      >
-                        <div
-                          css="${css`
-                            display: grid;
-                            & > * {
-                              grid-area: 1 / 1;
-                            }
-                          `}"
-                        >
-                          <div
-                            css="${css`
-                              font-size: var(--font-size--xl);
-                              line-height: var(--line-height--xl);
-                              font-weight: var(--font-weight--bold);
-                              padding: var(--space--0) var(--space--1);
-                              display: flex;
-                              justify-content: center;
-                              align-items: center;
-                            `}"
-                          >
-                            +
-                          </div>
-                          $${response.locals.invitations!.length === 0
-                            ? html``
-                            : html`
+                                      </div>
+                                    `},  
+                                  },
+                                });
+                              `}"
+                            >
+                              <div
+                                css="${css`
+                                  display: grid;
+                                  & > * {
+                                    grid-area: 1 / 1;
+                                  }
+                                `}"
+                              >
                                 <div
                                   css="${css`
-                                    background-color: var(--color--rose--500);
-                                    @media (prefers-color-scheme: dark) {
-                                      background-color: var(--color--rose--600);
-                                    }
-                                    width: var(--space--1-5);
-                                    height: var(--space--1-5);
-                                    border-radius: var(--border-radius--circle);
-                                    justify-self: end;
-                                    transform: translateY(50%);
+                                    font-size: var(--font-size--xl);
+                                    line-height: var(--line-height--xl);
+                                    font-weight: var(--font-weight--bold);
+                                    padding: var(--space--0) var(--space--1);
+                                    display: flex;
+                                    justify-content: center;
+                                    align-items: center;
                                   `}"
-                                ></div>
-                              `}
-                        </div>
-                      </button>
-                    </div>
+                                >
+                                  +
+                                </div>
+                                $${response.locals.invitations!.length === 0
+                                  ? html``
+                                  : html`
+                                      <div
+                                        css="${css`
+                                          background-color: var(
+                                            --color--rose--500
+                                          );
+                                          @media (prefers-color-scheme: dark) {
+                                            background-color: var(
+                                              --color--rose--600
+                                            );
+                                          }
+                                          width: var(--space--1-5);
+                                          height: var(--space--1-5);
+                                          border-radius: var(
+                                            --border-radius--circle
+                                          );
+                                          justify-self: end;
+                                          transform: translateY(50%);
+                                        `}"
+                                      ></div>
+                                    `}
+                              </div>
+                            </button>
+                          </div>
+                        `
+                      : html``}
 
                     <div>
                       <button
@@ -2441,8 +2458,10 @@ export default async (application: Application): Promise<void> => {
 
                                   <hr class="dropdown--separator" />
 
-                                  $${response.locals.user.systemRole ===
-                                  "administrator"
+                                  $${typeof response.locals.user
+                                    .emailVerifiedAt === "string" &&
+                                  response.locals.user.systemRole ===
+                                    "administrator"
                                     ? html`
                                         <div class="dropdown--menu">
                                           <a
@@ -2463,14 +2482,20 @@ export default async (application: Application): Promise<void> => {
                                     : html``}
 
                                   <div class="dropdown--menu">
-                                    <a
-                                      class="dropdown--menu--item button button--transparent"
-                                      href="https://${application.configuration
-                                        .hostname}/settings"
-                                    >
-                                      <i class="bi bi-sliders"></i>
-                                      User Settings
-                                    </a>
+                                    $${typeof response.locals.user
+                                      .emailVerifiedAt === "string"
+                                      ? html`
+                                          <a
+                                            class="dropdown--menu--item button button--transparent"
+                                            href="https://${application
+                                              .configuration.hostname}/settings"
+                                          >
+                                            <i class="bi bi-sliders"></i>
+                                            User Settings
+                                          </a>
+                                        `
+                                      : html``}
+
                                     <form
                                       method="DELETE"
                                       action="https://${application

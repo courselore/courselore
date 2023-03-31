@@ -60,7 +60,7 @@ export default async (application: Application): Promise<void> => {
               )}"
             >
               Didn’t receive the email? Already checked your spam inbox?
-              <button class="link">Resend</button>
+              <button class="link">Resend</button>.
             </form>
 
             <hr class="separator" />
@@ -75,8 +75,8 @@ export default async (application: Application): Promise<void> => {
                   };
               `}"
               >
-                Update email
-              </button>
+                Update email</button
+              >.
             </p>
 
             <form
@@ -192,7 +192,7 @@ export default async (application: Application): Promise<void> => {
                         )}"
                         class="link"
                         >Verify email</a
-                      >
+                      >.
                     </p>
                   `;
                 })()
