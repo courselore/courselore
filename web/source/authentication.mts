@@ -9,7 +9,7 @@ import javascript from "@leafac/javascript";
 import cryptoRandomString from "crypto-random-string";
 import argon2 from "argon2";
 import lodash from "lodash";
-import { SAML } from "@node-saml/node-saml";
+import * as saml from "@node-saml/node-saml";
 import { Application } from "./index.mjs";
 
 export type ApplicationAuthentication = {
@@ -1985,11 +1985,91 @@ export default async (application: Application): Promise<void> => {
         samlIdentifier,
         {
           ...options,
-          saml: new SAML({
+          saml: new saml.SAML({
             ...options.options,
             issuer: `https://${application.configuration.hostname}/saml/${samlIdentifier}/metadata`,
             callbackUrl: `https://${application.configuration.hostname}/saml/${samlIdentifier}/assertion-consumer-service`,
             logoutCallbackUrl: `https://${application.configuration.hostname}/saml/${samlIdentifier}/single-logout-service`,
+            // validateInResponseTo: saml.ValidateInResponseTo.ifPresent,
+            // cacheProvider: {
+            //   saveAsync: async (key, value) => {
+            //     application.database.run(
+            //       sql`
+            //         DELETE FROM "samlCache"
+            //         WHERE
+            //           "createdAt" < ${new Date(
+            //             new Date().getTime() - 8 * 60 * 60 * 1000
+            //           ).toISOString()} AND
+            //           "key" = ${key}
+            //       `
+            //     );
+
+            //     if (
+            //       application.database.get<{}>(
+            //         sql`
+            //           SELECT TRUE FROM "samlCache" WHERE "key" = ${key}
+            //         `
+            //       ) !== undefined
+            //     )
+            //       return null;
+
+            //     const cacheItem = application.database.get<{
+            //       createdAt: string;
+            //       value: string;
+            //     }>(
+            //       sql`
+            //         SELECT * FROM "samlCache" WHERE "id" = ${
+            //           application.database.run(
+            //             sql`
+            //               INSERT INTO "samlCache" (
+            //                 "createdAt",
+            //                 "key",
+            //                 "value"
+            //               )
+            //               VALUES (
+            //                 ${new Date().toISOString()},
+            //                 ${key},
+            //                 ${value}
+            //               )
+            //             `
+            //           ).lastInsertRowid
+            //         }
+            //       `
+            //     )!;
+
+            //     return {
+            //       createdAt: new Date(cacheItem.createdAt).getTime(),
+            //       value: cacheItem.value,
+            //     };
+            //   },
+
+            //   getAsync: async (key) => {
+            //     return (
+            //       application.database.get<{ value: string }>(
+            //         sql`
+            //         SELECT "value" FROM "samlCache" WHERE "key" = ${key}
+            //       `
+            //       )?.value ?? null
+            //     );
+            //   },
+
+            //   removeAsync: async (key) => {
+            //     const value =
+            //       application.database.get<{ value: string }>(
+            //         sql`
+            //         SELECT "value" FROM "samlCache" WHERE "key" = ${key}
+            //       `
+            //       )?.value ?? null;
+
+            //     application.database.run(
+            //       sql`
+            //         DELETE FROM "samlCache" WHERE "key" = ${key}
+            //       `
+            //     );
+
+            //     return value;
+            //   },
+            // },
           }),
         },
       ]

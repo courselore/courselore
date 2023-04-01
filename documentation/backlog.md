@@ -10,6 +10,7 @@
   - Digest SAML response and sign-in
     - Security checks
       - `InResponseTo` (use Cache Provider)
+      - Cleanup `"samlCache"` periodically
   - Sign up with SAML
     - When creating account, do we ask for a password? No
       - Do we allow them to create a password after the fact? Yes

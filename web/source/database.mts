@@ -1806,7 +1806,16 @@ export default async (application: Application): Promise<void> => {
           END;
         `
       );
-    }
+    },
+
+    sql`
+      CREATE TABLE "samlCache" (
+        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+        "createdAt" TEXT NOT NULL,
+        "key" TEXT NOT NULL UNIQUE,
+        "value" TEXT NOT NULL
+      );
+    `
   );
 
   application.database.run(
