@@ -8,8 +8,9 @@
 
 - Implementation
   - Sign up with SAML
-    - If `NameID` is email
-    - If `NameID` is **not** email
+    - We’ll trust the `nameIDFormat` coming from the identity provider
+    - If `nameIDFormat` **is** `emailAddress`
+    - If `nameIDFormat` **is not** `emailAddress`
       - Store in database: `samlIdentifier`, `nameIDFormat`, and `nameID`
     - Prefill name & email on sign-up form
     - When creating account, do we ask for a password? No
