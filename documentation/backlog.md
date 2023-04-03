@@ -7,8 +7,6 @@
 **SAML**
 
 - Implementation
-  - User interface
-    - Don’t hide email/password behind button
   - Digest SAML response and sign-in
     - Security checks
       - `InResponseTo` (use Cache Provider)

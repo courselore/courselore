@@ -703,7 +703,27 @@ export default async (application: Application): Promise<void> => {
 
           $${Object.keys(samls).length > 0
             ? html`
-                <hr class="separator" />
+                <div
+                  css="${css`
+                    display: flex;
+                    gap: var(--space--4);
+                    align-items: center;
+                  `}"
+                >
+                  <hr
+                    class="separator"
+                    css="${css`
+                      flex: 1;
+                    `}"
+                  />
+                  <span class="heading">Or</span>
+                  <hr
+                    class="separator"
+                    css="${css`
+                      flex: 1;
+                    `}"
+                  />
+                </div>
 
                 $${Object.entries(samls).map(
                   ([samlIdentifier, options]) => html`
@@ -713,9 +733,7 @@ export default async (application: Application): Promise<void> => {
                         { redirect: request.query.redirect },
                         { addQueryPrefix: true }
                       )}"
-                      class="button ${options.logo === undefined
-                        ? "button--justify-start"
-                        : ""} button--transparent"
+                      class="button button--transparent"
                       javascript="${javascript`
                         this.onbeforelivenavigate = () => false;
                       `}"
