@@ -10,7 +10,8 @@
   - Sign up with SAML
     - If `NameID` is email
     - If `NameID` is **not** email
-      - Store in database the `samlIdentifier` and the `NameID`
+      - Store in database: `samlIdentifier`, `nameIDFormat`, and `nameID`
+    - Prefill name & email on sign-up form
     - When creating account, do we ask for a password? No
       - Make password optional in database
       - Do we allow them to create a password after the fact? Yes
