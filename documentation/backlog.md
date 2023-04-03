@@ -12,6 +12,7 @@
     - If `NameID` is **not** email
       - Store in database the `samlIdentifier` and the `NameID`
     - When creating account, do we ask for a password? No
+      - Make password optional in database
       - Do we allow them to create a password after the fact? Yes
       - Administrator backdoor? Yes
     - Upon first SAML sign in, ask for existing account
