@@ -2172,8 +2172,6 @@ export default async (application: Application): Promise<void> => {
         samlResponse === undefined ||
         samlResponse.profile === null ||
         typeof samlResponse.profile.nameID !== "string" ||
-        samlResponse.profile.nameIDFormat !==
-          "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress" ||
         samlResponse.profile.nameID.match(
           application.web.locals.helpers.emailRegExp
         ) === null ||
@@ -2182,6 +2180,8 @@ export default async (application: Application): Promise<void> => {
             samlResponse.profile!.nameID.endsWith(`@${domain}`) ||
             samlResponse.profile!.nameID.endsWith(`.${domain}`)
         ) ||
+        samlResponse.profile.nameIDFormat !==
+          "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress" ||
         samlResponse.loggedOut
       )
         return next("Validation");
