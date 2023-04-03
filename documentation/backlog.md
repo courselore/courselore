@@ -11,7 +11,6 @@
     - If `NameID` is email
     - If `NameID` is **not** email
       - Store in database the `samlIdentifier` and the `NameID`
-      - Are **we** rejecting this case, or is the library?
     - When creating account, do we ask for a password? No
       - Do we allow them to create a password after the fact? Yes
       - Administrator backdoor? Yes
