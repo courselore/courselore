@@ -1981,11 +1981,9 @@ export default async (application: Application): Promise<void> => {
               saveAsync: async (key, value) => {
                 application.database.run(
                   sql`
-                    DELETE FROM "samlCache"
-                    WHERE
-                      "createdAt" < ${new Date(
-                        new Date().getTime() - 60 * 60 * 1000
-                      ).toISOString()}
+                    DELETE FROM "samlCache" WHERE "createdAt" < ${new Date(
+                      new Date().getTime() - 60 * 60 * 1000
+                    ).toISOString()}
                   `
                 );
 
@@ -2031,11 +2029,9 @@ export default async (application: Application): Promise<void> => {
               getAsync: async (key) => {
                 application.database.run(
                   sql`
-                    DELETE FROM "samlCache"
-                    WHERE
-                      "createdAt" < ${new Date(
-                        new Date().getTime() - 60 * 60 * 1000
-                      ).toISOString()}
+                    DELETE FROM "samlCache" WHERE "createdAt" < ${new Date(
+                      new Date().getTime() - 60 * 60 * 1000
+                    ).toISOString()}
                   `
                 );
 
@@ -2064,6 +2060,27 @@ export default async (application: Application): Promise<void> => {
       ]
     )
   );
+
+  if (application.process.number === 0)
+    application.workerEvents.once("start", async () => {
+      while (true) {
+        application.log("CLEAN EXPIRED ‘samlCache’", "STARTING...");
+        application.database.run(
+          sql`
+            DELETE FROM "samlCache"
+            WHERE "createdAt" < ${new Date(
+              Date.now() - 60 * 60 * 1000
+            ).toISOString()}
+          `
+        );
+        application.log("CLEAN EXPIRED ‘samlCache’", "FINISHED");
+        await timers.setTimeout(
+          60 * 60 * 1000 + Math.random() * 5 * 60 * 1000,
+          undefined,
+          { ref: false }
+        );
+      }
+    });
 
   type ResponseLocalsSAML =
     Application["web"]["locals"]["ResponseLocals"]["LiveConnection"] & {

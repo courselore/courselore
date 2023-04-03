@@ -1815,6 +1815,8 @@ export default async (application: Application): Promise<void> => {
         "key" TEXT NOT NULL UNIQUE,
         "value" TEXT NOT NULL
       );
+
+      CREATE INDEX "samlCacheCreatedAtIndex" ON "samlCache" ("createdAt");
     `
   );
 
