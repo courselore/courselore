@@ -7,6 +7,8 @@
 **SAML**
 
 - Implementation
+  - User interface
+    - Don’t hide email/password behind button
   - Digest SAML response and sign-in
     - Security checks
       - `InResponseTo` (use Cache Provider)
@@ -99,6 +101,7 @@
     - Given name: req.user.given_name
     - Email: req.user.email
   - URL to redirect to: https://idp.jh.edu/idp/profile/SAML2/Redirect/SSO
+  - Example of service provider metadata https://glacial-plateau-47269.herokuapp.com/jhu/metadata
 - Swarthmore
   - https://sid.swarthmore.edu/idp/shibboleth
 - Later
@@ -520,6 +523,7 @@ const extractStaticCSSAndJavaScript = () => ({
   - On email verification page, add a sign out button.
 - Give visual indication on dragging-and-dropping avatar on `/settings/profile`.
 - Extra fields:
+  - Display name.
   - Pronoun.
   - A short audio with the name’s pronunciation.
 
@@ -1225,6 +1229,8 @@ const { app, BrowserWindow } = require("electron");
       - Identity management (for example, correlate a student in Courselore with a student in Blackboard).
         - Automatically remove from the course the people who dropped.
       - Submitting grades (for example, if discussing a topic in Courselore is part of an assignment, add that grade to the gradebook in Blackboard).
+      - https://piazza.com/product/lti
+      - https://www.edu-apps.org/code.html
 
 ## User Interface
 
@@ -1246,7 +1252,10 @@ const { app, BrowserWindow } = require("electron");
 
 - Translate to other languages: 30 languages.
 - Test screen readers.
+  - https://piazza.com/product/accessibility
 - Test contrast.
+- FERPA
+  - https://piazza.com/legal/ferpa
 
 ## Live-Navigation
 

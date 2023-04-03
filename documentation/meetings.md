@@ -1,6 +1,19 @@
 # Meetings
 
 <details>
+<summary>2023-04-01</summary>
+
+- SAML: Setup keys, relay state, user interface, and so forth.
+- Other
+  - Don’t hide email/password behind button
+  - First/last/display name OR full/display name
+  - Pronoun
+  - How to pronounce your name
+  - LTI
+
+</details>
+
+<details>
 <summary>2023-03-25</summary>
 
 **SAML**
