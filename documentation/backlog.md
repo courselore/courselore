@@ -7,7 +7,6 @@
 **SAML**
 
 - Implementation
-  - Digest SAML response and sign-in
   - Sign up with SAML
     - When creating account, do we ask for a password? No
       - Do we allow them to create a password after the fact? Yes
@@ -101,6 +100,7 @@
   - https://sid.swarthmore.edu/idp/shibboleth
 - Later
   - When there are many universities, add a filter, similar to Gradescope has, and similar to what we do in the list of enrollments.
+  - Add support for `HTTP-POST` in addition to `HTTP-Redirect`
 
 ---
 
