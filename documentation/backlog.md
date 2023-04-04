@@ -10,6 +10,9 @@
   - Sign up with SAML
     - If `nameIDFormat` **is** `emailAddress`
       - Create a session without a user, but with an email address instead
+      - It doesn’t have to use a cookie, it can be a short-lived session as a `hidden` field in the form, similar to password reset.
+      - Make invitation name & email work as well?
+      - If identity provider included a name, don’t even show a form, just create the user.
     - If `nameIDFormat` **is not** `emailAddress`
       - Store in database: `samlIdentifier`, `nameIDFormat`, and `nameID`
     - Prefill name & email on sign-up form

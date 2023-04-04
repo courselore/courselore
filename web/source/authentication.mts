@@ -2153,7 +2153,7 @@ export default async (application: Application): Promise<void> => {
       SAMLResponse: string;
       RelayState: string;
     },
-    { redirect?: string },
+    { redirect?: string; invitation?: { email?: string; name?: string } },
     ResponseLocalsSAML &
       Partial<Application["web"]["locals"]["ResponseLocals"]["SignedIn"]>
   >(
@@ -2322,7 +2322,9 @@ export default async (application: Application): Promise<void> => {
           application.web.locals.layouts.box({
             request,
             response,
-            head: html`<title>${response.locals.saml.name} · Sign in · Courselore</title>`,
+            head: html`<title>
+              ${response.locals.saml.name} · Sign in · Courselore
+            </title>`,
             body: html`
               <h2 class="heading">
                 <i class="bi bi-box-arrow-in-right"></i>
@@ -2388,7 +2390,9 @@ export default async (application: Application): Promise<void> => {
           application.web.locals.layouts.box({
             request,
             response,
-            head: html`<title>${response.locals.saml.name} · Sign in · Courselore</title>`,
+            head: html`<title>
+              ${response.locals.saml.name} · Sign in · Courselore
+            </title>`,
             body: html`
               <h2 class="heading">
                 <i class="bi bi-box-arrow-in-right"></i>
@@ -2451,8 +2455,8 @@ export default async (application: Application): Promise<void> => {
             response,
             head: html`
               <title>
-              ${response.locals.saml.name} · Sign up · Courselore · Communication Platform for
-                Education
+                ${response.locals.saml.name} · Sign up · Courselore ·
+                Communication Platform for Education
               </title>
             `,
             body: html`
@@ -2496,38 +2500,9 @@ export default async (application: Application): Promise<void> => {
                   <p class="label--text">Email</p>
                   <input
                     type="email"
-                    name="email"
-                    placeholder="you@educational-institution.edu"
-                    value="${typeof request.query.invitation?.email ===
-                      "string" && request.query.invitation.email.trim() !== ""
-                      ? request.query.invitation.email
-                      : ""}"
-                    required
+                    value="${samlResponse.profile.nameID}"
+                    disabled
                     class="input--text"
-                  />
-                </label>
-                <label class="label">
-                  <p class="label--text">Password</p>
-                  <input
-                    type="password"
-                    name="password"
-                    required
-                    minlength="8"
-                    class="input--text"
-                  />
-                </label>
-                <label class="label">
-                  <p class="label--text">Password Confirmation</p>
-                  <input
-                    type="password"
-                    required
-                    class="input--text"
-                    javascript="${javascript`
-                    this.onvalidate = () => {
-                      if (this.value !== this.closest("form").querySelector('[name="password"]').value)
-                        return "Password & Password Confirmation don’t match.";
-                    };
-                  `}"
                   />
                 </label>
                 <button class="button button--blue">
@@ -2535,45 +2510,6 @@ export default async (application: Application): Promise<void> => {
                   Sign up
                 </button>
               </form>
-
-              <div
-                css="${css`
-                  display: flex;
-                  flex-direction: column;
-                  gap: var(--space--2);
-                `}"
-              >
-                <p>
-                  Already have an account account?
-                  <a
-                    href="https://${application.configuration
-                      .hostname}/sign-in${qs.stringify(
-                      {
-                        redirect: request.query.redirect,
-                        invitation: request.query.invitation,
-                      },
-                      { addQueryPrefix: true }
-                    )}"
-                    class="link"
-                    >Sign in</a
-                  >.
-                </p>
-                <p>
-                  Forgot your password?
-                  <a
-                    href="https://${application.configuration
-                      .hostname}/reset-password${qs.stringify(
-                      {
-                        redirect: request.query.redirect,
-                        invitation: request.query.invitation,
-                      },
-                      { addQueryPrefix: true }
-                    )}"
-                    class="link"
-                    >Reset password</a
-                  >.
-                </p>
-              </div>
             `,
           })
         );
