@@ -9,7 +9,9 @@
 - Implementation
   - Sign up with SAML
     - We’ll trust the `nameIDFormat` coming from the identity provider
+      - Have nice error message pages for other `nameIDFormat`s and for `nameID`s whose email address doesn’t match our more strict regular expression
     - If `nameIDFormat` **is** `emailAddress`
+      - Create a session without a user, but with an email address instead
     - If `nameIDFormat` **is not** `emailAddress`
       - Store in database: `samlIdentifier`, `nameIDFormat`, and `nameID`
     - Prefill name & email on sign-up form
@@ -19,6 +21,7 @@
       - Administrator backdoor? Yes
     - Upon first SAML sign in, ask for existing account
       - Help documents
+    - Allow people to disconnect the SAML identity from their account? (As long as they have a password?)
     - Interactions with email verification
   - Reset password when you signed up with SAML and don’t have a password to begin with
   - Sign out
@@ -34,6 +37,7 @@
   - Finalize configurations:
     - `development.mjs`
     - `example.mjs`
+      - The keys must stay the same, because they’ll be stored in the database?
       - Don’t set for service provider:
         - `issuer`
         - `callbackUrl`
