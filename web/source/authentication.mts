@@ -2178,17 +2178,20 @@ export default async (application: Application): Promise<void> => {
           application.web.locals.layouts.box({
             request,
             response,
-            head: html`<title>SAML · Sign in · Courselore</title>`,
+            head: html`<title>
+              ${response.locals.saml.name} · Sign in · Courselore
+            </title>`,
             body: html`
               <h2 class="heading">
                 <i class="bi bi-box-arrow-in-right"></i>
                 Sign in ·
                 <i class="bi bi-bank"></i>
-                SAML
+                ${response.locals.saml.name}
               </h2>
 
               <p>
-                The SAML response given by the identity provider is invalid.
+                The information Courselore received from
+                ${response.locals.saml.name} is invalid.
               </p>
 
               <p>
@@ -2201,6 +2204,9 @@ export default async (application: Application): Promise<void> => {
                     { addQueryPrefix: true }
                   )}"
                   class="link"
+                  javascript="${javascript`
+                    this.onbeforelivenavigate = () => false;
+                  `}"
                   >try again</a
                 >
                 and if the issue persists report to the system administrator at
@@ -2247,20 +2253,22 @@ export default async (application: Application): Promise<void> => {
           application.web.locals.layouts.box({
             request,
             response,
-            head: html`<title>SAML · Sign in · Courselore</title>`,
+            head: html`<title>
+              ${response.locals.saml.name} · Sign in · Courselore
+            </title>`,
             body: html`
               <h2 class="heading">
                 <i class="bi bi-box-arrow-in-right"></i>
                 Sign in ·
                 <i class="bi bi-bank"></i>
-                SAML
+                ${response.locals.saml.name}
               </h2>
 
               <p>
-                The <code class="code">nameIDFormat</code> in the SAML response
-                given by the identity provider is
+                The <code class="code">nameIDFormat</code> in the information
+                that Courselore received from ${response.locals.saml.name} is
                 <code class="code">${samlResponse.profile.nameIDFormat}</code>
-                and currently Courselore supports only
+                and currently Courselore only supports
                 <code class="code"
                   >urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress</code
                 >.
@@ -2314,18 +2322,19 @@ export default async (application: Application): Promise<void> => {
           application.web.locals.layouts.box({
             request,
             response,
-            head: html`<title>SAML · Sign in · Courselore</title>`,
+            head: html`<title>${response.locals.saml.name} · Sign in · Courselore</title>`,
             body: html`
               <h2 class="heading">
                 <i class="bi bi-box-arrow-in-right"></i>
                 Sign in ·
                 <i class="bi bi-bank"></i>
-                SAML
+                ${response.locals.saml.name}
               </h2>
 
               <p>
-                The email address in the SAML response is in a format that
-                Courselore doesn’t currently support.
+                The email address in the information Courselore received from
+                ${response.locals.saml.name} is in a format that Courselore
+                doesn’t support currently.
               </p>
 
               <p>
@@ -2379,18 +2388,19 @@ export default async (application: Application): Promise<void> => {
           application.web.locals.layouts.box({
             request,
             response,
-            head: html`<title>SAML · Sign in · Courselore</title>`,
+            head: html`<title>${response.locals.saml.name} · Sign in · Courselore</title>`,
             body: html`
               <h2 class="heading">
                 <i class="bi bi-box-arrow-in-right"></i>
                 Sign in ·
                 <i class="bi bi-bank"></i>
-                SAML
+                ${response.locals.saml.name}
               </h2>
 
               <p>
-                The email address in the SAML response is for a domain that the
-                identity provider doesn’t support.
+                The email address in the information that Courselore received
+                from ${response.locals.saml.name} is for a domain that isn’t
+                included in the configuration.
               </p>
 
               <p>
@@ -2434,7 +2444,139 @@ export default async (application: Application): Promise<void> => {
         sql`SELECT "id", "password" FROM "users" WHERE "email" = ${samlResponse.profile.nameID}`
       );
 
-      if (user === undefined) return response.end("TODO: Sign up with SAML");
+      if (user === undefined)
+        return response.send(
+          application.web.locals.layouts.box({
+            request,
+            response,
+            head: html`
+              <title>
+              ${response.locals.saml.name} · Sign up · Courselore · Communication Platform for
+                Education
+              </title>
+            `,
+            body: html`
+              <h2 class="heading">
+                <i class="bi bi-person-plus"></i>
+                Sign up ·
+                <i class="bi bi-bank"></i>
+                ${response.locals.saml.name}
+              </h2>
+
+              <form
+                method="POST"
+                action="https://${application.configuration
+                  .hostname}/saml/${request.params
+                  .samlIdentifier}/sign-up${qs.stringify(
+                  { redirect: request.query.redirect },
+                  { addQueryPrefix: true }
+                )}"
+                novalidate
+                css="${css`
+                  display: flex;
+                  flex-direction: column;
+                  gap: var(--space--4);
+                `}"
+              >
+                <label class="label">
+                  <p class="label--text">Name</p>
+                  <input
+                    type="text"
+                    name="name"
+                    value="${typeof request.query.invitation?.name ===
+                      "string" && request.query.invitation.name.trim() !== ""
+                      ? request.query.invitation.name
+                      : ""}"
+                    required
+                    autofocus
+                    class="input--text"
+                  />
+                </label>
+                <label class="label">
+                  <p class="label--text">Email</p>
+                  <input
+                    type="email"
+                    name="email"
+                    placeholder="you@educational-institution.edu"
+                    value="${typeof request.query.invitation?.email ===
+                      "string" && request.query.invitation.email.trim() !== ""
+                      ? request.query.invitation.email
+                      : ""}"
+                    required
+                    class="input--text"
+                  />
+                </label>
+                <label class="label">
+                  <p class="label--text">Password</p>
+                  <input
+                    type="password"
+                    name="password"
+                    required
+                    minlength="8"
+                    class="input--text"
+                  />
+                </label>
+                <label class="label">
+                  <p class="label--text">Password Confirmation</p>
+                  <input
+                    type="password"
+                    required
+                    class="input--text"
+                    javascript="${javascript`
+                    this.onvalidate = () => {
+                      if (this.value !== this.closest("form").querySelector('[name="password"]').value)
+                        return "Password & Password Confirmation don’t match.";
+                    };
+                  `}"
+                  />
+                </label>
+                <button class="button button--blue">
+                  <i class="bi bi-person-plus-fill"></i>
+                  Sign up
+                </button>
+              </form>
+
+              <div
+                css="${css`
+                  display: flex;
+                  flex-direction: column;
+                  gap: var(--space--2);
+                `}"
+              >
+                <p>
+                  Already have an account account?
+                  <a
+                    href="https://${application.configuration
+                      .hostname}/sign-in${qs.stringify(
+                      {
+                        redirect: request.query.redirect,
+                        invitation: request.query.invitation,
+                      },
+                      { addQueryPrefix: true }
+                    )}"
+                    class="link"
+                    >Sign in</a
+                  >.
+                </p>
+                <p>
+                  Forgot your password?
+                  <a
+                    href="https://${application.configuration
+                      .hostname}/reset-password${qs.stringify(
+                      {
+                        redirect: request.query.redirect,
+                        invitation: request.query.invitation,
+                      },
+                      { addQueryPrefix: true }
+                    )}"
+                    class="link"
+                    >Reset password</a
+                  >.
+                </p>
+              </div>
+            `,
+          })
+        );
 
       application.web.locals.helpers.Session.open({
         request,
