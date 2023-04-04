@@ -2153,7 +2153,7 @@ export default async (application: Application): Promise<void> => {
       SAMLResponse: string;
       RelayState: string;
     },
-    {},
+    { redirect?: string },
     ResponseLocalsSAML &
       Partial<Application["web"]["locals"]["ResponseLocals"]["SignedIn"]>
   >(
@@ -2174,7 +2174,70 @@ export default async (application: Application): Promise<void> => {
         samlResponse.profile === null ||
         typeof samlResponse.profile.nameID !== "string"
       )
-        return next("Validation");
+        return response.status(422).send(
+          application.web.locals.layouts.box({
+            request,
+            response,
+            head: html`<title>SAML · Sign in · Courselore</title>`,
+            body: html`
+              <h2 class="heading">
+                <i class="bi bi-box-arrow-in-right"></i>
+                Sign in ·
+                <i class="bi bi-bank"></i>
+                SAML
+              </h2>
+
+              <p>
+                The SAML response given by the identity provider is invalid.
+              </p>
+
+              <p>
+                Please
+                <a
+                  href="https://${application.configuration
+                    .hostname}/saml/${request.params
+                    .samlIdentifier}/authentication-request${qs.stringify(
+                    { redirect: request.query.redirect },
+                    { addQueryPrefix: true }
+                  )}"
+                  class="link"
+                  >try again</a
+                >
+                and if the issue persists report to the system administrator at
+                <a
+                  href="mailto:${application.configuration.administratorEmail}"
+                  target="_blank"
+                  class="link"
+                  >${application.configuration.administratorEmail}</a
+                >.
+              </p>
+
+              <p>
+                For the time being, you may also
+                <a
+                  href="https://${application.configuration
+                    .hostname}/sign-in${qs.stringify(
+                    { redirect: request.query.redirect },
+                    { addQueryPrefix: true }
+                  )}"
+                  class="link"
+                  >sign in</a
+                >
+                or
+                <a
+                  href="https://${application.configuration
+                    .hostname}/sign-up${qs.stringify(
+                    { redirect: request.query.redirect },
+                    { addQueryPrefix: true }
+                  )}"
+                  class="link"
+                  >sign up</a
+                >
+                to Courselore using email and password.
+              </p>
+            `,
+          })
+        );
 
       if (
         samlResponse.profile.nameIDFormat !==
@@ -2194,14 +2257,15 @@ export default async (application: Application): Promise<void> => {
               </h2>
 
               <p>
-                The <code class="code">nameIDFormat</code> in this SAML response
-                is
+                The <code class="code">nameIDFormat</code> in the SAML response
+                given by the identity provider is
                 <code class="code">${samlResponse.profile.nameIDFormat}</code>
                 and currently Courselore supports only
                 <code class="code"
                   >urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress</code
                 >.
               </p>
+
               <p>
                 Please contact the Courselore development team at
                 <a
@@ -2213,16 +2277,25 @@ export default async (application: Application): Promise<void> => {
                 and manifest your interest in adding support for other
                 <code class="code">nameIDFormat</code>s.
               </p>
+
               <p>
                 For the time being, please
                 <a
-                  href="https://${application.configuration.hostname}/sign-in"
+                  href="https://${application.configuration
+                    .hostname}/sign-in${qs.stringify(
+                    { redirect: request.query.redirect },
+                    { addQueryPrefix: true }
+                  )}"
                   class="link"
                   >sign in</a
                 >
                 or
                 <a
-                  href="https://${application.configuration.hostname}/sign-up"
+                  href="https://${application.configuration
+                    .hostname}/sign-up${qs.stringify(
+                    { redirect: request.query.redirect },
+                    { addQueryPrefix: true }
+                  )}"
                   class="link"
                   >sign up</a
                 >
@@ -2237,7 +2310,62 @@ export default async (application: Application): Promise<void> => {
           application.web.locals.helpers.emailRegExp
         ) === null
       )
-        return next("Validation");
+        return response.status(422).send(
+          application.web.locals.layouts.box({
+            request,
+            response,
+            head: html`<title>SAML · Sign in · Courselore</title>`,
+            body: html`
+              <h2 class="heading">
+                <i class="bi bi-box-arrow-in-right"></i>
+                Sign in ·
+                <i class="bi bi-bank"></i>
+                SAML
+              </h2>
+
+              <p>
+                The email address in the SAML response is in a format that
+                Courselore doesn’t currently support.
+              </p>
+
+              <p>
+                Please contact the Courselore development team at
+                <a
+                  href="mailto:development@courselore.org"
+                  target="_blank"
+                  class="link"
+                  >development@courselore.org</a
+                >
+                and manifest your interest in adding support for more email
+                formats.
+              </p>
+
+              <p>
+                For the time being, please
+                <a
+                  href="https://${application.configuration
+                    .hostname}/sign-in${qs.stringify(
+                    { redirect: request.query.redirect },
+                    { addQueryPrefix: true }
+                  )}"
+                  class="link"
+                  >sign in</a
+                >
+                or
+                <a
+                  href="https://${application.configuration
+                    .hostname}/sign-up${qs.stringify(
+                    { redirect: request.query.redirect },
+                    { addQueryPrefix: true }
+                  )}"
+                  class="link"
+                  >sign up</a
+                >
+                to Courselore using email and password.
+              </p>
+            `,
+          })
+        );
 
       if (
         !response.locals.saml.domains.some(
@@ -2247,7 +2375,60 @@ export default async (application: Application): Promise<void> => {
         ) ||
         samlResponse.loggedOut
       )
-        return next("Validation");
+        return response.status(422).send(
+          application.web.locals.layouts.box({
+            request,
+            response,
+            head: html`<title>SAML · Sign in · Courselore</title>`,
+            body: html`
+              <h2 class="heading">
+                <i class="bi bi-box-arrow-in-right"></i>
+                Sign in ·
+                <i class="bi bi-bank"></i>
+                SAML
+              </h2>
+
+              <p>
+                The email address in the SAML response is for a domain that the
+                identity provider doesn’t support.
+              </p>
+
+              <p>
+                Please report to the system administrator at
+                <a
+                  href="mailto:${application.configuration.administratorEmail}"
+                  target="_blank"
+                  class="link"
+                  >${application.configuration.administratorEmail}</a
+                >.
+              </p>
+
+              <p>
+                For the time being, you may
+                <a
+                  href="https://${application.configuration
+                    .hostname}/sign-in${qs.stringify(
+                    { redirect: request.query.redirect },
+                    { addQueryPrefix: true }
+                  )}"
+                  class="link"
+                  >sign in</a
+                >
+                or
+                <a
+                  href="https://${application.configuration
+                    .hostname}/sign-up${qs.stringify(
+                    { redirect: request.query.redirect },
+                    { addQueryPrefix: true }
+                  )}"
+                  class="link"
+                  >sign up</a
+                >
+                to Courselore using email and password.
+              </p>
+            `,
+          })
+        );
 
       const user = application.database.get<{ id: number; password: string }>(
         sql`SELECT "id", "password" FROM "users" WHERE "email" = ${samlResponse.profile.nameID}`
