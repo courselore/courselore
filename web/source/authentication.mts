@@ -2178,7 +2178,61 @@ export default async (application: Application): Promise<void> => {
 
       if (
         samlResponse.profile.nameIDFormat !==
-          "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress" ||
+        "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress"
+      )
+        return response.status(422).send(
+          application.web.locals.layouts.box({
+            request,
+            response,
+            head: html`<title>SAML · Sign in · Courselore</title>`,
+            body: html`
+              <h2 class="heading">
+                <i class="bi bi-box-arrow-in-right"></i>
+                Sign in ·
+                <i class="bi bi-bank"></i>
+                SAML
+              </h2>
+
+              <p>
+                The <code class="code">nameIDFormat</code> in this SAML response
+                is
+                <code class="code">${samlResponse.profile.nameIDFormat}</code>
+                and currently Courselore supports only
+                <code class="code"
+                  >urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress</code
+                >.
+              </p>
+              <p>
+                Please contact the Courselore development team at
+                <a
+                  href="mailto:development@courselore.org"
+                  target="_blank"
+                  class="link"
+                  >development@courselore.org</a
+                >
+                and manifest your interest in adding support for other
+                <code class="code">nameIDFormat</code>s.
+              </p>
+              <p>
+                For the time being, please
+                <a
+                  href="https://${application.configuration.hostname}/sign-in"
+                  class="link"
+                  >sign in</a
+                >
+                or
+                <a
+                  href="https://${application.configuration.hostname}/sign-up"
+                  class="link"
+                  >sign up</a
+                >
+                to Courselore using email and password.
+              </p>
+            `,
+          })
+        );
+
+      if (
         samlResponse.profile.nameID.match(
           application.web.locals.helpers.emailRegExp
         ) === null
