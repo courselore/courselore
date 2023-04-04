@@ -8,8 +8,6 @@
 
 - Implementation
   - Sign up with SAML
-    - We’ll trust the `nameIDFormat` coming from the identity provider
-      - Have nice error message pages for other `nameIDFormat`s and for `nameID`s whose email address doesn’t match our more strict regular expression
     - If `nameIDFormat` **is** `emailAddress`
       - Create a session without a user, but with an email address instead
     - If `nameIDFormat` **is not** `emailAddress`
