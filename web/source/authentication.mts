@@ -22,7 +22,7 @@ export type ApplicationAuthentication = {
             lastSeenOnlineAt: string;
             reference: string;
             email: string;
-            password: string;
+            password: string | null;
             emailVerifiedAt: string | null;
             name: string;
             avatar: string | null;
@@ -374,7 +374,7 @@ export default async (application: Application): Promise<void> => {
       lastSeenOnlineAt: string;
       reference: string;
       email: string;
-      password: string;
+      password: string | null;
       emailVerifiedAt: string | null;
       name: string;
       avatar: string | null;
@@ -563,6 +563,7 @@ export default async (application: Application): Promise<void> => {
   }) =>
     typeof request.body.passwordConfirmation === "string" &&
     request.body.passwordConfirmation.trim() !== "" &&
+    typeof response.locals.user.password === "string" &&
     (await argon2.verify(
       response.locals.user.password,
       request.body.passwordConfirmation
@@ -802,12 +803,18 @@ export default async (application: Application): Promise<void> => {
       )
         return next("Validation");
 
-      const user = application.database.get<{ id: number; password: string }>(
-        sql`SELECT "id", "password" FROM "users" WHERE "email" = ${request.body.email}`
+      const user = application.database.get<{
+        id: number;
+        password: string | null;
+      }>(
+        sql`
+          SELECT "id", "password" FROM "users" WHERE "email" = ${request.body.email}
+        `
       );
 
       if (
         user === undefined ||
+        user.password === null ||
         !(await argon2.verify(user.password, request.body.password))
       ) {
         application.web.locals.helpers.Flash.set({

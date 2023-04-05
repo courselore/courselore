@@ -8,7 +8,6 @@
 
 - Implementation
   - Sign up with SAML
-    - Make password optional in database
     - Create the backend that makes sign up with SAML work.
       - Reuse the existing sign-up route, or create a new one?
     - If identity provider doesn’t provide a name
@@ -29,6 +28,7 @@
       - Insist on administrators having a password
     - Allow people to disconnect the SAML identity from their account? (As long as they have a password?)
     - Interactions with email verification
+    - Revisit uses of `passwordConfirmation`
     - Make invitation name & email work as well?
     - Help pages for people who end up with two accounts.
   - Trying to change your email when you have signed up via SAML and don’t even have a password
