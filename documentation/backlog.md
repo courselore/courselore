@@ -9,8 +9,6 @@
 - Implementation
   - Change names of example data
   - Sign up with SAML
-    - Use the name given by the identity provider.
-      - If identity provider included a name, don’t even show a form, just create the user.
     - Make password optional in database
     - Create the backend that makes sign up with SAML work.
       - Reuse the existing sign-up route, or create a new one?
