@@ -8,6 +8,7 @@
 
 - Implementation
   - Sign up with SAML
+    - Long SAML identity provider name may break the interface
     - If `nameIDFormat` **is** `emailAddress`
       - Create a session without a user, but with an email address instead.
       - Create the backend that makes sign up with SAML work.
