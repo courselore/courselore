@@ -7,7 +7,6 @@
 **SAML**
 
 - Implementation
-  - Change names of example data
   - Sign up with SAML
     - Make password optional in database
     - Create the backend that makes sign up with SAML work.

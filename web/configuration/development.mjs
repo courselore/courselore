@@ -22,7 +22,7 @@ export default {
   ],
   saml: {
     development: {
-      name: "Development SAML Identity Provider",
+      name: "Courselore University",
       ...(process.env.SAML_LOGO === "true"
         ? {
             logo: {
