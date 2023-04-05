@@ -2444,75 +2444,138 @@ export default async (application: Application): Promise<void> => {
           })
         );
 
-      const user = application.database.get<{ id: number; password: string }>(
-        sql`SELECT "id", "password" FROM "users" WHERE "email" = ${samlResponse.profile.nameID}`
+      let user = application.database.get<{ id: number }>(
+        sql`SELECT "id" FROM "users" WHERE "email" = ${samlResponse.profile.nameID}`
       );
 
-      if (user === undefined)
-        return response.send(
-          application.web.locals.layouts.box({
-            request,
-            response,
-            head: html`
-              <title>
-                ${response.locals.saml.name} · Sign up · Courselore ·
-                Communication Platform for Education
-              </title>
-            `,
-            body: html`
-              <h2 class="heading">
-                <i class="bi bi-person-plus"></i>
-                Sign up ·
-                <i class="bi bi-bank"></i>
-                ${response.locals.saml.name}
-              </h2>
+      if (user === undefined) {
+        const userName = response.locals.saml.extractName?.(samlResponse);
+        if (typeof userName !== "string" || userName.trim() === "")
+          return response.send(
+            application.web.locals.layouts.box({
+              request,
+              response,
+              head: html`
+                <title>
+                  ${response.locals.saml.name} · Sign up · Courselore ·
+                  Communication Platform for Education
+                </title>
+              `,
+              body: html`
+                <h2 class="heading">
+                  <i class="bi bi-person-plus"></i>
+                  Sign up ·
+                  <i class="bi bi-bank"></i>
+                  ${response.locals.saml.name}
+                </h2>
 
-              <form
-                method="POST"
-                action="https://${application.configuration
-                  .hostname}/saml/${request.params
-                  .samlIdentifier}/sign-up${qs.stringify(
-                  { redirect: request.query.redirect },
-                  { addQueryPrefix: true }
-                )}"
-                novalidate
-                css="${css`
-                  display: flex;
-                  flex-direction: column;
-                  gap: var(--space--4);
-                `}"
-              >
-                <label class="label">
-                  <p class="label--text">Name</p>
-                  <input
-                    type="text"
-                    name="name"
-                    value="${typeof request.query.invitation?.name ===
-                      "string" && request.query.invitation.name.trim() !== ""
-                      ? request.query.invitation.name
-                      : ""}"
-                    required
-                    autofocus
-                    class="input--text"
-                  />
-                </label>
-                <label class="label">
-                  <p class="label--text">Email</p>
-                  <input
-                    type="email"
-                    value="${samlResponse.profile.nameID}"
-                    disabled
-                    class="input--text"
-                  />
-                </label>
-                <button class="button button--blue">
-                  <i class="bi bi-person-plus-fill"></i>
-                  Sign up
-                </button>
-              </form>
-            `,
-          })
-        );
+                <form
+                  method="POST"
+                  action="https://${application.configuration
+                    .hostname}/saml/${request.params
+                    .samlIdentifier}/sign-up${qs.stringify(
+                    { redirect: request.query.redirect },
+                    { addQueryPrefix: true }
+                  )}"
+                  novalidate
+                  css="${css`
+                    display: flex;
+                    flex-direction: column;
+                    gap: var(--space--4);
+                  `}"
+                >
+                  <label class="label">
+                    <p class="label--text">Name</p>
+                    <input
+                      type="text"
+                      name="name"
+                      value="${typeof request.query.invitation?.name ===
+                        "string" && request.query.invitation.name.trim() !== ""
+                        ? request.query.invitation.name
+                        : ""}"
+                      required
+                      autofocus
+                      class="input--text"
+                    />
+                  </label>
+                  <label class="label">
+                    <p class="label--text">Email</p>
+                    <input
+                      type="email"
+                      value="${samlResponse.profile.nameID}"
+                      disabled
+                      class="input--text"
+                    />
+                  </label>
+                  <button class="button button--blue">
+                    <i class="bi bi-person-plus-fill"></i>
+                    Sign up
+                  </button>
+                </form>
+              `,
+            })
+          );
+
+        user = application.database.get<{ id: number }>(
+          sql`
+            SELECT * FROM "users" WHERE "id" = ${
+              application.database.run(
+                sql`
+                  INSERT INTO "users" (
+                    "createdAt",
+                    "lastSeenOnlineAt",
+                    "reference",
+                    "email",
+                    "password",
+                    "emailVerifiedAt",
+                    "name",
+                    "nameSearch",
+                    "avatarlessBackgroundColor",
+                    "systemRole",
+                    "emailNotificationsForAllMessages",
+                    "emailNotificationsForAllMessagesDigestDeliveredAt",
+                    "emailNotificationsForMentionsAt",
+                    "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt",
+                    "emailNotificationsForMessagesInConversationsYouStartedAt",
+                    "latestNewsVersion"
+                  )
+                  VALUES (
+                    ${new Date().toISOString()},
+                    ${new Date().toISOString()},
+                    ${cryptoRandomString({ length: 20, type: "numeric" })},
+                    ${samlResponse.profile.nameID},
+                    ${null},
+                    ${new Date().toISOString()},
+                    ${userName},
+                    ${html`${userName}`},
+                    ${lodash.sample(
+                      application.web.locals.helpers
+                        .userAvatarlessBackgroundColors
+                    )},
+                    ${
+                      application.configuration.hostname !==
+                        application.addresses.tryHostname &&
+                      application.database.get<{ count: number }>(
+                        sql`
+                          SELECT COUNT(*) AS "count" FROM "users"
+                        `
+                      )!.count === 0
+                        ? "administrator"
+                        : "none"
+                    },
+                    ${"none"},
+                    ${null},
+                    ${new Date().toISOString()},
+                    ${new Date().toISOString()},
+                    ${new Date().toISOString()},
+                    ${application.version}
+                  )
+                `
+              ).lastInsertRowid
+            }
+          `
+        )!;
+      }
 
       application.web.locals.helpers.Session.open({
         request,

@@ -33,6 +33,7 @@ export default {
           }
         : {}),
       domains: ["courselore.org"],
+      extractName: (samlResponse) => samlResponse?.profile?.attributes?.name,
       options: {
         entryPoint: "http://localhost:9000/saml/sso",
         logoutUrl: "http://localhost:9000/saml/slo",

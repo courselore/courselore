@@ -15,7 +15,7 @@ import * as Got from "got";
 import * as node from "@leafac/node";
 import caddyfile from "dedent";
 import dedent from "dedent";
-import { SAML } from "@node-saml/node-saml";
+import * as saml from "@node-saml/node-saml";
 import logging, { ApplicationLogging } from "./logging.mjs";
 import database, { ApplicationDatabase } from "./database.mjs";
 import base, { ApplicationBase } from "./base.mjs";
@@ -70,7 +70,8 @@ export type Application = {
           width: number;
         };
         domains: string[];
-        options: ConstructorParameters<typeof SAML>[0] & {
+        extractName?: (samlResponse: object) => string | undefined;
+        options: ConstructorParameters<typeof saml.SAML>[0] & {
           decryptionCert?: string;
           signingCert?: string;
         };

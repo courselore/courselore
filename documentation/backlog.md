@@ -7,6 +7,7 @@
 **SAML**
 
 - Implementation
+  - Change names of example data
   - Sign up with SAML
     - Use the name given by the identity provider.
       - If identity provider included a name, don’t even show a form, just create the user.
