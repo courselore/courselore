@@ -21,6 +21,7 @@
   - Trying to change your email when you have signed up via SAML and don’t even have a password
   - Sign out
     - Doesn’t work because the POST request from the identity provider doesn’t send the cookie (as it shouldn’t, because we probably set some header or some cookie setting to prevent CSRF)
+      - This also affects the check during sign in via SAML that you aren’t already signed in
     - Initiated in Courselore: Sign out of Courselore only (leaving you signed in to the identity provider) or single sign out? Single sign-out.
     - Initiated elsewhere: Do we sign out of Courselore as well? Yes.
   - Invitations and their links to sign-in/sign-up and prefilled form data.
