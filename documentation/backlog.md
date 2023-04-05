@@ -10,6 +10,14 @@
   - Sign up with SAML
     - Create a session without a user, but with an email address instead.
       - It doesn’t have to use a cookie, it can be a short-lived session as a `hidden` field in the form, similar to password reset.
+        - `sessions`
+          - No, because token is long-lived, sliding, and there’s a foreign key to the `user`
+        - `passwordResets`
+          - No, because there’s a foreign key to the `user` (but the concept o `nonce` is what we want)
+        - `emailVerifications`
+          - No, because there’s a foreign key to the `user` (but the concept o `nonce` is what we want)
+        - `flashes`
+          - Yes
     - Make password optional in database
     - Use the name given by the identity provider.
       - If identity provider included a name, don’t even show a form, just create the user.
