@@ -20,13 +20,9 @@
       - Move help pages near where they’re useful in the codebase, instead of having a dedicated `help.mts` file
   - Trying to change your email when you have signed up via SAML and don’t even have a password
   - Sign out
-    - Doesn’t work because the POST request from the identity provider doesn’t send the cookie (as it shouldn’t, because we probably set some header or some cookie setting to prevent CSRF)
-      - This also affects the check during sign in via SAML that you aren’t already signed in
-      - When creating the SAML request in the first place, is the identity provider receiving the cookies (necessary if they’re already signed in to the identity provider)?
-        - Check `SameSite` on Hopkins & Swarthmore
-        - Check `SameSite` in Passport
-      - Migrate cookies to use `SameSite=none`
+    - `SameSite=none`
       - Reflect on the security implications of using `SameSite=none`
+      - Clean all sessions to force new cookies to use `SameSite=none`?
     - Initiated in Courselore: Sign out of Courselore only (leaving you signed in to the identity provider) or single sign out? Single sign-out.
     - Initiated elsewhere: Do we sign out of Courselore as well? Yes.
   - Invitations and their links to sign-in/sign-up and prefilled form data.
@@ -108,6 +104,7 @@
     - Email: req.user.email
   - URL to redirect to: https://idp.jh.edu/idp/profile/SAML2/Redirect/SSO
   - Example of service provider metadata https://glacial-plateau-47269.herokuapp.com/jhu/metadata
+  - When creating the SAML request in the first place, is the identity provider receiving the cookies (necessary if they’re already signed in to the identity provider)?
 - Swarthmore
   - https://sid.swarthmore.edu/idp/shibboleth
 - Questions to confirm with other people
