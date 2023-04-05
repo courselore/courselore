@@ -2156,10 +2156,7 @@ export default async (application: Application): Promise<void> => {
   application.web.post<
     { samlIdentifier: string },
     any,
-    {
-      SAMLResponse: string;
-      RelayState: string;
-    },
+    { RelayState: string },
     { redirect?: string; invitation?: { email?: string; name?: string } },
     ResponseLocalsSAML &
       Partial<Application["web"]["locals"]["ResponseLocals"]["SignedIn"]>
@@ -2604,10 +2601,7 @@ export default async (application: Application): Promise<void> => {
   application.web.post<
     { samlIdentifier: string },
     any,
-    {
-      SAMLResponse: string;
-      RelayState: string;
-    },
+    {},
     {},
     ResponseLocalsSAML &
       Partial<Application["web"]["locals"]["ResponseLocals"]["SignedIn"]>
@@ -2615,14 +2609,14 @@ export default async (application: Application): Promise<void> => {
     "/saml/:samlIdentifier/single-logout-service",
     asyncHandler(async (request, response, next) => {
       if (
-        response.locals.saml === undefined ||
-        response.locals.user === undefined
+        response.locals.saml === undefined
+        // || response.locals.user === undefined
       )
         return next();
 
-      const samlResponse =
-        await response.locals.saml.saml.validatePostResponseAsync(request.body);
-      console.log(samlResponse);
+      const samlResponse = await response.locals.saml.saml
+        .validatePostRequestAsync(request.body)
+        .catch(() => undefined);
 
       response.end("TODO: Sign out");
     })
