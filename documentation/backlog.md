@@ -15,9 +15,9 @@
       - Insist on administrators having a password
     - Allow people to disconnect the SAML identity from their account? (As long as they have a password?)
     - Interactions with email verification
-    - Revisit uses of `passwordConfirmation`
-    - Make invitation name & email work as well?
+    - Revisit uses of `passwordConfirmation` to deal with `null` passwords
     - Help pages for people who end up with two accounts.
+      - Move help pages near where they’re useful in the codebase, instead of having a dedicated `help.mts` file
   - Trying to change your email when you have signed up via SAML and don’t even have a password
   - Sign out
     - Doesn’t work because the POST request from the identity provider doesn’t send the cookie (as it shouldn’t, because we probably set some header or some cookie setting to prevent CSRF)
@@ -103,6 +103,8 @@
   - Example of service provider metadata https://glacial-plateau-47269.herokuapp.com/jhu/metadata
 - Swarthmore
   - https://sid.swarthmore.edu/idp/shibboleth
+- Questions to confirm with other people
+  - We don’t need email verification when signing up with SAML, right?
 - Later
   - When there are many universities, add a filter, similar to Gradescope has, and similar to what we do in the list of enrollments.
   - Add support for `HTTP-POST` in addition to `HTTP-Redirect`
@@ -113,17 +115,19 @@
   - Add support for `emailAdress`es that doesn’t follow our more strict rules for email address format
   - Sign up with SAML if identity provider doesn’t provide a name
     - Create a session without a user, but with an email address instead.
-    - It doesn’t have to use a cookie, it can be a short-lived session as a `hidden` field in the form, similar to password reset.
-      - `flashes`
-        - Yes
-      - `sessions`
-        - No, because token is long-lived, sliding, and there’s a foreign key to the `user`
-      - `passwordResets`
-        - No, because there’s a foreign key to the `user` (but the concept o `nonce` is what we want)
-      - `emailVerifications`
-        - No, because there’s a foreign key to the `user` (but the concept o `nonce` is what we want)
+      - It doesn’t have to use a cookie, it can be a short-lived session as a `hidden` field in the form, similar to password reset.
+        - `flashes`
+          - Yes
+        - `sessions`
+          - No, because token is long-lived, sliding, and there’s a foreign key to the `user`
+        - `passwordResets`
+          - No, because there’s a foreign key to the `user` (but the concept o `nonce` is what we want)
+        - `emailVerifications`
+          - No, because there’s a foreign key to the `user` (but the concept o `nonce` is what we want)
+    - Create user interface with form for name (and other data we might want to ask from the user)
     - Create the backend that makes sign up with SAML work.
       - Reuse the existing sign-up route, or create a new one?
+    - Make invitation name & email work as well?
 
 ---
 
