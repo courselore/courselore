@@ -22,6 +22,9 @@
   - Sign out
     - Doesn’t work because the POST request from the identity provider doesn’t send the cookie (as it shouldn’t, because we probably set some header or some cookie setting to prevent CSRF)
       - This also affects the check during sign in via SAML that you aren’t already signed in
+      - When creating the SAML request in the first place, is the identity provider receiving the cookies (necessary if they’re already signed in to the identity provider)?
+        - Check `SameSite` on Hopkins & Swarthmore
+        - Check `SameSite` in Passport
     - Initiated in Courselore: Sign out of Courselore only (leaving you signed in to the identity provider) or single sign out? Single sign-out.
     - Initiated elsewhere: Do we sign out of Courselore as well? Yes.
   - Invitations and their links to sign-in/sign-up and prefilled form data.
@@ -86,6 +89,7 @@
   - https://developer.okta.com/docs/concepts/saml/
   - https://github.com/authenio/react-samlify/blob/d36744c53f979e376b6380ae5368dd1ed70172a4/middleware/index.ts
     - https://github.com/authenio/react-samlify/blob/d36744c53f979e376b6380ae5368dd1ed70172a4/server.ts
+  - https://cheatsheetseries.owasp.org/cheatsheets/SAML_Security_Cheat_Sheet.html
 - Johns Hopkins SAML
   - Ask Ali for an example of Hopkins request and response
   - Get an alumni account
@@ -129,6 +133,24 @@
     - Create the backend that makes sign up with SAML work.
       - Reuse the existing sign-up route, or create a new one?
     - Make invitation name & email work as well?
+
+---
+
+```
+{
+  SAMLRequest: 'PHNhbWxwOkxvZ291dFJlcXVlc3QgSUQ9Il8wZjkyMDU2YjQ1NTQ3NWIyNzI2MyIgVmVyc2lvbj0iMi4wIiBJc3N1ZUluc3RhbnQ9IjIwMjMtMDQtMDVUMTM6NDg6MjkuMzIwWiIgRGVzdGluYXRpb249Imh0dHBzOi8vbGVhZmFjLS1tYWNib29rLmxvY2FsL3NhbWwvZGV2ZWxvcG1lbnQvc2luZ2xlLWxvZ291dC1zZXJ2aWNlIiBDb25zZW50PSJ1cm46b2FzaXM6bmFtZXM6dGM6U0FNTDoyLjA6Y29uc2VudDp1bnNwZWNpZmllZCIgeG1sbnM6c2FtbHA9InVybjpvYXNpczpuYW1lczp0YzpTQU1MOjIuMDpwcm90b2NvbCI+PElzc3VlciB4bWxucz0idXJuOm9hc2lzOm5hbWVzOnRjOlNBTUw6Mi4wOmFzc2VydGlvbiI+aHR0cDovL2xvY2FsaG9zdDo5MDAwL21ldGFkYXRhPC9Jc3N1ZXI+PFNpZ25hdHVyZSB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC8wOS94bWxkc2lnIyI+PFNpZ25lZEluZm8+PENhbm9uaWNhbGl6YXRpb25NZXRob2QgQWxnb3JpdGhtPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzEwL3htbC1leGMtYzE0biMiLz48U2lnbmF0dXJlTWV0aG9kIEFsZ29yaXRobT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS8wNC94bWxkc2lnLW1vcmUjcnNhLXNoYTI1NiIvPjxSZWZlcmVuY2UgVVJJPSIjXzBmOTIwNTZiNDU1NDc1YjI3MjYzIj48VHJhbnNmb3Jtcz48VHJhbnNmb3JtIEFsZ29yaXRobT0iaHR0cDovL3d3dy53My5vcmcvMjAwMC8wOS94bWxkc2lnI2VudmVsb3BlZC1zaWduYXR1cmUiLz48VHJhbnNmb3JtIEFsZ29yaXRobT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS8xMC94bWwtZXhjLWMxNG4jIi8+PC9UcmFuc2Zvcm1zPjxEaWdlc3RNZXRob2QgQWxnb3JpdGhtPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGVuYyNzaGEyNTYiLz48RGlnZXN0VmFsdWU+SXJIcGszWlJJSkxBQWkwRHlEcTh0bmtONWpraDdsdkpDYXJHNm5FbVFoTT08L0RpZ2VzdFZhbHVlPjwvUmVmZXJlbmNlPjwvU2lnbmVkSW5mbz48U2lnbmF0dXJlVmFsdWU+eGw1VnBZQWE0bHN5WXljRExRM0NhOU9pazRGQWtuWmlVWGFRQ3AycDFaL1hGamFJM1dPYjJ6Snp6RWhVMjI1RDlDQWM3akxtSXhRMC94YXBpR3Qzc2V0M3FvaUN5RW14WllGSWUxQTJaN1d4YzhmeG54ejBRTmMzZytualVNLzRVRVdBbng3OGdYQjdwY1ZsOHdUMnJZczkrNEpLTUNUbkoyV0VzRithODlFRjFKUVJYWUtkSFRqbnVZbVd4SG9uVktCK01EZ1k2UGZxdWg3VDd1U3M0akdGbkVpTEZnQ2RKeXl2dnFsRmhhc3FLdFBFUm5IMlBBT3dDSXNmSmxqRmlyWi90R0VLc2lqTFFSRkx6bzd2bjJqMkw0MktPdk13QVhzOXlWc255cGZpb0ZmV0liTDhocWloWlI5eFZNUDJwaFUvTE1aUnlTWmNUYUNWazJYZlVnPT08L1NpZ25hdHVyZVZhbHVlPjxLZXlJbmZvPjxYNTA5RGF0YT48WDUwOUNlcnRpZmljYXRlPk1JSUNmakNDQVdZQ0NRRDN0NWtWVFkxK3RUQU5CZ2txaGtpRzl3MEJBUXNGQURBQU1DQVhEVEl6TURNeU5URXdNVEkxT0ZvWUR6TXdNakl3TnpJMk1UQXhNalU0V2pBQU1JSUJJakFOQmdrcWhraUc5dzBCQVFFRkFBT0NBUThBTUlJQkNnS0NBUUVBNThmeWw3WGFGRnJXUWxWQkZpdkZ6b1FLeVpBMEpVTHBZMWNUTEcrcGVEZGoyVDRtYXNRTSthak1UaVNIZzFsVHdEVE45RU15QWNla0xEYTVaQWQ4aTQ2WitiSzUyUzRlRWVsM21QclZYWUh4bmlzcnEyUlBHeXRMMnhEMkpDREhmUmc1Rm9Wb3lHYlh0OUExVHlYODk3MUpkS0w0K1VHM29HanQwMEVBNlNTbmhOUE80NWtBL1ZaekpNYWV3WTNzc1Nid1ljRHJNR25WalpibEpRNzg1NkNBMno3bCtXTWJmeHpFQ01ySUVtemQ3WWUvUUpKY2h4UmlhYXpWNjRJUUVZQXRFL0ZWb01oTldFSFFKcmNWaUlYTVlZWGwwWm1UV3lGWjhTRHFhak0rK1daR1RWdCtNU0dhcmZvcGg5VVdsYW04VHRkMWVVd1dIaGppbWVWYWJRSURBUUFCTUEwR0NTcUdTSWIzRFFFQkN3VUFBNElCQVFBOTVRTDhGcGMyKzV4c2JTQmkwaFNWQjRCWWlBdjU0MGlZRXljekh5ZjlpbStIMTNFYWFvQ21uT1JtWVJMb25lUWhNcXc1NUtxalZWQmI1cVJMVEoyQk1Ucng0TldFL1luWjV2U2d3ZWYyUUh0Z3k5NkFXT1lBY1JUNkVNYmY1Rk1tUzQzK0huaVRuVytIeWxreHZncVk5ZGxFMG1QMHNUNkRDWlRmMFQ3aVgrWFk2R0VlQzhnY3BJeDF6TlVIK1k1ZXhCQ0liNDk2dHpKbEJscGFaWEVjOXVJVU9RZGphNVcrK2lSZFRmQ2s1ZnZUeE1BcjRWd0VtSkg0bFlwbGhleG1va2gyWDJuUDFwVkdkNC9oeEdmYkpJdUJvSDVxYmZ3S3k2Qm9HT0Q1dGRPNHJyNTJSSUsrbURpajd2ajErRy9EOGNNQ3hLYU1lZHVVUkNsaUpTZVE8L1g1MDlDZXJ0aWZpY2F0ZT48L1g1MDlEYXRhPjwvS2V5SW5mbz48L1NpZ25hdHVyZT48TmFtZUlEIHhtbG5zPSJ1cm46b2FzaXM6bmFtZXM6dGM6U0FNTDoyLjA6YXNzZXJ0aW9uIj5sZWFuZHJvQGNvdXJzZWxvcmUub3JnPC9OYW1lSUQ+PHNhbWxwOlNlc3Npb25JbmRleD44MjM4NzY1OTk8L3NhbWxwOlNlc3Npb25JbmRleD48L3NhbWxwOkxvZ291dFJlcXVlc3Q+',
+  RelayState: 'n1lcaSefktk'
+}
+{
+  profile: {
+    ID: '_0f92056b455475b27263',
+    issuer: 'http://localhost:9000/metadata',
+    nameID: 'leandro@courselore.org',
+    sessionIndex: '823876599'
+  },
+  loggedOut: true
+}
+```
 
 ---
 
