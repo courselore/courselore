@@ -8,25 +8,23 @@
 
 - Implementation
   - Sign up with SAML
-    - Long SAML identity provider name may break the interface
-    - If `nameIDFormat` **is** `emailAddress`
-      - Create a session without a user, but with an email address instead.
-      - Create the backend that makes sign up with SAML work.
+    - Create a session without a user, but with an email address instead.
       - It doesn’t have to use a cookie, it can be a short-lived session as a `hidden` field in the form, similar to password reset.
-      - Make invitation name & email work as well?
+    - Make password optional in database
+    - Use the name given by the identity provider.
       - If identity provider included a name, don’t even show a form, just create the user.
-    - If `nameIDFormat` **is not** `emailAddress`
-      - Store in database: `samlIdentifier`, `nameIDFormat`, and `nameID`
-    - Prefill name & email on sign-up form
-    - When creating account, do we ask for a password? No
-      - Make password optional in database
-      - Do we allow them to create a password after the fact? Yes
-      - Administrator backdoor? Yes
-    - Upon first SAML sign in, ask for existing account
-      - Help documents
+    - Create the backend that makes sign up with SAML work.
+      - Reuse the existing sign-up route, or create a new one?
+    - Passwords
+      - Allow user to create a password after the fact
+        - Security concern: When creating a password, you can’t verify that you are yourself by typing in your old password.
+          - Perhaps just use the password reset workflow, which sends an email instead?
+      - Insist on administrators having a password
     - Allow people to disconnect the SAML identity from their account? (As long as they have a password?)
     - Interactions with email verification
-  - Reset password when you signed up with SAML and don’t have a password to begin with
+    - Make invitation name & email work as well?
+    - Help pages for people who end up with two accounts.
+  - Trying to change your email when you have signed up via SAML and don’t even have a password
   - Sign out
     - Doesn’t work because the POST request from the identity provider doesn’t send the cookie (as it shouldn’t, because we probably set some header or some cookie setting to prevent CSRF)
     - Initiated in Courselore: Sign out of Courselore only (leaving you signed in to the identity provider) or single sign out? Single sign-out.
@@ -114,6 +112,11 @@
 - Later
   - When there are many universities, add a filter, similar to Gradescope has, and similar to what we do in the list of enrollments.
   - Add support for `HTTP-POST` in addition to `HTTP-Redirect`
+  - Long SAML identity provider name may break the interface (use ellipsis to fix it?)
+  - Add support for other `nameIDFormat`s
+    - Store in database: `samlIdentifier`, `nameIDFormat`, and `nameID`
+    - Dealing with transient `nameID`s is tricky
+  - Add support for `emailAdress`es that doesn’t follow our more strict rules for email address format
 
 ---
 
