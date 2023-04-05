@@ -8,8 +8,6 @@
 
 - Implementation
   - Sign up with SAML
-    - Create the backend that makes sign up with SAML work.
-      - Reuse the existing sign-up route, or create a new one?
     - If identity provider doesn’t provide a name
       - Create a session without a user, but with an email address instead.
       - It doesn’t have to use a cookie, it can be a short-lived session as a `hidden` field in the form, similar to password reset.
@@ -21,6 +19,8 @@
           - No, because there’s a foreign key to the `user` (but the concept o `nonce` is what we want)
         - `emailVerifications`
           - No, because there’s a foreign key to the `user` (but the concept o `nonce` is what we want)
+      - Create the backend that makes sign up with SAML work.
+        - Reuse the existing sign-up route, or create a new one?
     - Passwords
       - Allow user to create a password after the fact
         - Security concern: When creating a password, you can’t verify that you are yourself by typing in your old password.
