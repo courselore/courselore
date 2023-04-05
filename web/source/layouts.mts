@@ -1666,7 +1666,7 @@ export default async (application: Application): Promise<void> => {
                               event,
                               element: this,
                               tippyProps: {
-                                theme: "green",
+                                theme: ${flash?.theme ?? "green"},
                                 touch: false,
                                 content: "Close",
                               },

@@ -25,6 +25,8 @@
       - When creating the SAML request in the first place, is the identity provider receiving the cookies (necessary if they’re already signed in to the identity provider)?
         - Check `SameSite` on Hopkins & Swarthmore
         - Check `SameSite` in Passport
+      - Migrate cookies to use `SameSite=none`
+      - Reflect on the security implications of using `SameSite=none`
     - Initiated in Courselore: Sign out of Courselore only (leaving you signed in to the identity provider) or single sign out? Single sign-out.
     - Initiated elsewhere: Do we sign out of Courselore as well? Yes.
   - Invitations and their links to sign-in/sign-up and prefilled form data.

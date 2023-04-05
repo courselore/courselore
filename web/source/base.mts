@@ -39,7 +39,7 @@ export default async (application: Application): Promise<void> => {
     path: "/",
     secure: true,
     httpOnly: true,
-    sameSite: "lax",
+    sameSite: "none",
   };
 
   application.web.use<

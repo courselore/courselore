@@ -2163,15 +2163,35 @@ export default async (application: Application): Promise<void> => {
   >(
     "/saml/:samlIdentifier/assertion-consumer-service",
     asyncHandler(async (request, response, next) => {
-      if (
-        response.locals.saml === undefined ||
-        response.locals.user !== undefined
-      )
-        return next();
+      if (response.locals.saml === undefined) return next();
 
       const samlResponse = await response.locals.saml.saml
         .validatePostResponseAsync(request.body)
         .catch(() => undefined);
+
+      if (response.locals.user !== undefined) {
+        if (response.locals.user.email !== samlResponse?.profile?.nameID)
+          application.web.locals.helpers.Flash.set({
+            request,
+            response,
+            theme: "rose",
+            content: html`
+              <p>
+                You’re already signed in and you tried to sign in again as a
+                different user. If you intend to sign in as a different user
+                please sign out first.
+              </p>
+            `,
+          });
+        return response.redirect(
+          303,
+          `https://${application.configuration.hostname}/${
+            typeof request.body.RelayState === "string"
+              ? request.body.RelayState
+              : ""
+          }`
+        );
+      }
 
       if (
         samlResponse === undefined ||
@@ -2609,8 +2629,8 @@ export default async (application: Application): Promise<void> => {
     "/saml/:samlIdentifier/single-logout-service",
     asyncHandler(async (request, response, next) => {
       if (
-        response.locals.saml === undefined
-        // || response.locals.user === undefined
+        response.locals.saml === undefined ||
+        response.locals.user === undefined
       )
         return next();
 
