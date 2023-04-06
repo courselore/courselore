@@ -1978,7 +1978,11 @@ export default async (application: Application): Promise<void> => {
           END;
         `
       );
-    }
+    },
+
+    sql`
+      DELETE FROM "sessions";
+    `
   );
 
   application.database.run(

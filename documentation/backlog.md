@@ -21,8 +21,7 @@
   - Trying to change your email when you have signed up via SAML and don’t even have a password
   - Sign out
     - `SameSite=none`
-      - Reflect on the security implications of using `SameSite=none`
-      - Clean all sessions to force new cookies to use `SameSite=none`?
+      - I remember that perhaps `.clearCookie()` needs the same `options` as `.cookie()` used to begin with, but I tested and it works. Just in case, double-check the documentation.
     - Initiated in Courselore: Sign out of Courselore only (leaving you signed in to the identity provider) or single sign out? Single sign-out.
     - Initiated elsewhere: Do we sign out of Courselore as well? Yes.
   - Invitations and their links to sign-in/sign-up and prefilled form data.

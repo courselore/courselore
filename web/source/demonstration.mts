@@ -186,8 +186,8 @@ export default async (application: Application): Promise<void> => {
           enrollmentsUsers: users.slice(0, 100),
         },
         {
-          name: "Pharmacology",
-          code: "MD 401.324",
+          name: "Music Theory",
+          code: "MU 401.324",
           courseRole: application.web.locals.helpers.courseRoles[0],
           accentColor: application.web.locals.helpers.enrollmentAccentColors[1],
           enrollmentsUsers: users.slice(25, 125),
