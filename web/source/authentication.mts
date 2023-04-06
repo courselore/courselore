@@ -2169,20 +2169,19 @@ export default async (application: Application): Promise<void> => {
       )
         return next();
 
-      // console.log(response.locals.saml.saml.getLogoutResponseUrl())
-      console.log(
-        await response.locals.saml.saml.getLogoutResponseUrlAsync(
-          {
-            issuer: "BANANA",
-            nameID: "louie@courselore.org",
-            nameIDFormat:
-              "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress",
-          },
-          "MY-RELAY-STATE",
-          {},
-          true
-        )
-      );
+      // console.log(
+      //   await response.locals.saml.saml.getLogoutResponseUrlAsync(
+      //     {
+      //       issuer: "BANANA",
+      //       nameID: "louie@courselore.org",
+      //       nameIDFormat:
+      //         "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress",
+      //     },
+      //     "https://leafac.com",
+      //     {},
+      //     true
+      //   )
+      // );
       // http://localhost:9000/saml/slo?SAMLResponse=fZHBbsIwEER%2FJfI9sU0IEAuCqnJBopdSceil2jibgurYUXaD%2BvkNoVWpVHH0et7saHa5%2FmxcdMaOTsGvhE6UWBdLgsa1ZhfeQ8%2FPSG3whNEg9GTGr5XoO28C0ImMhwbJsDX7h6edmSTKtF3gYIMTN8h9Aoiw4yGBiLablXhTaVnjLLc2y9NqmimVLWYVzHWd6jpfzHOdYllZDSI6%2FCQfbAaYqMetJwbPw0hN0lhNYzV70XOTTU2aJhOtX0W0QeKTBx7JI3NrpHTBgjsGYpMrpeQltCQXxLUNM1p3xUVMFzVCDTaOG7BlCB%2FJSF%2BhCs%2FoQtugZ9kgQwUMS3lr8t3vnoF7%2Bvt6DBVGB3A93m%2BMRrXZ99YikZDFdcOvqfzvhsUX&RelayState=MY-RELAY-STATE&SigAlg=http%3A%2F%2Fwww.w3.org%2F2001%2F04%2Fxmldsig-more%23rsa-sha256&Signature=EMSBQY3UvzNCB6f8TIaP0FbaTjHNFupgI1JBrAGAZnmi1UoGO3O%2FRWbFtdgfPPzU4VAkSybGd%2FXrDF5EUOQnmkgQzo9uYy7SM%2BFmewYlLzcjGbE76RhjmpOcRiw1DUJffiJ%2FgYFhn3bqO4YGjUK%2B0w5VvlBhwGmRyadVJxNWNZ1bpYyS051wLgcp%2FBYMM0GKU39xJq9%2FgQ8CtP6BRtjLyQJU7UZQ%2F74KxIUnqbNitWFxXg9zbNixo2L9ygQgo4uOcH%2F%2FRJHbV7e3iXz2683WvtQtdP2wBdfiCfT4x8zR7Suo40ww9xcJExMobIq3%2F7VHcMFFR6q29odkSS%2BJz9sbXA%3D%3D
       // Invalid RelayState
 
@@ -2190,7 +2189,7 @@ export default async (application: Application): Promise<void> => {
         await response.locals.saml.saml.getLogoutUrlAsync(
           {
             issuer: "BANANA",
-            nameID: "louie@courselore.org",
+            nameID: "leandro@courselore.org",
             nameIDFormat:
               "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress",
           },

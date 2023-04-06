@@ -21,6 +21,9 @@
   - Trying to change your email when you have signed up via SAML and don’t even have a password
   - Sign out
     - Initiated in Courselore: Sign out of Courselore only (leaving you signed in to the identity provider) or single sign out? Single sign-out.
+      - Add button for it or change the behavior of the existing sign out?
+        - We’ll have to store whether you signed in via SAML.
+        - But what if your session at the identity provider expired?
   - Invitations and their links to sign-in/sign-up and prefilled form data.
   - Identity-provider initiated sign in, but you’re already signed in
     - And to a different account.
@@ -128,6 +131,7 @@
     - Create the backend that makes sign up with SAML work.
       - Reuse the existing sign-up route, or create a new one?
     - Make invitation name & email work as well?
+  - Single logout back channel (synchronous) (SOAP) (server-to-server from identity provider to service provider)
 
 ---
 
