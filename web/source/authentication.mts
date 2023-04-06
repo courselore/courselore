@@ -2196,7 +2196,8 @@ export default async (application: Application): Promise<void> => {
       if (
         samlResponse === undefined ||
         samlResponse.profile === null ||
-        typeof samlResponse.profile.nameID !== "string"
+        typeof samlResponse.profile.nameID !== "string" ||
+        samlResponse.loggedOut
       )
         return response.status(422).send(
           application.web.locals.layouts.box({
@@ -2407,8 +2408,7 @@ export default async (application: Application): Promise<void> => {
           (domain) =>
             samlResponse.profile!.nameID.endsWith(`@${domain}`) ||
             samlResponse.profile!.nameID.endsWith(`.${domain}`)
-        ) ||
-        samlResponse.loggedOut
+        )
       )
         return response.status(422).send(
           application.web.locals.layouts.box({
@@ -2662,7 +2662,7 @@ export default async (application: Application): Promise<void> => {
 
       if (
         samlResponse === undefined ||
-        typeof samlResponse.profile.nameID !== "string" ||
+        typeof samlResponse.profile?.nameID !== "string" ||
         samlResponse.profile.nameID.match(
           application.web.locals.helpers.emailRegExp
         ) === null ||
