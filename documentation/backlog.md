@@ -23,7 +23,6 @@
     - `SameSite=none`
       - I remember that perhaps `.clearCookie()` needs the same `options` as `.cookie()` used to begin with, but I tested and it works. Just in case, double-check the documentation.
     - Initiated in Courselore: Sign out of Courselore only (leaving you signed in to the identity provider) or single sign out? Single sign-out.
-    - Initiated elsewhere: Do we sign out of Courselore as well? Yes.
   - Invitations and their links to sign-in/sign-up and prefilled form data.
   - Identity-provider initiated sign in, but you’re already signed in
     - And to a different account.
