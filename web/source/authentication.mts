@@ -2140,7 +2140,7 @@ export default async (application: Application): Promise<void> => {
       )
         return next();
 
-      return response.redirect(
+      response.redirect(
         303,
         await response.locals.saml.saml.getAuthorizeUrlAsync(
           typeof request.query.redirect === "string"
@@ -2150,6 +2150,67 @@ export default async (application: Application): Promise<void> => {
           {}
         )
       );
+    })
+  );
+
+  application.web.get<
+    { samlIdentifier: string },
+    HTML,
+    {},
+    {},
+    ResponseLocalsSAML &
+      Application["web"]["locals"]["ResponseLocals"]["SignedIn"]
+  >(
+    "/saml/:samlIdentifier/logout-request",
+    asyncHandler(async (request, response, next) => {
+      if (
+        response.locals.saml === undefined ||
+        response.locals.user === undefined
+      )
+        return next();
+
+      // console.log(response.locals.saml.saml.getLogoutResponseUrl())
+      console.log(
+        await response.locals.saml.saml.getLogoutResponseUrlAsync(
+          {
+            issuer: "BANANA",
+            nameID: "louie@courselore.org",
+            nameIDFormat:
+              "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress",
+          },
+          "MY-RELAY-STATE",
+          {},
+          true
+        )
+      );
+      // http://localhost:9000/saml/slo?SAMLResponse=fZHNbsIwEIRfJfI9sfNLsCCoKhckeikVh16qjbMUVMeOshvUx28IrUqliqPX882OZherz9YGZ%2Bzp5N1SxJESq2pB0NpOb%2F27H%2FgZqfOOMBiFjvT0tRRD77QHOpF20CJpNnr38LTVSaR013v2xltxg9wngAh7HhOIYLNeire4PhjTpHMzrzFL8xSzvEzypDAZFmlmSijTOmtmiQj2P8lHmxEmGnDjiMHxOFJJGqosVMVLXOhYaZVHszJ%2BFcEaiU8OeCKPzJ2W0noD9uiJ9VwpJS%2BhJVkvrm3oybqvLmK6qBEOYMKwBVN7%2FxFN9BVq8IzWdy06li0yNMCwkLcm3%2F3uGHigv69H32CwBzvg%2FcZoUuvdYAwSCVldN%2Fyayv9uWH0B&RelayState=MY-RELAY-STATE&SigAlg=http%3A%2F%2Fwww.w3.org%2F2001%2F04%2Fxmldsig-more%23rsa-sha256&Signature=gJ%2BEywqTIV1UUW6iMJoypsGggGF99eWg6yLuO2UxDtWGkFvETBN%2BtHMdP1aEzApDkQc0ag5mA4JdG8w186R%2FIB8wZQ1wcfFFf%2Fwojrklg8U%2BlQgW6L%2B5Gow%2BYU4BEzmkIZyVm8WjdPTQi20SJiiBcwJNYAk6enNeGkkvKTFXrv0rrkBbBQo9qhPoQ3vgoC5GZ5sQwsRwfNosbEj0TwJ06P%2FkaT5SlopXjKquFFswqIEXzkhFE9kQpFvIB3%2BMElswTR8ZHx0e2GOvwwDJB0Vik5mIIMmP7XZ6DqdKeW053CFy%2FMT4CskZT%2FoUwlnIlfVunP8OKa6EB4kBzdwB4oALYw%3D%3D
+
+      console.log(
+        await response.locals.saml.saml.getLogoutUrlAsync(
+          {
+            issuer: "BANANA",
+            nameID: "louie@courselore.org",
+            nameIDFormat:
+              "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress",
+          },
+          "MY-RELAY-STATE",
+          {}
+        )
+      );
+      // http://localhost:9000/saml/slo?SAMLRequest=nZJBS8NAEIX%2FSth7kt2kTcjSphaKUKgeVDx4kUkybYObnbizKf5807SCCHrwuLPz3vdmmMXqozPBCR23ZJdCRVKsygVDZ3q9owMN%2FgHfB2QfjH2W9fSzFIOzmoBb1hY6ZO1r%2Fbi%2B2%2Bkkkrp35KkmI75J%2FlYAMzo%2FBhDBdrMUr1WSq32qMJ3leVHNK1UnMsEC8ipXgJgneZYVElMRPH8FH21GMfOAW8serB9LMklDOQtl9qQyraSW8ygv0hcRbMZ5Wgt%2BUh6973UcG6rBHIm9LqSU8Tl0zIbEZRl6snb%2FmKg8%2B%2FMZgLCHOgw7qCuit2gCXjgNntBQ36H1cYceGvCwiL9xryHuR852E9yS68D%2FHkBFaqq0TbifWjV20Jp10zhkFqWhocWbmgbHI9ZhRO5wxV0I5eX14wLKTw%3D%3D&RelayState=MY-RELAY-STATE&SigAlg=http%3A%2F%2Fwww.w3.org%2F2001%2F04%2Fxmldsig-more%23rsa-sha256&Signature=nwneMMYVWt7ssS0cGRM%2B1JlEFzSiodBgOtrjRHsqOsrklXchct98YzvPNIikv16SY0ibMcYTo8TJyR8amdAH7VjqKPMVHxafYeS2UVWWv3nfGo7nEUonm5q43t9Es3%2FmD1C%2Bjm5PU3oX%2FVFepLLxcbM%2FN4Tq7jDGoU8qIiy0fPUgN0cbb%2BNB%2BY149hiDU2bqJD7Sy01X8NihEmw%2Fzko9M41Pd7LXok2kxRIHawNp9t4exlcgTCxmsFX7Y9ctPf8w%2FXJbqoKRE%2BWTSqOYEaX7R7hKtU9CHtyoYgqMZfrY8W9Ms011y9Yjwpx0QmbLRDHsp9X2aXjSS2rINB8JK1oDQA%3D%3D
+
+      response.end("TODO");
+
+      // response.redirect(
+      //   303,
+      //   await response.locals.saml.saml.getLogoutResponseUrl(
+      //     typeof request.query.redirect === "string"
+      //       ? request.query.redirect
+      //       : "",
+      //     undefined,
+      //     {}
+      //   )
+      // );
     })
   );
 
