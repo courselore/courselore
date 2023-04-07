@@ -2153,68 +2153,6 @@ export default async (application: Application): Promise<void> => {
     })
   );
 
-  application.web.get<
-    { samlIdentifier: string },
-    HTML,
-    {},
-    {},
-    ResponseLocalsSAML &
-      Application["web"]["locals"]["ResponseLocals"]["SignedIn"]
-  >(
-    "/saml/:samlIdentifier/logout-request",
-    asyncHandler(async (request, response, next) => {
-      if (
-        response.locals.saml === undefined ||
-        response.locals.user === undefined
-      )
-        return next();
-
-      // console.log(
-      //   await response.locals.saml.saml.getLogoutResponseUrlAsync(
-      //     {
-      //       issuer: "BANANA",
-      //       nameID: "louie@courselore.org",
-      //       nameIDFormat:
-      //         "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress",
-      //     },
-      //     "https://leafac.com",
-      //     {},
-      //     true
-      //   )
-      // );
-      // http://localhost:9000/saml/slo?SAMLResponse=fZHBbsIwEER%2FJfI9sU0IEAuCqnJBopdSceil2jibgurYUXaD%2BvkNoVWpVHH0et7saHa5%2FmxcdMaOTsGvhE6UWBdLgsa1ZhfeQ8%2FPSG3whNEg9GTGr5XoO28C0ImMhwbJsDX7h6edmSTKtF3gYIMTN8h9Aoiw4yGBiLablXhTaVnjLLc2y9NqmimVLWYVzHWd6jpfzHOdYllZDSI6%2FCQfbAaYqMetJwbPw0hN0lhNYzV70XOTTU2aJhOtX0W0QeKTBx7JI3NrpHTBgjsGYpMrpeQltCQXxLUNM1p3xUVMFzVCDTaOG7BlCB%2FJSF%2BhCs%2FoQtugZ9kgQwUMS3lr8t3vnoF7%2Bvt6DBVGB3A93m%2BMRrXZ99YikZDFdcOvqfzvhsUX&RelayState=MY-RELAY-STATE&SigAlg=http%3A%2F%2Fwww.w3.org%2F2001%2F04%2Fxmldsig-more%23rsa-sha256&Signature=EMSBQY3UvzNCB6f8TIaP0FbaTjHNFupgI1JBrAGAZnmi1UoGO3O%2FRWbFtdgfPPzU4VAkSybGd%2FXrDF5EUOQnmkgQzo9uYy7SM%2BFmewYlLzcjGbE76RhjmpOcRiw1DUJffiJ%2FgYFhn3bqO4YGjUK%2B0w5VvlBhwGmRyadVJxNWNZ1bpYyS051wLgcp%2FBYMM0GKU39xJq9%2FgQ8CtP6BRtjLyQJU7UZQ%2F74KxIUnqbNitWFxXg9zbNixo2L9ygQgo4uOcH%2F%2FRJHbV7e3iXz2683WvtQtdP2wBdfiCfT4x8zR7Suo40ww9xcJExMobIq3%2F7VHcMFFR6q29odkSS%2BJz9sbXA%3D%3D
-      // Invalid RelayState
-
-      console.log(
-        await response.locals.saml.saml.getLogoutUrlAsync(
-          {
-            issuer: "BANANA",
-            nameID: "leandro@courselore.org",
-            nameIDFormat:
-              "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress",
-          },
-          "MY-RELAY-STATE",
-          {}
-        )
-      );
-      // http://localhost:9000/saml/slo?SAMLRequest=nZJBT8MwDIX%2FSpV723Rtty7aOiZNSJMGB0AcuCAvdbeKtC5xOvHzyTqQJiQ4cIzt975nK4vVR2uCE1puqFuKJJJiVS4YWtOrHR1ocA%2F4PiC7wM91rMbOUgy2UwTcsOqgRVZOq8f13U5NIql6S440GXEl%2BVsBzGidDyCC7WYpXqdFmudpXRU6nWJdzWdQZ1VWy32aaDn3vVxDUUgUwfN3cG%2FjxcwDbjt20DlfkpM0lFkop0%2FJTOWZStNokhQvItj4fZoO3Kg8OterODakwRyJnZpLKeNz6JgNicsx1Ght%2F7FRefbnMwChBh2GLeg90Vs0Ai%2BcCk9oqG%2Bxc3GLDipwsIivuF8h7j1nuwluybbgfg%2BQRMlYaaqwHkcVttCYdVVZZBaloaHBG02DZY%2B1GJE9fOEuhPLy%2BvEDyk8%3D&RelayState=MY-RELAY-STATE&SigAlg=http%3A%2F%2Fwww.w3.org%2F2001%2F04%2Fxmldsig-more%23rsa-sha256&Signature=N8l9slgqdMO8A%2BZ3U9A2LZTkmEqpYGECNkeHiJODBj9Q9AY0fuRc%2Ft45sXgww%2FIXr%2FakHs5Koy718ZqMpe13JsydnsRrP6SaQJZtLhHAiNa2pYWbKAk06mZlUo9xg2zKVj90SvuKaI8EjtoHcAepQZGZRy38nSOcjxWkZIqvzBjDBigoNMIjanWwX9psdInrFws8aWiS373BIOWDuUsTPRA5CGZUmg9PKHeB%2F5VmZFijnp9oLJOCvom%2FIcH9qWFr1%2FgbL0PYepXtzKA6zTtoFrGgFFtACfAHiP%2BcDGBOuf%2B0dwyZ%2FSapIN25hvjLufmbIR%2FGBLOW1wXKrgPUzD8okg%3D%3D
-      // Invalid Session Participant
-
-      response.end("TODO");
-
-      // response.redirect(
-      //   303,
-      //   await response.locals.saml.saml.getLogoutResponseUrl(
-      //     typeof request.query.redirect === "string"
-      //       ? request.query.redirect
-      //       : "",
-      //     undefined,
-      //     {}
-      //   )
-      // );
-    })
-  );
-
   application.web.post<
     { samlIdentifier: string },
     any,
@@ -2676,6 +2614,38 @@ export default async (application: Application): Promise<void> => {
             ? request.body.RelayState
             : ""
         }`
+      );
+    })
+  );
+
+  application.web.get<
+    { samlIdentifier: string },
+    HTML,
+    {},
+    {},
+    ResponseLocalsSAML &
+      Application["web"]["locals"]["ResponseLocals"]["SignedIn"]
+  >(
+    "/saml/:samlIdentifier/logout-request",
+    asyncHandler(async (request, response, next) => {
+      if (
+        response.locals.saml === undefined ||
+        response.locals.user === undefined
+      )
+        return next();
+
+      response.redirect(
+        303,
+        await response.locals.saml.saml.getLogoutUrlAsync(
+          {
+            issuer: `https://${application.configuration.hostname}/saml/${request.params.samlIdentifier}/metadata`,
+            nameIDFormat:
+              "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress",
+            nameID: response.locals.user.email,
+          },
+          "MY-RELAY-STATE",
+          {}
+        )
       );
     })
   );
