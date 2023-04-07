@@ -1982,6 +1982,10 @@ export default async (application: Application): Promise<void> => {
 
     sql`
       DELETE FROM "sessions";
+    `,
+
+    sql`
+      ALTER TABLE "sessions" ADD COLUMN "samlSessionIndex" TEXT NULL;
     `
   );
 
