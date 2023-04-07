@@ -2653,7 +2653,7 @@ export default async (application: Application): Promise<void> => {
   application.web.post<
     { samlIdentifier: string },
     any,
-    {},
+    { RelayState: string },
     {},
     ResponseLocalsSAML &
       Partial<Application["web"]["locals"]["ResponseLocals"]["SignedIn"]>
@@ -2776,7 +2776,15 @@ export default async (application: Application): Promise<void> => {
           "Clear-Site-Data",
           `"*", "cache", "cookies", "storage", "executionContexts"`
         )
-        .redirect(303, `https://${application.configuration.hostname}/`);
+        .redirect(
+          303,
+          await response.locals.saml.saml.getLogoutResponseUrlAsync(
+            samlResponse.profile,
+            request.body.RelayState,
+            {},
+            true
+          )
+        );
     })
   );
 };

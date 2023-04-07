@@ -10,7 +10,6 @@
   - Sign out
     - Initiated in Courselore
       - Logout request
-      - `single-logout-service`: Redirect back to identity provider? (`response.locals.saml.saml.getLogoutResponseUrlAsync`)
       - Add button for it or change the behavior of the existing sign out?
         - We’ll have to store whether you signed in via SAML.
         - But what if your session at the identity provider expired?
