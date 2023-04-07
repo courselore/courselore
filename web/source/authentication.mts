@@ -2715,7 +2715,9 @@ export default async (application: Application): Promise<void> => {
         );
 
       if (
-        samlResponse.profile?.nameID !== response.locals.user?.email ||
+        typeof samlResponse.profile?.nameID !== "string" ||
+        response.locals.user === undefined ||
+        samlResponse.profile.nameID !== response.locals.user.email ||
         samlResponse.loggedOut !== true
       )
         return response.redirect(
