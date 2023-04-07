@@ -136,6 +136,56 @@
 
 ---
 
+```
+return response.status(422).send(
+  application.web.locals.layouts.box({
+    request,
+    response,
+    head: html`
+      <title>${response.locals.saml.name} · Sign out · Courselore</title>
+    `,
+    body: html`
+      <h2 class="heading">
+        <i class="bi bi-box-arrow-right"></i>
+        Sign out ·
+        <i class="bi bi-bank"></i>
+        ${response.locals.saml.name}
+      </h2>
+
+      <p>You’re trying to sign out of Courselore but you aren’t signed in.</p>
+    `,
+  })
+);
+
+return response.status(422).send(
+  application.web.locals.layouts.box({
+    request,
+    response,
+    head: html`<title>
+      ${response.locals.saml.name} · Sign out · Courselore
+    </title>`,
+    body: html`
+      <h2 class="heading">
+        <i class="bi bi-box-arrow-right"></i>
+        Sign out ·
+        <i class="bi bi-bank"></i>
+        ${response.locals.saml.name}
+      </h2>
+
+      <form
+        method="DELETE"
+        action="https://${application.configuration.hostname}/sign-out"
+      >
+        You’re trying to sign out from a different account.
+        <button class="link">Sign out of Courselore</button>.
+      </form>
+    `,
+  })
+);
+```
+
+---
+
 - Use `node --test` in other projects: look for uses of the `TEST` environment variable
 - Some `setTippy()`s don’t need the `event`, for example, those inside an `.onclick`. In fact, the `event` may be problematic because it’s the `event` in the closure of when the `.onclick` was set, and it’ll be passed down to `morph()` and `execute()`, which may lead to issues.
 
