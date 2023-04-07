@@ -12,6 +12,9 @@
       - Logout request
         - “Invalid Session Participant”
           - Store session identifier on sign in and include it on request to single logout
+        - Review every use of `Session.open()`
+        - Perhaps it’s `Session.close()` which should make a logout request, because it’s used in other contexts?
+          - Think of `closeAllAndReopen`
         - CSRF exception should only be for services, not for logout request
       - Add button for it or change the behavior of the existing sign out?
         - We’ll have to store whether you signed in via SAML.
