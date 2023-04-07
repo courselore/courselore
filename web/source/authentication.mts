@@ -2618,7 +2618,7 @@ export default async (application: Application): Promise<void> => {
     })
   );
 
-  application.web.delete<
+  application.web.post<
     { samlIdentifier: string },
     HTML,
     {},

@@ -193,6 +193,12 @@ export function liveNavigation() {
   };
 
   document.onsubmit = async (event) => {
+    if (
+      event.submitter?.onbeforelivenavigate?.() === false ||
+      event.target.onbeforelivenavigate?.() === false
+    )
+      return;
+
     const method = (
       event.submitter?.getAttribute("formmethod") ??
       event.target.getAttribute("method")
