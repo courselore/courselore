@@ -7,12 +7,12 @@
 **SAML**
 
 - Implementation
+  - Sign out
+    - Initiated in Courselore
+      - Add button for it or change the behavior of the existing sign out?
+        - We’ll have to store whether you signed in via SAML.
+        - But what if your session at the identity provider expired?
   - Sign up with SAML
-    - Sign out
-      - Initiated in Courselore: Sign out of Courselore only (leaving you signed in to the identity provider) or single sign out? Single sign-out.
-        - Add button for it or change the behavior of the existing sign out?
-          - We’ll have to store whether you signed in via SAML.
-          - But what if your session at the identity provider expired?
     - Passwords
       - Allow user to create a password after the fact
         - Security concern: When creating a password, you can’t verify that you are yourself by typing in your old password.
