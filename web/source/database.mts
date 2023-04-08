@@ -1817,6 +1817,11 @@ export default async (application: Application): Promise<void> => {
       );
 
       CREATE INDEX "samlCacheCreatedAtIndex" ON "samlCache" ("createdAt");
+
+      DELETE FROM "sessions";
+      
+      ALTER TABLE "sessions" ADD COLUMN "samlIdentifier" TEXT NULL;
+      ALTER TABLE "sessions" ADD COLUMN "samlSessionIndex" TEXT NULL;
     `,
 
     () => {
@@ -1978,15 +1983,7 @@ export default async (application: Application): Promise<void> => {
           END;
         `
       );
-    },
-
-    sql`
-      DELETE FROM "sessions";
-    `,
-
-    sql`
-      ALTER TABLE "sessions" ADD COLUMN "samlSessionIndex" TEXT NULL;
-    `
+    }
   );
 
   application.database.run(
