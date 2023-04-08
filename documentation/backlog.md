@@ -7,6 +7,8 @@
 **SAML**
 
 - Implementation
+  - Cache provider should check `samlIdentifier`
+    - Store it in database
   - Sign out
     - Initiated in Courselore
       - Logout request
@@ -15,7 +17,7 @@
         - Perhaps it’s `Session.close()` which should make a logout request, because it’s used in other contexts?
           - Think of `closeAllAndReopen`
         - CSRF exception should only be for services, not for logout request
-        - Relay state
+        - Relay state (`TODO`)
       - What if your session at the identity provider expired and it hasn’t communicated with Courselore (especially because we don’t implement back-channel/synchronous single logout)?
   - Sign up with SAML
     - Passwords
