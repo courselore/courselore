@@ -9,7 +9,6 @@
 - Implementation
   - Cache provider should check `samlIdentifier`
     - Store it in database
-  - Why is sign out slow?
   - Sign out
     - Initiated in Courselore
       - Logout request
@@ -1409,6 +1408,7 @@ const { app, BrowserWindow } = require("electron");
 
 ## Infrastructure
 
+- Sign out is slow because of `Clear-Site-Data` header (https://bugs.chromium.org/p/chromium/issues/detail?id=762417)
 - Extract component that does reordering (tags, poll options, and so forth).
 - Rename schema to be more explicit, for example, “likes” → “messageLikes”.
 - Test process manager on Windows
