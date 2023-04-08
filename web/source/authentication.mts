@@ -2715,7 +2715,87 @@ export default async (application: Application): Promise<void> => {
         .validatePostRequestAsync(request.body)
         .catch(() => undefined);
 
-      if (samlRequest === undefined)
+      if (samlRequest !== undefined) {
+        if (
+          response.locals.user === undefined ||
+          typeof samlRequest.profile?.nameID !== "string" ||
+          samlRequest.profile.nameID !== response.locals.user.email ||
+          samlRequest.loggedOut !== true
+        )
+          return response.redirect(
+            303,
+            await response.locals.saml.saml.getLogoutResponseUrlAsync(
+              samlRequest.profile,
+              request.body.RelayState,
+              {},
+              false
+            )
+          );
+
+        application.web.locals.helpers.Session.close({ request, response });
+
+        return response
+          .header(
+            "Clear-Site-Data",
+            `"*", "cache", "cookies", "storage", "executionContexts"`
+          )
+          .redirect(
+            303,
+            await response.locals.saml.saml.getLogoutResponseUrlAsync(
+              samlRequest.profile,
+              request.body.RelayState,
+              {},
+              true
+            )
+          );
+      }
+
+      const samlResponse = await response.locals.saml.saml
+        .validatePostResponseAsync(request.body)
+        .catch(() => undefined);
+
+      if (response.locals.user === undefined)
+        return response.status(422).send(
+          application.web.locals.layouts.box({
+            request,
+            response,
+            head: html`
+              <title>
+                ${response.locals.saml.name} · Sign out · Courselore
+              </title>
+            `,
+            body: html`
+              <h2 class="heading">
+                <i class="bi bi-box-arrow-right"></i>
+                Sign out ·
+                <i class="bi bi-bank"></i>
+                ${response.locals.saml.name}
+              </h2>
+
+              <p>
+                You’re trying to sign out of Courselore but you aren’t signed
+                in.
+              </p>
+
+              <p>
+                <a
+                  href="https://${application.configuration.hostname}/sign-in"
+                  class="link"
+                  >Sign in</a
+                >
+                or
+                <a
+                  href="https://${application.configuration.hostname}/sign-up"
+                  class="link"
+                  >sign up</a
+                >
+                to Courselore.
+              </p>
+            `,
+          })
+        );
+
+      if (samlResponse === undefined || samlResponse.loggedOut !== true)
         return response.status(422).send(
           application.web.locals.layouts.box({
             request,
@@ -2764,37 +2844,43 @@ export default async (application: Application): Promise<void> => {
         );
 
       if (
-        typeof samlRequest.profile?.nameID !== "string" ||
-        response.locals.user === undefined ||
-        samlRequest.profile.nameID !== response.locals.user.email ||
-        samlRequest.loggedOut !== true
+        typeof samlResponse.profile?.nameID === "string" &&
+        samlResponse.profile.nameID !== response.locals.user.email
       )
-        return response.redirect(
-          303,
-          await response.locals.saml.saml.getLogoutResponseUrlAsync(
-            samlRequest.profile,
-            request.body.RelayState,
-            {},
-            false
-          )
+        return response.status(422).send(
+          application.web.locals.layouts.box({
+            request,
+            response,
+            head: html`<title>
+              ${response.locals.saml.name} · Sign out · Courselore
+            </title>`,
+            body: html`
+              <h2 class="heading">
+                <i class="bi bi-box-arrow-right"></i>
+                Sign out ·
+                <i class="bi bi-bank"></i>
+                ${response.locals.saml.name}
+              </h2>
+
+              <form
+                method="DELETE"
+                action="https://${application.configuration.hostname}/sign-out"
+              >
+                You’re trying to sign out from a different account.
+                <button class="link">Sign out of Courselore</button>.
+              </form>
+            `,
+          })
         );
 
       application.web.locals.helpers.Session.close({ request, response });
 
-      response
+      return response
         .header(
           "Clear-Site-Data",
           `"*", "cache", "cookies", "storage", "executionContexts"`
         )
-        .redirect(
-          303,
-          await response.locals.saml.saml.getLogoutResponseUrlAsync(
-            samlRequest.profile,
-            request.body.RelayState,
-            {},
-            true
-          )
-        );
+        .redirect(303, `https://${application.configuration.hostname}/`);
     })
   );
 };
