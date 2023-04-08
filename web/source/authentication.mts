@@ -2711,11 +2711,11 @@ export default async (application: Application): Promise<void> => {
     asyncHandler(async (request, response, next) => {
       if (response.locals.saml === undefined) return next();
 
-      const samlResponse = await response.locals.saml.saml
+      const samlRequest = await response.locals.saml.saml
         .validatePostRequestAsync(request.body)
         .catch(() => undefined);
 
-      if (samlResponse === undefined)
+      if (samlRequest === undefined)
         return response.status(422).send(
           application.web.locals.layouts.box({
             request,
@@ -2764,15 +2764,15 @@ export default async (application: Application): Promise<void> => {
         );
 
       if (
-        typeof samlResponse.profile?.nameID !== "string" ||
+        typeof samlRequest.profile?.nameID !== "string" ||
         response.locals.user === undefined ||
-        samlResponse.profile.nameID !== response.locals.user.email ||
-        samlResponse.loggedOut !== true
+        samlRequest.profile.nameID !== response.locals.user.email ||
+        samlRequest.loggedOut !== true
       )
         return response.redirect(
           303,
           await response.locals.saml.saml.getLogoutResponseUrlAsync(
-            samlResponse.profile,
+            samlRequest.profile,
             request.body.RelayState,
             {},
             false
@@ -2789,7 +2789,7 @@ export default async (application: Application): Promise<void> => {
         .redirect(
           303,
           await response.locals.saml.saml.getLogoutResponseUrlAsync(
-            samlResponse.profile,
+            samlRequest.profile,
             request.body.RelayState,
             {},
             true
