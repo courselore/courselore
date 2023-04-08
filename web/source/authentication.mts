@@ -19,6 +19,7 @@ export type ApplicationAuthentication = {
         SignedIn: Application["web"]["locals"]["ResponseLocals"]["LiveConnection"] & {
           session: {
             userId: number;
+            samlIdentifier?: string;
             samlSessionIndex?: string;
           };
 
@@ -106,6 +107,7 @@ export type ApplicationAuthentication = {
             request,
             response,
             userId,
+            samlIdentifier,
             samlSessionIndex,
           }: {
             request: express.Request<
@@ -120,6 +122,7 @@ export type ApplicationAuthentication = {
               Application["web"]["locals"]["ResponseLocals"]["LiveConnection"]
             >;
             userId: number;
+            samlIdentifier?: string;
             samlSessionIndex?: string;
           }) => void;
 
@@ -138,7 +141,13 @@ export type ApplicationAuthentication = {
               any,
               Application["web"]["locals"]["ResponseLocals"]["LiveConnection"]
             >;
-          }) => { userId: number; samlSessionIndex?: string } | undefined;
+          }) =>
+            | {
+                userId: number;
+                samlIdentifier?: string;
+                samlSessionIndex?: string;
+              }
+            | undefined;
 
           close: ({
             request,
@@ -249,7 +258,13 @@ export default async (application: Application): Promise<void> => {
   application.web.locals.helpers.Session = {
     maxAge: 180 * 24 * 60 * 60 * 1000,
 
-    open: ({ request, response, userId, samlSessionIndex = undefined }) => {
+    open: ({
+      request,
+      response,
+      userId,
+      samlIdentifier = undefined,
+      samlSessionIndex = undefined,
+    }) => {
       const session = application.database.get<{
         token: string;
       }>(
@@ -261,12 +276,14 @@ export default async (application: Application): Promise<void> => {
                   "createdAt",
                   "token",
                   "user",
+                  "samlIdentifier",
                   "samlSessionIndex"
                 )
                 VALUES (
                   ${new Date().toISOString()},
                   ${cryptoRandomString({ length: 100, type: "alphanumeric" })},
                   ${userId},
+                  ${samlIdentifier},
                   ${samlSessionIndex}
                 )
               `
@@ -288,12 +305,14 @@ export default async (application: Application): Promise<void> => {
       const session = application.database.get<{
         createdAt: string;
         userId: number;
+        samlIdentifier: string | null;
         samlSessionIndex: string | null;
       }>(
         sql`
           SELECT
             "createdAt",
             "user" AS "userId",
+            "samlIdentifier",
             "samlSessionIndex"
           FROM "sessions"
           WHERE "token" = ${request.cookies["__Host-Session"]}
@@ -317,12 +336,14 @@ export default async (application: Application): Promise<void> => {
           request,
           response,
           userId: session.userId,
+          samlIdentifier: session.samlIdentifier ?? undefined,
           samlSessionIndex: session.samlSessionIndex ?? undefined,
         });
       }
 
       return {
         userId: session.userId,
+        samlIdentifier: session.samlIdentifier ?? undefined,
         samlSessionIndex: session.samlSessionIndex ?? undefined,
       };
     },
@@ -2630,6 +2651,7 @@ export default async (application: Application): Promise<void> => {
         request,
         response,
         userId: user.id,
+        samlIdentifier: request.params.samlIdentifier,
         samlSessionIndex: samlResponse.profile.sessionIndex,
       });
 
