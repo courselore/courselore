@@ -2505,10 +2505,13 @@ export default async (application: Application): Promise<void> => {
                                         .configuration
                                         .hostname}/${typeof response.locals
                                         .session?.samlIdentifier === "string"
-                                        ? "saml/development/logout-request"
+                                        ? `saml/${response.locals.session.samlIdentifier}/logout-request`
                                         : "sign-out"}"
                                       javascript="${javascript`
-                                        this.onbeforelivenavigate = () => false;
+                                        this.onbeforelivenavigate = () => ${
+                                          typeof response.locals.session
+                                            ?.samlIdentifier !== "string"
+                                        };
                                       `}"
                                     >
                                       <button
