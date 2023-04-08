@@ -1,6 +1,16 @@
 # Meetings
 
 <details>
+<summary>2023-04-08</summary>
+
+- SAML
+  - Sign in page interface
+  - Sign up via SAML
+  - Sign out
+
+</details>
+
+<details>
 <summary>2023-04-01</summary>
 
 - SAML: Setup keys, relay state, user interface, and so forth.
