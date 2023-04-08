@@ -9,6 +9,7 @@
 - Implementation
   - Cache provider should check `samlIdentifier`
     - Store it in database
+  - Why is sign out slow?
   - Sign out
     - Initiated in Courselore
       - Logout request
