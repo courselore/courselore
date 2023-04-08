@@ -12,7 +12,6 @@
   - Sign out
     - Initiated in Courselore
       - Logout request
-        - Bad data is coming back to Courselore
         - Review every use of `Session.open()`
         - Perhaps it’s `Session.close()` which should make a logout request, because it’s used in other contexts?
           - Think of `closeAllAndReopen`
