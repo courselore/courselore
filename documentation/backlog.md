@@ -13,8 +13,6 @@
         - Review every use of `Session.open()`
         - Perhaps it’s `Session.close()` which should make a logout request, because it’s used in other contexts?
           - Think of `closeAllAndReopen`
-        - “Invalid Session Participant”
-          - Store session identifier on sign in and include it on request to single logout
         - CSRF exception should only be for services, not for logout request
         - Relay state
       - What if your session at the identity provider expired and it hasn’t communicated with Courselore (especially because we don’t implement back-channel/synchronous single logout)?
