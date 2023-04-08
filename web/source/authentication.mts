@@ -2665,11 +2665,12 @@ export default async (application: Application): Promise<void> => {
         await response.locals.saml.saml.getLogoutUrlAsync(
           {
             issuer: `https://${application.configuration.hostname}/saml/${request.params.samlIdentifier}/metadata`,
+            sessionIndex: response.locals.session.samlSessionIndex,
             nameIDFormat:
               "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress",
             nameID: response.locals.user.email,
           },
-          "MY-RELAY-STATE",
+          "TODO: RELAY STATE",
           {}
         )
       );

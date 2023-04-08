@@ -16,6 +16,7 @@
         - “Invalid Session Participant”
           - Store session identifier on sign in and include it on request to single logout
         - CSRF exception should only be for services, not for logout request
+        - Relay state
       - Add button for it or change the behavior of the existing sign out?
         - We’ll have to store whether you signed in via SAML.
         - But what if your session at the identity provider expired?
