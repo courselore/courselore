@@ -2497,9 +2497,19 @@ export default async (application: Application): Promise<void> => {
                                       : html``}
 
                                     <form
-                                      method="DELETE"
+                                      method="${typeof response.locals.session
+                                        ?.samlIdentifier === "string"
+                                        ? "POST"
+                                        : "DELETE"}"
                                       action="https://${application
-                                        .configuration.hostname}/sign-out"
+                                        .configuration
+                                        .hostname}/${typeof response.locals
+                                        .session?.samlIdentifier === "string"
+                                        ? "saml/development/logout-request"
+                                        : "sign-out"}"
+                                      javascript="${javascript`
+                                        this.onbeforelivenavigate = () => false;
+                                      `}"
                                     >
                                       <button
                                         class="dropdown--menu--item button button--transparent"
