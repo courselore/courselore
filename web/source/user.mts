@@ -154,11 +154,11 @@ export default async (application: Application): Promise<void> => {
         Application["web"]["locals"]["ResponseLocals"]["LiveConnection"]
       >;
     }) => {
-      const userId = application.web.locals.helpers.Session.get({
+      const session = application.web.locals.helpers.Session.get({
         request,
         response,
       });
-      if (userId === undefined) return;
+      if (session === undefined) return;
 
       const abortController = new AbortController();
 
@@ -168,7 +168,7 @@ export default async (application: Application): Promise<void> => {
             sql`
               UPDATE "users"
               SET "lastSeenOnlineAt" = ${new Date().toISOString()}
-              WHERE "id" = ${userId}
+              WHERE "id" = ${session.userId}
             `
           );
 

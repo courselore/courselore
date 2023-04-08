@@ -17,6 +17,11 @@ export type ApplicationAuthentication = {
     locals: {
       ResponseLocals: {
         SignedIn: Application["web"]["locals"]["ResponseLocals"]["LiveConnection"] & {
+          session: {
+            userId: number;
+            samlSessionIndex?: string;
+          };
+
           user: {
             id: number;
             lastSeenOnlineAt: string;
@@ -101,6 +106,7 @@ export type ApplicationAuthentication = {
             request,
             response,
             userId,
+            samlSessionIndex,
           }: {
             request: express.Request<
               {},
@@ -114,6 +120,7 @@ export type ApplicationAuthentication = {
               Application["web"]["locals"]["ResponseLocals"]["LiveConnection"]
             >;
             userId: number;
+            samlSessionIndex?: string;
           }) => void;
 
           get: ({
@@ -131,7 +138,7 @@ export type ApplicationAuthentication = {
               any,
               Application["web"]["locals"]["ResponseLocals"]["LiveConnection"]
             >;
-          }) => number | undefined;
+          }) => { userId: number; samlSessionIndex?: string } | undefined;
 
           close: ({
             request,
@@ -242,7 +249,7 @@ export default async (application: Application): Promise<void> => {
   application.web.locals.helpers.Session = {
     maxAge: 180 * 24 * 60 * 60 * 1000,
 
-    open: ({ request, response, userId }) => {
+    open: ({ request, response, userId, samlSessionIndex = undefined }) => {
       const session = application.database.get<{
         token: string;
       }>(
@@ -250,11 +257,17 @@ export default async (application: Application): Promise<void> => {
           SELECT * FROM "sessions" WHERE "id" = ${
             application.database.run(
               sql`
-                INSERT INTO "sessions" ("createdAt", "token", "user")
+                INSERT INTO "sessions" (
+                  "createdAt",
+                  "token",
+                  "user",
+                  "samlSessionIndex"
+                )
                 VALUES (
                   ${new Date().toISOString()},
                   ${cryptoRandomString({ length: 100, type: "alphanumeric" })},
-                  ${userId}
+                  ${userId},
+                  ${samlSessionIndex}
                 )
               `
             ).lastInsertRowid
@@ -274,10 +287,14 @@ export default async (application: Application): Promise<void> => {
 
       const session = application.database.get<{
         createdAt: string;
-        user: number;
+        userId: number;
+        samlSessionIndex: string | null;
       }>(
         sql`
-          SELECT "createdAt", "user"
+          SELECT
+            "createdAt",
+            "user" AS "userId",
+            "samlSessionIndex"
           FROM "sessions"
           WHERE "token" = ${request.cookies["__Host-Session"]}
         `
@@ -299,11 +316,12 @@ export default async (application: Application): Promise<void> => {
         application.web.locals.helpers.Session.open({
           request,
           response,
-          userId: session.user,
+          userId: session.userId,
+          samlSessionIndex: session.samlSessionIndex ?? undefined,
         });
       }
 
-      return session.user;
+      return session;
     },
 
     close: ({ request, response }) => {
@@ -363,11 +381,12 @@ export default async (application: Application): Promise<void> => {
     {},
     Application["web"]["locals"]["ResponseLocals"]["SignedIn"]
   >((request, response, next) => {
-    const userId = application.web.locals.helpers.Session.get({
+    const session = application.web.locals.helpers.Session.get({
       request,
       response,
     });
-    if (typeof userId !== "number") return next();
+    if (session === undefined) return next();
+    response.locals.session = session;
 
     response.locals.user = application.database.get<{
       id: number;
@@ -418,7 +437,7 @@ export default async (application: Application): Promise<void> => {
           "preferAnonymousAt",
           "latestNewsVersion"
         FROM "users"
-        WHERE "id" = ${userId}
+        WHERE "id" = ${response.locals.session.userId}
       `
     )!;
 
@@ -2196,7 +2215,10 @@ export default async (application: Application): Promise<void> => {
       if (
         samlResponse === undefined ||
         samlResponse.profile === null ||
+        typeof samlResponse.profile.sessionIndex !== "string" ||
+        samlResponse.profile.sessionIndex.trim() === "" ||
         typeof samlResponse.profile.nameID !== "string" ||
+        samlResponse.profile.nameID.trim() === "" ||
         samlResponse.loggedOut
       )
         return response.status(422).send(
@@ -2605,6 +2627,7 @@ export default async (application: Application): Promise<void> => {
         request,
         response,
         userId: user.id,
+        samlSessionIndex: samlResponse.profile.sessionIndex,
       });
 
       response.redirect(
