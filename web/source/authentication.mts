@@ -321,7 +321,10 @@ export default async (application: Application): Promise<void> => {
         });
       }
 
-      return session;
+      return {
+        userId: session.userId,
+        samlSessionIndex: session.samlSessionIndex ?? undefined,
+      };
     },
 
     close: ({ request, response }) => {
