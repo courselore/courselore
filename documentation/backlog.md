@@ -11,7 +11,6 @@
     - Initiated in Courselore
       - Logout request
         - Bad data is coming back to Courselore
-        - In `single-logout-service`, should we check `sessionIndex`?
         - Review every use of `Session.open()`
         - Perhaps it’s `Session.close()` which should make a logout request, because it’s used in other contexts?
           - Think of `closeAllAndReopen`
@@ -54,6 +53,7 @@
         - Immutable
         - A certain size around 300px of width
       - `/saml/<identifier>/metadata`
+      - When removing a SAML option, clear sessions.
     - `courselore.org.mjs`
   - Have a way for system administrators to turn off sign in via email and password
 - Testing tools

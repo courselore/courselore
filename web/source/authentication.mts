@@ -2678,7 +2678,8 @@ export default async (application: Application): Promise<void> => {
     asyncHandler(async (request, response, next) => {
       if (
         response.locals.saml === undefined ||
-        response.locals.user === undefined
+        response.locals.user === undefined ||
+        response.locals.session.samlIdentifier !== request.params.samlIdentifier
       )
         return next();
 
@@ -2686,7 +2687,7 @@ export default async (application: Application): Promise<void> => {
         303,
         await response.locals.saml.saml.getLogoutUrlAsync(
           {
-            issuer: `https://${application.configuration.hostname}/saml/${request.params.samlIdentifier}/metadata`,
+            issuer: `https://${application.configuration.hostname}/saml/${response.locals.session.samlIdentifier}/metadata`,
             sessionIndex: response.locals.session.samlSessionIndex,
             nameIDFormat:
               "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress",
@@ -2718,6 +2719,11 @@ export default async (application: Application): Promise<void> => {
       if (samlRequest !== undefined) {
         if (
           response.locals.user === undefined ||
+          response.locals.session === undefined ||
+          response.locals.session.samlIdentifier !==
+            request.params.samlIdentifier ||
+          response.locals.session.samlSessionIndex !==
+            samlRequest.profile.sessionIndex ||
           typeof samlRequest.profile?.nameID !== "string" ||
           samlRequest.profile.nameID !== response.locals.user.email ||
           samlRequest.loggedOut !== true
@@ -2750,11 +2756,10 @@ export default async (application: Application): Promise<void> => {
           );
       }
 
-      const samlResponse = await response.locals.saml.saml
-        .validatePostResponseAsync(request.body)
-        .catch(() => undefined);
-
-      if (response.locals.user === undefined)
+      if (
+        response.locals.user === undefined ||
+        response.locals.session === undefined
+      )
         return response.status(422).send(
           application.web.locals.layouts.box({
             request,
@@ -2795,6 +2800,55 @@ export default async (application: Application): Promise<void> => {
           })
         );
 
+      if (
+        response.locals.session.samlIdentifier !== request.params.samlIdentifier
+      )
+        return response.status(422).send(
+          application.web.locals.layouts.box({
+            request,
+            response,
+            head: html`<title>
+              ${response.locals.saml.name} · Sign out · Courselore
+            </title>`,
+            body: html`
+              <h2 class="heading">
+                <i class="bi bi-box-arrow-right"></i>
+                Sign out ·
+                <i class="bi bi-bank"></i>
+                ${response.locals.saml.name}
+              </h2>
+
+              <p>
+                You’re trying to sign out using a different identity provider
+                from the one you used to sign in.
+              </p>
+
+              <p>
+                Please try again and if the issue persists report to the system
+                administrator at
+                <a
+                  href="mailto:${application.configuration.administratorEmail}"
+                  target="_blank"
+                  class="link"
+                  >${application.configuration.administratorEmail}</a
+                >.
+              </p>
+
+              <form
+                method="DELETE"
+                action="https://${application.configuration.hostname}/sign-out"
+              >
+                For the time being, you may also
+                <button class="link">sign out of Courselore</button>.
+              </form>
+            `,
+          })
+        );
+
+      const samlResponse = await response.locals.saml.saml
+        .validatePostResponseAsync(request.body)
+        .catch(() => undefined);
+
       if (samlResponse === undefined || samlResponse.loggedOut !== true)
         return response.status(422).send(
           application.web.locals.layouts.box({
@@ -2827,25 +2881,23 @@ export default async (application: Application): Promise<void> => {
                 >.
               </p>
 
-              $${response.locals.user !== undefined
-                ? html`
-                    <form
-                      method="DELETE"
-                      action="https://${application.configuration
-                        .hostname}/sign-out"
-                    >
-                      For the time being, you may also
-                      <button class="link">sign out of Courselore</button>.
-                    </form>
-                  `
-                : html``}
+              <form
+                method="DELETE"
+                action="https://${application.configuration.hostname}/sign-out"
+              >
+                For the time being, you may also
+                <button class="link">sign out of Courselore</button>.
+              </form>
             `,
           })
         );
 
       if (
-        typeof samlResponse.profile?.nameID === "string" &&
-        samlResponse.profile.nameID !== response.locals.user.email
+        (typeof samlResponse.profile?.sessionIndex === "string" &&
+          samlResponse.profile.sessionIndex !==
+            response.locals.session.samlSessionIndex) ||
+        (typeof samlResponse.profile?.nameID === "string" &&
+          samlResponse.profile.nameID !== response.locals.user.email)
       )
         return response.status(422).send(
           application.web.locals.layouts.box({
@@ -2866,7 +2918,7 @@ export default async (application: Application): Promise<void> => {
                 method="DELETE"
                 action="https://${application.configuration.hostname}/sign-out"
               >
-                You’re trying to sign out from a different account.
+                You’re trying to sign out from a different session.
                 <button class="link">Sign out of Courselore</button>.
               </form>
             `,
