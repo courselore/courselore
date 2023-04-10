@@ -2666,7 +2666,7 @@ export default async (application: Application): Promise<void> => {
     })
   );
 
-  application.web.post<
+  application.web.get<
     { samlIdentifier: string },
     HTML,
     {},
@@ -2683,8 +2683,7 @@ export default async (application: Application): Promise<void> => {
       )
         return next();
 
-      response.redirect(
-        303,
+      response.contentType("text/plain").send(
         await response.locals.saml.saml.getLogoutUrlAsync(
           {
             issuer: `https://${application.configuration.hostname}/saml/${response.locals.session.samlIdentifier}/metadata`,

@@ -3,6 +3,10 @@
 ## Finish
 
 - Reviewed up to `63ab51c381cc94ad8b6f0f46acffd7c90a4c1db5`
+- Sign out followed by “Back” browser button results in 422
+  - Why is there a `GET` to the “previous” page after the 200 from `/sign?redirect=...`?
+  - Why is that `GET` resulting in a 422?
+  - At least the error message instructs you to reload the page, which gets you on the right path… 🤷
 
 **SAML**
 
@@ -11,6 +15,8 @@
     - Initiated in Courselore
       - Logout request
         - CSRF exception should only be for services, not for logout request
+          - Idea: The `/logout-request` route returns the URL and we do the redirect in JavaScript.
+          - Idea: Let the “sign-out” button be the form itself, and remove `/logout-request` route
         - Relay state (`TODO`)
       - What if your session at the identity provider expired and it hasn’t communicated with Courselore (especially because we don’t implement back-channel/synchronous single logout)?
   - Sign up with SAML
