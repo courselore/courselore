@@ -1349,128 +1349,164 @@ export default async (application: Application): Promise<void> => {
             Email & Password
           </h2>
 
-          <form
-            method="PATCH"
-            action="https://${application.configuration
-              .hostname}/settings/email-and-password"
-            novalidate
-            css="${css`
-              display: flex;
-              flex-direction: column;
-              gap: var(--space--4);
-            `}"
-          >
-            <label class="label">
-              <p class="label--text">Email</p>
-              <input
-                type="email"
-                name="email"
-                placeholder="you@educational-institution.edu"
-                value="${response.locals.user.email}"
-                required
-                class="input--text"
-                javascript="${javascript`
-                  this.onvalidate = () => {
-                    if (!leafac.isModified(this))
-                      return "Please provide the email address to which you’d like to update.";
-                  };
-                `}"
-              />
-            </label>
-            <div class="label">
-              <p class="label--text">
-                Password Confirmation
-                <button
-                  type="button"
-                  class="button button--tight button--tight--inline button--transparent"
-                  javascript="${javascript`
-                    leafac.setTippy({
-                      event,
-                      element: this,
-                      tippyProps: {
-                        trigger: "click",
-                        content: "You must confirm your password because this is an important operation that affects your account.",
-                      },
-                    });
+          $${typeof response.locals.session.samlIdentifier === "string"
+            ? html`
+                <div
+                  css="${css`
+                    display: flex;
+                    flex-direction: column;
+                    gap: var(--space--1);
                   `}"
                 >
-                  <i class="bi bi-info-circle"></i>
-                </button>
-              </p>
-              <input
-                type="password"
-                name="passwordConfirmation"
-                required
-                class="input--text"
-              />
-            </div>
+                  <label class="label">
+                    <p class="label--text">Email</p>
+                    <input
+                      type="email"
+                      value="${response.locals.user.email}"
+                      disabled
+                      class="input--text"
+                    />
+                  </label>
 
-            <div>
-              <button
-                class="button button--full-width-on-small-screen button--blue"
-              >
-                <i class="bi bi-pencil-fill"></i>
-                Update Email
-              </button>
-            </div>
-          </form>
+                  <div
+                    class="secondary"
+                    css="${css`
+                      font-size: var(--font-size--xs);
+                      line-height: var(--line-height--xs);
+                    `}"
+                  >
+                    You may not modify your email and password because you
+                    signed in via
+                    ${application.configuration.saml[
+                      response.locals.session.samlIdentifier
+                    ].name}.
+                  </div>
+                </div>
+              `
+            : html`
+                <form
+                  method="PATCH"
+                  action="https://${application.configuration
+                    .hostname}/settings/email-and-password"
+                  novalidate
+                  css="${css`
+                    display: flex;
+                    flex-direction: column;
+                    gap: var(--space--4);
+                  `}"
+                >
+                  <label class="label">
+                    <p class="label--text">Email</p>
+                    <input
+                      type="email"
+                      name="email"
+                      placeholder="you@educational-institution.edu"
+                      value="${response.locals.user.email}"
+                      required
+                      class="input--text"
+                      javascript="${javascript`
+                        this.onvalidate = () => {
+                          if (!leafac.isModified(this))
+                            return "Please provide the email address to which you’d like to update.";
+                        };
+                      `}"
+                    />
+                  </label>
+                  <div class="label">
+                    <p class="label--text">
+                      Password Confirmation
+                      <button
+                        type="button"
+                        class="button button--tight button--tight--inline button--transparent"
+                        javascript="${javascript`
+                          leafac.setTippy({
+                            event,
+                            element: this,
+                            tippyProps: {
+                              trigger: "click",
+                              content: "You must confirm your password because this is an important operation that affects your account.",
+                            },
+                          });
+                        `}"
+                      >
+                        <i class="bi bi-info-circle"></i>
+                      </button>
+                    </p>
+                    <input
+                      type="password"
+                      name="passwordConfirmation"
+                      required
+                      class="input--text"
+                    />
+                  </div>
 
-          <hr class="separator" />
+                  <div>
+                    <button
+                      class="button button--full-width-on-small-screen button--blue"
+                    >
+                      <i class="bi bi-pencil-fill"></i>
+                      Update Email
+                    </button>
+                  </div>
+                </form>
 
-          <form
-            method="PATCH"
-            action="https://${application.configuration
-              .hostname}/settings/email-and-password"
-            novalidate
-            css="${css`
-              display: flex;
-              flex-direction: column;
-              gap: var(--space--4);
-            `}"
-          >
-            <label class="label">
-              <p class="label--text">Current Password</p>
-              <input
-                type="password"
-                name="passwordConfirmation"
-                required
-                class="input--text"
-              />
-            </label>
-            <label class="label">
-              <p class="label--text">New Password</p>
-              <input
-                type="password"
-                name="newPassword"
-                required
-                minlength="8"
-                class="input--text"
-              />
-            </label>
-            <label class="label">
-              <p class="label--text">New Password Confirmation</p>
-              <input
-                type="password"
-                required
-                class="input--text"
-                javascript="${javascript`
-                  this.onvalidate = () => {
-                    if (this.value !== this.closest("form").querySelector('[name="newPassword"]').value)
-                      return "New Password & New Password Confirmation don’t match.";
-                  };
-                `}"
-              />
-            </label>
+                <hr class="separator" />
 
-            <div>
-              <button
-                class="button button--full-width-on-small-screen button--blue"
-              >
-                <i class="bi bi-pencil-fill"></i>
-                Update Password
-              </button>
-            </div>
-          </form>
+                <form
+                  method="PATCH"
+                  action="https://${application.configuration
+                    .hostname}/settings/email-and-password"
+                  novalidate
+                  css="${css`
+                    display: flex;
+                    flex-direction: column;
+                    gap: var(--space--4);
+                  `}"
+                >
+                  <label class="label">
+                    <p class="label--text">Current Password</p>
+                    <input
+                      type="password"
+                      name="passwordConfirmation"
+                      required
+                      class="input--text"
+                    />
+                  </label>
+                  <label class="label">
+                    <p class="label--text">New Password</p>
+                    <input
+                      type="password"
+                      name="newPassword"
+                      required
+                      minlength="8"
+                      class="input--text"
+                    />
+                  </label>
+                  <label class="label">
+                    <p class="label--text">New Password Confirmation</p>
+                    <input
+                      type="password"
+                      required
+                      class="input--text"
+                      javascript="${javascript`
+                        this.onvalidate = () => {
+                          if (this.value !== this.closest("form").querySelector('[name="newPassword"]').value)
+                            return "New Password & New Password Confirmation don’t match.";
+                        };
+                      `}"
+                    />
+                  </label>
+
+                  <div>
+                    <button
+                      class="button button--full-width-on-small-screen button--blue"
+                    >
+                      <i class="bi bi-pencil-fill"></i>
+                      Update Password
+                    </button>
+                  </div>
+                </form>
+              `}
         `,
       })
     );
@@ -1485,7 +1521,11 @@ export default async (application: Application): Promise<void> => {
   >(
     "/settings/email-and-password",
     asyncHandler(async (request, response, next) => {
-      if (response.locals.user === undefined) return next();
+      if (
+        response.locals.user === undefined ||
+        typeof response.locals.session.samlIdentifier === "string"
+      )
+        return next();
 
       if (
         !(await application.web.locals.helpers.passwordConfirmation({

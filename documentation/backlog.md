@@ -12,8 +12,6 @@
 
 - Implementation
   - Sign up with SAML
-    - Issue: Sign in with SAML and try to change your email. Sign out won’t work.
-      - Lock down `/settings/email-and-password` when current session is SAML
     - Interactions with email verification
     - Revisit uses of `passwordConfirmation` to deal with `null` passwords
     - Help pages for people who end up with two accounts.
@@ -134,6 +132,7 @@
     - Insist on administrators having a password
   - Allow people to disconnect the SAML identity from their account? (As long as they have a password?)
   - Trying to change your email when you have signed up via SAML and don’t even have a password
+  - Perhaps have a more elegant solution for when you sign in with SAML and try to change your email. Sign out wouldn’t work, so we just disallow it. (It also deals with the issue of signing up via SAML and trying to create a password.)
 
 ---
 
