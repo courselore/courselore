@@ -12,11 +12,6 @@
 
 - Implementation
   - Sign out
-    - Introduce synchronizer tokens for CSRF prevention
-      - Now is a great time to do it, because we’re resetting the sessions anyway
-      - Let them be transmitted via the `CSRF-Protection` header, or via a form field, and in `/logout-request` use the form field.
-      - Let the `/logout-request` be `POST` again and perform the redirect, instead of returning an URL and doing the redirect in JavaScript
-      - Remove JavaScript hack in the “Sign out” button
     - Initiated in Courselore
       - What if your session at the identity provider expired and it hasn’t communicated with Courselore (especially because we don’t implement back-channel/synchronous single logout)?
   - Sign up with SAML
@@ -1475,6 +1470,11 @@ const { app, BrowserWindow } = require("electron");
     - Let the synchronizer tokens be session-wide, not specific per page, so as to not break the browser “Back” button.
     - Couple the synchronizer token to the user session.
     - Have pre-sessions with synchronizer tokens for signed out users to protect against login CSRF.
+    - Remove the `/saml/:samlIdentifier/logout-request` hack
+      - This route initiates a single logout, so it must be protected from CSRF.
+      - The root of the issue is that this route redirects outside our application, which means we can’t use `fetch()` (we have to turn off Live-Navigation) and we can’t add custom headers to the `POST` request, which breaks our current CSRF protection mechanism.
+      - Currently that route returns the redirect URL and the redirection is performed via JavaScript, which is a bit janky.
+      - Once we introduce a synchronizer token, besides transmitting it via the `CSRF-Protection` header, we may also accept it as a form field, and then the `/saml/:samlIdentifier/logout-request` route may receive the token that way
   - In case the implementation of the synchronizer token doesn’t go well, try to use the [double-submit pattern](https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html#double-submit-cookie).
     - It requires a secret known by the server to implement most securely. Note how everything boils down to the server recognizing itself by seeing a secret piece of data that it created.
 - `filenamify` may generate long names in pathological cases in which the extension is long.
