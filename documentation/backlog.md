@@ -13,10 +13,7 @@
 - Implementation
   - Sign up with SAML
     - Issue: Sign in with SAML and try to change your email. Sign out won’t work.
-      - Lock down `/settings/email-and-password` when account doesn’t have a password or there exists a session using SAML?
-      - Have a way for the user to trigger a `closeAllAndReopen()`?
-      - Associate multiple emails with account?
-      - Sign you out upon changing email?
+      - Lock down `/settings/email-and-password` when current session is SAML
     - Interactions with email verification
     - Revisit uses of `passwordConfirmation` to deal with `null` passwords
     - Help pages for people who end up with two accounts.
