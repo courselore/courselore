@@ -12,17 +12,15 @@
 
 - Implementation
   - Sign up with SAML
-    - Passwords
-      - Allow user to create a password after the fact
-        - Security concern: When creating a password, you can’t verify that you are yourself by typing in your old password.
-          - Perhaps just use the password reset workflow, which sends an email instead?
-      - Insist on administrators having a password
-    - Allow people to disconnect the SAML identity from their account? (As long as they have a password?)
+    - Issue: Sign in with SAML and try to change your email. Sign out won’t work.
+      - Lock down `/settings/email-and-password` when account doesn’t have a password or there exists a session using SAML?
+      - Have a way for the user to trigger a `closeAllAndReopen()`?
+      - Associate multiple emails with account?
+      - Sign you out upon changing email?
     - Interactions with email verification
     - Revisit uses of `passwordConfirmation` to deal with `null` passwords
     - Help pages for people who end up with two accounts.
       - Move help pages near where they’re useful in the codebase, instead of having a dedicated `help.mts` file
-  - Trying to change your email when you have signed up via SAML and don’t even have a password
   - Invitations and their links to sign-in/sign-up and prefilled form data.
   - Identity-provider initiated sign in, but you’re already signed in
     - And to a different account.
@@ -132,6 +130,13 @@
       - Reuse the existing sign-up route, or create a new one?
     - Make invitation name & email work as well?
   - Single logout back channel (synchronous) (SOAP) (server-to-server from identity provider to service provider)
+  - Passwords
+    - Allow user to create a password after the fact
+      - Security concern: When creating a password, you can’t verify that you are yourself by typing in your old password.
+        - Perhaps just use the password reset workflow, which sends an email instead?
+    - Insist on administrators having a password
+  - Allow people to disconnect the SAML identity from their account? (As long as they have a password?)
+  - Trying to change your email when you have signed up via SAML and don’t even have a password
 
 ---
 
