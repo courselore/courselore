@@ -14,9 +14,6 @@
   - Sign out
     - Initiated in Courselore
       - Logout request
-        - CSRF exception should only be for services, not for logout request
-          - Idea: The `/logout-request` route returns the URL and we do the redirect in JavaScript.
-          - Idea: Let the “sign-out” button be the form itself, and remove `/logout-request` route
         - Relay state (`TODO`)
       - What if your session at the identity provider expired and it hasn’t communicated with Courselore (especially because we don’t implement back-channel/synchronous single logout)?
   - Sign up with SAML
