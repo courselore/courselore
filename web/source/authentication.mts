@@ -2692,7 +2692,7 @@ export default async (application: Application): Promise<void> => {
               "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress",
             nameID: response.locals.user.email,
           },
-          "TODO: RELAY STATE",
+          "",
           {}
         )
       );
@@ -2931,7 +2931,14 @@ export default async (application: Application): Promise<void> => {
           "Clear-Site-Data",
           `"*", "cache", "cookies", "storage", "executionContexts"`
         )
-        .redirect(303, `https://${application.configuration.hostname}/`);
+        .redirect(
+          303,
+          `https://${application.configuration.hostname}/${
+            typeof request.body.RelayState === "string"
+              ? request.body.RelayState
+              : ""
+          }`
+        );
     })
   );
 };
