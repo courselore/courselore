@@ -2029,20 +2029,10 @@ export default async (application: Application): Promise<void> => {
             requestIdExpirationPeriodMs: 60 * 60 * 1000,
             cacheProvider: {
               saveAsync: async (key, value) => {
-                application.database.run(
-                  sql`
-                    DELETE FROM "samlCache" WHERE "createdAt" < ${new Date(
-                      new Date().getTime() - 60 * 60 * 1000
-                    ).toISOString()}
-                  `
-                );
-
                 if (
-                  application.database.get<{}>(
-                    sql`
-                      SELECT TRUE FROM "samlCache" WHERE "key" = ${key}
-                    `
-                  ) !== undefined
+                  typeof (await samls[
+                    samlIdentifier
+                  ].saml.cacheProvider.getAsync(key)) === "string"
                 )
                   return null;
 
@@ -2056,11 +2046,13 @@ export default async (application: Application): Promise<void> => {
                         sql`
                           INSERT INTO "samlCache" (
                             "createdAt",
+                            "samlIdentifier",
                             "key",
                             "value"
                           )
                           VALUES (
                             ${new Date().toISOString()},
+                            ${samlIdentifier},
                             ${key},
                             ${value}
                           )
@@ -2077,30 +2069,31 @@ export default async (application: Application): Promise<void> => {
               },
 
               getAsync: async (key) => {
-                application.database.run(
-                  sql`
-                    DELETE FROM "samlCache" WHERE "createdAt" < ${new Date(
-                      new Date().getTime() - 60 * 60 * 1000
-                    ).toISOString()}
-                  `
-                );
-
                 return (
                   application.database.get<{ value: string }>(
                     sql`
-                      SELECT "value" FROM "samlCache" WHERE "key" = ${key}
+                      SELECT "value"
+                      FROM "samlCache"
+                      WHERE
+                        ${new Date(
+                          new Date().getTime() - 60 * 60 * 1000
+                        ).toISOString()} < "createdAt" AND
+                        "samlIdentifier" = ${samlIdentifier} AND
+                        "key" = ${key}
                     `
                   )?.value ?? null
                 );
               },
 
               removeAsync: async (key) => {
-                if (key !== null)
-                  application.database.run(
-                    sql`
-                      DELETE FROM "samlCache" WHERE "key" = ${key}
-                    `
-                  );
+                application.database.run(
+                  sql`
+                    DELETE FROM "samlCache"
+                    WHERE
+                      "samlIdentifier" = ${samlIdentifier} AND
+                      "key" = ${key}
+                  `
+                );
 
                 return key;
               },
@@ -2118,7 +2111,7 @@ export default async (application: Application): Promise<void> => {
         application.database.run(
           sql`
             DELETE FROM "samlCache"
-            WHERE "createdAt" < ${new Date(
+            WHERE "createdAt" <= ${new Date(
               Date.now() - 60 * 60 * 1000
             ).toISOString()}
           `

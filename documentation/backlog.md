@@ -7,8 +7,7 @@
 **SAML**
 
 - Implementation
-  - Cache provider should check `samlIdentifier`
-    - Store it in database
+  - Demonstration data for schema changes?
   - Sign out
     - Initiated in Courselore
       - Logout request

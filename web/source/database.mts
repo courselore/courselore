@@ -1812,6 +1812,7 @@ export default async (application: Application): Promise<void> => {
       CREATE TABLE "samlCache" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
         "createdAt" TEXT NOT NULL,
+        "samlIdentifier" TEXT NOT NULL,
         "key" TEXT NOT NULL UNIQUE,
         "value" TEXT NOT NULL
       );
