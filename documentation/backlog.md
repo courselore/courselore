@@ -7,7 +7,6 @@
 **SAML**
 
 - Implementation
-  - Demonstration data for schema changes?
   - Sign out
     - Initiated in Courselore
       - Logout request
