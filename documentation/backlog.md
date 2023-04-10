@@ -12,6 +12,11 @@
 
 - Implementation
   - Sign out
+    - Introduce synchronizer tokens for CSRF prevention
+      - Now is a great time to do it, because we’re resetting the sessions anyway
+      - Let them be transmitted via the `CSRF-Protection` header, or via a form field, and in `/logout-request` use the form field.
+      - Let the `/logout-request` be `POST` again and perform the redirect, instead of returning an URL and doing the redirect in JavaScript
+      - Remove JavaScript hack in the “Sign out” button
     - Initiated in Courselore
       - What if your session at the identity provider expired and it hasn’t communicated with Courselore (especially because we don’t implement back-channel/synchronous single logout)?
   - Sign up with SAML
