@@ -363,6 +363,11 @@ export default async (application: Application): Promise<void> => {
     },
 
     closeAllAndReopen: ({ request, response, userId }) => {
+      const session = application.web.locals.helpers.Session.get({
+        request,
+        response,
+      });
+
       application.web.locals.helpers.Session.close({ request, response });
 
       application.database.run(
@@ -373,6 +378,8 @@ export default async (application: Application): Promise<void> => {
         request,
         response,
         userId,
+        samlIdentifier: session?.samlIdentifier,
+        samlSessionIndex: session?.samlSessionIndex,
       });
     },
   };
