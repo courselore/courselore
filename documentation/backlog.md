@@ -11,9 +11,6 @@
 **SAML**
 
 - Implementation
-  - Sign out
-    - Initiated in Courselore
-      - What if your session at the identity provider expired and it hasn’t communicated with Courselore (especially because we don’t implement back-channel/synchronous single logout)?
   - Sign up with SAML
     - Passwords
       - Allow user to create a password after the fact

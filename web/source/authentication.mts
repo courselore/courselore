@@ -2212,8 +2212,25 @@ export default async (application: Application): Promise<void> => {
         .validatePostResponseAsync(request.body)
         .catch(() => undefined);
 
-      if (response.locals.user !== undefined) {
-        if (response.locals.user.email !== samlResponse?.profile?.nameID)
+      if (
+        response.locals.user !== undefined &&
+        response.locals.session !== undefined
+      ) {
+        if (response.locals.user.email === samlResponse?.profile?.nameID) {
+          if (
+            typeof samlResponse.profile.sessionIndex === "string" &&
+            samlResponse.profile.sessionIndex.trim() !== ""
+          )
+            application.database.run(
+              sql`
+                UPDATE "sessions"
+                SET "samlSessionIndex" = ${samlResponse.profile.sessionIndex}
+                WHERE
+                  "samlIdentifier" = ${response.locals.session.samlIdentifier} AND
+                  "samlSessionIndex" = ${response.locals.session.samlSessionIndex}
+              `
+            );
+        } else
           application.web.locals.helpers.Flash.set({
             request,
             response,
