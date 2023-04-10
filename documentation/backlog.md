@@ -13,8 +13,6 @@
 - Implementation
   - Sign out
     - Initiated in Courselore
-      - Logout request
-        - Relay state (`TODO`)
       - What if your session at the identity provider expired and it hasn’t communicated with Courselore (especially because we don’t implement back-channel/synchronous single logout)?
   - Sign up with SAML
     - Passwords
