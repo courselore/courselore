@@ -36,6 +36,72 @@ export default {
   //    In case something goes wrong with the certificate, they’ll contact you at this address.
   administratorEmail: "ADMINISTRATOR@YOUR-DOMAIN.EDU",
 
+  // [OPTIONAL] Paths to folders with static files.
+  //            They’re useful, for example, to store logos for SAML configuration (see below).
+  // staticPaths: [
+  //   url.fileURLToPath(new URL("./static/", import.meta.url)),
+  // ],
+
+  saml: {
+    development: {
+      name: "Courselore University",
+      ...(process.env.SAML_LOGO === "true"
+        ? {
+            logo: {
+              light: "johns-hopkins-university--light--2023-03-28.webp",
+              dark: "johns-hopkins-university--dark--2023-03-28.webp",
+              width: 300,
+            },
+          }
+        : {}),
+      domains: ["courselore.org"],
+      extractName: (samlResponse) => samlResponse?.profile?.attributes?.name,
+      options: {
+        idpIssuer: "http://localhost:9000/metadata",
+        entryPoint: "http://localhost:9000/saml/sso",
+        logoutUrl: "http://localhost:9000/saml/slo",
+        signatureAlgorithm: "sha256",
+        digestAlgorithm: "sha256",
+        signMetadata: true,
+        privateKey: await fs.readFile(
+          new URL(
+            "./development--saml--service-provider--signing.key",
+            import.meta.url
+          ),
+          "utf-8"
+        ),
+        signingCert: await fs.readFile(
+          new URL(
+            "./development--saml--service-provider--signing.crt",
+            import.meta.url
+          ),
+          "utf-8"
+        ),
+        decryptionPvk: await fs.readFile(
+          new URL(
+            "./development--saml--service-provider--encryption.key",
+            import.meta.url
+          ),
+          "utf-8"
+        ),
+        decryptionCert: await fs.readFile(
+          new URL(
+            "./development--saml--service-provider--encryption.crt",
+            import.meta.url
+          ),
+          "utf-8"
+        ),
+        cert: await fs.readFile(
+          new URL(
+            "./development--saml--identity-provider--signing.crt",
+            import.meta.url
+          ),
+          "utf-8"
+        ),
+      },
+    },
+  },
+
   // [OPTIONAL] Other hostnames you’d like to redirect to this Courselore installation.
   // alternativeHostnames: ["WWW.YOUR-DOMAIN.EDU", "..."],
 
