@@ -2569,49 +2569,36 @@ export default async (application: Application): Promise<void> => {
                   ${response.locals.saml.name}
                 </h2>
 
-                <form
-                  method="POST"
-                  action="https://${application.configuration
-                    .hostname}/saml/${response.locals.saml
-                    .samlIdentifier}/sign-up${qs.stringify(
-                    { redirect: request.query.redirect },
-                    { addQueryPrefix: true }
-                  )}"
-                  novalidate
-                  css="${css`
-                    display: flex;
-                    flex-direction: column;
-                    gap: var(--space--4);
-                  `}"
-                >
-                  <label class="label">
-                    <p class="label--text">Name</p>
-                    <input
-                      type="text"
-                      name="name"
-                      value="${typeof request.query.invitation?.name ===
-                        "string" && request.query.invitation.name.trim() !== ""
-                        ? request.query.invitation.name
-                        : ""}"
-                      required
-                      autofocus
-                      class="input--text"
-                    />
-                  </label>
-                  <label class="label">
-                    <p class="label--text">Email</p>
-                    <input
-                      type="email"
-                      value="${samlResponse.profile.nameID}"
-                      disabled
-                      class="input--text"
-                    />
-                  </label>
-                  <button class="button button--blue">
-                    <i class="bi bi-person-plus-fill"></i>
-                    Sign up
-                  </button>
-                </form>
+                <p>
+                  The information Courselore received from
+                  ${response.locals.saml.name} doesn’t include your name.
+                </p>
+
+                <p>
+                  Please contact the Courselore development team at
+                  <a
+                    href="mailto:development@courselore.org"
+                    target="_blank"
+                    class="link"
+                    >development@courselore.org</a
+                  >
+                  and manifest your interest in adding support for signing up
+                  under these conditions.
+                </p>
+
+                <p>
+                  For the time being, you may also
+                  <a
+                    href="https://${application.configuration
+                      .hostname}/sign-up${qs.stringify(
+                      { redirect: request.query.redirect },
+                      { addQueryPrefix: true }
+                    )}"
+                    class="link"
+                    >sign up</a
+                  >
+                  to Courselore using email and password.
+                </p>
               `,
             })
           );

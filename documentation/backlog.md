@@ -11,8 +11,6 @@
 **SAML**
 
 - Implementation
-  - Sign up when name isn’t provided by identity provider
-  - Add `samlIdentifier` to `samls` object
   - Invitations and their links to sign-in/sign-up and prefilled form data.
   - Identity-provider initiated sign in, but you’re already signed in
     - And to a different account.
@@ -132,6 +130,7 @@
   - Perhaps have a more elegant solution for when you sign in with SAML and try to change your email. Sign out wouldn’t work, so we just disallow it. (It also deals with the issue of signing up via SAML and trying to create a password.)
     - Similarly, let the person remove their account that they created via SAML.
   - Grab avatar from SAML assertions.
+  - Sign up when name isn’t provided by identity provider
 
 ---
 
