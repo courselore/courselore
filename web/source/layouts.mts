@@ -2499,11 +2499,7 @@ export default async (application: Application): Promise<void> => {
                                     <form
                                       method="DELETE"
                                       action="https://${application
-                                        .configuration
-                                        .hostname}/${typeof response.locals
-                                        .session?.samlIdentifier === "string"
-                                        ? `saml/${response.locals.session.samlIdentifier}/logout-request`
-                                        : "sign-out"}"
+                                        .configuration.hostname}/sign-out"
                                     >
                                       <button
                                         class="dropdown--menu--item button button--transparent"
