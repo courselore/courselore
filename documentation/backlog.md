@@ -129,6 +129,7 @@
   - Trying to change your email when you have signed up via SAML and don’t even have a password
   - Perhaps have a more elegant solution for when you sign in with SAML and try to change your email. Sign out wouldn’t work, so we just disallow it. (It also deals with the issue of signing up via SAML and trying to create a password.)
     - Similarly, let the person remove their account that they created via SAML.
+  - Grab avatar from SAML assertions.
 
 ---
 
