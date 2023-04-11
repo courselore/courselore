@@ -12,7 +12,6 @@
 
 - Implementation
   - Sign up with SAML
-    - Interactions with email verification
     - Revisit uses of `passwordConfirmation` to deal with `null` passwords
     - Help pages for people who end up with two accounts.
       - Move help pages near where they’re useful in the codebase, instead of having a dedicated `help.mts` file

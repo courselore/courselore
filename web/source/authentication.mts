@@ -2230,6 +2230,16 @@ export default async (application: Application): Promise<void> => {
                   "samlSessionIndex" = ${response.locals.session.samlSessionIndex}
               `
             );
+
+          application.database.run(
+            sql`
+              UPDATE "users"
+              SET "emailVerifiedAt" = ${new Date().toISOString()}
+              WHERE
+                "id" = ${response.locals.user.id} AND
+                "emailVerifiedAt" IS NULL
+            `
+          );
         } else
           application.web.locals.helpers.Flash.set({
             request,
@@ -2243,6 +2253,7 @@ export default async (application: Application): Promise<void> => {
               </p>
             `,
           });
+
         return response.redirect(
           303,
           `https://${application.configuration.hostname}/${
@@ -2662,7 +2673,16 @@ export default async (application: Application): Promise<void> => {
             }
           `
         )!;
-      }
+      } else
+        application.database.run(
+          sql`
+            UPDATE "users"
+            SET "emailVerifiedAt" = ${new Date().toISOString()}
+            WHERE
+              "id" = ${user.id} AND
+              "emailVerifiedAt" IS NULL
+          `
+        );
 
       application.web.locals.helpers.Session.open({
         request,
