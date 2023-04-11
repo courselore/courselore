@@ -2704,7 +2704,7 @@ export default async (application: Application): Promise<void> => {
     })
   );
 
-  application.web.get<
+  application.web.delete<
     { samlIdentifier: string },
     HTML,
     {},
@@ -2721,19 +2721,22 @@ export default async (application: Application): Promise<void> => {
       )
         return next();
 
-      response.contentType("text/plain").send(
-        await response.locals.saml.saml.getLogoutUrlAsync(
-          {
-            issuer: `https://${application.configuration.hostname}/saml/${response.locals.session.samlIdentifier}/metadata`,
-            sessionIndex: response.locals.session.samlSessionIndex,
-            nameIDFormat:
-              "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress",
-            nameID: response.locals.user.email,
-          },
-          "",
-          {}
+      response
+        .header(
+          "Live-Navigation-External-Redirect",
+          await response.locals.saml.saml.getLogoutUrlAsync(
+            {
+              issuer: `https://${application.configuration.hostname}/saml/${response.locals.session.samlIdentifier}/metadata`,
+              sessionIndex: response.locals.session.samlSessionIndex,
+              nameIDFormat:
+                "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress",
+              nameID: response.locals.user.email,
+            },
+            "",
+            {}
+          )
         )
-      );
+        .end();
     })
   );
 

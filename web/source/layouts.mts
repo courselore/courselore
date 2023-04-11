@@ -2495,39 +2495,23 @@ export default async (application: Application): Promise<void> => {
                                           </a>
                                         `
                                       : html``}
-                                    $${typeof response.locals.session
-                                      ?.samlIdentifier === "string"
-                                      ? html`
-                                          <button
-                                            class="dropdown--menu--item button button--transparent"
-                                            javascript="${javascript`
-                                              this.onclick = async () => {
-                                                window.location.assign(await (await fetch(${`https://${application.configuration.hostname}/saml/${response.locals.session.samlIdentifier}/logout-request`}, { cache: "no-store" })).text());
-                                              };
-                                            `}"
-                                          >
-                                            <i
-                                              class="bi bi-box-arrow-right"
-                                            ></i>
-                                            Sign Out
-                                          </button>
-                                        `
-                                      : html`
-                                          <form
-                                            method="DELETE"
-                                            action="https://${application
-                                              .configuration.hostname}/sign-out"
-                                          >
-                                            <button
-                                              class="dropdown--menu--item button button--transparent"
-                                            >
-                                              <i
-                                                class="bi bi-box-arrow-right"
-                                              ></i>
-                                              Sign Out
-                                            </button>
-                                          </form>
-                                        `}
+
+                                    <form
+                                      method="DELETE"
+                                      action="https://${application
+                                        .configuration
+                                        .hostname}/${typeof response.locals
+                                        .session?.samlIdentifier === "string"
+                                        ? `saml/${response.locals.session.samlIdentifier}/logout-request`
+                                        : "sign-out"}"
+                                    >
+                                      <button
+                                        class="dropdown--menu--item button button--transparent"
+                                      >
+                                        <i class="bi bi-box-arrow-right"></i>
+                                        Sign Out
+                                      </button>
+                                    </form>
                                   </div>
                                 </div>
                               `},  

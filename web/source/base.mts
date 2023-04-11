@@ -79,7 +79,11 @@ export default async (application: Application): Promise<void> => {
     Application["web"]["locals"]["ResponseLocals"]["Logging"]
   >((request, response, next) => {
     if (
-      !request.originalUrl.startsWith("/saml/") &&
+      !(
+        request.originalUrl.startsWith("/saml/") &&
+        (request.originalUrl.endsWith("/assertion-consumer-service") ||
+          request.originalUrl.endsWith("/single-logout-service"))
+      ) &&
       !["GET", "HEAD", "OPTIONS", "TRACE"].includes(request.method) &&
       request.header("CSRF-Protection") !== "true"
     )
