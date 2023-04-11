@@ -901,8 +901,28 @@ export default async (application: Application): Promise<void> => {
             ${new Date(Date.now() + 5 * 60 * 1000).toISOString()},
             ${JSON.stringify({
               to: user.email,
-              subject: "Signed In",
-              html: html` TODO `,
+              subject: "Sign In",
+              html: html`
+                <p>
+                  There has been a new sign in to Courselore with the email
+                  address <code>${user.email}</code>.
+                </p>
+
+                <p>
+                  If it was you signing in, then no further action is required.
+                </p>
+
+                <p>
+                  If it was not you signing in, then please contact the system
+                  administrator at
+                  <a
+                    href="mailto:${application.configuration
+                      .administratorEmail}"
+                    >${application.configuration.administratorEmail}</a
+                  >
+                  as soon as possible.
+                </p>
+              `,
             })}
           )
         `
@@ -2721,7 +2741,28 @@ export default async (application: Application): Promise<void> => {
               ${JSON.stringify({
                 to: user.email,
                 subject: "Signed In",
-                html: html` TODO `,
+                html: html`
+                  <p>
+                    There has been a new sign in to Courselore with the email
+                    address <code>${user.email}</code>.
+                  </p>
+
+                  <p>
+                    If it was you signing in, then no further action is
+                    required.
+                  </p>
+
+                  <p>
+                    If it was not you signing in, then please contact the system
+                    administrator at
+                    <a
+                      href="mailto:${application.configuration
+                        .administratorEmail}"
+                      >${application.configuration.administratorEmail}</a
+                    >
+                    as soon as possible.
+                  </p>
+                `,
               })}
             )
           `
