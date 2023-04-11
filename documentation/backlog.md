@@ -11,6 +11,7 @@
 **SAML**
 
 - Implementation
+  - Sign up when name isn’t provided by identity provider
   - Add `samlIdentifier` to `samls` object
   - Invitations and their links to sign-in/sign-up and prefilled form data.
   - Identity-provider initiated sign in, but you’re already signed in

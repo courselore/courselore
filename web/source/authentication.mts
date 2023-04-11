@@ -2028,6 +2028,7 @@ export default async (application: Application): Promise<void> => {
         samlIdentifier,
         {
           ...options,
+          samlIdentifier,
           saml: new saml.SAML({
             ...options.options,
             issuer: `https://${application.configuration.hostname}/saml/${samlIdentifier}/metadata`,
@@ -2298,7 +2299,7 @@ export default async (application: Application): Promise<void> => {
                 Please
                 <a
                   href="https://${application.configuration
-                    .hostname}/saml/${request.params
+                    .hostname}/saml/${response.locals.saml
                     .samlIdentifier}/authentication-request${qs.stringify(
                     { redirect: request.query.redirect },
                     { addQueryPrefix: true }
@@ -2571,7 +2572,7 @@ export default async (application: Application): Promise<void> => {
                 <form
                   method="POST"
                   action="https://${application.configuration
-                    .hostname}/saml/${request.params
+                    .hostname}/saml/${response.locals.saml
                     .samlIdentifier}/sign-up${qs.stringify(
                     { redirect: request.query.redirect },
                     { addQueryPrefix: true }
@@ -2689,7 +2690,7 @@ export default async (application: Application): Promise<void> => {
         request,
         response,
         userId: user.id,
-        samlIdentifier: request.params.samlIdentifier,
+        samlIdentifier: response.locals.saml.samlIdentifier,
         samlSessionIndex: samlResponse.profile.sessionIndex,
       });
 
@@ -2717,7 +2718,8 @@ export default async (application: Application): Promise<void> => {
       if (
         response.locals.saml === undefined ||
         response.locals.user === undefined ||
-        response.locals.session.samlIdentifier !== request.params.samlIdentifier
+        response.locals.session.samlIdentifier !==
+          response.locals.saml.samlIdentifier
       )
         return next();
 
@@ -2761,7 +2763,7 @@ export default async (application: Application): Promise<void> => {
           response.locals.user === undefined ||
           response.locals.session === undefined ||
           response.locals.session.samlIdentifier !==
-            request.params.samlIdentifier ||
+            response.locals.saml.samlIdentifier ||
           response.locals.session.samlSessionIndex !==
             samlRequest.profile.sessionIndex ||
           typeof samlRequest.profile?.nameID !== "string" ||
@@ -2841,7 +2843,8 @@ export default async (application: Application): Promise<void> => {
         );
 
       if (
-        response.locals.session.samlIdentifier !== request.params.samlIdentifier
+        response.locals.session.samlIdentifier !==
+        response.locals.saml.samlIdentifier
       )
         return response.status(422).send(
           application.web.locals.layouts.box({
