@@ -652,13 +652,13 @@ export default async (application: Application): Promise<void> => {
         response,
         head: html`
           <title>
-            Sign in · Courselore · Communication Platform for Education
+            Sign In · Courselore · Communication Platform for Education
           </title>
         `,
         body: html`
           <h2 class="heading">
             <i class="bi bi-box-arrow-in-right"></i>
-            Sign in
+            Sign In
           </h2>
 
           <form
@@ -710,7 +710,7 @@ export default async (application: Application): Promise<void> => {
             </label>
             <button class="button button--blue">
               <i class="bi bi-box-arrow-in-right"></i>
-              Sign in
+              Sign In
             </button>
           </form>
 
@@ -733,7 +733,7 @@ export default async (application: Application): Promise<void> => {
                   { addQueryPrefix: true }
                 )}"
                 class="link"
-                >Sign up</a
+                >Sign Up</a
               >.
             </p>
             <p>
@@ -1107,7 +1107,7 @@ export default async (application: Application): Promise<void> => {
                   { addQueryPrefix: true }
                 )}"
                 class="link"
-                >Sign up</a
+                >Sign Up</a
               >.
             </p>
             <p>
@@ -1122,7 +1122,7 @@ export default async (application: Application): Promise<void> => {
                   { addQueryPrefix: true }
                 )}"
                 class="link"
-                >Sign in</a
+                >Sign In</a
               >.
             </p>
           </div>
@@ -1555,13 +1555,13 @@ export default async (application: Application): Promise<void> => {
         response,
         head: html`
           <title>
-            Sign up · Courselore · Communication Platform for Education
+            Sign Up · Courselore · Communication Platform for Education
           </title>
         `,
         body: html`
           <h2 class="heading">
             <i class="bi bi-person-plus"></i>
-            Sign up
+            Sign Up
           </h2>
 
           <form
@@ -1635,7 +1635,7 @@ export default async (application: Application): Promise<void> => {
             </label>
             <button class="button button--blue">
               <i class="bi bi-person-plus-fill"></i>
-              Sign up
+              Sign Up
             </button>
           </form>
 
@@ -1658,7 +1658,7 @@ export default async (application: Application): Promise<void> => {
                   { addQueryPrefix: true }
                 )}"
                 class="link"
-                >Sign in</a
+                >Sign In</a
               >.
             </p>
             <p>
@@ -2333,12 +2333,12 @@ export default async (application: Application): Promise<void> => {
             request,
             response,
             head: html`<title>
-              ${response.locals.saml.name} · Sign in · Courselore
+              ${response.locals.saml.name} · Sign In · Courselore
             </title>`,
             body: html`
               <h2 class="heading">
                 <i class="bi bi-box-arrow-in-right"></i>
-                Sign in ·
+                Sign In ·
                 <i class="bi bi-bank"></i>
                 ${response.locals.saml.name}
               </h2>
@@ -2408,12 +2408,12 @@ export default async (application: Application): Promise<void> => {
             request,
             response,
             head: html`<title>
-              ${response.locals.saml.name} · Sign in · Courselore
+              ${response.locals.saml.name} · Sign In · Courselore
             </title>`,
             body: html`
               <h2 class="heading">
                 <i class="bi bi-box-arrow-in-right"></i>
-                Sign in ·
+                Sign In ·
                 <i class="bi bi-bank"></i>
                 ${response.locals.saml.name}
               </h2>
@@ -2477,12 +2477,12 @@ export default async (application: Application): Promise<void> => {
             request,
             response,
             head: html`<title>
-              ${response.locals.saml.name} · Sign in · Courselore
+              ${response.locals.saml.name} · Sign In · Courselore
             </title>`,
             body: html`
               <h2 class="heading">
                 <i class="bi bi-box-arrow-in-right"></i>
-                Sign in ·
+                Sign In ·
                 <i class="bi bi-bank"></i>
                 ${response.locals.saml.name}
               </h2>
@@ -2544,12 +2544,12 @@ export default async (application: Application): Promise<void> => {
             request,
             response,
             head: html`<title>
-              ${response.locals.saml.name} · Sign in · Courselore
+              ${response.locals.saml.name} · Sign In · Courselore
             </title>`,
             body: html`
               <h2 class="heading">
                 <i class="bi bi-box-arrow-in-right"></i>
-                Sign in ·
+                Sign In ·
                 <i class="bi bi-bank"></i>
                 ${response.locals.saml.name}
               </h2>
@@ -2610,14 +2610,14 @@ export default async (application: Application): Promise<void> => {
               response,
               head: html`
                 <title>
-                  ${response.locals.saml.name} · Sign up · Courselore ·
+                  ${response.locals.saml.name} · Sign Up · Courselore ·
                   Communication Platform for Education
                 </title>
               `,
               body: html`
                 <h2 class="heading">
                   <i class="bi bi-person-plus"></i>
-                  Sign up ·
+                  Sign Up ·
                   <i class="bi bi-bank"></i>
                   ${response.locals.saml.name}
                 </h2>
@@ -2901,13 +2901,13 @@ export default async (application: Application): Promise<void> => {
             response,
             head: html`
               <title>
-                ${response.locals.saml.name} · Sign out · Courselore
+                ${response.locals.saml.name} · Sign Out · Courselore
               </title>
             `,
             body: html`
               <h2 class="heading">
                 <i class="bi bi-box-arrow-right"></i>
-                Sign out ·
+                Sign Out ·
                 <i class="bi bi-bank"></i>
                 ${response.locals.saml.name}
               </h2>
@@ -2921,7 +2921,7 @@ export default async (application: Application): Promise<void> => {
                 <a
                   href="https://${application.configuration.hostname}/sign-in"
                   class="link"
-                  >Sign in</a
+                  >Sign In</a
                 >
                 or
                 <a
@@ -2944,12 +2944,12 @@ export default async (application: Application): Promise<void> => {
             request,
             response,
             head: html`<title>
-              ${response.locals.saml.name} · Sign out · Courselore
+              ${response.locals.saml.name} · Sign Out · Courselore
             </title>`,
             body: html`
               <h2 class="heading">
                 <i class="bi bi-box-arrow-right"></i>
-                Sign out ·
+                Sign Out ·
                 <i class="bi bi-bank"></i>
                 ${response.locals.saml.name}
               </h2>
@@ -2991,12 +2991,12 @@ export default async (application: Application): Promise<void> => {
             request,
             response,
             head: html`<title>
-              ${response.locals.saml.name} · Sign out · Courselore
+              ${response.locals.saml.name} · Sign Out · Courselore
             </title>`,
             body: html`
               <h2 class="heading">
                 <i class="bi bi-box-arrow-right"></i>
-                Sign out ·
+                Sign Out ·
                 <i class="bi bi-bank"></i>
                 ${response.locals.saml.name}
               </h2>
@@ -3040,12 +3040,12 @@ export default async (application: Application): Promise<void> => {
             request,
             response,
             head: html`<title>
-              ${response.locals.saml.name} · Sign out · Courselore
+              ${response.locals.saml.name} · Sign Out · Courselore
             </title>`,
             body: html`
               <h2 class="heading">
                 <i class="bi bi-box-arrow-right"></i>
-                Sign out ·
+                Sign Out ·
                 <i class="bi bi-bank"></i>
                 ${response.locals.saml.name}
               </h2>

@@ -3682,7 +3682,7 @@ export default async (application: Application): Promise<void> => {
                         class="button button--blue"
                       >
                         <i class="bi bi-person-plus-fill"></i>
-                        Sign up
+                        Sign Up
                       </a>
                     `;
 
@@ -3707,7 +3707,7 @@ export default async (application: Application): Promise<void> => {
                           : "button--transparent"}"
                       >
                         <i class="bi bi-box-arrow-in-right"></i>
-                        Sign in
+                        Sign In
                       </a>
                     `;
 

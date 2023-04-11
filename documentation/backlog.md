@@ -7,9 +7,6 @@
 **SAML**
 
 - Implementation
-  - Send an email saying “You signed in from a new device”
-    - From assertion consumer
-  - Capitalize sign in/sign up/sign out buttons
   - Finalize configurations:
     - `development.mjs`
     - `example.mjs`
