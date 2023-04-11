@@ -8,7 +8,6 @@
 
 - Implementation
   - Finalize configurations:
-    - `development.mjs`
     - `example.mjs`
       - The keys must stay the same, because they’ll be stored in the database?
       - Don’t set for service provider:
