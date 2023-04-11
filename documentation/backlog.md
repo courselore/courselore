@@ -12,8 +12,6 @@
 
 - Implementation
   - Sign up with SAML
-    - Revisit uses of `passwordConfirmation` to deal with `null` passwords
-      - Trying to remove your account when you signed in via SAML
     - Help pages for people who end up with two accounts.
       - Move help pages near where they’re useful in the codebase, instead of having a dedicated `help.mts` file
   - Invitations and their links to sign-in/sign-up and prefilled form data.
