@@ -2502,7 +2502,7 @@ export default async (application: Application): Promise<void> => {
                                             class="dropdown--menu--item button button--transparent"
                                             javascript="${javascript`
                                               this.onclick = async () => {
-                                                window.location.href = await (await fetch(${`https://${application.configuration.hostname}/saml/${response.locals.session.samlIdentifier}/logout-request`}, { cache: "no-store" })).text();
+                                                window.location.assign(await (await fetch(${`https://${application.configuration.hostname}/saml/${response.locals.session.samlIdentifier}/logout-request`}, { cache: "no-store" })).text());
                                               };
                                             `}"
                                           >
