@@ -12,11 +12,7 @@
 
 - Implementation
   - Invitations and their links to sign-in/sign-up and prefilled form data.
-  - Identity-provider initiated sign in, but you’re already signed in
-    - And to a different account.
-  - Signatures & encryption on requests & responses
   - Send an email saying “You signed in from a new device”
-  - Different `NameIdFormat`s
   - Finalize configurations:
     - `development.mjs`
     - `example.mjs`
@@ -37,7 +33,6 @@
       - `/saml/<identifier>/metadata`
       - When removing a SAML option, clear sessions.
     - `courselore.org.mjs`
-  - Have a way for system administrators to turn off sign in via email and password
 - Testing tools
   - Lightweight
     - **https://github.com/mcguinness/saml-idp**
@@ -131,6 +126,7 @@
     - Similarly, let the person remove their account that they created via SAML.
   - Grab avatar from SAML assertions.
   - Sign up when name isn’t provided by identity provider
+  - Have a way for system administrators to turn off sign in via email and password
 
 ---
 
