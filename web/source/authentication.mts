@@ -2577,8 +2577,8 @@ export default async (application: Application): Promise<void> => {
           })
         );
 
-      let user = application.database.get<{ id: number }>(
-        sql`SELECT "id" FROM "users" WHERE "email" = ${samlResponse.profile.nameID}`
+      let user = application.database.get<{ id: number; email: string }>(
+        sql`SELECT "id", "email" FROM "users" WHERE "email" = ${samlResponse.profile.nameID}`
       );
 
       if (user === undefined) {
@@ -2636,7 +2636,7 @@ export default async (application: Application): Promise<void> => {
             })
           );
 
-        user = application.database.get<{ id: number }>(
+        user = application.database.get<{ id: number; email: string }>(
           sql`
             SELECT * FROM "users" WHERE "id" = ${
               application.database.run(
@@ -2705,6 +2705,38 @@ export default async (application: Application): Promise<void> => {
               "emailVerifiedAt" IS NULL
           `
         );
+
+      application.database.run(
+        sql`
+            INSERT INTO "sendEmailJobs" (
+              "createdAt",
+              "startAt",
+              "expiresAt",
+              "mailOptions"
+            )
+            VALUES (
+              ${new Date().toISOString()},
+              ${new Date().toISOString()},
+              ${new Date(Date.now() + 5 * 60 * 1000).toISOString()},
+              ${JSON.stringify({
+                to: user.email,
+                subject: "Signed In",
+                html: html` TODO `,
+              })}
+            )
+          `
+      );
+      application.got
+        .post(
+          `http://127.0.0.1:${application.ports.workerEventsAny}/send-email`
+        )
+        .catch((error) => {
+          response.locals.log(
+            "FAILED TO EMIT ‘/send-email’ EVENT",
+            String(error),
+            error?.stack
+          );
+        });
 
       application.web.locals.helpers.Session.open({
         request,
