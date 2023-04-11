@@ -35,9 +35,9 @@ export default {
       domains: ["courselore.org"],
       extractName: (samlResponse) => samlResponse?.profile?.attributes?.name,
       options: {
+        idpIssuer: "http://localhost:9000/metadata",
         entryPoint: "http://localhost:9000/saml/sso",
         logoutUrl: "http://localhost:9000/saml/slo",
-        idpIssuer: "http://localhost:9000/metadata",
         signatureAlgorithm: "sha256",
         digestAlgorithm: "sha256",
         signMetadata: true,
