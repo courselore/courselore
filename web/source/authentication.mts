@@ -614,6 +614,7 @@ export default async (application: Application): Promise<void> => {
     typeof request.body.passwordConfirmation === "string" &&
     request.body.passwordConfirmation.trim() !== "" &&
     typeof response.locals.user.password === "string" &&
+    response.locals.user.password.trim() !== "" &&
     (await argon2.verify(
       response.locals.user.password,
       request.body.passwordConfirmation

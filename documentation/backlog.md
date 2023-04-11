@@ -13,6 +13,7 @@
 - Implementation
   - Sign up with SAML
     - Revisit uses of `passwordConfirmation` to deal with `null` passwords
+      - Trying to remove your account when you signed in via SAML
     - Help pages for people who end up with two accounts.
       - Move help pages near where they’re useful in the codebase, instead of having a dedicated `help.mts` file
   - Invitations and their links to sign-in/sign-up and prefilled form data.
@@ -132,6 +133,7 @@
   - Allow people to disconnect the SAML identity from their account? (As long as they have a password?)
   - Trying to change your email when you have signed up via SAML and don’t even have a password
   - Perhaps have a more elegant solution for when you sign in with SAML and try to change your email. Sign out wouldn’t work, so we just disallow it. (It also deals with the issue of signing up via SAML and trying to create a password.)
+    - Similarly, let the person remove their account that they created via SAML.
 
 ---
 

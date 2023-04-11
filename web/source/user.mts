@@ -2162,129 +2162,148 @@ export default async (application: Application): Promise<void> => {
             Account
           </h2>
 
-          <form
-            method="DELETE"
-            action="https://${application.configuration
-              .hostname}/settings/account"
-            novalidate
-            css="${css`
-              display: flex;
-              flex-direction: column;
-              gap: var(--space--4);
-            `}"
-          >
-            <div class="label">
-              <p class="label--text">
-                Email Confirmation
-                <button
-                  type="button"
-                  class="button button--tight button--tight--inline button--transparent"
-                  javascript="${javascript`
-                    leafac.setTippy({
-                      event,
-                      element: this,
-                      tippyProps: {
-                        trigger: "click",
-                        content: "You must confirm your email because this is an important operation that affects your account.",
-                      },
-                    });
+          $${typeof response.locals.session?.samlIdentifier === "string"
+            ? html`
+                <div
+                  class="secondary"
+                  css="${css`
+                    font-size: var(--font-size--xs);
+                    line-height: var(--line-height--xs);
                   `}"
                 >
-                  <i class="bi bi-info-circle"></i>
-                </button>
-              </p>
-              <input
-                type="email"
-                name="emailConfirmation"
-                required
-                class="input--text"
-              />
-            </div>
-            <div class="label">
-              <p class="label--text">
-                Password Confirmation
-                <button
-                  type="button"
-                  class="button button--tight button--tight--inline button--transparent"
-                  javascript="${javascript`
-                    leafac.setTippy({
-                      event,
-                      element: this,
-                      tippyProps: {
-                        trigger: "click",
-                        content: "You must confirm your password because this is an important operation that affects your account.",
-                      },
-                    });
+                  You may not remove your account because you signed in via
+                  ${application.configuration.saml[
+                    response.locals.session.samlIdentifier
+                  ].name}.
+                </div>
+              `
+            : html`
+                <form
+                  method="DELETE"
+                  action="https://${application.configuration
+                    .hostname}/settings/account"
+                  novalidate
+                  css="${css`
+                    display: flex;
+                    flex-direction: column;
+                    gap: var(--space--4);
                   `}"
                 >
-                  <i class="bi bi-info-circle"></i>
-                </button>
-              </p>
-              <input
-                type="password"
-                name="passwordConfirmation"
-                required
-                class="input--text"
-              />
-            </div>
+                  <div class="label">
+                    <p class="label--text">
+                      Email Confirmation
+                      <button
+                        type="button"
+                        class="button button--tight button--tight--inline button--transparent"
+                        javascript="${javascript`
+                          leafac.setTippy({
+                            event,
+                            element: this,
+                            tippyProps: {
+                              trigger: "click",
+                              content: "You must confirm your email because this is an important operation that affects your account.",
+                            },
+                          });
+                        `}"
+                      >
+                        <i class="bi bi-info-circle"></i>
+                      </button>
+                    </p>
+                    <input
+                      type="email"
+                      name="emailConfirmation"
+                      required
+                      class="input--text"
+                    />
+                  </div>
+                  <div class="label">
+                    <p class="label--text">
+                      Password Confirmation
+                      <button
+                        type="button"
+                        class="button button--tight button--tight--inline button--transparent"
+                        javascript="${javascript`
+                          leafac.setTippy({
+                            event,
+                            element: this,
+                            tippyProps: {
+                              trigger: "click",
+                              content: "You must confirm your password because this is an important operation that affects your account.",
+                            },
+                          });
+                        `}"
+                      >
+                        <i class="bi bi-info-circle"></i>
+                      </button>
+                    </p>
+                    <input
+                      type="password"
+                      name="passwordConfirmation"
+                      required
+                      class="input--text"
+                    />
+                  </div>
 
-            <div>
-              <button
-                type="button"
-                class="button button--full-width-on-small-screen button--rose"
-                javascript="${javascript`
-                  leafac.setTippy({
-                    event,
-                    element: this,
-                    elementProperty: "dropdown",
-                    tippyProps: {
-                      theme: "rose",
-                      trigger: "click",
-                      interactive: true,
-                      content: ${html`
-                        <div
-                          css="${css`
-                            padding: var(--space--2);
-                            display: flex;
-                            flex-direction: column;
-                            gap: var(--space--4);
-                          `}"
-                        >
-                          <p>Are you sure you want to remove your account?</p>
-                          <p>
-                            <strong
-                              css="${css`
-                                font-weight: var(--font-weight--bold);
-                              `}"
-                            >
-                              You may not undo this action!
-                            </strong>
-                          </p>
-                          <p>
-                            <strong
-                              css="${css`
-                                font-weight: var(--font-weight--bold);
-                              `}"
-                            >
-                              You’ll lose access to Courselore and all the
-                              courses in which you participate.
-                            </strong>
-                          </p>
-                          <button class="button button--rose">
-                            <i class="bi bi-person-x-fill"></i>
-                            Remove Your Account
-                          </button>
-                        </div>
-                      `},  
-                    },
-                  });
-                `}"
-              >
-                <i class="bi bi-person-x-fill"></i>
-                Remove Your Account
-              </button>
-            </div>
-          </form>
+                  <div>
+                    <button
+                      type="button"
+                      class="button button--full-width-on-small-screen button--rose"
+                      javascript="${javascript`
+                        leafac.setTippy({
+                          event,
+                          element: this,
+                          elementProperty: "dropdown",
+                          tippyProps: {
+                            theme: "rose",
+                            trigger: "click",
+                            interactive: true,
+                            content: ${html`
+                              <div
+                                css="${css`
+                                  padding: var(--space--2);
+                                  display: flex;
+                                  flex-direction: column;
+                                  gap: var(--space--4);
+                                `}"
+                              >
+                                <p>
+                                  Are you sure you want to remove your account?
+                                </p>
+                                <p>
+                                  <strong
+                                    css="${css`
+                                      font-weight: var(--font-weight--bold);
+                                    `}"
+                                  >
+                                    You may not undo this action!
+                                  </strong>
+                                </p>
+                                <p>
+                                  <strong
+                                    css="${css`
+                                      font-weight: var(--font-weight--bold);
+                                    `}"
+                                  >
+                                    You’ll lose access to Courselore and all the
+                                    courses in which you participate.
+                                  </strong>
+                                </p>
+                                <button class="button button--rose">
+                                  <i class="bi bi-person-x-fill"></i>
+                                  Remove Your Account
+                                </button>
+                              </div>
+                            `},  
+                          },
+                        });
+                      `}"
+                    >
+                      <i class="bi bi-person-x-fill"></i>
+                      Remove Your Account
+                    </button>
+                  </div>
+                </form>
+              `}
         `,
       })
     );
@@ -2301,7 +2320,8 @@ export default async (application: Application): Promise<void> => {
     asyncHandler(async (request, response, next) => {
       if (
         response.locals.user === undefined ||
-        response.locals.user.emailVerifiedAt === null
+        response.locals.user.emailVerifiedAt === null ||
+        typeof response.locals.session.samlIdentifier === "string"
       )
         return next();
 
