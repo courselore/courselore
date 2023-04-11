@@ -856,10 +856,11 @@ export default async (application: Application): Promise<void> => {
 
       const user = application.database.get<{
         id: number;
+        email: string;
         password: string | null;
       }>(
         sql`
-          SELECT "id", "password" FROM "users" WHERE "email" = ${request.body.email}
+          SELECT "id", "email", "password" FROM "users" WHERE "email" = ${request.body.email}
         `
       );
 
@@ -885,6 +886,38 @@ export default async (application: Application): Promise<void> => {
           )}`
         );
       }
+
+      application.database.run(
+        sql`
+          INSERT INTO "sendEmailJobs" (
+            "createdAt",
+            "startAt",
+            "expiresAt",
+            "mailOptions"
+          )
+          VALUES (
+            ${new Date().toISOString()},
+            ${new Date().toISOString()},
+            ${new Date(Date.now() + 5 * 60 * 1000).toISOString()},
+            ${JSON.stringify({
+              to: user.email,
+              subject: "Signed In",
+              html: html` TODO `,
+            })}
+          )
+        `
+      );
+      application.got
+        .post(
+          `http://127.0.0.1:${application.ports.workerEventsAny}/send-email`
+        )
+        .catch((error) => {
+          response.locals.log(
+            "FAILED TO EMIT ‘/send-email’ EVENT",
+            String(error),
+            error?.stack
+          );
+        });
 
       application.web.locals.helpers.Session.open({
         request,
