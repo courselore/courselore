@@ -11,7 +11,6 @@
 **SAML**
 
 - Implementation
-  - Invitations and their links to sign-in/sign-up and prefilled form data.
   - Send an email saying “You signed in from a new device”
   - Finalize configurations:
     - `development.mjs`
