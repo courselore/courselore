@@ -11,6 +11,7 @@
 **SAML**
 
 - Implementation
+  - Add `samlIdentifier` to `samls` object
   - Invitations and their links to sign-in/sign-up and prefilled form data.
   - Identity-provider initiated sign in, but you’re already signed in
     - And to a different account.
