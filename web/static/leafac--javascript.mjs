@@ -116,7 +116,10 @@ export function liveNavigation() {
           window.location.origin !== responseURL.origin ||
           window.location.pathname !== responseURL.pathname ||
           window.location.search !== responseURL.search) &&
-        !(event instanceof PopStateEvent)
+        (!(event instanceof PopStateEvent) ||
+          requestURL.origin !== responseURL.origin ||
+          requestURL.pathname !== responseURL.pathname ||
+          requestURL.search !== responseURL.search)
       )
         window.history.pushState(undefined, "", responseURL.href);
 
