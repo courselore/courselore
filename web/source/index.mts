@@ -28,7 +28,6 @@ import authentication, {
 } from "./authentication.mjs";
 import healthChecks from "./health-checks.mjs";
 import about from "./about.mjs";
-import help from "./help.mjs";
 import administration, {
   ApplicationAdministration,
 } from "./administration.mjs";
@@ -236,7 +235,6 @@ if (await node.isExecuted(import.meta.url)) {
         await authentication(application);
         await healthChecks(application);
         await about(application);
-        await help(application);
         await administration(application);
         await user(application);
         await course(application);
