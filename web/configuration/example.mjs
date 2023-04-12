@@ -40,6 +40,7 @@ export default {
   // They’re useful, for example, to serve logos for SAML configuration (see below).
   // Files must be immutable. If the contents of a file changes, then change its name as well.
   // staticPaths: [
+  //   // Use the following for paths that are relative to the configuration file.
   //   url.fileURLToPath(new URL("./static/", import.meta.url)),
   // ],
 
@@ -58,6 +59,7 @@ export default {
   //     // - Be approximately 300px in width, matching the other logos visually.
   //     // - Be in WebP format. You may use https://npm.im/sharp-cli to convert from other formats into WebP using the following command:
   //     //   $ npx sharp-cli -i educational-institution--light.png -o educational-institution--light--2023-03-28.webp
+  //     // - Be appropriate for light and dark backgrounds.
   //     logo: {
   //       light: "educational-institution--light--2023-03-28.webp",
   //       dark: "educational-institution--dark--2023-03-28.webp",
