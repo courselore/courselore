@@ -8,27 +8,6 @@
 
 - Implementation
   - Finalize configurations:
-    - `example.mjs`
-      - Provide:
-        - `decryptionCert`
-        - `signingCert`
-      - Don’t provide:
-        - `issuer`
-        - `callbackUrl`
-        - `logoutCallbackUrl`
-        - `validateInResponseTo`
-        - `requestIdExpirationPeriodMs`
-        - `cacheProvider`
-      - Logo should be:
-        - Transparent
-        - WebP
-          - `npx sharp-cli -i johns-hopkins.png -o johns-hopkins.webp`
-        - Immutable
-        - A certain size around 300px of width
-      - URLS
-        - `/saml/<identifier>/metadata`
-        - `/saml/<identifier>/assertion-consumer-service`
-        - `/saml/<identifier>/single-logout-service`
     - `courselore.org.mjs`
 - Testing tools
   - Lightweight
@@ -111,6 +90,7 @@
     - Create the backend that makes sign up with SAML work.
       - Reuse the existing sign-up route, or create a new one?
     - Make invitation name & email work as well?
+    - Document in `example.mjs` that `extractName` is optional.
   - Single logout back channel (synchronous) (SOAP) (server-to-server from identity provider to service provider)
   - Passwords
     - Allow user to create a password after the fact
