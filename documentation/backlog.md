@@ -9,22 +9,26 @@
 - Implementation
   - Finalize configurations:
     - `example.mjs`
-      - The keys must stay the same, because they’ll be stored in the database?
-      - Don’t set for service provider:
-        - `issuer`
-        - `callbackUrl`
-      - But you may provide:
+      - Provide:
         - `decryptionCert`
         - `signingCert`
-        - (For `generateServiceProviderMetadata()`)
+      - Don’t provide:
+        - `issuer`
+        - `callbackUrl`
+        - `logoutCallbackUrl`
+        - `validateInResponseTo`
+        - `requestIdExpirationPeriodMs`
+        - `cacheProvider`
       - Logo should be:
         - Transparent
         - WebP
           - `npx sharp-cli -i johns-hopkins.png -o johns-hopkins.webp`
         - Immutable
         - A certain size around 300px of width
-      - `/saml/<identifier>/metadata`
-      - When removing a SAML option, clear sessions.
+      - URLS
+        - `/saml/<identifier>/metadata`
+        - `/saml/<identifier>/assertion-consumer-service`
+        - `/saml/<identifier>/single-logout-service`
     - `courselore.org.mjs`
 - Testing tools
   - Lightweight
@@ -120,6 +124,7 @@
   - Grab avatar from SAML assertions.
   - Sign up when name isn’t provided by identity provider
   - Have a way for system administrators to turn off sign in via email and password
+  - Introduce a way for system administrators to clear all sessions for when they need to remove a SAML identity provider
 
 ---
 
