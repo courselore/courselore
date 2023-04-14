@@ -20,13 +20,16 @@
 - Swarthmore
   - https://sid.swarthmore.edu/idp/shibboleth
 - Later
-  - When there are many universities, add a filter, similar to Gradescope has, and similar to what we do in the list of enrollments.
-  - Add support for `HTTP-POST` in addition to `HTTP-Redirect`
-  - Long SAML identity provider name may break the interface (use ellipsis to fix it?)
-  - Add support for other `nameIDFormat`s
-    - Store in database: `samlIdentifier`, `nameIDFormat`, and `nameID`
-    - Dealing with transient `nameID`s is tricky
-  - Add support for `emailAdress`es that doesn’t follow our more strict rules for email address format
+  - Infrastructure
+    - Add support for other `nameIDFormat`s
+      - Store in `users` table: `samlIdentifier`, `nameIDFormat`, and `nameID`
+      - Dealing with transient `nameID`s is tricky
+    - Add support for `emailAdress`es that doesn’t follow our more strict rules for email address format
+    - Add support for `HTTP-POST` in addition to `HTTP-Redirect`
+    - Single logout back channel (synchronous) (SOAP) (server-to-server from identity provider to service provider)
+  - Interface
+    - When there are many universities, add a filter to the user interface, similar to Gradescope has, and similar to what we do in the list of enrollments.
+    - Long SAML identity provider name may break the interface (use ellipsis to fix it?)
   - Sign up with SAML if identity provider doesn’t provide a name
     - Create a session without a user, but with an email address instead.
       - It doesn’t have to use a cookie, it can be a short-lived session as a `hidden` field in the form, similar to password reset.
@@ -42,19 +45,19 @@
     - Create the backend that makes sign up with SAML work.
       - Reuse the existing sign-up route, or create a new one?
     - Make invitation name & email work as well?
+    - Grab avatar from SAML assertions.
     - Document in `example.mjs` that `extractName` is optional.
-  - Single logout back channel (synchronous) (SOAP) (server-to-server from identity provider to service provider)
-  - Passwords
-    - Allow user to create a password after the fact
-      - Security concern: When creating a password, you can’t verify that you are yourself by typing in your old password.
-        - Perhaps just use the password reset workflow, which sends an email instead?
-    - Insist on administrators having a password
+  - Changing user information on SAML sign in
+    - Passwords
+      - Allow user to create a password after the fact
+        - Security concern: When creating a password, you can’t verify that you are yourself by typing in your old password.
+          - Perhaps just use the password reset workflow, which sends an email instead?
+      - Insist on administrators having a password
+    - Email
+      - Perhaps have a more elegant solution for when you sign in with SAML and try to change your email, which would cause sign out to not work.
+        - For the time being we just disallow it.
+    - Let the person remove their account that they created via SAML.
   - Allow people to disconnect the SAML identity from their account? (As long as they have a password?)
-  - Trying to change your email when you have signed up via SAML and don’t even have a password
-  - Perhaps have a more elegant solution for when you sign in with SAML and try to change your email. Sign out wouldn’t work, so we just disallow it. (It also deals with the issue of signing up via SAML and trying to create a password.)
-    - Similarly, let the person remove their account that they created via SAML.
-  - Grab avatar from SAML assertions.
-  - Sign up when name isn’t provided by identity provider
   - Have a way for system administrators to turn off sign in via email and password
   - Introduce a way for system administrators to clear all sessions for when they need to remove a SAML identity provider
 
