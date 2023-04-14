@@ -222,22 +222,22 @@ export default async (application: Application): Promise<void> => {
                         <button
                           class="menu-box--item button button--transparent"
                           javascript="${javascript`
-                      leafac.setTippy({
-                        event,
-                        element: this,
-                        tippyProps: {
-                          trigger: "click",
-                          content: ${`You signed in with the email address ${
-                            response.locals.user.email
-                          } via
-                          ${
-                            application.configuration.saml[
-                              response.locals.session.samlIdentifier
-                            ].name
-                          }, but you may already have a Courselore account with a different email address.`},
-                        },
-                      });
-                    `}"
+                            leafac.setTippy({
+                              event,
+                              element: this,
+                              tippyProps: {
+                                trigger: "click",
+                                content: ${`You signed in with the email address ${
+                                  response.locals.user.email
+                                } via
+                                ${
+                                  application.configuration.saml[
+                                    response.locals.session.samlIdentifier
+                                  ].name
+                                }, but you may already have a Courselore account with a different email address.`},
+                              },
+                            });
+                          `}"
                         >
                           <i class="bi bi-question-diamond"></i>
                           Where Are My Courses?
