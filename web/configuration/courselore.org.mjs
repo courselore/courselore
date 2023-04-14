@@ -24,6 +24,64 @@ export default {
     },
   },
   administratorEmail: "administrator@courselore.org",
+  staticPaths: [url.fileURLToPath(new URL("./static/", import.meta.url))],
+  saml: {
+    "johns-hopkins-university": {
+      name: "Johns Hopkins University",
+      logo: {
+        light: "johns-hopkins-university--light--2023-03-28.webp",
+        dark: "johns-hopkins-university--dark--2023-03-28.webp",
+        width: 300,
+      },
+      domains: ["jhu.edu", "jh.edu", "jhmi.edu"],
+      extractName: (samlResponse) => `${samlResponse?.profile?.attributes?.first_name} ${samlResponse?.profile?.attributes?.last_name}`,
+      options: {
+        idpIssuer:
+          "https://idp.jh.edu/idp/shibboleth",
+        entryPoint:
+          "https://idp.jh.edu/idp/profile/SAML2/Redirect/SSO",
+        logoutUrl:
+          "https://login.johnshopkins.edu/cgi-bin/logoff.pl",
+        signatureAlgorithm: "sha256",
+        digestAlgorithm: "sha256",
+        signMetadata: true,
+        cert: await fs.readFile(
+          new URL(
+            "./keys/johns-hopkins-university--saml--identity-provider--signing.crt",
+            import.meta.url
+          ),
+          "utf-8"
+        ),
+        privateKey: await fs.readFile(
+          new URL(
+            "./keys/johns-hopkins-university--saml--service-provider--signing.key",
+            import.meta.url
+          ),
+          "utf-8"
+        ),
+        signingCert: await fs.readFile(
+          new URL(
+            "./keys/johns-hopkins-university--saml--service-provider--signing.crt",
+            import.meta.url
+          ),
+          "utf-8"
+        ),
+        decryptionPvk: await fs.readFile(
+          new URL(
+            "./keys/johns-hopkins-university--saml--service-provider--encryption.key",
+            import.meta.url
+          ),
+          "utf-8"
+        ),
+        decryptionCert: await fs.readFile(
+          new URL(
+            "./keys/johns-hopkins-university--saml--service-provider--encryption.crt",
+            import.meta.url
+          ),
+          "utf-8"
+        ),
+      },
+    },
   alternativeHostnames: [
     "www.courselore.org",
     "courselore.com",

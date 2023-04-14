@@ -85,10 +85,13 @@ export default {
   //     // - requestIdExpirationPeriodMs
   //     // - cacheProvider
   //     options: {
+  //       // The URL of the metadata for the identity provider at the educational institution.
   //       idpIssuer:
   //         "https://identity-provider.educational-institution.edu/metadata",
+  //       // The ‘Location’ given in the ‘SingleSignOnService’ entry with the ‘HTTP-Redirect’ binding.
   //       entryPoint:
   //         "https://identity-provider.educational-institution.edu/single-sign-on",
+  //       // The ‘Location’ given in the ‘SingleLogoutService’ entry with the ‘HTTP-Redirect’ binding.
   //       logoutUrl:
   //         "https://identity-provider.educational-institution.edu/single-logout",
 
@@ -105,6 +108,9 @@ export default {
   //         "utf-8"
   //       ),
 
+  //       // You may create the following keys and certificates with the following commands:
+  //       // $ openssl req -x509 -newkey rsa:2048 -nodes -days 365000 -subj "/" -keyout educational-institution--saml--service-provider--signing.key -out educational-institution--saml--service-provider--signing.crt
+  //       // $ openssl req -x509 -newkey rsa:2048 -nodes -days 365000 -subj "/" -keyout educational-institution--saml--service-provider--encryption.key -out educational-institution--saml--service-provider--encryption.crt
   //       privateKey: await fs.readFile(
   //         new URL(
   //           "./educational-institution--saml--service-provider--signing.key",
