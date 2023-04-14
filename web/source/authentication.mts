@@ -2453,7 +2453,7 @@ export default async (application: Application): Promise<void> => {
     { samlIdentifier: string },
     any,
     { RelayState: string },
-    { redirect?: string; invitation?: { email?: string; name?: string } },
+    {},
     ResponseLocalsSAML &
       Partial<Application["web"]["locals"]["ResponseLocals"]["SignedIn"]>
   >(
@@ -2536,9 +2536,9 @@ export default async (application: Application): Promise<void> => {
           application.web.locals.layouts.box({
             request,
             response,
-            head: html`<title>
-              ${response.locals.saml.name} · Sign In · Courselore
-            </title>`,
+            head: html`
+              <title>${response.locals.saml.name} · Sign In · Courselore</title>
+            `,
             body: html`
               <h2 class="heading">
                 <i class="bi bi-box-arrow-in-right"></i>
@@ -2558,7 +2558,12 @@ export default async (application: Application): Promise<void> => {
                   href="https://${application.configuration
                     .hostname}/saml/${response.locals.saml
                     .samlIdentifier}/authentication-request${qs.stringify(
-                    { redirect: request.query.redirect },
+                    {
+                      redirect:
+                        typeof request.body.RelayState === "string"
+                          ? request.body.RelayState
+                          : undefined,
+                    },
                     { addQueryPrefix: true }
                   )}"
                   class="link"
@@ -2581,7 +2586,12 @@ export default async (application: Application): Promise<void> => {
                 <a
                   href="https://${application.configuration
                     .hostname}/sign-in${qs.stringify(
-                    { redirect: request.query.redirect },
+                    {
+                      redirect:
+                        typeof request.body.RelayState === "string"
+                          ? request.body.RelayState
+                          : undefined,
+                    },
                     { addQueryPrefix: true }
                   )}"
                   class="link"
@@ -2591,7 +2601,12 @@ export default async (application: Application): Promise<void> => {
                 <a
                   href="https://${application.configuration
                     .hostname}/sign-up${qs.stringify(
-                    { redirect: request.query.redirect },
+                    {
+                      redirect:
+                        typeof request.body.RelayState === "string"
+                          ? request.body.RelayState
+                          : undefined,
+                    },
                     { addQueryPrefix: true }
                   )}"
                   class="link"
@@ -2611,9 +2626,9 @@ export default async (application: Application): Promise<void> => {
           application.web.locals.layouts.box({
             request,
             response,
-            head: html`<title>
-              ${response.locals.saml.name} · Sign In · Courselore
-            </title>`,
+            head: html`
+              <title>${response.locals.saml.name} · Sign In · Courselore</title>
+            `,
             body: html`
               <h2 class="heading">
                 <i class="bi bi-box-arrow-in-right"></i>
@@ -2649,7 +2664,12 @@ export default async (application: Application): Promise<void> => {
                 <a
                   href="https://${application.configuration
                     .hostname}/sign-in${qs.stringify(
-                    { redirect: request.query.redirect },
+                    {
+                      redirect:
+                        typeof request.body.RelayState === "string"
+                          ? request.body.RelayState
+                          : undefined,
+                    },
                     { addQueryPrefix: true }
                   )}"
                   class="link"
@@ -2659,7 +2679,12 @@ export default async (application: Application): Promise<void> => {
                 <a
                   href="https://${application.configuration
                     .hostname}/sign-up${qs.stringify(
-                    { redirect: request.query.redirect },
+                    {
+                      redirect:
+                        typeof request.body.RelayState === "string"
+                          ? request.body.RelayState
+                          : undefined,
+                    },
                     { addQueryPrefix: true }
                   )}"
                   class="link"
@@ -2680,9 +2705,9 @@ export default async (application: Application): Promise<void> => {
           application.web.locals.layouts.box({
             request,
             response,
-            head: html`<title>
-              ${response.locals.saml.name} · Sign In · Courselore
-            </title>`,
+            head: html`
+              <title>${response.locals.saml.name} · Sign In · Courselore</title>
+            `,
             body: html`
               <h2 class="heading">
                 <i class="bi bi-box-arrow-in-right"></i>
@@ -2714,7 +2739,12 @@ export default async (application: Application): Promise<void> => {
                 <a
                   href="https://${application.configuration
                     .hostname}/sign-in${qs.stringify(
-                    { redirect: request.query.redirect },
+                    {
+                      redirect:
+                        typeof request.body.RelayState === "string"
+                          ? request.body.RelayState
+                          : undefined,
+                    },
                     { addQueryPrefix: true }
                   )}"
                   class="link"
@@ -2724,7 +2754,12 @@ export default async (application: Application): Promise<void> => {
                 <a
                   href="https://${application.configuration
                     .hostname}/sign-up${qs.stringify(
-                    { redirect: request.query.redirect },
+                    {
+                      redirect:
+                        typeof request.body.RelayState === "string"
+                          ? request.body.RelayState
+                          : undefined,
+                    },
                     { addQueryPrefix: true }
                   )}"
                   class="link"
@@ -2747,9 +2782,9 @@ export default async (application: Application): Promise<void> => {
           application.web.locals.layouts.box({
             request,
             response,
-            head: html`<title>
-              ${response.locals.saml.name} · Sign In · Courselore
-            </title>`,
+            head: html`
+              <title>${response.locals.saml.name} · Sign In · Courselore</title>
+            `,
             body: html`
               <h2 class="heading">
                 <i class="bi bi-box-arrow-in-right"></i>
@@ -2779,7 +2814,12 @@ export default async (application: Application): Promise<void> => {
                 <a
                   href="https://${application.configuration
                     .hostname}/sign-in${qs.stringify(
-                    { redirect: request.query.redirect },
+                    {
+                      redirect:
+                        typeof request.body.RelayState === "string"
+                          ? request.body.RelayState
+                          : undefined,
+                    },
                     { addQueryPrefix: true }
                   )}"
                   class="link"
@@ -2789,7 +2829,12 @@ export default async (application: Application): Promise<void> => {
                 <a
                   href="https://${application.configuration
                     .hostname}/sign-up${qs.stringify(
-                    { redirect: request.query.redirect },
+                    {
+                      redirect:
+                        typeof request.body.RelayState === "string"
+                          ? request.body.RelayState
+                          : undefined,
+                    },
                     { addQueryPrefix: true }
                   )}"
                   class="link"
@@ -2848,7 +2893,12 @@ export default async (application: Application): Promise<void> => {
                   <a
                     href="https://${application.configuration
                       .hostname}/sign-up${qs.stringify(
-                      { redirect: request.query.redirect },
+                      {
+                        redirect:
+                          typeof request.body.RelayState === "string"
+                            ? request.body.RelayState
+                            : undefined,
+                      },
                       { addQueryPrefix: true }
                     )}"
                     class="link"
@@ -3153,9 +3203,11 @@ export default async (application: Application): Promise<void> => {
           application.web.locals.layouts.box({
             request,
             response,
-            head: html`<title>
-              ${response.locals.saml.name} · Sign Out · Courselore
-            </title>`,
+            head: html`
+              <title>
+                ${response.locals.saml.name} · Sign Out · Courselore
+              </title>
+            `,
             body: html`
               <h2 class="heading">
                 <i class="bi bi-box-arrow-right"></i>
@@ -3206,9 +3258,11 @@ export default async (application: Application): Promise<void> => {
           application.web.locals.layouts.box({
             request,
             response,
-            head: html`<title>
-              ${response.locals.saml.name} · Sign Out · Courselore
-            </title>`,
+            head: html`
+              <title>
+                ${response.locals.saml.name} · Sign Out · Courselore
+              </title>
+            `,
             body: html`
               <h2 class="heading">
                 <i class="bi bi-box-arrow-right"></i>
@@ -3255,9 +3309,11 @@ export default async (application: Application): Promise<void> => {
           application.web.locals.layouts.box({
             request,
             response,
-            head: html`<title>
-              ${response.locals.saml.name} · Sign Out · Courselore
-            </title>`,
+            head: html`
+              <title>
+                ${response.locals.saml.name} · Sign Out · Courselore
+              </title>
+            `,
             body: html`
               <h2 class="heading">
                 <i class="bi bi-box-arrow-right"></i>
