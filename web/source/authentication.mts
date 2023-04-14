@@ -733,7 +733,7 @@ export default async (application: Application): Promise<void> => {
                   { addQueryPrefix: true }
                 )}"
                 class="link"
-                >Sign Up</a
+                >Sign up</a
               >.
             </p>
             <p>
@@ -1108,7 +1108,7 @@ export default async (application: Application): Promise<void> => {
                   { addQueryPrefix: true }
                 )}"
                 class="link"
-                >Sign Up</a
+                >Sign up</a
               >.
             </p>
             <p>
@@ -1123,7 +1123,7 @@ export default async (application: Application): Promise<void> => {
                   { addQueryPrefix: true }
                 )}"
                 class="link"
-                >Sign In</a
+                >Sign in</a
               >.
             </p>
           </div>
@@ -1659,7 +1659,7 @@ export default async (application: Application): Promise<void> => {
                   { addQueryPrefix: true }
                 )}"
                 class="link"
-                >Sign In</a
+                >Sign in</a
               >.
             </p>
             <p>
@@ -2290,7 +2290,7 @@ export default async (application: Application): Promise<void> => {
                   { addQueryPrefix: true }
                 )}"
                 class="link"
-                >Sign Up</a
+                >Sign up</a
               >.
             </p>
             <p>
