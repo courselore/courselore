@@ -2465,6 +2465,12 @@ export default async (application: Application): Promise<void> => {
         .validatePostResponseAsync(request.body)
         .catch(() => undefined);
 
+      if (application.configuration.features.saml !== true)
+        response.locals.log(
+          "SAML RESPONSE",
+          JSON.stringify(samlResponse, undefined, 2)
+        );
+
       if (
         response.locals.user !== undefined &&
         response.locals.session !== undefined

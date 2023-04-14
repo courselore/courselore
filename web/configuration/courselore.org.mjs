@@ -34,7 +34,7 @@ export default {
         width: 300,
       },
       domains: ["jhu.edu", "jh.edu", "jhmi.edu"],
-      extractName: (samlResponse) => `${samlResponse?.profile?.attributes?.first_name} ${samlResponse?.profile?.attributes?.last_name}`,
+      extractName: (samlResponse) => `${samlResponse?.profile?.attributes?.first_name ?? ""} ${samlResponse?.profile?.attributes?.last_name ?? ""}`,
       options: {
         idpIssuer:
           "https://idp.jh.edu/idp/shibboleth",

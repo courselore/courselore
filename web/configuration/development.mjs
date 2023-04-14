@@ -41,11 +41,9 @@ export default {
         idpIssuer: "http://localhost:9000/metadata",
         entryPoint: "http://localhost:9000/saml/sso",
         logoutUrl: "http://localhost:9000/saml/slo",
-
         signatureAlgorithm: "sha256",
         digestAlgorithm: "sha256",
         signMetadata: true,
-
         cert: await fs.readFile(
           new URL(
             "./development--saml--identity-provider--signing.crt",
@@ -53,7 +51,6 @@ export default {
           ),
           "utf-8"
         ),
-
         privateKey: await fs.readFile(
           new URL(
             "./development--saml--service-provider--signing.key",
@@ -68,7 +65,6 @@ export default {
           ),
           "utf-8"
         ),
-
         decryptionPvk: await fs.readFile(
           new URL(
             "./development--saml--service-provider--encryption.key",
