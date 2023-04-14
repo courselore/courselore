@@ -3055,6 +3055,12 @@ export default async (application: Application): Promise<void> => {
         .validatePostRequestAsync(request.body)
         .catch(() => undefined);
 
+      if (application.configuration.features.saml !== true)
+        response.locals.log(
+          "SAML REQUEST",
+          JSON.stringify(samlRequest, undefined, 2)
+        );
+
       if (samlRequest !== undefined) {
         if (
           response.locals.user === undefined ||
@@ -3188,6 +3194,12 @@ export default async (application: Application): Promise<void> => {
       const samlResponse = await response.locals.saml.saml
         .validatePostResponseAsync(request.body)
         .catch(() => undefined);
+
+      if (application.configuration.features.saml !== true)
+        response.locals.log(
+          "SAML RESPONSE",
+          JSON.stringify(samlResponse, undefined, 2)
+        );
 
       if (samlResponse === undefined || samlResponse.loggedOut !== true)
         return response.status(422).send(
