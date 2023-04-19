@@ -1375,11 +1375,15 @@ export default async (application: Application): Promise<void> => {
                       line-height: var(--line-height--xs);
                     `}"
                   >
-                    You may not modify your email and password because you
-                    signed in via
+                    You may not modify your email or password because you signed
+                    in via
                     ${application.configuration.saml[
                       response.locals.session.samlIdentifier
-                    ].name}.
+                    ].name}. <br />
+                    If you wish to modify your email or password then sign out
+                    and sign in via password. <br />
+                    If you don’t have a password, use “Reset Password” upon sign
+                    in.
                   </div>
                 </div>
               `
@@ -2174,7 +2178,11 @@ export default async (application: Application): Promise<void> => {
                   You may not remove your account because you signed in via
                   ${application.configuration.saml[
                     response.locals.session.samlIdentifier
-                  ].name}.
+                  ].name}. <br />
+                  If you wish to remove your account then sign out and sign in
+                  via password. <br />
+                  If you don’t have a password, use “Reset Password” upon sign
+                  in.
                 </div>
               `
             : html`

@@ -3,10 +3,6 @@
 ## Finish
 
 - More help
-  - How to change email/password
-    - Sign out
-    - Use reset password.
-  - How to remove account
   - How to “merge” accounts
     - Problem:
       - Sign up with `louie@courselore.org` and password
