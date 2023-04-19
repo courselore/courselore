@@ -227,14 +227,41 @@ export default async (application: Application): Promise<void> => {
                               element: this,
                               tippyProps: {
                                 trigger: "click",
-                                content: ${`You signed in with the email address ${
-                                  response.locals.user.email
-                                } via
-                                ${
-                                  application.configuration.saml[
-                                    response.locals.session.samlIdentifier
-                                  ].name
-                                }, but you may already have a Courselore account with a different email address.`},
+                                interactive: true,
+                                content: ${html`
+                                  <div
+                                    css="${css`
+                                      padding: var(--space--2);
+                                      display: flex;
+                                      flex-direction: column;
+                                      gap: var(--space--4);
+                                    `}"
+                                  >
+                                    <p>
+                                      You signed in with the email address
+                                      ${response.locals.user.email} via
+                                      ${application.configuration.saml[
+                                        response.locals.session.samlIdentifier
+                                      ].name},
+                                      but you may already have a Courselore
+                                      account with a different email address in
+                                      which you enrolled in courses.
+                                    </p>
+
+                                    <p>
+                                      You may want to
+                                      <a
+                                        href="https://${application
+                                          .configuration
+                                          .hostname}/settings/account"
+                                        class="link"
+                                        >remove this account</a
+                                      >
+                                      and modify the email address in the other
+                                      account to ${response.locals.user.email}.
+                                    </p>
+                                  </div>
+                                `},
                               },
                             });
                           `}"
