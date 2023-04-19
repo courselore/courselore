@@ -36,6 +36,11 @@ export default {
   //    In case something goes wrong with the certificate, they’ll contact you at this address.
   administratorEmail: "administrator@your-domain.edu",
 
+  // [OPTIONAL] Feature flags for experimental features.
+  // features: {
+  //   saml: true,
+  // },
+
   // [OPTIONAL] Paths to folders with static files.
   // They’re useful, for example, to serve logos for SAML configuration (see below).
   // Files must be immutable. If the contents of a file changes, then change its name as well.
