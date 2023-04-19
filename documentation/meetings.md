@@ -1,6 +1,14 @@
 # Meetings
 
 <details>
+<summary>2023-04-15</summary>
+
+- Finished SAML.
+- Will start whispers.
+
+</details>
+
+<details>
 <summary>2023-04-08</summary>
 
 - SAML
