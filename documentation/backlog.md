@@ -2,10 +2,10 @@
 
 ## Finish
 
-- Reviewed up to `63ab51c381cc94ad8b6f0f46acffd7c90a4c1db5`
 - More help
   - How to “merge” accounts
   - How to change email/password
+- Reviewed up to `63ab51c381cc94ad8b6f0f46acffd7c90a4c1db5`
 - Write changelog
 - Backup
 - Deploy keys
