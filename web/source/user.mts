@@ -2162,8 +2162,7 @@ export default async (application: Application): Promise<void> => {
             Account
           </h2>
 
-          $${response.locals.user.password === null &&
-          typeof response.locals.session?.samlIdentifier === "string"
+          $${typeof response.locals.session?.samlIdentifier === "string"
             ? html`
                 <div
                   class="secondary"
@@ -2322,7 +2321,8 @@ export default async (application: Application): Promise<void> => {
     asyncHandler(async (request, response, next) => {
       if (
         response.locals.user === undefined ||
-        response.locals.user.emailVerifiedAt === null
+        response.locals.user.emailVerifiedAt === null ||
+        typeof response.locals.session?.samlIdentifier === "string"
       )
         return next();
 
