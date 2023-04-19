@@ -2,8 +2,9 @@
 
 ## Finish
 
-- Change email
 - Change password
+  - Trigger password reset
+- Change email
 - More help
   - How to change email/password
     - Sign out
