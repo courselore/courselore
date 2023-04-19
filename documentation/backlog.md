@@ -2,8 +2,6 @@
 
 ## Finish
 
-- Remove account
-  - If you signed in via SAML but have a password, allow you to remove your account, but don’t single-logout via SAML
 - Change email
 - Change password
 - More help
