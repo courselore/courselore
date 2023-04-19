@@ -12,6 +12,20 @@
 
 ## Unreleased
 
+## 6.1.0
+
+**2023-04-20 · [Download](https://github.com/courselore/courselore/releases/tag/v6.1.0) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
+
+- Added support for single sign-on and single logout with the credentials of educational institutions via SAML.
+
+  See https://github.com/courselore/courselore/blob/8dc06fdfc8760f42f477984543d9058bfc2b27f5/web/configuration/example.mjs for instructions on how to configure it.
+
+  This is the first experimental feature that we release under a feature flag, because it depends on external systems (the identity providers of educational institutions). You may test single sign-on by going to `https://your-domain.edu/saml` and when everything is working show the single sign-on options to your users by enabling the `saml` feature flag in your configuration file (see https://github.com/courselore/courselore/blob/8dc06fdfc8760f42f477984543d9058bfc2b27f5/web/configuration/example.mjs for instructions on how to enable the feature flag).
+
+  Please report back your experience to the Courselore developers at <https://meta.courselore.org> or <development@courselore.org>.
+
+  > Note: As a consequence of introducing SAML, when this version of Courselore is deployed all users will be signed out.
+
 - Fixed styling issues on scrollbars.
 - Added a sign out button to the screen asking you to confirm your email for the case in which you’re in a public computer where you don’t have access to your email and you need to sign out.
 
