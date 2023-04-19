@@ -2,14 +2,6 @@
 
 ## Finish
 
-- Test
-  - Change email
-  - Change password
-  - Remove account
-  - “Merge” accounts
-    - Problem:
-      - Sign up with `louie@courselore.org` and password
-      - Sign up with `leandro@courselore.org` via SAML
 - Reviewed up to `63ab51c381cc94ad8b6f0f46acffd7c90a4c1db5`
 - Write changelog
 - Backup
