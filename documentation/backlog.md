@@ -2,8 +2,11 @@
 
 ## Finish
 
-- More help
-  - How to “merge” accounts
+- Test
+  - Change email
+  - Change password
+  - Remove account
+  - “Merge” accounts
     - Problem:
       - Sign up with `louie@courselore.org` and password
       - Sign up with `leandro@courselore.org` via SAML
