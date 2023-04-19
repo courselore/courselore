@@ -2,7 +2,6 @@
 
 ## Finish
 
-- Write changelog
 - Backup
 - Deploy keys
 - Deploy new version
