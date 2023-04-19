@@ -2,6 +2,10 @@
 
 ## Finish
 
+- Remove account
+  - If you signed in via SAML but have a password, allow you to remove your account, but don’t single-logout via SAML
+- Change email
+- Change password
 - More help
   - How to change email/password
     - Sign out
@@ -1337,6 +1341,7 @@ const { app, BrowserWindow } = require("electron");
 
 ## Infrastructure
 
+- Use `fetch` instead of `got`?
 - Sign out is slow because of `Clear-Site-Data` header (https://bugs.chromium.org/p/chromium/issues/detail?id=762417)
 - Extract component that does reordering (tags, poll options, and so forth).
 - Rename schema to be more explicit, for example, “likes” → “messageLikes”.

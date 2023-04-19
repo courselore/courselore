@@ -31,7 +31,7 @@
     "update": "npm-check-updates --upgrade && npm install"
   },
   "engines": {
-    "node": ">=19"
+    "node": ">=20"
   },
   "dependencies": {
     "@leafac/caddy": "^1.0.5",
