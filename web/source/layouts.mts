@@ -2890,10 +2890,7 @@ export default async (application: Application): Promise<void> => {
                 <button
                   class="button button--transparent ${response.locals.user !==
                     undefined &&
-                  semver.gt(
-                    application.version,
-                    response.locals.user.latestNewsVersion
-                  )
+                  semver.lt(response.locals.user.latestNewsVersion, "6.0.11")
                     ? "strong text--green"
                     : ""}"
                   javascript="${javascript`
