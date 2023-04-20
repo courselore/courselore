@@ -2,10 +2,6 @@
 
 ## Finish
 
-- Backup
-- Deploy keys
-- Deploy new version
-
 **SAML**
 
 - Johns Hopkins SAML
