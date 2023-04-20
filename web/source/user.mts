@@ -1087,7 +1087,6 @@ export default async (application: Application): Promise<void> => {
                       avatarChooser.uploadingIndicator.hide();
                       if (!response.ok) {
                         leafac.setTippy({
-                          event,
                           element: avatarChooser,
                           elementProperty: "uploadingError",
                           tippyProps: {

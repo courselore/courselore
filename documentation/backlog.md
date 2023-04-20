@@ -3,7 +3,6 @@
 ## Finish
 
 - Use `node --test` in other projects: look for uses of the `TEST` environment variable
-- Some `setTippy()`s don’t need the `event`, for example, those inside an `.onclick`. In fact, the `event` may be problematic because it’s the `event` in the closure of when the `.onclick` was set, and it’ll be passed down to `morph()` and `execute()`, which may lead to issues.
 
 **DateTimePicker**
 
@@ -889,6 +888,7 @@ new Notification('Example');
 - Selecting multiple paragraphs and bolding doesn’t work (the same issue occurs in GitHub 🤷)
 - Don’t let `@metions` and `#references` widgets appear if you’re in the middle of a code block.
   - https://courselore.org/courses/8537410611/conversations/64
+- In long messages the widgets like `@mentions` may show out of place 🤦‍♂️
 
 **New Conversation**
 

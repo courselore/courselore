@@ -3279,7 +3279,6 @@ export default async (application: Application): Promise<void> => {
                             (window.locals ??= {}).editPollReference = match.groups.pollReference;
 
                             leafac.setTippy({
-                              event,
                               element: dropdownMenuTarget,
                               elementProperty: "dropdownPollEdit",
                               tippyProps: {
@@ -3304,7 +3303,6 @@ export default async (application: Application): Promise<void> => {
                                           loading.hidden = true;
                                           if (!response.ok) {
                                             leafac.setTippy({
-                                              event,
                                               element: this,
                                               elementProperty: "errorTooltip",
                                               tippyProps: {
