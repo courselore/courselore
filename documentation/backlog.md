@@ -3,7 +3,6 @@
 ## Work in Progress
 
 - Whispers:
-  - Add `whisperAt` column to `messages` table
   - User interface
     - A way to create a whisper
     - Style differences to highlight whispers: font (italics vs regular), font color, and a little icon. Do several such things. Perhaps don’t change the background color. It might be good to make it a little more obvious, e.g. label it as a "staff-only whisper, students cannot see this". Otherwise some new staff may not know what is going on.

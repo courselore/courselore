@@ -1165,7 +1165,8 @@ Message non-existent permanent link turned reference: <https://${
                         "answerAt",
                         "contentSource",
                         "contentPreprocessed",
-                        "contentSearch"
+                        "contentSearch",
+                        "whisperAt"
                       )
                       VALUES (
                         ${messageCreatedAt},
@@ -1199,7 +1200,13 @@ Message non-existent permanent link turned reference: <https://${
                         },
                         ${contentSource},
                         ${contentPreprocessed.contentPreprocessed},
-                        ${contentPreprocessed.contentSearch}
+                        ${contentPreprocessed.contentSearch},
+                        ${
+                          enrollment.courseRole === "staff" &&
+                          Math.random() < 0.1
+                            ? new Date().toISOString()
+                            : null
+                        }
                       )
                     `
                   ).lastInsertRowid

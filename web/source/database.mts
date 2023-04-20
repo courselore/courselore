@@ -1984,7 +1984,11 @@ export default async (application: Application): Promise<void> => {
           END;
         `
       );
-    }
+    },
+
+    sql`
+      ALTER TABLE "messages" ADD COLUMN "whisperAt" TEXT NULL;
+    `
   );
 
   application.database.run(
