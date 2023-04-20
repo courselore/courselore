@@ -377,7 +377,6 @@ const extractStaticCSSAndJavaScript = () => ({
 **Next Priorities**
 
 - Whispers.
-- SAML.
 
 ---
 
@@ -410,7 +409,6 @@ const extractStaticCSSAndJavaScript = () => ({
   - Turn them on as soon as someone who was offline becomes online (right now it may take up to 5 minutes in next periodic Live-Update).
   - Fade in and out.
 - Authentication:
-  - SSO with Hopkins ID (SAML) (https://glacial-plateau-47269.herokuapp.com/).
   - 2-Factor Authentication.
   - Look into SIS to get a list of courses
   - Send an email on sign-in to alert of potentially suspicious activity
@@ -1269,6 +1267,7 @@ const { app, BrowserWindow } = require("electron");
 ## Infrastructure
 
 - SAML
+  - Perhaps there should be a per-identity-provider option of show/hide in the user interface to help you deploy a new identity provider and test it out before users see it.
   - Infrastructure
     - Add support for other `nameIDFormat`s
       - Store in `users` table: `samlIdentifier`, `nameIDFormat`, and `nameID`
