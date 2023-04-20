@@ -34,14 +34,14 @@ export default {
         width: 300,
       },
       domains: ["jhu.edu", "jh.edu", "jhmi.edu"],
-      extractName: (samlResponse) => `${samlResponse?.profile?.attributes?.first_name ?? ""} ${samlResponse?.profile?.attributes?.last_name ?? ""}`,
+      extractName: (samlResponse) =>
+        `${samlResponse?.profile?.attributes?.first_name ?? ""} ${
+          samlResponse?.profile?.attributes?.last_name ?? ""
+        }`,
       options: {
-        idpIssuer:
-          "https://idp.jh.edu/idp/shibboleth",
-        entryPoint:
-          "https://idp.jh.edu/idp/profile/SAML2/Redirect/SSO",
-        logoutUrl:
-          "https://login.johnshopkins.edu/cgi-bin/logoff.pl",
+        idpIssuer: "https://idp.jh.edu/idp/shibboleth",
+        entryPoint: "https://idp.jh.edu/idp/profile/SAML2/Redirect/SSO",
+        logoutUrl: "https://login.johnshopkins.edu/cgi-bin/logoff.pl",
         signatureAlgorithm: "sha256",
         digestAlgorithm: "sha256",
         signMetadata: true,
@@ -82,6 +82,7 @@ export default {
         ),
       },
     },
+  },
   alternativeHostnames: [
     "www.courselore.org",
     "courselore.com",
