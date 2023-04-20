@@ -3,53 +3,6 @@
 ## Finish
 
 - “News” flash green even when there aren’t news for that version.
-
-**SAML**
-
-- Later
-  - Infrastructure
-    - Add support for other `nameIDFormat`s
-      - Store in `users` table: `samlIdentifier`, `nameIDFormat`, and `nameID`
-      - Dealing with transient `nameID`s is tricky
-    - Add support for `emailAdress`es that doesn’t follow our more strict rules for email address format
-    - Add support for `HTTP-POST` in addition to `HTTP-Redirect`
-    - Single logout back channel (synchronous) (SOAP) (server-to-server from identity provider to service provider)
-  - Interface
-    - When there are many universities, add a filter to the user interface, similar to Gradescope has, and similar to what we do in the list of enrollments.
-    - Long SAML identity provider name may break the interface (use ellipsis to fix it?)
-  - Sign up with SAML if identity provider doesn’t provide a name
-    - Create a session without a user, but with an email address instead.
-      - It doesn’t have to use a cookie, it can be a short-lived session as a `hidden` field in the form, similar to password reset.
-        - `flashes`
-          - Yes
-        - `sessions`
-          - No, because token is long-lived, sliding, and there’s a foreign key to the `user`
-        - `passwordResets`
-          - No, because there’s a foreign key to the `user` (but the concept o `nonce` is what we want)
-        - `emailVerifications`
-          - No, because there’s a foreign key to the `user` (but the concept o `nonce` is what we want)
-    - Create user interface with form for name (and other data we might want to ask from the user)
-    - Create the backend that makes sign up with SAML work.
-      - Reuse the existing sign-up route, or create a new one?
-    - Make invitation name & email work as well?
-    - Grab avatar from SAML assertions.
-    - Document in `example.mjs` that `extractName` is optional.
-  - Changing user information on SAML sign in
-    - Passwords
-      - Allow user to create a password after the fact
-        - Security concern: When creating a password, you can’t verify that you are yourself by typing in your old password.
-          - Perhaps just use the password reset workflow, which sends an email instead?
-      - Insist on administrators having a password
-    - Email
-      - Perhaps have a more elegant solution for when you sign in with SAML and try to change your email, which would cause sign out to not work.
-        - For the time being we just disallow it.
-    - Let the person remove their account that they created via SAML.
-  - Allow people to disconnect the SAML identity from their account? (As long as they have a password?)
-  - Have a way for system administrators to turn off sign in via email and password
-  - Introduce a way for system administrators to clear all sessions for when they need to remove a SAML identity provider
-
----
-
 - Use `node --test` in other projects: look for uses of the `TEST` environment variable
 - Some `setTippy()`s don’t need the `event`, for example, those inside an `.onclick`. In fact, the `event` may be problematic because it’s the `event` in the closure of when the `.onclick` was set, and it’ll be passed down to `morph()` and `execute()`, which may lead to issues.
 
@@ -1315,6 +1268,47 @@ const { app, BrowserWindow } = require("electron");
 
 ## Infrastructure
 
+- SAML
+  - Infrastructure
+    - Add support for other `nameIDFormat`s
+      - Store in `users` table: `samlIdentifier`, `nameIDFormat`, and `nameID`
+      - Dealing with transient `nameID`s is tricky
+    - Add support for `emailAdress`es that doesn’t follow our more strict rules for email address format
+    - Add support for `HTTP-POST` in addition to `HTTP-Redirect`
+    - Single logout back channel (synchronous) (SOAP) (server-to-server from identity provider to service provider)
+  - Interface
+    - When there are many universities, add a filter to the user interface, similar to Gradescope has, and similar to what we do in the list of enrollments.
+    - Long SAML identity provider name may break the interface (use ellipsis to fix it?)
+  - Sign up with SAML if identity provider doesn’t provide a name
+    - Create a session without a user, but with an email address instead.
+      - It doesn’t have to use a cookie, it can be a short-lived session as a `hidden` field in the form, similar to password reset.
+        - `flashes`
+          - Yes
+        - `sessions`
+          - No, because token is long-lived, sliding, and there’s a foreign key to the `user`
+        - `passwordResets`
+          - No, because there’s a foreign key to the `user` (but the concept o `nonce` is what we want)
+        - `emailVerifications`
+          - No, because there’s a foreign key to the `user` (but the concept o `nonce` is what we want)
+    - Create user interface with form for name (and other data we might want to ask from the user)
+    - Create the backend that makes sign up with SAML work.
+      - Reuse the existing sign-up route, or create a new one?
+    - Make invitation name & email work as well?
+    - Grab avatar from SAML assertions.
+    - Document in `example.mjs` that `extractName` is optional.
+  - Changing user information on SAML sign in
+    - Passwords
+      - Allow user to create a password after the fact
+        - Security concern: When creating a password, you can’t verify that you are yourself by typing in your old password.
+          - Perhaps just use the password reset workflow, which sends an email instead?
+      - Insist on administrators having a password
+    - Email
+      - Perhaps have a more elegant solution for when you sign in with SAML and try to change your email, which would cause sign out to not work.
+        - For the time being we just disallow it.
+    - Let the person remove their account that they created via SAML.
+  - Allow people to disconnect the SAML identity from their account? (As long as they have a password?)
+  - Have a way for system administrators to turn off sign in via email and password
+  - Introduce a way for system administrators to clear all sessions for when they need to remove a SAML identity provider
 - Use `fetch` instead of `got`?
 - Sign out is slow because of `Clear-Site-Data` header (https://bugs.chromium.org/p/chromium/issues/detail?id=762417)
 - Extract component that does reordering (tags, poll options, and so forth).
