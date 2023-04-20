@@ -2,17 +2,10 @@
 
 ## Finish
 
+- “News” flash green even when there aren’t news for that version.
+
 **SAML**
 
-- Johns Hopkins SAML
-  - Ask Ali for an example of Hopkins request and response
-  - Get an alumni account
-  - Contact the Enterprise Auth team
-    - http://www.it.johnshopkins.edu/services/directoryservices/jhea/Shibboleth/
-    - enterpriseauth@jhmi.edu
-  - Example of service provider metadata https://glacial-plateau-47269.herokuapp.com/jhu/metadata
-- Swarthmore
-  - https://sid.swarthmore.edu/idp/shibboleth
 - Later
   - Infrastructure
     - Add support for other `nameIDFormat`s
