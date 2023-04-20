@@ -3,15 +3,26 @@
 ## Work in Progress
 
 - Whispers:
-  - Similar to Discourse
-  - Staff-only messages
-  - Disclosure button to show/hide all whispers
-    - On load, it’s showing
-    - On new whisper, show again
-    - The point is: Don’t let people miss whispers
-  - There’s no way to convert back and forth between regular messages & whispers. If necessary, delete and send another message.
-  - Style differences to highlight whispers: font (italics vs regular), font color, and a little icon. Do several such things. Perhaps don’t change the background color. It might be good to make it a little more obvious, e.g. label it as a "staff-only whisper, students cannot see this". Otherwise some new staff may not know what is going on.
+  - Add `whisperAt` column to `messages` table
+  - User interface
+    - A way to create a whisper
+    - Style differences to highlight whispers: font (italics vs regular), font color, and a little icon. Do several such things. Perhaps don’t change the background color. It might be good to make it a little more obvious, e.g. label it as a "staff-only whisper, students cannot see this". Otherwise some new staff may not know what is going on.
+    - Disclosure button to show/hide whispers
+      - On load, it’s showing
+      - On new whisper, show again
+      - The point is: Don’t let people miss whispers
+  - Only staff may create
+  - Only staff may see (even the author, if they had been staff and are now student, may not see their own whispers anymore)
+  - Edge cases:
+    - `"conversations"."updatedAt"` should be updated or not?
+    - Should email notifications be sent?
+      - Certainly not to students
+    - Reply
+    - Count of messages in conversation
+    - Count of unread messages
+    - There’s no way to convert back and forth between regular messages & whispers. If necessary, delete and send another message.
   - Talk about it on home page.
+  - Reference: Discourse
 
 **DateTimePicker**
 
