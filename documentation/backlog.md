@@ -12,6 +12,8 @@
       - The point is: Don’t let people miss whispers
   - Only staff may create
   - Only staff may see (even the author, if they had been staff and are now student, may not see their own whispers anymore)
+  - Discuss:
+    - No whispers in chats, right?
   - Edge cases:
     - `"conversations"."updatedAt"` should be updated or not?
     - Should email notifications be sent?

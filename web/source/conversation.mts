@@ -9044,6 +9044,10 @@ export default async (application: Application): Promise<void> => {
                                     `},
                                   },
                                 });
+
+                                const textarea = this.closest("form").querySelector('[key="content-editor--write--textarea"]');
+
+                                (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+enter", () => { this.click(); return false; });
                               `}"
                             >
                               <i
@@ -9190,49 +9194,48 @@ export default async (application: Application): Promise<void> => {
                           </div>
                         </div>
                       `}
+                  $${response.locals.conversation.type !== "chat"
+                    ? html`
+                        <div>
+                          <button
+                            class="button button--full-width-on-small-screen button--blue"
+                            javascript="${javascript`
+                              leafac.setTippy({
+                                event,
+                                element: this,
+                                tippyProps: {
+                                  touch: false,
+                                  content: ${html`
+                                    <span class="keyboard-shortcut">
+                                      <span
+                                        javascript="${javascript`
+                                          this.hidden = leafac.isAppleDevice;
+                                        `}"
+                                        >Ctrl+Enter</span
+                                      ><span
+                                        class="keyboard-shortcut--cluster"
+                                        javascript="${javascript`
+                                          this.hidden = !leafac.isAppleDevice;
+                                        `}"
+                                        ><i class="bi bi-command"></i
+                                        ><i class="bi bi-arrow-return-left"></i
+                                      ></span>
+                                    </span>
+                                  `},
+                                },
+                              });
 
-                  <div
-                    $${response.locals.conversation.type === "chat"
-                      ? html`hidden`
-                      : html``}
-                  >
-                    <button
-                      class="button button--full-width-on-small-screen button--blue"
-                      javascript="${javascript`
-                        leafac.setTippy({
-                          event,
-                          element: this,
-                          tippyProps: {
-                            touch: false,
-                            content: ${html`
-                              <span class="keyboard-shortcut">
-                                <span
-                                  javascript="${javascript`
-                                    this.hidden = leafac.isAppleDevice;
-                                  `}"
-                                  >Ctrl+Enter</span
-                                ><span
-                                  class="keyboard-shortcut--cluster"
-                                  javascript="${javascript`
-                                    this.hidden = !leafac.isAppleDevice;
-                                  `}"
-                                  ><i class="bi bi-command"></i
-                                  ><i class="bi bi-arrow-return-left"></i
-                                ></span>
-                              </span>
-                            `},
-                          },
-                        });
+                              const textarea = this.closest("form").querySelector('[key="content-editor--write--textarea"]');
 
-                        const textarea = this.closest("form").querySelector('[key="content-editor--write--textarea"]');
-
-                        (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+enter", () => { this.click(); return false; });    
-                      `}"
-                    >
-                      <i class="bi bi-send-fill"></i>
-                      Send Message
-                    </button>
-                  </div>
+                              (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+enter", () => { this.click(); return false; });    
+                            `}"
+                          >
+                            <i class="bi bi-send-fill"></i>
+                            Send Message
+                          </button>
+                        </div>
+                      `
+                    : html``}
                 </div>
               </form>
             </div>
