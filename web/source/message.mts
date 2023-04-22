@@ -1262,7 +1262,12 @@ export default async (application: Application): Promise<void> => {
   application.web.post<
     { courseReference: string; conversationReference: string },
     HTML,
-    { isAnswer?: "on"; content?: string; isAnonymous?: "on" },
+    {
+      content?: string;
+      isAnonymous?: "on";
+      isAnswer?: "on";
+      isWhisper?: "on";
+    },
     {
       conversations?: object;
       messages?: object;
@@ -1274,14 +1279,18 @@ export default async (application: Application): Promise<void> => {
       if (response.locals.conversation === undefined) return next();
 
       if (
-        ![undefined, "on"].includes(request.body.isAnswer) ||
-        (request.body.isAnswer === "on" &&
-          response.locals.conversation.type !== "question") ||
         typeof request.body.content !== "string" ||
         request.body.content.trim() === "" ||
         ![undefined, "on"].includes(request.body.isAnonymous) ||
         (request.body.isAnonymous === "on" &&
-          response.locals.enrollment.courseRole === "staff")
+          response.locals.enrollment.courseRole === "staff") ||
+        ![undefined, "on"].includes(request.body.isAnswer) ||
+        (request.body.isAnswer === "on" &&
+          response.locals.conversation.type !== "question") ||
+        ![undefined, "on"].includes(request.body.isWhisper) ||
+        (request.body.isWhisper === "on" &&
+          (response.locals.conversation.type === "chat" ||
+            response.locals.enrollment.courseRole !== "staff"))
       )
         return next("Validation");
 
@@ -1388,7 +1397,8 @@ export default async (application: Application): Promise<void> => {
                       "answerAt",
                       "contentSource",
                       "contentPreprocessed",
-                      "contentSearch"
+                      "contentSearch",
+                      "whisperAt"
                     )
                     VALUES (
                       ${new Date().toISOString()},
@@ -1409,7 +1419,12 @@ export default async (application: Application): Promise<void> => {
                       },
                       ${request.body.content},
                       ${contentPreprocessed.contentPreprocessed},
-                      ${contentPreprocessed.contentSearch}
+                      ${contentPreprocessed.contentSearch},
+                      ${
+                        request.body.isWhisper === "on"
+                          ? new Date().toISOString()
+                          : null
+                      }
                     )
                   `
                 ).lastInsertRowid
