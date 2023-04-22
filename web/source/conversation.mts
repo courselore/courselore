@@ -9231,6 +9231,22 @@ export default async (application: Application): Promise<void> => {
                               `
                             : html``;
 
+                        const sendWhisper =
+                          response.locals.enrollment.courseRole === "staff"
+                            ? html`
+                                <div>
+                                  <button
+                                    name="isWhisper"
+                                    value="on"
+                                    class="button button--full-width-on-small-screen button--sky"
+                                  >
+                                    <i class="bi bi-mortarboard-fill"></i>
+                                    Send Whisper
+                                  </button>
+                                </div>
+                              `
+                            : html``;
+
                         return html`
                           <div
                             css="${css`
@@ -9243,6 +9259,7 @@ export default async (application: Application): Promise<void> => {
                             $${sendAnswerFirst
                               ? html`$${sendAnswer} $${sendMessage}`
                               : html`$${sendMessage} $${sendAnswer}`}
+                            $${sendWhisper}
                           </div>
                         `;
                       })()
