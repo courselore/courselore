@@ -1,6 +1,16 @@
 # Meetings
 
 <details>
+<summary>2023-04-22</summary>
+
+- Deployed SAML
+- Email on sign in?
+- Homework grading application
+- Questions about whispers
+
+</details>
+
+<details>
 <summary>2023-04-15</summary>
 
 - Finished SAML.

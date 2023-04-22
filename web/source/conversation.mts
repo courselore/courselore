@@ -8918,67 +8918,6 @@ export default async (application: Application): Promise<void> => {
                         gap: var(--space--4);
                       `}"
                 >
-                  $${response.locals.conversation.type === "question"
-                    ? html`
-                        <div class="label">
-                          <p class="label--text">Type</p>
-                          <div
-                            css="${css`
-                              display: flex;
-                            `}"
-                          >
-                            <label
-                              class="button button--tight button--tight--inline button--transparent"
-                            >
-                              <input
-                                type="checkbox"
-                                name="isAnswer"
-                                $${typeof response.locals.messageDraft
-                                  ?.answerAt === "string" ||
-                                (response.locals.messageDraft === undefined &&
-                                  response.locals.enrollment.courseRole ===
-                                    "staff")
-                                  ? html`checked`
-                                  : html``}
-                                class="visually-hidden input--radio-or-checkbox--multilabel"
-                              />
-                              <span
-                                javascript="${javascript`
-                                  leafac.setTippy({
-                                    event,
-                                    element: this,
-                                    tippyProps: {
-                                      touch: false,
-                                      content: "Set as Answer",
-                                    },
-                                  });
-                                `}"
-                              >
-                                <i class="bi bi-patch-check"></i>
-                                Not an Answer
-                              </span>
-                              <span
-                                class="text--emerald"
-                                javascript="${javascript`
-                                  leafac.setTippy({
-                                    event,
-                                    element: this,
-                                    tippyProps: {
-                                      touch: false,
-                                      content: "Set as Not an Answer",
-                                    },
-                                  });
-                                `}"
-                              >
-                                <i class="bi bi-patch-check-fill"></i>
-                                Answer
-                              </span>
-                            </label>
-                          </div>
-                        </div>
-                      `
-                    : html``}
-
                   <div
                     css="${css`
                       display: flex;
@@ -9195,46 +9134,121 @@ export default async (application: Application): Promise<void> => {
                         </div>
                       `}
                   $${response.locals.conversation.type !== "chat"
-                    ? html`
-                        <div>
-                          <button
-                            class="button button--full-width-on-small-screen button--blue"
-                            javascript="${javascript`
-                              leafac.setTippy({
-                                event,
-                                element: this,
-                                tippyProps: {
-                                  touch: false,
-                                  content: ${html`
-                                    <span class="keyboard-shortcut">
-                                      <span
-                                        javascript="${javascript`
-                                          this.hidden = leafac.isAppleDevice;
-                                        `}"
-                                        >Ctrl+Enter</span
-                                      ><span
-                                        class="keyboard-shortcut--cluster"
-                                        javascript="${javascript`
-                                          this.hidden = !leafac.isAppleDevice;
-                                        `}"
-                                        ><i class="bi bi-command"></i
-                                        ><i class="bi bi-arrow-return-left"></i
-                                      ></span>
-                                    </span>
-                                  `},
-                                },
-                              });
+                    ? (() => {
+                        const sendAnswerFirst =
+                          response.locals.conversation.type === "question" &&
+                          response.locals.enrollment.courseRole === "staff";
 
-                              const textarea = this.closest("form").querySelector('[key="content-editor--write--textarea"]');
+                        const sendMessage = html`
+                          <div>
+                            <button
+                              class="button button--full-width-on-small-screen button--blue"
+                              javascript="${javascript`
+                                if (${sendAnswerFirst}) return;
 
-                              (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+enter", () => { this.click(); return false; });    
+                                leafac.setTippy({
+                                  event,
+                                  element: this,
+                                  tippyProps: {
+                                    touch: false,
+                                    content: ${html`
+                                      <span class="keyboard-shortcut">
+                                        <span
+                                          javascript="${javascript`
+                                            this.hidden = leafac.isAppleDevice;
+                                          `}"
+                                          >Ctrl+Enter</span
+                                        ><span
+                                          class="keyboard-shortcut--cluster"
+                                          javascript="${javascript`
+                                            this.hidden = !leafac.isAppleDevice;
+                                          `}"
+                                          ><i class="bi bi-command"></i
+                                          ><i
+                                            class="bi bi-arrow-return-left"
+                                          ></i
+                                        ></span>
+                                      </span>
+                                    `},
+                                  },
+                                });
+      
+                                const textarea = this.closest("form").querySelector('[key="content-editor--write--textarea"]');
+      
+                                (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+enter", () => { this.click(); return false; });
+                              `}"
+                            >
+                              <i class="bi bi-send-fill"></i>
+                              Send Message
+                            </button>
+                          </div>
+                        `;
+
+                        const sendAnswer =
+                          response.locals.conversation.type === "question"
+                            ? html`
+                                <div>
+                                  <button
+                                    name="isAnswer"
+                                    value="on"
+                                    class="button button--full-width-on-small-screen button--emerald"
+                                    javascript="${javascript`
+                                      if (${!sendAnswerFirst}) return;
+
+                                      leafac.setTippy({
+                                        event,
+                                        element: this,
+                                        tippyProps: {
+                                          touch: false,
+                                          content: ${html`
+                                            <span class="keyboard-shortcut">
+                                              <span
+                                                javascript="${javascript`
+                                                  this.hidden = leafac.isAppleDevice;
+                                                `}"
+                                                >Ctrl+Enter</span
+                                              ><span
+                                                class="keyboard-shortcut--cluster"
+                                                javascript="${javascript`
+                                                  this.hidden = !leafac.isAppleDevice;
+                                                `}"
+                                                ><i class="bi bi-command"></i
+                                                ><i
+                                                  class="bi bi-arrow-return-left"
+                                                ></i
+                                              ></span>
+                                            </span>
+                                          `},
+                                        },
+                                      });
+            
+                                      const textarea = this.closest("form").querySelector('[key="content-editor--write--textarea"]');
+            
+                                      (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+enter", () => { this.click(); return false; });
+                                    `}"
+                                  >
+                                    <i class="bi bi-patch-check-fill"></i>
+                                    Send Answer
+                                  </button>
+                                </div>
+                              `
+                            : html``;
+
+                        return html`
+                          <div
+                            css="${css`
+                              display: flex;
+                              column-gap: var(--space--4);
+                              row-gap: var(--space--2);
+                              flex-wrap: wrap;
                             `}"
                           >
-                            <i class="bi bi-send-fill"></i>
-                            Send Message
-                          </button>
-                        </div>
-                      `
+                            $${sendAnswerFirst
+                              ? html`$${sendAnswer} $${sendMessage}`
+                              : html`$${sendMessage} $${sendAnswer}`}
+                          </div>
+                        `;
+                      })()
                     : html``}
                 </div>
               </form>

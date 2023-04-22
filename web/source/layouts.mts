@@ -686,7 +686,7 @@ export default async (application: Application): Promise<void> => {
                   }
                 }
 
-                ${["blue", "green", "rose", "amber"].map(
+                ${["blue", "green", "rose", "amber", "emerald"].map(
                   (color) => css`
                     &.button--${color} {
                       color: var(--color--${color}--50);
