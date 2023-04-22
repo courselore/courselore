@@ -7715,342 +7715,369 @@ export default async (application: Application): Promise<void> => {
                                           let header = html``;
 
                                           if (
-                                            application.web.locals.helpers.mayEditMessage(
-                                              {
-                                                request,
-                                                response,
-                                                message,
-                                              }
-                                            ) &&
-                                            message.reference !== "1" &&
-                                            response.locals.conversation
-                                              .type === "question"
-                                          )
-                                            header += html`
-                                              <form
-                                                method="PATCH"
-                                                action="https://${application
-                                                  .configuration
-                                                  .hostname}/courses/${response
-                                                  .locals.course
-                                                  .reference}/conversations/${response
-                                                  .locals.conversation
-                                                  .reference}/messages/${message.reference}${qs.stringify(
-                                                  {
-                                                    conversations:
-                                                      request.query
-                                                        .conversations,
-                                                    messages:
-                                                      request.query.messages,
-                                                  },
-                                                  { addQueryPrefix: true }
-                                                )}"
-                                              >
-                                                $${message.answerAt === null
-                                                  ? html`
-                                                      <input
-                                                        key="isAnswer--true"
-                                                        type="hidden"
-                                                        name="isAnswer"
-                                                        value="true"
-                                                      />
-                                                      <button
-                                                        class="button button--tight button--tight--inline button--tight-gap button--transparent"
-                                                        javascript="${javascript`
-                                                          leafac.setTippy({
-                                                            event,
-                                                            element: this,
-                                                            tippyProps: {
-                                                              touch: false,
-                                                              content: "Set as Answer",
-                                                            },
-                                                          });
-                                                        `}"
-                                                      >
-                                                        <i
-                                                          class="bi bi-patch-check"
-                                                        ></i>
-                                                        Not an Answer
-                                                      </button>
-                                                    `
-                                                  : html`
-                                                      <input
-                                                        key="isAnswer--false"
-                                                        type="hidden"
-                                                        name="isAnswer"
-                                                        value="false"
-                                                      />
-                                                      <button
-                                                        class="button button--tight button--tight--inline button--tight-gap button--transparent text--emerald"
-                                                        javascript="${javascript`
-                                                          leafac.setTippy({
-                                                            event,
-                                                            element: this,
-                                                            tippyProps: {
-                                                              touch: false,
-                                                              content: "Set as Not an Answer",
-                                                            },
-                                                          });
-                                                        `}"
-                                                      >
-                                                        <i
-                                                          class="bi bi-patch-check-fill"
-                                                        ></i>
-                                                        Answer
-                                                      </button>
-                                                    `}
-                                              </form>
-                                            `;
-                                          else if (
-                                            message.reference !== "1" &&
-                                            response.locals.conversation
-                                              .type === "question" &&
-                                            message.answerAt !== null
-                                          )
-                                            header += html`
-                                              <div class="text--emerald">
-                                                <i
-                                                  class="bi bi-patch-check-fill"
-                                                ></i>
-                                                Answer
-                                              </div>
-                                            `;
-
-                                          if (
-                                            application.web.locals.helpers.mayEndorseMessage(
-                                              {
-                                                request,
-                                                response,
-                                                message,
-                                              }
-                                            )
-                                          ) {
-                                            const isEndorsed =
-                                              message.endorsements.some(
-                                                (endorsement) =>
-                                                  endorsement.enrollment !==
-                                                    "no-longer-enrolled" &&
-                                                  endorsement.enrollment.id ===
-                                                    response.locals.enrollment
-                                                      .id
-                                              );
-
-                                            header += html`
-                                              <form
-                                                method="${isEndorsed
-                                                  ? "DELETE"
-                                                  : "POST"}"
-                                                action="https://${application
-                                                  .configuration
-                                                  .hostname}/courses/${response
-                                                  .locals.course
-                                                  .reference}/conversations/${response
-                                                  .locals.conversation
-                                                  .reference}/messages/${message.reference}/endorsements${qs.stringify(
-                                                  {
-                                                    conversations:
-                                                      request.query
-                                                        .conversations,
-                                                    messages:
-                                                      request.query.messages,
-                                                  },
-                                                  { addQueryPrefix: true }
-                                                )}"
-                                              >
-                                                $${isEndorsed
-                                                  ? html`
-                                                      <button
-                                                        class="button button--tight button--tight--inline button--tight-gap button--transparent text--blue"
-                                                        javascript="${javascript`
-                                                          leafac.setTippy({
-                                                            event,
-                                                            element: this,
-                                                            tippyProps: {
-                                                              touch: false,
-                                                              content: ${`Remove Endorsement${
-                                                                message.endorsements.filter(
-                                                                  (
-                                                                    endorsement
-                                                                  ) =>
-                                                                    endorsement.enrollment !==
-                                                                      "no-longer-enrolled" &&
-                                                                    endorsement
-                                                                      .enrollment
-                                                                      .id !==
-                                                                      response
-                                                                        .locals
-                                                                        .enrollment
-                                                                        .id
-                                                                ).length > 0
-                                                                  ? ` (Also endorsed by ${
-                                                                      /* FIXME: https://github.com/microsoft/TypeScript/issues/29129 */ new (
-                                                                        Intl as any
-                                                                      ).ListFormat(
-                                                                        "en"
-                                                                      ).format(
-                                                                        message.endorsements.flatMap(
-                                                                          (
-                                                                            endorsement
-                                                                          ) =>
-                                                                            endorsement.enrollment !==
-                                                                              "no-longer-enrolled" &&
-                                                                            endorsement
-                                                                              .enrollment
-                                                                              .id !==
-                                                                              response
-                                                                                .locals
-                                                                                .enrollment
-                                                                                .id
-                                                                              ? [
-                                                                                  endorsement
-                                                                                    .enrollment
-                                                                                    .user
-                                                                                    .name,
-                                                                                ]
-                                                                              : []
-                                                                        )
-                                                                      )
-                                                                    })`
-                                                                  : ``
-                                                              }`},  
-                                                            },
-                                                          });
-                                                        `}"
-                                                      >
-                                                        <i
-                                                          class="bi bi-award-fill"
-                                                        ></i>
-                                                        ${message.endorsements.length.toString()}
-                                                        Staff
-                                                        Endorsement${message
-                                                          .endorsements
-                                                          .length === 1
-                                                          ? ""
-                                                          : "s"}
-                                                      </button>
-                                                    `
-                                                  : html`
-                                                      <button
-                                                        class="button button--tight button--tight--inline button--tight-gap button--transparent text--lime"
-                                                        $${message.endorsements.filter(
-                                                          (endorsement) =>
-                                                            endorsement.enrollment !==
-                                                            "no-longer-enrolled"
-                                                        ).length === 0
-                                                          ? html``
-                                                          : html`
-                                                              javascript="${javascript`
-                                                                leafac.setTippy({
-                                                                  event,
-                                                                  element: this,
-                                                                  tippyProps: {
-                                                                    touch: false,
-                                                                    content: ${`Endorse (Already endorsed by ${
-                                                                      /* FIXME: https://github.com/microsoft/TypeScript/issues/29129 */ new (
-                                                                        Intl as any
-                                                                      ).ListFormat(
-                                                                        "en"
-                                                                      ).format(
-                                                                        message.endorsements.flatMap(
-                                                                          (
-                                                                            endorsement
-                                                                          ) =>
-                                                                            endorsement.enrollment ===
-                                                                            "no-longer-enrolled"
-                                                                              ? []
-                                                                              : [
-                                                                                  endorsement
-                                                                                    .enrollment
-                                                                                    .user
-                                                                                    .name,
-                                                                                ]
-                                                                        )
-                                                                      )
-                                                                    })`},  
-                                                                  },
-                                                                });
-                                                              `}"
-                                                            `}
-                                                      >
-                                                        <i
-                                                          class="bi bi-award"
-                                                        ></i>
-                                                        ${message.endorsements
-                                                          .length === 0
-                                                          ? `Endorse`
-                                                          : `${
-                                                              message
-                                                                .endorsements
-                                                                .length
-                                                            }
-                                                            Staff Endorsement${
-                                                              message
-                                                                .endorsements
-                                                                .length === 1
-                                                                ? ""
-                                                                : "s"
-                                                            }`}
-                                                      </button>
-                                                    `}
-                                              </form>
-                                            `;
-                                          } else if (
-                                            response.locals.conversation
-                                              .type === "question" &&
-                                            (message.authorEnrollment ===
-                                              "no-longer-enrolled" ||
-                                              message.authorEnrollment
-                                                .courseRole !== "staff") &&
-                                            message.endorsements.length > 0
+                                            typeof message.whisperAt ===
+                                            "string"
                                           )
                                             header += html`
                                               <div
-                                                class="text--lime"
+                                                class="text--sky"
                                                 javascript="${javascript`
-                                                  if (${
-                                                    message.endorsements.filter(
-                                                      (endorsement) =>
-                                                        endorsement.enrollment !==
-                                                        "no-longer-enrolled"
-                                                    ).length > 0
-                                                  })
-                                                    leafac.setTippy({
-                                                      event,
-                                                      element: this,
-                                                      tippyProps: {
-                                                        content: ${`Endorsed by ${
-                                                          /* FIXME: https://github.com/microsoft/TypeScript/issues/29129 */ new (
-                                                            Intl as any
-                                                          ).ListFormat(
-                                                            "en"
-                                                          ).format(
-                                                            message.endorsements.flatMap(
-                                                              (endorsement) =>
-                                                                endorsement.enrollment ===
-                                                                "no-longer-enrolled"
-                                                                  ? []
-                                                                  : [
-                                                                      endorsement
-                                                                        .enrollment
-                                                                        .user
-                                                                        .name,
-                                                                    ]
-                                                            )
-                                                          )
-                                                        }`},  
-                                                      },
-                                                    });
+                                                  leafac.setTippy({
+                                                    event,
+                                                    element: this,
+                                                    tippyProps: {
+                                                      touch: false,
+                                                      content: "Whispers are messages visible to staff only",
+                                                    },
+                                                  });
                                                 `}"
                                               >
-                                                <i class="bi bi-award"></i>
-                                                ${message.endorsements.length.toString()}
-                                                Staff
-                                                Endorsement${message
-                                                  .endorsements.length === 1
-                                                  ? ""
-                                                  : "s"}
+                                                <i
+                                                  class="bi bi-mortarboard-fill"
+                                                ></i>
+                                                Whisper
                                               </div>
                                             `;
+                                          else {
+                                            if (
+                                              application.web.locals.helpers.mayEditMessage(
+                                                {
+                                                  request,
+                                                  response,
+                                                  message,
+                                                }
+                                              ) &&
+                                              message.reference !== "1" &&
+                                              response.locals.conversation
+                                                .type === "question"
+                                            )
+                                              header += html`
+                                                <form
+                                                  method="PATCH"
+                                                  action="https://${application
+                                                    .configuration
+                                                    .hostname}/courses/${response
+                                                    .locals.course
+                                                    .reference}/conversations/${response
+                                                    .locals.conversation
+                                                    .reference}/messages/${message.reference}${qs.stringify(
+                                                    {
+                                                      conversations:
+                                                        request.query
+                                                          .conversations,
+                                                      messages:
+                                                        request.query.messages,
+                                                    },
+                                                    { addQueryPrefix: true }
+                                                  )}"
+                                                >
+                                                  $${message.answerAt === null
+                                                    ? html`
+                                                        <input
+                                                          key="isAnswer--true"
+                                                          type="hidden"
+                                                          name="isAnswer"
+                                                          value="true"
+                                                        />
+                                                        <button
+                                                          class="button button--tight button--tight--inline button--tight-gap button--transparent"
+                                                          javascript="${javascript`
+                                                            leafac.setTippy({
+                                                              event,
+                                                              element: this,
+                                                              tippyProps: {
+                                                                touch: false,
+                                                                content: "Set as Answer",
+                                                              },
+                                                            });
+                                                          `}"
+                                                        >
+                                                          <i
+                                                            class="bi bi-patch-check"
+                                                          ></i>
+                                                          Not an Answer
+                                                        </button>
+                                                      `
+                                                    : html`
+                                                        <input
+                                                          key="isAnswer--false"
+                                                          type="hidden"
+                                                          name="isAnswer"
+                                                          value="false"
+                                                        />
+                                                        <button
+                                                          class="button button--tight button--tight--inline button--tight-gap button--transparent text--emerald"
+                                                          javascript="${javascript`
+                                                            leafac.setTippy({
+                                                              event,
+                                                              element: this,
+                                                              tippyProps: {
+                                                                touch: false,
+                                                                content: "Set as Not an Answer",
+                                                              },
+                                                            });
+                                                          `}"
+                                                        >
+                                                          <i
+                                                            class="bi bi-patch-check-fill"
+                                                          ></i>
+                                                          Answer
+                                                        </button>
+                                                      `}
+                                                </form>
+                                              `;
+                                            else if (
+                                              message.reference !== "1" &&
+                                              response.locals.conversation
+                                                .type === "question" &&
+                                              message.answerAt !== null
+                                            )
+                                              header += html`
+                                                <div class="text--emerald">
+                                                  <i
+                                                    class="bi bi-patch-check-fill"
+                                                  ></i>
+                                                  Answer
+                                                </div>
+                                              `;
+
+                                            if (
+                                              application.web.locals.helpers.mayEndorseMessage(
+                                                {
+                                                  request,
+                                                  response,
+                                                  message,
+                                                }
+                                              )
+                                            ) {
+                                              const isEndorsed =
+                                                message.endorsements.some(
+                                                  (endorsement) =>
+                                                    endorsement.enrollment !==
+                                                      "no-longer-enrolled" &&
+                                                    endorsement.enrollment
+                                                      .id ===
+                                                      response.locals.enrollment
+                                                        .id
+                                                );
+
+                                              header += html`
+                                                <form
+                                                  method="${isEndorsed
+                                                    ? "DELETE"
+                                                    : "POST"}"
+                                                  action="https://${application
+                                                    .configuration
+                                                    .hostname}/courses/${response
+                                                    .locals.course
+                                                    .reference}/conversations/${response
+                                                    .locals.conversation
+                                                    .reference}/messages/${message.reference}/endorsements${qs.stringify(
+                                                    {
+                                                      conversations:
+                                                        request.query
+                                                          .conversations,
+                                                      messages:
+                                                        request.query.messages,
+                                                    },
+                                                    { addQueryPrefix: true }
+                                                  )}"
+                                                >
+                                                  $${isEndorsed
+                                                    ? html`
+                                                        <button
+                                                          class="button button--tight button--tight--inline button--tight-gap button--transparent text--blue"
+                                                          javascript="${javascript`
+                                                            leafac.setTippy({
+                                                              event,
+                                                              element: this,
+                                                              tippyProps: {
+                                                                touch: false,
+                                                                content: ${`Remove Endorsement${
+                                                                  message.endorsements.filter(
+                                                                    (
+                                                                      endorsement
+                                                                    ) =>
+                                                                      endorsement.enrollment !==
+                                                                        "no-longer-enrolled" &&
+                                                                      endorsement
+                                                                        .enrollment
+                                                                        .id !==
+                                                                        response
+                                                                          .locals
+                                                                          .enrollment
+                                                                          .id
+                                                                  ).length > 0
+                                                                    ? ` (Also endorsed by ${
+                                                                        /* FIXME: https://github.com/microsoft/TypeScript/issues/29129 */ new (
+                                                                          Intl as any
+                                                                        ).ListFormat(
+                                                                          "en"
+                                                                        ).format(
+                                                                          message.endorsements.flatMap(
+                                                                            (
+                                                                              endorsement
+                                                                            ) =>
+                                                                              endorsement.enrollment !==
+                                                                                "no-longer-enrolled" &&
+                                                                              endorsement
+                                                                                .enrollment
+                                                                                .id !==
+                                                                                response
+                                                                                  .locals
+                                                                                  .enrollment
+                                                                                  .id
+                                                                                ? [
+                                                                                    endorsement
+                                                                                      .enrollment
+                                                                                      .user
+                                                                                      .name,
+                                                                                  ]
+                                                                                : []
+                                                                          )
+                                                                        )
+                                                                      })`
+                                                                    : ``
+                                                                }`},  
+                                                              },
+                                                            });
+                                                          `}"
+                                                        >
+                                                          <i
+                                                            class="bi bi-award-fill"
+                                                          ></i>
+                                                          ${message.endorsements.length.toString()}
+                                                          Staff
+                                                          Endorsement${message
+                                                            .endorsements
+                                                            .length === 1
+                                                            ? ""
+                                                            : "s"}
+                                                        </button>
+                                                      `
+                                                    : html`
+                                                        <button
+                                                          class="button button--tight button--tight--inline button--tight-gap button--transparent text--lime"
+                                                          $${message.endorsements.filter(
+                                                            (endorsement) =>
+                                                              endorsement.enrollment !==
+                                                              "no-longer-enrolled"
+                                                          ).length === 0
+                                                            ? html``
+                                                            : html`
+                                                                javascript="${javascript`
+                                                                  leafac.setTippy({
+                                                                    event,
+                                                                    element: this,
+                                                                    tippyProps: {
+                                                                      touch: false,
+                                                                      content: ${`Endorse (Already endorsed by ${
+                                                                        /* FIXME: https://github.com/microsoft/TypeScript/issues/29129 */ new (
+                                                                          Intl as any
+                                                                        ).ListFormat(
+                                                                          "en"
+                                                                        ).format(
+                                                                          message.endorsements.flatMap(
+                                                                            (
+                                                                              endorsement
+                                                                            ) =>
+                                                                              endorsement.enrollment ===
+                                                                              "no-longer-enrolled"
+                                                                                ? []
+                                                                                : [
+                                                                                    endorsement
+                                                                                      .enrollment
+                                                                                      .user
+                                                                                      .name,
+                                                                                  ]
+                                                                          )
+                                                                        )
+                                                                      })`},  
+                                                                    },
+                                                                  });
+                                                                `}"
+                                                              `}
+                                                        >
+                                                          <i
+                                                            class="bi bi-award"
+                                                          ></i>
+                                                          ${message.endorsements
+                                                            .length === 0
+                                                            ? `Endorse`
+                                                            : `${
+                                                                message
+                                                                  .endorsements
+                                                                  .length
+                                                              }
+                                                              Staff Endorsement${
+                                                                message
+                                                                  .endorsements
+                                                                  .length === 1
+                                                                  ? ""
+                                                                  : "s"
+                                                              }`}
+                                                        </button>
+                                                      `}
+                                                </form>
+                                              `;
+                                            } else if (
+                                              response.locals.conversation
+                                                .type === "question" &&
+                                              (message.authorEnrollment ===
+                                                "no-longer-enrolled" ||
+                                                message.authorEnrollment
+                                                  .courseRole !== "staff") &&
+                                              message.endorsements.length > 0
+                                            )
+                                              header += html`
+                                                <div
+                                                  class="text--lime"
+                                                  javascript="${javascript`
+                                                    if (${
+                                                      message.endorsements.filter(
+                                                        (endorsement) =>
+                                                          endorsement.enrollment !==
+                                                          "no-longer-enrolled"
+                                                      ).length > 0
+                                                    })
+                                                      leafac.setTippy({
+                                                        event,
+                                                        element: this,
+                                                        tippyProps: {
+                                                          content: ${`Endorsed by ${
+                                                            /* FIXME: https://github.com/microsoft/TypeScript/issues/29129 */ new (
+                                                              Intl as any
+                                                            ).ListFormat(
+                                                              "en"
+                                                            ).format(
+                                                              message.endorsements.flatMap(
+                                                                (endorsement) =>
+                                                                  endorsement.enrollment ===
+                                                                  "no-longer-enrolled"
+                                                                    ? []
+                                                                    : [
+                                                                        endorsement
+                                                                          .enrollment
+                                                                          .user
+                                                                          .name,
+                                                                      ]
+                                                              )
+                                                            )
+                                                          }`},  
+                                                        },
+                                                      });
+                                                  `}"
+                                                >
+                                                  <i class="bi bi-award"></i>
+                                                  ${message.endorsements.length.toString()}
+                                                  Staff
+                                                  Endorsement${message
+                                                    .endorsements.length === 1
+                                                    ? ""
+                                                    : "s"}
+                                                </div>
+                                              `;
+                                          }
 
                                           return html`
                                             $${header !== html``
