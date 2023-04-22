@@ -228,8 +228,7 @@ export default async (application: Application): Promise<void> => {
                 class="img light"
                 css="${css`
                   background-color: transparent;
-                  border: var(--border-width--1) solid
-                    var(--color--zinc--200);
+                  border: var(--border-width--1) solid var(--color--zinc--200);
                   @media (prefers-color-scheme: dark) {
                     border-color: var(--color--zinc--700);
                   }
@@ -244,8 +243,7 @@ export default async (application: Application): Promise<void> => {
                 class="img dark"
                 css="${css`
                   background-color: transparent;
-                  border: var(--border-width--1) solid
-                    var(--color--zinc--200);
+                  border: var(--border-width--1) solid var(--color--zinc--200);
                   @media (prefers-color-scheme: dark) {
                     border-color: var(--color--zinc--700);
                   }
@@ -441,8 +439,7 @@ export default async (application: Application): Promise<void> => {
                 class="img"
                 css="${css`
                   background-color: transparent;
-                  border: var(--border-width--1) solid
-                    var(--color--zinc--200);
+                  border: var(--border-width--1) solid var(--color--zinc--200);
                   @media (prefers-color-scheme: dark) {
                     border-color: var(--color--zinc--700);
                   }
@@ -518,8 +515,7 @@ export default async (application: Application): Promise<void> => {
                 class="img light"
                 css="${css`
                   background-color: transparent;
-                  border: var(--border-width--1) solid
-                    var(--color--zinc--200);
+                  border: var(--border-width--1) solid var(--color--zinc--200);
                   @media (prefers-color-scheme: dark) {
                     border-color: var(--color--zinc--700);
                   }
@@ -534,8 +530,7 @@ export default async (application: Application): Promise<void> => {
                 class="img dark"
                 css="${css`
                   background-color: transparent;
-                  border: var(--border-width--1) solid
-                    var(--color--zinc--200);
+                  border: var(--border-width--1) solid var(--color--zinc--200);
                   @media (prefers-color-scheme: dark) {
                     border-color: var(--color--zinc--700);
                   }

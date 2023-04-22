@@ -7374,8 +7374,7 @@ export default async (application: Application): Promise<void> => {
                                             border-bottom: var(
                                                 --border-width--4
                                               )
-                                              solid
-                                              var(--color--zinc--200);
+                                              solid var(--color--zinc--200);
                                             @media (prefers-color-scheme: dark) {
                                               border-color: var(
                                                 --color--zinc--700
@@ -8744,9 +8743,7 @@ export default async (application: Application): Promise<void> => {
                                       border-bottom: var(--border-width--4)
                                         solid var(--color--zinc--200);
                                       @media (prefers-color-scheme: dark) {
-                                        border-color: var(
-                                          --color--zinc--700
-                                        );
+                                        border-color: var(--color--zinc--700);
                                       }
                                     `}"
                               >

@@ -960,8 +960,7 @@ export default async (application: Application): Promise<void> => {
               }
 
               .separator {
-                border-top: var(--border-width--1) solid
-                  var(--color--zinc--200);
+                border-top: var(--border-width--1) solid var(--color--zinc--200);
                 @media (prefers-color-scheme: dark) {
                   border-color: var(--color--zinc--700);
                 }
@@ -2592,8 +2591,7 @@ export default async (application: Application): Promise<void> => {
                   background-color: var(--color--zinc--800);
                 }
                 padding: var(--space--0) var(--space--4);
-                border-top: var(--border-width--1) solid
-                  var(--color--zinc--200);
+                border-top: var(--border-width--1) solid var(--color--zinc--200);
                 @media (prefers-color-scheme: dark) {
                   border-color: var(--color--zinc--700);
                 }
