@@ -988,7 +988,7 @@ export default async (application: Application): Promise<void> => {
                         css="${css`
                           background: var(--color--blue--100);
                           @media (prefers-color-scheme: dark) {
-                            background-color: var(--color--blue--900);
+                            background-color: var(--color--blue--950);
                           }
                           width: var(--width);
                           height: calc(var(--space--6) + var(--space--0-5));

@@ -1087,8 +1087,8 @@ export default async (application: Application): Promise<void> => {
                       }
                       @media (prefers-color-scheme: dark) {
                         color: var(--color--${color}--200);
-                        --background-color: var(--color--${color}--900);
-                        --border-color: var(--color--${color}--800);
+                        --background-color: var(--color--${color}--950);
+                        --border-color: var(--color--${color}--900);
                         .button.button--transparent {
                           &:hover,
                           &:focus-within {
