@@ -21,6 +21,8 @@
     - Count of messages in conversation
     - Count of unread messages
     - “Views”
+      - Mark messages as read on load
+      - “Mark all as read”
     - There’s no way to convert back and forth between regular messages & whispers. If necessary, delete and send another message.
   - Talk about it on home page.
   - Reference: Discourse
