@@ -4,9 +4,9 @@
 <summary>2023-04-22</summary>
 
 - Deployed SAML
-- Email on sign in?
-- Homework grading application
+  - Email on sign in?
 - Questions about whispers
+- Homework grading application
 
 </details>
 
