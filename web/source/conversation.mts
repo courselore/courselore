@@ -9234,7 +9234,13 @@ export default async (application: Application): Promise<void> => {
                         const sendWhisper =
                           response.locals.enrollment.courseRole === "staff"
                             ? html`
-                                <div>
+                                <div
+                                  css="${css`
+                                    display: flex;
+                                    gap: var(--space--2);
+                                    align-items: center;
+                                  `}"
+                                >
                                   <button
                                     name="isWhisper"
                                     value="on"
@@ -9242,6 +9248,23 @@ export default async (application: Application): Promise<void> => {
                                   >
                                     <i class="bi bi-mortarboard-fill"></i>
                                     Send Whisper
+                                  </button>
+
+                                  <button
+                                    type="button"
+                                    class="button button--tight button--tight--inline button--transparent"
+                                    javascript="${javascript`
+                                      leafac.setTippy({
+                                        event,
+                                        element: this,
+                                        tippyProps: {
+                                          trigger: "click",
+                                          content: "Whispers are messages visible to staff only.",
+                                        },
+                                      });
+                                    `}"
+                                  >
+                                    <i class="bi bi-info-circle"></i>
                                   </button>
                                 </div>
                               `
