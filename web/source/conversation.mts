@@ -5225,6 +5225,13 @@ export default async (application: Application): Promise<void> => {
                   `
                 : sql``
             }
+            $${
+              response.locals.enrollment.courseRole !== "staff"
+                ? sql`
+                    AND "whisperAt" IS NULL
+                  `
+                : sql``
+            }
           ORDER BY "id" $${messagesReverse ? sql`DESC` : sql`ASC`}
           LIMIT ${messagesPageSize + 1}
         `
