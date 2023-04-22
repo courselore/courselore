@@ -3140,7 +3140,7 @@ export default async (application: Application): Promise<void> => {
                       background-color: var(--color--amber--100);
                       @media (prefers-color-scheme: dark) {
                         color: var(--color--amber--200);
-                        background-color: var(--color--amber--900);
+                        background-color: var(--color--amber--950);
                       }
                       padding: var(--space--4);
                       border-radius: var(--border-radius--lg);
@@ -3198,7 +3198,7 @@ export default async (application: Application): Promise<void> => {
                       background-color: var(--color--amber--100);
                       @media (prefers-color-scheme: dark) {
                         color: var(--color--amber--200);
-                        background-color: var(--color--amber--900);
+                        background-color: var(--color--amber--950);
                       }
                       padding: var(--space--4);
                       border-radius: var(--border-radius--lg);
