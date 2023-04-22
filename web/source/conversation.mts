@@ -24,7 +24,6 @@ export type ApplicationConversation = {
             | {
                 id: number;
                 createdAt: string;
-                answerAt: string | null;
                 contentSource: string;
               }
             | undefined;
@@ -231,14 +230,12 @@ export default async (application: Application): Promise<void> => {
       response.locals.messageDraft = application.database.get<{
         id: number;
         createdAt: string;
-        answerAt: string | null;
         contentSource: string;
       }>(
         sql`
           SELECT
             "id",
             "createdAt",
-            "answerAt",
             "contentSource"
           FROM "messageDrafts"
           WHERE

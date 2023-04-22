@@ -1197,7 +1197,7 @@ export default async (application: Application): Promise<void> => {
   application.web.post<
     { courseReference: string; conversationReference: string },
     HTML,
-    { isAnswer?: "on"; content?: string },
+    { content?: string },
     {},
     Application["web"]["locals"]["ResponseLocals"]["Conversation"]
   >(
@@ -1205,13 +1205,7 @@ export default async (application: Application): Promise<void> => {
     (request, response, next) => {
       if (response.locals.conversation === undefined) return next();
 
-      if (
-        ![undefined, "on"].includes(request.body.isAnswer) ||
-        (request.body.isAnswer === "on" &&
-          response.locals.conversation.type !== "question") ||
-        typeof request.body.content !== "string"
-      )
-        return next("Validation");
+      if (typeof request.body.content !== "string") return next("Validation");
 
       const removeDraft = request.body.content.trim() === "";
 
@@ -1250,16 +1244,12 @@ export default async (application: Application): Promise<void> => {
               "createdAt",
               "conversation",
               "authorEnrollment",
-              "answerAt",
               "contentSource"
             )
             VALUES (
               ${new Date().toISOString()},
               ${response.locals.conversation.id},
               ${response.locals.enrollment.id},
-              ${
-                request.body.isAnswer === "on" ? new Date().toISOString() : null
-              },
               ${request.body.content}
             )
           `

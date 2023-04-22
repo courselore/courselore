@@ -1987,6 +1987,7 @@ export default async (application: Application): Promise<void> => {
     },
 
     sql`
+      ALTER TABLE "messageDrafts" DROP COLUMN "answerAt";
       ALTER TABLE "messages" ADD COLUMN "whisperAt" TEXT NULL;
     `
   );
