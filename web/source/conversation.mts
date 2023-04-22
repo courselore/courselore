@@ -7581,7 +7581,7 @@ export default async (application: Application): Promise<void> => {
                                         "string"
                                           ? css`
                                               background-color: var(
-                                                --color--sky--50
+                                                --color--sky--100
                                               );
                                               @media (prefers-color-scheme: dark) {
                                                 background-color: var(
