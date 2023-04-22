@@ -229,9 +229,9 @@ export default async (application: Application): Promise<void> => {
                 css="${css`
                   background-color: transparent;
                   border: var(--border-width--1) solid
-                    var(--color--gray--medium--200);
+                    var(--color--zinc--200);
                   @media (prefers-color-scheme: dark) {
-                    border-color: var(--color--gray--medium--700);
+                    border-color: var(--color--zinc--700);
                   }
                 `}"
               />
@@ -245,9 +245,9 @@ export default async (application: Application): Promise<void> => {
                 css="${css`
                   background-color: transparent;
                   border: var(--border-width--1) solid
-                    var(--color--gray--medium--200);
+                    var(--color--zinc--200);
                   @media (prefers-color-scheme: dark) {
-                    border-color: var(--color--gray--medium--700);
+                    border-color: var(--color--zinc--700);
                   }
                 `}"
               />
@@ -256,9 +256,9 @@ export default async (application: Application): Promise<void> => {
 
           <div
             css="${css`
-              background-color: var(--color--gray--medium--100);
+              background-color: var(--color--zinc--100);
               @media (prefers-color-scheme: dark) {
-                background-color: var(--color--gray--medium--800);
+                background-color: var(--color--zinc--800);
               }
               padding: var(--space--32) var(--space--8);
               display: flex;
@@ -442,9 +442,9 @@ export default async (application: Application): Promise<void> => {
                 css="${css`
                   background-color: transparent;
                   border: var(--border-width--1) solid
-                    var(--color--gray--medium--200);
+                    var(--color--zinc--200);
                   @media (prefers-color-scheme: dark) {
-                    border-color: var(--color--gray--medium--700);
+                    border-color: var(--color--zinc--700);
                   }
                 `}"
               />
@@ -453,9 +453,9 @@ export default async (application: Application): Promise<void> => {
 
           <div
             css="${css`
-              background-color: var(--color--gray--medium--100);
+              background-color: var(--color--zinc--100);
               @media (prefers-color-scheme: dark) {
-                background-color: var(--color--gray--medium--800);
+                background-color: var(--color--zinc--800);
               }
               display: flex;
               justify-content: center;
@@ -519,9 +519,9 @@ export default async (application: Application): Promise<void> => {
                 css="${css`
                   background-color: transparent;
                   border: var(--border-width--1) solid
-                    var(--color--gray--medium--200);
+                    var(--color--zinc--200);
                   @media (prefers-color-scheme: dark) {
-                    border-color: var(--color--gray--medium--700);
+                    border-color: var(--color--zinc--700);
                   }
                 `}"
               />
@@ -535,9 +535,9 @@ export default async (application: Application): Promise<void> => {
                 css="${css`
                   background-color: transparent;
                   border: var(--border-width--1) solid
-                    var(--color--gray--medium--200);
+                    var(--color--zinc--200);
                   @media (prefers-color-scheme: dark) {
-                    border-color: var(--color--gray--medium--700);
+                    border-color: var(--color--zinc--700);
                   }
                 `}"
               />
@@ -700,9 +700,9 @@ export default async (application: Application): Promise<void> => {
 
           <div
             css="${css`
-              background-color: var(--color--gray--medium--100);
+              background-color: var(--color--zinc--100);
               @media (prefers-color-scheme: dark) {
-                background-color: var(--color--gray--medium--800);
+                background-color: var(--color--zinc--800);
               }
               display: flex;
               flex-direction: column;

@@ -320,9 +320,9 @@ export default async (application: Application): Promise<void> => {
               }
 
               ::-webkit-scrollbar-thumb {
-                background-color: var(--color--gray--medium--400);
+                background-color: var(--color--zinc--400);
                 @media (prefers-color-scheme: dark) {
-                  background-color: var(--color--gray--medium--500);
+                  background-color: var(--color--zinc--500);
                 }
                 border-radius: var(--border-radius--full);
               }
@@ -338,9 +338,9 @@ export default async (application: Application): Promise<void> => {
               *,
               ::before,
               ::after {
-                scrollbar-color: var(--color--gray--medium--400) transparent;
+                scrollbar-color: var(--color--zinc--400) transparent;
                 @media (prefers-color-scheme: dark) {
-                  scrollbar-color: var(--color--gray--medium--500) transparent;
+                  scrollbar-color: var(--color--zinc--500) transparent;
                 }
               }
 
@@ -372,28 +372,28 @@ export default async (application: Application): Promise<void> => {
               }
 
               .input--text {
-                background-color: var(--color--gray--medium--200);
+                background-color: var(--color--zinc--200);
                 --color--box-shadow: var(--color--blue--400);
                 &::placeholder {
-                  color: var(--color--gray--medium--400);
+                  color: var(--color--zinc--400);
                 }
                 &:disabled,
                 &.disabled {
-                  color: var(--color--gray--medium--500);
-                  -webkit-text-fill-color: var(--color--gray--medium--500);
-                  background-color: var(--color--gray--medium--300);
+                  color: var(--color--zinc--500);
+                  -webkit-text-fill-color: var(--color--zinc--500);
+                  background-color: var(--color--zinc--300);
                 }
                 @media (prefers-color-scheme: dark) {
-                  background-color: var(--color--gray--medium--700);
+                  background-color: var(--color--zinc--700);
                   --color--box-shadow: var(--color--blue--600);
                   &::placeholder {
-                    color: var(--color--gray--medium--500);
+                    color: var(--color--zinc--500);
                   }
                   &:disabled,
                   &.disabled {
-                    color: var(--color--gray--medium--400);
-                    -webkit-text-fill-color: var(--color--gray--medium--400);
-                    background-color: var(--color--gray--medium--600);
+                    color: var(--color--zinc--400);
+                    -webkit-text-fill-color: var(--color--zinc--400);
+                    background-color: var(--color--zinc--600);
                   }
                 }
                 width: 100%;
@@ -416,17 +416,17 @@ export default async (application: Application): Promise<void> => {
               }
 
               .input--radio {
-                background-color: var(--color--gray--medium--200);
+                background-color: var(--color--zinc--200);
                 &:hover,
                 &:focus-within {
-                  background-color: var(--color--gray--medium--300);
+                  background-color: var(--color--zinc--300);
                 }
                 &:active {
-                  background-color: var(--color--gray--medium--400);
+                  background-color: var(--color--zinc--400);
                 }
                 &:disabled,
                 &.disabled {
-                  background-color: var(--color--gray--medium--300);
+                  background-color: var(--color--zinc--300);
                 }
                 &:checked {
                   background-color: var(--color--blue--600);
@@ -443,17 +443,17 @@ export default async (application: Application): Promise<void> => {
                   }
                 }
                 @media (prefers-color-scheme: dark) {
-                  background-color: var(--color--gray--medium--700);
+                  background-color: var(--color--zinc--700);
                   &:hover,
                   &:focus-within {
-                    background-color: var(--color--gray--medium--600);
+                    background-color: var(--color--zinc--600);
                   }
                   &:active {
-                    background-color: var(--color--gray--medium--500);
+                    background-color: var(--color--zinc--500);
                   }
                   &:disabled,
                   &.disabled {
-                    background-color: var(--color--gray--medium--600);
+                    background-color: var(--color--zinc--600);
                   }
                   &:checked {
                     background-color: var(--color--blue--700);
@@ -489,9 +489,9 @@ export default async (application: Application): Promise<void> => {
 
                 &::before {
                   content: "";
-                  background-color: var(--color--gray--medium--50);
+                  background-color: var(--color--zinc--50);
                   @media (prefers-color-scheme: dark) {
-                    background-color: var(--color--gray--medium--200);
+                    background-color: var(--color--zinc--200);
                   }
                   display: block;
                   width: var(--space--1-5);
@@ -509,17 +509,17 @@ export default async (application: Application): Promise<void> => {
               }
 
               .input--checkbox {
-                background-color: var(--color--gray--medium--200);
+                background-color: var(--color--zinc--200);
                 &:hover,
                 &:focus-within {
-                  background-color: var(--color--gray--medium--300);
+                  background-color: var(--color--zinc--300);
                 }
                 &:active {
-                  background-color: var(--color--gray--medium--400);
+                  background-color: var(--color--zinc--400);
                 }
                 &:disabled,
                 &.disabled {
-                  background-color: var(--color--gray--medium--300);
+                  background-color: var(--color--zinc--300);
                 }
                 &:checked {
                   background-color: var(--color--blue--600);
@@ -536,17 +536,17 @@ export default async (application: Application): Promise<void> => {
                   }
                 }
                 @media (prefers-color-scheme: dark) {
-                  background-color: var(--color--gray--medium--700);
+                  background-color: var(--color--zinc--700);
                   &:hover,
                   &:focus-within {
-                    background-color: var(--color--gray--medium--600);
+                    background-color: var(--color--zinc--600);
                   }
                   &:active {
-                    background-color: var(--color--gray--medium--500);
+                    background-color: var(--color--zinc--500);
                   }
                   &:disabled,
                   &.disabled {
-                    background-color: var(--color--gray--medium--600);
+                    background-color: var(--color--zinc--600);
                   }
                   &:checked {
                     background-color: var(--color--blue--700);
@@ -578,9 +578,9 @@ export default async (application: Application): Promise<void> => {
 
                 &::after {
                   content: "";
-                  background-color: var(--color--gray--medium--50);
+                  background-color: var(--color--zinc--50);
                   @media (prefers-color-scheme: dark) {
-                    background-color: var(--color--gray--medium--200);
+                    background-color: var(--color--zinc--200);
                   }
                   display: block;
                   width: var(--space--3);
@@ -631,9 +631,9 @@ export default async (application: Application): Promise<void> => {
 
                 &:disabled,
                 &.disabled {
-                  color: var(--color--gray--medium--500);
+                  color: var(--color--zinc--500);
                   @media (prefers-color-scheme: dark) {
-                    color: var(--color--gray--medium--400);
+                    color: var(--color--zinc--400);
                   }
                 }
 
@@ -668,19 +668,19 @@ export default async (application: Application): Promise<void> => {
                     &:hover,
                     &:focus-within,
                     &.hover {
-                      background-color: var(--color--gray--medium--200);
+                      background-color: var(--color--zinc--200);
                     }
                     &:active {
-                      background-color: var(--color--gray--medium--300);
+                      background-color: var(--color--zinc--300);
                     }
                     @media (prefers-color-scheme: dark) {
                       &:hover,
                       &:focus-within,
                       &.hover {
-                        background-color: var(--color--gray--medium--700);
+                        background-color: var(--color--zinc--700);
                       }
                       &:active {
-                        background-color: var(--color--gray--medium--600);
+                        background-color: var(--color--zinc--600);
                       }
                     }
                   }
@@ -809,9 +809,9 @@ export default async (application: Application): Promise<void> => {
                 font-weight: var(--font-weight--bold);
                 text-transform: uppercase;
                 letter-spacing: var(--letter-spacing--widest);
-                color: var(--color--gray--medium--600);
+                color: var(--color--zinc--600);
                 @media (prefers-color-scheme: dark) {
-                  color: var(--color--gray--medium--400);
+                  color: var(--color--zinc--400);
                 }
                 display: flex;
                 gap: var(--space--1);
@@ -822,24 +822,24 @@ export default async (application: Application): Promise<void> => {
                 line-height: var(--line-height--xl);
                 font-weight: var(--font-weight--bold);
                 text-align: center;
-                color: var(--color--gray--medium--800);
+                color: var(--color--zinc--800);
                 @media (prefers-color-scheme: dark) {
-                  color: var(--color--gray--medium--100);
+                  color: var(--color--zinc--100);
                 }
               }
 
               .strong {
                 font-weight: var(--font-weight--bold);
-                color: var(--color--gray--medium--800);
+                color: var(--color--zinc--800);
                 @media (prefers-color-scheme: dark) {
-                  color: var(--color--gray--medium--100);
+                  color: var(--color--zinc--100);
                 }
               }
 
               .secondary {
-                color: var(--color--gray--medium--500);
+                color: var(--color--zinc--500);
                 @media (prefers-color-scheme: dark) {
-                  color: var(--color--gray--medium--400);
+                  color: var(--color--zinc--400);
                 }
               }
 
@@ -891,9 +891,9 @@ export default async (application: Application): Promise<void> => {
               }
 
               .img {
-                background-color: var(--color--gray--medium--50);
+                background-color: var(--color--zinc--50);
                 @media (prefers-color-scheme: dark) {
-                  background-color: var(--color--gray--medium--50);
+                  background-color: var(--color--zinc--50);
                   filter: brightness(var(--brightness--90));
                 }
                 max-width: 100%;
@@ -902,20 +902,20 @@ export default async (application: Application): Promise<void> => {
               }
 
               .details {
-                background-color: var(--color--gray--medium--200);
+                background-color: var(--color--zinc--200);
                 @media (prefers-color-scheme: dark) {
-                  background-color: var(--color--gray--medium--700);
+                  background-color: var(--color--zinc--700);
                 }
                 border-radius: var(--border-radius--xl);
                 summary {
                   &:hover,
                   &:focus-within {
-                    background-color: var(--color--gray--medium--300);
+                    background-color: var(--color--zinc--300);
                   }
                   @media (prefers-color-scheme: dark) {
                     &:hover,
                     &:focus-within {
-                      background-color: var(--color--gray--medium--600);
+                      background-color: var(--color--zinc--600);
                     }
                   }
                   padding: var(--space--2) var(--space--4);
@@ -945,11 +945,11 @@ export default async (application: Application): Promise<void> => {
               .decorative-icon {
                 font-size: var(--font-size--9xl);
                 line-height: var(--line-height--9xl);
-                color: var(--color--gray--medium--300);
-                background-color: var(--color--gray--medium--100);
+                color: var(--color--zinc--300);
+                background-color: var(--color--zinc--100);
                 @media (prefers-color-scheme: dark) {
-                  color: var(--color--gray--medium--600);
-                  background-color: var(--color--gray--medium--800);
+                  color: var(--color--zinc--600);
+                  background-color: var(--color--zinc--800);
                 }
                 width: var(--space--48);
                 height: var(--space--48);
@@ -961,16 +961,16 @@ export default async (application: Application): Promise<void> => {
 
               .separator {
                 border-top: var(--border-width--1) solid
-                  var(--color--gray--medium--200);
+                  var(--color--zinc--200);
                 @media (prefers-color-scheme: dark) {
-                  border-color: var(--color--gray--medium--700);
+                  border-color: var(--color--zinc--700);
                 }
               }
 
               .menu-box {
-                background-color: var(--color--gray--medium--100);
+                background-color: var(--color--zinc--100);
                 @media (prefers-color-scheme: dark) {
-                  background-color: var(--color--gray--medium--800);
+                  background-color: var(--color--zinc--800);
                 }
                 width: 100%;
                 max-width: var(--space--64);
@@ -988,16 +988,16 @@ export default async (application: Application): Promise<void> => {
               .tippy-box {
                 font-size: var(--font-size--sm);
                 line-height: var(--line-height--sm);
-                color: var(--color--gray--medium--700);
-                --background-color: var(--color--gray--medium--100);
+                color: var(--color--zinc--700);
+                --background-color: var(--color--zinc--100);
                 background-color: var(--background-color);
-                --border-color: var(--color--gray--medium--400);
+                --border-color: var(--color--zinc--400);
                 border: var(--border-width--1) solid var(--border-color);
                 border-radius: var(--border-radius--md);
                 @media (prefers-color-scheme: dark) {
-                  color: var(--color--gray--medium--200);
-                  --background-color: var(--color--gray--medium--800);
-                  --border-color: var(--color--gray--medium--400);
+                  color: var(--color--zinc--200);
+                  --background-color: var(--color--zinc--800);
+                  --border-color: var(--color--zinc--400);
                 }
                 & > .tippy-svg-arrow > svg {
                   &:first-child {
@@ -1019,9 +1019,9 @@ export default async (application: Application): Promise<void> => {
                 .keyboard-shortcut {
                   font-size: var(--font-size--xs);
                   line-height: var(--line-height--xs);
-                  color: var(--color--gray--medium--500);
+                  color: var(--color--zinc--500);
                   @media (prefers-color-scheme: dark) {
-                    color: var(--color--gray--medium--400);
+                    color: var(--color--zinc--400);
                   }
                   flex: 1;
                   text-align: right;
@@ -1046,9 +1046,9 @@ export default async (application: Application): Promise<void> => {
 
                 .dropdown--separator {
                   border-top: var(--border-width--1) solid
-                    var(--color--gray--medium--200);
+                    var(--color--zinc--200);
                   @media (prefers-color-scheme: dark) {
-                    border-color: var(--color--gray--medium--700);
+                    border-color: var(--color--zinc--700);
                   }
                   margin: var(--space--0) var(--space--2);
                 }
@@ -1142,9 +1142,9 @@ export default async (application: Application): Promise<void> => {
                 }
 
                 h1 {
-                  color: var(--color--gray--medium--800);
+                  color: var(--color--zinc--800);
                   @media (prefers-color-scheme: dark) {
-                    color: var(--color--gray--medium--100);
+                    color: var(--color--zinc--100);
                   }
                 }
 
@@ -1168,9 +1168,9 @@ export default async (application: Application): Promise<void> => {
 
                 hr {
                   border-top: var(--border-width--1) solid
-                    var(--color--gray--medium--300);
+                    var(--color--zinc--300);
                   @media (prefers-color-scheme: dark) {
-                    border-color: var(--color--gray--medium--600);
+                    border-color: var(--color--zinc--600);
                   }
                   margin: var(--space--2) var(--space--0);
                 }
@@ -1181,25 +1181,25 @@ export default async (application: Application): Promise<void> => {
 
                 strong {
                   font-weight: var(--font-weight--bold);
-                  color: var(--color--gray--medium--800);
+                  color: var(--color--zinc--800);
                   @media (prefers-color-scheme: dark) {
-                    color: var(--color--gray--medium--100);
+                    color: var(--color--zinc--100);
                   }
                 }
 
                 em {
                   font-style: italic;
-                  color: var(--color--gray--medium--800);
+                  color: var(--color--zinc--800);
                   @media (prefers-color-scheme: dark) {
-                    color: var(--color--gray--medium--100);
+                    color: var(--color--zinc--100);
                   }
                 }
 
                 u {
                   text-decoration: underline;
-                  text-decoration-color: var(--color--gray--medium--300);
+                  text-decoration-color: var(--color--zinc--300);
                   @media (prefers-color-scheme: dark) {
-                    text-decoration-color: var(--color--gray--medium--500);
+                    text-decoration-color: var(--color--zinc--500);
                   }
                 }
 
@@ -1235,9 +1235,9 @@ export default async (application: Application): Promise<void> => {
                   font-family: "JetBrains MonoVariable",
                     var(--font-family--monospace);
                   font-variant-ligatures: none;
-                  background-color: var(--color--gray--medium--300);
+                  background-color: var(--color--zinc--300);
                   @media (prefers-color-scheme: dark) {
-                    background-color: var(--color--gray--medium--600);
+                    background-color: var(--color--zinc--600);
                   }
                   padding: var(--space--0) var(--space--0-5);
                   border-radius: var(--border-radius--base);
@@ -1287,9 +1287,9 @@ export default async (application: Application): Promise<void> => {
 
                 img,
                 video {
-                  background-color: var(--color--gray--medium--50);
+                  background-color: var(--color--zinc--50);
                   @media (prefers-color-scheme: dark) {
-                    background-color: var(--color--gray--medium--50);
+                    background-color: var(--color--zinc--50);
                     filter: brightness(var(--brightness--90));
                   }
                   max-width: 100%;
@@ -1306,9 +1306,9 @@ export default async (application: Application): Promise<void> => {
                   & > li {
                     list-style: disc;
                     &::marker {
-                      color: var(--color--gray--medium--500);
+                      color: var(--color--zinc--500);
                       @media (prefers-color-scheme: dark) {
-                        color: var(--color--gray--medium--400);
+                        color: var(--color--zinc--400);
                       }
                     }
                   }
@@ -1319,9 +1319,9 @@ export default async (application: Application): Promise<void> => {
                   & > li {
                     list-style: decimal;
                     &::marker {
-                      color: var(--color--gray--medium--500);
+                      color: var(--color--zinc--500);
                       @media (prefers-color-scheme: dark) {
-                        color: var(--color--gray--medium--400);
+                        color: var(--color--zinc--400);
                       }
                     }
                   }
@@ -1332,17 +1332,17 @@ export default async (application: Application): Promise<void> => {
                 }
 
                 input[type="radio"] {
-                  background-color: var(--color--gray--medium--200);
+                  background-color: var(--color--zinc--200);
                   &:hover,
                   &:focus-within {
-                    background-color: var(--color--gray--medium--300);
+                    background-color: var(--color--zinc--300);
                   }
                   &:active {
-                    background-color: var(--color--gray--medium--400);
+                    background-color: var(--color--zinc--400);
                   }
                   &:disabled,
                   &.disabled {
-                    background-color: var(--color--gray--medium--300);
+                    background-color: var(--color--zinc--300);
                   }
                   &:checked {
                     background-color: var(--color--blue--600);
@@ -1359,17 +1359,17 @@ export default async (application: Application): Promise<void> => {
                     }
                   }
                   @media (prefers-color-scheme: dark) {
-                    background-color: var(--color--gray--medium--700);
+                    background-color: var(--color--zinc--700);
                     &:hover,
                     &:focus-within {
-                      background-color: var(--color--gray--medium--600);
+                      background-color: var(--color--zinc--600);
                     }
                     &:active {
-                      background-color: var(--color--gray--medium--500);
+                      background-color: var(--color--zinc--500);
                     }
                     &:disabled,
                     &.disabled {
-                      background-color: var(--color--gray--medium--600);
+                      background-color: var(--color--zinc--600);
                     }
                     &:checked {
                       background-color: var(--color--blue--700);
@@ -1402,9 +1402,9 @@ export default async (application: Application): Promise<void> => {
 
                   &::before {
                     content: "";
-                    background-color: var(--color--gray--medium--50);
+                    background-color: var(--color--zinc--50);
                     @media (prefers-color-scheme: dark) {
-                      background-color: var(--color--gray--medium--200);
+                      background-color: var(--color--zinc--200);
                     }
                     display: block;
                     width: var(--space--1-5);
@@ -1424,17 +1424,17 @@ export default async (application: Application): Promise<void> => {
                 input[type="checkbox"] {
                   font-size: var(--font-size--2xs);
                   line-height: var(--line-height--2xs);
-                  background-color: var(--color--gray--medium--200);
+                  background-color: var(--color--zinc--200);
                   &:hover,
                   &:focus-within {
-                    background-color: var(--color--gray--medium--300);
+                    background-color: var(--color--zinc--300);
                   }
                   &:active {
-                    background-color: var(--color--gray--medium--400);
+                    background-color: var(--color--zinc--400);
                   }
                   &:disabled,
                   &.disabled {
-                    background-color: var(--color--gray--medium--300);
+                    background-color: var(--color--zinc--300);
                   }
                   &:checked {
                     background-color: var(--color--blue--600);
@@ -1451,17 +1451,17 @@ export default async (application: Application): Promise<void> => {
                     }
                   }
                   @media (prefers-color-scheme: dark) {
-                    background-color: var(--color--gray--medium--700);
+                    background-color: var(--color--zinc--700);
                     &:hover,
                     &:focus-within {
-                      background-color: var(--color--gray--medium--600);
+                      background-color: var(--color--zinc--600);
                     }
                     &:active {
-                      background-color: var(--color--gray--medium--500);
+                      background-color: var(--color--zinc--500);
                     }
                     &:disabled,
                     &.disabled {
-                      background-color: var(--color--gray--medium--600);
+                      background-color: var(--color--zinc--600);
                     }
                     &:checked {
                       background-color: var(--color--blue--700);
@@ -1494,9 +1494,9 @@ export default async (application: Application): Promise<void> => {
                   &::before {
                     content: "\\f633";
                     font-family: "bootstrap-icons" !important;
-                    color: var(--color--gray--medium--50);
+                    color: var(--color--zinc--50);
                     @media (prefers-color-scheme: dark) {
-                      color: var(--color--gray--medium--200);
+                      color: var(--color--zinc--200);
                     }
                     transition-property: var(--transition-property--transform);
                     transition-duration: var(--transition-duration--150);
@@ -1517,12 +1517,12 @@ export default async (application: Application): Promise<void> => {
 
                 blockquote {
                   padding-left: var(--space--4);
-                  color: var(--color--gray--medium--500);
+                  color: var(--color--zinc--500);
                   border-left: var(--border-width--4) solid
-                    var(--color--gray--medium--300);
+                    var(--color--zinc--300);
                   @media (prefers-color-scheme: dark) {
-                    color: var(--color--gray--medium--400);
-                    border-color: var(--color--gray--medium--600);
+                    color: var(--color--zinc--400);
+                    border-color: var(--color--zinc--600);
                   }
                 }
 
@@ -1532,9 +1532,9 @@ export default async (application: Application): Promise<void> => {
                   overflow-x: auto;
                   tbody tr {
                     border-top: var(--border-width--1) solid
-                      var(--color--gray--medium--300);
+                      var(--color--zinc--300);
                     @media (prefers-color-scheme: dark) {
-                      border-color: var(--color--gray--medium--600);
+                      border-color: var(--color--zinc--600);
                     }
                   }
                   th,
@@ -1544,29 +1544,29 @@ export default async (application: Application): Promise<void> => {
                   th {
                     font-weight: var(--font-weight--bold);
                     text-align: left;
-                    color: var(--color--gray--medium--800);
+                    color: var(--color--zinc--800);
                     @media (prefers-color-scheme: dark) {
-                      color: var(--color--gray--medium--100);
+                      color: var(--color--zinc--100);
                     }
                   }
                 }
 
                 details {
-                  background-color: var(--color--gray--medium--300);
+                  background-color: var(--color--zinc--300);
                   @media (prefers-color-scheme: dark) {
-                    background-color: var(--color--gray--medium--600);
+                    background-color: var(--color--zinc--600);
                   }
                   border-radius: var(--border-radius--xl);
                   padding: var(--space--0) var(--space--4);
                   & > summary {
                     &:hover,
                     &:focus-within {
-                      background-color: var(--color--gray--medium--400);
+                      background-color: var(--color--zinc--400);
                     }
                     @media (prefers-color-scheme: dark) {
                       &:hover,
                       &:focus-within {
-                        background-color: var(--color--gray--medium--500);
+                        background-color: var(--color--zinc--500);
                       }
                     }
                     padding: var(--space--2) var(--space--4);
@@ -1623,11 +1623,11 @@ export default async (application: Application): Promise<void> => {
             font-family: "Public SansVariable", var(--font-family--sans-serif);
             font-size: var(--font-size--sm);
             line-height: var(--line-height--sm);
-            color: var(--color--gray--medium--700);
-            background-color: var(--color--gray--medium--50);
+            color: var(--color--zinc--700);
+            background-color: var(--color--zinc--50);
             @media (prefers-color-scheme: dark) {
-              color: var(--color--gray--medium--200);
-              background-color: var(--color--gray--medium--900);
+              color: var(--color--zinc--200);
+              background-color: var(--color--zinc--900);
             }
           `}"
           javascript="${(() => {
@@ -2541,18 +2541,18 @@ export default async (application: Application): Promise<void> => {
                       css="${css`
                         font-size: var(--font-size--xs);
                         line-height: var(--line-height--xs);
-                        background-color: var(--color--gray--medium--100);
+                        background-color: var(--color--zinc--100);
                         @media (prefers-color-scheme: dark) {
-                          background-color: var(--color--gray--medium--800);
+                          background-color: var(--color--zinc--800);
                         }
                         display: flex;
                         flex-direction: column;
                         & > * {
                           padding: var(--space--0) var(--space--4);
                           border-bottom: var(--border-width--1) solid
-                            var(--color--gray--medium--200);
+                            var(--color--zinc--200);
                           @media (prefers-color-scheme: dark) {
-                            border-color: var(--color--gray--medium--700);
+                            border-color: var(--color--zinc--700);
                           }
                           display: flex;
                         }
@@ -2587,15 +2587,15 @@ export default async (application: Application): Promise<void> => {
               css="${css`
                 font-size: var(--font-size--xs);
                 line-height: var(--line-height--xs);
-                background-color: var(--color--gray--medium--100);
+                background-color: var(--color--zinc--100);
                 @media (prefers-color-scheme: dark) {
-                  background-color: var(--color--gray--medium--800);
+                  background-color: var(--color--zinc--800);
                 }
                 padding: var(--space--0) var(--space--4);
                 border-top: var(--border-width--1) solid
-                  var(--color--gray--medium--200);
+                  var(--color--zinc--200);
                 @media (prefers-color-scheme: dark) {
-                  border-color: var(--color--gray--medium--700);
+                  border-color: var(--color--zinc--700);
                 }
                 display: flex;
                 justify-content: center;
@@ -3118,9 +3118,9 @@ export default async (application: Application): Promise<void> => {
             <div
               key="main--${request.path}"
               css="${css`
-                background-color: var(--color--gray--medium--100);
+                background-color: var(--color--zinc--100);
                 @media (prefers-color-scheme: dark) {
-                  background-color: var(--color--gray--medium--800);
+                  background-color: var(--color--zinc--800);
                 }
                 padding: var(--space--4);
                 border-radius: var(--border-radius--lg);

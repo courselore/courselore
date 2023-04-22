@@ -1175,9 +1175,9 @@ export default async (application: Application): Promise<void> => {
               @media (min-width: 900px) {
                 width: var(--width--sm);
                 border-right: var(--border-width--1) solid
-                  var(--color--gray--medium--200);
+                  var(--color--zinc--200);
                 @media (prefers-color-scheme: dark) {
-                  border-color: var(--color--gray--medium--700);
+                  border-color: var(--color--zinc--700);
                 }
               }
             `} ${sidebarOnSmallScreen
@@ -1190,16 +1190,16 @@ export default async (application: Application): Promise<void> => {
           >
             <div
               css="${css`
-                background-color: var(--color--gray--medium--100);
+                background-color: var(--color--zinc--100);
                 @media (prefers-color-scheme: dark) {
-                  background-color: var(--color--gray--medium--800);
+                  background-color: var(--color--zinc--800);
                 }
                 max-height: 50%;
                 overflow: auto;
                 border-bottom: var(--border-width--1) solid
-                  var(--color--gray--medium--200);
+                  var(--color--zinc--200);
                 @media (prefers-color-scheme: dark) {
-                  border-color: var(--color--gray--medium--700);
+                  border-color: var(--color--zinc--700);
                 }
               `}"
             >
@@ -5286,9 +5286,9 @@ export default async (application: Application): Promise<void> => {
                 css="${css`
                   padding-bottom: var(--space--2);
                   border-bottom: var(--border-width--1) solid
-                    var(--color--gray--medium--200);
+                    var(--color--zinc--200);
                   @media (prefers-color-scheme: dark) {
-                    border-color: var(--color--gray--medium--700);
+                    border-color: var(--color--zinc--700);
                   }
                 `} ${response.locals.conversation.type === "chat"
                   ? css`
@@ -7375,10 +7375,10 @@ export default async (application: Application): Promise<void> => {
                                                 --border-width--4
                                               )
                                               solid
-                                              var(--color--gray--medium--200);
+                                              var(--color--zinc--200);
                                             @media (prefers-color-scheme: dark) {
                                               border-color: var(
-                                                --color--gray--medium--700
+                                                --color--zinc--700
                                               );
                                             }
                                           `}"
@@ -7566,11 +7566,11 @@ export default async (application: Application): Promise<void> => {
                                               &:hover,
                                               &:focus-within {
                                                 background-color: var(
-                                                  --color--gray--medium--100
+                                                  --color--zinc--100
                                                 );
                                                 @media (prefers-color-scheme: dark) {
                                                   background-color: var(
-                                                    --color--gray--medium--800
+                                                    --color--zinc--800
                                                   );
                                                 }
                                               }
@@ -8742,10 +8742,10 @@ export default async (application: Application): Promise<void> => {
                                   ? css``
                                   : css`
                                       border-bottom: var(--border-width--4)
-                                        solid var(--color--gray--medium--200);
+                                        solid var(--color--zinc--200);
                                       @media (prefers-color-scheme: dark) {
                                         border-color: var(
-                                          --color--gray--medium--700
+                                          --color--zinc--700
                                         );
                                       }
                                     `}"
@@ -8773,11 +8773,11 @@ export default async (application: Application): Promise<void> => {
                                         &:hover,
                                         &:focus-within {
                                           background-color: var(
-                                            --color--gray--medium--100
+                                            --color--zinc--100
                                           );
                                           @media (prefers-color-scheme: dark) {
                                             background-color: var(
-                                              --color--gray--medium--800
+                                              --color--zinc--800
                                             );
                                           }
                                         }

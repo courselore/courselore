@@ -2315,9 +2315,9 @@ export default async (application: Application): Promise<void> => {
                         css="${css`
                           padding-top: var(--space--4);
                           border-top: var(--border-width--1) solid
-                            var(--color--gray--medium--200);
+                            var(--color--zinc--200);
                           @media (prefers-color-scheme: dark) {
-                            border-color: var(--color--gray--medium--700);
+                            border-color: var(--color--zinc--700);
                           }
                           display: flex;
                           gap: var(--space--2);
@@ -4167,9 +4167,9 @@ export default async (application: Application): Promise<void> => {
                   css="${css`
                     padding-top: var(--space--2);
                     border-top: var(--border-width--1) solid
-                      var(--color--gray--medium--200);
+                      var(--color--zinc--200);
                     @media (prefers-color-scheme: dark) {
-                      border-color: var(--color--gray--medium--700);
+                      border-color: var(--color--zinc--700);
                     }
                     display: flex;
                     gap: var(--space--2);

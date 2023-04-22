@@ -959,9 +959,9 @@ export default async (application: Application): Promise<void> => {
                     data-results="true"
                     $${voted || closed ? html`` : html`hidden`}
                     css="${css`
-                      background: var(--color--gray--medium--100);
+                      background: var(--color--zinc--100);
                       @media (prefers-color-scheme: dark) {
-                        background-color: var(--color--gray--medium--800);
+                        background-color: var(--color--zinc--800);
                       }
                       width: calc(var(--space--1) + 100% + var(--space--1));
                       height: calc(var(--space--6) + var(--space--0-5));
@@ -1023,9 +1023,9 @@ export default async (application: Application): Promise<void> => {
                         line-height: var(--line-height--xs);
                         padding-bottom: var(--space--2);
                         border-bottom: var(--border-width--1) solid
-                          var(--color--gray--medium--300);
+                          var(--color--zinc--300);
                         @media (prefers-color-scheme: dark) {
-                          border-color: var(--color--gray--medium--600);
+                          border-color: var(--color--zinc--600);
                         }
                         margin-bottom: var(--space--2);
                         display: flex;
@@ -1339,9 +1339,9 @@ export default async (application: Application): Promise<void> => {
                   <div
                     key="poll--show"
                     css="${css`
-                      background-color: var(--color--gray--medium--50);
+                      background-color: var(--color--zinc--50);
                       @media (prefers-color-scheme: dark) {
-                        background-color: var(--color--gray--medium--900);
+                        background-color: var(--color--zinc--900);
                       }
                       padding: var(--space--2) var(--space--4);
                       border-radius: var(--border-radius--lg);
@@ -1518,17 +1518,17 @@ export default async (application: Application): Promise<void> => {
             }
 
             :checked + .button--transparent {
-              background-color: var(--color--gray--medium--200);
+              background-color: var(--color--zinc--200);
             }
             :focus-within + .button--transparent {
-              background-color: var(--color--gray--medium--300);
+              background-color: var(--color--zinc--300);
             }
             @media (prefers-color-scheme: dark) {
               :checked + .button--transparent {
-                background-color: var(--color--gray--medium--700);
+                background-color: var(--color--zinc--700);
               }
               :focus-within + .button--transparent {
-                background-color: var(--color--gray--medium--600);
+                background-color: var(--color--zinc--600);
               }
             }
           `}"
@@ -2956,9 +2956,9 @@ export default async (application: Application): Promise<void> => {
       </div>
       <div
         css="${css`
-          background-color: var(--color--gray--medium--200);
+          background-color: var(--color--zinc--200);
           @media (prefers-color-scheme: dark) {
-            background-color: var(--color--gray--medium--700);
+            background-color: var(--color--zinc--700);
           }
           border-radius: var(--border-radius--lg);
         `}"
@@ -3363,18 +3363,18 @@ ${contentSource}</textarea
                       justify-self: end;
                       &:hover,
                       &:focus-within {
-                        background-color: var(--color--gray--medium--300);
+                        background-color: var(--color--zinc--300);
                       }
                       &:active {
-                        background-color: var(--color--gray--medium--400);
+                        background-color: var(--color--zinc--400);
                       }
                       @media (prefers-color-scheme: dark) {
                         &:hover,
                         &:focus-within {
-                          background-color: var(--color--gray--medium--600);
+                          background-color: var(--color--zinc--600);
                         }
                         &:active {
-                          background-color: var(--color--gray--medium--500);
+                          background-color: var(--color--zinc--500);
                         }
                       }
                       width: var(--font-size--2xl);
@@ -3555,9 +3555,9 @@ ${contentSource}</textarea
             [key="content-editor"] & {
               padding-bottom: var(--space--2);
               border-bottom: var(--border-width--1) solid
-                var(--color--gray--medium--300);
+                var(--color--zinc--300);
               @media (prefers-color-scheme: dark) {
-                border-color: var(--color--gray--medium--600);
+                border-color: var(--color--zinc--600);
               }
             }
           `}"
@@ -3566,9 +3566,9 @@ ${contentSource}</textarea
             key="poll-editor--content"
             css="${css`
               [key="content-editor"] & {
-                background-color: var(--color--gray--medium--50);
+                background-color: var(--color--zinc--50);
                 @media (prefers-color-scheme: dark) {
-                  background-color: var(--color--gray--medium--900);
+                  background-color: var(--color--zinc--900);
                 }
                 padding: var(--space--2) var(--space--4);
                 border-radius: var(--border-radius--lg);
