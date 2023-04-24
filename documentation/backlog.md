@@ -3,8 +3,6 @@
 ## Work in Progress
 
 - Whispers:
-  - Differentiate whispers
-    - Test with highlight from permalink
   - Introduce the notion of `message.type`, which encompasses `answer`, `whisper`, and the upcoming `follow-up question`.
   - Edge cases:
     - @mentions
