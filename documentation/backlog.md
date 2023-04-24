@@ -3,8 +3,9 @@
 ## Work in Progress
 
 - Whispers:
-  - User interface
-    - `message--highlight` + whisper = glitch
+  - Differentiate whispers
+    - Test with highlight from permalink
+  - Introduce the notion of `message.type`, which encompasses `answer`, `whisper`, and the upcoming `follow-up question`.
   - Edge cases:
     - @mentions
     - `"conversations"."updatedAt"` should be updated or not?

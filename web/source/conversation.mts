@@ -7529,8 +7529,6 @@ export default async (application: Application): Promise<void> => {
                                           );
                                           margin: var(--space--0)
                                             var(--space---2);
-                                          display: flex;
-                                          flex-direction: column;
                                           --message--highlight--background-color: var(
                                             --color--amber--200
                                           );
@@ -7552,7 +7550,6 @@ export default async (application: Application): Promise<void> => {
                                         `} ${response.locals.conversation
                                           .type === "chat"
                                           ? css`
-                                              gap: var(--space--1);
                                               transition-property: var(
                                                 --transition-property--colors
                                               );
@@ -7576,168 +7573,158 @@ export default async (application: Application): Promise<void> => {
                                             `
                                           : css`
                                               padding-bottom: var(--space--4);
-                                              gap: var(--space--2);
                                             `}"
                                       >
-                                        $${(() => {
-                                          const actions = html`
-                                            <div key="message--actions">
-                                              <button
-                                                class="button button--tight button--tight--inline button--transparent secondary"
-                                                css="${css`
-                                                  font-size: var(
-                                                    --font-size--xs
-                                                  );
-                                                  line-height: var(
-                                                    --line-height--xs
-                                                  );
-                                                `} ${response.locals
-                                                  .conversation.type === "chat"
-                                                  ? css`
-                                                      transition-property: var(
-                                                        --transition-property--opacity
-                                                      );
-                                                      transition-duration: var(
-                                                        --transition-duration--150
-                                                      );
-                                                      transition-timing-function: var(
-                                                        --transition-timing-function--in-out
-                                                      );
-                                                      [key^="message/"]:not(
-                                                          :hover,
-                                                          :focus-within
-                                                        )
-                                                        & {
-                                                        opacity: var(
-                                                          --opacity--0
+                                        <div
+                                          css="${css`
+                                            display: flex;
+                                            flex-direction: column;
+                                          `} ${response.locals.conversation
+                                            .type === "chat"
+                                            ? css`
+                                                gap: var(--space--1);
+                                              `
+                                            : css`
+                                                gap: var(--space--2);
+                                              `}"
+                                        >
+                                          $${(() => {
+                                            const actions = html`
+                                              <div key="message--actions">
+                                                <button
+                                                  class="button button--tight button--tight--inline button--transparent secondary"
+                                                  css="${css`
+                                                    font-size: var(
+                                                      --font-size--xs
+                                                    );
+                                                    line-height: var(
+                                                      --line-height--xs
+                                                    );
+                                                  `} ${response.locals
+                                                    .conversation.type ===
+                                                  "chat"
+                                                    ? css`
+                                                        transition-property: var(
+                                                          --transition-property--opacity
                                                         );
-                                                      }
-                                                    `
-                                                  : css``}"
-                                                javascript="${javascript`
-                                                  leafac.setTippy({
-                                                    event,
-                                                    element: this,
-                                                    tippyProps: {
-                                                      touch: false,
-                                                      content: "Actions",
-                                                    },
-                                                  });
-
-                                                  leafac.setTippy({
-                                                    event,
-                                                    element: this,
-                                                    elementProperty: "dropdown",
-                                                    tippyProps: {
-                                                      trigger: "click",
-                                                      interactive: true,
-                                                      onHidden: () => { this.onmouseleave(); },
-                                                      content: ${html`
-                                                        <div
-                                                          key="loading"
-                                                          css="${css`
-                                                            display: flex;
-                                                            gap: var(
-                                                              --space--2
-                                                            );
-                                                            align-items: center;
-                                                          `}"
-                                                        >
-                                                          $${application.web.locals.partials.spinner(
-                                                            {
-                                                              request,
-                                                              response,
-                                                            }
-                                                          )}
-                                                          Loading…
-                                                        </div>
-                                                        <div
-                                                          key="content"
-                                                          hidden
-                                                        ></div>
-                                                      `},
-                                                    },
-                                                  });
-
-                                                  window.clearTimeout(this.dropdownContentTimeout);
-                                                  this.dropdownContentSkipLoading = false;
-
-                                                  this.onmouseenter = this.onfocus = async () => {
-                                                    window.clearTimeout(this.dropdownContentTimeout);
-                                                    if (this.dropdownContentSkipLoading) return;
-                                                    this.dropdownContentSkipLoading = true;
-                                                    leafac.loadPartial(this.dropdown.props.content.querySelector('[key="content"]'), await (await fetch(${`https://${
-                                                      application.configuration
-                                                        .hostname
-                                                    }/courses/${
-                                                      response.locals.course
-                                                        .reference
-                                                    }/conversations/${
-                                                      response.locals
-                                                        .conversation.reference
-                                                    }/messages/${
-                                                      message.reference
-                                                    }/actions${qs.stringify(
-                                                      {
-                                                        conversations:
-                                                          request.query
-                                                            .conversations,
-                                                        messages:
-                                                          request.query
-                                                            .messages,
+                                                        transition-duration: var(
+                                                          --transition-duration--150
+                                                        );
+                                                        transition-timing-function: var(
+                                                          --transition-timing-function--in-out
+                                                        );
+                                                        [key^="message/"]:not(
+                                                            :hover,
+                                                            :focus-within
+                                                          )
+                                                          & {
+                                                          opacity: var(
+                                                            --opacity--0
+                                                          );
+                                                        }
+                                                      `
+                                                    : css``}"
+                                                  javascript="${javascript`
+                                                    leafac.setTippy({
+                                                      event,
+                                                      element: this,
+                                                      tippyProps: {
+                                                        touch: false,
+                                                        content: "Actions",
                                                       },
-                                                      { addQueryPrefix: true }
-                                                    )}`}, { cache: "no-store" })).text());
-                                                    this.dropdown.props.content.querySelector('[key="loading"]').hidden = true;
-                                                    this.dropdown.props.content.querySelector('[key="content"]').hidden = false;
-                                                    this.dropdown.setProps({});
-                                                  };
+                                                    });
 
-                                                  this.onmouseleave = this.onblur = () => {
+                                                    leafac.setTippy({
+                                                      event,
+                                                      element: this,
+                                                      elementProperty: "dropdown",
+                                                      tippyProps: {
+                                                        trigger: "click",
+                                                        interactive: true,
+                                                        onHidden: () => { this.onmouseleave(); },
+                                                        content: ${html`
+                                                          <div
+                                                            key="loading"
+                                                            css="${css`
+                                                              display: flex;
+                                                              gap: var(
+                                                                --space--2
+                                                              );
+                                                              align-items: center;
+                                                            `}"
+                                                          >
+                                                            $${application.web.locals.partials.spinner(
+                                                              {
+                                                                request,
+                                                                response,
+                                                              }
+                                                            )}
+                                                            Loading…
+                                                          </div>
+                                                          <div
+                                                            key="content"
+                                                            hidden
+                                                          ></div>
+                                                        `},
+                                                      },
+                                                    });
+
                                                     window.clearTimeout(this.dropdownContentTimeout);
-                                                    if (this.matches(":hover, :focus-within") || this.dropdown.state.isShown) return;
-                                                    this.dropdownContentTimeout = window.setTimeout(() => {
-                                                      this.dropdown.props.content.querySelector('[key="loading"]').hidden = false;
-                                                      this.dropdown.props.content.querySelector('[key="content"]').hidden = true;
-                                                      this.dropdownContentSkipLoading = false;
-                                                    }, 60 * 1000);
-                                                  };
-                                                `}"
-                                              >
-                                                <i
-                                                  class="bi bi-three-dots-vertical"
-                                                ></i>
-                                              </button>
-                                            </div>
-                                          `;
+                                                    this.dropdownContentSkipLoading = false;
 
-                                          let header = html``;
+                                                    this.onmouseenter = this.onfocus = async () => {
+                                                      window.clearTimeout(this.dropdownContentTimeout);
+                                                      if (this.dropdownContentSkipLoading) return;
+                                                      this.dropdownContentSkipLoading = true;
+                                                      leafac.loadPartial(this.dropdown.props.content.querySelector('[key="content"]'), await (await fetch(${`https://${
+                                                        application
+                                                          .configuration
+                                                          .hostname
+                                                      }/courses/${
+                                                        response.locals.course
+                                                          .reference
+                                                      }/conversations/${
+                                                        response.locals
+                                                          .conversation
+                                                          .reference
+                                                      }/messages/${
+                                                        message.reference
+                                                      }/actions${qs.stringify(
+                                                        {
+                                                          conversations:
+                                                            request.query
+                                                              .conversations,
+                                                          messages:
+                                                            request.query
+                                                              .messages,
+                                                        },
+                                                        { addQueryPrefix: true }
+                                                      )}`}, { cache: "no-store" })).text());
+                                                      this.dropdown.props.content.querySelector('[key="loading"]').hidden = true;
+                                                      this.dropdown.props.content.querySelector('[key="content"]').hidden = false;
+                                                      this.dropdown.setProps({});
+                                                    };
 
-                                          if (
-                                            typeof message.staffWhisperAt ===
-                                            "string"
-                                          )
-                                            header += html`
-                                              <div
-                                                class="text--sky"
-                                                javascript="${javascript`
-                                                  leafac.setTippy({
-                                                    event,
-                                                    element: this,
-                                                    tippyProps: {
-                                                      touch: false,
-                                                      content: "Staff whispers are messages visible to staff only.",
-                                                    },
-                                                  });
-                                                `}"
-                                              >
-                                                <i
-                                                  class="bi bi-mortarboard-fill"
-                                                ></i>
-                                                Staff Whisper
+                                                    this.onmouseleave = this.onblur = () => {
+                                                      window.clearTimeout(this.dropdownContentTimeout);
+                                                      if (this.matches(":hover, :focus-within") || this.dropdown.state.isShown) return;
+                                                      this.dropdownContentTimeout = window.setTimeout(() => {
+                                                        this.dropdown.props.content.querySelector('[key="loading"]').hidden = false;
+                                                        this.dropdown.props.content.querySelector('[key="content"]').hidden = true;
+                                                        this.dropdownContentSkipLoading = false;
+                                                      }, 60 * 1000);
+                                                    };
+                                                  `}"
+                                                >
+                                                  <i
+                                                    class="bi bi-three-dots-vertical"
+                                                  ></i>
+                                                </button>
                                               </div>
                                             `;
-                                          else {
+
+                                            let header = html``;
+
                                             if (
                                               application.web.locals.helpers.mayEditMessage(
                                                 {
@@ -8076,27 +8063,574 @@ export default async (application: Application): Promise<void> => {
                                                     : "s"}
                                                 </div>
                                               `;
-                                          }
 
-                                          return html`
-                                            $${header !== html``
-                                              ? html`
+                                            return html`
+                                              $${header !== html``
+                                                ? html`
+                                                    <div
+                                                      key="message--header"
+                                                      css="${css`
+                                                        font-size: var(
+                                                          --font-size--xs
+                                                        );
+                                                        line-height: var(
+                                                          --line-height--xs
+                                                        );
+                                                        display: flex;
+                                                        gap: var(--space--4);
+                                                      `}"
+                                                    >
+                                                      <div
+                                                        css="${css`
+                                                          flex: 1;
+                                                          display: flex;
+                                                          flex-wrap: wrap;
+                                                          column-gap: var(
+                                                            --space--8
+                                                          );
+                                                          row-gap: var(
+                                                            --space--1
+                                                          );
+                                                          & > * {
+                                                            display: flex;
+                                                            gap: var(
+                                                              --space--1
+                                                            );
+                                                          }
+                                                        `}"
+                                                      >
+                                                        $${header}
+                                                      </div>
+                                                      $${actions}
+                                                    </div>
+                                                  `
+                                                : html``}
+
+                                              <div
+                                                css="${css`
+                                                  display: flex;
+                                                  gap: var(--space--2);
+                                                `}"
+                                              >
+                                                <div
+                                                  class="secondary"
+                                                  css="${css`
+                                                    font-size: var(
+                                                      --font-size--xs
+                                                    );
+                                                    line-height: var(
+                                                      --line-height--xs
+                                                    );
+                                                    flex: 1;
+                                                    display: flex;
+                                                    flex-wrap: wrap;
+                                                    align-items: baseline;
+                                                    column-gap: var(--space--4);
+                                                    row-gap: var(--space--2);
+                                                  `}"
+                                                >
                                                   <div
-                                                    key="message--header"
+                                                    class="strong"
                                                     css="${css`
                                                       font-size: var(
-                                                        --font-size--xs
+                                                        --font-size--sm
                                                       );
                                                       line-height: var(
-                                                        --line-height--xs
+                                                        --line-height--sm
                                                       );
-                                                      display: flex;
-                                                      gap: var(--space--4);
                                                     `}"
                                                   >
+                                                    $${application.web.locals.partials.user(
+                                                      {
+                                                        request,
+                                                        response,
+                                                        enrollment:
+                                                          message.authorEnrollment,
+                                                        anonymous:
+                                                          message.anonymousAt ===
+                                                          null
+                                                            ? false
+                                                            : response.locals
+                                                                .enrollment
+                                                                .courseRole ===
+                                                                "staff" ||
+                                                              (message.authorEnrollment !==
+                                                                "no-longer-enrolled" &&
+                                                                message
+                                                                  .authorEnrollment
+                                                                  .id ===
+                                                                  response
+                                                                    .locals
+                                                                    .enrollment
+                                                                    .id)
+                                                            ? "reveal"
+                                                            : true,
+                                                        name:
+                                                          message.authorEnrollment ===
+                                                          "no-longer-enrolled"
+                                                            ? undefined
+                                                            : application.web.locals.helpers.highlightSearchResult(
+                                                                html`${message
+                                                                  .authorEnrollment
+                                                                  .user.name}`,
+                                                                typeof request
+                                                                  .query
+                                                                  .conversations
+                                                                  ?.search ===
+                                                                  "string" &&
+                                                                  request.query.conversations.search.trim() !==
+                                                                    ""
+                                                                  ? request
+                                                                      .query
+                                                                      .conversations
+                                                                      .search
+                                                                  : undefined
+                                                              ),
+                                                      }
+                                                    )}
+                                                  </div>
+
+                                                  <time
+                                                    datetime="${new Date(
+                                                      message.createdAt
+                                                    ).toISOString()}"
+                                                    javascript="${javascript`
+                                                      leafac.relativizeDateTimeElement(this, { capitalize: true });
+                                                    `}"
+                                                  ></time>
+
+                                                  $${message.updatedAt !== null
+                                                    ? html`
+                                                        <div>
+                                                          Updated
+                                                          <time
+                                                            datetime="${new Date(
+                                                              message.updatedAt
+                                                            ).toISOString()}"
+                                                            javascript="${javascript`
+                                                              leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
+                                                            `}"
+                                                          ></time>
+                                                        </div>
+                                                      `
+                                                    : html``}
+                                                </div>
+
+                                                $${header === html``
+                                                  ? actions
+                                                  : html``}
+                                              </div>
+                                            `;
+                                          })()}
+
+                                          <div
+                                            key="message--show"
+                                            css="${css`
+                                              display: flex;
+                                              flex-direction: column;
+                                              gap: var(--space--2);
+                                            `}"
+                                          >
+                                            <div
+                                              key="message--show--content-area"
+                                              css="${css`
+                                                position: relative;
+                                              `}"
+                                            >
+                                              <div
+                                                key="message--show--content-area--dropdown-menu-target"
+                                                css="${css`
+                                                  width: var(--space--0);
+                                                  height: var(
+                                                    --line-height--sm
+                                                  );
+                                                  position: absolute;
+                                                `}"
+                                              ></div>
+                                              <div
+                                                key="message--show--content-area--content"
+                                                javascript="${javascript`
+                                                  const dropdownMenuTarget = this.closest('[key="message--show--content-area"]').querySelector('[key="message--show--content-area--dropdown-menu-target"]');
+                                                  leafac.setTippy({
+                                                    event,
+                                                    element: dropdownMenuTarget,
+                                                    elementProperty: "dropdownMenu",
+                                                    tippyProps: {
+                                                      trigger: "manual",
+                                                      interactive: true,
+                                                      content: ${html`
+                                                        <div
+                                                          class="dropdown--menu"
+                                                        >
+                                                          <button
+                                                            class="dropdown--menu--item button button--transparent"
+                                                            javascript="${javascript`
+                                                              this.onclick = () => {
+                                                                tippy.hideAll();
+                                                                const selection = window.getSelection();
+                                                                const anchorElement = leafac.ancestors(selection.anchorNode).reverse().find(element => typeof element?.getAttribute?.("data-position") === "string");
+                                                                const focusElement = leafac.ancestors(selection.focusNode).reverse().find(element => typeof element?.getAttribute?.("data-position") === "string");
+                                                                const contentElement = this.closest('[key="message--show--content-area"]').querySelector('[key="message--show--content-area--content"]');
+                                                                if (
+                                                                  selection.isCollapsed ||
+                                                                  anchorElement === undefined ||
+                                                                  focusElement === undefined ||
+                                                                  !contentElement.contains(anchorElement) ||
+                                                                  !contentElement.contains(focusElement)
+                                                                ) return;
+                                                                const anchorPosition = JSON.parse(anchorElement.getAttribute("data-position"));
+                                                                const focusPosition = JSON.parse(focusElement.getAttribute("data-position"));
+                                                                const start = Math.min(anchorPosition.start.offset, focusPosition.start.offset);
+                                                                const end = Math.max(anchorPosition.end.offset, focusPosition.end.offset);
+                                                                const content = anchorElement.closest("[data-content-source]").getAttribute("data-content-source");
+                                                                const newMessage = document.querySelector('[key="new-message"]');
+                                                                newMessage.querySelector('[key="content-editor--button--write"]')?.click();
+                                                                const element = newMessage.querySelector('[key="content-editor--write--textarea"]');
+                                                                textFieldEdit.wrapSelection(
+                                                                  element,
+                                                                  ((element.selectionStart > 0) ? "\\n\\n" : "") + "> " + ${
+                                                                    message.authorEnrollment ===
+                                                                    "no-longer-enrolled"
+                                                                      ? ``
+                                                                      : `@${
+                                                                          message.anonymousAt ===
+                                                                          null
+                                                                            ? `${
+                                                                                message
+                                                                                  .authorEnrollment
+                                                                                  .reference
+                                                                              }--${slugify(
+                                                                                message
+                                                                                  .authorEnrollment
+                                                                                  .user
+                                                                                  .name
+                                                                              )}`
+                                                                            : `anonymous`
+                                                                        } · `
+                                                                  } + "#" + ${
+                                                              response.locals
+                                                                .conversation
+                                                                .reference
+                                                            } + "/" + ${
+                                                              message.reference
+                                                            } + "\\n>\\n> " + content.slice(start, end).replaceAll("\\n", "\\n> ") + "\\n\\n",
+                                                                  ""
+                                                                );
+                                                                element.focus();
+                                                              };
+                                                            `}"
+                                                          >
+                                                            <i
+                                                              class="bi bi-chat-quote"
+                                                            ></i>
+                                                            Quote
+                                                          </button>
+                                                        </div>
+                                                      `},  
+                                                    },
+                                                  });
+                                                  
+                                                  this.onmouseup = (event) => {
+                                                    window.setTimeout(() => {
+                                                      const selection = window.getSelection();
+                                                      const anchorElement = leafac.ancestors(selection.anchorNode).reverse().find(element => typeof element?.getAttribute?.("data-position") === "string");
+                                                      const focusElement = leafac.ancestors(selection.focusNode).reverse().find(element => typeof element?.getAttribute?.("data-position") === "string");
+                                                      if (
+                                                        selection.isCollapsed ||
+                                                        anchorElement === undefined ||
+                                                        focusElement === undefined ||
+                                                        !this.contains(anchorElement) ||
+                                                        !this.contains(focusElement) ||
+                                                        anchorElement.closest('[key^="poll/"]') !== null ||
+                                                        focusElement.closest('[key^="poll/"]') !== null
+                                                      ) return;
+                                                      dropdownMenuTarget.style.top = String(event.layerY) + "px";
+                                                      dropdownMenuTarget.style.left = String(event.layerX) + "px";
+                                                      dropdownMenuTarget.dropdownMenu.show();
+                                                    });
+                                                  };
+                                                `}"
+                                              >
+                                                $${application.web.locals.partials.content(
+                                                  {
+                                                    request,
+                                                    response,
+                                                    id: `message--${message.reference}`,
+                                                    contentPreprocessed:
+                                                      message.contentPreprocessed,
+                                                    search:
+                                                      typeof request.query
+                                                        .conversations
+                                                        ?.search === "string" &&
+                                                      request.query.conversations.search.trim() !==
+                                                        ""
+                                                        ? request.query
+                                                            .conversations
+                                                            .search
+                                                        : undefined,
+                                                  }
+                                                ).contentProcessed}
+                                              </div>
+                                            </div>
+
+                                            $${(() => {
+                                              let messageShowFooter = html``;
+
+                                              const isLiked =
+                                                message.likes.some(
+                                                  (like) =>
+                                                    like.enrollment !==
+                                                      "no-longer-enrolled" &&
+                                                    like.enrollment.id ===
+                                                      response.locals.enrollment
+                                                        .id
+                                                );
+                                              const likesCount =
+                                                message.likes.length;
+                                              if (
+                                                response.locals.conversation
+                                                  .type !== "chat" ||
+                                                likesCount > 0
+                                              )
+                                                messageShowFooter += html`
+                                                  <div
+                                                    css="${css`
+                                                      display: flex;
+                                                      gap: var(--space--1);
+                                                    `}"
+                                                  >
+                                                    <form
+                                                      method="${isLiked
+                                                        ? "DELETE"
+                                                        : "POST"}"
+                                                      action="https://${application
+                                                        .configuration
+                                                        .hostname}/courses/${response
+                                                        .locals.course
+                                                        .reference}/conversations/${response
+                                                        .locals.conversation
+                                                        .reference}/messages/${message.reference}/likes${qs.stringify(
+                                                        {
+                                                          conversations:
+                                                            request.query
+                                                              .conversations,
+                                                          messages:
+                                                            request.query
+                                                              .messages,
+                                                        },
+                                                        { addQueryPrefix: true }
+                                                      )}"
+                                                    >
+                                                      <button
+                                                        class="button button--tight button--tight--inline button--tight-gap button--transparent ${isLiked
+                                                          ? "text--blue"
+                                                          : ""}"
+                                                        $${likesCount === 0
+                                                          ? html``
+                                                          : html`
+                                                              javascript="${javascript`
+                                                                leafac.setTippy({
+                                                                  event,
+                                                                  element: this,
+                                                                  tippyProps: {
+                                                                    touch: false,
+                                                                    content: ${
+                                                                      isLiked
+                                                                        ? "Remove Like"
+                                                                        : "Like"
+                                                                    },
+                                                                  },
+                                                                });
+                                                              `}"
+                                                            `}
+                                                      >
+                                                        $${isLiked
+                                                          ? html`
+                                                              <i
+                                                                class="bi bi-hand-thumbs-up-fill"
+                                                              ></i>
+                                                            `
+                                                          : html`<i
+                                                              class="bi bi-hand-thumbs-up"
+                                                            ></i>`}
+                                                        $${likesCount === 0
+                                                          ? html`Like`
+                                                          : html``}
+                                                      </button>
+                                                    </form>
+
+                                                    $${likesCount === 0
+                                                      ? html``
+                                                      : html`
+                                                          <button
+                                                            class="button button--tight button--tight--inline button--tight-gap button--transparent ${isLiked
+                                                              ? "text--blue"
+                                                              : ""}"
+                                                            javascript="${javascript`
+                                                              leafac.setTippy({
+                                                                event,
+                                                                element: this,
+                                                                tippyProps: {
+                                                                  touch: false,
+                                                                  content: "See people who liked",
+                                                                },
+                                                              });
+                                                              
+                                                              leafac.setTippy({
+                                                                event,
+                                                                element: this,
+                                                                elementProperty: "dropdown",
+                                                                tippyProps: {
+                                                                  trigger: "click",
+                                                                  interactive: true,
+                                                                  onHidden: () => { this.onmouseleave(); },
+                                                                  content: ${html`
+                                                                    <div
+                                                                      key="loading"
+                                                                      css="${css`
+                                                                        display: flex;
+                                                                        gap: var(
+                                                                          --space--2
+                                                                        );
+                                                                        align-items: center;
+                                                                      `}"
+                                                                    >
+                                                                      $${application.web.locals.partials.spinner(
+                                                                        {
+                                                                          request,
+                                                                          response,
+                                                                        }
+                                                                      )}
+                                                                      Loading…
+                                                                    </div>
+                                                                    <div
+                                                                      key="content"
+                                                                      hidden
+                                                                    ></div>
+                                                                  `},
+                                                                },
+                                                              });
+
+                                                              window.clearTimeout(this.dropdownContentTimeout);
+                                                              this.dropdownContentSkipLoading = false;
+                                                              
+                                                              this.onmouseenter = this.onfocus = async () => {
+                                                                window.clearTimeout(this.dropdownContentTimeout);
+                                                                if (this.dropdownContentSkipLoading) return;
+                                                                this.dropdownContentSkipLoading = true;
+                                                                leafac.loadPartial(this.dropdown.props.content.querySelector('[key="content"]'), await (await fetch(${`https://${application.configuration.hostname}/courses/${response.locals.course.reference}/conversations/${response.locals.conversation.reference}/messages/${message.reference}/likes`}, { cache: "no-store" })).text());
+                                                                this.dropdown.props.content.querySelector('[key="loading"]').hidden = true;
+                                                                this.dropdown.props.content.querySelector('[key="content"]').hidden = false;
+                                                                this.dropdown.setProps({});
+                                                              };
+                                                              
+                                                              this.onmouseleave = this.onblur = () => {
+                                                                window.clearTimeout(this.dropdownContentTimeout);
+                                                                if (this.matches(":hover, :focus-within") || this.dropdown.state.isShown) return;
+                                                                this.dropdownContentTimeout = window.setTimeout(() => {
+                                                                  this.dropdown.props.content.querySelector('[key="loading"]').hidden = false;
+                                                                  this.dropdown.props.content.querySelector('[key="content"]').hidden = true;
+                                                                  this.dropdownContentSkipLoading = false;
+                                                                }, 60 * 1000);
+                                                              };
+                                                            `}"
+                                                          >
+                                                            ${likesCount.toString()}
+                                                            Like${likesCount ===
+                                                            1
+                                                              ? ""
+                                                              : "s"}
+                                                          </button>
+                                                        `}
+                                                  </div>
+                                                `;
+
+                                              if (
+                                                response.locals.enrollment
+                                                  .courseRole === "staff" &&
+                                                response.locals.conversation
+                                                  .type !== "chat"
+                                              )
+                                                messageShowFooter += html`
+                                                  <button
+                                                    class="button button--tight button--tight--inline button--tight-gap button--transparent"
+                                                    javascript="${javascript`
+                                                      leafac.setTippy({
+                                                        event,
+                                                        element: this,
+                                                        tippyProps: {
+                                                          trigger: "click",
+                                                          interactive: true,
+                                                          onHidden: () => { this.onmouseleave(); },
+                                                          content: ${html`
+                                                            <div
+                                                              key="loading"
+                                                              css="${css`
+                                                                display: flex;
+                                                                gap: var(
+                                                                  --space--2
+                                                                );
+                                                                align-items: center;
+                                                              `}"
+                                                            >
+                                                              $${application.web.locals.partials.spinner(
+                                                                {
+                                                                  request,
+                                                                  response,
+                                                                }
+                                                              )}
+                                                              Loading…
+                                                            </div>
+                                                            <div
+                                                              key="content"
+                                                              hidden
+                                                            ></div>
+                                                          `},
+                                                        },
+                                                      });
+
+                                                      window.clearTimeout(this.tooltipContentTimeout);
+                                                      this.tooltipContentSkipLoading = false;
+                                                      
+                                                      this.onmouseenter = this.onfocus = async () => {
+                                                        window.clearTimeout(this.tooltipContentTimeout);
+                                                        if (this.tooltipContentSkipLoading) return;
+                                                        this.tooltipContentSkipLoading = true;
+                                                        leafac.loadPartial(this.tooltip.props.content.querySelector('[key="content"]'), await (await fetch(${`https://${application.configuration.hostname}/courses/${response.locals.course.reference}/conversations/${response.locals.conversation.reference}/messages/${message.reference}/views`}, { cache: "no-store" })).text());
+                                                        this.tooltip.props.content.querySelector('[key="loading"]').hidden = true;
+                                                        this.tooltip.props.content.querySelector('[key="content"]').hidden = false;
+                                                        this.tooltip.setProps({});
+                                                      };
+                                                      
+                                                      this.onmouseleave = this.onblur = () => {
+                                                        window.clearTimeout(this.tooltipContentTimeout);
+                                                        if (this.matches(":hover, :focus-within") || this.tooltip.state.isShown) return;
+                                                        this.tooltipContentTimeout = window.setTimeout(() => {
+                                                          this.tooltip.props.content.querySelector('[key="loading"]').hidden = false;
+                                                          this.tooltip.props.content.querySelector('[key="content"]').hidden = true;
+                                                          this.tooltipContentSkipLoading = false;
+                                                        }, 60 * 1000);
+                                                      };
+                                                    `}"
+                                                  >
+                                                    <i class="bi bi-eye"></i>
+                                                    ${message.readings.length.toString()}
+                                                    Views
+                                                  </button>
+                                                `;
+
+                                              return messageShowFooter !==
+                                                html``
+                                                ? html`
                                                     <div
+                                                      key="message--show--footer"
                                                       css="${css`
-                                                        flex: 1;
+                                                        font-size: var(
+                                                          --font-size--xs
+                                                        );
+                                                        line-height: var(
+                                                          --line-height--xs
+                                                        );
                                                         display: flex;
                                                         flex-wrap: wrap;
                                                         column-gap: var(
@@ -8105,577 +8639,43 @@ export default async (application: Application): Promise<void> => {
                                                         row-gap: var(
                                                           --space--1
                                                         );
-                                                        & > * {
-                                                          display: flex;
-                                                          gap: var(--space--1);
-                                                        }
                                                       `}"
                                                     >
-                                                      $${header}
+                                                      $${messageShowFooter}
                                                     </div>
-                                                    $${actions}
-                                                  </div>
-                                                `
-                                              : html``}
+                                                  `
+                                                : html``;
+                                            })()}
+                                          </div>
 
+                                          <div key="message--edit" hidden>
                                             <div
+                                              key="loading"
+                                              class="strong"
                                               css="${css`
                                                 display: flex;
                                                 gap: var(--space--2);
+                                                justify-content: center;
                                               `}"
                                             >
-                                              <div
-                                                class="secondary"
-                                                css="${css`
-                                                  font-size: var(
-                                                    --font-size--xs
-                                                  );
-                                                  line-height: var(
-                                                    --line-height--xs
-                                                  );
-                                                  flex: 1;
-                                                  display: flex;
-                                                  flex-wrap: wrap;
-                                                  align-items: baseline;
-                                                  column-gap: var(--space--4);
-                                                  row-gap: var(--space--2);
-                                                `}"
-                                              >
-                                                <div
-                                                  class="strong"
-                                                  css="${css`
-                                                    font-size: var(
-                                                      --font-size--sm
-                                                    );
-                                                    line-height: var(
-                                                      --line-height--sm
-                                                    );
-                                                  `}"
-                                                >
-                                                  $${application.web.locals.partials.user(
-                                                    {
-                                                      request,
-                                                      response,
-                                                      enrollment:
-                                                        message.authorEnrollment,
-                                                      anonymous:
-                                                        message.anonymousAt ===
-                                                        null
-                                                          ? false
-                                                          : response.locals
-                                                              .enrollment
-                                                              .courseRole ===
-                                                              "staff" ||
-                                                            (message.authorEnrollment !==
-                                                              "no-longer-enrolled" &&
-                                                              message
-                                                                .authorEnrollment
-                                                                .id ===
-                                                                response.locals
-                                                                  .enrollment
-                                                                  .id)
-                                                          ? "reveal"
-                                                          : true,
-                                                      name:
-                                                        message.authorEnrollment ===
-                                                        "no-longer-enrolled"
-                                                          ? undefined
-                                                          : application.web.locals.helpers.highlightSearchResult(
-                                                              html`${message
-                                                                .authorEnrollment
-                                                                .user.name}`,
-                                                              typeof request
-                                                                .query
-                                                                .conversations
-                                                                ?.search ===
-                                                                "string" &&
-                                                                request.query.conversations.search.trim() !==
-                                                                  ""
-                                                                ? request.query
-                                                                    .conversations
-                                                                    .search
-                                                                : undefined
-                                                            ),
-                                                    }
-                                                  )}
-                                                </div>
-
-                                                <time
-                                                  datetime="${new Date(
-                                                    message.createdAt
-                                                  ).toISOString()}"
-                                                  javascript="${javascript`
-                                                    leafac.relativizeDateTimeElement(this, { capitalize: true });
-                                                  `}"
-                                                ></time>
-
-                                                $${message.updatedAt !== null
-                                                  ? html`
-                                                      <div>
-                                                        Updated
-                                                        <time
-                                                          datetime="${new Date(
-                                                            message.updatedAt
-                                                          ).toISOString()}"
-                                                          javascript="${javascript`
-                                                            leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
-                                                          `}"
-                                                        ></time>
-                                                      </div>
-                                                    `
-                                                  : html``}
-                                              </div>
-
-                                              $${header === html``
-                                                ? actions
-                                                : html``}
-                                            </div>
-                                          `;
-                                        })()}
-
-                                        <div
-                                          key="message--show"
-                                          css="${css`
-                                            display: flex;
-                                            flex-direction: column;
-                                            gap: var(--space--2);
-                                          `}"
-                                        >
-                                          <div
-                                            key="message--show--content-area"
-                                            css="${css`
-                                              position: relative;
-                                            `}"
-                                          >
-                                            <div
-                                              key="message--show--content-area--dropdown-menu-target"
-                                              css="${css`
-                                                width: var(--space--0);
-                                                height: var(--line-height--sm);
-                                                position: absolute;
-                                              `}"
-                                            ></div>
-                                            <div
-                                              key="message--show--content-area--content"
-                                              javascript="${javascript`
-                                                const dropdownMenuTarget = this.closest('[key="message--show--content-area"]').querySelector('[key="message--show--content-area--dropdown-menu-target"]');
-                                                leafac.setTippy({
-                                                  event,
-                                                  element: dropdownMenuTarget,
-                                                  elementProperty: "dropdownMenu",
-                                                  tippyProps: {
-                                                    trigger: "manual",
-                                                    interactive: true,
-                                                    content: ${html`
-                                                      <div
-                                                        class="dropdown--menu"
-                                                      >
-                                                        <button
-                                                          class="dropdown--menu--item button button--transparent"
-                                                          javascript="${javascript`
-                                                            this.onclick = () => {
-                                                              tippy.hideAll();
-                                                              const selection = window.getSelection();
-                                                              const anchorElement = leafac.ancestors(selection.anchorNode).reverse().find(element => typeof element?.getAttribute?.("data-position") === "string");
-                                                              const focusElement = leafac.ancestors(selection.focusNode).reverse().find(element => typeof element?.getAttribute?.("data-position") === "string");
-                                                              const contentElement = this.closest('[key="message--show--content-area"]').querySelector('[key="message--show--content-area--content"]');
-                                                              if (
-                                                                selection.isCollapsed ||
-                                                                anchorElement === undefined ||
-                                                                focusElement === undefined ||
-                                                                !contentElement.contains(anchorElement) ||
-                                                                !contentElement.contains(focusElement)
-                                                              ) return;
-                                                              const anchorPosition = JSON.parse(anchorElement.getAttribute("data-position"));
-                                                              const focusPosition = JSON.parse(focusElement.getAttribute("data-position"));
-                                                              const start = Math.min(anchorPosition.start.offset, focusPosition.start.offset);
-                                                              const end = Math.max(anchorPosition.end.offset, focusPosition.end.offset);
-                                                              const content = anchorElement.closest("[data-content-source]").getAttribute("data-content-source");
-                                                              const newMessage = document.querySelector('[key="new-message"]');
-                                                              newMessage.querySelector('[key="content-editor--button--write"]')?.click();
-                                                              const element = newMessage.querySelector('[key="content-editor--write--textarea"]');
-                                                              textFieldEdit.wrapSelection(
-                                                                element,
-                                                                ((element.selectionStart > 0) ? "\\n\\n" : "") + "> " + ${
-                                                                  message.authorEnrollment ===
-                                                                  "no-longer-enrolled"
-                                                                    ? ``
-                                                                    : `@${
-                                                                        message.anonymousAt ===
-                                                                        null
-                                                                          ? `${
-                                                                              message
-                                                                                .authorEnrollment
-                                                                                .reference
-                                                                            }--${slugify(
-                                                                              message
-                                                                                .authorEnrollment
-                                                                                .user
-                                                                                .name
-                                                                            )}`
-                                                                          : `anonymous`
-                                                                      } · `
-                                                                } + "#" + ${
-                                                            response.locals
-                                                              .conversation
-                                                              .reference
-                                                          } + "/" + ${
-                                                            message.reference
-                                                          } + "\\n>\\n> " + content.slice(start, end).replaceAll("\\n", "\\n> ") + "\\n\\n",
-                                                                ""
-                                                              );
-                                                              element.focus();
-                                                            };
-                                                          `}"
-                                                        >
-                                                          <i
-                                                            class="bi bi-chat-quote"
-                                                          ></i>
-                                                          Quote
-                                                        </button>
-                                                      </div>
-                                                    `},  
-                                                  },
-                                                });
-                                                
-                                                this.onmouseup = (event) => {
-                                                  window.setTimeout(() => {
-                                                    const selection = window.getSelection();
-                                                    const anchorElement = leafac.ancestors(selection.anchorNode).reverse().find(element => typeof element?.getAttribute?.("data-position") === "string");
-                                                    const focusElement = leafac.ancestors(selection.focusNode).reverse().find(element => typeof element?.getAttribute?.("data-position") === "string");
-                                                    if (
-                                                      selection.isCollapsed ||
-                                                      anchorElement === undefined ||
-                                                      focusElement === undefined ||
-                                                      !this.contains(anchorElement) ||
-                                                      !this.contains(focusElement) ||
-                                                      anchorElement.closest('[key^="poll/"]') !== null ||
-                                                      focusElement.closest('[key^="poll/"]') !== null
-                                                    ) return;
-                                                    dropdownMenuTarget.style.top = String(event.layerY) + "px";
-                                                    dropdownMenuTarget.style.left = String(event.layerX) + "px";
-                                                    dropdownMenuTarget.dropdownMenu.show();
-                                                  });
-                                                };
-                                              `}"
-                                            >
-                                              $${application.web.locals.partials.content(
+                                              $${application.web.locals.partials.spinner(
                                                 {
                                                   request,
                                                   response,
-                                                  id: `message--${message.reference}`,
-                                                  contentPreprocessed:
-                                                    message.contentPreprocessed,
-                                                  search:
-                                                    typeof request.query
-                                                      .conversations?.search ===
-                                                      "string" &&
-                                                    request.query.conversations.search.trim() !==
-                                                      ""
-                                                      ? request.query
-                                                          .conversations.search
-                                                      : undefined,
                                                 }
-                                              ).contentProcessed}
+                                              )}
+                                              Loading…
                                             </div>
+                                            <div
+                                              key="form"
+                                              hidden
+                                              javascript="${javascript`
+                                                if (event?.detail?.liveUpdate && !this.closest('[key="message--edit"]').hidden) return;
+                                                this.partialParentElement = false;
+                                                this.skipLoading = false;
+                                              `}"
+                                            ></div>
                                           </div>
-
-                                          $${(() => {
-                                            let messageShowFooter = html``;
-
-                                            const isLiked = message.likes.some(
-                                              (like) =>
-                                                like.enrollment !==
-                                                  "no-longer-enrolled" &&
-                                                like.enrollment.id ===
-                                                  response.locals.enrollment.id
-                                            );
-                                            const likesCount =
-                                              message.likes.length;
-                                            if (
-                                              response.locals.conversation
-                                                .type !== "chat" ||
-                                              likesCount > 0
-                                            )
-                                              messageShowFooter += html`
-                                                <div
-                                                  css="${css`
-                                                    display: flex;
-                                                    gap: var(--space--1);
-                                                  `}"
-                                                >
-                                                  <form
-                                                    method="${isLiked
-                                                      ? "DELETE"
-                                                      : "POST"}"
-                                                    action="https://${application
-                                                      .configuration
-                                                      .hostname}/courses/${response
-                                                      .locals.course
-                                                      .reference}/conversations/${response
-                                                      .locals.conversation
-                                                      .reference}/messages/${message.reference}/likes${qs.stringify(
-                                                      {
-                                                        conversations:
-                                                          request.query
-                                                            .conversations,
-                                                        messages:
-                                                          request.query
-                                                            .messages,
-                                                      },
-                                                      { addQueryPrefix: true }
-                                                    )}"
-                                                  >
-                                                    <button
-                                                      class="button button--tight button--tight--inline button--tight-gap button--transparent ${isLiked
-                                                        ? "text--blue"
-                                                        : ""}"
-                                                      $${likesCount === 0
-                                                        ? html``
-                                                        : html`
-                                                            javascript="${javascript`
-                                                              leafac.setTippy({
-                                                                event,
-                                                                element: this,
-                                                                tippyProps: {
-                                                                  touch: false,
-                                                                  content: ${
-                                                                    isLiked
-                                                                      ? "Remove Like"
-                                                                      : "Like"
-                                                                  },
-                                                                },
-                                                              });
-                                                            `}"
-                                                          `}
-                                                    >
-                                                      $${isLiked
-                                                        ? html`
-                                                            <i
-                                                              class="bi bi-hand-thumbs-up-fill"
-                                                            ></i>
-                                                          `
-                                                        : html`<i
-                                                            class="bi bi-hand-thumbs-up"
-                                                          ></i>`}
-                                                      $${likesCount === 0
-                                                        ? html`Like`
-                                                        : html``}
-                                                    </button>
-                                                  </form>
-
-                                                  $${likesCount === 0
-                                                    ? html``
-                                                    : html`
-                                                        <button
-                                                          class="button button--tight button--tight--inline button--tight-gap button--transparent ${isLiked
-                                                            ? "text--blue"
-                                                            : ""}"
-                                                          javascript="${javascript`
-                                                            leafac.setTippy({
-                                                              event,
-                                                              element: this,
-                                                              tippyProps: {
-                                                                touch: false,
-                                                                content: "See people who liked",
-                                                              },
-                                                            });
-                                                            
-                                                            leafac.setTippy({
-                                                              event,
-                                                              element: this,
-                                                              elementProperty: "dropdown",
-                                                              tippyProps: {
-                                                                trigger: "click",
-                                                                interactive: true,
-                                                                onHidden: () => { this.onmouseleave(); },
-                                                                content: ${html`
-                                                                  <div
-                                                                    key="loading"
-                                                                    css="${css`
-                                                                      display: flex;
-                                                                      gap: var(
-                                                                        --space--2
-                                                                      );
-                                                                      align-items: center;
-                                                                    `}"
-                                                                  >
-                                                                    $${application.web.locals.partials.spinner(
-                                                                      {
-                                                                        request,
-                                                                        response,
-                                                                      }
-                                                                    )}
-                                                                    Loading…
-                                                                  </div>
-                                                                  <div
-                                                                    key="content"
-                                                                    hidden
-                                                                  ></div>
-                                                                `},
-                                                              },
-                                                            });
-
-                                                            window.clearTimeout(this.dropdownContentTimeout);
-                                                            this.dropdownContentSkipLoading = false;
-                                                            
-                                                            this.onmouseenter = this.onfocus = async () => {
-                                                              window.clearTimeout(this.dropdownContentTimeout);
-                                                              if (this.dropdownContentSkipLoading) return;
-                                                              this.dropdownContentSkipLoading = true;
-                                                              leafac.loadPartial(this.dropdown.props.content.querySelector('[key="content"]'), await (await fetch(${`https://${application.configuration.hostname}/courses/${response.locals.course.reference}/conversations/${response.locals.conversation.reference}/messages/${message.reference}/likes`}, { cache: "no-store" })).text());
-                                                              this.dropdown.props.content.querySelector('[key="loading"]').hidden = true;
-                                                              this.dropdown.props.content.querySelector('[key="content"]').hidden = false;
-                                                              this.dropdown.setProps({});
-                                                            };
-                                                            
-                                                            this.onmouseleave = this.onblur = () => {
-                                                              window.clearTimeout(this.dropdownContentTimeout);
-                                                              if (this.matches(":hover, :focus-within") || this.dropdown.state.isShown) return;
-                                                              this.dropdownContentTimeout = window.setTimeout(() => {
-                                                                this.dropdown.props.content.querySelector('[key="loading"]').hidden = false;
-                                                                this.dropdown.props.content.querySelector('[key="content"]').hidden = true;
-                                                                this.dropdownContentSkipLoading = false;
-                                                              }, 60 * 1000);
-                                                            };
-                                                          `}"
-                                                        >
-                                                          ${likesCount.toString()}
-                                                          Like${likesCount === 1
-                                                            ? ""
-                                                            : "s"}
-                                                        </button>
-                                                      `}
-                                                </div>
-                                              `;
-
-                                            if (
-                                              response.locals.enrollment
-                                                .courseRole === "staff" &&
-                                              response.locals.conversation
-                                                .type !== "chat"
-                                            )
-                                              messageShowFooter += html`
-                                                <button
-                                                  class="button button--tight button--tight--inline button--tight-gap button--transparent"
-                                                  javascript="${javascript`
-                                                    leafac.setTippy({
-                                                      event,
-                                                      element: this,
-                                                      tippyProps: {
-                                                        trigger: "click",
-                                                        interactive: true,
-                                                        onHidden: () => { this.onmouseleave(); },
-                                                        content: ${html`
-                                                          <div
-                                                            key="loading"
-                                                            css="${css`
-                                                              display: flex;
-                                                              gap: var(
-                                                                --space--2
-                                                              );
-                                                              align-items: center;
-                                                            `}"
-                                                          >
-                                                            $${application.web.locals.partials.spinner(
-                                                              {
-                                                                request,
-                                                                response,
-                                                              }
-                                                            )}
-                                                            Loading…
-                                                          </div>
-                                                          <div
-                                                            key="content"
-                                                            hidden
-                                                          ></div>
-                                                        `},
-                                                      },
-                                                    });
-
-                                                    window.clearTimeout(this.tooltipContentTimeout);
-                                                    this.tooltipContentSkipLoading = false;
-                                                    
-                                                    this.onmouseenter = this.onfocus = async () => {
-                                                      window.clearTimeout(this.tooltipContentTimeout);
-                                                      if (this.tooltipContentSkipLoading) return;
-                                                      this.tooltipContentSkipLoading = true;
-                                                      leafac.loadPartial(this.tooltip.props.content.querySelector('[key="content"]'), await (await fetch(${`https://${application.configuration.hostname}/courses/${response.locals.course.reference}/conversations/${response.locals.conversation.reference}/messages/${message.reference}/views`}, { cache: "no-store" })).text());
-                                                      this.tooltip.props.content.querySelector('[key="loading"]').hidden = true;
-                                                      this.tooltip.props.content.querySelector('[key="content"]').hidden = false;
-                                                      this.tooltip.setProps({});
-                                                    };
-                                                    
-                                                    this.onmouseleave = this.onblur = () => {
-                                                      window.clearTimeout(this.tooltipContentTimeout);
-                                                      if (this.matches(":hover, :focus-within") || this.tooltip.state.isShown) return;
-                                                      this.tooltipContentTimeout = window.setTimeout(() => {
-                                                        this.tooltip.props.content.querySelector('[key="loading"]').hidden = false;
-                                                        this.tooltip.props.content.querySelector('[key="content"]').hidden = true;
-                                                        this.tooltipContentSkipLoading = false;
-                                                      }, 60 * 1000);
-                                                    };
-                                                  `}"
-                                                >
-                                                  <i class="bi bi-eye"></i>
-                                                  ${message.readings.length.toString()}
-                                                  Views
-                                                </button>
-                                              `;
-
-                                            return messageShowFooter !== html``
-                                              ? html`
-                                                  <div
-                                                    key="message--show--footer"
-                                                    css="${css`
-                                                      font-size: var(
-                                                        --font-size--xs
-                                                      );
-                                                      line-height: var(
-                                                        --line-height--xs
-                                                      );
-                                                      display: flex;
-                                                      flex-wrap: wrap;
-                                                      column-gap: var(
-                                                        --space--8
-                                                      );
-                                                      row-gap: var(--space--1);
-                                                    `}"
-                                                  >
-                                                    $${messageShowFooter}
-                                                  </div>
-                                                `
-                                              : html``;
-                                          })()}
-                                        </div>
-
-                                        <div key="message--edit" hidden>
-                                          <div
-                                            key="loading"
-                                            class="strong"
-                                            css="${css`
-                                              display: flex;
-                                              gap: var(--space--2);
-                                              justify-content: center;
-                                            `}"
-                                          >
-                                            $${application.web.locals.partials.spinner(
-                                              {
-                                                request,
-                                                response,
-                                              }
-                                            )}
-                                            Loading…
-                                          </div>
-                                          <div
-                                            key="form"
-                                            hidden
-                                            javascript="${javascript`
-                                              if (event?.detail?.liveUpdate && !this.closest('[key="message--edit"]').hidden) return;
-                                              this.partialParentElement = false;
-                                              this.skipLoading = false;
-                                            `}"
-                                          ></div>
                                         </div>
                                       </div>
                                     </div>
