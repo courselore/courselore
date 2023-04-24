@@ -7577,19 +7577,7 @@ export default async (application: Application): Promise<void> => {
                                           : css`
                                               padding-bottom: var(--space--4);
                                               gap: var(--space--2);
-                                            `} ${typeof message.staffWhisperAt ===
-                                        "string"
-                                          ? css`
-                                              background-color: var(
-                                                --color--sky--100
-                                              );
-                                              @media (prefers-color-scheme: dark) {
-                                                background-color: var(
-                                                  --color--sky--950
-                                                );
-                                              }
-                                            `
-                                          : css``}"
+                                            `}"
                                       >
                                         $${(() => {
                                           const actions = html`
