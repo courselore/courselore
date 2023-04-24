@@ -1,12 +1,22 @@
 # Meetings
 
 <details>
+<summary>2023-04-29</summary>
+
+- Under what conditions do we send email on sign in?
+
+</details>
+
+<details>
 <summary>2023-04-22</summary>
 
-- Deployed SAML
-  - Email on sign in?
-- Questions about whispers
-- Homework grading application
+- Deployed SAML, waiting for Identity Provider to answer.
+- Whispers are working, but need polish.
+- Follow up questions.
+- Homework grading application: not yet.
+- Next priorities:
+  - UI on the upper left.
+  - LTI by fall.
 
 </details>
 

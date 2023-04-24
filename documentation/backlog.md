@@ -4,6 +4,7 @@
 
 - Whispers:
   - User interface
+    - “Staff Whispers”
     - `message--highlight` + whisper = glitch
     - Disclosure button to show/hide whispers
       - On load, it’s showing
@@ -14,6 +15,7 @@
     - No whispers in chats, right?
     - The messages permanent links reveal to students the fact that a whisper was created. That’s okay, right?
   - Edge cases:
+    - @mentions
     - `"conversations"."updatedAt"` should be updated or not?
     - Should email notifications be sent?
       - Certainly not to students
@@ -26,6 +28,9 @@
     - There’s no way to convert back and forth between regular messages & whispers. If necessary, delete and send another message.
   - Talk about it on home page.
   - Reference: Discourse
+- Introduce the notion of follow-up question.
+- UI on the upper left
+- LTI by fall
 
 **DateTimePicker**
 
