@@ -7529,6 +7529,8 @@ export default async (application: Application): Promise<void> => {
                                           );
                                           margin: var(--space--0)
                                             var(--space---2);
+                                          display: flex;
+                                          gap: var(--space--4);
                                           --message--highlight--background-color: var(
                                             --color--amber--200
                                           );
