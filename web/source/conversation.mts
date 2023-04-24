@@ -5228,7 +5228,7 @@ export default async (application: Application): Promise<void> => {
             $${
               response.locals.enrollment.courseRole !== "staff"
                 ? sql`
-                    AND "whisperAt" IS NULL
+                    AND "staffWhisperAt" IS NULL
                   `
                 : sql``
             }
@@ -7577,7 +7577,7 @@ export default async (application: Application): Promise<void> => {
                                           : css`
                                               padding-bottom: var(--space--4);
                                               gap: var(--space--2);
-                                            `} ${typeof message.whisperAt ===
+                                            `} ${typeof message.staffWhisperAt ===
                                         "string"
                                           ? css`
                                               background-color: var(
@@ -7726,7 +7726,7 @@ export default async (application: Application): Promise<void> => {
                                           let header = html``;
 
                                           if (
-                                            typeof message.whisperAt ===
+                                            typeof message.staffWhisperAt ===
                                             "string"
                                           )
                                             header += html`
@@ -7738,7 +7738,7 @@ export default async (application: Application): Promise<void> => {
                                                     element: this,
                                                     tippyProps: {
                                                       touch: false,
-                                                      content: "Whispers are messages visible to staff only",
+                                                      content: "Staff whispers are messages visible to staff only.",
                                                     },
                                                   });
                                                 `}"
@@ -7746,7 +7746,7 @@ export default async (application: Application): Promise<void> => {
                                                 <i
                                                   class="bi bi-mortarboard-fill"
                                                 ></i>
-                                                Whisper
+                                                Staff Whisper
                                               </div>
                                             `;
                                           else {
@@ -9274,7 +9274,7 @@ export default async (application: Application): Promise<void> => {
                               `
                             : html``;
 
-                        const sendWhisper =
+                        const sendStaffWhisper =
                           response.locals.enrollment.courseRole === "staff"
                             ? html`
                                 <div
@@ -9285,12 +9285,12 @@ export default async (application: Application): Promise<void> => {
                                   `}"
                                 >
                                   <button
-                                    name="isWhisper"
+                                    name="isStaffWhisper"
                                     value="on"
                                     class="button button--full-width-on-small-screen button--sky"
                                   >
                                     <i class="bi bi-mortarboard-fill"></i>
-                                    Send Whisper
+                                    Send Staff Whisper
                                   </button>
 
                                   <button
@@ -9302,7 +9302,7 @@ export default async (application: Application): Promise<void> => {
                                         element: this,
                                         tippyProps: {
                                           trigger: "click",
-                                          content: "Whispers are messages visible to staff only.",
+                                          content: "Staff whispers are messages visible to staff only.",
                                         },
                                       });
                                     `}"
@@ -9325,7 +9325,7 @@ export default async (application: Application): Promise<void> => {
                             $${sendAnswerFirst
                               ? html`$${sendAnswer} $${sendMessage}`
                               : html`$${sendMessage} $${sendAnswer}`}
-                            $${sendWhisper}
+                            $${sendStaffWhisper}
                           </div>
                         `;
                       })()

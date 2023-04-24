@@ -1166,7 +1166,7 @@ Message non-existent permanent link turned reference: <https://${
                         "contentSource",
                         "contentPreprocessed",
                         "contentSearch",
-                        "whisperAt"
+                        "staffWhisperAt"
                       )
                       VALUES (
                         ${messageCreatedAt},

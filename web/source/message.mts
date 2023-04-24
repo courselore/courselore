@@ -47,7 +47,7 @@ export type ApplicationMessage = {
               contentSource: string;
               contentPreprocessed: HTML;
               contentSearch: string;
-              whisperAt: string | null;
+              staffWhisperAt: string | null;
               reading: { id: number } | null;
               readings: {
                 id: number;
@@ -204,7 +204,7 @@ export default async (application: Application): Promise<void> => {
       contentSource: string;
       contentPreprocessed: HTML;
       contentSearch: string;
-      whisperAt: string | null;
+      staffWhisperAt: string | null;
       readingId: number | null;
     }>(
       sql`
@@ -230,7 +230,7 @@ export default async (application: Application): Promise<void> => {
           "messages"."contentSource",
           "messages"."contentPreprocessed",
           "messages"."contentSearch",
-          "messages"."whisperAt",
+          "messages"."staffWhisperAt",
           "readings"."id" AS "readingId"
         FROM "messages"
         LEFT JOIN "enrollments" AS "authorEnrollment" ON "messages"."authorEnrollment" = "authorEnrollment"."id"
@@ -284,7 +284,7 @@ export default async (application: Application): Promise<void> => {
       contentSource: messageRow.contentSource,
       contentPreprocessed: messageRow.contentPreprocessed,
       contentSearch: messageRow.contentSearch,
-      whisperAt: messageRow.whisperAt,
+      staffWhisperAt: messageRow.staffWhisperAt,
       reading:
         messageRow.readingId === null ? null : { id: messageRow.readingId },
     };
@@ -1270,7 +1270,7 @@ export default async (application: Application): Promise<void> => {
       content?: string;
       isAnonymous?: "on";
       isAnswer?: "on";
-      isWhisper?: "on";
+      isStaffWhisper?: "on";
     },
     {
       conversations?: object;
@@ -1291,8 +1291,8 @@ export default async (application: Application): Promise<void> => {
         ![undefined, "on"].includes(request.body.isAnswer) ||
         (request.body.isAnswer === "on" &&
           response.locals.conversation.type !== "question") ||
-        ![undefined, "on"].includes(request.body.isWhisper) ||
-        (request.body.isWhisper === "on" &&
+        ![undefined, "on"].includes(request.body.isStaffWhisper) ||
+        (request.body.isStaffWhisper === "on" &&
           (response.locals.conversation.type === "chat" ||
             response.locals.enrollment.courseRole !== "staff"))
       )
@@ -1402,7 +1402,7 @@ export default async (application: Application): Promise<void> => {
                       "contentSource",
                       "contentPreprocessed",
                       "contentSearch",
-                      "whisperAt"
+                      "staffWhisperAt"
                     )
                     VALUES (
                       ${new Date().toISOString()},
@@ -1425,7 +1425,7 @@ export default async (application: Application): Promise<void> => {
                       ${contentPreprocessed.contentPreprocessed},
                       ${contentPreprocessed.contentSearch},
                       ${
-                        request.body.isWhisper === "on"
+                        request.body.isStaffWhisper === "on"
                           ? new Date().toISOString()
                           : null
                       }
