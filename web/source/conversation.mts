@@ -7587,17 +7587,17 @@ export default async (application: Application): Promise<void> => {
                                                 class="heading"
                                                 css="${css`
                                                   color: var(
-                                                    --color--emerald--50
+                                                    --color--emerald--700
                                                   );
                                                   background-color: var(
-                                                    --color--emerald--600
+                                                    --color--emerald--100
                                                   );
                                                   @media (prefers-color-scheme: dark) {
                                                     color: var(
-                                                      --color--emerald--100
+                                                      --color--emerald--200
                                                     );
                                                     background-color: var(
-                                                      --color--emerald--800
+                                                      --color--emerald--950
                                                     );
                                                   }
                                                   padding: var(--space--2)
@@ -7626,16 +7626,16 @@ export default async (application: Application): Promise<void> => {
                                               <div
                                                 class="heading"
                                                 css="${css`
-                                                  color: var(--color--sky--50);
+                                                  color: var(--color--sky--700);
                                                   background-color: var(
-                                                    --color--sky--600
+                                                    --color--sky--100
                                                   );
                                                   @media (prefers-color-scheme: dark) {
                                                     color: var(
-                                                      --color--sky--100
+                                                      --color--sky--200
                                                     );
                                                     background-color: var(
-                                                      --color--sky--800
+                                                      --color--sky--950
                                                     );
                                                   }
                                                   padding: var(--space--2)
