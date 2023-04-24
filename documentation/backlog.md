@@ -4,7 +4,6 @@
 
 - Whispers:
   - User interface
-    - “Staff Whispers”
     - `message--highlight` + whisper = glitch
     - Disclosure button to show/hide whispers
       - On load, it’s showing
