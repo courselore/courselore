@@ -7577,24 +7577,55 @@ export default async (application: Application): Promise<void> => {
                                               padding-bottom: var(--space--4);
                                             `}"
                                       >
+                                        $${typeof message.answerAt ===
+                                          "string" &&
+                                        message.reference !== "1" &&
+                                        response.locals.conversation.type ===
+                                          "question"
+                                          ? html`
+                                              <div
+                                                class="heading"
+                                                css="${css`
+                                                  color: var(
+                                                    --color--emerald--50
+                                                  );
+                                                  background-color: var(
+                                                    --color--emerald--600
+                                                  );
+                                                  @media (prefers-color-scheme: dark) {
+                                                    color: var(
+                                                      --color--emerald--100
+                                                    );
+                                                    background-color: var(
+                                                      --color--emerald--800
+                                                    );
+                                                  }
+                                                  padding: var(--space--2)
+                                                    var(--space--0);
+                                                  border-radius: var(
+                                                    --border-radius--base
+                                                  );
+                                                  writing-mode: vertical-lr;
+                                                  transform: rotate(180deg);
+                                                  justify-content: flex-end;
+                                                  .bi {
+                                                    transform: rotate(90deg);
+                                                  }
+                                                `}"
+                                              >
+                                                <i
+                                                  class="bi bi-patch-check-fill"
+                                                ></i>
+                                                Answer
+                                              </div>
+                                            `
+                                          : html``}
                                         $${typeof message.staffWhisperAt ===
                                         "string"
                                           ? html`
                                               <div
+                                                class="heading"
                                                 css="${css`
-                                                  font-size: var(
-                                                    --font-size--2xs
-                                                  );
-                                                  line-height: var(
-                                                    --line-height--2xs
-                                                  );
-                                                  font-weight: var(
-                                                    --font-weight--bold
-                                                  );
-                                                  text-transform: uppercase;
-                                                  letter-spacing: var(
-                                                    --letter-spacing--widest
-                                                  );
                                                   color: var(--color--sky--50);
                                                   background-color: var(
                                                     --color--sky--600
@@ -7614,8 +7645,6 @@ export default async (application: Application): Promise<void> => {
                                                   );
                                                   writing-mode: vertical-lr;
                                                   transform: rotate(180deg);
-                                                  display: flex;
-                                                  gap: var(--space--1);
                                                   justify-content: flex-end;
                                                   .bi {
                                                     transform: rotate(90deg);
@@ -7876,20 +7905,6 @@ export default async (application: Application): Promise<void> => {
                                                         </button>
                                                       `}
                                                 </form>
-                                              `;
-                                            else if (
-                                              message.reference !== "1" &&
-                                              response.locals.conversation
-                                                .type === "question" &&
-                                              message.answerAt !== null
-                                            )
-                                              header += html`
-                                                <div class="text--emerald">
-                                                  <i
-                                                    class="bi bi-patch-check-fill"
-                                                  ></i>
-                                                  Answer
-                                                </div>
                                               `;
 
                                             if (

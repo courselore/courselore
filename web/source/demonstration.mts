@@ -1196,7 +1196,10 @@ Message non-existent permanent link turned reference: <https://${
                             : null
                         },
                         ${
-                          Math.random() < 0.5 ? new Date().toISOString() : null
+                          conversation.type === "question" &&
+                          Math.random() < 0.5
+                            ? new Date().toISOString()
+                            : null
                         },
                         ${contentSource},
                         ${contentPreprocessed.contentPreprocessed},
