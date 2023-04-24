@@ -5,14 +5,6 @@
 - Whispers:
   - User interface
     - `message--highlight` + whisper = glitch
-    - Disclosure button to show/hide whispers
-      - On load, it’s showing
-      - On new whisper, show again
-      - The point is: Don’t let people miss whispers
-  - Only staff may see (even the author, if they had been staff and are now student, may not see their own whispers anymore)
-  - Discuss:
-    - No whispers in chats, right?
-    - The messages permanent links reveal to students the fact that a whisper was created. That’s okay, right?
   - Edge cases:
     - @mentions
     - `"conversations"."updatedAt"` should be updated or not?
@@ -25,7 +17,13 @@
       - Mark messages as read on load
       - “Mark all as read”
     - There’s no way to convert back and forth between regular messages & whispers. If necessary, delete and send another message.
+    - Double-check visibility everywhere to make sure whispers don’t leak to students.
   - Talk about it on home page.
+  - Later:
+    - Disclosure button to show/hide whispers
+      - On load, it’s showing
+      - On new whisper, show again
+      - The point is: Don’t let people miss whispers
   - Reference: Discourse
 - Introduce the notion of follow-up question.
 - UI on the upper left
