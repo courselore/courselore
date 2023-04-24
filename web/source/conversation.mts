@@ -7577,6 +7577,69 @@ export default async (application: Application): Promise<void> => {
                                               padding-bottom: var(--space--4);
                                             `}"
                                       >
+                                        $${typeof message.staffWhisperAt ===
+                                        "string"
+                                          ? html`
+                                              <div
+                                                css="${css`
+                                                  font-size: var(
+                                                    --font-size--2xs
+                                                  );
+                                                  line-height: var(
+                                                    --line-height--2xs
+                                                  );
+                                                  font-weight: var(
+                                                    --font-weight--bold
+                                                  );
+                                                  text-transform: uppercase;
+                                                  letter-spacing: var(
+                                                    --letter-spacing--widest
+                                                  );
+                                                  color: var(--color--sky--50);
+                                                  background-color: var(
+                                                    --color--sky--600
+                                                  );
+                                                  @media (prefers-color-scheme: dark) {
+                                                    color: var(
+                                                      --color--sky--100
+                                                    );
+                                                    background-color: var(
+                                                      --color--sky--800
+                                                    );
+                                                  }
+                                                  padding: var(--space--2)
+                                                    var(--space--0);
+                                                  border-radius: var(
+                                                    --border-radius--base
+                                                  );
+                                                  writing-mode: vertical-lr;
+                                                  transform: rotate(180deg);
+                                                  display: flex;
+                                                  gap: var(--space--1);
+                                                  justify-content: flex-end;
+                                                  .bi {
+                                                    transform: rotate(90deg);
+                                                  }
+                                                `}"
+                                                javascript="${javascript`
+                                                  leafac.setTippy({
+                                                    event,
+                                                    element: this,
+                                                    tippyProps: {
+                                                      touch: false,
+                                                      content: "Staff whispers are messages visible to staff only.",
+                                                    },
+                                                  });
+                                                `}"
+                                              >
+                                                <i
+                                                  class="bi bi-mortarboard-fill"
+                                                ></i>
+                                                Staff Whisper
+                                              </div>
+                                            `
+                                          : html``}
+
                                         <div
                                           css="${css`
                                             display: flex;

@@ -1202,7 +1202,8 @@ Message non-existent permanent link turned reference: <https://${
                         ${contentPreprocessed.contentPreprocessed},
                         ${contentPreprocessed.contentSearch},
                         ${
-                          enrollment.courseRole === "staff" &&
+                          conversation.type !== "chat" &&
+                          messageAuthorEnrollment?.courseRole !== "student" &&
                           Math.random() < 0.1
                             ? new Date().toISOString()
                             : null
