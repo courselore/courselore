@@ -1988,8 +1988,121 @@ export default async (application: Application): Promise<void> => {
 
     sql`
       ALTER TABLE "messageDrafts" DROP COLUMN "answerAt";
-      ALTER TABLE "messages" ADD COLUMN "staffWhisperAt" TEXT NULL;
-    `
+    `,
+
+    () => {
+      application.database.execute(
+        sql`
+          CREATE TABLE "new_messages" (
+            "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+            "createdAt" TEXT NOT NULL,
+            "updatedAt" TEXT NULL,
+            "conversation" INTEGER NOT NULL REFERENCES "conversations" ON DELETE CASCADE,
+            "reference" TEXT NOT NULL,
+            "authorEnrollment" INTEGER NULL REFERENCES "enrollments" ON DELETE SET NULL,
+            "anonymousAt" TEXT NULL,
+            "type" TEXT NOT NULL,
+            "contentSource" TEXT NOT NULL,
+            "contentPreprocessed" TEXT NOT NULL,
+            "contentSearch" TEXT NOT NULL,
+            UNIQUE ("conversation", "reference")
+          );
+        `
+      );
+
+      for (const message of application.database.all<{
+        id: number;
+        createdAt: string;
+        updatedAt: string | null;
+        conversation: number;
+        reference: string;
+        authorEnrollment: number | null;
+        anonymousAt: string | null;
+        answerAt: string | null;
+        contentSource: string;
+        contentPreprocessed: string;
+        contentSearch: string;
+      }>(
+        sql`
+          SELECT
+            "id",
+            "createdAt",
+            "updatedAt",
+            "conversation",
+            "reference",
+            "authorEnrollment",
+            "anonymousAt",
+            "answerAt",
+            "contentSource",
+            "contentPreprocessed",
+            "contentSearch"
+          FROM "messages"
+        `
+      ))
+        application.database.run(
+          sql`
+            INSERT INTO "new_messages" (
+              "id",
+              "createdAt",
+              "updatedAt",
+              "conversation",
+              "reference",
+              "authorEnrollment",
+              "anonymousAt",
+              "type",
+              "contentSource",
+              "contentPreprocessed",
+              "contentSearch"
+            )
+            VALUES (
+              ${message.id},
+              ${message.createdAt},
+              ${message.updatedAt},
+              ${message.conversation},
+              ${message.reference},
+              ${message.authorEnrollment},
+              ${message.anonymousAt},
+              ${typeof message.answerAt === "string" ? "answer" : "message"},
+              ${message.contentSource},
+              ${message.contentPreprocessed},
+              ${message.contentSearch}
+            )
+          `
+        );
+
+      application.database.execute(
+        sql`
+          DROP TABLE "messages";
+
+          ALTER TABLE "new_messages" RENAME TO "messages";
+
+          CREATE INDEX "messagesConversationIndex" ON "messages" ("conversation");
+          CREATE INDEX "messagesTypeIndex" ON "messages" ("type");
+
+          CREATE TRIGGER "messagesReferenceIndexInsert" AFTER INSERT ON "messages" BEGIN
+            INSERT INTO "messagesReferenceIndex" ("rowid", "reference") VALUES ("new"."id", "new"."reference");
+          END;
+          CREATE TRIGGER "messagesReferenceIndexUpdate" AFTER UPDATE ON "messages" BEGIN
+            INSERT INTO "messagesReferenceIndex" ("messagesReferenceIndex", "rowid", "reference") VALUES ('delete', "old"."id", "old"."reference");
+            INSERT INTO "messagesReferenceIndex" ("rowid", "reference") VALUES ("new"."id", "new"."reference");
+          END;
+          CREATE TRIGGER "messagesReferenceIndexDelete" AFTER DELETE ON "messages" BEGIN
+            INSERT INTO "messagesReferenceIndex" ("messagesReferenceIndex", "rowid", "reference") VALUES ('delete', "old"."id", "old"."reference");
+          END;
+
+          CREATE TRIGGER "messagesContentSearchIndexInsert" AFTER INSERT ON "messages" BEGIN
+            INSERT INTO "messagesContentSearchIndex" ("rowid", "contentSearch") VALUES ("new"."id", "new"."contentSearch");
+          END;
+          CREATE TRIGGER "messagesContentSearchIndexUpdate" AFTER UPDATE ON "messages" BEGIN
+            INSERT INTO "messagesContentSearchIndex" ("messagesContentSearchIndex", "rowid", "contentSearch") VALUES ('delete', "old"."id", "old"."contentSearch");
+            INSERT INTO "messagesContentSearchIndex" ("rowid", "contentSearch") VALUES ("new"."id", "new"."contentSearch");
+          END;
+          CREATE TRIGGER "messagesContentSearchIndexDelete" AFTER DELETE ON "messages" BEGIN
+            INSERT INTO "messagesContentSearchIndex" ("messagesContentSearchIndex", "rowid", "contentSearch") VALUES ('delete', "old"."id", "old"."contentSearch");
+          END;
+        `
+      );
+    }
   );
 
   application.database.run(
