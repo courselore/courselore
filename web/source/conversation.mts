@@ -5228,7 +5228,7 @@ export default async (application: Application): Promise<void> => {
             $${
               response.locals.enrollment.courseRole !== "staff"
                 ? sql`
-                    AND "staffWhisperAt" IS NULL
+                    AND "type" != 'staff-whisper'
                   `
                 : sql``
             }

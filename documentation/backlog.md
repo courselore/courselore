@@ -3,8 +3,10 @@
 ## Work in Progress
 
 - Whispers:
-  - Introduce the notion of `message.type`, which encompasses `answer`, `whisper`, and the upcoming `follow-up question`.
-    - `whisper`
+  - Message types
+    - Test creating all types of messages
+    - Reshape sidebar indicator
+    - Revisit the way you set type
   - Edge cases:
     - @mentions
     - `"conversations"."updatedAt"` should be updated or not?

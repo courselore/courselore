@@ -47,7 +47,6 @@ export type ApplicationMessage = {
               contentSource: string;
               contentPreprocessed: HTML;
               contentSearch: string;
-              staffWhisperAt: string | null;
               reading: { id: number } | null;
               readings: {
                 id: number;
@@ -206,7 +205,6 @@ export default async (application: Application): Promise<void> => {
       contentSource: string;
       contentPreprocessed: HTML;
       contentSearch: string;
-      staffWhisperAt: string | null;
       readingId: number | null;
     }>(
       sql`
@@ -232,7 +230,6 @@ export default async (application: Application): Promise<void> => {
           "messages"."contentSource",
           "messages"."contentPreprocessed",
           "messages"."contentSearch",
-          "messages"."staffWhisperAt",
           "readings"."id" AS "readingId"
         FROM "messages"
         LEFT JOIN "enrollments" AS "authorEnrollment" ON "messages"."authorEnrollment" = "authorEnrollment"."id"
@@ -286,7 +283,6 @@ export default async (application: Application): Promise<void> => {
       contentSource: messageRow.contentSource,
       contentPreprocessed: messageRow.contentPreprocessed,
       contentSearch: messageRow.contentSearch,
-      staffWhisperAt: messageRow.staffWhisperAt,
       reading:
         messageRow.readingId === null ? null : { id: messageRow.readingId },
     };
