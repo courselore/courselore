@@ -43,7 +43,7 @@ export type ApplicationMessage = {
               reference: string;
               authorEnrollment: Application["web"]["locals"]["Types"]["MaybeEnrollment"];
               anonymousAt: string | null;
-              answerAt: string | null;
+              type: "message" | "answer" | "staff-whisper";
               contentSource: string;
               contentPreprocessed: HTML;
               contentSearch: string;
@@ -200,7 +200,9 @@ export default async (application: Application): Promise<void> => {
         | Application["web"]["locals"]["helpers"]["courseRoles"][number]
         | null;
       anonymousAt: string | null;
-      answerAt: string | null;
+      type: NonNullable<
+        ReturnType<Application["web"]["locals"]["helpers"]["getMessage"]>
+      >["type"];
       contentSource: string;
       contentPreprocessed: HTML;
       contentSearch: string;
@@ -226,7 +228,7 @@ export default async (application: Application): Promise<void> => {
           "authorEnrollment"."reference" AS "authorEnrollmentReference",
           "authorEnrollment"."courseRole" AS "authorEnrollmentCourseRole",
           "messages"."anonymousAt",
-          "messages"."answerAt",
+          "messages"."type",
           "messages"."contentSource",
           "messages"."contentPreprocessed",
           "messages"."contentSearch",
@@ -280,7 +282,7 @@ export default async (application: Application): Promise<void> => {
             }
           : ("no-longer-enrolled" as const),
       anonymousAt: messageRow.anonymousAt,
-      answerAt: messageRow.answerAt,
+      type: messageRow.type,
       contentSource: messageRow.contentSource,
       contentPreprocessed: messageRow.contentPreprocessed,
       contentSearch: messageRow.contentSearch,
@@ -1398,11 +1400,10 @@ export default async (application: Application): Promise<void> => {
                       "reference",
                       "authorEnrollment",
                       "anonymousAt",
-                      "answerAt",
+                      "type",
                       "contentSource",
                       "contentPreprocessed",
-                      "contentSearch",
-                      "staffWhisperAt"
+                      "contentSearch"
                     )
                     VALUES (
                       ${new Date().toISOString()},
@@ -1418,17 +1419,14 @@ export default async (application: Application): Promise<void> => {
                       },
                       ${
                         request.body.isAnswer === "on"
-                          ? new Date().toISOString()
-                          : null
+                          ? "answer"
+                          : request.body.isStaffWhisper === "on"
+                          ? "staff-whisper"
+                          : "message"
                       },
                       ${request.body.content},
                       ${contentPreprocessed.contentPreprocessed},
-                      ${contentPreprocessed.contentSearch},
-                      ${
-                        request.body.isStaffWhisper === "on"
-                          ? new Date().toISOString()
-                          : null
-                      }
+                      ${contentPreprocessed.contentSearch}
                     )
                   `
                 ).lastInsertRowid
@@ -1537,10 +1535,8 @@ export default async (application: Application): Promise<void> => {
           application.database.run(
             sql`
               UPDATE "messages"
-              SET "answerAt" = ${
-                request.body.isAnswer === "true"
-                  ? new Date().toISOString()
-                  : null
+              SET "type" = ${
+                request.body.isAnswer === "true" ? "answer" : "message"
               }
               WHERE "id" = ${response.locals.message.id}
             `
@@ -1951,7 +1947,7 @@ export default async (application: Application): Promise<void> => {
     response.locals.enrollment.courseRole === "staff" &&
     response.locals.conversation.type === "question" &&
     message.reference !== "1" &&
-    message.answerAt !== null &&
+    message.type === "answer" &&
     (message.authorEnrollment === "no-longer-enrolled" ||
       message.authorEnrollment.courseRole !== "staff");
 

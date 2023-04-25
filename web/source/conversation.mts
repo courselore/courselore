@@ -7577,8 +7577,7 @@ export default async (application: Application): Promise<void> => {
                                               padding-bottom: var(--space--4);
                                             `}"
                                       >
-                                        $${typeof message.answerAt ===
-                                          "string" &&
+                                        $${message.type === "answer" &&
                                         message.reference !== "1" &&
                                         response.locals.conversation.type ===
                                           "question"
@@ -7620,8 +7619,7 @@ export default async (application: Application): Promise<void> => {
                                               </div>
                                             `
                                           : html``}
-                                        $${typeof message.staffWhisperAt ===
-                                        "string"
+                                        $${message.type === "staff-whisper"
                                           ? html`
                                               <div
                                                 class="heading"
@@ -7851,7 +7849,7 @@ export default async (application: Application): Promise<void> => {
                                                     { addQueryPrefix: true }
                                                   )}"
                                                 >
-                                                  $${message.answerAt === null
+                                                  $${message.type !== "answer"
                                                     ? html`
                                                         <input
                                                           key="isAnswer--true"

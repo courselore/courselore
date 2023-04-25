@@ -4,6 +4,7 @@
 
 - Whispers:
   - Introduce the notion of `message.type`, which encompasses `answer`, `whisper`, and the upcoming `follow-up question`.
+    - `whisper`
   - Edge cases:
     - @mentions
     - `"conversations"."updatedAt"` should be updated or not?

@@ -1202,7 +1202,7 @@ Message non-existent permanent link turned reference: <https://${
                               messageAuthorEnrollment?.courseRole !==
                                 "student" &&
                               Math.random() < 0.1
-                            ? "whisper"
+                            ? "staff-whisper"
                             : "message"
                         },
                         ${contentSource},
