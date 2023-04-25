@@ -2,7 +2,6 @@
 
 ## Work in Progress
 
-- “[BABEL] Note: The code generator has deoptimised the styling of” Use `compact` option
 - Whispers:
   - Introduce the notion of `message.type`, which encompasses `answer`, `whisper`, and the upcoming `follow-up question`.
   - Edge cases:

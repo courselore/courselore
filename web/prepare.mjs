@@ -68,6 +68,7 @@ for (const input of await globby("./source/**/*.mts")) {
       sourceMaps: true,
       sourceFileName: path.relative(path.dirname(output), input),
       cloneInputAst: false,
+      compact: false,
       plugins: [
         {
           visitor: {
