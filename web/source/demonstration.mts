@@ -1162,11 +1162,10 @@ Message non-existent permanent link turned reference: <https://${
                         "reference",
                         "authorEnrollment",
                         "anonymousAt",
-                        "answerAt",
+                        "type",
                         "contentSource",
                         "contentPreprocessed",
-                        "contentSearch",
-                        "staffWhisperAt"
+                        "contentSearch"
                       )
                       VALUES (
                         ${messageCreatedAt},
@@ -1198,19 +1197,17 @@ Message non-existent permanent link turned reference: <https://${
                         ${
                           conversation.type === "question" &&
                           Math.random() < 0.5
-                            ? new Date().toISOString()
-                            : null
+                            ? "answer"
+                            : conversation.type !== "chat" &&
+                              messageAuthorEnrollment?.courseRole !==
+                                "student" &&
+                              Math.random() < 0.1
+                            ? "whisper"
+                            : "message"
                         },
                         ${contentSource},
                         ${contentPreprocessed.contentPreprocessed},
-                        ${contentPreprocessed.contentSearch},
-                        ${
-                          conversation.type !== "chat" &&
-                          messageAuthorEnrollment?.courseRole !== "student" &&
-                          Math.random() < 0.1
-                            ? new Date().toISOString()
-                            : null
-                        }
+                        ${contentPreprocessed.contentSearch}
                       )
                     `
                   ).lastInsertRowid
