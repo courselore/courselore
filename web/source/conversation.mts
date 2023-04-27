@@ -7907,66 +7907,163 @@ export default async (application: Application): Promise<void> => {
                                                             <div
                                                               class="dropdown--menu"
                                                             >
-                                                              $${application.web.locals.helpers.conversationTypes.map(
-                                                                (
-                                                                  conversationType
-                                                                ) => html`
-                                                                  <form
-                                                                    key="conversation-type--${conversationType}"
-                                                                    method="PATCH"
-                                                                    action="https://${application
-                                                                      .configuration
-                                                                      .hostname}/courses/${response
-                                                                      .locals
-                                                                      .course
-                                                                      .reference}/conversations/${response
-                                                                      .locals
-                                                                      .conversation
-                                                                      .reference}${qs.stringify(
-                                                                      {
-                                                                        conversations:
-                                                                          request
-                                                                            .query
-                                                                            .conversations,
-                                                                        messages:
-                                                                          request
-                                                                            .query
-                                                                            .messages,
-                                                                      },
-                                                                      {
-                                                                        addQueryPrefix:
-                                                                          true,
-                                                                      }
-                                                                    )}"
-                                                                  >
-                                                                    <input
-                                                                      type="hidden"
-                                                                      name="type"
-                                                                      value="${conversationType}"
-                                                                    />
-                                                                    <button
-                                                                      class="dropdown--menu--item button ${conversationType ===
-                                                                      response
-                                                                        .locals
-                                                                        .conversation
-                                                                        .type
-                                                                        ? "button--blue"
-                                                                        : "button--transparent"} ${textColorsConversationType[
-                                                                        conversationType
-                                                                      ]}"
-                                                                    >
-                                                                      TODO
-                                                                    </button>
-                                                                  </form>
-                                                                `
-                                                              )}
+                                                              <form
+                                                                method="PATCH"
+                                                                action="https://${application
+                                                                  .configuration
+                                                                  .hostname}/courses/${response
+                                                                  .locals.course
+                                                                  .reference}/conversations/${response
+                                                                  .locals
+                                                                  .conversation
+                                                                  .reference}/messages/${message.reference}${qs.stringify(
+                                                                  {
+                                                                    conversations:
+                                                                      request
+                                                                        .query
+                                                                        .conversations,
+                                                                    messages:
+                                                                      request
+                                                                        .query
+                                                                        .messages,
+                                                                  },
+                                                                  {
+                                                                    addQueryPrefix:
+                                                                      true,
+                                                                  }
+                                                                )}"
+                                                              >
+                                                                <input
+                                                                  type="hidden"
+                                                                  name="type"
+                                                                  value="message"
+                                                                />
+                                                                <button
+                                                                  class="dropdown--menu--item button ${message.type ===
+                                                                  "message"
+                                                                    ? "button--blue"
+                                                                    : "button--transparent"}"
+                                                                >
+                                                                  $${message.type ===
+                                                                  "message"
+                                                                    ? html`
+                                                                        <i
+                                                                          class="bi bi-chat-fill"
+                                                                        ></i>
+                                                                      `
+                                                                    : html`
+                                                                        <i
+                                                                          class="bi bi-chat"
+                                                                        ></i>
+                                                                      `}
+                                                                  Message
+                                                                </button>
+                                                              </form>
+
+                                                              <form
+                                                                method="PATCH"
+                                                                action="https://${application
+                                                                  .configuration
+                                                                  .hostname}/courses/${response
+                                                                  .locals.course
+                                                                  .reference}/conversations/${response
+                                                                  .locals
+                                                                  .conversation
+                                                                  .reference}/messages/${message.reference}${qs.stringify(
+                                                                  {
+                                                                    conversations:
+                                                                      request
+                                                                        .query
+                                                                        .conversations,
+                                                                    messages:
+                                                                      request
+                                                                        .query
+                                                                        .messages,
+                                                                  },
+                                                                  {
+                                                                    addQueryPrefix:
+                                                                      true,
+                                                                  }
+                                                                )}"
+                                                              >
+                                                                <input
+                                                                  type="hidden"
+                                                                  name="type"
+                                                                  value="answer"
+                                                                />
+                                                                <button
+                                                                  class="dropdown--menu--item button ${message.type ===
+                                                                  "answer"
+                                                                    ? "button--blue"
+                                                                    : "button--transparent"} text--emerald"
+                                                                >
+                                                                  <i
+                                                                    class="bi bi-patch-check-fill"
+                                                                  ></i>
+                                                                  Answer
+                                                                </button>
+                                                              </form>
+
+                                                              <form
+                                                                method="PATCH"
+                                                                action="https://${application
+                                                                  .configuration
+                                                                  .hostname}/courses/${response
+                                                                  .locals.course
+                                                                  .reference}/conversations/${response
+                                                                  .locals
+                                                                  .conversation
+                                                                  .reference}/messages/${message.reference}${qs.stringify(
+                                                                  {
+                                                                    conversations:
+                                                                      request
+                                                                        .query
+                                                                        .conversations,
+                                                                    messages:
+                                                                      request
+                                                                        .query
+                                                                        .messages,
+                                                                  },
+                                                                  {
+                                                                    addQueryPrefix:
+                                                                      true,
+                                                                  }
+                                                                )}"
+                                                              >
+                                                                <input
+                                                                  type="hidden"
+                                                                  name="type"
+                                                                  value="followUpQuestion"
+                                                                />
+                                                                <button
+                                                                  class="dropdown--menu--item button ${message.type ===
+                                                                  "followUpQuestion"
+                                                                    ? "button--blue"
+                                                                    : "button--transparent"} text--rose"
+                                                                >
+                                                                  <i
+                                                                    class="bi bi-patch-question-fill"
+                                                                  ></i>
+                                                                  Follow-Up
+                                                                  Question
+                                                                </button>
+                                                              </form>
                                                             </div>
                                                           `},  
                                                         },
                                                       });
                                                     `}"
                                                   >
-                                                    $${message.type === "answer"
+                                                    $${message.type ===
+                                                    "message"
+                                                      ? html`
+                                                          <i
+                                                            class="bi bi-chat"
+                                                          ></i>
+                                                          Message
+                                                        `
+                                                      : message.type ===
+                                                        "answer"
                                                       ? html`
                                                           <i
                                                             class="bi bi-patch-check-fill"
@@ -7981,12 +8078,7 @@ export default async (application: Application): Promise<void> => {
                                                           ></i>
                                                           Follow-Up Question
                                                         `
-                                                      : html`
-                                                          <i
-                                                            class="bi bi-chat"
-                                                          ></i>
-                                                          Message
-                                                        `}
+                                                      : html``}
                                                   </button>
                                                 </div>
                                               `;
