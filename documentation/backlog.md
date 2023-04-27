@@ -3,8 +3,6 @@
 ## Work in Progress
 
 - Whispers:
-  - Message types
-    - Revisit the way you set type
   - Edge cases:
     - @mentions
     - `"conversations"."updatedAt"` should be updated or not?

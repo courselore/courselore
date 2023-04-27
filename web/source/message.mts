@@ -1525,7 +1525,8 @@ export default async (application: Application): Promise<void> => {
         if (
           !["true", "false"].includes(request.body.isAnswer) ||
           response.locals.message.reference === "1" ||
-          response.locals.conversation.type !== "question"
+          response.locals.conversation.type !== "question" ||
+          response.locals.message.type === "staff-whisper"
         )
           return next("Validation");
         else
