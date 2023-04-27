@@ -9357,6 +9357,22 @@ export default async (application: Application): Promise<void> => {
                             $${sendAnswerFirst
                               ? html`$${sendAnswer} $${sendMessage}`
                               : html`$${sendMessage} $${sendAnswer}`}
+                            $${response.locals.conversation.type ===
+                              "question" &&
+                            response.locals.enrollment.courseRole === "student"
+                              ? html`
+                                  <div>
+                                    <button
+                                      name="isFollowUpQuestion"
+                                      value="on"
+                                      class="button button--full-width-on-small-screen button--rose"
+                                    >
+                                      <i class="bi bi-patch-question-fill"></i>
+                                      Send Follow-Up Question
+                                    </button>
+                                  </div>
+                                `
+                              : html``}
                             $${response.locals.enrollment.courseRole === "staff"
                               ? html`
                                   <div
