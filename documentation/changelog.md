@@ -12,6 +12,8 @@
 
 ## Unreleased
 
+- Introduced the notion of “Follow-Up Question”.
+
 ## 6.1.0
 
 **2023-04-20 · [Download](https://github.com/courselore/courselore/releases/tag/v6.1.0) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
