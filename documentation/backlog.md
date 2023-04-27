@@ -4,7 +4,6 @@
 
 - Whispers:
   - Message types
-    - Test creating all types of messages
     - Reshape sidebar indicator
     - Revisit the way you set type
   - Edge cases:
