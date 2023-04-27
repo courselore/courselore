@@ -1201,12 +1201,12 @@ Message non-existent permanent link turned reference: <https://${
                             : conversation.type === "question" &&
                               messageAuthorEnrollment?.courseRole !== "staff" &&
                               Math.random() < 0.5
-                            ? "follow-up-question"
+                            ? "followUpQuestion"
                             : conversation.type !== "chat" &&
                               messageAuthorEnrollment?.courseRole !==
                                 "student" &&
                               Math.random() < 0.1
-                            ? "staff-whisper"
+                            ? "staffWhisper"
                             : "message"
                         },
                         ${contentSource},

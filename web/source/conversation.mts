@@ -5230,7 +5230,7 @@ export default async (application: Application): Promise<void> => {
             $${
               response.locals.enrollment.courseRole !== "staff"
                 ? sql`
-                    AND "type" != 'staff-whisper'
+                    AND "type" != 'staffWhisper'
                   `
                 : sql``
             }
@@ -7621,7 +7621,7 @@ export default async (application: Application): Promise<void> => {
                                               </div>
                                             `
                                           : message.type ===
-                                              "follow-up-question" &&
+                                              "followUpQuestion" &&
                                             message.reference !== "1" &&
                                             response.locals.conversation
                                               .type === "question"
@@ -7662,7 +7662,7 @@ export default async (application: Application): Promise<void> => {
                                                 Follow-Up Question
                                               </div>
                                             `
-                                          : message.type === "staff-whisper" &&
+                                          : message.type === "staffWhisper" &&
                                             response.locals.conversation
                                               .type !== "chat"
                                           ? html`
@@ -7874,7 +7874,7 @@ export default async (application: Application): Promise<void> => {
                                               message.reference !== "1" &&
                                               response.locals.conversation
                                                 .type === "question" &&
-                                              message.type !== "staff-whisper"
+                                              message.type !== "staffWhisper"
                                             )
                                               header += html`
                                                 <form
@@ -9342,8 +9342,8 @@ export default async (application: Application): Promise<void> => {
                             ? html`
                                 <div>
                                   <button
-                                    name="isAnswer"
-                                    value="on"
+                                    name="type"
+                                    value="answer"
                                     class="button button--full-width-on-small-screen button--emerald"
                                     javascript="${javascript`
                                       if (${!sendAnswerFirst}) return;
@@ -9405,8 +9405,8 @@ export default async (application: Application): Promise<void> => {
                               ? html`
                                   <div>
                                     <button
-                                      name="isFollowUpQuestion"
-                                      value="on"
+                                      name="type"
+                                      value="followUpQuestion"
                                       class="button button--full-width-on-small-screen button--rose"
                                     >
                                       <i class="bi bi-patch-question-fill"></i>
@@ -9425,8 +9425,8 @@ export default async (application: Application): Promise<void> => {
                                     `}"
                                   >
                                     <button
-                                      name="isStaffWhisper"
-                                      value="on"
+                                      name="type"
+                                      value="staffWhisper"
                                       class="button button--full-width-on-small-screen button--sky"
                                     >
                                       <i class="bi bi-mortarboard-fill"></i>

@@ -43,11 +43,7 @@ export type ApplicationMessage = {
               reference: string;
               authorEnrollment: Application["web"]["locals"]["Types"]["MaybeEnrollment"];
               anonymousAt: string | null;
-              type:
-                | "message"
-                | "answer"
-                | "follow-up-question"
-                | "staff-whisper";
+              type: "message" | "answer" | "followUpQuestion" | "staffWhisper";
               contentSource: string;
               contentPreprocessed: HTML;
               contentSearch: string;
@@ -1271,9 +1267,7 @@ export default async (application: Application): Promise<void> => {
     {
       content?: string;
       isAnonymous?: "on";
-      isAnswer?: "on";
-      isFollowUpQuestion?: "on";
-      isStaffWhisper?: "on";
+      type?: "answer" | "followUpQuestion" | "staffWhisper";
     },
     {
       conversations?: object;
@@ -1291,18 +1285,17 @@ export default async (application: Application): Promise<void> => {
         ![undefined, "on"].includes(request.body.isAnonymous) ||
         (request.body.isAnonymous === "on" &&
           response.locals.enrollment.courseRole === "staff") ||
-        ![undefined, "on"].includes(request.body.isAnswer) ||
-        (request.body.isAnswer === "on" &&
+        ![undefined, "answer", "followUpQuestion", "staffWhisper"].includes(
+          request.body.type
+        ) ||
+        (request.body.type === "answer" &&
           response.locals.conversation.type !== "question") ||
-        ![undefined, "on"].includes(request.body.isFollowUpQuestion) ||
-        (request.body.isFollowUpQuestion === "on" &&
+        (request.body.type === "followUpQuestion" &&
           (response.locals.conversation.type !== "question" ||
             response.locals.enrollment.courseRole !== "student")) ||
-        ![undefined, "on"].includes(request.body.isStaffWhisper) ||
-        (request.body.isStaffWhisper === "on" &&
+        (request.body.type === "staffWhisper" &&
           (response.locals.conversation.type === "chat" ||
-            response.locals.enrollment.courseRole !== "staff")) ||
-        (request.body.isAnswer === "on" && request.body.isStaffWhisper === "on")
+            response.locals.enrollment.courseRole !== "staff"))
       )
         return next("Validation");
 
@@ -1374,16 +1367,13 @@ export default async (application: Application): Promise<void> => {
                   response.locals.conversation.nextMessageReference + 1
                 }
                 $${
-                  response.locals.conversation.type === "question" &&
+                  request.body.type === "answer" &&
                   response.locals.enrollment.courseRole === "staff" &&
-                  request.body.isAnswer === "on" &&
                   response.locals.conversation.resolvedAt === null
                     ? sql`,
                         "resolvedAt" = ${new Date().toISOString()}
                       `
-                    : response.locals.conversation.type === "question" &&
-                      response.locals.enrollment.courseRole === "student" &&
-                      request.body.isFollowUpQuestion === "on"
+                    : request.body.type === "followUpQuestion"
                     ? sql`,
                         "resolvedAt" = ${null}
                       `
@@ -1423,15 +1413,7 @@ export default async (application: Application): Promise<void> => {
                           ? new Date().toISOString()
                           : null
                       },
-                      ${
-                        request.body.isAnswer === "on"
-                          ? "answer"
-                          : request.body.isFollowUpQuestion === "on"
-                          ? "follow-up-question"
-                          : request.body.isStaffWhisper === "on"
-                          ? "staff-whisper"
-                          : "message"
-                      },
+                      ${request.body.type ?? "message"},
                       ${request.body.content},
                       ${contentPreprocessed.contentPreprocessed},
                       ${contentPreprocessed.contentSearch}
@@ -1537,7 +1519,7 @@ export default async (application: Application): Promise<void> => {
           !["true", "false"].includes(request.body.isAnswer) ||
           response.locals.message.reference === "1" ||
           response.locals.conversation.type !== "question" ||
-          response.locals.message.type === "staff-whisper"
+          response.locals.message.type === "staffWhisper"
         )
           return next("Validation");
         else
