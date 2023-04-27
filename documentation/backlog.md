@@ -2,6 +2,7 @@
 
 ## Work in Progress
 
+- Introduce the notion of follow-up question.
 - Whispers:
   - Edge cases:
     - @mentions
@@ -23,7 +24,6 @@
       - On new whisper, show again
       - The point is: Don’t let people miss whispers
   - Reference: Discourse
-- Introduce the notion of follow-up question.
 - UI on the upper left
 - LTI by fall
 
