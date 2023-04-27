@@ -4993,6 +4993,7 @@ export default async (application: Application): Promise<void> => {
                     "reference",
                     "authorEnrollment",
                     "anonymousAt",
+                    "type",
                     "contentSource",
                     "contentPreprocessed",
                     "contentSearch"
@@ -5007,6 +5008,7 @@ export default async (application: Application): Promise<void> => {
                         ? new Date().toISOString()
                         : null
                     },
+                    ${"message"},
                     ${request.body.content},
                     ${contentPreprocessed.contentPreprocessed},
                     ${contentPreprocessed.contentSearch}
