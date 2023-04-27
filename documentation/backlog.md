@@ -4,7 +4,6 @@
 
 - Whispers:
   - Message types
-    - Reshape sidebar indicator
     - Revisit the way you set type
   - Edge cases:
     - @mentions
