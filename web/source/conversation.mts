@@ -7830,7 +7830,8 @@ export default async (application: Application): Promise<void> => {
                                               ) &&
                                               message.reference !== "1" &&
                                               response.locals.conversation
-                                                .type === "question"
+                                                .type === "question" &&
+                                              message.type !== "staff-whisper"
                                             )
                                               header += html`
                                                 <form
