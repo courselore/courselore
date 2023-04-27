@@ -1492,7 +1492,7 @@ export default async (application: Application): Promise<void> => {
     },
     any,
     {
-      isAnswer?: "true" | "false";
+      type?: "message" | "answer" | "followUpQuestion";
       isAnonymous?: "true" | "false";
       content?: string;
     },
@@ -1514,9 +1514,11 @@ export default async (application: Application): Promise<void> => {
       )
         return next();
 
-      if (typeof request.body.isAnswer === "string")
+      if (typeof request.body.type === "string")
         if (
-          !["true", "false"].includes(request.body.isAnswer) ||
+          !["message", "answer", "followUpQuestion"].includes(
+            request.body.type
+          ) ||
           response.locals.message.reference === "1" ||
           response.locals.conversation.type !== "question" ||
           response.locals.message.type === "staffWhisper"
@@ -1526,9 +1528,7 @@ export default async (application: Application): Promise<void> => {
           application.database.run(
             sql`
               UPDATE "messages"
-              SET "type" = ${
-                request.body.isAnswer === "true" ? "answer" : "message"
-              }
+              SET "type" = ${request.body.type}
               WHERE "id" = ${response.locals.message.id}
             `
           );
