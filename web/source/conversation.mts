@@ -7620,8 +7620,9 @@ export default async (application: Application): Promise<void> => {
                                                 Answer
                                               </div>
                                             `
-                                          : html``}
-                                        $${message.type === "staff-whisper"
+                                          : message.type === "staff-whisper" &&
+                                            response.locals.conversation
+                                              .type !== "chat"
                                           ? html`
                                               <div
                                                 class="heading"

@@ -1292,7 +1292,8 @@ export default async (application: Application): Promise<void> => {
         ![undefined, "on"].includes(request.body.isStaffWhisper) ||
         (request.body.isStaffWhisper === "on" &&
           (response.locals.conversation.type === "chat" ||
-            response.locals.enrollment.courseRole !== "staff"))
+            response.locals.enrollment.courseRole !== "staff")) ||
+        (request.body.isAnswer === "on" && request.body.isStaffWhisper === "on")
       )
         return next("Validation");
 
