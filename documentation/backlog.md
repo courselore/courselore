@@ -29,6 +29,84 @@
 - UI on the upper left
 - LTI by fall
 
+```
+
+<form
+                                                  method="PATCH"
+                                                  action="https://${application
+                                                    .configuration
+                                                    .hostname}/courses/${response
+                                                    .locals.course
+                                                    .reference}/conversations/${response
+                                                    .locals.conversation
+                                                    .reference}/messages/${message.reference}${qs.stringify(
+                                                    {
+                                                      conversations:
+                                                        request.query
+                                                          .conversations,
+                                                      messages:
+                                                        request.query.messages,
+                                                    },
+                                                    { addQueryPrefix: true }
+                                                  )}"
+                                                >
+                                                  $${message.type !== "answer"
+                                                    ? html`
+                                                        <input
+                                                          key="isAnswer--true"
+                                                          type="hidden"
+                                                          name="isAnswer"
+                                                          value="true"
+                                                        />
+                                                        <button
+                                                          class="button button--tight button--tight--inline button--tight-gap button--transparent"
+                                                          javascript="${javascript`
+                                                            leafac.setTippy({
+                                                              event,
+                                                              element: this,
+                                                              tippyProps: {
+                                                                touch: false,
+                                                                content: "Set as Answer",
+                                                              },
+                                                            });
+                                                          `}"
+                                                        >
+                                                          <i
+                                                            class="bi bi-patch-check"
+                                                          ></i>
+                                                          Not an Answer
+                                                        </button>
+                                                      `
+                                                    : html`
+                                                        <input
+                                                          key="isAnswer--false"
+                                                          type="hidden"
+                                                          name="isAnswer"
+                                                          value="false"
+                                                        />
+                                                        <button
+                                                          class="button button--tight button--tight--inline button--tight-gap button--transparent text--emerald"
+                                                          javascript="${javascript`
+                                                            leafac.setTippy({
+                                                              event,
+                                                              element: this,
+                                                              tippyProps: {
+                                                                touch: false,
+                                                                content: "Set as Not an Answer",
+                                                              },
+                                                            });
+                                                          `}"
+                                                        >
+                                                          <i
+                                                            class="bi bi-patch-check-fill"
+                                                          ></i>
+                                                          Answer
+                                                        </button>
+                                                      `}
+                                                </form>
+
+```
+
 **DateTimePicker**
 
 - Uses

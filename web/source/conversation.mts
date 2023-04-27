@@ -7877,79 +7877,118 @@ export default async (application: Application): Promise<void> => {
                                               message.type !== "staffWhisper"
                                             )
                                               header += html`
-                                                <form
-                                                  method="PATCH"
-                                                  action="https://${application
-                                                    .configuration
-                                                    .hostname}/courses/${response
-                                                    .locals.course
-                                                    .reference}/conversations/${response
-                                                    .locals.conversation
-                                                    .reference}/messages/${message.reference}${qs.stringify(
-                                                    {
-                                                      conversations:
-                                                        request.query
-                                                          .conversations,
-                                                      messages:
-                                                        request.query.messages,
-                                                    },
-                                                    { addQueryPrefix: true }
-                                                  )}"
-                                                >
-                                                  $${message.type !== "answer"
-                                                    ? html`
-                                                        <input
-                                                          key="isAnswer--true"
-                                                          type="hidden"
-                                                          name="isAnswer"
-                                                          value="true"
-                                                        />
-                                                        <button
-                                                          class="button button--tight button--tight--inline button--tight-gap button--transparent"
-                                                          javascript="${javascript`
-                                                            leafac.setTippy({
-                                                              event,
-                                                              element: this,
-                                                              tippyProps: {
-                                                                touch: false,
-                                                                content: "Set as Answer",
-                                                              },
-                                                            });
-                                                          `}"
-                                                        >
-                                                          <i
-                                                            class="bi bi-patch-check"
-                                                          ></i>
-                                                          Not an Answer
-                                                        </button>
-                                                      `
-                                                    : html`
-                                                        <input
-                                                          key="isAnswer--false"
-                                                          type="hidden"
-                                                          name="isAnswer"
-                                                          value="false"
-                                                        />
-                                                        <button
-                                                          class="button button--tight button--tight--inline button--tight-gap button--transparent text--emerald"
-                                                          javascript="${javascript`
-                                                            leafac.setTippy({
-                                                              event,
-                                                              element: this,
-                                                              tippyProps: {
-                                                                touch: false,
-                                                                content: "Set as Not an Answer",
-                                                              },
-                                                            });
-                                                          `}"
-                                                        >
+                                                <div>
+                                                  <button
+                                                    class="button button--tight button--tight--inline button--tight-gap button--transparent ${message.type ===
+                                                    "answer"
+                                                      ? "text--emerald"
+                                                      : message.type ===
+                                                        "followUpQuestion"
+                                                      ? "text--rose"
+                                                      : ""}"
+                                                    javascript="${javascript`
+                                                      leafac.setTippy({
+                                                        event,
+                                                        element: this,
+                                                        tippyProps: {
+                                                          touch: false,
+                                                          content: "Update Message Type",
+                                                        },
+                                                      });
+                  
+                                                      leafac.setTippy({
+                                                        event,
+                                                        element: this,
+                                                        elementProperty: "dropdown",
+                                                        tippyProps: {
+                                                          trigger: "click",
+                                                          interactive: true,
+                                                          content: ${html`
+                                                            <div
+                                                              class="dropdown--menu"
+                                                            >
+                                                              $${application.web.locals.helpers.conversationTypes.map(
+                                                                (
+                                                                  conversationType
+                                                                ) => html`
+                                                                  <form
+                                                                    key="conversation-type--${conversationType}"
+                                                                    method="PATCH"
+                                                                    action="https://${application
+                                                                      .configuration
+                                                                      .hostname}/courses/${response
+                                                                      .locals
+                                                                      .course
+                                                                      .reference}/conversations/${response
+                                                                      .locals
+                                                                      .conversation
+                                                                      .reference}${qs.stringify(
+                                                                      {
+                                                                        conversations:
+                                                                          request
+                                                                            .query
+                                                                            .conversations,
+                                                                        messages:
+                                                                          request
+                                                                            .query
+                                                                            .messages,
+                                                                      },
+                                                                      {
+                                                                        addQueryPrefix:
+                                                                          true,
+                                                                      }
+                                                                    )}"
+                                                                  >
+                                                                    <input
+                                                                      type="hidden"
+                                                                      name="type"
+                                                                      value="${conversationType}"
+                                                                    />
+                                                                    <button
+                                                                      class="dropdown--menu--item button ${conversationType ===
+                                                                      response
+                                                                        .locals
+                                                                        .conversation
+                                                                        .type
+                                                                        ? "button--blue"
+                                                                        : "button--transparent"} ${textColorsConversationType[
+                                                                        conversationType
+                                                                      ]}"
+                                                                    >
+                                                                      TODO
+                                                                    </button>
+                                                                  </form>
+                                                                `
+                                                              )}
+                                                            </div>
+                                                          `},  
+                                                        },
+                                                      });
+                                                    `}"
+                                                  >
+                                                    $${message.type === "answer"
+                                                      ? html`
                                                           <i
                                                             class="bi bi-patch-check-fill"
                                                           ></i>
                                                           Answer
-                                                        </button>
-                                                      `}
-                                                </form>
+                                                        `
+                                                      : message.type ===
+                                                        "followUpQuestion"
+                                                      ? html`
+                                                          <i
+                                                            class="bi bi-patch-question-fill"
+                                                          ></i>
+                                                          Follow-Up Question
+                                                        `
+                                                      : html`
+                                                          <i
+                                                            class="bi bi-chat"
+                                                          ></i>
+                                                          Message
+                                                        `}
+                                                  </button>
+                                                </div>
                                               `;
 
                                             if (
