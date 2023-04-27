@@ -1272,6 +1272,7 @@ export default async (application: Application): Promise<void> => {
       content?: string;
       isAnonymous?: "on";
       isAnswer?: "on";
+      isFollowUpQuestion?: "on";
       isStaffWhisper?: "on";
     },
     {
@@ -1293,6 +1294,10 @@ export default async (application: Application): Promise<void> => {
         ![undefined, "on"].includes(request.body.isAnswer) ||
         (request.body.isAnswer === "on" &&
           response.locals.conversation.type !== "question") ||
+        ![undefined, "on"].includes(request.body.isFollowUpQuestion) ||
+        (request.body.isFollowUpQuestion === "on" &&
+          (response.locals.conversation.type !== "question" ||
+            response.locals.enrollment.courseRole !== "student")) ||
         ![undefined, "on"].includes(request.body.isStaffWhisper) ||
         (request.body.isStaffWhisper === "on" &&
           (response.locals.conversation.type === "chat" ||
@@ -1378,7 +1383,7 @@ export default async (application: Application): Promise<void> => {
                       `
                     : response.locals.conversation.type === "question" &&
                       response.locals.enrollment.courseRole === "student" &&
-                      request.body.isAnswer !== "on"
+                      request.body.isFollowUpQuestion === "on"
                     ? sql`,
                         "resolvedAt" = ${null}
                       `
@@ -1421,6 +1426,8 @@ export default async (application: Application): Promise<void> => {
                       ${
                         request.body.isAnswer === "on"
                           ? "answer"
+                          : request.body.isFollowUpQuestion === "on"
+                          ? "follow-up-question"
                           : request.body.isStaffWhisper === "on"
                           ? "staff-whisper"
                           : "message"

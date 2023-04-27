@@ -7620,6 +7620,48 @@ export default async (application: Application): Promise<void> => {
                                                 Answer
                                               </div>
                                             `
+                                          : message.type ===
+                                              "follow-up-question" &&
+                                            message.reference !== "1" &&
+                                            response.locals.conversation
+                                              .type === "question"
+                                          ? html`
+                                              <div
+                                                class="heading"
+                                                css="${css`
+                                                  color: var(
+                                                    --color--rose--700
+                                                  );
+                                                  background-color: var(
+                                                    --color--rose--100
+                                                  );
+                                                  @media (prefers-color-scheme: dark) {
+                                                    color: var(
+                                                      --color--rose--200
+                                                    );
+                                                    background-color: var(
+                                                      --color--rose--950
+                                                    );
+                                                  }
+                                                  padding: var(--space--2)
+                                                    var(--space--0);
+                                                  border-radius: var(
+                                                    --border-radius--base
+                                                  );
+                                                  writing-mode: vertical-lr;
+                                                  transform: rotate(180deg);
+                                                  justify-content: flex-end;
+                                                  .bi {
+                                                    transform: rotate(90deg);
+                                                  }
+                                                `}"
+                                              >
+                                                <i
+                                                  class="bi bi-patch-question-fill"
+                                                ></i>
+                                                Follow-Up Question
+                                              </div>
+                                            `
                                           : message.type === "staff-whisper" &&
                                             response.locals.conversation
                                               .type !== "chat"

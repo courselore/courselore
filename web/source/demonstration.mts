@@ -1198,6 +1198,10 @@ Message non-existent permanent link turned reference: <https://${
                           conversation.type === "question" &&
                           Math.random() < 0.5
                             ? "answer"
+                            : conversation.type === "question" &&
+                              messageAuthorEnrollment?.courseRole !== "staff" &&
+                              Math.random() < 0.5
+                            ? "follow-up-question"
                             : conversation.type !== "chat" &&
                               messageAuthorEnrollment?.courseRole !==
                                 "student" &&

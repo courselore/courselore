@@ -3,6 +3,9 @@
 ## Work in Progress
 
 - Introduce the notion of follow-up question.
+  - Instead of `isAnswer`, `isFollowUpQuestion`, and `isStaffWhisper`, use `type`
+  - Test the effect of posting new messages on the resolved status of the conversation
+  - Allow you to change the type of message after the fact (`message`, `answer`, `follow-up-question`)
 - Whispers:
   - Edge cases:
     - @mentions
