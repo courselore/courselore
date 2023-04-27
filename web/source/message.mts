@@ -43,7 +43,11 @@ export type ApplicationMessage = {
               reference: string;
               authorEnrollment: Application["web"]["locals"]["Types"]["MaybeEnrollment"];
               anonymousAt: string | null;
-              type: "message" | "answer" | "staff-whisper";
+              type:
+                | "message"
+                | "answer"
+                | "follow-up-question"
+                | "staff-whisper";
               contentSource: string;
               contentPreprocessed: HTML;
               contentSearch: string;

@@ -9345,45 +9345,6 @@ export default async (application: Application): Promise<void> => {
                               `
                             : html``;
 
-                        const sendStaffWhisper =
-                          response.locals.enrollment.courseRole === "staff"
-                            ? html`
-                                <div
-                                  css="${css`
-                                    display: flex;
-                                    gap: var(--space--2);
-                                    align-items: center;
-                                  `}"
-                                >
-                                  <button
-                                    name="isStaffWhisper"
-                                    value="on"
-                                    class="button button--full-width-on-small-screen button--sky"
-                                  >
-                                    <i class="bi bi-mortarboard-fill"></i>
-                                    Send Staff Whisper
-                                  </button>
-
-                                  <button
-                                    type="button"
-                                    class="button button--tight button--tight--inline button--transparent"
-                                    javascript="${javascript`
-                                      leafac.setTippy({
-                                        event,
-                                        element: this,
-                                        tippyProps: {
-                                          trigger: "click",
-                                          content: "Staff whispers are messages visible to staff only.",
-                                        },
-                                      });
-                                    `}"
-                                  >
-                                    <i class="bi bi-info-circle"></i>
-                                  </button>
-                                </div>
-                              `
-                            : html``;
-
                         return html`
                           <div
                             css="${css`
@@ -9396,7 +9357,43 @@ export default async (application: Application): Promise<void> => {
                             $${sendAnswerFirst
                               ? html`$${sendAnswer} $${sendMessage}`
                               : html`$${sendMessage} $${sendAnswer}`}
-                            $${sendStaffWhisper}
+                            $${response.locals.enrollment.courseRole === "staff"
+                              ? html`
+                                  <div
+                                    css="${css`
+                                      display: flex;
+                                      gap: var(--space--2);
+                                      align-items: center;
+                                    `}"
+                                  >
+                                    <button
+                                      name="isStaffWhisper"
+                                      value="on"
+                                      class="button button--full-width-on-small-screen button--sky"
+                                    >
+                                      <i class="bi bi-mortarboard-fill"></i>
+                                      Send Staff Whisper
+                                    </button>
+
+                                    <button
+                                      type="button"
+                                      class="button button--tight button--tight--inline button--transparent"
+                                      javascript="${javascript`
+                                        leafac.setTippy({
+                                          event,
+                                          element: this,
+                                          tippyProps: {
+                                            trigger: "click",
+                                            content: "Staff whispers are messages visible to staff only.",
+                                          },
+                                        });
+                                      `}"
+                                    >
+                                      <i class="bi bi-info-circle"></i>
+                                    </button>
+                                  </div>
+                                `
+                              : html``}
                           </div>
                         `;
                       })()
