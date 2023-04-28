@@ -4,8 +4,8 @@
 
 - Staff whispers:
   - Edge cases:
-    - Count of messages in conversation
     - Count of unread messages
+    - Count of messages in conversation
     - Search
       - Conversation participants
     - “Views”
