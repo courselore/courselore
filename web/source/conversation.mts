@@ -3239,7 +3239,13 @@ export default async (application: Application): Promise<void> => {
                   response.locals.enrollment.id
                 }
             )
-          )
+          ) $${
+            response.locals.enrollment.courseRole !== "staff"
+              ? sql`
+                  AND "messages"."type" != 'staff-whisper'
+                `
+              : sql``
+          }
           ORDER BY "messages"."id" ASC
         `
       );
