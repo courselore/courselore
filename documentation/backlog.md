@@ -4,7 +4,6 @@
 
 - Staff whispers:
   - Edge cases:
-    - Reply
     - Count of messages in conversation
     - Count of unread messages
     - “Views”
