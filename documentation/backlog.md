@@ -6,6 +6,8 @@
   - Edge cases:
     - Count of messages in conversation
     - Count of unread messages
+    - Search
+      - Conversation participants
     - “Views”
       - Mark messages as read on load
       - “Mark all as read”
