@@ -3,8 +3,8 @@
 ## Work in Progress
 
 - Staff whispers:
-  - Talk about it on home page.
   - Later:
+    - Talk about staff whispers on home page.
     - Disclosure button to show/hide whispers
       - On load, it’s showing
       - On new whisper, show again
