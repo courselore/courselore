@@ -914,7 +914,13 @@ export default async (application: Application): Promise<void> => {
                         }
                       WHERE
                         "conversations"."id" = "messages"."conversation" AND
-                        "readings"."id" IS NULL
+                        "readings"."id" IS NULL $${
+                          response.locals.enrollment.courseRole !== "staff"
+                            ? sql`
+                                AND "messages"."type" != 'staff-whisper'
+                              `
+                            : sql``
+                        }
                     )
                   `
             }
@@ -5208,7 +5214,15 @@ export default async (application: Application): Promise<void> => {
                 FROM "messages"
                 WHERE
                   "conversation" = ${response.locals.conversation.id} AND
-                  "reference" = ${request.query.messages.messagesPage.beforeMessageReference}
+                  "reference" = ${
+                    request.query.messages.messagesPage.beforeMessageReference
+                  } $${
+                response.locals.enrollment.courseRole !== "staff"
+                  ? sql`
+                      AND "messages"."type" != 'staff-whisper'
+                    `
+                  : sql``
+              }
                 LIMIT 1
               `
             )
@@ -5224,7 +5238,15 @@ export default async (application: Application): Promise<void> => {
                 FROM "messages"
                 WHERE
                   "conversation" = ${response.locals.conversation.id} AND
-                  "reference" = ${request.query.messages.messagesPage.afterMessageReference}
+                  "reference" = ${
+                    request.query.messages.messagesPage.afterMessageReference
+                  } $${
+                response.locals.enrollment.courseRole !== "staff"
+                  ? sql`
+                      AND "messages"."type" != 'staff-whisper'
+                    `
+                  : sql``
+              }
                 LIMIT 1
               `
             )

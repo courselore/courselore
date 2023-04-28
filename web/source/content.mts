@@ -4328,7 +4328,14 @@ ${contentSource}</textarea
                         )}
                     `
               }
-              WHERE "messages"."conversation" = ${conversation.id}
+              WHERE
+                "messages"."conversation" = ${conversation.id} $${
+              response.locals.enrollment.courseRole !== "staff"
+                ? sql`
+                    AND "messages"."type" != 'staff-whisper'
+                  `
+                : sql``
+            }
               ORDER BY "messages"."id" ASC
               LIMIT 5
             `
@@ -4470,10 +4477,12 @@ ${contentSource}</textarea
             response.locals.enrollment.courseRole === "staff"
               ? sql``
               : sql`
-                  WHERE (
+                  WHERE
+                  (
                     "messages"."anonymousAt" IS NULL OR
                     "messages"."authorEnrollment" = ${response.locals.enrollment.id}
-                  )
+                  ) AND
+                    "messages"."type" != 'staff-whisper'
                 `
           }
           ORDER BY
@@ -4555,6 +4564,13 @@ ${contentSource}</textarea
           JOIN "conversations" ON
             "messages"."conversation" = "conversations"."id" AND
             "conversations"."course" = ${response.locals.course.id}
+          $${
+            response.locals.enrollment.courseRole !== "staff"
+              ? sql`
+                  WHERE "messages"."type" != 'staff-whisper'
+                `
+              : sql``
+          }
           ORDER BY
             "messagesContentSearchIndex"."rank" ASC,
             "messages"."id" DESC

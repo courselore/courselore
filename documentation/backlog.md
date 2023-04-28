@@ -5,7 +5,6 @@
 - Staff whispers:
   - Edge cases:
     - Double-check visibility everywhere to make sure whispers don’t leak to students.
-      - `FROM "messages`
       - `JOIN "messages`
   - Talk about it on home page.
   - Later:
