@@ -551,7 +551,14 @@ export default async (application: Application): Promise<void> => {
       sql`
         SELECT COUNT(*) AS "messagesCount"
         FROM "messages"
-        WHERE "messages"."conversation" = ${conversation.id}
+        WHERE
+          "messages"."conversation" = ${conversation.id} $${
+        response.locals.enrollment.courseRole !== "staff"
+          ? sql`
+              AND "messages"."type" != 'staff-whisper'
+            `
+          : sql``
+      }
       `
     )!.messagesCount;
 
@@ -562,7 +569,14 @@ export default async (application: Application): Promise<void> => {
         JOIN "messages" ON
           "readings"."message" = "messages"."id" AND
           "messages"."conversation" = ${conversation.id}
-        WHERE "readings"."enrollment" = ${response.locals.enrollment.id}
+        WHERE
+          "readings"."enrollment" = ${response.locals.enrollment.id} $${
+        response.locals.enrollment.courseRole !== "staff"
+          ? sql`
+              AND "messages"."type" != 'staff-whisper'
+            `
+          : sql``
+      }
       `
     )!.readingsCount;
 

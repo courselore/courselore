@@ -4,10 +4,8 @@
 
 - Staff whispers:
   - Edge cases:
-    - Count of unread messages
-    - Count of messages in conversation
     - Search
-      - Conversation participants
+      - `getMessage`
     - “Views”
       - Mark messages as read on load
       - “Mark all as read”
