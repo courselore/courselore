@@ -3,9 +3,6 @@
 ## Work in Progress
 
 - Staff whispers:
-  - Edge cases:
-    - Double-check visibility everywhere to make sure whispers don’t leak to students.
-      - `JOIN "messages`
   - Talk about it on home page.
   - Later:
     - Disclosure button to show/hide whispers
