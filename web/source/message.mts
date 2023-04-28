@@ -2264,6 +2264,9 @@ export default async (application: Application): Promise<void> => {
           reference: string;
           authorUserName: string | null;
           anonymousAt: string | null;
+          type: NonNullable<
+            ReturnType<Application["web"]["locals"]["helpers"]["getMessage"]>
+          >["type"];
           contentPreprocessed: string;
         }>(
           sql`
@@ -2287,6 +2290,7 @@ export default async (application: Application): Promise<void> => {
               "messages"."reference",
               "authorUser"."name" AS "authorUserName",
               "messages"."anonymousAt",
+              "messages"."type",
               "messages"."contentPreprocessed"
             FROM "messages"
             JOIN "conversations" ON "messages"."conversation" = "conversations"."id"
@@ -2308,6 +2312,7 @@ export default async (application: Application): Promise<void> => {
                 }
               : ("no-longer-enrolled" as const),
           anonymousAt: messageRow.anonymousAt,
+          type: messageRow.type,
           contentPreprocessed: messageRow.contentPreprocessed,
         };
         const conversation = {
@@ -2377,32 +2382,38 @@ export default async (application: Application): Promise<void> => {
                   "enrollments"."id" = "emailNotificationDeliveries"."enrollment" AND
                   "emailNotificationDeliveries"."message" = ${message.id}
               ) $${
-                conversation.participants === "everyone"
-                  ? sql``
-                  : conversation.participants === "staff"
+                message.type === "staff-whisper"
                   ? sql`
-                      AND (
-                        "enrollments"."courseRole" = 'staff' OR EXISTS(
-                          SELECT TRUE
-                          FROM "conversationSelectedParticipants"
-                          WHERE
-                            "conversationSelectedParticipants"."conversation" = ${conversation.id} AND
-                            "conversationSelectedParticipants"."enrollment" = "enrollments"."id"
-                        )
-                      )
-                    `
-                  : conversation.participants === "selected-people"
-                  ? sql`
-                      AND EXISTS(
-                        SELECT TRUE
-                        FROM "conversationSelectedParticipants"
-                        WHERE
-                          "conversationSelectedParticipants"."conversation" = ${conversation.id} AND
-                          "conversationSelectedParticipants"."enrollment" = "enrollments"."id"
-                      )
+                      AND "enrollments"."courseRole" = 'staff'
                     `
                   : sql``
               } $${
+            conversation.participants === "everyone"
+              ? sql``
+              : conversation.participants === "staff"
+              ? sql`
+                  AND (
+                    "enrollments"."courseRole" = 'staff' OR EXISTS(
+                      SELECT TRUE
+                      FROM "conversationSelectedParticipants"
+                      WHERE
+                        "conversationSelectedParticipants"."conversation" = ${conversation.id} AND
+                        "conversationSelectedParticipants"."enrollment" = "enrollments"."id"
+                    )
+                  )
+                `
+              : conversation.participants === "selected-people"
+              ? sql`
+                  AND EXISTS(
+                    SELECT TRUE
+                    FROM "conversationSelectedParticipants"
+                    WHERE
+                      "conversationSelectedParticipants"."conversation" = ${conversation.id} AND
+                      "conversationSelectedParticipants"."enrollment" = "enrollments"."id"
+                  )
+                `
+              : sql``
+          } $${
             conversation.type === "note" &&
             conversation.announcementAt !== null &&
             message.reference === "1"

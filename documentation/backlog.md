@@ -4,7 +4,6 @@
 
 - Staff whispers:
   - Edge cases:
-    - Don’t send email notifications to students
     - Reply
     - Count of messages in conversation
     - Count of unread messages
@@ -13,6 +12,8 @@
       - “Mark all as read”
     - There’s no way to convert back and forth between regular messages & whispers. If necessary, delete and send another message.
     - Double-check visibility everywhere to make sure whispers don’t leak to students.
+      - `FROM "messages`
+      - `JOIN "messages`
   - Talk about it on home page.
   - Later:
     - Disclosure button to show/hide whispers
