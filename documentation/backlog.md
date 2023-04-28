@@ -4,7 +4,6 @@
 
 - Staff whispers:
   - Edge cases:
-    - @mentions
     - `"conversations"."updatedAt"` should be updated or not?
     - Should email notifications be sent?
       - Certainly not to students
@@ -22,6 +21,8 @@
       - On load, it’s showing
       - On new whisper, show again
       - The point is: Don’t let people miss whispers
+    - The order or messages on the left now may be different for students and staff
+      - Two `"conversations"."updatedAt"`, one for staff (which updates on staff whispers) and one for students (which does not update on staff whispers)
   - Reference: Discourse
 - UI on the upper left
 - LTI by fall
