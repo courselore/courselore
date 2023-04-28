@@ -4,8 +4,7 @@
 
 - Staff whispers:
   - Edge cases:
-    - Should email notifications be sent?
-      - Certainly not to students
+    - Don’t send email notifications to students
     - Reply
     - Count of messages in conversation
     - Count of unread messages
