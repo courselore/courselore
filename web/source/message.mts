@@ -1367,7 +1367,13 @@ export default async (application: Application): Promise<void> => {
             sql`
               UPDATE "conversations"
               SET
-                "updatedAt" = ${new Date().toISOString()},
+                $${
+                  request.body.type !== "staff-whisper"
+                    ? sql`
+                        "updatedAt" = ${new Date().toISOString()},
+                      `
+                    : sql``
+                }
                 "nextMessageReference" = ${
                   response.locals.conversation.nextMessageReference + 1
                 }
@@ -1601,13 +1607,14 @@ export default async (application: Application): Promise<void> => {
               WHERE "id" = ${response.locals.message.id}
             `
           );
-          application.database.run(
-            sql`
-              UPDATE "conversations"
-              SET "updatedAt" = ${new Date().toISOString()}
-              WHERE "id" = ${response.locals.conversation.id}
-            `
-          );
+          if (response.locals.message.type !== "staff-whisper")
+            application.database.run(
+              sql`
+                UPDATE "conversations"
+                SET "updatedAt" = ${new Date().toISOString()}
+                WHERE "id" = ${response.locals.conversation.id}
+              `
+            );
         });
 
         application.web.locals.helpers.emailNotifications({

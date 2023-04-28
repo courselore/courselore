@@ -4,7 +4,6 @@
 
 - Staff whispers:
   - Edge cases:
-    - `"conversations"."updatedAt"` should be updated or not?
     - Should email notifications be sent?
       - Certainly not to students
     - Reply
