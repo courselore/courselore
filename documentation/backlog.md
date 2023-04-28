@@ -3,6 +3,9 @@
 ## Work in Progress
 
 - Staff whispers:
+  - Test
+  - Review
+  - Deploy
   - Later:
     - Talk about staff whispers on home page.
     - Disclosure button to show/hide whispers
