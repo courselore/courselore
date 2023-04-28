@@ -4,7 +4,6 @@
 
 - Staff whispers:
   - Edge cases:
-    - There’s no way to convert back and forth between regular messages & whispers. If necessary, delete and send another message.
     - Double-check visibility everywhere to make sure whispers don’t leak to students.
       - `FROM "messages`
       - `JOIN "messages`
