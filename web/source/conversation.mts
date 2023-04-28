@@ -5230,7 +5230,7 @@ export default async (application: Application): Promise<void> => {
             $${
               response.locals.enrollment.courseRole !== "staff"
                 ? sql`
-                    AND "type" != 'staffWhisper'
+                    AND "type" != 'staff-whisper'
                   `
                 : sql``
             }
@@ -7621,7 +7621,7 @@ export default async (application: Application): Promise<void> => {
                                               </div>
                                             `
                                           : message.type ===
-                                              "followUpQuestion" &&
+                                              "follow-up-question" &&
                                             message.reference !== "1" &&
                                             response.locals.conversation
                                               .type === "question"
@@ -7662,7 +7662,7 @@ export default async (application: Application): Promise<void> => {
                                                 Follow-Up Question
                                               </div>
                                             `
-                                          : message.type === "staffWhisper" &&
+                                          : message.type === "staff-whisper" &&
                                             response.locals.conversation
                                               .type !== "chat"
                                           ? html`
@@ -7874,7 +7874,7 @@ export default async (application: Application): Promise<void> => {
                                               message.reference !== "1" &&
                                               response.locals.conversation
                                                 .type === "question" &&
-                                              message.type !== "staffWhisper"
+                                              message.type !== "staff-whisper"
                                             )
                                               header += html`
                                                 <div>
@@ -7883,7 +7883,7 @@ export default async (application: Application): Promise<void> => {
                                                     "answer"
                                                       ? "text--emerald"
                                                       : message.type ===
-                                                        "followUpQuestion"
+                                                        "follow-up-question"
                                                       ? "text--rose"
                                                       : ""}"
                                                     javascript="${javascript`
@@ -8033,11 +8033,11 @@ export default async (application: Application): Promise<void> => {
                                                                 <input
                                                                   type="hidden"
                                                                   name="type"
-                                                                  value="followUpQuestion"
+                                                                  value="follow-up-question"
                                                                 />
                                                                 <button
                                                                   class="dropdown--menu--item button ${message.type ===
-                                                                  "followUpQuestion"
+                                                                  "follow-up-question"
                                                                     ? "button--blue"
                                                                     : "button--transparent"} text--rose"
                                                                 >
@@ -8071,7 +8071,7 @@ export default async (application: Application): Promise<void> => {
                                                           Answer
                                                         `
                                                       : message.type ===
-                                                        "followUpQuestion"
+                                                        "follow-up-question"
                                                       ? html`
                                                           <i
                                                             class="bi bi-patch-question-fill"
@@ -9537,7 +9537,7 @@ export default async (application: Application): Promise<void> => {
                                   <div>
                                     <button
                                       name="type"
-                                      value="followUpQuestion"
+                                      value="follow-up-question"
                                       class="button button--full-width-on-small-screen button--rose"
                                     >
                                       <i class="bi bi-patch-question-fill"></i>
@@ -9560,7 +9560,7 @@ export default async (application: Application): Promise<void> => {
                                   >
                                     <button
                                       name="type"
-                                      value="staffWhisper"
+                                      value="staff-whisper"
                                       class="button button--full-width-on-small-screen button--sky"
                                     >
                                       <i class="bi bi-mortarboard-fill"></i>

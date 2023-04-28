@@ -43,7 +43,11 @@ export type ApplicationMessage = {
               reference: string;
               authorEnrollment: Application["web"]["locals"]["Types"]["MaybeEnrollment"];
               anonymousAt: string | null;
-              type: "message" | "answer" | "followUpQuestion" | "staffWhisper";
+              type:
+                | "message"
+                | "answer"
+                | "follow-up-question"
+                | "staff-whisper";
               contentSource: string;
               contentPreprocessed: HTML;
               contentSearch: string;
@@ -1267,7 +1271,7 @@ export default async (application: Application): Promise<void> => {
     {
       content?: string;
       isAnonymous?: "on";
-      type?: "answer" | "followUpQuestion" | "staffWhisper";
+      type?: "answer" | "follow-up-question" | "staff-whisper";
     },
     {
       conversations?: object;
@@ -1285,15 +1289,15 @@ export default async (application: Application): Promise<void> => {
         ![undefined, "on"].includes(request.body.isAnonymous) ||
         (request.body.isAnonymous === "on" &&
           response.locals.enrollment.courseRole === "staff") ||
-        ![undefined, "answer", "followUpQuestion", "staffWhisper"].includes(
+        ![undefined, "answer", "follow-up-question", "staff-whisper"].includes(
           request.body.type
         ) ||
         (request.body.type === "answer" &&
           response.locals.conversation.type !== "question") ||
-        (request.body.type === "followUpQuestion" &&
+        (request.body.type === "follow-up-question" &&
           (response.locals.conversation.type !== "question" ||
             response.locals.enrollment.courseRole !== "student")) ||
-        (request.body.type === "staffWhisper" &&
+        (request.body.type === "staff-whisper" &&
           (response.locals.conversation.type === "chat" ||
             response.locals.enrollment.courseRole !== "staff" ||
             response.locals.conversation.participants === "staff"))
@@ -1374,7 +1378,7 @@ export default async (application: Application): Promise<void> => {
                     ? sql`,
                         "resolvedAt" = ${new Date().toISOString()}
                       `
-                    : request.body.type === "followUpQuestion"
+                    : request.body.type === "follow-up-question"
                     ? sql`,
                         "resolvedAt" = ${null}
                       `
@@ -1493,7 +1497,7 @@ export default async (application: Application): Promise<void> => {
     },
     any,
     {
-      type?: "message" | "answer" | "followUpQuestion";
+      type?: "message" | "answer" | "follow-up-question";
       isAnonymous?: "true" | "false";
       content?: string;
     },
@@ -1517,12 +1521,12 @@ export default async (application: Application): Promise<void> => {
 
       if (typeof request.body.type === "string")
         if (
-          !["message", "answer", "followUpQuestion"].includes(
+          !["message", "answer", "follow-up-question"].includes(
             request.body.type
           ) ||
           response.locals.message.reference === "1" ||
           response.locals.conversation.type !== "question" ||
-          response.locals.message.type === "staffWhisper"
+          response.locals.message.type === "staff-whisper"
         )
           return next("Validation");
         else
