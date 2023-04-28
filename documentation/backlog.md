@@ -2,7 +2,8 @@
 
 ## Work in Progress
 
-- Whispers:
+- Staff whispers:
+  - CamelCase → kebab-case on message types
   - Edge cases:
     - @mentions
     - `"conversations"."updatedAt"` should be updated or not?

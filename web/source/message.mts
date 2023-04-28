@@ -1295,7 +1295,8 @@ export default async (application: Application): Promise<void> => {
             response.locals.enrollment.courseRole !== "student")) ||
         (request.body.type === "staffWhisper" &&
           (response.locals.conversation.type === "chat" ||
-            response.locals.enrollment.courseRole !== "staff"))
+            response.locals.enrollment.courseRole !== "staff" ||
+            response.locals.conversation.participants === "staff"))
       )
         return next("Validation");
 

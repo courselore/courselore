@@ -9546,7 +9546,10 @@ export default async (application: Application): Promise<void> => {
                                   </div>
                                 `
                               : html``}
-                            $${response.locals.enrollment.courseRole === "staff"
+                            $${response.locals.enrollment.courseRole ===
+                              "staff" &&
+                            response.locals.conversation.participants !==
+                              "staff"
                               ? html`
                                   <div
                                     css="${css`
