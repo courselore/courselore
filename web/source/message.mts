@@ -244,6 +244,13 @@ export default async (application: Application): Promise<void> => {
         WHERE
           "messages"."conversation" = ${conversation.id} AND
           "messages"."reference" = ${messageReference}
+          $${
+            response.locals.enrollment.courseRole !== "staff"
+              ? sql`
+                  AND "messages"."type" != 'staff-whisper'
+                `
+              : sql``
+          }
         ORDER BY "messages"."id" ASC
       `
     );

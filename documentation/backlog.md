@@ -4,8 +4,6 @@
 
 - Staff whispers:
   - Edge cases:
-    - Search
-      - `getMessage`
     - “Views”
       - Mark messages as read on load
       - “Mark all as read”

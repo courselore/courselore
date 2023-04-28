@@ -834,7 +834,8 @@ export default async (application: Application): Promise<void> => {
                             AND (
                               "messages"."anonymousAt" IS NULL OR
                               "messages"."authorEnrollment" = ${response.locals.enrollment.id}
-                            )
+                            ) AND
+                              "messages"."type" != 'staff-whisper'
                           `
                     }
                   WHERE "usersNameSearchIndex" MATCH ${search}
@@ -847,7 +848,15 @@ export default async (application: Application): Promise<void> => {
                     "messagesContentSearchIndex"."rank" AS "rank",
                     snippet("messagesContentSearchIndex", 0, '<mark class="mark">', '</mark>', '…', 16) AS "snippet"
                   FROM "messagesContentSearchIndex"
-                  JOIN "messages" ON "messagesContentSearchIndex"."rowid" = "messages"."id"
+                  JOIN "messages" ON
+                    "messagesContentSearchIndex"."rowid" = "messages"."id"
+                    $${
+                      response.locals.enrollment.courseRole === "staff"
+                        ? sql``
+                        : sql`
+                            AND "messages"."type" != 'staff-whisper'
+                          `
+                    }
                   WHERE "messagesContentSearchIndex" MATCH ${search}
                 ) AS "messageContentSearchResult" ON "conversations"."id" = "messageContentSearchResult"."conversationId"
               `
