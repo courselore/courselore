@@ -3,7 +3,6 @@
 ## Work in Progress
 
 - Staff whispers:
-  - Test
   - Review
   - Deploy
   - Later:
