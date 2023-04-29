@@ -4,6 +4,9 @@
 <summary>2023-04-29</summary>
 
 - Under what conditions do we send email on sign in?
+- No news on SAML.
+- Skipping next week’s meeting.
+- Staff whispers and follow-up questions are done.
 
 </details>
 
