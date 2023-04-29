@@ -3,6 +3,7 @@
 <details>
 <summary>2023-04-29</summary>
 
+- Skipping next week’s meeting.
 - SAML
   - No news from Hopkins
   - Under what conditions do we send email on sign in?
@@ -10,7 +11,6 @@
   - The case of the OOM killer.
   - Participants in Ali’s conversation.
 - Staff whispers and follow-up questions are done, but not deployed.
-  - Skipping next week’s meeting.
 
 </details>
 
