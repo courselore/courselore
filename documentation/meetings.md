@@ -7,6 +7,8 @@
 - No news on SAML.
 - Skipping next week’s meeting.
 - Staff whispers and follow-up questions are done.
+- The case of the OOM killer.
+- Participants in Ali’s conversation.
 
 </details>
 
