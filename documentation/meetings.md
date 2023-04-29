@@ -3,12 +3,14 @@
 <details>
 <summary>2023-04-29</summary>
 
-- Under what conditions do we send email on sign in?
-- No news on SAML.
-- Skipping next week’s meeting.
-- Staff whispers and follow-up questions are done.
-- The case of the OOM killer.
-- Participants in Ali’s conversation.
+- SAML
+  - No news from Hopkins
+  - Under what conditions do we send email on sign in?
+- Follow-up on cases from the week:
+  - The case of the OOM killer.
+  - Participants in Ali’s conversation.
+- Staff whispers and follow-up questions are done, but not deployed.
+  - Skipping next week’s meeting.
 
 </details>
 
