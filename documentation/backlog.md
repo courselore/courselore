@@ -3,7 +3,6 @@
 ## Work in Progress
 
 - Staff whispers:
-  - Review
   - Deploy
   - Later:
     - Talk about staff whispers on home page.

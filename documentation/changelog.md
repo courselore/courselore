@@ -13,6 +13,7 @@
 ## Unreleased
 
 - Introduced the notion of “Follow-Up Question”.
+- Introduced the notion of “Staff Whisper”.
 
 ## 6.1.0
 
