@@ -10,19 +10,13 @@
   - “Endorsed Answer”
   - “Staff Answer”
   - Accessibility (color blindness, low vision, etc.)
+
 ---
 
-- Staff whispers:
-  - Deploy
-  - Later:
-    - Talk about staff whispers on home page.
-    - Disclosure button to show/hide whispers
-      - On load, it’s showing
-      - On new whisper, show again
-      - The point is: Don’t let people miss whispers
-    - The order or messages on the left now may be different for students and staff
-      - Two `"conversations"."updatedAt"`, one for staff (which updates on staff whispers) and one for students (which does not update on staff whispers)
-  - Reference: Discourse
+- Reviewed up to `2118a2c7d83b8eaed7802a4aa78701ce5c612fa8`
+
+---
+
 - UI on the upper left
 - LTI by fall
 
@@ -550,6 +544,15 @@ const extractStaticCSSAndJavaScript = () => ({
   - Changes to the inputs related to creating a poll don’t need to submit message draft updates
   - Finer control over who can see what results
   - Ranking: https://civs1.civs.us
+- Staff whispers
+  - Talk about staff whispers on home page.
+  - Disclosure button to show/hide whispers
+    - On load, it’s showing
+    - On new whisper, show again
+    - The point is: Don’t let people miss whispers
+  - The order or messages on the left now may be different for students and staff
+    - Two `"conversations"."updatedAt"`, one for staff (which updates on staff whispers) and one for students (which does not update on staff whispers)
+  - Reference: Discourse
 
 **Readings & Views**
 
