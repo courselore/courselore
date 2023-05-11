@@ -6741,6 +6741,9 @@ export default async (application: Application): Promise<void> => {
                                 flex-direction: column;
                                 gap: var(--space--2);
                               `}"
+                              javascript="${javascript`
+                                this.onbeforemorphattribute = (event, attribute) => attribute === "checked";
+                              `}"
                             >
                               <div
                                 css="${css`
