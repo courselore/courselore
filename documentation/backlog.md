@@ -17,12 +17,11 @@
     - Look at `DOMContentLoaded`
     - Double-check every use of `execute()`
 - In `/settings/tags`, make tag input even smaller
-- Use more `` html\`\` ``
+- Use `` html\`\` ``?
   - “Add Tag”
   - “Add Option” in polls
   - Latency compensation when sending message
 - Try TypeScript on client-side JavaScript
-- In routes like `/likes`, do a redirect back with `${qs.stringify( { redirect: request.originalUrl.slice(1) }, { addQueryPrefix: true } )}`
 
 ---
 
