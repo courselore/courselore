@@ -2,12 +2,6 @@
 
 ## Work in Progress
 
-- Conversation participants
-  - When changing from selected people to staff, keep the selected people
-  - Do something about the “Update Participants” button being tricky.
-
----
-
 - Reviewed up to `2118a2c7d83b8eaed7802a4aa78701ce5c612fa8`
 
 ---

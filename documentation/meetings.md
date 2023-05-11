@@ -1,6 +1,15 @@
 # Meetings
 
 <details>
+<summary>2023-05-13</summary>
+
+- Small user interface tweaks:
+  - Sidebar marker for “Question”
+  - The “Update Participants” button shows up on the dropdown menu.
+
+</details>
+
+<details>
 <summary>2023-04-29</summary>
 
 - Skipping next week’s meeting.

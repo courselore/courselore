@@ -6834,7 +6834,7 @@ export default async (application: Application): Promise<void> => {
                                                               element.disabled = false;
                                                           }
 
-                                                          this.closest("form").querySelector('[key="submit"]').hidden = !leafac.isModified(this.closest("form"));
+                                                          this.closest("form").querySelector('[key="submit"]').hidden = this.closest("form").querySelector('[key="participants--dropdown--submit"]').hidden = !leafac.isModified(this.closest("form"));
                                                         };
                                                       `}"
                                                     />
@@ -7005,7 +7005,7 @@ export default async (application: Application): Promise<void> => {
                                                                 this.onchange = () => {
                                                                   this.closest("form").querySelector(${`[name="selectedParticipantsReferences[]"][value="${enrollment.reference}"]`}).checked = this.checked;
 
-                                                                  this.closest("form").querySelector('[key="submit"]').hidden = !leafac.isModified(this.closest("form"));
+                                                                  this.closest("form").querySelector('[key="submit"]').hidden = this.closest("form").querySelector('[key="participants--dropdown--submit"]').hidden = !leafac.isModified(this.closest("form"));
                                                                 };
                                                               `}"
                                                             />
@@ -7046,6 +7046,29 @@ export default async (application: Application): Promise<void> => {
                                                       )}
                                                     </div>
                                                   `}
+                                            </div>
+
+                                            <div
+                                              key="participants--dropdown--submit"
+                                              hidden
+                                              css="${css`
+                                                display: flex;
+                                                flex-direction: column;
+                                                gap: var(--space--2);
+                                              `}"
+                                            >
+                                              <hr class="dropdown--separator" />
+
+                                              <div class="dropdown--menu">
+                                                <button
+                                                  class="dropdown--menu--item button button--blue"
+                                                >
+                                                  <i
+                                                    class="bi bi-pencil-fill"
+                                                  ></i>
+                                                  Update Participants
+                                                </button>
+                                              </div>
                                             </div>
                                           </div>
                                         `},  
@@ -7140,7 +7163,7 @@ export default async (application: Application): Promise<void> => {
 
                                           this.closest("form").querySelector('[key="participants"]').dropdown.props.content.querySelector(${`[name="participants--dropdown--selected-participants[]"][value="${enrollment.reference}"]`}).checked = false;
 
-                                          this.closest("form").querySelector('[key="submit"]').hidden = !leafac.isModified(this.closest("form"));
+                                          this.closest("form").querySelector('[key="submit"]').hidden = this.closest("form").querySelector('[key="participants"]').dropdown.props.content.querySelector('[key="participants--dropdown--submit"]').hidden = !leafac.isModified(this.closest("form"));
                                         };
                                       `}"
                                     >
