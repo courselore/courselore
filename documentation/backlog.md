@@ -2,6 +2,16 @@
 
 ## Work in Progress
 
+- Conversation participants
+  - When changing from selected people to staff, keep the selected people
+  - Do something about the “Update Participants” button being tricky.
+- Sidebar widgets
+  - “Question” message
+  - “Endorsed Answer”
+  - “Staff Answer”
+  - Accessibility (color blindness, low vision, etc.)
+---
+
 - Staff whispers:
   - Deploy
   - Later:
