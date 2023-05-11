@@ -2102,7 +2102,12 @@ export default async (application: Application): Promise<void> => {
           END;
         `
       );
-    }
+    },
+
+    sql`
+      ALTER TABLE "users" ADD COLUMN "mostRecentlyVisitedEnrollment" INTEGER NULL REFERENCES "enrollments" ON DELETE SET NULL;
+      ALTER TABLE "enrollments" ADD COLUMN "mostRecentlyVisitedConversation" INTEGER NULL REFERENCES "conversations" ON DELETE SET NULL;
+    `
   );
 
   application.database.run(

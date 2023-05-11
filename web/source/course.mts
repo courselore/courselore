@@ -153,177 +153,135 @@ export default async (application: Application): Promise<void> => {
     )
       return next();
 
-    switch (response.locals.enrollments.length) {
-      case 0:
-        response.send(
-          application.web.locals.layouts.main({
-            request,
-            response,
-            head: html`<title>Courselore</title>`,
-            body: html`
-              <div
-                css="${css`
-                  display: flex;
-                  flex-direction: column;
-                  gap: var(--space--4);
-                  align-items: center;
-                `}"
-              >
-                <h2 class="heading--display">Welcome to Courselore!</h2>
+    if (response.locals.enrollments.length === 0)
+      return response.send(
+        application.web.locals.layouts.main({
+          request,
+          response,
+          head: html`<title>Courselore</title>`,
+          body: html`
+            <div
+              css="${css`
+                display: flex;
+                flex-direction: column;
+                gap: var(--space--4);
+                align-items: center;
+              `}"
+            >
+              <h2 class="heading--display">Welcome to Courselore!</h2>
 
-                <div class="decorative-icon">
-                  $${application.web.locals.partials.logo({
-                    size: 144 /* var(--space--36) */,
-                  })}
-                </div>
-
-                <div class="menu-box">
-                  <a
-                    href="https://${application.configuration
-                      .hostname}/settings/profile"
-                    class="menu-box--item button button--blue"
-                  >
-                    <i class="bi bi-person-circle"></i>
-                    Fill in Your Profile
-                  </a>
-                  <button
-                    class="menu-box--item button button--transparent"
-                    javascript="${javascript`
-                      leafac.setTippy({
-                        event,
-                        element: this,
-                        tippyProps: {
-                          trigger: "click",
-                          content: "To enroll in an existing course you either have to follow an invitation link or be invited via email. Contact your course staff for more information.",
-                        },
-                      });
-                    `}"
-                  >
-                    <i class="bi bi-journal-arrow-down"></i>
-                    Enroll in an Existing Course
-                  </button>
-                  $${application.web.locals.helpers.mayCreateCourses({
-                    request,
-                    response,
-                  })
-                    ? html`
-                        <a
-                          href="https://${application.configuration
-                            .hostname}/courses/new"
-                          class="menu-box--item button button--transparent"
-                        >
-                          <i class="bi bi-journal-plus"></i>
-                          Create a New Course
-                        </a>
-                      `
-                    : html``}
-                  $${typeof response.locals.session.samlIdentifier === "string"
-                    ? html`
-                        <button
-                          class="menu-box--item button button--transparent"
-                          javascript="${javascript`
-                            leafac.setTippy({
-                              event,
-                              element: this,
-                              tippyProps: {
-                                trigger: "click",
-                                interactive: true,
-                                content: ${html`
-                                  <div
-                                    css="${css`
-                                      padding: var(--space--2);
-                                      display: flex;
-                                      flex-direction: column;
-                                      gap: var(--space--4);
-                                    `}"
-                                  >
-                                    <p>
-                                      You signed in with the email address
-                                      ${response.locals.user.email} via
-                                      ${application.configuration.saml[
-                                        response.locals.session.samlIdentifier
-                                      ].name},
-                                      but you may already have a Courselore
-                                      account with a different email address in
-                                      which you enrolled in courses.
-                                    </p>
-
-                                    <p>
-                                      You may want to
-                                      <a
-                                        href="https://${application
-                                          .configuration
-                                          .hostname}/settings/account"
-                                        class="link"
-                                        >remove this account</a
-                                      >
-                                      and modify the email address in the other
-                                      account to ${response.locals.user.email}.
-                                    </p>
-                                  </div>
-                                `},
-                              },
-                            });
-                          `}"
-                        >
-                          <i class="bi bi-question-diamond"></i>
-                          Where Are My Courses?
-                        </button>
-                      `
-                    : html``}
-                </div>
+              <div class="decorative-icon">
+                $${application.web.locals.partials.logo({
+                  size: 144 /* var(--space--36) */,
+                })}
               </div>
-            `,
-          })
-        );
-        break;
 
-      case 1:
-        response.redirect(
-          303,
-          `https://${application.configuration.hostname}/courses/${response.locals.enrollments[0].course.reference}`
-        );
-        break;
-
-      default:
-        response.send(
-          application.web.locals.layouts.main({
-            request,
-            response,
-            head: html`<title>Courselore</title>`,
-            showCourseSwitcher: false,
-            body: html`
-              <div
-                css="${css`
-                  display: flex;
-                  flex-direction: column;
-                  gap: var(--space--4);
-                  align-items: center;
-                `}"
-              >
-                <div class="decorative-icon">
-                  <i class="bi bi-journal-text"></i>
-                </div>
-
-                <p class="secondary">Go to one of your courses.</p>
-
-                <div
-                  class="menu-box"
-                  css="${css`
-                    max-width: var(--space--80);
+              <div class="menu-box">
+                <a
+                  href="https://${application.configuration
+                    .hostname}/settings/profile"
+                  class="menu-box--item button button--blue"
+                >
+                  <i class="bi bi-person-circle"></i>
+                  Fill in Your Profile
+                </a>
+                <button
+                  class="menu-box--item button button--transparent"
+                  javascript="${javascript`
+                    leafac.setTippy({
+                      event,
+                      element: this,
+                      tippyProps: {
+                        trigger: "click",
+                        content: "To enroll in an existing course you either have to follow an invitation link or be invited via email. Contact your course staff for more information.",
+                      },
+                    });
                   `}"
                 >
-                  $${application.web.locals.partials.courses({
-                    request,
-                    response,
-                  })}
-                </div>
+                  <i class="bi bi-journal-arrow-down"></i>
+                  Enroll in an Existing Course
+                </button>
+                $${application.web.locals.helpers.mayCreateCourses({
+                  request,
+                  response,
+                })
+                  ? html`
+                      <a
+                        href="https://${application.configuration
+                          .hostname}/courses/new"
+                        class="menu-box--item button button--transparent"
+                      >
+                        <i class="bi bi-journal-plus"></i>
+                        Create a New Course
+                      </a>
+                    `
+                  : html``}
+                $${typeof response.locals.session.samlIdentifier === "string"
+                  ? html`
+                      <button
+                        class="menu-box--item button button--transparent"
+                        javascript="${javascript`
+                          leafac.setTippy({
+                            event,
+                            element: this,
+                            tippyProps: {
+                              trigger: "click",
+                              interactive: true,
+                              content: ${html`
+                                <div
+                                  css="${css`
+                                    padding: var(--space--2);
+                                    display: flex;
+                                    flex-direction: column;
+                                    gap: var(--space--4);
+                                  `}"
+                                >
+                                  <p>
+                                    You signed in with the email address
+                                    ${response.locals.user.email} via
+                                    ${application.configuration.saml[
+                                      response.locals.session.samlIdentifier
+                                    ].name},
+                                    but you may already have a Courselore
+                                    account with a different email address in
+                                    which you enrolled in courses.
+                                  </p>
+
+                                  <p>
+                                    You may want to
+                                    <a
+                                      href="https://${application.configuration
+                                        .hostname}/settings/account"
+                                      class="link"
+                                      >remove this account</a
+                                    >
+                                    and modify the email address in the other
+                                    account to ${response.locals.user.email}.
+                                  </p>
+                                </div>
+                              `},
+                            },
+                          });
+                        `}"
+                      >
+                        <i class="bi bi-question-diamond"></i>
+                        Where Are My Courses?
+                      </button>
+                    `
+                  : html``}
               </div>
-            `,
-          })
-        );
-        break;
-    }
+            </div>
+          `,
+        })
+      );
+
+    response.redirect(
+      303,
+      `https://${application.configuration.hostname}/courses/${
+        response.locals.user.mostRecentlyVisitedCourseReference ??
+        response.locals.enrollments[0].course.reference
+      }`
+    );
   });
 
   application.web.get<
@@ -652,6 +610,14 @@ export default async (application: Application): Promise<void> => {
               : sql``
           }
         ORDER BY "order" ASC
+      `
+    );
+
+    application.database.run(
+      sql`
+        UPDATE "users"
+        SET "mostRecentlyVisitedEnrollment" = ${response.locals.enrollment.id}
+        WHERE "id" = ${response.locals.user.id}
       `
     );
 

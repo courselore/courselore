@@ -49,6 +49,7 @@ export type ApplicationAuthentication = {
             preferContentEditorToolbarInCompactAt: string | null;
             preferAnonymousAt: string | null;
             latestNewsVersion: string;
+            mostRecentlyVisitedCourseReference: string | null;
           };
 
           invitations: {
@@ -443,32 +444,39 @@ export default async (application: Application): Promise<void> => {
       preferContentEditorToolbarInCompactAt: string | null;
       preferAnonymousAt: string | null;
       latestNewsVersion: string;
+      mostRecentlyVisitedCourseReference: string | null;
     }>(
       sql`
         SELECT
-          "id",
-          "lastSeenOnlineAt",
-          "reference",
-          "email",
-          "password",
-          "emailVerifiedAt",
-          "name",
-          "avatar",
-          "avatarlessBackgroundColor",
-          "biographySource",
-          "biographyPreprocessed",
-          "systemRole",
-          "emailNotificationsForAllMessages",
-          "emailNotificationsForAllMessagesDigestDeliveredAt",
-          "emailNotificationsForMentionsAt",
-          "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt",
-          "emailNotificationsForMessagesInConversationsYouStartedAt",
-          "preferContentEditorProgrammerModeAt",
-          "preferContentEditorToolbarInCompactAt",
-          "preferAnonymousAt",
-          "latestNewsVersion"
+          "users"."id",
+          "users"."lastSeenOnlineAt",
+          "users"."reference",
+          "users"."email",
+          "users"."password",
+          "users"."emailVerifiedAt",
+          "users"."name",
+          "users"."avatar",
+          "users"."avatarlessBackgroundColor",
+          "users"."biographySource",
+          "users"."biographyPreprocessed",
+          "users"."systemRole",
+          "users"."emailNotificationsForAllMessages",
+          "users"."emailNotificationsForAllMessagesDigestDeliveredAt",
+          "users"."emailNotificationsForMentionsAt",
+          "users"."emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt",
+          "users"."emailNotificationsForMessagesInConversationsYouStartedAt",
+          "users"."preferContentEditorProgrammerModeAt",
+          "users"."preferContentEditorToolbarInCompactAt",
+          "users"."preferAnonymousAt",
+          "users"."latestNewsVersion",
+          "mostRecentlyVisitedCourse"."reference" AS "mostRecentlyVisitedCourseReference"
         FROM "users"
-        WHERE "id" = ${response.locals.session.userId}
+        LEFT JOIN "enrollments" AS "mostRecentlyVisitedEnrollment" ON
+          "users"."id" = "mostRecentlyVisitedEnrollment"."user" AND
+          "mostRecentlyVisitedEnrollment"."id" = "users"."mostRecentlyVisitedEnrollment"
+        LEFT JOIN "courses" AS "mostRecentlyVisitedCourse" ON
+          "mostRecentlyVisitedEnrollment"."course" = "mostRecentlyVisitedCourse"."id"
+        WHERE "users"."id" = ${response.locals.session.userId}
       `
     )!;
 
