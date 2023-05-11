@@ -11,21 +11,6 @@
 
 ---
 
-- `partialParentElement` → `this.onbeforemorph = (event) => !event?.detail?.liveUpdate;`?
-- Should `morph()` call `execute()`?
-  - Improve `execute()`’s default `elements` to take `event` Live-Updates in account
-    - Look at `DOMContentLoaded`
-    - Double-check every use of `execute()`
-- Use client-side templating (`` html\`\` ``)?
-  - “Add Tag”
-  - “Add Option” in polls
-  - Latency compensation when sending message
-- Try TypeScript on client-side JavaScript
-  - `leafac--javascript.mjs`
-  - `javascript=" ... "`
-
----
-
 - Merge feature branches
   - `poll`
     - Exam period
@@ -921,6 +906,18 @@ const { app, BrowserWindow } = require("electron");
 
 ## Infrastructure
 
+- `partialParentElement` → `this.onbeforemorph = (event) => !event?.detail?.liveUpdate;`?
+- Should `morph()` call `execute()`?
+  - Improve `execute()`’s default `elements` to take `event` Live-Updates in account
+    - Look at `DOMContentLoaded`
+    - Double-check every use of `execute()`
+- Use client-side templating (`` html\`\` ``)?
+  - “Add Tag”
+  - “Add Option” in polls
+  - Latency compensation when sending message
+- Try TypeScript on client-side JavaScript
+  - `leafac--javascript.mjs`
+  - `javascript=" ... "`
 - Use `node --test` in other projects: look for uses of the `TEST` environment variable
 - SAML
   - Perhaps there should be a per-identity-provider option of show/hide in the user interface to help you deploy a new identity provider and test it out before users see it.
