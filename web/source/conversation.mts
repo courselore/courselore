@@ -6995,7 +6995,17 @@ export default async (application: Application): Promise<void> => {
                                                                 ) =>
                                                                   selectedParticipant.id ===
                                                                   enrollment.id
-                                                              ) !== undefined
+                                                              ) !== undefined ||
+                                                              // TODO: Pagination
+                                                              messages.some(
+                                                                (message) =>
+                                                                  message.authorEnrollment !==
+                                                                    "no-longer-enrolled" &&
+                                                                  message
+                                                                    .authorEnrollment
+                                                                    .id ===
+                                                                    enrollment.id
+                                                              )
                                                                 ? html`checked`
                                                                 : html``}
                                                               class="visually-hidden input--radio-or-checkbox--multilabel"
@@ -7130,7 +7140,15 @@ export default async (application: Application): Promise<void> => {
                                         (selectedParticipant) =>
                                           selectedParticipant.id ===
                                           enrollment.id
-                                      ) !== undefined
+                                      ) !== undefined ||
+                                      // TODO: Pagination
+                                      messages.some(
+                                        (message) =>
+                                          message.authorEnrollment !==
+                                            "no-longer-enrolled" &&
+                                          message.authorEnrollment.id ===
+                                            enrollment.id
+                                      )
                                         ? html`checked`
                                         : html``}
                                       $${(response.locals.conversation
