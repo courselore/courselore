@@ -2102,7 +2102,7 @@ export default async (application: Application): Promise<void> => {
           "emailNotificationsForAllMessages" = ${
             request.body.isEmailNotificationsForAllMessages === undefined
               ? "none"
-              : "instant" /* TODO request.body.emailNotificationsForAllMessages */
+              : "instant" /* TODO: Email notification digests: request.body.emailNotificationsForAllMessages */
           },
           "emailNotificationsForMentionsAt" = ${
             request.body.isEmailNotificationsForMentions === "on"

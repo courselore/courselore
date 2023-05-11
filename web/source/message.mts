@@ -2143,7 +2143,7 @@ export default async (application: Application): Promise<void> => {
             VALUES (
               ${new Date().toISOString()},
               ${new Date(
-                Date.now() /* TODO: Better email notifications: + 5 * 60 * 1000 */
+                Date.now() /* TODO: Email notification digests: + 5 * 60 * 1000 */
               ).toISOString()},
               ${new Date(Date.now() + 5 * 60 * 60 * 1000).toISOString()},
               ${message.id}
@@ -2156,7 +2156,7 @@ export default async (application: Application): Promise<void> => {
             UPDATE "emailNotificationMessageJobs"
             SET
               "startAt" = ${new Date(
-                Date.now() /* TODO: Better email notifications: + 5 * 60 * 1000 */
+                Date.now() /* TODO: Email notification digests: + 5 * 60 * 1000 */
               ).toISOString()},
               "expiresAt" = ${new Date(
                 Date.now() + 5 * 60 * 60 * 1000
@@ -2474,7 +2474,7 @@ export default async (application: Application): Promise<void> => {
         );
 
         for (const enrollment of enrollments) {
-          // TODO: Better email notifications
+          // TODO: Email notification digests
           // switch (enrollment.userEmailNotificationsForAllMessages) {
           //   case "instant":
           //     break;

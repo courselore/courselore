@@ -9,9 +9,9 @@
 - UI on the upper left
 - LTI by fall
 
----
+**Half-Implemented Features**
 
-- Merge feature branches
+- Feature branches
   - `poll`
     - Exam period
     - Files
@@ -25,8 +25,8 @@
       - `message.ts`
       - `user.ts`
   - `app-mobile`
-- Email digests
-- Drafts
+- Email notification digests
+- Conversation drafts
 - Pagination
 
 ## Users

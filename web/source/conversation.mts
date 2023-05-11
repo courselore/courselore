@@ -3545,7 +3545,7 @@ export default async (application: Application): Promise<void> => {
                     ? request.query.newConversation.content
                     : undefined,
                 required:
-                  // TODO: Drafts
+                  // TODO: Conversation drafts
                   (typeof request.params.type === "string" &&
                     ["question", "note"].includes(request.params.type)) ||
                   (request.params.type === undefined &&
@@ -3656,7 +3656,7 @@ export default async (application: Application): Promise<void> => {
                                         ? html`checked`
                                         : html``}
                                       $${
-                                        // TODO: Drafts
+                                        // TODO: Conversation drafts
                                         (typeof request.params.type ===
                                           "string" &&
                                           ["question", "note"].includes(
@@ -4593,7 +4593,7 @@ export default async (application: Application): Promise<void> => {
 
                     const textarea = this.closest("form").querySelector('[key="content-editor--write--textarea"]');
 
-                    // TODO: Drafts
+                    // TODO: Conversation drafts
                     // (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+s", () => { this.click(); return false; });
 
                     this.onclick = () => {
