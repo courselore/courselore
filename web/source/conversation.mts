@@ -7630,10 +7630,50 @@ export default async (application: Application): Promise<void> => {
                                               padding-bottom: var(--space--4);
                                             `}"
                                       >
-                                        $${message.type === "answer" &&
-                                        message.reference !== "1" &&
+                                        $${message.reference === "1" &&
                                         response.locals.conversation.type ===
                                           "question"
+                                          ? html`
+                                              <div
+                                                class="heading"
+                                                css="${css`
+                                                  color: var(
+                                                    --color--rose--700
+                                                  );
+                                                  background-color: var(
+                                                    --color--rose--100
+                                                  );
+                                                  @media (prefers-color-scheme: dark) {
+                                                    color: var(
+                                                      --color--rose--200
+                                                    );
+                                                    background-color: var(
+                                                      --color--rose--950
+                                                    );
+                                                  }
+                                                  padding: var(--space--2)
+                                                    var(--space--0);
+                                                  border-radius: var(
+                                                    --border-radius--base
+                                                  );
+                                                  writing-mode: vertical-lr;
+                                                  transform: rotate(180deg);
+                                                  justify-content: flex-end;
+                                                  .bi {
+                                                    transform: rotate(90deg);
+                                                  }
+                                                `}"
+                                              >
+                                                <i
+                                                  class="bi bi-patch-question-fill"
+                                                ></i>
+                                                Question
+                                              </div>
+                                            `
+                                          : message.type === "answer" &&
+                                            message.reference !== "1" &&
+                                            response.locals.conversation
+                                              .type === "question"
                                           ? html`
                                               <div
                                                 class="heading"

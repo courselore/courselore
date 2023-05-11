@@ -3,9 +3,8 @@
 ## Work in Progress
 
 - Sidebar widgets
-  - “Question” message
-  - “Endorsed Answer”
   - “Staff Answer”
+  - “Endorsed Answer”
   - Accessibility (color blindness, low vision, etc.)
 - Conversation participants
   - When changing from selected people to staff, keep the selected people
