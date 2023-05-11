@@ -16,7 +16,6 @@
   - Improve `execute()`’s default `elements` to take `event` Live-Updates in account
     - Look at `DOMContentLoaded`
     - Double-check every use of `execute()`
-- In `/settings/tags`, make tag input even smaller
 - Use `` html\`\` ``?
   - “Add Tag”
   - “Add Option” in polls
