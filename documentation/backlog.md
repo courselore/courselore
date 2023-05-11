@@ -397,7 +397,6 @@ const extractStaticCSSAndJavaScript = () => ({
 
 ## Users
 
-- Allow people to remove their accounts.
 - Improvements to the workflow for when you change your email:
   - Don’t actually change the email until it’s verified. Otherwise an attacker with a compromised password could change your email and lock you out of the “Forgot your password?” flow.
 - Allow person to have multiple emails on their account?
