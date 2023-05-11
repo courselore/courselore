@@ -6,7 +6,11 @@
 
 ---
 
-- Conversation participants: When changing from “Everybody” to “Staff” or “Selected People”, pre-select people who are part of the conversation.
+- Conversation participants
+  - When going from “Everyone” → “Staff” or “Staff” → “Selected People” preselect as “Selected People” the people who have participated in the conversation, so that they don’t lose access to it.
+    - Use case: Student creates a question in which “Conversation Participants” is “Everyone”, but as a staff member you’d like to change that to “Staff” without cutting the student out.
+  - Live-Updates aren’t changing the “Conversation Participants”
+  - You can’t send Staff Whispers in conversations in which “Conversation Participants” is “Staff”, but you may want to, because it may be a question from a student.
 - Maintain navigation state:
   - When visiting `/`, redirect to most recently visited course
   - When switching between courses, redirect to the most recently viewed conversation
