@@ -138,8 +138,6 @@
   - You’re the only enrollment
   - There are no students
 - Consider removing selected participants from `getConversation()` as it’s probably expensive to retrieve and isn’t always necessary.
-- 1-to-1 conversation
-  - Use background color to distinguish between people, so you don’t have to show their names over and over.
 - Staff may allow or disallow people to have private conversations in which staff don’t participate (the default is to allow)
 - Groups, for example, Graders, Project Advisors, Group members, different sections on courses.
   - Some groups are available only to students, while others only to staff.
@@ -152,11 +150,10 @@
 
 ## Messages
 
-- Add the notion of follow-up question, so that questions aren’t marked as “unresolved” as soon as a student sends a message. It makes sense for when the student just says “thanks.”
-  - Have a dedicated button for this.
 - Let staff endorse other staff answers.
 - Introduce the notion of promoting a message into its own conversation (one example use case is when someone asks a question as a follow-up to an announcement).
 - Add a notion of “reply” that’s a first-class citizen, like Discord and unlike GitHub.
+  - Nested replies (similar to Slack’s threads).
 - Polls
   - Polls don’t render in email notifications, because we’re still sending the content without processing.
   - Include options in full-text search. This is difficult because when you edit a poll we’d have to track every use of the poll and update it as well.
@@ -192,8 +189,7 @@
 
 **Chat**
 
-- Show accent colors for different people (for example, faint background colors), to help identify messages.
-- Nested replies (similar to Slack’s threads).
+- 1-to-1 chats: Use background color to distinguish between people, so you don’t have to show their names over and over.
 
 **Reuse**
 
