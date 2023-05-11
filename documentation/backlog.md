@@ -16,7 +16,7 @@
   - Improve `execute()`’s default `elements` to take `event` Live-Updates in account
     - Look at `DOMContentLoaded`
     - Double-check every use of `execute()`
-- Use `` html\`\` ``?
+- Use client-side templating (`` html\`\` ``)?
   - “Add Tag”
   - “Add Option” in polls
   - Latency compensation when sending message
