@@ -8,6 +8,10 @@
 
 - Conversation participants
   - Live-Updates aren’t changing the “Conversation Participants”
+    - Introduce a way of forcing the `morph()`
+    - Introduce the notion that we only skip the `morph()` if the form has not been modified
+      - Risky and magical
+    - Ignore the issue
 - Maintain navigation state:
   - When visiting `/`, redirect to most recently visited course
   - When switching between courses, redirect to the most recently viewed conversation
