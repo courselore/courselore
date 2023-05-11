@@ -7,8 +7,8 @@
 ---
 
 - Conversation participants
-  - Live-Updates aren’t changing the “Conversation Participants”
   - You can’t send Staff Whispers in conversations in which “Conversation Participants” is “Staff”, but you may want to, because it may be a question from a student.
+  - Live-Updates aren’t changing the “Conversation Participants”
 - Maintain navigation state:
   - When visiting `/`, redirect to most recently visited course
   - When switching between courses, redirect to the most recently viewed conversation
