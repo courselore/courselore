@@ -2,10 +2,6 @@
 
 ## Work in Progress
 
-- Sidebar widgets
-  - “Staff Answer”
-  - “Endorsed Answer”
-  - Accessibility (color blindness, low vision, etc.)
 - Conversation participants
   - When changing from selected people to staff, keep the selected people
   - Do something about the “Update Participants” button being tricky.
