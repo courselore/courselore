@@ -6,6 +6,15 @@
 
 ---
 
+- Maintain navigation state:
+  - When visiting `/`, redirect to most recently visited course
+  - When switching between courses, redirect to the most recently viewed conversation
+    - How does this work on mobile?
+  - When navigating between conversations, preserve scrolling position
+    - https://courselore.org/courses/8537410611/conversations/66
+
+---
+
 - UI on the upper left
 - LTI by fall
 
@@ -40,8 +49,6 @@
 - Authentication:
   - 2-Factor Authentication.
   - Look into SIS to get a list of courses
-  - Send an email on sign-in to alert of potentially suspicious activity
-  - On email verification page, add a sign out button.
 - Give visual indication on dragging-and-dropping avatar on `/settings/profile`.
 - Extra fields:
   - Display name.
@@ -53,7 +60,6 @@
 - “Enrollment” → “Course Participant”
   - “Enroll” → “Join”
 - “Staff” → “Course Staff”
-- Remove course entirely.
 - Have a setting to either let students remove themselves from the course, or let them request the staff to be removed.
 - Upload roster and show differences.
   - https://courselore.org/courses/8537410611/conversations/34
@@ -64,12 +70,10 @@
   - Invitations per section.
   - Choose a section when joining the course or when already joined.
 - Introduce the notion of “groups”, for example, “group of TAs who work on grading”.
-- When switching between courses, go back to the same conversation where you’ve been.
-- Pretty URLs for courses (for example, `https://courselore.org/principles-of-programming-languages--2023`?
+- Pretty URLs for courses (for example, `https://courselore.org/principles-of-programming-languages--2023`)?
   - https://courselore.org/courses/8537410611/conversations/44
 - Have a way to delete a course entirely?
 - On tags, `this.isModified = true;` in `this.reorder()` is heavy-handed, because it marks everything as modified even if you reorder back to original order or “recycle” a tag.
-- Move “Archive Course” and related controls (for example, the upcoming “Exam Period” feature) out of “Course Information” and into its own settings page.
 
 ## Invitations
 
@@ -106,13 +110,12 @@
 - Have a simple way to share “conversation templates,” which use the query parameters to pre-fill the “New Conversation” form.
 - Add the notion of “staff considers this a good question.” Similar to the notion of “endorsement,” but for questions.
   - https://courselore.org/courses/8537410611/conversations/33
-- Introduce the notion of locking a conversation.
 - Streamline the creation of DMs.
 - Highlights (similar to Slack’s pins, but we’re avoiding the word “pin” because it already means “pinned conversations”). The highlights are visible to everyone in the conversation.
 - Bookmarks / flags / saved items. These are personal, for example, for something you have to follow up on.
 - Assign questions to CAs.
 - `position: sticky` headers (showing author name) in messages?
-- Different states: Open vs archived.
+- Different states: Open, locked, archived.
 - “Mark all conversations as read” could work with search & filters, marking as read only the conversations that matched the search & filters.
 - Let original question asker approve an answer.
 - Add a course-wide setting to make tags optional in all kinds of conversation (not only non-chats), even if there are tags.
@@ -123,8 +126,6 @@
   - Talk about this on home page.
 - Introduce a helper to explain Conversation Participants. People aren’t getting, for example, that you can have “Staff + these few people I selected by hand.”
 - Introduce panes so you can have multiple conversations open on the same window, side-by-side (particularly useful on desktop application, maybe even on mobile application).
-- When navigating back and forth between conversations, go back to previous scrolling position.
-  - https://courselore.org/courses/8537410611/conversations/66
 
 **Participants**
 
