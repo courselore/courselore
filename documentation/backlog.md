@@ -21,6 +21,8 @@
   - “Add Option” in polls
   - Latency compensation when sending message
 - Try TypeScript on client-side JavaScript
+  - `leafac--javascript.mjs`
+  - `javascript=" ... "`
 
 ---
 
