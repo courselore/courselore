@@ -6,6 +6,7 @@
 
 ---
 
+- Conversation participants: When changing from “Everybody” to “Staff” or “Selected People”, pre-select people who are part of the conversation.
 - Maintain navigation state:
   - When visiting `/`, redirect to most recently visited course
   - When switching between courses, redirect to the most recently viewed conversation
@@ -136,7 +137,6 @@
   - You’re the only staff member
   - You’re the only enrollment
   - There are no students
-- When changing from “Everybody” to “Staff” or “Selected People”, pre-select people who are part of the conversation.
 - Consider removing selected participants from `getConversation()` as it’s probably expensive to retrieve and isn’t always necessary.
 - 1-to-1 conversation
   - Use background color to distinguish between people, so you don’t have to show their names over and over.
