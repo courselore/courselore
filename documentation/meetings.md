@@ -10,6 +10,7 @@
     - Conversation participants: When going from “Everyone” → “Staff” or “Staff” → “Selected People” preselect as “Selected People” the people who have participated in the conversation, so that they don’t lose access to it.
       - Use case: Student creates a question in which “Conversation Participants” is “Everyone”, but as a staff member you’d like to change that to “Staff” without cutting the student out.
   - Preserve navigation state: most recently visited course/conversation.
+- Response from Hopkins about SAML.
 
 </details>
 
