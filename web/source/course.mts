@@ -32,7 +32,7 @@ export type ApplicationCourse = {
           enrollment: Application["web"]["locals"]["ResponseLocals"]["SignedIn"]["enrollments"][number];
           course: Application["web"]["locals"]["ResponseLocals"]["SignedIn"]["enrollments"][number]["course"];
           courseEnrollmentsCount: number;
-          conversationsCount: number;
+          mostRecentlyUpdatedConversationReference: string | null;
           tags: {
             id: number;
             reference: string;
@@ -567,30 +567,32 @@ export default async (application: Application): Promise<void> => {
       `
     )!.count;
 
-    response.locals.conversationsCount = application.database.get<{
-      count: number;
-    }>(
-      sql`
-        SELECT COUNT(*) AS "count"
-        FROM "conversations"
-        WHERE
-          "course" = ${response.locals.course.id} AND (
-            "conversations"."participants" = 'everyone' $${
-              response.locals.enrollment.courseRole === "staff"
-                ? sql`OR "conversations"."participants" = 'staff'`
-                : sql``
-            } OR EXISTS(
-              SELECT TRUE
-              FROM "conversationSelectedParticipants"
-              WHERE
-                "conversationSelectedParticipants"."conversation" = "conversations"."id" AND 
-                "conversationSelectedParticipants"."enrollment" = ${
-                  response.locals.enrollment.id
-                }
+    response.locals.mostRecentlyUpdatedConversationReference =
+      application.database.get<{
+        reference: string;
+      }>(
+        sql`
+          SELECT "reference"
+          FROM "conversations"
+          WHERE
+            "course" = ${response.locals.course.id} AND (
+              "conversations"."participants" = 'everyone' $${
+                response.locals.enrollment.courseRole === "staff"
+                  ? sql`OR "conversations"."participants" = 'staff'`
+                  : sql``
+              } OR EXISTS(
+                SELECT TRUE
+                FROM "conversationSelectedParticipants"
+                WHERE
+                  "conversationSelectedParticipants"."conversation" = "conversations"."id" AND 
+                  "conversationSelectedParticipants"."enrollment" = ${
+                    response.locals.enrollment.id
+                  }
+              )
             )
-          )
-      `
-    )!.count;
+          ORDER BY coalesce("updatedAt", "createdAt") DESC
+        `
+      )?.reference ?? null;
 
     response.locals.tags = application.database.all<{
       id: number;
@@ -871,7 +873,7 @@ export default async (application: Application): Promise<void> => {
   >("/courses/:courseReference", (request, response, next) => {
     if (response.locals.course === undefined) return next();
 
-    if (response.locals.conversationsCount === 0)
+    if (response.locals.mostRecentlyUpdatedConversationReference === null)
       return response.send(
         application.web.locals.layouts.main({
           request,
@@ -946,7 +948,7 @@ export default async (application: Application): Promise<void> => {
         response.locals.course.reference
       }/conversations/${
         response.locals.enrollment.mostRecentlyVisitedConversationReference ??
-        "TODO"
+        response.locals.mostRecentlyUpdatedConversationReference
       }`
     );
   });
@@ -1557,8 +1559,8 @@ export default async (application: Application): Promise<void> => {
           </button>
         </div>
 
-        $${response.locals.conversationsCount > 0 &&
-        response.locals.tags.length > 0
+        $${typeof response.locals.mostRecentlyUpdatedConversationReference ===
+          "string" && response.locals.tags.length > 0
           ? html`
               <a
                 href="https://${application.configuration

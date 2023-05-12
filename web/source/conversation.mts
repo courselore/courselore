@@ -3360,7 +3360,7 @@ export default async (application: Application): Promise<void> => {
           : undefined;
 
       response.send(
-        (response.locals.conversationsCount === 0
+        (response.locals.mostRecentlyUpdatedConversationReference === null
           ? application.web.locals.layouts.main
           : application.web.locals.layouts.conversation)({
           request,
@@ -3369,24 +3369,28 @@ export default async (application: Application): Promise<void> => {
             <title>
               ${request.params.type === "note"
                 ? `Post ${
-                    response.locals.conversationsCount === 0
+                    response.locals.mostRecentlyUpdatedConversationReference ===
+                    null
                       ? "the First"
                       : "a New"
                   } Note`
                 : request.params.type === "question"
                 ? `Ask ${
-                    response.locals.conversationsCount === 0
+                    response.locals.mostRecentlyUpdatedConversationReference ===
+                    null
                       ? "the First"
                       : "a New"
                   } Question`
                 : request.params.type === "chat"
                 ? `Start ${
-                    response.locals.conversationsCount === 0
+                    response.locals.mostRecentlyUpdatedConversationReference ===
+                    null
                       ? "the First"
                       : "a New"
                   } Chat`
                 : `Start ${
-                    response.locals.conversationsCount === 0
+                    response.locals.mostRecentlyUpdatedConversationReference ===
+                    null
                       ? "the First"
                       : "a New"
                   } Conversation`}
@@ -3398,7 +3402,8 @@ export default async (application: Application): Promise<void> => {
               $${request.params.type === "note"
                 ? html`
                     $${iconsConversationType.note.fill} Post
-                    ${response.locals.conversationsCount === 0
+                    ${response.locals
+                      .mostRecentlyUpdatedConversationReference === null
                       ? "the First"
                       : "a New"}
                     Note
@@ -3406,7 +3411,8 @@ export default async (application: Application): Promise<void> => {
                 : request.params.type === "question"
                 ? html`
                     $${iconsConversationType.question.fill} Ask
-                    ${response.locals.conversationsCount === 0
+                    ${response.locals
+                      .mostRecentlyUpdatedConversationReference === null
                       ? "the First"
                       : "a New"}
                     Question
@@ -3414,7 +3420,8 @@ export default async (application: Application): Promise<void> => {
                 : request.params.type === "chat"
                 ? html`
                     $${iconsConversationType.chat.fill} Start
-                    ${response.locals.conversationsCount === 0
+                    ${response.locals
+                      .mostRecentlyUpdatedConversationReference === null
                       ? "the First"
                       : "a New"}
                     Chat
@@ -3422,7 +3429,8 @@ export default async (application: Application): Promise<void> => {
                 : html`
                     <i class="bi bi-chat-text-fill"></i>
                     Start
-                    ${response.locals.conversationsCount === 0
+                    ${response.locals
+                      .mostRecentlyUpdatedConversationReference === null
                       ? "the First"
                       : "a New"}
                     Conversation
@@ -4526,7 +4534,8 @@ export default async (application: Application): Promise<void> => {
                   $${request.params.type === "note"
                     ? html`
                         $${iconsConversationType.note.fill} Post
-                        ${response.locals.conversationsCount === 0
+                        ${response.locals
+                          .mostRecentlyUpdatedConversationReference === null
                           ? "the First"
                           : "a New"}
                         Note
@@ -4534,7 +4543,8 @@ export default async (application: Application): Promise<void> => {
                     : request.params.type === "question"
                     ? html`
                         $${iconsConversationType.question.fill} Ask
-                        ${response.locals.conversationsCount === 0
+                        ${response.locals
+                          .mostRecentlyUpdatedConversationReference === null
                           ? "the First"
                           : "a New"}
                         Question
@@ -4542,7 +4552,8 @@ export default async (application: Application): Promise<void> => {
                     : request.params.type === "chat"
                     ? html`
                         $${iconsConversationType.chat.fill} Start
-                        ${response.locals.conversationsCount === 0
+                        ${response.locals
+                          .mostRecentlyUpdatedConversationReference === null
                           ? "the First"
                           : "a New"}
                         Chat
@@ -4550,7 +4561,8 @@ export default async (application: Application): Promise<void> => {
                     : html`
                         <i class="bi bi-chat-text-fill"></i>
                         Start
-                        ${response.locals.conversationsCount === 0
+                        ${response.locals
+                          .mostRecentlyUpdatedConversationReference === null
                           ? "the First"
                           : "a New"}
                         Conversation
