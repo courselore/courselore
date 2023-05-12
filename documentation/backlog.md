@@ -6,11 +6,6 @@
 
 ---
 
-- Maintain navigation state:
-  - When switching between courses, redirect to the most recently viewed conversation
-    - Mobile support
-  - When navigating between conversations, preserve scrolling position
-    - https://courselore.org/courses/8537410611/conversations/66
 - Conversation Participants: Pre-selecting people who participated in the conversation gives the wrong impression that they still have access to the conversation when they actually don’t anymore.
 - Side-effects of `GET`
   - Maintain navigation state:
@@ -427,6 +422,8 @@ new Notification('Example');
 - First conversation for staff should default to being pinned.
 - Editing tags should behave like “Selected Participants”. (You have to confirm your changes by clicking a button, the dropdown doesn’t go away on first click, and that kind of thing.)
 - Fix keyboard navigation on “Selected Participants” widget, which is a bunch of checkboxes acting as a `<select>`.
+- When navigating between conversations, preserve scrolling position
+  - https://courselore.org/courses/8537410611/conversations/66
 
 **Messages**
 
@@ -509,8 +506,12 @@ new Notification('Example');
 - When pressing up on an empty chat box, start editing the your most recently sent message (if it’s still the most recently sent message in the conversation) (like Discord does).
 - Issue with autosizing:
   - Slows down the typing in iOS
+    - https://courselore.org/courses/8537410611/conversations/66
   - In chats, if the textarea is autosizing, then the main messages pane scrolls up.
   - When you’re typing, there’s a weird scrollbar glitch: it shows up for a split second and hides back again. I observed this in Meta Courselore using Safari.
+  - Leaks resources because of the global `Map` of bound textareas. It should be using `WeakMap` instead.
+  - Also slows down “Reply” of long messages, like the rich-text demonstration message.
+  - Look into using `fit-textarea@2.0.0` instead.
   - https://css-tricks.com/the-cleanest-trick-for-autogrowing-textareas/
   - https://github.com/fregante/fit-textarea **Use v2**.
   - https://courselore.org/courses/8537410611/conversations/66
@@ -1035,7 +1036,6 @@ const { app, BrowserWindow } = require("electron");
 - Things like `text--sky` and `mortarboard` are repeated throughout the application. DRY these up.
 - Windows development:
   - `Ctrl+C` leaves the Caddy process behind, failing subsequent runs because the port is taken
-- Sign-out is slow for some reason 🤷
 - When we start receiving code contributions, we might want to ask for people to sign a contributor’s agreement, because otherwise we’re locking ourselves out of the possibility of dual-licensing & perhaps selling closed-source extensions.
 - Do things break if you’re trying to run Courselore from a directory that includes spaces & weird characters?
   - Note Caddy’s configuration and the serving of static files.
@@ -1046,11 +1046,6 @@ const { app, BrowserWindow } = require("electron");
   - Treat the error cases
   - Have timeouts, because there may be no feedback if the internet goes down in the middle of an operation, and the connection may be left hanging, and we’ll be `await`ing forever.
     - But maybe this only applies to event-stream type of requests, and we have them covered already. Maybe for regular kinds of requests this would be overkill…
-- Autosize issues:
-  - Leaks resources because of the global `Map` of bound textareas. It should be using `WeakMap` instead.
-  - Makes typing slow on big pages on iOS.
-  - Also slows down “Reply” of long messages, like the rich-text demonstration message.
-  - Look into using `fit-textarea@2.0.0` instead.
 - Add missing `key`s:
   - `class=`
   - `querySelector`
