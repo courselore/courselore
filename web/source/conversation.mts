@@ -2548,9 +2548,7 @@ export default async (application: Application): Promise<void> => {
                                     },
                                     { addQueryPrefix: true }
                                   )}"
-                                  class="button ${isSelected
-                                    ? "button--blue"
-                                    : "button--transparent"}"
+                                  class="button button--transparent"
                                   css="${css`
                                     width: calc(
                                       var(--space--2) + 100% + var(--space--2)
@@ -2561,6 +2559,71 @@ export default async (application: Application): Promise<void> => {
                                     align-items: center;
                                   `} ${isSelected
                                     ? css`
+                                        @media (min-width: 900px) {
+                                          color: var(--color--blue--50);
+                                          @media (prefers-color-scheme: dark) {
+                                            color: var(--color--blue--100);
+                                          }
+                                          &:not(:disabled):not(.disabled) {
+                                            background-color: var(
+                                              --color--blue--600
+                                            );
+                                            &:hover,
+                                            &:focus-within,
+                                            &.hover {
+                                              background-color: var(
+                                                --color--blue--500
+                                              );
+                                            }
+                                            &:active {
+                                              background-color: var(
+                                                --color--blue--700
+                                              );
+                                            }
+                                            @media (prefers-color-scheme: dark) {
+                                              background-color: var(
+                                                --color--blue--800
+                                              );
+                                              &:hover,
+                                              &:focus-within,
+                                              &.hover {
+                                                background-color: var(
+                                                  --color--blue--700
+                                                );
+                                              }
+                                              &:active {
+                                                background-color: var(
+                                                  --color--blue--900
+                                                );
+                                              }
+                                            }
+                                          }
+                                          &:disabled,
+                                          &.disabled {
+                                            background-color: var(
+                                              --color--blue--300
+                                            );
+                                            @media (prefers-color-scheme: dark) {
+                                              background-color: var(
+                                                --color--blue--500
+                                              );
+                                            }
+                                          }
+                                          .strong {
+                                            color: var(--color--blue--50);
+                                            @media (prefers-color-scheme: dark) {
+                                              color: var(--color--blue--100);
+                                            }
+                                          }
+                                          .secondary,
+                                          [class^="text--"] {
+                                            color: var(--color--blue--100);
+                                            @media (prefers-color-scheme: dark) {
+                                              color: var(--color--blue--200);
+                                            }
+                                          }
+                                        }
+
                                         && + * {
                                           margin-bottom: var(--space--0);
                                         }
