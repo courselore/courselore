@@ -3929,6 +3929,8 @@ export default async (application: Application): Promise<void> => {
                                                   "staff"
                                                 }) {
                                                   selectedParticipants.hidden = false;
+                                                  selectedParticipants.querySelector('[key="participants--dropdown--selected-participants--separator--staff"]').hidden = false;
+                                                  selectedParticipants.querySelector('[key="participants--dropdown--selected-participants--separator--selected-people"]').hidden = true;
 
                                                   for (const element of selectedParticipants.querySelectorAll('[data-enrollment-course-role="staff"]'))
                                                     element.hidden = true;
@@ -3941,6 +3943,8 @@ export default async (application: Application): Promise<void> => {
                                                   "selected-people"
                                                 }) {
                                                   selectedParticipants.hidden = false;
+                                                  selectedParticipants.querySelector('[key="participants--dropdown--selected-participants--separator--staff"]').hidden = true;
+                                                  selectedParticipants.querySelector('[key="participants--dropdown--selected-participants--separator--selected-people"]').hidden = false;
 
                                                   for (const element of selectedParticipants.querySelectorAll('[data-enrollment-course-role="staff"]'))
                                                     element.hidden = false;
@@ -3998,7 +4002,35 @@ export default async (application: Application): Promise<void> => {
                                       gap: var(--space--2);
                                     `}"
                                   >
-                                    <hr class="dropdown--separator" />
+                                    <div
+                                      key="participants--dropdown--selected-participants--separator--staff"
+                                      css="${css`
+                                        display: flex;
+                                        align-items: center;
+                                      `}"
+                                    >
+                                      <hr
+                                        class="separator"
+                                        css="${css`
+                                          flex: 1;
+                                        `}"
+                                      />
+                                      <span class="heading">
+                                        <i class="bi bi-plus-lg"></i>
+                                        Selected Students
+                                      </span>
+                                      <hr
+                                        class="separator"
+                                        css="${css`
+                                          flex: 1;
+                                        `}"
+                                      />
+                                    </div>
+
+                                    <hr
+                                      key="participants--dropdown--selected-participants--separator--selected-people"
+                                      class="dropdown--separator"
+                                    />
 
                                     $${response.locals
                                       .courseEnrollmentsCount === 1
@@ -6907,6 +6939,8 @@ export default async (application: Application): Promise<void> => {
                                                             "staff"
                                                           }) {
                                                             selectedParticipants.hidden = false;
+                                                            selectedParticipants.querySelector('[key="participants--dropdown--selected-participants--separator--staff"]').hidden = false;
+                                                            selectedParticipants.querySelector('[key="participants--dropdown--selected-participants--separator--selected-people"]').hidden = true;
 
                                                             for (const element of selectedParticipants.querySelectorAll('[data-enrollment-course-role="staff"]'))
                                                               element.hidden = true;
@@ -6919,6 +6953,8 @@ export default async (application: Application): Promise<void> => {
                                                             "selected-people"
                                                           }) {
                                                             selectedParticipants.hidden = false;
+                                                            selectedParticipants.querySelector('[key="participants--dropdown--selected-participants--separator--staff"]').hidden = true;
+                                                            selectedParticipants.querySelector('[key="participants--dropdown--selected-participants--separator--selected-people"]').hidden = false;
 
                                                             for (const element of selectedParticipants.querySelectorAll('[data-enrollment-course-role="staff"]'))
                                                               element.hidden = false;
@@ -6976,7 +7012,43 @@ export default async (application: Application): Promise<void> => {
                                                 gap: var(--space--2);
                                               `}"
                                             >
-                                              <hr class="dropdown--separator" />
+                                              <div
+                                                key="participants--dropdown--selected-participants--separator--staff"
+                                                $${response.locals.conversation
+                                                  .participants !== "staff"
+                                                  ? html`hidden`
+                                                  : html``}
+                                                css="${css`
+                                                  display: flex;
+                                                  align-items: center;
+                                                `}"
+                                              >
+                                                <hr
+                                                  class="separator"
+                                                  css="${css`
+                                                    flex: 1;
+                                                  `}"
+                                                />
+                                                <span class="heading">
+                                                  <i class="bi bi-plus-lg"></i>
+                                                  Selected Students
+                                                </span>
+                                                <hr
+                                                  class="separator"
+                                                  css="${css`
+                                                    flex: 1;
+                                                  `}"
+                                                />
+                                              </div>
+
+                                              <hr
+                                                key="participants--dropdown--selected-participants--separator--selected-people"
+                                                $${response.locals.conversation
+                                                  .participants === "staff"
+                                                  ? html`hidden`
+                                                  : html``}
+                                                class="dropdown--separator"
+                                              />
 
                                               $${response.locals
                                                 .courseEnrollmentsCount === 1
