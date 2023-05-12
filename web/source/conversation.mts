@@ -213,7 +213,7 @@ export default async (application: Application): Promise<void> => {
     { courseReference: string; conversationReference: string },
     HTML,
     {},
-    {},
+    { sidebarOnSmallScreen?: "true" },
     Application["web"]["locals"]["ResponseLocals"]["Conversation"]
   >(
     "/courses/:courseReference/conversations/:conversationReference",
@@ -313,13 +313,14 @@ export default async (application: Application): Promise<void> => {
               }))
           : [];
 
-      application.database.run(
-        sql`
-          UPDATE "enrollments"
-          SET "mostRecentlyVisitedConversation" = ${response.locals.conversation.id}
-          WHERE "id" = ${response.locals.enrollment.id}
-        `
-      );
+      if (request.query.sidebarOnSmallScreen !== "true")
+        application.database.run(
+          sql`
+            UPDATE "enrollments"
+            SET "mostRecentlyVisitedConversation" = ${response.locals.conversation.id}
+            WHERE "id" = ${response.locals.enrollment.id}
+          `
+        );
 
       next();
     }

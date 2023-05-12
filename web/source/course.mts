@@ -944,7 +944,15 @@ export default async (application: Application): Promise<void> => {
         })
       );
 
-    if (request.query.sidebarOnSmallScreen === "true")
+    if (request.query.sidebarOnSmallScreen === "true") {
+      application.database.run(
+        sql`
+          UPDATE "enrollments"
+          SET "mostRecentlyVisitedConversation" = NULL
+          WHERE "id" = ${response.locals.enrollment.id}
+        `
+      );
+
       return response.send(
         application.web.locals.layouts.conversation({
           request,
@@ -956,6 +964,7 @@ export default async (application: Application): Promise<void> => {
           body: html`<p class="secondary">No conversation selected.</p>`,
         })
       );
+    }
 
     response.redirect(
       303,

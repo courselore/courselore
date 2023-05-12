@@ -9,9 +9,7 @@
 - Maintain navigation state:
   - When switching between courses, redirect to the most recently viewed conversation
     - Mobile support
-      - Add query parameter when redirecting to conversation
-      - Remove `mostRecentlyVisitedConversation` when visiting `/courses/8537410611?sidebarOnSmallScreen=true`
-      - Don’t set `mostRecentlyVisitedConversation` when visiting `/courses/8537410611/conversations/1231231?sidebarOnSmallScreen=true`?
+      - Current conversation is blue when visiting `/courses/8537410611/conversations/1231231?sidebarOnSmallScreen=true`
   - When navigating between conversations, preserve scrolling position
     - https://courselore.org/courses/8537410611/conversations/66
 - Conversation Participants: Pre-selecting people who participated in the conversation gives the wrong impression that they still have access to the conversation when they actually don’t anymore.
