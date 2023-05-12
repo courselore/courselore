@@ -4007,6 +4007,7 @@ export default async (application: Application): Promise<void> => {
                                       css="${css`
                                         display: flex;
                                         align-items: center;
+                                        padding: var(--space--0) var(--space--2);
                                       `}"
                                     >
                                       <hr
@@ -7021,6 +7022,8 @@ export default async (application: Application): Promise<void> => {
                                                 css="${css`
                                                   display: flex;
                                                   align-items: center;
+                                                  padding: var(--space--0)
+                                                    var(--space--2);
                                                 `}"
                                               >
                                                 <hr
