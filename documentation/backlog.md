@@ -6,7 +6,6 @@
 
 ---
 
-- Conversation Participants: Pre-selecting people who participated in the conversation gives the wrong impression that they still have access to the conversation when they actually don’t anymore.
 - Side-effects of `GET`
   - Maintain navigation state:
     - `"users"."mostRecentlyVisitedEnrollment"`

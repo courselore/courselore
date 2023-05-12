@@ -7091,15 +7091,34 @@ export default async (application: Application): Promise<void> => {
                                                                   enrollment.id
                                                               ) !== undefined ||
                                                               // TODO: Pagination
-                                                              messages.some(
-                                                                (message) =>
-                                                                  message.authorEnrollment !==
-                                                                    "no-longer-enrolled" &&
-                                                                  message
-                                                                    .authorEnrollment
-                                                                    .id ===
-                                                                    enrollment.id
-                                                              )
+                                                              (response.locals
+                                                                .conversation
+                                                                .participants ===
+                                                                "everyone" &&
+                                                                messages.some(
+                                                                  (message) =>
+                                                                    message.authorEnrollment !==
+                                                                      "no-longer-enrolled" &&
+                                                                    message
+                                                                      .authorEnrollment
+                                                                      .id ===
+                                                                      enrollment.id
+                                                                )) ||
+                                                              (response.locals
+                                                                .conversation
+                                                                .participants ===
+                                                                "staff" &&
+                                                                enrollment.courseRole ===
+                                                                  "staff" &&
+                                                                messages.some(
+                                                                  (message) =>
+                                                                    message.authorEnrollment !==
+                                                                      "no-longer-enrolled" &&
+                                                                    message
+                                                                      .authorEnrollment
+                                                                      .id ===
+                                                                      enrollment.id
+                                                                ))
                                                                 ? html`checked`
                                                                 : html``}
                                                               class="visually-hidden input--radio-or-checkbox--multilabel"
@@ -7236,13 +7255,25 @@ export default async (application: Application): Promise<void> => {
                                           enrollment.id
                                       ) !== undefined ||
                                       // TODO: Pagination
-                                      messages.some(
-                                        (message) =>
-                                          message.authorEnrollment !==
-                                            "no-longer-enrolled" &&
-                                          message.authorEnrollment.id ===
-                                            enrollment.id
-                                      )
+                                      (response.locals.conversation
+                                        .participants === "everyone" &&
+                                        messages.some(
+                                          (message) =>
+                                            message.authorEnrollment !==
+                                              "no-longer-enrolled" &&
+                                            message.authorEnrollment.id ===
+                                              enrollment.id
+                                        )) ||
+                                      (response.locals.conversation
+                                        .participants === "staff" &&
+                                        enrollment.courseRole === "staff" &&
+                                        messages.some(
+                                          (message) =>
+                                            message.authorEnrollment !==
+                                              "no-longer-enrolled" &&
+                                            message.authorEnrollment.id ===
+                                              enrollment.id
+                                        ))
                                         ? html`checked`
                                         : html``}
                                       $${(response.locals.conversation
