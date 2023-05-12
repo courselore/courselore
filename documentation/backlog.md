@@ -8,8 +8,8 @@
 
 - Maintain navigation state:
   - When switching between courses, redirect to the most recently viewed conversation
-    - How does this work on mobile?
     - What if you lost access to that conversation?
+    - How does this work on mobile?
   - When navigating between conversations, preserve scrolling position
     - https://courselore.org/courses/8537410611/conversations/66
 - Side-effects of `GET`
