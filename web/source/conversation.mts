@@ -5222,6 +5222,7 @@ export default async (application: Application): Promise<void> => {
           afterMessageReference?: string;
         };
       };
+      sidebarOnSmallScreen?: "true";
     },
     Application["web"]["locals"]["ResponseLocals"]["Conversation"]
   >(
@@ -5350,6 +5351,7 @@ export default async (application: Application): Promise<void> => {
             </title>
           `,
           mainIsAScrollingPane: response.locals.conversation.type === "chat",
+          sidebarOnSmallScreen: request.query.sidebarOnSmallScreen === "true",
           body: html`
             <div
               css="${css`

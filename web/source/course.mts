@@ -964,7 +964,14 @@ export default async (application: Application): Promise<void> => {
       }/conversations/${
         response.locals.enrollment.mostRecentlyVisitedConversationReference ??
         response.locals.mostRecentlyUpdatedConversationReference
-      }`
+      }${qs.stringify(
+        {
+          sidebarOnSmallScreen:
+            response.locals.enrollment
+              .mostRecentlyVisitedConversationReference === null,
+        },
+        { addQueryPrefix: true }
+      )}`
     );
   });
 

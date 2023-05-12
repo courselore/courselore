@@ -13,8 +13,9 @@
       - Cases:
         - Course switcher
         - Accessing `https://courselore.org` directly
-      - Solutions:
-        - Add a query parameter to buttons on small screen
+      - Add query parameter when redirecting to conversation
+      - Remove `mostRecentlyVisitedConversation` when visiting `/courses/8537410611?sidebarOnSmallScreen=true`
+      - Don’t set `mostRecentlyVisitedConversation` when visiting `/courses/8537410611/conversations/1231231?sidebarOnSmallScreen=true`?
   - When navigating between conversations, preserve scrolling position
     - https://courselore.org/courses/8537410611/conversations/66
 - Conversation Participants: Pre-selecting people who participated in the conversation gives the wrong impression that they still have access to the conversation when they actually don’t anymore.
