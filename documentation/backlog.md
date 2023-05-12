@@ -2,11 +2,11 @@
 
 ## Work in Progress
 
-- Reviewed up to `2118a2c7d83b8eaed7802a4aa78701ce5c612fa8`
-
----
-
-- Add “News”
+- Deploy
+  - Add “News”
+  - Review from `2118a2c7d83b8eaed7802a4aa78701ce5c612fa8`
+  - Changelog
+  - Backup
 - UI on the upper left
 - LTI by fall
 
