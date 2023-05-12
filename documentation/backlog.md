@@ -222,7 +222,6 @@
     - Give option to wrap or not long lines
   - Block quotes (especially replies)
   - https://courselore.org/courses/8537410611/conversations/6
-- Install extensions for Shiki, for example, for OCaml.
 - Mermaid: https://github.blog/2022-02-14-include-diagrams-markdown-files-mermaid/
   - Isn’t made for server-side rendering: https://github.com/mermaid-js/mermaid/issues/3650
   - The current workaround is to use `mermaid-cli`, which uses Puppeteer, but that’s slow and downloads a whole browser (~200MB) 🤦‍♂️
