@@ -6,13 +6,6 @@
 
 ---
 
-- Side-effects of `GET`
-  - Maintain navigation state:
-    - `"users"."mostRecentlyVisitedEnrollment"`
-    - `"enrollments"."mostRecentlyVisitedConversation"`
-
----
-
 - UI on the upper left
 - LTI by fall
 
@@ -175,7 +168,6 @@
 
 - Change the meaning of “views”: Instead of using “readings”, only count as “viewed” if the message has appeared on the person’s screen.
   - Tracking pixel on email for people who will read the notification on their email and just “mark as read” on Courselore?
-  - This should be the last instance of a GET request that makes changes on the server, which should unlock the possibility of prefetching on hover.
 - Mark a message as unread.
 - Add notification badges indicating the number of unread messages on the lists of courses (for example, the main page and the course switcher on the upper-left).
 - Add different notification badges for when you’re @mentioned.
@@ -866,7 +858,11 @@ const { app, BrowserWindow } = require("electron");
   - This would interact in some way with server-side diffing on Live-Updates
   - Elm seems to do something similar
 - Pre-fetching
-  - There are some links that have side-effects (marking messages as read).
+  - There are some links that have side-effects
+    - Marking messages as read.
+    - Maintain navigation state:
+      - `"users"."mostRecentlyVisitedEnrollment"`
+      - `"enrollments"."mostRecentlyVisitedConversation"`
   - All links in viewport
     - https://getquick.link/
   - Link under cursor
