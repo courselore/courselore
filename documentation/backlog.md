@@ -8,7 +8,13 @@
 
 - Maintain navigation state:
   - When switching between courses, redirect to the most recently viewed conversation
-    - How does this work on mobile?
+    - Mobile support
+      - Problem: The redirect takes you to a conversation, so you never see the sidebar with the list of conversations
+      - Cases:
+        - Course switcher
+        - Accessing `https://courselore.org` directly
+      - Solutions:
+        - Add a query parameter to buttons on small screen
   - When navigating between conversations, preserve scrolling position
     - https://courselore.org/courses/8537410611/conversations/66
 - Conversation Participants: Pre-selecting people who participated in the conversation gives the wrong impression that they still have access to the conversation when they actually don’t anymore.
@@ -16,18 +22,6 @@
   - Maintain navigation state:
     - `"users"."mostRecentlyVisitedEnrollment"`
     - `"enrollments"."mostRecentlyVisitedConversation"`
-
-```typescript
-response.send(
-  application.web.locals.layouts.conversation({
-    request,
-    response,
-    head: html`<title>${response.locals.course.name} · Courselore</title>`,
-    sidebarOnSmallScreen: true,
-    body: html`<p class="secondary">No conversation selected.</p>`,
-  })
-);
-```
 
 ---
 

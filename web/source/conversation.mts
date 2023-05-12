@@ -61,6 +61,7 @@ export type ApplicationConversation = {
               };
               messages?: object;
               newConversation?: object;
+              sidebarOnSmallScreen?: "true";
             },
             Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"] &
               Partial<
@@ -1180,7 +1181,11 @@ export default async (application: Application): Promise<void> => {
                 >
                   <a
                     href="https://${application.configuration
-                      .hostname}/courses/${response.locals.course.reference}"
+                      .hostname}/courses/${response.locals.course
+                      .reference}${qs.stringify(
+                      { sidebarOnSmallScreen: true },
+                      { addQueryPrefix: true }
+                    )}"
                     class="button button--tight button--tight--inline button--transparent"
                   >
                     <i class="bi bi-arrow-left"></i>

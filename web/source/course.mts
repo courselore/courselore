@@ -870,7 +870,7 @@ export default async (application: Application): Promise<void> => {
     { courseReference: string },
     HTML,
     {},
-    {},
+    { sidebarOnSmallScreen?: "true" },
     Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
   >("/courses/:courseReference", (request, response, next) => {
     if (response.locals.course === undefined) return next();
@@ -941,6 +941,19 @@ export default async (application: Application): Promise<void> => {
               </div>
             </div>
           `,
+        })
+      );
+
+    if (request.query.sidebarOnSmallScreen === "true")
+      return response.send(
+        application.web.locals.layouts.conversation({
+          request,
+          response,
+          head: html`
+            <title>${response.locals.course.name} · Courselore</title>
+          `,
+          sidebarOnSmallScreen: true,
+          body: html`<p class="secondary">No conversation selected.</p>`,
         })
       );
 
