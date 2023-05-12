@@ -863,6 +863,7 @@ const { app, BrowserWindow } = require("electron");
     - Maintain navigation state:
       - `"users"."mostRecentlyVisitedEnrollment"`
       - `"enrollments"."mostRecentlyVisitedConversation"`
+  - Potential workaround: Have some flag that the request is a pre-fetching (say, an HTTP header) and don’t perform these side-effects
   - All links in viewport
     - https://getquick.link/
   - Link under cursor
