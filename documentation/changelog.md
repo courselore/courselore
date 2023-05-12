@@ -14,6 +14,16 @@
 
 - Introduced the notion of “Follow-Up Question”.
 - Introduced the notion of “Staff Whisper”.
+- Several user interface improvements:
+  - Small user interface tweaks:
+    - Sidebar marker for “Question”
+    - Conversation participants
+      - The “Update Participants” button shows up on the dropdown menu.
+      - “+ Selected Students”
+      - Conversation participants: When going from “Everyone” → “Staff” or “Staff” → “Selected People” preselect as “Selected People” the people who have participated in the conversation, so that they don’t lose access to it.
+        - Use case: Student creates a question in which “Conversation Participants” is “Everyone”, but as a staff member you’d like to change that to “Staff” without cutting the student out.
+    - Preserve navigation state: most recently visited course/conversation.
+    - `@mention` widget: Sort by people who have recently participated in the conversation.
 
 ## 6.1.0
 

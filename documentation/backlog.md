@@ -6,6 +6,7 @@
 
 ---
 
+- Add “News”
 - UI on the upper left
 - LTI by fall
 
@@ -237,7 +238,6 @@
 **Editor**
 
 - On new conversation page, maybe adapt the `@mentions` widget according to the participants that are currently set. (This already happens on drafting messages on existing conversations.)
-- The `@mention` widget should sort by people who have recently participated in the conversation.
 - Have the `@mention` widget list people who aren’t in the conversation (suitably marked as so) (similar to Twitter DMs).
 - Answer templates.
 - Paste tables from Excel and have them formatted as Markdown tables.

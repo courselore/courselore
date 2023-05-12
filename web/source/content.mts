@@ -4144,11 +4144,8 @@ ${contentSource}</textarea
             $${
               response.locals.conversation !== undefined
                 ? sql`
-                    WHERE EXISTS(
-                      SELECT TRUE
-                      FROM "conversations"
-                      WHERE
-                        "conversations"."id" = ${response.locals.conversation.id} AND (
+                    JOIN "conversations" ON
+                      "conversations"."id" = ${response.locals.conversation.id} AND (
                         "conversations"."participants" = 'everyone' OR (
                           "conversations"."participants" = 'staff' AND
                           "enrollments"."courseRole" = 'staff'
@@ -4161,11 +4158,35 @@ ${contentSource}</textarea
                             "conversationSelectedParticipants"."enrollment" = "enrollments"."id"
                         )
                       )
-                    )
+                    LEFT JOIN "messages" ON
+                      "messages"."id" = (
+                        SELECT "messages"."id"
+                        FROM "messages"
+                        WHERE
+                          "conversations"."id" = "messages"."conversation" AND
+                          "messages"."authorEnrollment" = "enrollments"."id" $${
+                            response.locals.enrollment.courseRole === "staff"
+                              ? sql``
+                              : sql`
+                                  AND
+                                  "messages"."anonymousAt" IS NULL AND
+                                  "messages"."type" != 'staff-whisper'
+                                `
+                          }
+                        ORDER BY "messages"."id" DESC
+                        LIMIT 1
+                      )
                   `
                 : sql``
             }
             ORDER BY
+              $${
+                response.locals.conversation !== undefined
+                  ? sql`
+                      "messages"."id" DESC,
+                    `
+                  : sql``
+              }
               "usersNameSearchIndex"."rank" ASC,
               "users"."name" ASC
             LIMIT 5
