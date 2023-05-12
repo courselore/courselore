@@ -8,10 +8,10 @@
 
 - Maintain navigation state:
   - When switching between courses, redirect to the most recently viewed conversation
-    - What if you lost access to that conversation?
     - How does this work on mobile?
   - When navigating between conversations, preserve scrolling position
     - https://courselore.org/courses/8537410611/conversations/66
+- Conversation Participants: Pre-selecting people who participated in the conversation gives the wrong impression that they still have access to the conversation when they actually don’t anymore.
 - Side-effects of `GET`
   - Maintain navigation state:
     - `"users"."mostRecentlyVisitedEnrollment"`

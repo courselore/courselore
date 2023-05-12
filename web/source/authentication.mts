@@ -580,7 +580,18 @@ export default async (application: Application): Promise<void> => {
           JOIN "courses" ON "enrollments"."course" = "courses"."id"
           LEFT JOIN "conversations" AS "mostRecentlyVisitedConversation" ON
             "courses"."id" = "mostRecentlyVisitedConversation"."course" AND
-            "enrollments"."mostRecentlyVisitedConversation" = "mostRecentlyVisitedConversation"."id"
+            "enrollments"."mostRecentlyVisitedConversation" = "mostRecentlyVisitedConversation"."id" AND (
+              "mostRecentlyVisitedConversation"."participants" = 'everyone' OR (
+                "enrollments"."courseRole" = 'staff' AND
+                "mostRecentlyVisitedConversation"."participants" = 'staff'
+              ) OR EXISTS(
+                SELECT TRUE
+                FROM "conversationSelectedParticipants"
+                WHERE
+                  "conversationSelectedParticipants"."conversation" = "mostRecentlyVisitedConversation"."id" AND 
+                  "conversationSelectedParticipants"."enrollment" = "enrollments"."id"
+              )
+            )
           WHERE "enrollments"."user" = ${response.locals.user.id}
           ORDER BY "enrollments"."id" DESC
         `

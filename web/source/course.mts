@@ -590,7 +590,9 @@ export default async (application: Application): Promise<void> => {
                   }
               )
             )
-          ORDER BY coalesce("updatedAt", "createdAt") DESC
+          ORDER BY
+            "conversations"."pinnedAt" IS NOT NULL DESC,
+            coalesce("updatedAt", "createdAt") DESC
         `
       )?.reference ?? null;
 
