@@ -8,8 +8,10 @@
 
 - Maintain navigation state:
   - When switching between courses, redirect to the most recently viewed conversation
-    - Update when fetching pages
     - Redirect
+      - When `mostRecentlyVisitedConversationReference` is `null`, default to most recently updated conversation you have access to
+        - Replace `conversationsCount` with `mostRecentlyUpdatedConversationReference`
+        - `TODO`
     - How does this work on mobile?
     - What if you lost access to that conversation?
   - When navigating between conversations, preserve scrolling position
@@ -18,6 +20,18 @@
   - Maintain navigation state:
     - `"users"."mostRecentlyVisitedEnrollment"`
     - `"enrollments"."mostRecentlyVisitedConversation"`
+
+```typescript
+response.send(
+  application.web.locals.layouts.conversation({
+    request,
+    response,
+    head: html`<title>${response.locals.course.name} · Courselore</title>`,
+    sidebarOnSmallScreen: true,
+    body: html`<p class="secondary">No conversation selected.</p>`,
+  })
+);
+```
 
 ---
 

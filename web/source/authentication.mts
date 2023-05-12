@@ -87,6 +87,7 @@ export type ApplicationAuthentication = {
             reference: string;
             courseRole: Application["web"]["locals"]["helpers"]["courseRoles"][number];
             accentColor: Application["web"]["locals"]["helpers"]["enrollmentAccentColors"][number];
+            mostRecentlyVisitedConversationReference: string | null;
           }[];
 
           administrationOptions: {
@@ -556,6 +557,7 @@ export default async (application: Application): Promise<void> => {
         reference: string;
         courseRole: Application["web"]["locals"]["helpers"]["courseRoles"][number];
         accentColor: Application["web"]["locals"]["helpers"]["enrollmentAccentColors"][number];
+        mostRecentlyVisitedConversationReference: string | null;
       }>(
         sql`
           SELECT
@@ -572,9 +574,13 @@ export default async (application: Application): Promise<void> => {
             "courses"."studentsMayCreatePollsAt" AS "courseStudentsMayCreatePollsAt",
             "enrollments"."reference",
             "enrollments"."courseRole",
-            "enrollments"."accentColor"
+            "enrollments"."accentColor",
+            "mostRecentlyVisitedConversation"."reference" AS "mostRecentlyVisitedConversationReference"
           FROM "enrollments"
           JOIN "courses" ON "enrollments"."course" = "courses"."id"
+          LEFT JOIN "conversations" AS "mostRecentlyVisitedConversation" ON
+            "courses"."id" = "mostRecentlyVisitedConversation"."course" AND
+            "enrollments"."mostRecentlyVisitedConversation" = "mostRecentlyVisitedConversation"."id"
           WHERE "enrollments"."user" = ${response.locals.user.id}
           ORDER BY "enrollments"."id" DESC
         `
@@ -596,6 +602,8 @@ export default async (application: Application): Promise<void> => {
         reference: enrollment.reference,
         courseRole: enrollment.courseRole,
         accentColor: enrollment.accentColor,
+        mostRecentlyVisitedConversationReference:
+          enrollment.mostRecentlyVisitedConversationReference,
       }));
 
     response.locals.administrationOptions =

@@ -312,6 +312,14 @@ export default async (application: Application): Promise<void> => {
               }))
           : [];
 
+      application.database.run(
+        sql`
+          UPDATE "enrollments"
+          SET "mostRecentlyVisitedConversation" = ${response.locals.conversation.id}
+          WHERE "id" = ${response.locals.enrollment.id}
+        `
+      );
+
       next();
     }
   );

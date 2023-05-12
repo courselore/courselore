@@ -940,14 +940,14 @@ export default async (application: Application): Promise<void> => {
         })
       );
 
-    response.send(
-      application.web.locals.layouts.conversation({
-        request,
-        response,
-        head: html`<title>${response.locals.course.name} · Courselore</title>`,
-        sidebarOnSmallScreen: true,
-        body: html`<p class="secondary">No conversation selected.</p>`,
-      })
+    response.redirect(
+      303,
+      `https://${application.configuration.hostname}/courses/${
+        response.locals.course.reference
+      }/conversations/${
+        response.locals.enrollment.mostRecentlyVisitedConversationReference ??
+        "TODO"
+      }`
     );
   });
 
