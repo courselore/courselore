@@ -2,6 +2,7 @@
 
 ## Work in Progress
 
+- Paste tables from Excel and have them formatted as Markdown tables.
 - Deploy
   - Add “News”
   - Review from `2118a2c7d83b8eaed7802a4aa78701ce5c612fa8`
@@ -240,7 +241,6 @@
 - On new conversation page, maybe adapt the `@mentions` widget according to the participants that are currently set. (This already happens on drafting messages on existing conversations.)
 - Have the `@mention` widget list people who aren’t in the conversation (suitably marked as so) (similar to Twitter DMs).
 - Answer templates.
-- Paste tables from Excel and have them formatted as Markdown tables.
 - Add https://github.com/fregante/indent-textarea or CodeMirror in programmer mode.
   - Issue with indent-textarea is that it only supports tabs, not spaces https://github.com/fregante/indent-textarea/issues/21
   - CodeMirror is heavy-handed

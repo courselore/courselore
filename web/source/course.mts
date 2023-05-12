@@ -975,9 +975,10 @@ export default async (application: Application): Promise<void> => {
         response.locals.mostRecentlyUpdatedConversationReference
       }${qs.stringify(
         {
-          sidebarOnSmallScreen:
-            response.locals.enrollment
-              .mostRecentlyVisitedConversationReference === null,
+          ...(response.locals.enrollment
+            .mostRecentlyVisitedConversationReference === null
+            ? { sidebarOnSmallScreen: true }
+            : {}),
         },
         { addQueryPrefix: true }
       )}`
