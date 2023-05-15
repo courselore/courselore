@@ -4,6 +4,10 @@
 <summary>2023-05-13</summary>
 
 - Response from Hopkins about SAML.
+- Deploy new features early next week.
+- User interface improvements.
+- Email notifications for Selected Participants?
+- Hard split between forum and chat?
 
 </details>
 
