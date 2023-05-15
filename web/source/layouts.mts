@@ -1692,6 +1692,10 @@ export default async (application: Application): Promise<void> => {
                 response.locals.enrollment?.accentColor ?? ""
               }--600`}));
 
+              window.onkeydown = window.onkeyup = (event) => {
+                window.shiftKey = event.shiftKey;
+              }
+
               if (${
                 typeof response.locals.liveConnectionNonce === "string"
               } && event?.detail?.liveUpdate !== true)

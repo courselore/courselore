@@ -33,6 +33,11 @@ let staticJavaScript = javascript`
   import * as tippy from "tippy.js";
   import textareaCaret from "textarea-caret";
   import * as textFieldEdit from "text-field-edit";
+  import { unified } from "unified";
+  import rehypeParse from "rehype-parse";
+  import rehypeRemark from "rehype-remark";
+  import remarkGfm from "remark-gfm";
+  import remarkStringify from "remark-stringify";
   // import * as leafac from "@leafac/javascript/static/index.mjs";
   import * as leafac from "./leafac--javascript.mjs";
 

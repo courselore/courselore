@@ -3046,9 +3046,23 @@ export default async (application: Application): Promise<void> => {
                     };
     
                     this.onpaste = (event) => {
-                      if (event.clipboardData.files.length === 0) return;
-                      event.preventDefault();
-                      this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--attachments"]').upload(event.clipboardData.files);
+                      if (window.shiftKey) return;
+                      if (event.clipboardData.types.length === 1 && event.clipboardData.types.includes("Files")) {
+                        if (event.clipboardData.files.length === 0) return;
+                        event.preventDefault();
+                        this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--attachments"]').upload(event.clipboardData.files);
+                      } else if (event.clipboardData.types.includes("text/html")) {
+                        event.preventDefault();
+                        textFieldEdit.insert(
+                          this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]'),
+                          unified()
+                            .use(rehypeParse, { fragment: true })
+                            .use(rehypeRemark)
+                            .use(remarkGfm, { singleTilde: false })
+                            .use(remarkStringify)
+                            .processSync(event.clipboardData.getData("text/html"))
+                        );
+                      }
                     };
     
                     if (${response.locals.course !== undefined}) {

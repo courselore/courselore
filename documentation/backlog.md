@@ -4,6 +4,10 @@
 
 - Rich-text paste
   - Rich-text vs plain-text
+    - Explain
+      - Chrome either command+shift or command+alt+shift
+      - Safari only command+alt+shift
+      - Firefox only command+shift
   - Mathematics
     - https://katex.org/
     - https://www.mathjax.org/
