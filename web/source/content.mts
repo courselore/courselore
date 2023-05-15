@@ -4145,7 +4145,9 @@ ${contentSource}</textarea
               response.locals.conversation !== undefined
                 ? sql`
                     JOIN "conversations" ON
-                      "conversations"."id" = ${response.locals.conversation.id} AND (
+                      "conversations"."id" = ${
+                        response.locals.conversation.id
+                      } AND (
                         "conversations"."participants" = 'everyone' OR (
                           "conversations"."participants" = 'staff' AND
                           "enrollments"."courseRole" = 'staff'
