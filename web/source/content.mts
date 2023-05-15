@@ -3047,11 +3047,7 @@ export default async (application: Application): Promise<void> => {
     
                     this.onpaste = (event) => {
                       if (window.shiftKey) return;
-                      if (event.clipboardData.types.length === 1 && event.clipboardData.types.includes("Files")) {
-                        if (event.clipboardData.files.length === 0) return;
-                        event.preventDefault();
-                        this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--attachments"]').upload(event.clipboardData.files);
-                      } else if (event.clipboardData.types.includes("text/html")) {
+                      if (event.clipboardData.types.includes("text/html")) {
                         event.preventDefault();
                         textFieldEdit.insert(
                           this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]'),
@@ -3062,6 +3058,10 @@ export default async (application: Application): Promise<void> => {
                             .use(remarkStringify)
                             .processSync(event.clipboardData.getData("text/html"))
                         );
+                      } else if (event.clipboardData.types.includes("Files")) {
+                        if (event.clipboardData.files.length === 0) return;
+                        event.preventDefault();
+                        this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--attachments"]').upload(event.clipboardData.files);
                       }
                     };
     
