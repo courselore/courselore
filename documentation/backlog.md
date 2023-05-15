@@ -3,16 +3,16 @@
 ## Work in Progress
 
 - Rich-text paste
-  - Rich-text vs plain-text
-    - Explain
-      - Chrome either command+shift or command+alt+shift
-      - Safari only command+alt+shift
-      - Firefox only command+shift
   - Mathematics
     - https://katex.org/
     - https://www.mathjax.org/
     - https://en.wikipedia.org/wiki/Big_O_notation
     - https://cs226sp23.github.io/notes/10-asymptotics/step05.html
+  - Rich-text vs plain-text
+    - Explain
+      - Chrome either command+shift or command+alt+shift
+      - Safari only command+alt+shift
+      - Firefox only command+shift
   - Mobile
   - Later
     - Bundle size got bigger:
