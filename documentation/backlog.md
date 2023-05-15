@@ -3,6 +3,9 @@
 ## Work in Progress
 
 - Paste tables from Excel and have them formatted as Markdown tables.
+  - Bundle size got bigger:
+    - Do it on the server?
+    - Split this dependency into a separate file that’s loaded later?
 - Deploy
   - Add “News”
   - Review from `2118a2c7d83b8eaed7802a4aa78701ce5c612fa8`

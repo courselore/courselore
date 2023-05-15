@@ -16,7 +16,6 @@
 - Introduced the notion of “Staff Whisper”.
 - Several user interface improvements:
   - Small user interface tweaks:
-    - Sidebar marker for “Question”
     - Conversation participants
       - The “Update Participants” button shows up on the dropdown menu.
       - “+ Selected Students”
