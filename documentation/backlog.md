@@ -2,6 +2,14 @@
 
 ## Work in Progress
 
+- User interface tweaks
+  - Conversation Participants
+    - Save on close dropdown menu
+    - Flaky on Live-Updates: Probably because now Live-Updates may update `value` and should update `defaultValue` as well for `isModified()` to work
+  - New Note: When changing Participants, make it not an Announcement and Unpinned
+  - @mention is flaky
+    - Show/hide is flaky
+    - Positioning in long messages
 - Paste tables from Excel and have them formatted as Markdown tables.
   - Bundle size got bigger:
     - Do it on the server?
@@ -11,6 +19,9 @@
   - Review from `2118a2c7d83b8eaed7802a4aa78701ce5c612fa8`
   - Changelog
   - Backup
+- Think
+  - Email notifications for Selected Participants?
+  - Hard split between forum and chat?
 - UI on the upper left
 - LTI by fall
 
