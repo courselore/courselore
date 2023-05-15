@@ -176,7 +176,7 @@ export function liveNavigation() {
 
   document.onclick = async (event) => {
     const link = event.target.closest(
-      `a[href]:not([target^="_"]):not([download])`
+      'a[href]:not([target^="_"]):not([download])'
     );
     if (
       event.button !== 0 ||

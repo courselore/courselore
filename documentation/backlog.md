@@ -2,15 +2,18 @@
 
 ## Work in Progress
 
-- Paste tables from Excel and have them formatted as Markdown tables.
+- Rich-text paste
+  - Rich-text vs plain-text
   - Mathematics
     - https://katex.org/
     - https://www.mathjax.org/
     - https://en.wikipedia.org/wiki/Big_O_notation
     - https://cs226sp23.github.io/notes/10-asymptotics/step05.html
-  - Bundle size got bigger:
-    - Do it on the server?
-    - Split this dependency into a separate file that’s loaded later?
+  - Mobile
+  - Later
+    - Bundle size got bigger:
+      - Do it on the server?
+      - Split this dependency into a separate file that’s loaded later?
 - User interface tweaks
   - Conversation Participants
     - Save on close dropdown menu
