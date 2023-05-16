@@ -8047,6 +8047,7 @@ export default async (application: Application): Promise<void> => {
                                         <div
                                           css="${css`
                                             flex: 1;
+                                            max-width: 100%;
                                             display: flex;
                                             flex-direction: column;
                                           `} ${response.locals.conversation
