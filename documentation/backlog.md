@@ -3,11 +3,6 @@
 ## Work in Progress
 
 - Rich-text paste
-  - Mathematics
-    - https://katex.org/
-    - https://www.mathjax.org/
-    - https://en.wikipedia.org/wiki/Big_O_notation
-    - https://cs226sp23.github.io/notes/10-asymptotics/step05.html
   - Rich-text vs plain-text
     - Explain
       - Chrome either command+shift or command+alt+shift
@@ -18,6 +13,15 @@
     - Bundle size got bigger:
       - Do it on the server?
       - Split this dependency into a separate file that’s loaded later?
+    - Better mathematics, if that’s even possible
+      - We support KaTeX’s `annotation` tags and Wikipedia’s images, but not much else, because the source material doesn’t give us enough to go by.
+        - We tried doing MathML → LaTeX, but the MathML in the clipboard material includes `�` in place of some characters
+        - Oddly enough, the `annotation` tag sometimes seems to show up in the clipboard (https://katex.org/), and sometimes it doesn’t (https://cs226sp23.github.io/notes/10-asymptotics/step05.html), even though it’s in the DOM 🤷‍♂️
+      - Examples
+        - https://katex.org/
+        - https://www.mathjax.org/
+        - https://en.wikipedia.org/wiki/Big_O_notation
+        - https://cs226sp23.github.io/notes/10-asymptotics/step05.html
 - User interface tweaks
   - Conversation Participants
     - Save on close dropdown menu

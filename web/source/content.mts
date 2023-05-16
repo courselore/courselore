@@ -1444,26 +1444,15 @@ export default async (application: Application): Promise<void> => {
             timeout: { request: 10000 },
           })
           .on("response", (proxiedResponse) => {
-            for (const [headerName, headerValue] of Object.entries(
-              proxiedResponse.headers
-            ))
-              switch (headerName.toLowerCase()) {
-                case "content-type":
-                  if (
-                    typeof headerValue !== "string" ||
-                    !(
-                      headerValue.startsWith("image/") ||
-                      headerValue.startsWith("video/")
-                    )
-                  )
-                    response.status(422).end();
-                  break;
-                case "content-length":
-                  break;
-                default:
-                  delete proxiedResponse.headers[headerName];
-                  break;
-              }
+            const contentType = proxiedResponse.headers["content-type"];
+            proxiedResponse.headers = {};
+            if (typeof contentType !== "string") return;
+            if (
+              !contentType.startsWith("image/") &&
+              !contentType.startsWith("video/")
+            )
+              return response.status(422).end();
+            proxiedResponse.headers["content-type"] = contentType;
           }),
         response
       );
