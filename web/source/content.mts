@@ -3047,8 +3047,26 @@ export default async (application: Application): Promise<void> => {
     
                     this.onpaste = (event) => {
                       if (window.shiftKey) return;
+
                       if (event.clipboardData.types.includes("text/html")) {
                         event.preventDefault();
+
+                        const placeholder = "◊◊" + Math.random().toString(36).slice(2) + "◊◊";
+                        const replacements = [];
+
+                        const html = leafac.stringToElement(event.clipboardData.getData("text/html"));
+
+                        for (const element of html.querySelectorAll(".katex, .katex-display")) {
+                          const annotation = element.querySelector('annotation[encoding="application/x-tex"]');
+                          if (annotation === null) continue;
+                          replacements.push(
+                            (element.matches(".katex-display") ? "\\n\\n$$\\n" : "$") +
+                            annotation.textContent +
+                            (element.matches(".katex-display") ? "\\n$$\\n\\n" : "$")
+                          );
+                          element.outerHTML = "<span>" + placeholder + "</span>";
+                        }
+
                         textFieldEdit.insert(
                           this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]'),
                           unified()
@@ -3056,7 +3074,9 @@ export default async (application: Application): Promise<void> => {
                             .use(rehypeRemark)
                             .use(remarkGfm, { singleTilde: false })
                             .use(remarkStringify)
-                            .processSync(event.clipboardData.getData("text/html"))
+                            .processSync(html.innerHTML)
+                            .toString()
+                            .replaceAll(placeholder, () => replacements.shift())
                         );
                       } else if (event.clipboardData.types.includes("Files")) {
                         if (event.clipboardData.files.length === 0) return;
