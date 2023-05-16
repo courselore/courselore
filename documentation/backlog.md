@@ -265,6 +265,7 @@
   - How do they show up in email notifications?
 - Let the “quote” selected text pick parts of paragraphs.
   - https://courselore.org/courses/8537410611/conversations/63
+- When you click on a footnote and hit the “back” browser button, you aren’t taken back to where you were, because we’re hijacking history navigation with Live-Navigation. The same issue probably happens with anchors in messages in general. The solution is probably to keep track of scrolling position in Live-Navigation, or maybe try and find a way to revert back to the default browser behavior in this special case of `window.onpopstate`.
 
 **Editor**
 
