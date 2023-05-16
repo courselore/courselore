@@ -5550,7 +5550,9 @@ ${contentSource}</textarea
 
                   You may style content with
                   [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/)
-                  and include mathematical formulas with [LaTeX](https://katex.org/docs/supported.html), for example:
+                  and include mathematical formulas with [LaTeX](https://katex.org/docs/supported.html).
+
+                  ## Examples
 
                   <table>
                   <thead>
@@ -5623,14 +5625,17 @@ ${contentSource}</textarea
                   </tbody>
                   </table>
 
+                  ## Languages Supported in Code Blocks (\`\`\`LANGUAGE)
+
                   <details>
-                  <summary>List of languages supported in code blocks (\`\`\`LANGUAGE)</summary>
 
                   ${shiki.BUNDLED_LANGUAGES.map(
                     (language) => markdown`- \`${language.id}\`\n`
                   ).join("")}
 
                   </details>
+
+                  ## Try
                       
                   The content editor includes a toolbar that helps you discover all the options. Try it out:
                 `
