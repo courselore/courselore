@@ -6,7 +6,6 @@
   - Conversation Participants
     - Save on close dropdown menu
     - Flaky on Live-Updates: Probably because now Live-Updates may update `value` and should update `defaultValue` as well for `isModified()` to work
-  - New Note: When changing Participants, make it not an Announcement and Unpinned
   - @mention is flaky
     - Show/hide is flaky
     - Positioning in long messages

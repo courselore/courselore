@@ -3938,6 +3938,9 @@ export default async (application: Application): Promise<void> => {
 
                                                   for (const element of this.closest("form").querySelectorAll('[name="selectedParticipantsReferences[]"]'))
                                                     element.disabled = element.matches('[data-enrollment-course-role="staff"]');
+
+                                                  (this.closest("form").querySelector('[name="isAnnouncement"]') ?? {}).checked = false;
+                                                  (this.closest("form").querySelector('[name="isPinned"]') ?? {}).checked = false;
                                                 } else if (${
                                                   conversationParticipants ===
                                                   "selected-people"
@@ -3952,6 +3955,9 @@ export default async (application: Application): Promise<void> => {
 
                                                   for (const element of this.closest("form").querySelectorAll('[name="selectedParticipantsReferences[]"]'))
                                                     element.disabled = false;
+
+                                                  (this.closest("form").querySelector('[name="isAnnouncement"]') ?? {}).checked = false;
+                                                  (this.closest("form").querySelector('[name="isPinned"]') ?? {}).checked = false;
                                                 }
                                               };
                                             `}"
