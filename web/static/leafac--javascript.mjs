@@ -955,10 +955,17 @@ export const isSafari = /Version\/([0-9\._]+).*Safari/.test(
   navigator.userAgent
 );
 
+export let isPhysicalKeyboard = false;
 export let shiftKey = false;
-window.addEventListener("keydown", globalShiftKeyDetector);
-window.addEventListener("keyup", globalShiftKeyDetector);
-function globalShiftKeyDetector(event) {
+window.addEventListener("keydown", keyboardEventListener);
+window.addEventListener("keyup", keyboardEventListener);
+function keyboardEventListener(event) {
+  isPhysicalKeyboard =
+    isPhysicalKeyboard ||
+    event.altKey ||
+    event.ctrlKey ||
+    event.metaKey ||
+    event.shiftKey;
   shiftKey = event.shiftKey;
 }
 

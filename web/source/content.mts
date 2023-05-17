@@ -3049,6 +3049,8 @@ export default async (application: Application): Promise<void> => {
                         if (leafac.shiftKey) return;
 
                         if (event.clipboardData.types.includes("text/html")) {
+                          if (!leafac.isPhysicalKeyboard) return;
+
                           event.preventDefault();
 
                           const placeholder = "◊◊" + Math.random().toString(36).slice(2) + "◊◊";
