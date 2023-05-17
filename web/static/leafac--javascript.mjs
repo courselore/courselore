@@ -557,22 +557,23 @@ export function morph(from, to, event = undefined) {
         from.setAttribute(attribute, toAttribute);
     }
 
-    if (!event?.detail?.liveUpdate)
-      switch (from.tagName.toLowerCase()) {
-        case "input":
-          for (const property of [
-            "value",
-            "checked",
-            "disabled",
-            "indeterminate",
-          ])
-            if (from[property] !== to[property]) from[property] = to[property];
-          break;
-        case "textarea":
-          for (const property of ["value", "disabled"])
-            if (from[property] !== to[property]) from[property] = to[property];
-          break;
-      }
+    switch (from.tagName.toLowerCase()) {
+      case "input":
+        for (const property of [
+          "value",
+          "checked",
+          "disabled",
+          "indeterminate",
+        ])
+          if (!event?.detail?.liveUpdate && from[property] !== to[property])
+            from[property] = to[property];
+        break;
+      case "textarea":
+        for (const property of ["value", "disabled"])
+          if (!event?.detail?.liveUpdate && from[property] !== to[property])
+            from[property] = to[property];
+        break;
+    }
 
     morph(from, to, event);
   }
