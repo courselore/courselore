@@ -6898,6 +6898,10 @@ export default async (application: Application): Promise<void> => {
                                         trigger: "click",
                                         interactive: true,
                                         placement: "bottom",
+                                        onHidden: () => {
+                                          const submit = this.closest("form").querySelector('[key="submit"]');
+                                          if (!submit.hidden) submit.querySelector("button").click();
+                                        },
                                         content: ${html`
                                           <div
                                             key="participants--dropdown"

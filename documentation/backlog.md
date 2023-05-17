@@ -3,9 +3,9 @@
 ## Work in Progress
 
 - User interface tweaks
-  - Conversation Participants
-    - Save on close dropdown menu
-    - Flaky on Live-Updates: Probably because now Live-Updates may update `value` and should update `defaultValue` as well for `isModified()` to work
+  - Conversation Participants flaky on Live-Updates:
+    - Now Live-Updates may update `value` and should update `defaultValue` as well for `isModified()` to work
+    - Dropdown doesn’t see the `onbeforemorphattribute`
   - @mention is flaky
     - Show/hide is flaky
     - Positioning in long messages
