@@ -3508,9 +3508,16 @@ ${contentSource}</textarea
           ><span
             class="keyboard-shortcut--cluster"
             javascript="${javascript`
-              this.hidden = !leafac.isAppleDevice;
+              this.hidden = !leafac.isAppleDevice || leafac.isSafari;
             `}"
             ><i class="bi bi-shift"></i><i class="bi bi-command"></i>V</span
+          ><span
+            class="keyboard-shortcut--cluster"
+            javascript="${javascript`
+              this.hidden = !leafac.isAppleDevice || !leafac.isSafari;
+            `}"
+            ><i class="bi bi-option"></i><i class="bi bi-shift"></i
+            ><i class="bi bi-command"></i>V</span
           >
         </span>
       </div>

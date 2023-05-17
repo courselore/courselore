@@ -3,12 +3,8 @@
 ## Work in Progress
 
 - Rich-text paste
-  - Rich-text vs plain-text
-    - Explain
-      - Chrome either command+shift or command+alt+shift
-      - Safari only command+alt+shift
-      - Firefox only command+shift
   - Mobile
+    - Perhaps we’ll need a toggle, just like Programmer Mode, for rich-text pasting
   - Later
     - Bundle size got bigger:
       - Do it on the server?

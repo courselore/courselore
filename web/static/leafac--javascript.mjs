@@ -950,6 +950,11 @@ export function isConnected(element) {
 // https://github.com/ccampbell/mousetrap/blob/2f9a476ba6158ba69763e4fcf914966cc72ef433/mousetrap.js#L135
 export const isAppleDevice = /Mac|iPod|iPhone|iPad/.test(navigator.platform);
 
+// https://github.com/DamonOehlman/detect-browser/blob/546e6f1348375d8a486f21da07b20717267f6c49/src/index.ts#L166
+export const isSafari = /Version\/([0-9\._]+).*Safari/.test(
+  navigator.userAgent
+);
+
 export const regExps = {
   email: /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i,
   localizedDateTime: /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/,
