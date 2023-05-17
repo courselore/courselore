@@ -1472,131 +1472,764 @@ export default async (application: Application): Promise<void> => {
       key="content-editor"
       css="${css`
         min-width: var(--space--0);
-        & > * {
-          position: relative;
-        }
+        display: flex;
+        flex-direction: column;
+        gap: var(--space--2);
       `}"
       javascript="${javascript`
         this.onbeforemorph = (event) => !event?.detail?.liveUpdate;
       `}"
     >
       <div
-        key="content-editor--toolbar"
-        ${compact &&
-        typeof response.locals.user?.preferContentEditorToolbarInCompactAt !==
-          "string"
-          ? html`hidden`
-          : html``}
         css="${css`
-          font-size: var(--font-size--xs);
-          line-height: var(--line-height--xs);
-          display: flex;
-          gap: var(--space--4);
-          justify-content: space-between;
-          align-items: baseline;
+          & > * {
+            position: relative;
+          }
         `}"
       >
         <div
+          key="content-editor--toolbar"
+          ${compact &&
+          typeof response.locals.user?.preferContentEditorToolbarInCompactAt !==
+            "string"
+            ? html`hidden`
+            : html``}
           css="${css`
+            font-size: var(--font-size--xs);
+            line-height: var(--line-height--xs);
             display: flex;
-            gap: var(--space--1);
-
-            .button {
-              padding-bottom: var(--space--4);
-              margin-bottom: var(--space---3);
-            }
-
-            :checked + .button--transparent {
-              background-color: var(--color--zinc--200);
-            }
-            :focus-within + .button--transparent {
-              background-color: var(--color--zinc--300);
-            }
-            @media (prefers-color-scheme: dark) {
-              :checked + .button--transparent {
-                background-color: var(--color--zinc--700);
-              }
-              :focus-within + .button--transparent {
-                background-color: var(--color--zinc--600);
-              }
-            }
+            gap: var(--space--4);
+            justify-content: space-between;
+            align-items: baseline;
           `}"
         >
-          <label>
-            <input
-              key="content-editor--button--write"
-              type="radio"
-              name="content-editor--mode"
-              checked
-              class="visually-hidden"
-              javascript="${javascript`
-                this.isModified = false;
+          <div
+            css="${css`
+              display: flex;
+              gap: var(--space--1);
 
-                this.onclick = () => {
-                  this.closest('[key="content-editor"]').querySelector('[key="content-editor--write"]').hidden = false;
-                  this.closest('[key="content-editor"]').querySelector('[key="content-editor--loading"]').hidden = true;
-                  this.closest('[key="content-editor"]').querySelector('[key="content-editor--preview"]').hidden = true;  
-                  this.closest('[key="content-editor"]').querySelector('[key="content-editor--toolbar--write"]').hidden = false;
-                };
-              `}"
-            />
-            <span class="button button--transparent">
-              <i class="bi bi-pencil"></i>
-              Write
-            </span>
-          </label>
-          <label>
-            <input
-              type="radio"
-              name="content-editor--mode"
-              class="content-editor--button--preview visually-hidden"
-              javascript="${javascript`
-                this.isModified = false;
+              .button {
+                padding-bottom: var(--space--4);
+                margin-bottom: var(--space---3);
+              }
 
-                this.onclick = async (event) => {
-                  const write = this.closest('[key="content-editor"]').querySelector('[key="content-editor--write"]');
-                  const loading = this.closest('[key="content-editor"]').querySelector('[key="content-editor--loading"]');
-                  const preview = this.closest('[key="content-editor"]').querySelector('[key="content-editor--preview"]');
-                  const toolbar = this.closest('[key="content-editor"]').querySelector('[key="content-editor--toolbar--write"]');
-                  const textarea = write.querySelector("textarea");
-                  const previousTextareaRequired = textarea.required;
-                  textarea.required = true;
-                  const isWriteValid = leafac.validate(write);
-                  textarea.required = previousTextareaRequired;
-                  if (!isWriteValid) {
-                    event.preventDefault();
-                    return;
-                  }
-                  tippy.hideAll();
-                  write.hidden = true;
-                  loading.hidden = false;
-                  preview.hidden = true;
-                  toolbar.hidden = true;
-                  leafac.loadPartial(
-                    preview,
-                    await (
-                      await fetch(${`https://${
-                        application.configuration.hostname
-                      }${
-                        response.locals.course === undefined
-                          ? ""
-                          : `/courses/${response.locals.course.reference}`
-                      }/content-editor/preview`}, {
-                        method: "POST",
-                        headers: { "CSRF-Protection": "true", },
-                        cache: "no-store",
-                        body: new URLSearchParams({ content: textarea.value, }),
-                      })
-                    ).text()
-                  );
-                  write.hidden = true;
-                  loading.hidden = true;
-                  preview.hidden = false;
-                };
+              :checked + .button--transparent {
+                background-color: var(--color--zinc--200);
+              }
+              :focus-within + .button--transparent {
+                background-color: var(--color--zinc--300);
+              }
+              @media (prefers-color-scheme: dark) {
+                :checked + .button--transparent {
+                  background-color: var(--color--zinc--700);
+                }
+                :focus-within + .button--transparent {
+                  background-color: var(--color--zinc--600);
+                }
+              }
+            `}"
+          >
+            <label>
+              <input
+                key="content-editor--button--write"
+                type="radio"
+                name="content-editor--mode"
+                checked
+                class="visually-hidden"
+                javascript="${javascript`
+                  this.isModified = false;
+
+                  this.onclick = () => {
+                    this.closest('[key="content-editor"]').querySelector('[key="content-editor--write"]').hidden = false;
+                    this.closest('[key="content-editor"]').querySelector('[key="content-editor--loading"]').hidden = true;
+                    this.closest('[key="content-editor"]').querySelector('[key="content-editor--preview"]').hidden = true;  
+                    this.closest('[key="content-editor"]').querySelector('[key="content-editor--toolbar--write"]').hidden = false;
+                  };
+                `}"
+              />
+              <span class="button button--transparent">
+                <i class="bi bi-pencil"></i>
+                Write
+              </span>
+            </label>
+            <label>
+              <input
+                type="radio"
+                name="content-editor--mode"
+                class="content-editor--button--preview visually-hidden"
+                javascript="${javascript`
+                  this.isModified = false;
+
+                  this.onclick = async (event) => {
+                    const write = this.closest('[key="content-editor"]').querySelector('[key="content-editor--write"]');
+                    const loading = this.closest('[key="content-editor"]').querySelector('[key="content-editor--loading"]');
+                    const preview = this.closest('[key="content-editor"]').querySelector('[key="content-editor--preview"]');
+                    const toolbar = this.closest('[key="content-editor"]').querySelector('[key="content-editor--toolbar--write"]');
+                    const textarea = write.querySelector("textarea");
+                    const previousTextareaRequired = textarea.required;
+                    textarea.required = true;
+                    const isWriteValid = leafac.validate(write);
+                    textarea.required = previousTextareaRequired;
+                    if (!isWriteValid) {
+                      event.preventDefault();
+                      return;
+                    }
+                    tippy.hideAll();
+                    write.hidden = true;
+                    loading.hidden = false;
+                    preview.hidden = true;
+                    toolbar.hidden = true;
+                    leafac.loadPartial(
+                      preview,
+                      await (
+                        await fetch(${`https://${
+                          application.configuration.hostname
+                        }${
+                          response.locals.course === undefined
+                            ? ""
+                            : `/courses/${response.locals.course.reference}`
+                        }/content-editor/preview`}, {
+                          method: "POST",
+                          headers: { "CSRF-Protection": "true", },
+                          cache: "no-store",
+                          body: new URLSearchParams({ content: textarea.value, }),
+                        })
+                      ).text()
+                    );
+                    write.hidden = true;
+                    loading.hidden = true;
+                    preview.hidden = false;
+                  };
+                `}"
+              />
+              <span
+                class="button button--transparent"
+                javascript="${javascript`
+                  leafac.setTippy({
+                    event,
+                    element: this,
+                    tippyProps: {
+                      touch: false,
+                      content: ${html`
+                        <span class="keyboard-shortcut">
+                          <span
+                            javascript="${javascript`
+                              this.hidden = leafac.isAppleDevice;
+                            `}"
+                            >Ctrl+Alt+P</span
+                          ><span
+                            class="keyboard-shortcut--cluster"
+                            javascript="${javascript`
+                              this.hidden = !leafac.isAppleDevice;
+                            `}"
+                            ><i class="bi bi-alt"></i
+                            ><i class="bi bi-command"></i>P</span
+                          >
+                        </span>
+                      `},  
+                    },
+                  });
+
+                  const textarea = this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
+
+                  (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+alt+p", () => { this.click(); return false; });
+                `}"
+              >
+                <i class="bi bi-eyeglasses"></i>
+                Preview
+              </span>
+            </label>
+          </div>
+          <div
+            key="content-editor--toolbar--write"
+            css="${css`
+              display: flex;
+              margin-right: var(--space---1);
+            `}"
+          >
+            <button
+              type="button"
+              class="button button--tight button--transparent"
+              javascript="${javascript`
+                leafac.setTippy({
+                  event,
+                  element: this,
+                  tippyProps: {
+                    touch: false,
+                    content: "Headings",
+                  },
+                });
+
+                leafac.setTippy({
+                  event,
+                  element: this,
+                  elementProperty: "dropdown",
+                  tippyProps: {
+                    trigger: "click",
+                    interactive: true,
+                    content: ${html`
+                      <div
+                        css="${css`
+                          max-height: 40vh;
+                          overflow: auto;
+                          display: flex;
+                          flex-direction: column;
+                          gap: var(--space--2);
+                        `}"
+                      >
+                        <div class="dropdown--menu">
+                          <button
+                            type="button"
+                            class="dropdown--menu--item button button--transparent"
+                            javascript="${javascript`
+                              const textarea = this.closest("[data-tippy-root]")._tippy.reference.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
+            
+                              this.onclick = () => {
+                                this.closest("[data-tippy-root]")._tippy.hide();
+                                if (textarea.selectionStart === textarea.selectionEnd) {
+                                  textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "# ", "HEADING\\n\\n");
+                                  textarea.selectionEnd += "HEADING".length;
+                                }
+                                else
+                                  textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "# ", "\\n\\n");
+                                textarea.focus();
+                              };
+
+                              (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+alt+1", () => { this.click(); return false; });
+                            `}"
+                          >
+                            <i class="bi bi-type-h1"></i>
+                            Heading 1
+                            <span class="keyboard-shortcut">
+                              <span
+                                javascript="${javascript`
+                                  this.hidden = leafac.isAppleDevice;
+                                `}"
+                                >Ctrl+Alt+1</span
+                              ><span
+                                class="keyboard-shortcut--cluster"
+                                javascript="${javascript`
+                                  this.hidden = !leafac.isAppleDevice;
+                                `}"
+                                ><i class="bi bi-alt"></i
+                                ><i class="bi bi-command"></i>1</span
+                              >
+                            </span>
+                          </button>
+                          <button
+                            type="button"
+                            class="dropdown--menu--item button button--transparent"
+                            javascript="${javascript`
+                              const textarea = this.closest("[data-tippy-root]")._tippy.reference.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
+            
+                              this.onclick = () => {
+                                this.closest("[data-tippy-root]")._tippy.hide();
+                                if (textarea.selectionStart === textarea.selectionEnd) {
+                                  textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "## ", "HEADING\\n\\n");
+                                  textarea.selectionEnd += "HEADING".length;
+                                }
+                                else
+                                  textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "## ", "\\n\\n");
+                                textarea.focus();  
+                              };
+
+                              (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+alt+2", () => { this.click(); return false; });
+                            `}"
+                          >
+                            <i class="bi bi-type-h2"></i>
+                            Heading 2
+                            <span class="keyboard-shortcut">
+                              <span
+                                javascript="${javascript`
+                                  this.hidden = leafac.isAppleDevice;
+                                `}"
+                                >Ctrl+Alt+2</span
+                              ><span
+                                class="keyboard-shortcut--cluster"
+                                javascript="${javascript`
+                                  this.hidden = !leafac.isAppleDevice;
+                                `}"
+                                ><i class="bi bi-alt"></i
+                                ><i class="bi bi-command"></i>2</span
+                              >
+                            </span>
+                          </button>
+                          <button
+                            type="button"
+                            class="dropdown--menu--item button button--transparent"
+                            javascript="${javascript`
+                              const textarea = this.closest("[data-tippy-root]")._tippy.reference.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
+            
+                              this.onclick = () => {
+                                this.closest("[data-tippy-root]")._tippy.hide();
+                                if (textarea.selectionStart === textarea.selectionEnd) {
+                                  textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "### ", "HEADING\\n\\n");
+                                  textarea.selectionEnd += "HEADING".length;
+                                }
+                                else
+                                  textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "### ", "\\n\\n");
+                                textarea.focus();  
+                              };
+
+                              (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+alt+3", () => { this.click(); return false; });
+                            `}"
+                          >
+                            <i class="bi bi-type-h3"></i>
+                            Heading 3
+                            <span class="keyboard-shortcut">
+                              <span
+                                javascript="${javascript`
+                                  this.hidden = leafac.isAppleDevice;
+                                `}"
+                                >Ctrl+Alt+3</span
+                              ><span
+                                class="keyboard-shortcut--cluster"
+                                javascript="${javascript`
+                                  this.hidden = !leafac.isAppleDevice;
+                                `}"
+                                ><i class="bi bi-alt"></i
+                                ><i class="bi bi-command"></i>3</span
+                              >
+                            </span>
+                          </button>
+                        </div>
+
+                        <hr class="dropdown--separator" />
+
+                        <div class="dropdown--menu">
+                          <button
+                            type="button"
+                            class="dropdown--menu--item button button--transparent"
+                            javascript="${javascript`
+                              const textarea = this.closest("[data-tippy-root]")._tippy.reference.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
+            
+                              this.onclick = () => {
+                                this.closest("[data-tippy-root]")._tippy.hide();
+                                textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "---\\n\\n", "");
+                                textarea.focus();  
+                              };
+                            `}"
+                          >
+                            <i class="bi bi-dash-lg"></i>
+                            Separator
+                          </button>
+                        </div>
+                      </div>
+                    `},  
+                  },
+                });
               `}"
-            />
-            <span
-              class="button button--transparent"
+            >
+              <i class="bi bi-paragraph"></i>
+            </button>
+            <button
+              type="button"
+              class="button button--tight button--transparent"
+              javascript="${javascript`
+                leafac.setTippy({
+                  event,
+                  element: this,
+                  tippyProps: {
+                    touch: false,
+                    content: "Inline",
+                  },
+                });
+
+                leafac.setTippy({
+                  event,
+                  element: this,
+                  elementProperty: "dropdown",
+                  tippyProps: {
+                    trigger: "click",
+                    interactive: true,
+                    content: ${html`
+                      <div
+                        css="${css`
+                          max-height: 40vh;
+                          overflow: auto;
+                          display: flex;
+                          flex-direction: column;
+                          gap: var(--space--2);
+                        `}"
+                      >
+                        <div class="dropdown--menu">
+                          <button
+                            type="button"
+                            class="dropdown--menu--item button button--transparent"
+                            javascript="${javascript`
+                              const textarea = this.closest("[data-tippy-root]")._tippy.reference.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
+            
+                              this.onclick = () => {
+                                this.closest("[data-tippy-root]")._tippy.hide();
+                                if (textarea.selectionStart === textarea.selectionEnd) {
+                                  textFieldEdit.wrapSelection(textarea, "**", "TEXT**");
+                                  textarea.selectionEnd += "TEXT".length;
+                                }
+                                else
+                                  textFieldEdit.wrapSelection(textarea, "**");
+                                textarea.focus();
+                              };
+                        
+                              (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+b", () => { this.click(); return false; });
+                            `}"
+                          >
+                            <i class="bi bi-type-bold"></i>
+                            Bold
+                            <span class="keyboard-shortcut">
+                              <span
+                                javascript="${javascript`
+                                  this.hidden = leafac.isAppleDevice;
+                                `}"
+                                >Ctrl+B</span
+                              ><span
+                                class="keyboard-shortcut--cluster"
+                                javascript="${javascript`
+                                  this.hidden = !leafac.isAppleDevice;
+                                `}"
+                                ><i class="bi bi-command"></i>B</span
+                              >
+                            </span>
+                          </button>
+                          <button
+                            type="button"
+                            class="dropdown--menu--item button button--transparent"
+                            javascript="${javascript`
+                              const textarea = this.closest("[data-tippy-root]")._tippy.reference.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
+            
+                              this.onclick = () => {
+                                this.closest("[data-tippy-root]")._tippy.hide();
+                                if (textarea.selectionStart === textarea.selectionEnd) {
+                                  textFieldEdit.wrapSelection(textarea, "_", "TEXT_");
+                                  textarea.selectionEnd += "TEXT".length;
+                                }
+                                else
+                                  textFieldEdit.wrapSelection(textarea, "_");
+                                textarea.focus();
+                              };
+                          
+                              (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+i", () => { this.click(); return false; });
+                            `}"
+                          >
+                            <i class="bi bi-type-italic"></i>
+                            Italic
+                            <span class="keyboard-shortcut">
+                              <span
+                                javascript="${javascript`
+                                  this.hidden = leafac.isAppleDevice;
+                                `}"
+                                >Ctrl+I</span
+                              ><span
+                                class="keyboard-shortcut--cluster"
+                                javascript="${javascript`
+                                  this.hidden = !leafac.isAppleDevice;
+                                `}"
+                                ><i class="bi bi-command"></i>I</span
+                              >
+                            </span>
+                          </button>
+                          <button
+                            type="button"
+                            class="dropdown--menu--item button button--transparent"
+                            javascript="${javascript`
+                              const textarea = this.closest("[data-tippy-root]")._tippy.reference.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
+            
+                              this.onclick = () => {
+                                this.closest("[data-tippy-root]")._tippy.hide();
+                                if (textarea.selectionStart === textarea.selectionEnd) {
+                                  textFieldEdit.wrapSelection(textarea, "<u>", "TEXT</u>");
+                                  textarea.selectionEnd += "TEXT".length;
+                                }
+                                else
+                                  textFieldEdit.wrapSelection(textarea, "<u>", "</u>");
+                                textarea.focus();
+                              };
+                          
+                              (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+u", () => { this.click(); return false; });
+                            `}"
+                          >
+                            <i class="bi bi-type-underline"></i>
+                            Underline
+                            <span class="keyboard-shortcut">
+                              <span
+                                javascript="${javascript`
+                                  this.hidden = leafac.isAppleDevice;
+                                `}"
+                                >Ctrl+U</span
+                              ><span
+                                class="keyboard-shortcut--cluster"
+                                javascript="${javascript`
+                                  this.hidden = !leafac.isAppleDevice;
+                                `}"
+                                ><i class="bi bi-command"></i>U</span
+                              >
+                            </span>
+                          </button>
+                          <button
+                            type="button"
+                            class="dropdown--menu--item button button--transparent"
+                            javascript="${javascript`
+                              const textarea = this.closest("[data-tippy-root]")._tippy.reference.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
+            
+                              this.onclick = () => {
+                                this.closest("[data-tippy-root]")._tippy.hide();
+                                if (textarea.selectionStart === textarea.selectionEnd) {
+                                  textFieldEdit.wrapSelection(textarea, "~~", "TEXT~~");
+                                  textarea.selectionEnd += "TEXT".length;
+                                }
+                                else
+                                  textFieldEdit.wrapSelection(textarea, "~~");
+                                textarea.focus();
+                              };
+
+                              (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+alt+s", () => { this.click(); return false; });
+                            `}"
+                          >
+                            <i class="bi bi-type-strikethrough"></i>
+                            Strikethrough
+                            <span class="keyboard-shortcut">
+                              <span
+                                javascript="${javascript`
+                                  this.hidden = leafac.isAppleDevice;
+                                `}"
+                                >Ctrl+Alt+S</span
+                              ><span
+                                class="keyboard-shortcut--cluster"
+                                javascript="${javascript`
+                                  this.hidden = !leafac.isAppleDevice;
+                                `}"
+                                ><i class="bi bi-alt"></i
+                                ><i class="bi bi-command"></i>S</span
+                              >
+                            </span>
+                          </button>
+                        </div>
+
+                        <hr class="dropdown--separator" />
+
+                        <div class="dropdown--menu">
+                          <button
+                            type="button"
+                            class="dropdown--menu--item button button--transparent"
+                            javascript="${javascript`
+                              const textarea = this.closest("[data-tippy-root]")._tippy.reference.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
+            
+                              this.onclick = () => {
+                                this.closest("[data-tippy-root]")._tippy.hide();
+                                if (textarea.selectionStart === textarea.selectionEnd) {
+                                  textFieldEdit.wrapSelection(textarea, "[", "TEXT](https://example.com)");
+                                  textarea.selectionEnd += "TEXT".length;
+                                }
+                                else
+                                  textFieldEdit.wrapSelection(textarea, "[", "](https://example.com)");
+                                textarea.focus();
+                              };
+                          
+                              (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+k", () => { this.click(); return false; });
+                            `}"
+                          >
+                            <i class="bi bi-link"></i>
+                            Link
+                            <span class="keyboard-shortcut">
+                              <span
+                                javascript="${javascript`
+                                  this.hidden = leafac.isAppleDevice;
+                                `}"
+                                >Ctrl+K</span
+                              ><span
+                                class="keyboard-shortcut--cluster"
+                                javascript="${javascript`
+                                  this.hidden = !leafac.isAppleDevice;
+                                `}"
+                                ><i class="bi bi-command"></i>K</span
+                              >
+                            </span>
+                          </button>
+                        </div>
+
+                        <hr class="dropdown--separator" />
+
+                        <div class="dropdown--menu">
+                          <button
+                            type="button"
+                            class="dropdown--menu--item button button--transparent"
+                            javascript="${javascript`
+                              const textarea = this.closest("[data-tippy-root]")._tippy.reference.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
+            
+                              this.onclick = () => {
+                                this.closest("[data-tippy-root]")._tippy.hide();
+                                if (textarea.selectionStart === textarea.selectionEnd) {
+                                  textFieldEdit.wrapSelection(textarea, "$", "LATEX$");
+                                  textarea.selectionEnd += "LATEX".length;
+                                }
+                                else
+                                  textFieldEdit.wrapSelection(textarea, "$");
+                                textarea.focus();
+                              };
+                            
+                              (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+alt+e", () => { this.click(); return false; });
+                            `}"
+                          >
+                            <i class="bi bi-calculator"></i>
+                            Mathematics (LaTeX)
+                            <span class="keyboard-shortcut">
+                              <span
+                                javascript="${javascript`
+                                  this.hidden = leafac.isAppleDevice;
+                                `}"
+                                >Ctrl+Alt+E</span
+                              ><span
+                                class="keyboard-shortcut--cluster"
+                                javascript="${javascript`
+                                  this.hidden = !leafac.isAppleDevice;
+                                `}"
+                                ><i class="bi bi-alt"></i
+                                ><i class="bi bi-command"></i>E</span
+                              >
+                            </span>
+                          </button>
+                          <button
+                            type="button"
+                            class="dropdown--menu--item button button--transparent"
+                            javascript="${javascript`
+                              const textarea = this.closest("[data-tippy-root]")._tippy.reference.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
+            
+                              this.onclick = () => {
+                                this.closest("[data-tippy-root]")._tippy.hide();
+                                if (textarea.selectionStart === textarea.selectionEnd) {
+                                  textFieldEdit.wrapSelection(textarea, "\`", "CODE\`");
+                                  textarea.selectionEnd += "CODE".length;
+                                }
+                                else
+                                  textFieldEdit.wrapSelection(textarea, "\`");
+                                textarea.focus();
+                              };
+                          
+                              (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+e", () => { this.click(); return false; });
+                            `}"
+                          >
+                            <i class="bi bi-braces"></i>
+                            Code
+                            <span class="keyboard-shortcut">
+                              <span
+                                javascript="${javascript`
+                                  this.hidden = leafac.isAppleDevice;
+                                `}"
+                                >Ctrl+E</span
+                              ><span
+                                class="keyboard-shortcut--cluster"
+                                javascript="${javascript`
+                                  this.hidden = !leafac.isAppleDevice;
+                                `}"
+                                ><i class="bi bi-command"></i>E</span
+                              >
+                            </span>
+                          </button>
+                        </div>
+
+                        <hr class="dropdown--separator" />
+
+                        <div class="dropdown--menu">
+                          <button
+                            type="button"
+                            class="dropdown--menu--item button button--transparent"
+                            javascript="${javascript`
+                              const textarea = this.closest("[data-tippy-root]")._tippy.reference.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
+            
+                              this.onclick = () => {
+                                this.closest("[data-tippy-root]")._tippy.hide();
+                                if (textarea.selectionStart === textarea.selectionEnd) {
+                                  textFieldEdit.wrapSelection(textarea, "<ins>", "TEXT</ins>");
+                                  textarea.selectionEnd += "TEXT".length;
+                                }
+                                else
+                                  textFieldEdit.wrapSelection(textarea, "<ins>", "</ins>");
+                                textarea.focus();
+                              };
+                            `}"
+                          >
+                            <i class="bi bi-plus-square-dotted"></i>
+                            Insertion
+                          </button>
+                          <button
+                            type="button"
+                            class="dropdown--menu--item button button--transparent"
+                            javascript="${javascript`
+                              const textarea = this.closest("[data-tippy-root]")._tippy.reference.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
+            
+                              this.onclick = () => {
+                                this.closest("[data-tippy-root]")._tippy.hide();
+                                if (textarea.selectionStart === textarea.selectionEnd) {
+                                  textFieldEdit.wrapSelection(textarea, "~~", "TEXT~~");
+                                  textarea.selectionEnd += "TEXT".length;
+                                }
+                                else
+                                  textFieldEdit.wrapSelection(textarea, "~~");
+                                textarea.focus();
+                              };
+                            `}"
+                          >
+                            <i class="bi bi-dash-square-dotted"></i>
+                            Deletion
+                          </button>
+                        </div>
+
+                        <hr class="dropdown--separator" />
+
+                        <div class="dropdown--menu">
+                          <button
+                            type="button"
+                            class="dropdown--menu--item button button--transparent"
+                            javascript="${javascript`
+                              const textarea = this.closest("[data-tippy-root]")._tippy.reference.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
+            
+                              this.onclick = () => {
+                                this.closest("[data-tippy-root]")._tippy.hide();
+                                if (textarea.selectionStart === textarea.selectionEnd) {
+                                  textFieldEdit.wrapSelection(textarea, "<sup>", "TEXT</sup>");
+                                  textarea.selectionEnd += "TEXT".length;
+                                }
+                                else
+                                  textFieldEdit.wrapSelection(textarea, "<sup>", "</sup>");
+                                textarea.focus();
+                              };
+                            `}"
+                          >
+                            <i class="bi bi-superscript"></i>
+                            Superscript
+                          </button>
+                          <button
+                            type="button"
+                            class="dropdown--menu--item button button--transparent"
+                            javascript="${javascript`
+                              const textarea = this.closest("[data-tippy-root]")._tippy.reference.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
+            
+                              this.onclick = () => {
+                                this.closest("[data-tippy-root]")._tippy.hide();
+                                if (textarea.selectionStart === textarea.selectionEnd) {
+                                  textFieldEdit.wrapSelection(textarea, "<sub>", "TEXT</sub>");
+                                  textarea.selectionEnd += "TEXT".length;
+                                }
+                                else
+                                  textFieldEdit.wrapSelection(textarea, "<sub>", "</sub>");
+                                textarea.focus();
+                              };
+                            `}"
+                          >
+                            <i class="bi bi-subscript"></i>
+                            Subscript
+                          </button>
+                        </div>
+                      </div>
+                    `},  
+                  },
+                });
+              `}"
+            >
+              <i class="bi bi-type"></i>
+            </button>
+            <button
+              type="button"
+              class="button button--tight button--transparent"
               javascript="${javascript`
                 leafac.setTippy({
                   event,
@@ -1604,1865 +2237,1273 @@ export default async (application: Application): Promise<void> => {
                   tippyProps: {
                     touch: false,
                     content: ${html`
+                      Attachment
                       <span class="keyboard-shortcut">
                         <span
                           javascript="${javascript`
                             this.hidden = leafac.isAppleDevice;
                           `}"
-                          >Ctrl+Alt+P</span
+                          >Ctrl+Shift+K</span
                         ><span
                           class="keyboard-shortcut--cluster"
                           javascript="${javascript`
                             this.hidden = !leafac.isAppleDevice;
                           `}"
-                          ><i class="bi bi-alt"></i
-                          ><i class="bi bi-command"></i>P</span
+                          ><i class="bi bi-shift"></i
+                          ><i class="bi bi-command"></i>K</span
                         >
+                        / drag-and-drop / copy-and-paste
                       </span>
                     `},  
                   },
                 });
 
+                this.onclick = () => {
+                  this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--attachments"]').click();
+                };
+
                 const textarea = this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
 
-                (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+alt+p", () => { this.click(); return false; });
+                (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+shift+k", () => { this.click(); return false; });
               `}"
             >
-              <i class="bi bi-eyeglasses"></i>
-              Preview
-            </span>
-          </label>
-        </div>
-        <div
-          key="content-editor--toolbar--write"
-          css="${css`
-            display: flex;
-            margin-right: var(--space---1);
-          `}"
-        >
-          <button
-            type="button"
-            class="button button--tight button--transparent"
-            javascript="${javascript`
-              leafac.setTippy({
-                event,
-                element: this,
-                tippyProps: {
-                  touch: false,
-                  content: "Headings",
-                },
-              });
-
-              leafac.setTippy({
-                event,
-                element: this,
-                elementProperty: "dropdown",
-                tippyProps: {
-                  trigger: "click",
-                  interactive: true,
-                  content: ${html`
-                    <div
-                      css="${css`
-                        max-height: 40vh;
-                        overflow: auto;
-                        display: flex;
-                        flex-direction: column;
-                        gap: var(--space--2);
-                      `}"
-                    >
-                      <div class="dropdown--menu">
-                        <button
-                          type="button"
-                          class="dropdown--menu--item button button--transparent"
-                          javascript="${javascript`
-                            const textarea = this.closest("[data-tippy-root]")._tippy.reference.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
-          
-                            this.onclick = () => {
-                              this.closest("[data-tippy-root]")._tippy.hide();
-                              if (textarea.selectionStart === textarea.selectionEnd) {
-                                textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "# ", "HEADING\\n\\n");
-                                textarea.selectionEnd += "HEADING".length;
-                              }
-                              else
-                                textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "# ", "\\n\\n");
-                              textarea.focus();
-                            };
-
-                            (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+alt+1", () => { this.click(); return false; });
-                          `}"
-                        >
-                          <i class="bi bi-type-h1"></i>
-                          Heading 1
-                          <span class="keyboard-shortcut">
-                            <span
-                              javascript="${javascript`
-                                this.hidden = leafac.isAppleDevice;
-                              `}"
-                              >Ctrl+Alt+1</span
-                            ><span
-                              class="keyboard-shortcut--cluster"
-                              javascript="${javascript`
-                                this.hidden = !leafac.isAppleDevice;
-                              `}"
-                              ><i class="bi bi-alt"></i
-                              ><i class="bi bi-command"></i>1</span
-                            >
-                          </span>
-                        </button>
-                        <button
-                          type="button"
-                          class="dropdown--menu--item button button--transparent"
-                          javascript="${javascript`
-                            const textarea = this.closest("[data-tippy-root]")._tippy.reference.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
-          
-                            this.onclick = () => {
-                              this.closest("[data-tippy-root]")._tippy.hide();
-                              if (textarea.selectionStart === textarea.selectionEnd) {
-                                textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "## ", "HEADING\\n\\n");
-                                textarea.selectionEnd += "HEADING".length;
-                              }
-                              else
-                                textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "## ", "\\n\\n");
-                              textarea.focus();  
-                            };
-
-                            (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+alt+2", () => { this.click(); return false; });
-                          `}"
-                        >
-                          <i class="bi bi-type-h2"></i>
-                          Heading 2
-                          <span class="keyboard-shortcut">
-                            <span
-                              javascript="${javascript`
-                                this.hidden = leafac.isAppleDevice;
-                              `}"
-                              >Ctrl+Alt+2</span
-                            ><span
-                              class="keyboard-shortcut--cluster"
-                              javascript="${javascript`
-                                this.hidden = !leafac.isAppleDevice;
-                              `}"
-                              ><i class="bi bi-alt"></i
-                              ><i class="bi bi-command"></i>2</span
-                            >
-                          </span>
-                        </button>
-                        <button
-                          type="button"
-                          class="dropdown--menu--item button button--transparent"
-                          javascript="${javascript`
-                            const textarea = this.closest("[data-tippy-root]")._tippy.reference.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
-          
-                            this.onclick = () => {
-                              this.closest("[data-tippy-root]")._tippy.hide();
-                              if (textarea.selectionStart === textarea.selectionEnd) {
-                                textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "### ", "HEADING\\n\\n");
-                                textarea.selectionEnd += "HEADING".length;
-                              }
-                              else
-                                textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "### ", "\\n\\n");
-                              textarea.focus();  
-                            };
-
-                            (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+alt+3", () => { this.click(); return false; });
-                          `}"
-                        >
-                          <i class="bi bi-type-h3"></i>
-                          Heading 3
-                          <span class="keyboard-shortcut">
-                            <span
-                              javascript="${javascript`
-                                this.hidden = leafac.isAppleDevice;
-                              `}"
-                              >Ctrl+Alt+3</span
-                            ><span
-                              class="keyboard-shortcut--cluster"
-                              javascript="${javascript`
-                                this.hidden = !leafac.isAppleDevice;
-                              `}"
-                              ><i class="bi bi-alt"></i
-                              ><i class="bi bi-command"></i>3</span
-                            >
-                          </span>
-                        </button>
-                      </div>
-
-                      <hr class="dropdown--separator" />
-
-                      <div class="dropdown--menu">
-                        <button
-                          type="button"
-                          class="dropdown--menu--item button button--transparent"
-                          javascript="${javascript`
-                            const textarea = this.closest("[data-tippy-root]")._tippy.reference.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
-          
-                            this.onclick = () => {
-                              this.closest("[data-tippy-root]")._tippy.hide();
-                              textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "---\\n\\n", "");
-                              textarea.focus();  
-                            };
-                          `}"
-                        >
-                          <i class="bi bi-dash-lg"></i>
-                          Separator
-                        </button>
-                      </div>
-                    </div>
-                  `},  
-                },
-              });
-            `}"
-          >
-            <i class="bi bi-paragraph"></i>
-          </button>
-          <button
-            type="button"
-            class="button button--tight button--transparent"
-            javascript="${javascript`
-              leafac.setTippy({
-                event,
-                element: this,
-                tippyProps: {
-                  touch: false,
-                  content: "Inline",
-                },
-              });
-
-              leafac.setTippy({
-                event,
-                element: this,
-                elementProperty: "dropdown",
-                tippyProps: {
-                  trigger: "click",
-                  interactive: true,
-                  content: ${html`
-                    <div
-                      css="${css`
-                        max-height: 40vh;
-                        overflow: auto;
-                        display: flex;
-                        flex-direction: column;
-                        gap: var(--space--2);
-                      `}"
-                    >
-                      <div class="dropdown--menu">
-                        <button
-                          type="button"
-                          class="dropdown--menu--item button button--transparent"
-                          javascript="${javascript`
-                            const textarea = this.closest("[data-tippy-root]")._tippy.reference.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
-          
-                            this.onclick = () => {
-                              this.closest("[data-tippy-root]")._tippy.hide();
-                              if (textarea.selectionStart === textarea.selectionEnd) {
-                                textFieldEdit.wrapSelection(textarea, "**", "TEXT**");
-                                textarea.selectionEnd += "TEXT".length;
-                              }
-                              else
-                                textFieldEdit.wrapSelection(textarea, "**");
-                              textarea.focus();
-                            };
-                      
-                            (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+b", () => { this.click(); return false; });
-                          `}"
-                        >
-                          <i class="bi bi-type-bold"></i>
-                          Bold
-                          <span class="keyboard-shortcut">
-                            <span
-                              javascript="${javascript`
-                                this.hidden = leafac.isAppleDevice;
-                              `}"
-                              >Ctrl+B</span
-                            ><span
-                              class="keyboard-shortcut--cluster"
-                              javascript="${javascript`
-                                this.hidden = !leafac.isAppleDevice;
-                              `}"
-                              ><i class="bi bi-command"></i>B</span
-                            >
-                          </span>
-                        </button>
-                        <button
-                          type="button"
-                          class="dropdown--menu--item button button--transparent"
-                          javascript="${javascript`
-                            const textarea = this.closest("[data-tippy-root]")._tippy.reference.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
-          
-                            this.onclick = () => {
-                              this.closest("[data-tippy-root]")._tippy.hide();
-                              if (textarea.selectionStart === textarea.selectionEnd) {
-                                textFieldEdit.wrapSelection(textarea, "_", "TEXT_");
-                                textarea.selectionEnd += "TEXT".length;
-                              }
-                              else
-                                textFieldEdit.wrapSelection(textarea, "_");
-                              textarea.focus();
-                            };
-                        
-                            (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+i", () => { this.click(); return false; });
-                          `}"
-                        >
-                          <i class="bi bi-type-italic"></i>
-                          Italic
-                          <span class="keyboard-shortcut">
-                            <span
-                              javascript="${javascript`
-                                this.hidden = leafac.isAppleDevice;
-                              `}"
-                              >Ctrl+I</span
-                            ><span
-                              class="keyboard-shortcut--cluster"
-                              javascript="${javascript`
-                                this.hidden = !leafac.isAppleDevice;
-                              `}"
-                              ><i class="bi bi-command"></i>I</span
-                            >
-                          </span>
-                        </button>
-                        <button
-                          type="button"
-                          class="dropdown--menu--item button button--transparent"
-                          javascript="${javascript`
-                            const textarea = this.closest("[data-tippy-root]")._tippy.reference.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
-          
-                            this.onclick = () => {
-                              this.closest("[data-tippy-root]")._tippy.hide();
-                              if (textarea.selectionStart === textarea.selectionEnd) {
-                                textFieldEdit.wrapSelection(textarea, "<u>", "TEXT</u>");
-                                textarea.selectionEnd += "TEXT".length;
-                              }
-                              else
-                                textFieldEdit.wrapSelection(textarea, "<u>", "</u>");
-                              textarea.focus();
-                            };
-                        
-                            (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+u", () => { this.click(); return false; });
-                          `}"
-                        >
-                          <i class="bi bi-type-underline"></i>
-                          Underline
-                          <span class="keyboard-shortcut">
-                            <span
-                              javascript="${javascript`
-                                this.hidden = leafac.isAppleDevice;
-                              `}"
-                              >Ctrl+U</span
-                            ><span
-                              class="keyboard-shortcut--cluster"
-                              javascript="${javascript`
-                                this.hidden = !leafac.isAppleDevice;
-                              `}"
-                              ><i class="bi bi-command"></i>U</span
-                            >
-                          </span>
-                        </button>
-                        <button
-                          type="button"
-                          class="dropdown--menu--item button button--transparent"
-                          javascript="${javascript`
-                            const textarea = this.closest("[data-tippy-root]")._tippy.reference.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
-          
-                            this.onclick = () => {
-                              this.closest("[data-tippy-root]")._tippy.hide();
-                              if (textarea.selectionStart === textarea.selectionEnd) {
-                                textFieldEdit.wrapSelection(textarea, "~~", "TEXT~~");
-                                textarea.selectionEnd += "TEXT".length;
-                              }
-                              else
-                                textFieldEdit.wrapSelection(textarea, "~~");
-                              textarea.focus();
-                            };
-
-                            (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+alt+s", () => { this.click(); return false; });
-                          `}"
-                        >
-                          <i class="bi bi-type-strikethrough"></i>
-                          Strikethrough
-                          <span class="keyboard-shortcut">
-                            <span
-                              javascript="${javascript`
-                                this.hidden = leafac.isAppleDevice;
-                              `}"
-                              >Ctrl+Alt+S</span
-                            ><span
-                              class="keyboard-shortcut--cluster"
-                              javascript="${javascript`
-                                this.hidden = !leafac.isAppleDevice;
-                              `}"
-                              ><i class="bi bi-alt"></i
-                              ><i class="bi bi-command"></i>S</span
-                            >
-                          </span>
-                        </button>
-                      </div>
-
-                      <hr class="dropdown--separator" />
-
-                      <div class="dropdown--menu">
-                        <button
-                          type="button"
-                          class="dropdown--menu--item button button--transparent"
-                          javascript="${javascript`
-                            const textarea = this.closest("[data-tippy-root]")._tippy.reference.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
-          
-                            this.onclick = () => {
-                              this.closest("[data-tippy-root]")._tippy.hide();
-                              if (textarea.selectionStart === textarea.selectionEnd) {
-                                textFieldEdit.wrapSelection(textarea, "[", "TEXT](https://example.com)");
-                                textarea.selectionEnd += "TEXT".length;
-                              }
-                              else
-                                textFieldEdit.wrapSelection(textarea, "[", "](https://example.com)");
-                              textarea.focus();
-                            };
-                        
-                            (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+k", () => { this.click(); return false; });
-                          `}"
-                        >
-                          <i class="bi bi-link"></i>
-                          Link
-                          <span class="keyboard-shortcut">
-                            <span
-                              javascript="${javascript`
-                                this.hidden = leafac.isAppleDevice;
-                              `}"
-                              >Ctrl+K</span
-                            ><span
-                              class="keyboard-shortcut--cluster"
-                              javascript="${javascript`
-                                this.hidden = !leafac.isAppleDevice;
-                              `}"
-                              ><i class="bi bi-command"></i>K</span
-                            >
-                          </span>
-                        </button>
-                      </div>
-
-                      <hr class="dropdown--separator" />
-
-                      <div class="dropdown--menu">
-                        <button
-                          type="button"
-                          class="dropdown--menu--item button button--transparent"
-                          javascript="${javascript`
-                            const textarea = this.closest("[data-tippy-root]")._tippy.reference.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
-          
-                            this.onclick = () => {
-                              this.closest("[data-tippy-root]")._tippy.hide();
-                              if (textarea.selectionStart === textarea.selectionEnd) {
-                                textFieldEdit.wrapSelection(textarea, "$", "LATEX$");
-                                textarea.selectionEnd += "LATEX".length;
-                              }
-                              else
-                                textFieldEdit.wrapSelection(textarea, "$");
-                              textarea.focus();
-                            };
-                          
-                            (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+alt+e", () => { this.click(); return false; });
-                          `}"
-                        >
-                          <i class="bi bi-calculator"></i>
-                          Mathematics (LaTeX)
-                          <span class="keyboard-shortcut">
-                            <span
-                              javascript="${javascript`
-                                this.hidden = leafac.isAppleDevice;
-                              `}"
-                              >Ctrl+Alt+E</span
-                            ><span
-                              class="keyboard-shortcut--cluster"
-                              javascript="${javascript`
-                                this.hidden = !leafac.isAppleDevice;
-                              `}"
-                              ><i class="bi bi-alt"></i
-                              ><i class="bi bi-command"></i>E</span
-                            >
-                          </span>
-                        </button>
-                        <button
-                          type="button"
-                          class="dropdown--menu--item button button--transparent"
-                          javascript="${javascript`
-                            const textarea = this.closest("[data-tippy-root]")._tippy.reference.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
-          
-                            this.onclick = () => {
-                              this.closest("[data-tippy-root]")._tippy.hide();
-                              if (textarea.selectionStart === textarea.selectionEnd) {
-                                textFieldEdit.wrapSelection(textarea, "\`", "CODE\`");
-                                textarea.selectionEnd += "CODE".length;
-                              }
-                              else
-                                textFieldEdit.wrapSelection(textarea, "\`");
-                              textarea.focus();
-                            };
-                        
-                            (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+e", () => { this.click(); return false; });
-                          `}"
-                        >
-                          <i class="bi bi-braces"></i>
-                          Code
-                          <span class="keyboard-shortcut">
-                            <span
-                              javascript="${javascript`
-                                this.hidden = leafac.isAppleDevice;
-                              `}"
-                              >Ctrl+E</span
-                            ><span
-                              class="keyboard-shortcut--cluster"
-                              javascript="${javascript`
-                                this.hidden = !leafac.isAppleDevice;
-                              `}"
-                              ><i class="bi bi-command"></i>E</span
-                            >
-                          </span>
-                        </button>
-                      </div>
-
-                      <hr class="dropdown--separator" />
-
-                      <div class="dropdown--menu">
-                        <button
-                          type="button"
-                          class="dropdown--menu--item button button--transparent"
-                          javascript="${javascript`
-                            const textarea = this.closest("[data-tippy-root]")._tippy.reference.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
-          
-                            this.onclick = () => {
-                              this.closest("[data-tippy-root]")._tippy.hide();
-                              if (textarea.selectionStart === textarea.selectionEnd) {
-                                textFieldEdit.wrapSelection(textarea, "<ins>", "TEXT</ins>");
-                                textarea.selectionEnd += "TEXT".length;
-                              }
-                              else
-                                textFieldEdit.wrapSelection(textarea, "<ins>", "</ins>");
-                              textarea.focus();
-                            };
-                          `}"
-                        >
-                          <i class="bi bi-plus-square-dotted"></i>
-                          Insertion
-                        </button>
-                        <button
-                          type="button"
-                          class="dropdown--menu--item button button--transparent"
-                          javascript="${javascript`
-                            const textarea = this.closest("[data-tippy-root]")._tippy.reference.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
-          
-                            this.onclick = () => {
-                              this.closest("[data-tippy-root]")._tippy.hide();
-                              if (textarea.selectionStart === textarea.selectionEnd) {
-                                textFieldEdit.wrapSelection(textarea, "~~", "TEXT~~");
-                                textarea.selectionEnd += "TEXT".length;
-                              }
-                              else
-                                textFieldEdit.wrapSelection(textarea, "~~");
-                              textarea.focus();
-                            };
-                          `}"
-                        >
-                          <i class="bi bi-dash-square-dotted"></i>
-                          Deletion
-                        </button>
-                      </div>
-
-                      <hr class="dropdown--separator" />
-
-                      <div class="dropdown--menu">
-                        <button
-                          type="button"
-                          class="dropdown--menu--item button button--transparent"
-                          javascript="${javascript`
-                            const textarea = this.closest("[data-tippy-root]")._tippy.reference.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
-          
-                            this.onclick = () => {
-                              this.closest("[data-tippy-root]")._tippy.hide();
-                              if (textarea.selectionStart === textarea.selectionEnd) {
-                                textFieldEdit.wrapSelection(textarea, "<sup>", "TEXT</sup>");
-                                textarea.selectionEnd += "TEXT".length;
-                              }
-                              else
-                                textFieldEdit.wrapSelection(textarea, "<sup>", "</sup>");
-                              textarea.focus();
-                            };
-                          `}"
-                        >
-                          <i class="bi bi-superscript"></i>
-                          Superscript
-                        </button>
-                        <button
-                          type="button"
-                          class="dropdown--menu--item button button--transparent"
-                          javascript="${javascript`
-                            const textarea = this.closest("[data-tippy-root]")._tippy.reference.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
-          
-                            this.onclick = () => {
-                              this.closest("[data-tippy-root]")._tippy.hide();
-                              if (textarea.selectionStart === textarea.selectionEnd) {
-                                textFieldEdit.wrapSelection(textarea, "<sub>", "TEXT</sub>");
-                                textarea.selectionEnd += "TEXT".length;
-                              }
-                              else
-                                textFieldEdit.wrapSelection(textarea, "<sub>", "</sub>");
-                              textarea.focus();
-                            };
-                          `}"
-                        >
-                          <i class="bi bi-subscript"></i>
-                          Subscript
-                        </button>
-                      </div>
-                    </div>
-                  `},  
-                },
-              });
-            `}"
-          >
-            <i class="bi bi-type"></i>
-          </button>
-          <button
-            type="button"
-            class="button button--tight button--transparent"
-            javascript="${javascript`
-              leafac.setTippy({
-                event,
-                element: this,
-                tippyProps: {
-                  touch: false,
-                  content: ${html`
-                    Attachment
-                    <span class="keyboard-shortcut">
-                      <span
-                        javascript="${javascript`
-                          this.hidden = leafac.isAppleDevice;
-                        `}"
-                        >Ctrl+Shift+K</span
-                      ><span
-                        class="keyboard-shortcut--cluster"
-                        javascript="${javascript`
-                          this.hidden = !leafac.isAppleDevice;
-                        `}"
-                        ><i class="bi bi-shift"></i
-                        ><i class="bi bi-command"></i>K</span
-                      >
-                      / drag-and-drop / copy-and-paste
-                    </span>
-                  `},  
-                },
-              });
-
-              this.onclick = () => {
-                this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--attachments"]').click();
-              };
-
-              const textarea = this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
-
-              (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+shift+k", () => { this.click(); return false; });
-            `}"
-          >
-            <i class="bi bi-paperclip"></i>
-          </button>
-          <input
-            key="content-editor--write--attachments"
-            type="file"
-            multiple
-            hidden
-            javascript="${javascript`
-              this.isModified = false;
-
-              const textarea = this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
-
-              this.upload = async (fileList) => {
-                if (!checkIsSignedIn()) return;
-                const body = new FormData();
-                for (const file of fileList) body.append("attachments", file);
-                this.value = "";
-                tippy.hideAll();
-                textarea.uploadingIndicator.show();
-                textarea.disabled = true;
-                const response = await (await fetch(${`https://${application.configuration.hostname}/content-editor/attachments`}, {
-                  method: "POST",
-                  headers: { "CSRF-Protection": "true", },
-                  cache: "no-store",
-                  body,
-                })).text();
-                textarea.disabled = false;
-                textarea.uploadingIndicator.hide();
-                textFieldEdit.wrapSelection(textarea, response, "");
-                textarea.focus();
-              };
-
-              const checkIsSignedIn = (() => {
-                if (${
-                  response.locals.user === undefined ||
-                  response.locals.user.emailVerifiedAt === null
-                }) {
-                  leafac.setTippy({
-                    event,
-                    element: textarea,
-                    tippyProps: {
-                      trigger: "manual",
-                      theme: "rose",
-                      content: "You must sign in to upload files.",
-                    },
-                  });
-
-                  return () => {
-                    textarea.tooltip.show();
-                    return false;
-                  };
-                } else
-                  return () => true;
-              })();
-
-              leafac.setTippy({
-                event,
-                element: textarea,
-                elementProperty: "uploadingIndicator",
-                tippyProps: {
-                  trigger: "manual",
-                  hideOnClick: false,
-                  content: ${html`
-                    <div
-                      css="${css`
-                        display: flex;
-                        gap: var(--space--2);
-                      `}"
-                    >
-                      $${application.web.locals.partials.spinner({
-                        request,
-                        response,
-                      })}
-                      Uploading…
-                    </div>
-                  `},  
-                },
-              });
-
-              this.onclick = (event) => {
-                if (!checkIsSignedIn()) event.preventDefault();
-              };
-
-              this.onchange = () => {
-                this.upload(this.files);
-              };
-            `}"
-          />
-          <button
-            type="button"
-            class="button button--tight button--transparent"
-            javascript="${javascript`
-              leafac.setTippy({
-                event,
-                element: this,
-                tippyProps: {
-                  touch: false,
-                  content: "Block",
-                },
-              });
-
-              leafac.setTippy({
-                event,
-                element: this,
-                elementProperty: "dropdown",
-                tippyProps: {
-                  trigger: "click",
-                  interactive: true,
-                  content: ${html`
-                    <div
-                      css="${css`
-                        max-height: 40vh;
-                        overflow: auto;
-                        display: flex;
-                        flex-direction: column;
-                        gap: var(--space--2);
-                      `}"
-                    >
-                      $${response.locals.course !== undefined &&
-                      !(
-                        response.locals.enrollment?.courseRole === "student" &&
-                        response.locals.course.studentsMayCreatePollsAt === null
-                      )
-                        ? html`
-                            <div class="dropdown--menu">
-                              <button
-                                type="button"
-                                class="dropdown--menu--item button button--transparent"
-                                javascript="${javascript`
-                                  this.onclick = () => {
-                                    tippy.hideAll();
-                                    const write = this.closest('[key="content-editor"]').querySelector('[key="content-editor--write"]');
-                                    if (write.querySelector('[key="poll-editor"]') !== null) return;
-                                    const poll = leafac.stringToElement(${partialPollEditor(
-                                      {
-                                        request: request as express.Request<
-                                          {},
-                                          any,
-                                          {},
-                                          { redirect?: string },
-                                          Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
-                                        >,
-                                        response: response as express.Response<
-                                          any,
-                                          Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
-                                        >,
-                                      }
-                                    )}).querySelector('[key="poll-editor"]');
-                                    write.insertAdjacentElement("afterbegin", poll);
-                                    leafac.execute({ element: poll });
-                                  };
-                                `}"
-                              >
-                                <i class="bi bi-card-checklist"></i>
-                                Poll
-                              </button>
-                            </div>
-
-                            <hr class="dropdown--separator" />
-                          `
-                        : html``}
-
-                      <div class="dropdown--menu">
-                        <button
-                          type="button"
-                          class="dropdown--menu--item button button--transparent"
-                          javascript="${javascript`
-                            const textarea = this.closest("[data-tippy-root]")._tippy.reference.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
-          
-                            this.onclick = () => {
-                              this.closest("[data-tippy-root]")._tippy.hide();
-                              if (textarea.selectionStart === textarea.selectionEnd) {
-                                textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "- ", "TEXT\\n\\n");
-                                textarea.selectionEnd += "TEXT".length;
-                              } else {
-                                const replacement = textFieldEdit.getSelection(textarea).split("\\n").map((line) => "- " + line).join("\\n");
-                                const selectionStart = textarea.selectionStart + ((textarea.selectionStart > 0) ? "\\n\\n" : "").length;
-                                textFieldEdit.insert(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + replacement + "\\n\\n");
-                                textarea.selectionStart = selectionStart;
-                                textarea.selectionEnd = textarea.selectionStart + replacement.length;
-                              }
-                              textarea.focus();
-                            };
-
-                            (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+shift+8", () => { this.click(); return false; });
-                          `}"
-                        >
-                          <i class="bi bi-list-ul"></i>
-                          Bulleted List
-                          <span class="keyboard-shortcut">
-                            <span
-                              javascript="${javascript`
-                                this.hidden = leafac.isAppleDevice;
-                              `}"
-                              >Ctrl+Shift+8</span
-                            ><span
-                              class="keyboard-shortcut--cluster"
-                              javascript="${javascript`
-                                this.hidden = !leafac.isAppleDevice;
-                              `}"
-                              ><i class="bi bi-shift"></i
-                              ><i class="bi bi-command"></i>8</span
-                            >
-                          </span>
-                        </button>
-                        <button
-                          type="button"
-                          class="dropdown--menu--item button button--transparent"
-                          javascript="${javascript`
-                            const textarea = this.closest("[data-tippy-root]")._tippy.reference.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
-          
-                            this.onclick = () => {
-                              this.closest("[data-tippy-root]")._tippy.hide();
-                              if (textarea.selectionStart === textarea.selectionEnd) {
-                                textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "1. ", "TEXT\\n\\n");
-                                textarea.selectionEnd += "TEXT".length;
-                              } else {
-                                const replacement = textFieldEdit.getSelection(textarea).split("\\n").map((line, index) => String(index + 1) + ". " + line).join("\\n");
-                                const selectionStart = textarea.selectionStart + ((textarea.selectionStart > 0) ? "\\n\\n" : "").length;
-                                textFieldEdit.insert(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + replacement + "\\n\\n");
-                                textarea.selectionStart = selectionStart;
-                                textarea.selectionEnd = textarea.selectionStart + replacement.length;
-                              }
-                              textarea.focus();
-                            };
-
-                            (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+shift+7", () => { this.click(); return false; });
-                          `}"
-                        >
-                          <i class="bi bi-list-ol"></i>
-                          Numbered List
-                          <span class="keyboard-shortcut">
-                            <span
-                              javascript="${javascript`
-                                this.hidden = leafac.isAppleDevice;
-                              `}"
-                              >Ctrl+Shift+7</span
-                            ><span
-                              class="keyboard-shortcut--cluster"
-                              javascript="${javascript`
-                                this.hidden = !leafac.isAppleDevice;
-                              `}"
-                              ><i class="bi bi-shift"></i
-                              ><i class="bi bi-command"></i>7</span
-                            >
-                          </span>
-                        </button>
-                        <button
-                          type="button"
-                          class="dropdown--menu--item button button--transparent"
-                          javascript="${javascript`
-                            const textarea = this.closest("[data-tippy-root]")._tippy.reference.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
-          
-                            this.onclick = () => {
-                              this.closest("[data-tippy-root]")._tippy.hide();
-                              if (textarea.selectionStart === textarea.selectionEnd) {
-                                textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "- [ ] ", "TEXT (USE [X] TO MARK ITEM AS DONE)\\n\\n");
-                                textarea.selectionEnd += "TEXT (USE [X] TO MARK ITEM AS DONE)".length;
-                              } else {
-                                const replacement = textFieldEdit.getSelection(textarea).split("\\n").map((line) => "- [ ] " + line).join("\\n");
-                                const selectionStart = textarea.selectionStart + ((textarea.selectionStart > 0) ? "\\n\\n" : "").length;
-                                textFieldEdit.insert(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + replacement + "\\n\\n");
-                                textarea.selectionStart = selectionStart;
-                                textarea.selectionEnd = textarea.selectionStart + replacement.length;
-                              }
-                              textarea.focus();
-                            };
-
-                            (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+shift+9", () => { this.click(); return false; });
-                          `}"
-                        >
-                          <i class="bi bi-list-check"></i>
-                          Checklist
-                          <span class="keyboard-shortcut">
-                            <span
-                              javascript="${javascript`
-                                this.hidden = leafac.isAppleDevice;
-                              `}"
-                              >Ctrl+Shift+9</span
-                            ><span
-                              class="keyboard-shortcut--cluster"
-                              javascript="${javascript`
-                                this.hidden = !leafac.isAppleDevice;
-                              `}"
-                              ><i class="bi bi-shift"></i
-                              ><i class="bi bi-command"></i>9</span
-                            >
-                          </span>
-                        </button>
-                      </div>
-
-                      <hr class="dropdown--separator" />
-
-                      <div class="dropdown--menu">
-                        <button
-                          type="button"
-                          class="dropdown--menu--item button button--transparent"
-                          javascript="${javascript`
-                            const textarea = this.closest("[data-tippy-root]")._tippy.reference.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
-          
-                            this.onclick = () => {
-                              this.closest("[data-tippy-root]")._tippy.hide();
-                              if (textarea.selectionStart === textarea.selectionEnd) {
-                                textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "> ", "TEXT\\n\\n");
-                                textarea.selectionEnd += "TEXT".length;
-                              } else {
-                                const replacement = textFieldEdit.getSelection(textarea).split("\\n").map((line) => "> " + line).join("\\n");
-                                const selectionStart = textarea.selectionStart + ((textarea.selectionStart > 0) ? "\\n\\n" : "").length;
-                                textFieldEdit.insert(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + replacement + "\\n\\n");
-                                textarea.selectionStart = selectionStart;
-                                textarea.selectionEnd = textarea.selectionStart + replacement.length;
-                              }
-                              textarea.focus();
-                            };
-
-                            (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+'", () => { this.click(); return false; });
-                          `}"
-                        >
-                          <i class="bi bi-quote"></i>
-                          Blockquote
-                          <span class="keyboard-shortcut">
-                            <span
-                              javascript="${javascript`
-                                this.hidden = leafac.isAppleDevice;
-                              `}"
-                              >Ctrl+'</span
-                            ><span
-                              class="keyboard-shortcut--cluster"
-                              javascript="${javascript`
-                                this.hidden = !leafac.isAppleDevice;
-                              `}"
-                              ><i class="bi bi-command"></i>'</span
-                            >
-                          </span>
-                        </button>
-                        <button
-                          type="button"
-                          class="dropdown--menu--item button button--transparent"
-                          javascript="${javascript`
-                            const textarea = this.closest("[data-tippy-root]")._tippy.reference.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
-          
-                            this.onclick = () => {
-                              this.closest("[data-tippy-root]")._tippy.hide();
-                              const selectionStart = textarea.selectionStart + (textFieldEdit.getSelection(textarea) + ((textarea.selectionEnd > 0) ? "\\n\\n" : "") + "| ").length;
-                              textFieldEdit.insert(textarea, textFieldEdit.getSelection(textarea) + ((textarea.selectionEnd > 0) ? "\\n\\n" : "") + "| HEADING | HEADING |\\n|---------|---------|\\n| CONTENT | CONTENT |\\n\\n");
-                              textarea.selectionStart = selectionStart;
-                              textarea.selectionEnd = textarea.selectionStart + "HEADING".length;
-                              textarea.focus();
-                            };
-                        
-                            (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+alt+t", () => { this.click(); return false; });
-                          `}"
-                        >
-                          <i class="bi bi-table"></i>
-                          Table
-                          <span class="keyboard-shortcut">
-                            <span
-                              javascript="${javascript`
-                                this.hidden = leafac.isAppleDevice;
-                              `}"
-                              >Ctrl+Alt+T</span
-                            ><span
-                              class="keyboard-shortcut--cluster"
-                              javascript="${javascript`
-                                this.hidden = !leafac.isAppleDevice;
-                              `}"
-                              ><i class="bi bi-alt"></i
-                              ><i class="bi bi-command"></i>T</span
-                            >
-                          </span>
-                        </button>
-                        <button
-                          type="button"
-                          class="dropdown--menu--item button button--transparent"
-                          javascript="${javascript`
-                            const textarea = this.closest("[data-tippy-root]")._tippy.reference.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
-          
-                            this.onclick = () => {
-                              this.closest("[data-tippy-root]")._tippy.hide();
-                              if (textarea.selectionStart === textarea.selectionEnd) {
-                                textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "<details>\\n<summary>", "SUMMARY</summary>\\n\\nCONTENT\\n\\n</details>\\n\\n");
-                                textarea.selectionEnd += "SUMMARY".length;
-                              }
-                              else
-                                textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "<details>\\n<summary>SUMMARY</summary>\\n\\n", "\\n\\n</details>\\n\\n");
-                              textarea.focus();
-                            };
-                        
-                            (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+shift+d", () => { this.click(); return false; });
-                          `}"
-                        >
-                          <i class="bi bi-chevron-bar-expand"></i>
-                          Disclosure
-                          <span class="keyboard-shortcut">
-                            <span
-                              javascript="${javascript`
-                                this.hidden = leafac.isAppleDevice;
-                              `}"
-                              >Ctrl+Shift+D</span
-                            ><span
-                              class="keyboard-shortcut--cluster"
-                              javascript="${javascript`
-                                this.hidden = !leafac.isAppleDevice;
-                              `}"
-                              ><i class="bi bi-shift"></i
-                              ><i class="bi bi-command"></i>D</span
-                            >
-                          </span>
-                        </button>
-                        <button
-                          type="button"
-                          class="dropdown--menu--item button button--transparent"
-                          javascript="${javascript`
-                            const textarea = this.closest("[data-tippy-root]")._tippy.reference.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
-          
-                            this.onclick = () => {
-                              this.closest("[data-tippy-root]")._tippy.hide();
-                              const identifier = Math.random().toString(36).slice(2);
-                              if (textarea.selectionStart === textarea.selectionEnd) {
-                                textFieldEdit.wrapSelection(textarea, "[^footnote--" + identifier + "]\\n\\n[^footnote--" + identifier + "]: ", "FOOTNOTE");
-                                textarea.selectionEnd += "FOOTNOTE".length;
-                              }
-                              else
-                                textFieldEdit.wrapSelection(textarea, "[^footnote--" + identifier + "]\\n\\n[^footnote--" + identifier + "]: ", "");
-                              textarea.focus();
-                            };
-                        
-                            (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+shift+f", () => { this.click(); return false; });
-                          `}"
-                        >
-                          <i class="bi bi-card-text"></i>
-                          Footnote
-                          <span class="keyboard-shortcut">
-                            <span
-                              javascript="${javascript`
-                                this.hidden = leafac.isAppleDevice;
-                              `}"
-                              >Ctrl+Shift+F</span
-                            ><span
-                              class="keyboard-shortcut--cluster"
-                              javascript="${javascript`
-                                this.hidden = !leafac.isAppleDevice;
-                              `}"
-                              ><i class="bi bi-shift"></i
-                              ><i class="bi bi-command"></i>F</span
-                            >
-                          </span>
-                        </button>
-                      </div>
-
-                      <hr class="dropdown--separator" />
-
-                      <div class="dropdown--menu">
-                        <button
-                          type="button"
-                          class="dropdown--menu--item button button--transparent"
-                          javascript="${javascript`
-                            const textarea = this.closest("[data-tippy-root]")._tippy.reference.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
-          
-                            this.onclick = () => {
-                              this.closest("[data-tippy-root]")._tippy.hide();
-                              if (textarea.selectionStart === textarea.selectionEnd) {
-                                textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "$$\\n", "LATEX\\n$$\\n\\n");
-                                textarea.selectionEnd += "LATEX".length;
-                              }
-                              else
-                                textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "$$\\n", "\\n$$\\n\\n");
-                              textarea.focus();
-                            };
-                        
-                            (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+alt+shift+e", () => { this.click(); return false; });
-                          `}"
-                        >
-                          <i class="bi bi-calculator"></i>
-                          Mathematics (LaTeX)
-                          <span class="keyboard-shortcut">
-                            <span
-                              javascript="${javascript`
-                                this.hidden = leafac.isAppleDevice;
-                              `}"
-                              >Ctrl+Alt+Shift+E</span
-                            ><span
-                              class="keyboard-shortcut--cluster"
-                              javascript="${javascript`
-                                this.hidden = !leafac.isAppleDevice;
-                              `}"
-                              ><i class="bi bi-alt"></i
-                              ><i class="bi bi-shift"></i
-                              ><i class="bi bi-command"></i>E</span
-                            >
-                          </span>
-                        </button>
-                        <button
-                          type="button"
-                          class="dropdown--menu--item button button--transparent"
-                          javascript="${javascript`
-                            const textarea = this.closest("[data-tippy-root]")._tippy.reference.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
-          
-                            this.onclick = () => {
-                              this.closest("[data-tippy-root]")._tippy.hide();
-                              if (textarea.selectionStart === textarea.selectionEnd) {
-                                textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "\`\`\`", "LANGUAGE\\nCODE\\n\`\`\`\\n\\n");
-                                textarea.selectionEnd += "LANGUAGE".length;
-                              }
-                              else
-                                textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "\`\`\`LANGUAGE\\n", "\\n\`\`\`\\n\\n");
-                              textarea.focus();
-                            };
-                        
-                            (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+shift+e", () => { this.click(); return false; });
-                          `}"
-                        >
-                          <i class="bi bi-braces"></i>
-                          Code
-                          <span class="keyboard-shortcut">
-                            <span
-                              javascript="${javascript`
-                                this.hidden = leafac.isAppleDevice;
-                              `}"
-                              >Ctrl+Shift+E</span
-                            ><span
-                              class="keyboard-shortcut--cluster"
-                              javascript="${javascript`
-                                this.hidden = !leafac.isAppleDevice;
-                              `}"
-                              ><i class="bi bi-shift"></i
-                              ><i class="bi bi-command"></i>E</span
-                            >
-                          </span>
-                        </button>
-                      </div>
-                    </div>
-                  `},  
-                },
-              });
-            `}"
-          >
-            <i class="bi bi-textarea-t"></i>
-          </button>
-          $${response.locals.course !== undefined
-            ? html`
-                <button
-                  type="button"
-                  class="button button--tight button--transparent"
-                  javascript="${javascript`
-                    leafac.setTippy({
-                      event,
-                      element: this,
-                      tippyProps: {
-                        touch: false,
-                        content: "Mentions & References",
-                      },
-                    });
-
-                    leafac.setTippy({
-                      event,
-                      element: this,
-                      elementProperty: "dropdown",
-                      tippyProps: {
-                        trigger: "click",
-                        interactive: true,
-                        content: ${html`
-                          <div
-                            css="${css`
-                              max-height: 40vh;
-                              overflow: auto;
-                              display: flex;
-                              flex-direction: column;
-                              gap: var(--space--2);
-                            `}"
-                          >
-                            <div class="dropdown--menu">
-                              <button
-                                type="button"
-                                class="dropdown--menu--item button button--transparent"
-                                javascript="${javascript`
-                                  const textarea = this.closest("[data-tippy-root]")._tippy.reference.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
-                
-                                  this.onclick = () => {
-                                    this.closest("[data-tippy-root]")._tippy.hide();
-                                    textFieldEdit.wrapSelection(textarea, " @", "");
-                                    textarea.focus();
-                                  };
-                                `}"
-                              >
-                                <i class="bi bi-at"></i>
-                                Mention Person
-                                <span class="keyboard-shortcut">@</span>
-                              </button>
-                              <button
-                                type="button"
-                                class="dropdown--menu--item button button--transparent"
-                                javascript="${javascript`
-                                  const textarea = this.closest("[data-tippy-root]")._tippy.reference.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
-                
-                                  this.onclick = () => {
-                                    this.closest("[data-tippy-root]")._tippy.hide();
-                                    textFieldEdit.wrapSelection(textarea, " #", "");
-                                    textarea.focus();
-                                  };
-                                `}"
-                              >
-                                <i class="bi bi-hash"></i>
-                                Refer to Conversation or Message
-                                <span class="keyboard-shortcut">#</span>
-                              </button>
-                            </div>
-                          </div>
-                        `},  
-                      },
-                    });
-                  `}"
-                >
-                  <i class="bi bi-at"></i>
-                </button>
-              `
-            : html``}
-          <label
-            class="button button--tight button--transparent"
-            javascript="${javascript`
-              leafac.setTippy({
-                event,
-                element: this,
-                tippyProps: {
-                  touch: false,
-                  content: ${html`
-                    Programmer Mode
-                    <span class="secondary">(Monospaced Font)</span>
-                  `},
-                },
-              });
-            `}"
-          >
+              <i class="bi bi-paperclip"></i>
+            </button>
             <input
-              type="checkbox"
-              $${typeof response.locals.user
-                ?.preferContentEditorProgrammerModeAt === "string"
-                ? html`checked`
-                : html``}
-              class="visually-hidden input--radio-or-checkbox--multilabel"
+              key="content-editor--write--attachments"
+              type="file"
+              multiple
+              hidden
               javascript="${javascript`
                 this.isModified = false;
-          
+
                 const textarea = this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
-          
-                this.onchange = async () => {
-                  textarea.classList[this.checked ? "add" : "remove"]("content-editor--write--textarea--programmer-mode");
-                  await fetch(${`https://${application.configuration.hostname}/preferences`}, {
-                    method: "PATCH",
+
+                this.upload = async (fileList) => {
+                  if (!checkIsSignedIn()) return;
+                  const body = new FormData();
+                  for (const file of fileList) body.append("attachments", file);
+                  this.value = "";
+                  tippy.hideAll();
+                  textarea.uploadingIndicator.show();
+                  textarea.disabled = true;
+                  const response = await (await fetch(${`https://${application.configuration.hostname}/content-editor/attachments`}, {
+                    method: "POST",
                     headers: { "CSRF-Protection": "true", },
                     cache: "no-store",
-                    body: new URLSearchParams({ preferContentEditorProgrammerMode: String(this.checked), }),
-                  });
+                    body,
+                  })).text();
+                  textarea.disabled = false;
+                  textarea.uploadingIndicator.hide();
+                  textFieldEdit.wrapSelection(textarea, response, "");
+                  textarea.focus();
+                };
+
+                const checkIsSignedIn = (() => {
+                  if (${
+                    response.locals.user === undefined ||
+                    response.locals.user.emailVerifiedAt === null
+                  }) {
+                    leafac.setTippy({
+                      event,
+                      element: textarea,
+                      tippyProps: {
+                        trigger: "manual",
+                        theme: "rose",
+                        content: "You must sign in to upload files.",
+                      },
+                    });
+
+                    return () => {
+                      textarea.tooltip.show();
+                      return false;
+                    };
+                  } else
+                    return () => true;
+                })();
+
+                leafac.setTippy({
+                  event,
+                  element: textarea,
+                  elementProperty: "uploadingIndicator",
+                  tippyProps: {
+                    trigger: "manual",
+                    hideOnClick: false,
+                    content: ${html`
+                      <div
+                        css="${css`
+                          display: flex;
+                          gap: var(--space--2);
+                        `}"
+                      >
+                        $${application.web.locals.partials.spinner({
+                          request,
+                          response,
+                        })}
+                        Uploading…
+                      </div>
+                    `},  
+                  },
+                });
+
+                this.onclick = (event) => {
+                  if (!checkIsSignedIn()) event.preventDefault();
+                };
+
+                this.onchange = () => {
+                  this.upload(this.files);
                 };
               `}"
             />
-            <span>
-              <i class="bi bi-braces-asterisk"></i>
-            </span>
-            <span class="text--blue">
-              <i class="bi bi-braces-asterisk"></i>
-            </span>
-          </label>
-          <a
-            href="https://${application.configuration
-              .hostname}/help/styling-content"
-            target="_blank"
-            class="button button--tight button--transparent"
-            javascript="${javascript`
-              leafac.setTippy({
-                event,
-                element: this,
-                tippyProps: {
-                  touch: false,
-                  content: "Help",
-                },
-              });
-            `}"
-          >
-            <i class="bi bi-info-circle"></i>
-          </a>
-        </div>
-      </div>
+            <button
+              type="button"
+              class="button button--tight button--transparent"
+              javascript="${javascript`
+                leafac.setTippy({
+                  event,
+                  element: this,
+                  tippyProps: {
+                    touch: false,
+                    content: "Block",
+                  },
+                });
 
-      <div
-        css="${css`
-          background-color: var(--color--zinc--200);
-          @media (prefers-color-scheme: dark) {
-            background-color: var(--color--zinc--700);
-          }
-          border-radius: var(--border-radius--lg);
-        `}"
-      >
-        <div key="content-editor--write">
-          <div
-            css="${css`
-              display: grid;
-              & > * {
-                grid-area: 1 / 1;
-              }
-            `}"
-          >
-            <div>
-              <div
-                css="${css`
-                  position: relative;
-                `}"
-              >
-                <div
-                  key="content-editor--write--textarea--dropdown-menu-target"
-                  css="${css`
-                    width: var(--space--0);
-                    height: var(--line-height--sm);
-                    position: absolute;
-                  `}"
-                ></div>
-                <textarea
-                  key="content-editor--write--textarea"
-                  name="${name}"
-                  $${required ? html`required` : html``}
-                  class="input--text input--text--textarea ${typeof response
-                    .locals.user?.preferContentEditorProgrammerModeAt ===
-                  "string"
-                    ? "content-editor--write--textarea--programmer-mode"
-                    : ""}"
-                  style="
-                    --height: ${compact
-                    ? `var(--space--14)`
-                    : `var(--space--20)`};
-                  "
-                  css="${css`
-                    height: var(--height);
-                    max-height: var(--space--64);
-
-                    &.drag {
-                      background-color: var(--color--blue--200);
-                      @media (prefers-color-scheme: dark) {
-                        background-color: var(--color--blue--900);
-                      }
-                    }
-
-                    &.content-editor--write--textarea--programmer-mode {
-                      font-family: "JetBrains MonoVariable",
-                        var(--font-family--monospace);
-                      font-variant-ligatures: none;
-                    }
-                  `} ${compact
-                    ? css`
-                        padding-right: var(--space--8);
-                      `
-                    : css``}"
-                  javascript="${javascript`
-                    if (${!modifiable}) this.isModified = false;
-
-                    autosize(this);
-                    autosize.update(this);
-    
-                    this.ondragenter = () => {
-                      this.classList.add("drag");
-                    };
-                    this.ondragleave = () => {
-                      this.classList.remove("drag");
-                    };
-    
-                    this.ondragover = (event) => {
-                      if (!event.dataTransfer.types.includes("Files")) return;
-                      event.preventDefault();
-                    };
-                    this.ondrop = (event) => {
-                      this.classList.remove("drag");
-                      if (event.dataTransfer.files.length === 0) return;
-                      event.preventDefault();
-                      this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--attachments"]').upload(event.dataTransfer.files);
-                    };
-    
-                    this.onpaste = (event) => {
-                      if (window.shiftKey) return;
-
-                      if (event.clipboardData.types.includes("text/html")) {
-                        event.preventDefault();
-
-                        const placeholder = "◊◊" + Math.random().toString(36).slice(2) + "◊◊";
-                        const replacements = [];
-
-                        const html = leafac.stringToElement(event.clipboardData.getData("text/html"));
-
-                        for (const element of html.querySelectorAll(".katex, .katex-display")) {
-                          const annotation = element.querySelector('annotation[encoding="application/x-tex"]');
-                          if (annotation === null) continue;
-                          replacements.push(
-                            (element.matches(".katex-display") ? "\\n\\n$$\\n" : "$") +
-                            annotation.textContent +
-                            (element.matches(".katex-display") ? "\\n$$\\n\\n" : "$")
-                          );
-                          element.outerHTML = "<span>" + placeholder + "</span>";
-                        }
-
-                        textFieldEdit.insert(
-                          this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]'),
-                          unified()
-                            .use(rehypeParse, { fragment: true })
-                            .use(rehypeRemark)
-                            .use(remarkGfm, { singleTilde: false })
-                            .use(remarkStringify)
-                            .processSync(html.innerHTML)
-                            .toString()
-                            .replaceAll(placeholder, () => replacements.shift())
-                        );
-                      } else if (event.clipboardData.types.includes("Files")) {
-                        if (event.clipboardData.files.length === 0) return;
-                        event.preventDefault();
-                        this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--attachments"]').upload(event.clipboardData.files);
-                      }
-                    };
-    
-                    if (${response.locals.course !== undefined}) {
-                      const dropdownMenuTarget = this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea--dropdown-menu-target"]');
-    
-                      const dropdownMenus = [
-                        {
-                          trigger: "@",
-                          route: ${`https://${
-                            application.configuration.hostname
-                          }/courses/${response.locals.course?.reference}/${
-                            response.locals.conversation !== undefined
-                              ? `conversations/${response.locals.conversation.reference}/`
-                              : ``
-                          }content-editor/mention-user-search`},
-                          emptySearch: ${html`
-                            <button
-                              type="button"
-                              class="dropdown--menu--item button button--transparent"
-                              javascript="${javascript`
-                                this.onclick = () => {
-                                  this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete("everyone");
-                                };
-                              `}"
-                            >
-                              Everyone in the Conversation
-                            </button>
-                            <button
-                              type="button"
-                              class="dropdown--menu--item button button--transparent"
-                              javascript="${javascript`
-                                this.onclick = () => {
-                                  this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete("staff");
-                                };
-                              `}"
-                            >
-                              Staff in the Conversation
-                            </button>
-                            <button
-                              type="button"
-                              class="dropdown--menu--item button button--transparent"
-                              javascript="${javascript`
-                                this.onclick = () => {
-                                  this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete("students");
-                                };
-                              `}"
-                            >
-                              Students in the Conversation
-                            </button>
-                            <div class="dropdown--menu--item secondary">
-                              Start typing to search…
-                            </div>
-                          `},
-                          dropdownMenu: leafac.setTippy({
-                            event,
-                            element: dropdownMenuTarget,
-                            elementProperty: "dropdownMenuMention",
-                            tippyProps: {
-                              placement: "bottom-start",
-                              trigger: "manual",
-                              interactive: true,
-                              content: ${html`
-                                <div
-                                  css="${css`
-                                    width: var(--space--56);
-                                    max-height: var(--space--44);
-                                    overflow: auto;
-                                  `}"
-                                >
-                                  <p class="heading">
-                                    <i class="bi bi-at"></i>
-                                    Mention Person
-                                  </p>
-                                  <div
-                                    key="search-results"
-                                    class="dropdown--menu"
-                                  ></div>
-                                </div>
-                              `},  
-                            },
-                          }),
-                        },
-                        {
-                          trigger: "#",
-                          route: ${`https://${application.configuration.hostname}/courses/${response.locals.course?.reference}/content-editor/refer-to-conversation-or-message-search`},
-                          emptySearch: ${html`
-                            <div class="dropdown--menu--item secondary">
-                              Start typing to search…
-                            </div>
-                          `},
-                          dropdownMenu: leafac.setTippy({
-                            event,
-                            element: dropdownMenuTarget,
-                            elementProperty: "dropdownMenuReference",
-                            tippyProps: {
-                              placement: "bottom-start",
-                              trigger: "manual",
-                              interactive: true,
-                              content: ${html`
-                                <div
-                                  css="${css`
-                                    width: var(--space--72);
-                                    max-height: var(--space--44);
-                                    overflow: auto;
-                                  `}"
-                                >
-                                  <p class="heading">
-                                    <i class="bi bi-hash"></i>
-                                    Refer to Conversation or Message
-                                  </p>
-                                  <div
-                                    key="search-results"
-                                    class="dropdown--menu"
-                                  ></div>
-                                </div>
-                              `},  
-                            },
-                          }),
-                        },
-                      ];
-    
-                      let anchorIndex = null;
-    
-                      this.oninput = (() => {
-                        let isUpdating = false;
-                        let shouldUpdateAgain = false;
-                        return async () => {
-                          for (const { trigger, route, emptySearch, dropdownMenu } of dropdownMenus) {
-                            if (!dropdownMenu.state.isShown) {
-                              if (
-                                (this.selectionStart > 1 && this.value[this.selectionStart - 2].match(/^\\s$/) === null) ||
-                                this.value[this.selectionStart - 1] !== trigger
-                              ) continue;
-                              anchorIndex = this.selectionStart;
-                              const caretCoordinates = textareaCaret(this, this.selectionStart);
-                              dropdownMenuTarget.style.top = String(caretCoordinates.top - this.scrollTop) + "px";
-                              dropdownMenuTarget.style.left = String(caretCoordinates.left - 14) + "px";
-                              tippy.hideAll();
-                              dropdownMenu.show();
-                            }
-                            const search = this.value.slice(anchorIndex, this.selectionStart);
-                            if (this.selectionStart < anchorIndex || search.match(/[^a-z0-9\\/]/i) !== null) {
-                              dropdownMenu.hide();
-                              continue;
-                            }
-                            if (isUpdating) {
-                              shouldUpdateAgain = true;
-                              continue;
-                            }
-                            isUpdating = true;
-                            shouldUpdateAgain = false;
-                            const content = dropdownMenu.props.content;
-                            const searchResults = content.querySelector('[key="search-results"]');
-                            searchResults.partialParentElement = true;
-                            if (search === "")
-                              searchResults.innerHTML = emptySearch;
-                            else
-                              leafac.loadPartial(
-                                searchResults,
-                                await (await fetch(route + "?" + new URLSearchParams({ search }), { cache: "no-store" })).text()
-                              );
-                            const buttons = content.querySelectorAll(".button");
-                            for (const button of buttons) button.classList.remove("hover");
-                            if (buttons.length > 0) buttons[0].classList.add("hover");
-                            isUpdating = false;
-                            if (shouldUpdateAgain) this.oninput();
-                          }
-                        }
-                      })();
-    
-                      this.onkeydown = (event) => {
-                        for (const { dropdownMenu } of dropdownMenus) {
-                          if (!dropdownMenu.state.isShown) continue;
-                          const content = dropdownMenu.props.content;
-                          switch (event.code) {
-                            case "ArrowUp":
-                            case "ArrowDown":
-                              event.preventDefault();
-                              const buttons = [...content.querySelectorAll(".button")];
-                              if (buttons.length === 0) continue;    
-                              const currentHoverIndex = buttons.indexOf(content.querySelector(".button.hover"));
-                              if (
-                                currentHoverIndex === -1 ||
-                                (event.code === "ArrowUp" && currentHoverIndex === 0) ||
-                                (event.code === "ArrowDown" && currentHoverIndex === buttons.length - 1)
-                              ) continue;
-                              buttons[currentHoverIndex].classList.remove("hover");
-                              const buttonToHover = buttons[currentHoverIndex + (event.code === "ArrowUp" ? -1 : 1)];
-                              buttonToHover.classList.add("hover");
-                              scrollIntoViewIfNeeded(buttonToHover, { scrollMode: "if-needed" });
-                              break;
-                            case "Enter":
-                            case "Tab":
-                              const buttonHover = content.querySelector(".button.hover");
-                              if (buttonHover === null) dropdownMenu.hide();
-                              else {
-                                event.preventDefault();
-                                buttonHover.click();
-                              }
-                              break;
-                            case "Escape":
-                            case "ArrowLeft":
-                            case "ArrowRight":
-                            case "Home":
-                            case "End":
-                              dropdownMenu.hide();
-                              break;
-                          }
-                        }
-                      };
-    
-                      this.dropdownMenuComplete = (text) => {
-                        this.setSelectionRange(anchorIndex, this.selectionStart);
-                        textFieldEdit.insert(this, text);
-                        tippy.hideAll();
-                        this.focus();
-                      };
-
-                      this.onclick = this.onkeyup = () => {
-                        if (this.closest('[key="content-editor"]').querySelector('[key="poll-editor"]') !== null) return;
-                        
-                        for (const match of this.value.matchAll(/<courselore-poll\\s+reference="(?<pollReference>\\d+)"><\\/courselore-poll>/g))
-                          if (match.index <= this.selectionStart && this.selectionStart <= match.index + match[0].length) {
-                            const caretCoordinates = textareaCaret(this, this.selectionStart);
-                            dropdownMenuTarget.style.top = String(caretCoordinates.top - this.scrollTop) + "px";
-                            dropdownMenuTarget.style.left = String(caretCoordinates.left) + "px";
-
-                            (window.locals ??= {}).editPollReference = match.groups.pollReference;
-
-                            leafac.setTippy({
-                              element: dropdownMenuTarget,
-                              elementProperty: "dropdownPollEdit",
-                              tippyProps: {
-                                trigger: "manual",
-                                interactive: true,
-                                content: ${html`
-                                  <div class="dropdown--menu">
-                                    <button
-                                      type="button"
-                                      class="dropdown--menu--item button button--transparent"
-                                      javascript="${javascript`
-                                        this.onclick = async () => {
-                                          const loading = this.querySelector('[key="loading"]');
-                                          loading.hidden = false;
-                                          const response = await fetch(${`https://${application.configuration.hostname}/courses/${response.locals.course?.reference}/polls/`} + window.locals.editPollReference + ${`/edit${qs.stringify(
+                leafac.setTippy({
+                  event,
+                  element: this,
+                  elementProperty: "dropdown",
+                  tippyProps: {
+                    trigger: "click",
+                    interactive: true,
+                    content: ${html`
+                      <div
+                        css="${css`
+                          max-height: 40vh;
+                          overflow: auto;
+                          display: flex;
+                          flex-direction: column;
+                          gap: var(--space--2);
+                        `}"
+                      >
+                        $${response.locals.course !== undefined &&
+                        !(
+                          response.locals.enrollment?.courseRole ===
+                            "student" &&
+                          response.locals.course.studentsMayCreatePollsAt ===
+                            null
+                        )
+                          ? html`
+                              <div class="dropdown--menu">
+                                <button
+                                  type="button"
+                                  class="dropdown--menu--item button button--transparent"
+                                  javascript="${javascript`
+                                    this.onclick = () => {
+                                      tippy.hideAll();
+                                      const write = this.closest('[key="content-editor"]').querySelector('[key="content-editor--write"]');
+                                      if (write.querySelector('[key="poll-editor"]') !== null) return;
+                                      const poll = leafac.stringToElement(${partialPollEditor(
                                         {
-                                          redirect:
-                                            request.originalUrl.slice(1),
-                                        },
-                                        { addQueryPrefix: true }
-                                      )}`}, { cache: "no-store" });
-                                          loading.hidden = true;
-                                          if (!response.ok) {
-                                            leafac.setTippy({
-                                              element: this,
-                                              elementProperty: "errorTooltip",
-                                              tippyProps: {
-                                                theme: "rose",
-                                                trigger: "manual",
-                                                content: await response.text(),
-                                              },
-                                            });
-                                            this.errorTooltip.show();
-                                            return;
-                                          }
-                                          const poll = leafac.stringToElement(await response.text()).querySelector('[key="poll-editor"]');
-                                          this.closest('[key="content-editor"]').querySelector('[key="content-editor--write"]').insertAdjacentElement("afterbegin", poll);
-                                          leafac.execute({ element: poll });
-                                          tippy.hideAll();
-                                        };
-                                      `}"
-                                    >
-                                      <i class="bi bi-pencil"></i>
-                                      Edit Poll
-                                      <div key="loading" hidden>
-                                        $${application.web.locals.partials.spinner(
-                                          {
-                                            request,
-                                            response,
-                                            size: 10,
-                                          }
-                                        )}
-                                      </div>
-                                    </button>
-                                  </div>
-                                `},  
-                              },
-                            });
+                                          request: request as express.Request<
+                                            {},
+                                            any,
+                                            {},
+                                            { redirect?: string },
+                                            Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+                                          >,
+                                          response:
+                                            response as express.Response<
+                                              any,
+                                              Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+                                            >,
+                                        }
+                                      )}).querySelector('[key="poll-editor"]');
+                                      write.insertAdjacentElement("afterbegin", poll);
+                                      leafac.execute({ element: poll });
+                                    };
+                                  `}"
+                                >
+                                  <i class="bi bi-card-checklist"></i>
+                                  Poll
+                                </button>
+                              </div>
 
-                            tippy.hideAll();
-                            dropdownMenuTarget.dropdownPollEdit.show();
+                              <hr class="dropdown--separator" />
+                            `
+                          : html``}
 
-                            return;
-                          }
+                        <div class="dropdown--menu">
+                          <button
+                            type="button"
+                            class="dropdown--menu--item button button--transparent"
+                            javascript="${javascript`
+                              const textarea = this.closest("[data-tippy-root]")._tippy.reference.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
+            
+                              this.onclick = () => {
+                                this.closest("[data-tippy-root]")._tippy.hide();
+                                if (textarea.selectionStart === textarea.selectionEnd) {
+                                  textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "- ", "TEXT\\n\\n");
+                                  textarea.selectionEnd += "TEXT".length;
+                                } else {
+                                  const replacement = textFieldEdit.getSelection(textarea).split("\\n").map((line) => "- " + line).join("\\n");
+                                  const selectionStart = textarea.selectionStart + ((textarea.selectionStart > 0) ? "\\n\\n" : "").length;
+                                  textFieldEdit.insert(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + replacement + "\\n\\n");
+                                  textarea.selectionStart = selectionStart;
+                                  textarea.selectionEnd = textarea.selectionStart + replacement.length;
+                                }
+                                textarea.focus();
+                              };
 
-                        dropdownMenuTarget.dropdownPollEdit?.hide?.();
-                      };
-                    }
-                  `}"
-                >
-${contentSource}</textarea
-                >
-              </div>
-            </div>
-            $${compact
+                              (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+shift+8", () => { this.click(); return false; });
+                            `}"
+                          >
+                            <i class="bi bi-list-ul"></i>
+                            Bulleted List
+                            <span class="keyboard-shortcut">
+                              <span
+                                javascript="${javascript`
+                                  this.hidden = leafac.isAppleDevice;
+                                `}"
+                                >Ctrl+Shift+8</span
+                              ><span
+                                class="keyboard-shortcut--cluster"
+                                javascript="${javascript`
+                                  this.hidden = !leafac.isAppleDevice;
+                                `}"
+                                ><i class="bi bi-shift"></i
+                                ><i class="bi bi-command"></i>8</span
+                              >
+                            </span>
+                          </button>
+                          <button
+                            type="button"
+                            class="dropdown--menu--item button button--transparent"
+                            javascript="${javascript`
+                              const textarea = this.closest("[data-tippy-root]")._tippy.reference.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
+            
+                              this.onclick = () => {
+                                this.closest("[data-tippy-root]")._tippy.hide();
+                                if (textarea.selectionStart === textarea.selectionEnd) {
+                                  textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "1. ", "TEXT\\n\\n");
+                                  textarea.selectionEnd += "TEXT".length;
+                                } else {
+                                  const replacement = textFieldEdit.getSelection(textarea).split("\\n").map((line, index) => String(index + 1) + ". " + line).join("\\n");
+                                  const selectionStart = textarea.selectionStart + ((textarea.selectionStart > 0) ? "\\n\\n" : "").length;
+                                  textFieldEdit.insert(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + replacement + "\\n\\n");
+                                  textarea.selectionStart = selectionStart;
+                                  textarea.selectionEnd = textarea.selectionStart + replacement.length;
+                                }
+                                textarea.focus();
+                              };
+
+                              (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+shift+7", () => { this.click(); return false; });
+                            `}"
+                          >
+                            <i class="bi bi-list-ol"></i>
+                            Numbered List
+                            <span class="keyboard-shortcut">
+                              <span
+                                javascript="${javascript`
+                                  this.hidden = leafac.isAppleDevice;
+                                `}"
+                                >Ctrl+Shift+7</span
+                              ><span
+                                class="keyboard-shortcut--cluster"
+                                javascript="${javascript`
+                                  this.hidden = !leafac.isAppleDevice;
+                                `}"
+                                ><i class="bi bi-shift"></i
+                                ><i class="bi bi-command"></i>7</span
+                              >
+                            </span>
+                          </button>
+                          <button
+                            type="button"
+                            class="dropdown--menu--item button button--transparent"
+                            javascript="${javascript`
+                              const textarea = this.closest("[data-tippy-root]")._tippy.reference.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
+            
+                              this.onclick = () => {
+                                this.closest("[data-tippy-root]")._tippy.hide();
+                                if (textarea.selectionStart === textarea.selectionEnd) {
+                                  textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "- [ ] ", "TEXT (USE [X] TO MARK ITEM AS DONE)\\n\\n");
+                                  textarea.selectionEnd += "TEXT (USE [X] TO MARK ITEM AS DONE)".length;
+                                } else {
+                                  const replacement = textFieldEdit.getSelection(textarea).split("\\n").map((line) => "- [ ] " + line).join("\\n");
+                                  const selectionStart = textarea.selectionStart + ((textarea.selectionStart > 0) ? "\\n\\n" : "").length;
+                                  textFieldEdit.insert(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + replacement + "\\n\\n");
+                                  textarea.selectionStart = selectionStart;
+                                  textarea.selectionEnd = textarea.selectionStart + replacement.length;
+                                }
+                                textarea.focus();
+                              };
+
+                              (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+shift+9", () => { this.click(); return false; });
+                            `}"
+                          >
+                            <i class="bi bi-list-check"></i>
+                            Checklist
+                            <span class="keyboard-shortcut">
+                              <span
+                                javascript="${javascript`
+                                  this.hidden = leafac.isAppleDevice;
+                                `}"
+                                >Ctrl+Shift+9</span
+                              ><span
+                                class="keyboard-shortcut--cluster"
+                                javascript="${javascript`
+                                  this.hidden = !leafac.isAppleDevice;
+                                `}"
+                                ><i class="bi bi-shift"></i
+                                ><i class="bi bi-command"></i>9</span
+                              >
+                            </span>
+                          </button>
+                        </div>
+
+                        <hr class="dropdown--separator" />
+
+                        <div class="dropdown--menu">
+                          <button
+                            type="button"
+                            class="dropdown--menu--item button button--transparent"
+                            javascript="${javascript`
+                              const textarea = this.closest("[data-tippy-root]")._tippy.reference.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
+            
+                              this.onclick = () => {
+                                this.closest("[data-tippy-root]")._tippy.hide();
+                                if (textarea.selectionStart === textarea.selectionEnd) {
+                                  textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "> ", "TEXT\\n\\n");
+                                  textarea.selectionEnd += "TEXT".length;
+                                } else {
+                                  const replacement = textFieldEdit.getSelection(textarea).split("\\n").map((line) => "> " + line).join("\\n");
+                                  const selectionStart = textarea.selectionStart + ((textarea.selectionStart > 0) ? "\\n\\n" : "").length;
+                                  textFieldEdit.insert(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + replacement + "\\n\\n");
+                                  textarea.selectionStart = selectionStart;
+                                  textarea.selectionEnd = textarea.selectionStart + replacement.length;
+                                }
+                                textarea.focus();
+                              };
+
+                              (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+'", () => { this.click(); return false; });
+                            `}"
+                          >
+                            <i class="bi bi-quote"></i>
+                            Blockquote
+                            <span class="keyboard-shortcut">
+                              <span
+                                javascript="${javascript`
+                                  this.hidden = leafac.isAppleDevice;
+                                `}"
+                                >Ctrl+'</span
+                              ><span
+                                class="keyboard-shortcut--cluster"
+                                javascript="${javascript`
+                                  this.hidden = !leafac.isAppleDevice;
+                                `}"
+                                ><i class="bi bi-command"></i>'</span
+                              >
+                            </span>
+                          </button>
+                          <button
+                            type="button"
+                            class="dropdown--menu--item button button--transparent"
+                            javascript="${javascript`
+                              const textarea = this.closest("[data-tippy-root]")._tippy.reference.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
+            
+                              this.onclick = () => {
+                                this.closest("[data-tippy-root]")._tippy.hide();
+                                const selectionStart = textarea.selectionStart + (textFieldEdit.getSelection(textarea) + ((textarea.selectionEnd > 0) ? "\\n\\n" : "") + "| ").length;
+                                textFieldEdit.insert(textarea, textFieldEdit.getSelection(textarea) + ((textarea.selectionEnd > 0) ? "\\n\\n" : "") + "| HEADING | HEADING |\\n|---------|---------|\\n| CONTENT | CONTENT |\\n\\n");
+                                textarea.selectionStart = selectionStart;
+                                textarea.selectionEnd = textarea.selectionStart + "HEADING".length;
+                                textarea.focus();
+                              };
+                          
+                              (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+alt+t", () => { this.click(); return false; });
+                            `}"
+                          >
+                            <i class="bi bi-table"></i>
+                            Table
+                            <span class="keyboard-shortcut">
+                              <span
+                                javascript="${javascript`
+                                  this.hidden = leafac.isAppleDevice;
+                                `}"
+                                >Ctrl+Alt+T</span
+                              ><span
+                                class="keyboard-shortcut--cluster"
+                                javascript="${javascript`
+                                  this.hidden = !leafac.isAppleDevice;
+                                `}"
+                                ><i class="bi bi-alt"></i
+                                ><i class="bi bi-command"></i>T</span
+                              >
+                            </span>
+                          </button>
+                          <button
+                            type="button"
+                            class="dropdown--menu--item button button--transparent"
+                            javascript="${javascript`
+                              const textarea = this.closest("[data-tippy-root]")._tippy.reference.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
+            
+                              this.onclick = () => {
+                                this.closest("[data-tippy-root]")._tippy.hide();
+                                if (textarea.selectionStart === textarea.selectionEnd) {
+                                  textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "<details>\\n<summary>", "SUMMARY</summary>\\n\\nCONTENT\\n\\n</details>\\n\\n");
+                                  textarea.selectionEnd += "SUMMARY".length;
+                                }
+                                else
+                                  textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "<details>\\n<summary>SUMMARY</summary>\\n\\n", "\\n\\n</details>\\n\\n");
+                                textarea.focus();
+                              };
+                          
+                              (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+shift+d", () => { this.click(); return false; });
+                            `}"
+                          >
+                            <i class="bi bi-chevron-bar-expand"></i>
+                            Disclosure
+                            <span class="keyboard-shortcut">
+                              <span
+                                javascript="${javascript`
+                                  this.hidden = leafac.isAppleDevice;
+                                `}"
+                                >Ctrl+Shift+D</span
+                              ><span
+                                class="keyboard-shortcut--cluster"
+                                javascript="${javascript`
+                                  this.hidden = !leafac.isAppleDevice;
+                                `}"
+                                ><i class="bi bi-shift"></i
+                                ><i class="bi bi-command"></i>D</span
+                              >
+                            </span>
+                          </button>
+                          <button
+                            type="button"
+                            class="dropdown--menu--item button button--transparent"
+                            javascript="${javascript`
+                              const textarea = this.closest("[data-tippy-root]")._tippy.reference.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
+            
+                              this.onclick = () => {
+                                this.closest("[data-tippy-root]")._tippy.hide();
+                                const identifier = Math.random().toString(36).slice(2);
+                                if (textarea.selectionStart === textarea.selectionEnd) {
+                                  textFieldEdit.wrapSelection(textarea, "[^footnote--" + identifier + "]\\n\\n[^footnote--" + identifier + "]: ", "FOOTNOTE");
+                                  textarea.selectionEnd += "FOOTNOTE".length;
+                                }
+                                else
+                                  textFieldEdit.wrapSelection(textarea, "[^footnote--" + identifier + "]\\n\\n[^footnote--" + identifier + "]: ", "");
+                                textarea.focus();
+                              };
+                          
+                              (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+shift+f", () => { this.click(); return false; });
+                            `}"
+                          >
+                            <i class="bi bi-card-text"></i>
+                            Footnote
+                            <span class="keyboard-shortcut">
+                              <span
+                                javascript="${javascript`
+                                  this.hidden = leafac.isAppleDevice;
+                                `}"
+                                >Ctrl+Shift+F</span
+                              ><span
+                                class="keyboard-shortcut--cluster"
+                                javascript="${javascript`
+                                  this.hidden = !leafac.isAppleDevice;
+                                `}"
+                                ><i class="bi bi-shift"></i
+                                ><i class="bi bi-command"></i>F</span
+                              >
+                            </span>
+                          </button>
+                        </div>
+
+                        <hr class="dropdown--separator" />
+
+                        <div class="dropdown--menu">
+                          <button
+                            type="button"
+                            class="dropdown--menu--item button button--transparent"
+                            javascript="${javascript`
+                              const textarea = this.closest("[data-tippy-root]")._tippy.reference.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
+            
+                              this.onclick = () => {
+                                this.closest("[data-tippy-root]")._tippy.hide();
+                                if (textarea.selectionStart === textarea.selectionEnd) {
+                                  textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "$$\\n", "LATEX\\n$$\\n\\n");
+                                  textarea.selectionEnd += "LATEX".length;
+                                }
+                                else
+                                  textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "$$\\n", "\\n$$\\n\\n");
+                                textarea.focus();
+                              };
+                          
+                              (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+alt+shift+e", () => { this.click(); return false; });
+                            `}"
+                          >
+                            <i class="bi bi-calculator"></i>
+                            Mathematics (LaTeX)
+                            <span class="keyboard-shortcut">
+                              <span
+                                javascript="${javascript`
+                                  this.hidden = leafac.isAppleDevice;
+                                `}"
+                                >Ctrl+Alt+Shift+E</span
+                              ><span
+                                class="keyboard-shortcut--cluster"
+                                javascript="${javascript`
+                                  this.hidden = !leafac.isAppleDevice;
+                                `}"
+                                ><i class="bi bi-alt"></i
+                                ><i class="bi bi-shift"></i
+                                ><i class="bi bi-command"></i>E</span
+                              >
+                            </span>
+                          </button>
+                          <button
+                            type="button"
+                            class="dropdown--menu--item button button--transparent"
+                            javascript="${javascript`
+                              const textarea = this.closest("[data-tippy-root]")._tippy.reference.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
+            
+                              this.onclick = () => {
+                                this.closest("[data-tippy-root]")._tippy.hide();
+                                if (textarea.selectionStart === textarea.selectionEnd) {
+                                  textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "\`\`\`", "LANGUAGE\\nCODE\\n\`\`\`\\n\\n");
+                                  textarea.selectionEnd += "LANGUAGE".length;
+                                }
+                                else
+                                  textFieldEdit.wrapSelection(textarea, ((textarea.selectionStart > 0) ? "\\n\\n" : "") + "\`\`\`LANGUAGE\\n", "\\n\`\`\`\\n\\n");
+                                textarea.focus();
+                              };
+                          
+                              (textarea.mousetrap ??= new Mousetrap(textarea)).bind("mod+shift+e", () => { this.click(); return false; });
+                            `}"
+                          >
+                            <i class="bi bi-braces"></i>
+                            Code
+                            <span class="keyboard-shortcut">
+                              <span
+                                javascript="${javascript`
+                                  this.hidden = leafac.isAppleDevice;
+                                `}"
+                                >Ctrl+Shift+E</span
+                              ><span
+                                class="keyboard-shortcut--cluster"
+                                javascript="${javascript`
+                                  this.hidden = !leafac.isAppleDevice;
+                                `}"
+                                ><i class="bi bi-shift"></i
+                                ><i class="bi bi-command"></i>E</span
+                              >
+                            </span>
+                          </button>
+                        </div>
+                      </div>
+                    `},  
+                  },
+                });
+              `}"
+            >
+              <i class="bi bi-textarea-t"></i>
+            </button>
+            $${response.locals.course !== undefined
               ? html`
                   <button
                     type="button"
-                    class="button button--transparent"
-                    css="${css`
-                      position: relative;
-                      justify-self: end;
-                      &:hover,
-                      &:focus-within {
-                        background-color: var(--color--zinc--300);
-                      }
-                      &:active {
-                        background-color: var(--color--zinc--400);
-                      }
-                      @media (prefers-color-scheme: dark) {
-                        &:hover,
-                        &:focus-within {
-                          background-color: var(--color--zinc--600);
-                        }
-                        &:active {
-                          background-color: var(--color--zinc--500);
-                        }
-                      }
-                      width: var(--font-size--2xl);
-                      height: var(--font-size--2xl);
-                      padding: var(--space--0);
-                      border-radius: var(--border-radius--circle);
-                      margin: var(--space--1);
-                      align-items: center;
-                    `}"
+                    class="button button--tight button--transparent"
                     javascript="${javascript`
                       leafac.setTippy({
                         event,
                         element: this,
                         tippyProps: {
                           touch: false,
-                          content: "Toolbar",
+                          content: "Mentions & References",
                         },
                       });
 
-                      this.onclick = async () => {
-                        const toolbar = this.closest('[key="content-editor"]').querySelector('[key="content-editor--toolbar"]');
-                        toolbar.hidden = !toolbar.hidden;
-                        await fetch(${`https://${application.configuration.hostname}/preferences`}, {
-                          method: "PATCH",
-                          headers: { "CSRF-Protection": "true", },
-                          cache: "no-store",
-                          body: new URLSearchParams({ preferContentEditorToolbarInCompact: String(!toolbar.hidden), }),
-                        });
-                      };
+                      leafac.setTippy({
+                        event,
+                        element: this,
+                        elementProperty: "dropdown",
+                        tippyProps: {
+                          trigger: "click",
+                          interactive: true,
+                          content: ${html`
+                            <div
+                              css="${css`
+                                max-height: 40vh;
+                                overflow: auto;
+                                display: flex;
+                                flex-direction: column;
+                                gap: var(--space--2);
+                              `}"
+                            >
+                              <div class="dropdown--menu">
+                                <button
+                                  type="button"
+                                  class="dropdown--menu--item button button--transparent"
+                                  javascript="${javascript`
+                                    const textarea = this.closest("[data-tippy-root]")._tippy.reference.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
+                  
+                                    this.onclick = () => {
+                                      this.closest("[data-tippy-root]")._tippy.hide();
+                                      textFieldEdit.wrapSelection(textarea, " @", "");
+                                      textarea.focus();
+                                    };
+                                  `}"
+                                >
+                                  <i class="bi bi-at"></i>
+                                  Mention Person
+                                  <span class="keyboard-shortcut">@</span>
+                                </button>
+                                <button
+                                  type="button"
+                                  class="dropdown--menu--item button button--transparent"
+                                  javascript="${javascript`
+                                    const textarea = this.closest("[data-tippy-root]")._tippy.reference.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
+                  
+                                    this.onclick = () => {
+                                      this.closest("[data-tippy-root]")._tippy.hide();
+                                      textFieldEdit.wrapSelection(textarea, " #", "");
+                                      textarea.focus();
+                                    };
+                                  `}"
+                                >
+                                  <i class="bi bi-hash"></i>
+                                  Refer to Conversation or Message
+                                  <span class="keyboard-shortcut">#</span>
+                                </button>
+                              </div>
+                            </div>
+                          `},  
+                        },
+                      });
                     `}"
                   >
-                    <i class="bi bi-three-dots-vertical"></i>
+                    <i class="bi bi-at"></i>
                   </button>
                 `
               : html``}
+            <label
+              class="button button--tight button--transparent"
+              javascript="${javascript`
+                leafac.setTippy({
+                  event,
+                  element: this,
+                  tippyProps: {
+                    touch: false,
+                    content: ${html`
+                      Programmer Mode
+                      <span class="secondary">(Monospaced Font)</span>
+                    `},
+                  },
+                });
+              `}"
+            >
+              <input
+                type="checkbox"
+                $${typeof response.locals.user
+                  ?.preferContentEditorProgrammerModeAt === "string"
+                  ? html`checked`
+                  : html``}
+                class="visually-hidden input--radio-or-checkbox--multilabel"
+                javascript="${javascript`
+                  this.isModified = false;
+            
+                  const textarea = this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]');
+            
+                  this.onchange = async () => {
+                    textarea.classList[this.checked ? "add" : "remove"]("content-editor--write--textarea--programmer-mode");
+                    await fetch(${`https://${application.configuration.hostname}/preferences`}, {
+                      method: "PATCH",
+                      headers: { "CSRF-Protection": "true", },
+                      cache: "no-store",
+                      body: new URLSearchParams({ preferContentEditorProgrammerMode: String(this.checked), }),
+                    });
+                  };
+                `}"
+              />
+              <span>
+                <i class="bi bi-braces-asterisk"></i>
+              </span>
+              <span class="text--blue">
+                <i class="bi bi-braces-asterisk"></i>
+              </span>
+            </label>
+            <a
+              href="https://${application.configuration
+                .hostname}/help/styling-content"
+              target="_blank"
+              class="button button--tight button--transparent"
+              javascript="${javascript`
+                leafac.setTippy({
+                  event,
+                  element: this,
+                  tippyProps: {
+                    touch: false,
+                    content: "Help",
+                  },
+                });
+              `}"
+            >
+              <i class="bi bi-info-circle"></i>
+            </a>
           </div>
         </div>
 
         <div
-          key="content-editor--loading"
-          hidden
-          class="strong"
           css="${css`
-            padding: var(--space--4);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: var(--space--2);
+            background-color: var(--color--zinc--200);
+            @media (prefers-color-scheme: dark) {
+              background-color: var(--color--zinc--700);
+            }
+            border-radius: var(--border-radius--lg);
           `}"
         >
-          $${application.web.locals.partials.spinner({
-            request,
-            response,
-          })}
-          Loading…
-        </div>
+          <div key="content-editor--write">
+            <div
+              css="${css`
+                display: grid;
+                & > * {
+                  grid-area: 1 / 1;
+                }
+              `}"
+            >
+              <div>
+                <div
+                  css="${css`
+                    position: relative;
+                  `}"
+                >
+                  <div
+                    key="content-editor--write--textarea--dropdown-menu-target"
+                    css="${css`
+                      width: var(--space--0);
+                      height: var(--line-height--sm);
+                      position: absolute;
+                    `}"
+                  ></div>
+                  <textarea
+                    key="content-editor--write--textarea"
+                    name="${name}"
+                    $${required ? html`required` : html``}
+                    class="input--text input--text--textarea ${typeof response
+                      .locals.user?.preferContentEditorProgrammerModeAt ===
+                    "string"
+                      ? "content-editor--write--textarea--programmer-mode"
+                      : ""}"
+                    style="
+                      --height: ${compact
+                      ? `var(--space--14)`
+                      : `var(--space--20)`};
+                    "
+                    css="${css`
+                      height: var(--height);
+                      max-height: var(--space--64);
 
-        <div
-          key="content-editor--preview"
-          hidden
+                      &.drag {
+                        background-color: var(--color--blue--200);
+                        @media (prefers-color-scheme: dark) {
+                          background-color: var(--color--blue--900);
+                        }
+                      }
+
+                      &.content-editor--write--textarea--programmer-mode {
+                        font-family: "JetBrains MonoVariable",
+                          var(--font-family--monospace);
+                        font-variant-ligatures: none;
+                      }
+                    `} ${compact
+                      ? css`
+                          padding-right: var(--space--8);
+                        `
+                      : css``}"
+                    javascript="${javascript`
+                      if (${!modifiable}) this.isModified = false;
+
+                      autosize(this);
+                      autosize.update(this);
+      
+                      this.ondragenter = () => {
+                        this.classList.add("drag");
+                      };
+                      this.ondragleave = () => {
+                        this.classList.remove("drag");
+                      };
+      
+                      this.ondragover = (event) => {
+                        if (!event.dataTransfer.types.includes("Files")) return;
+                        event.preventDefault();
+                      };
+                      this.ondrop = (event) => {
+                        this.classList.remove("drag");
+                        if (event.dataTransfer.files.length === 0) return;
+                        event.preventDefault();
+                        this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--attachments"]').upload(event.dataTransfer.files);
+                      };
+      
+                      this.onpaste = (event) => {
+                        if (window.shiftKey) return;
+
+                        if (event.clipboardData.types.includes("text/html")) {
+                          event.preventDefault();
+
+                          const placeholder = "◊◊" + Math.random().toString(36).slice(2) + "◊◊";
+                          const replacements = [];
+
+                          const html = leafac.stringToElement(event.clipboardData.getData("text/html"));
+
+                          for (const element of html.querySelectorAll(".katex, .katex-display")) {
+                            const annotation = element.querySelector('annotation[encoding="application/x-tex"]');
+                            if (annotation === null) continue;
+                            replacements.push(
+                              (element.matches(".katex-display") ? "\\n\\n$$\\n" : "$") +
+                              annotation.textContent +
+                              (element.matches(".katex-display") ? "\\n$$\\n\\n" : "$")
+                            );
+                            element.outerHTML = "<span>" + placeholder + "</span>";
+                          }
+
+                          textFieldEdit.insert(
+                            this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]'),
+                            unified()
+                              .use(rehypeParse, { fragment: true })
+                              .use(rehypeRemark)
+                              .use(remarkGfm, { singleTilde: false })
+                              .use(remarkStringify)
+                              .processSync(html.innerHTML)
+                              .toString()
+                              .replaceAll(placeholder, () => replacements.shift())
+                          );
+                        } else if (event.clipboardData.types.includes("Files")) {
+                          if (event.clipboardData.files.length === 0) return;
+                          event.preventDefault();
+                          this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--attachments"]').upload(event.clipboardData.files);
+                        }
+                      };
+      
+                      if (${response.locals.course !== undefined}) {
+                        const dropdownMenuTarget = this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea--dropdown-menu-target"]');
+      
+                        const dropdownMenus = [
+                          {
+                            trigger: "@",
+                            route: ${`https://${
+                              application.configuration.hostname
+                            }/courses/${response.locals.course?.reference}/${
+                              response.locals.conversation !== undefined
+                                ? `conversations/${response.locals.conversation.reference}/`
+                                : ``
+                            }content-editor/mention-user-search`},
+                            emptySearch: ${html`
+                              <button
+                                type="button"
+                                class="dropdown--menu--item button button--transparent"
+                                javascript="${javascript`
+                                  this.onclick = () => {
+                                    this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete("everyone");
+                                  };
+                                `}"
+                              >
+                                Everyone in the Conversation
+                              </button>
+                              <button
+                                type="button"
+                                class="dropdown--menu--item button button--transparent"
+                                javascript="${javascript`
+                                  this.onclick = () => {
+                                    this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete("staff");
+                                  };
+                                `}"
+                              >
+                                Staff in the Conversation
+                              </button>
+                              <button
+                                type="button"
+                                class="dropdown--menu--item button button--transparent"
+                                javascript="${javascript`
+                                  this.onclick = () => {
+                                    this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete("students");
+                                  };
+                                `}"
+                              >
+                                Students in the Conversation
+                              </button>
+                              <div class="dropdown--menu--item secondary">
+                                Start typing to search…
+                              </div>
+                            `},
+                            dropdownMenu: leafac.setTippy({
+                              event,
+                              element: dropdownMenuTarget,
+                              elementProperty: "dropdownMenuMention",
+                              tippyProps: {
+                                placement: "bottom-start",
+                                trigger: "manual",
+                                interactive: true,
+                                content: ${html`
+                                  <div
+                                    css="${css`
+                                      width: var(--space--56);
+                                      max-height: var(--space--44);
+                                      overflow: auto;
+                                    `}"
+                                  >
+                                    <p class="heading">
+                                      <i class="bi bi-at"></i>
+                                      Mention Person
+                                    </p>
+                                    <div
+                                      key="search-results"
+                                      class="dropdown--menu"
+                                    ></div>
+                                  </div>
+                                `},  
+                              },
+                            }),
+                          },
+                          {
+                            trigger: "#",
+                            route: ${`https://${application.configuration.hostname}/courses/${response.locals.course?.reference}/content-editor/refer-to-conversation-or-message-search`},
+                            emptySearch: ${html`
+                              <div class="dropdown--menu--item secondary">
+                                Start typing to search…
+                              </div>
+                            `},
+                            dropdownMenu: leafac.setTippy({
+                              event,
+                              element: dropdownMenuTarget,
+                              elementProperty: "dropdownMenuReference",
+                              tippyProps: {
+                                placement: "bottom-start",
+                                trigger: "manual",
+                                interactive: true,
+                                content: ${html`
+                                  <div
+                                    css="${css`
+                                      width: var(--space--72);
+                                      max-height: var(--space--44);
+                                      overflow: auto;
+                                    `}"
+                                  >
+                                    <p class="heading">
+                                      <i class="bi bi-hash"></i>
+                                      Refer to Conversation or Message
+                                    </p>
+                                    <div
+                                      key="search-results"
+                                      class="dropdown--menu"
+                                    ></div>
+                                  </div>
+                                `},  
+                              },
+                            }),
+                          },
+                        ];
+      
+                        let anchorIndex = null;
+      
+                        this.oninput = (() => {
+                          let isUpdating = false;
+                          let shouldUpdateAgain = false;
+                          return async () => {
+                            for (const { trigger, route, emptySearch, dropdownMenu } of dropdownMenus) {
+                              if (!dropdownMenu.state.isShown) {
+                                if (
+                                  (this.selectionStart > 1 && this.value[this.selectionStart - 2].match(/^\\s$/) === null) ||
+                                  this.value[this.selectionStart - 1] !== trigger
+                                ) continue;
+                                anchorIndex = this.selectionStart;
+                                const caretCoordinates = textareaCaret(this, this.selectionStart);
+                                dropdownMenuTarget.style.top = String(caretCoordinates.top - this.scrollTop) + "px";
+                                dropdownMenuTarget.style.left = String(caretCoordinates.left - 14) + "px";
+                                tippy.hideAll();
+                                dropdownMenu.show();
+                              }
+                              const search = this.value.slice(anchorIndex, this.selectionStart);
+                              if (this.selectionStart < anchorIndex || search.match(/[^a-z0-9\\/]/i) !== null) {
+                                dropdownMenu.hide();
+                                continue;
+                              }
+                              if (isUpdating) {
+                                shouldUpdateAgain = true;
+                                continue;
+                              }
+                              isUpdating = true;
+                              shouldUpdateAgain = false;
+                              const content = dropdownMenu.props.content;
+                              const searchResults = content.querySelector('[key="search-results"]');
+                              searchResults.partialParentElement = true;
+                              if (search === "")
+                                searchResults.innerHTML = emptySearch;
+                              else
+                                leafac.loadPartial(
+                                  searchResults,
+                                  await (await fetch(route + "?" + new URLSearchParams({ search }), { cache: "no-store" })).text()
+                                );
+                              const buttons = content.querySelectorAll(".button");
+                              for (const button of buttons) button.classList.remove("hover");
+                              if (buttons.length > 0) buttons[0].classList.add("hover");
+                              isUpdating = false;
+                              if (shouldUpdateAgain) this.oninput();
+                            }
+                          }
+                        })();
+      
+                        this.onkeydown = (event) => {
+                          for (const { dropdownMenu } of dropdownMenus) {
+                            if (!dropdownMenu.state.isShown) continue;
+                            const content = dropdownMenu.props.content;
+                            switch (event.code) {
+                              case "ArrowUp":
+                              case "ArrowDown":
+                                event.preventDefault();
+                                const buttons = [...content.querySelectorAll(".button")];
+                                if (buttons.length === 0) continue;    
+                                const currentHoverIndex = buttons.indexOf(content.querySelector(".button.hover"));
+                                if (
+                                  currentHoverIndex === -1 ||
+                                  (event.code === "ArrowUp" && currentHoverIndex === 0) ||
+                                  (event.code === "ArrowDown" && currentHoverIndex === buttons.length - 1)
+                                ) continue;
+                                buttons[currentHoverIndex].classList.remove("hover");
+                                const buttonToHover = buttons[currentHoverIndex + (event.code === "ArrowUp" ? -1 : 1)];
+                                buttonToHover.classList.add("hover");
+                                scrollIntoViewIfNeeded(buttonToHover, { scrollMode: "if-needed" });
+                                break;
+                              case "Enter":
+                              case "Tab":
+                                const buttonHover = content.querySelector(".button.hover");
+                                if (buttonHover === null) dropdownMenu.hide();
+                                else {
+                                  event.preventDefault();
+                                  buttonHover.click();
+                                }
+                                break;
+                              case "Escape":
+                              case "ArrowLeft":
+                              case "ArrowRight":
+                              case "Home":
+                              case "End":
+                                dropdownMenu.hide();
+                                break;
+                            }
+                          }
+                        };
+      
+                        this.dropdownMenuComplete = (text) => {
+                          this.setSelectionRange(anchorIndex, this.selectionStart);
+                          textFieldEdit.insert(this, text);
+                          tippy.hideAll();
+                          this.focus();
+                        };
+
+                        this.onclick = this.onkeyup = () => {
+                          if (this.closest('[key="content-editor"]').querySelector('[key="poll-editor"]') !== null) return;
+                          
+                          for (const match of this.value.matchAll(/<courselore-poll\\s+reference="(?<pollReference>\\d+)"><\\/courselore-poll>/g))
+                            if (match.index <= this.selectionStart && this.selectionStart <= match.index + match[0].length) {
+                              const caretCoordinates = textareaCaret(this, this.selectionStart);
+                              dropdownMenuTarget.style.top = String(caretCoordinates.top - this.scrollTop) + "px";
+                              dropdownMenuTarget.style.left = String(caretCoordinates.left) + "px";
+
+                              (window.locals ??= {}).editPollReference = match.groups.pollReference;
+
+                              leafac.setTippy({
+                                element: dropdownMenuTarget,
+                                elementProperty: "dropdownPollEdit",
+                                tippyProps: {
+                                  trigger: "manual",
+                                  interactive: true,
+                                  content: ${html`
+                                    <div class="dropdown--menu">
+                                      <button
+                                        type="button"
+                                        class="dropdown--menu--item button button--transparent"
+                                        javascript="${javascript`
+                                          this.onclick = async () => {
+                                            const loading = this.querySelector('[key="loading"]');
+                                            loading.hidden = false;
+                                            const response = await fetch(${`https://${application.configuration.hostname}/courses/${response.locals.course?.reference}/polls/`} + window.locals.editPollReference + ${`/edit${qs.stringify(
+                                          {
+                                            redirect:
+                                              request.originalUrl.slice(1),
+                                          },
+                                          { addQueryPrefix: true }
+                                        )}`}, { cache: "no-store" });
+                                            loading.hidden = true;
+                                            if (!response.ok) {
+                                              leafac.setTippy({
+                                                element: this,
+                                                elementProperty: "errorTooltip",
+                                                tippyProps: {
+                                                  theme: "rose",
+                                                  trigger: "manual",
+                                                  content: await response.text(),
+                                                },
+                                              });
+                                              this.errorTooltip.show();
+                                              return;
+                                            }
+                                            const poll = leafac.stringToElement(await response.text()).querySelector('[key="poll-editor"]');
+                                            this.closest('[key="content-editor"]').querySelector('[key="content-editor--write"]').insertAdjacentElement("afterbegin", poll);
+                                            leafac.execute({ element: poll });
+                                            tippy.hideAll();
+                                          };
+                                        `}"
+                                      >
+                                        <i class="bi bi-pencil"></i>
+                                        Edit Poll
+                                        <div key="loading" hidden>
+                                          $${application.web.locals.partials.spinner(
+                                            {
+                                              request,
+                                              response,
+                                              size: 10,
+                                            }
+                                          )}
+                                        </div>
+                                      </button>
+                                    </div>
+                                  `},  
+                                },
+                              });
+
+                              tippy.hideAll();
+                              dropdownMenuTarget.dropdownPollEdit.show();
+
+                              return;
+                            }
+
+                          dropdownMenuTarget.dropdownPollEdit?.hide?.();
+                        };
+                      }
+                    `}"
+                  >
+${contentSource}</textarea
+                  >
+                </div>
+              </div>
+              $${compact
+                ? html`
+                    <button
+                      type="button"
+                      class="button button--transparent"
+                      css="${css`
+                        position: relative;
+                        justify-self: end;
+                        &:hover,
+                        &:focus-within {
+                          background-color: var(--color--zinc--300);
+                        }
+                        &:active {
+                          background-color: var(--color--zinc--400);
+                        }
+                        @media (prefers-color-scheme: dark) {
+                          &:hover,
+                          &:focus-within {
+                            background-color: var(--color--zinc--600);
+                          }
+                          &:active {
+                            background-color: var(--color--zinc--500);
+                          }
+                        }
+                        width: var(--font-size--2xl);
+                        height: var(--font-size--2xl);
+                        padding: var(--space--0);
+                        border-radius: var(--border-radius--circle);
+                        margin: var(--space--1);
+                        align-items: center;
+                      `}"
+                      javascript="${javascript`
+                        leafac.setTippy({
+                          event,
+                          element: this,
+                          tippyProps: {
+                            touch: false,
+                            content: "Toolbar",
+                          },
+                        });
+
+                        this.onclick = async () => {
+                          const toolbar = this.closest('[key="content-editor"]').querySelector('[key="content-editor--toolbar"]');
+                          toolbar.hidden = !toolbar.hidden;
+                          await fetch(${`https://${application.configuration.hostname}/preferences`}, {
+                            method: "PATCH",
+                            headers: { "CSRF-Protection": "true", },
+                            cache: "no-store",
+                            body: new URLSearchParams({ preferContentEditorToolbarInCompact: String(!toolbar.hidden), }),
+                          });
+                        };
+                      `}"
+                    >
+                      <i class="bi bi-three-dots-vertical"></i>
+                    </button>
+                  `
+                : html``}
+            </div>
+          </div>
+
+          <div
+            key="content-editor--loading"
+            hidden
+            class="strong"
+            css="${css`
+              padding: var(--space--4);
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              gap: var(--space--2);
+            `}"
+          >
+            $${application.web.locals.partials.spinner({
+              request,
+              response,
+            })}
+            Loading…
+          </div>
+
+          <div
+            key="content-editor--preview"
+            hidden
+            css="${css`
+              padding: var(--space--2) var(--space--4);
+            `}"
+          ></div>
+        </div>
+      </div>
+
+      <div
+        class="secondary"
+        css="${css`
+          font-size: var(--font-size--xs);
+          line-height: var(--line-height--xs);
+        `}"
+      >
+        <i
+          class="bi bi-clipboard"
           css="${css`
-            padding: var(--space--2) var(--space--4);
+            margin-right: var(--space--1);
           `}"
-        ></div>
+        ></i>
+        Paste without rich-text formatting with
+        <span class="keyboard-shortcut">
+          <span
+            javascript="${javascript`
+              this.hidden = leafac.isAppleDevice;
+            `}"
+            >Ctrl+Shift+V</span
+          ><span
+            class="keyboard-shortcut--cluster"
+            javascript="${javascript`
+              this.hidden = !leafac.isAppleDevice;
+            `}"
+            ><i class="bi bi-shift"></i><i class="bi bi-command"></i>V</span
+          >
+        </span>
       </div>
     </div>
   `;
