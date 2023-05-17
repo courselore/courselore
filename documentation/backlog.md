@@ -2,11 +2,6 @@
 
 ## Work in Progress
 
-- See what Discourse does for spreadsheets → tables.
-- Paste from Piazza
-
----
-
 - User interface tweaks
   - Conversation Participants
     - Save on close dropdown menu
