@@ -562,8 +562,8 @@ export function morph(from, to, event = undefined) {
         case "input":
           for (const property of [
             "value",
-            "disabled",
             "checked",
+            "disabled",
             "indeterminate",
           ])
             if (from[property] !== to[property]) from[property] = to[property];
