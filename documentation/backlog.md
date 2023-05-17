@@ -2,22 +2,11 @@
 
 ## Work in Progress
 
-- Rich-text paste
-  - Disable rich-text paste on mobile
-  - Later
-    - Mobile: Perhaps do a toggle, just like Programmer Mode, for rich-text pasting
-    - Bundle size got bigger:
-      - Do it on the server?
-      - Split this dependency into a separate file that’s loaded later?
-    - Better mathematics, if that’s even possible
-      - We support KaTeX’s `annotation` tags and Wikipedia’s images, but not much else, because the source material doesn’t give us enough to go by.
-        - We tried doing MathML → LaTeX, but the MathML in the clipboard material includes `�` in place of some characters
-        - Oddly enough, the `annotation` tag sometimes seems to show up in the clipboard (https://katex.org/), and sometimes it doesn’t (https://cs226sp23.github.io/notes/10-asymptotics/step05.html), even though it’s in the DOM 🤷‍♂️
-      - Examples
-        - https://katex.org/
-        - https://www.mathjax.org/
-        - https://en.wikipedia.org/wiki/Big_O_notation
-        - https://cs226sp23.github.io/notes/10-asymptotics/step05.html
+- See what Discourse does for spreadsheets → tables.
+- Paste from Piazza
+
+---
+
 - User interface tweaks
   - Conversation Participants
     - Save on close dropdown menu
@@ -275,12 +264,23 @@
 - Dragging a directory from Finder makes the request fail without even an error code(!)
 - In programmer mode, change the behavior of when the `@mentions` and `#references` widgets appear and go away, particularly in code & mathematics blocks.
 - Load “Preview” on hover/focus to speed things up?
-- When pasting things like spreadsheets into the editor, turn them into Markdown tables.
-  - Do the same for links, bold, and other inline styles.
-  - @github/paste-markdown
-  - See what Discourse does for spreadsheets → tables.
-  - Paste from Piazza
-  - LaTeX
+- Rich-text paste
+  - Mobile
+    - Rich-text pasting is flaky
+    - There’s no way to force a plain-text pasting: Perhaps do a toggle, just like Programmer Mode, for rich-text pasting?
+  - Bundle size got bigger:
+    - Do it on the server?
+    - Split this dependency into a separate file that’s loaded later?
+  - Better mathematics, if that’s even possible
+    - We support KaTeX’s `annotation` tags and Wikipedia’s images, but not much else, because the source material doesn’t give us enough to go by.
+      - We tried doing MathML → LaTeX, but the MathML in the clipboard material includes `�` in place of some characters
+      - Oddly enough, the `annotation` tag sometimes seems to show up in the clipboard (https://katex.org/), and sometimes it doesn’t (https://cs226sp23.github.io/notes/10-asymptotics/step05.html), even though it’s in the DOM 🤷‍♂️
+    - Examples
+      - https://katex.org/
+      - https://www.mathjax.org/
+      - https://en.wikipedia.org/wiki/Big_O_notation
+      - https://cs226sp23.github.io/notes/10-asymptotics/step05.html
+  - @github/paste-markdown: More sophisticated in mixing rich-text with pain-text without resorting to different pasting modalities
 
 ## Notifications
 
