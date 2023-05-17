@@ -955,6 +955,13 @@ export const isSafari = /Version\/([0-9\._]+).*Safari/.test(
   navigator.userAgent
 );
 
+export let shiftKey = false;
+window.addEventListener("keydown", globalShiftKeyDetector);
+window.addEventListener("keyup", globalShiftKeyDetector);
+function globalShiftKeyDetector(event) {
+  shiftKey = event.shiftKey;
+}
+
 export const regExps = {
   email: /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i,
   localizedDateTime: /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/,

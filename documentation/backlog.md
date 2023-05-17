@@ -3,9 +3,9 @@
 ## Work in Progress
 
 - Rich-text paste
-  - Mobile
-    - Perhaps we’ll need a toggle, just like Programmer Mode, for rich-text pasting
+  - Disable rich-text paste on mobile
   - Later
+    - Mobile: Perhaps do a toggle, just like Programmer Mode, for rich-text pasting
     - Bundle size got bigger:
       - Do it on the server?
       - Split this dependency into a separate file that’s loaded later?

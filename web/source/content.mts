@@ -3046,7 +3046,7 @@ export default async (application: Application): Promise<void> => {
                       };
       
                       this.onpaste = (event) => {
-                        if (window.shiftKey) return;
+                        if (leafac.shiftKey) return;
 
                         if (event.clipboardData.types.includes("text/html")) {
                           event.preventDefault();
