@@ -3078,6 +3078,13 @@ export default async (application: Application): Promise<void> => {
                               .toString()
                               .replaceAll(placeholder, () => replacements.shift())
                           );
+
+                          const richTextHelp = this.closest('[key="content-editor"]').querySelector('[key="content-editor--rich-text-help"]');
+                          richTextHelp.hidden = false;
+                          window.clearTimeout(richTextHelp.hideTimeout);
+                          richTextHelp.hideTimeout = window.setTimeout(() => {
+                            richTextHelp.hidden = true;
+                          }, 10 * 1000);
                         } else if (event.clipboardData.types.includes("Files")) {
                           if (event.clipboardData.files.length === 0) return;
                           event.preventDefault();
@@ -3477,6 +3484,8 @@ ${contentSource}</textarea
       </div>
 
       <div
+        key="content-editor--rich-text-help"
+        hidden
         class="secondary"
         css="${css`
           font-size: var(--font-size--xs);
