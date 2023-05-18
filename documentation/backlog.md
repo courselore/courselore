@@ -4,8 +4,6 @@
 
 - User interface tweaks
   - Conversation Participants flaky on Live-Updates:
-    - Submit form and reload page will tell you that you have unfinished business
-      - Could we use `.setAttribute()` instead of `.defaultValue`/`.defaultChecked`?
     - “Update Participants”
       - Outside the dropdown shouldn’t show up?
       - Inside dropdown shouldn’t exist?

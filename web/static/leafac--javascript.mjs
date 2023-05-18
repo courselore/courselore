@@ -528,18 +528,23 @@ export function morph(from, to, event = undefined) {
   for (const { from, to } of toMorph) {
     if (from.nodeType !== from.ELEMENT_NODE) continue;
 
+    const isInput = ["input", "textarea"].includes(from.tagName.toLowerCase());
+    const inputAttributes = ["value", "checked"];
+
     for (const attribute of new Set([
       ...from.getAttributeNames(),
       ...to.getAttributeNames(),
+      ...(isInput ? inputAttributes : []),
     ])) {
       if (
-        ["value", "checked"].includes(attribute) ||
-        (event?.detail?.liveUpdate &&
-          ["style", "hidden", "disabled"].includes(attribute) &&
-          ancestors(from).every(
-            (element) =>
-              element.onbeforemorphattribute?.(event, attribute) !== true
-          ))
+        event?.detail?.liveUpdate &&
+        ["style", "hidden", "disabled", ...inputAttributes].includes(
+          attribute
+        ) &&
+        ancestors(from).every(
+          (element) =>
+            element.onbeforemorphattribute?.(event, attribute) !== true
+        )
       )
         continue;
 
@@ -549,22 +554,9 @@ export function morph(from, to, event = undefined) {
       if (toAttribute === null) from.removeAttribute(attribute);
       else if (fromAttribute !== toAttribute)
         from.setAttribute(attribute, toAttribute);
-    }
 
-    if (["input", "textarea"].includes(from.tagName.toLowerCase()))
-      for (const attribute of ["value", "checked"]) {
-        const defaultAttribute = `default${capitalize(attribute)}`;
-        if (
-          (from[attribute] !== to[attribute] ||
-            from[defaultAttribute] !== to[defaultAttribute]) &&
-          (!event?.detail?.liveUpdate ||
-            ancestors(from).some(
-              (element) =>
-                element.onbeforemorphattribute?.(event, attribute) === true
-            ))
-        )
-          from[attribute] = from[defaultAttribute] = to[attribute];
-      }
+      if (inputAttributes.includes(attribute)) from[attribute] = to[attribute];
+    }
 
     morph(from, to, event);
   }
