@@ -12,7 +12,7 @@ ancestors(from).every(
   - Conversation Participants flaky on Live-Updates:
     - Now Live-Updates may update `value` and should update `defaultValue` as well for `isModified()` to work
       - "hidden" may use `setAttribute` because it modifies DOM attributes on JavaScript manipulation
-      - "value" "checked", may _not_ use `setAttribute` because they don’t modify DOM attributes on user input
+      - "value" "checked", may **not** use `setAttribute` because they don’t modify DOM attributes on user input
       - Check
         - "disabled",
         - "indeterminate",
