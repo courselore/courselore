@@ -925,13 +925,9 @@ export function previousSiblings(element) {
 }
 
 export function isConnected(element) {
-  for (const ancestor of ancestors(element)) {
-    if (ancestor.forceIsConnected === true || ancestor.matches("html"))
-      return true;
-    if (ancestor.matches("[data-tippy-root]"))
-      return isConnected(ancestor._tippy.reference);
-  }
-  return false;
+  return ancestors(element).some(
+    (ancestor) => ancestor.forceIsConnected === true || ancestor.matches("html")
+  );
 }
 
 // https://github.com/ccampbell/mousetrap/blob/2f9a476ba6158ba69763e4fcf914966cc72ef433/mousetrap.js#L135
