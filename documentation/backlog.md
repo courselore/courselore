@@ -11,11 +11,8 @@ ancestors(from).every(
 - User interface tweaks
   - Conversation Participants flaky on Live-Updates:
     - Now Live-Updates may update `value` and should update `defaultValue` as well for `isModified()` to work
-      - "hidden" may use `setAttribute` because it modifies DOM attributes on JavaScript manipulation
+      - "hidden", "disabled" may use `setAttribute` because it modifies DOM attributes on JavaScript manipulation
       - "value" "checked", may **not** use `setAttribute` because they don’t modify DOM attributes on user input
-      - Check
-        - "disabled",
-        - "indeterminate",
     - Dropdown doesn’t see the `onbeforemorphattribute`
   - @mention is flaky
     - Show/hide is flaky

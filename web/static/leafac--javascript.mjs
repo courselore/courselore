@@ -535,9 +535,7 @@ export function morph(from, to, event = undefined) {
       if (
         attribute === "style" ||
         (event?.detail?.liveUpdate &&
-          ["hidden", "value", "checked", "disabled", "indeterminate"].includes(
-            attribute
-          ))
+          ["hidden", "value", "checked", "disabled"].includes(attribute))
       )
         continue;
 
@@ -551,12 +549,7 @@ export function morph(from, to, event = undefined) {
 
     switch (from.tagName.toLowerCase()) {
       case "input":
-        for (const property of [
-          "value",
-          "checked",
-          "disabled",
-          "indeterminate",
-        ])
+        for (const property of ["value", "checked", "disabled"])
           if (!event?.detail?.liveUpdate && from[property] !== to[property])
             from[property] = to[property];
         break;
