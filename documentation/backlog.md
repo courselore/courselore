@@ -6,8 +6,9 @@
   - Conversation Participants flaky on Live-Updates:
     - Test in other browsers and mobile
   - @mention is flaky
+    - Keyboard shortcuts (return/tab) don’t work in default options before you start typing
     - Show/hide is flaky
-    - Positioning in long messages
+    - Positioning in long messages in long conversations
 - Deploy
   - Add “News”
   - Review from `2118a2c7d83b8eaed7802a4aa78701ce5c612fa8`
