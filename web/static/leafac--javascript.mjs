@@ -533,19 +533,11 @@ export function morph(from, to, event = undefined) {
       ...to.getAttributeNames(),
     ])) {
       if (
-        ancestors(from).every(
-          (element) =>
-            element.onbeforemorphattribute?.(event, attribute) !== true
-        ) &&
-        (attribute === "style" ||
-          (event?.detail?.liveUpdate &&
-            [
-              "hidden",
-              "value",
-              "checked",
-              "disabled",
-              "indeterminate",
-            ].includes(attribute)))
+        attribute === "style" ||
+        (event?.detail?.liveUpdate &&
+          ["hidden", "value", "checked", "disabled", "indeterminate"].includes(
+            attribute
+          ))
       )
         continue;
 
