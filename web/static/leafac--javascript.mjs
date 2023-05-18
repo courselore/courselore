@@ -552,16 +552,19 @@ export function morph(from, to, event = undefined) {
     }
 
     if (["input", "textarea"].includes(from.tagName.toLowerCase()))
-      for (const attribute of ["value", "checked"])
+      for (const attribute of ["value", "checked"]) {
+        const defaultAttribute = `default${capitalize(attribute)}`;
         if (
-          from[attribute] !== to[attribute] &&
+          (from[attribute] !== to[attribute] ||
+            from[defaultAttribute] !== to[defaultAttribute]) &&
           (!event?.detail?.liveUpdate ||
             ancestors(from).some(
               (element) =>
                 element.onbeforemorphattribute?.(event, attribute) === true
             ))
         )
-          from[attribute] = to[attribute];
+          from[attribute] = from[defaultAttribute] = to[attribute];
+      }
 
     morph(from, to, event);
   }
