@@ -217,7 +217,7 @@ export function liveNavigation() {
         : new URLSearchParams(new FormData(event.target));
     const submitterName = event.submitter?.getAttribute("name");
     if (typeof submitterName === "string")
-      body.set(submitterName, event.submitter?.getAttribute("value") ?? "");
+      body.set(submitterName, event.submitter?.value ?? "");
 
     event.preventDefault();
 
@@ -692,6 +692,8 @@ export function isModified(element) {
   }
   return false;
 }
+
+window.isModified = isModified;
 
 export function serialize(element) {
   const urlSearchParams = new URLSearchParams();
