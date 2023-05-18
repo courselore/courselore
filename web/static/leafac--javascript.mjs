@@ -548,9 +548,16 @@ export function morph(from, to, event = undefined) {
     }
 
     if (["input", "textarea"].includes(from.tagName.toLowerCase()))
-      for (const property of ["value", "checked"])
-        if (!event?.detail?.liveUpdate && from[property] !== to[property])
-          from[property] = to[property];
+      for (const attribute of ["value", "checked"])
+        if (
+          from[attribute] !== to[attribute] &&
+          (!event?.detail?.liveUpdate ||
+            ancestors(from).some(
+              (element) =>
+                element.onbeforemorphattribute?.(event, attribute) === true
+            ))
+        )
+          from[attribute] = to[attribute];
 
     morph(from, to, event);
   }

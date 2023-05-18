@@ -2,15 +2,8 @@
 
 ## Work in Progress
 
-```javascript
-ancestors(from).every(
-  (element) => element.onbeforemorphattribute?.(event, attribute) !== true
-);
-```
-
 - User interface tweaks
   - Conversation Participants flaky on Live-Updates:
-    - Now Live-Updates may update `value` and should update `defaultValue` as well for `isModified()` to work
     - Dropdown doesn’t see the `onbeforemorphattribute`
   - @mention is flaky
     - Show/hide is flaky
