@@ -4,9 +4,6 @@
 
 - User interface tweaks
   - Conversation Participants flaky on Live-Updates:
-    - “Update Participants”
-      - Outside the dropdown shouldn’t show up?
-      - Inside dropdown shouldn’t exist?
     - Test in other browsers and mobile
   - @mention is flaky
     - Show/hide is flaky

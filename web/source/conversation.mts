@@ -6898,9 +6898,9 @@ export default async (application: Application): Promise<void> => {
                                         trigger: "click",
                                         interactive: true,
                                         placement: "bottom",
-                                        onHidden: () => {
-                                          const submit = this.closest("form").querySelector('[key="submit"]');
-                                          if (!submit.hidden) submit.querySelector("button").click();
+                                        onHide: () => {
+                                          const form = this.closest("form");
+                                          if (leafac.isModified(form)) form.querySelector('[key="submit"] button').click();
                                         },
                                         content: ${html`
                                           <div
@@ -6974,8 +6974,6 @@ export default async (application: Application): Promise<void> => {
                                                             for (const element of this.closest("form").querySelectorAll('[name="selectedParticipantsReferences[]"]'))
                                                               element.disabled = false;
                                                           }
-
-                                                          this.closest("form").querySelector('[key="submit"]').hidden = !leafac.isModified(this.closest("form"));
                                                         };
                                                       `}"
                                                     />
@@ -7212,8 +7210,6 @@ export default async (application: Application): Promise<void> => {
 
                                                                 this.onchange = () => {
                                                                   this.closest("form").querySelector(${`[name="selectedParticipantsReferences[]"][value="${enrollment.reference}"]`}).checked = this.checked;
-
-                                                                  this.closest("form").querySelector('[key="submit"]').hidden = !leafac.isModified(this.closest("form"));
                                                                 };
                                                               `}"
                                                             />
