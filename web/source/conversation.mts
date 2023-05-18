@@ -6872,7 +6872,7 @@ export default async (application: Application): Promise<void> => {
                                 gap: var(--space--2);
                               `}"
                               javascript="${javascript`
-                                this.onbeforemorphattribute = (event, attribute) => attribute === "checked";
+                                this.onbeforemorphattribute = (event, attribute) => ["hidden", "disabled", "checked"].includes(attribute);
                               `}"
                             >
                               <div

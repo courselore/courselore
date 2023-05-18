@@ -535,7 +535,11 @@ export function morph(from, to, event = undefined) {
       if (
         ["value", "checked"].includes(attribute) ||
         (event?.detail?.liveUpdate &&
-          ["style", "hidden", "disabled"].includes(attribute))
+          ["style", "hidden", "disabled"].includes(attribute) &&
+          ancestors(from).every(
+            (element) =>
+              element.onbeforemorphattribute?.(event, attribute) !== true
+          ))
       )
         continue;
 
