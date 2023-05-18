@@ -22,6 +22,7 @@
 - Think
   - Email notifications for Selected Participants?
   - Hard split between forum and chat?
+- A tab left open in Firefox for a long time seems to slow down the computer
 - UI on the upper left
 - LTI by fall
 
