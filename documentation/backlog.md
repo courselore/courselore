@@ -5,6 +5,7 @@
 - User interface tweaks
   - Conversation Participants flaky on Live-Updates:
     - Dropdown doesn’t see the `onbeforemorphattribute`
+      - Remove `isConnected()`?
   - @mention is flaky
     - Show/hide is flaky
     - Positioning in long messages

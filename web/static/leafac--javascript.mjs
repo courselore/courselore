@@ -895,7 +895,9 @@ export function ancestors(element) {
   const ancestors = [];
   while (element !== null) {
     ancestors.push(element);
-    element = element.parentElement;
+    element = element.matches("[data-tippy-root]")
+      ? element._tippy.reference
+      : element.parentElement;
   }
   return ancestors;
 }
