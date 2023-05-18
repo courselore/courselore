@@ -894,8 +894,8 @@ execute.functions = new Map();
 export function ancestors(element) {
   const ancestors = [];
   while (element !== null) {
-    ancestors.push(element);
-    element = element.matches("[data-tippy-root]")
+    if (element.nodeType === element.ELEMENT_NODE) ancestors.push(element);
+    element = element.matches?.("[data-tippy-root]")
       ? element._tippy.reference
       : element.parentElement;
   }

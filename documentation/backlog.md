@@ -8,6 +8,10 @@
       - New `ancestors()` changes `isConnected()`
     - Submit form and reload page will tell you that you have unfinished business
     - “Update Participants” outside the dropdown shouldn’t show up
+    - Change to “Everyone” and “Selected Participants” still show up
+      - In page
+      - In dropdown
+      - Probably the solution is to add `hidden` to `onbeforemorphattribute`
   - @mention is flaky
     - Show/hide is flaky
     - Positioning in long messages
