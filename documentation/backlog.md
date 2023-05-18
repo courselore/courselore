@@ -4,7 +4,6 @@
 
 - User interface tweaks
   - Conversation Participants flaky on Live-Updates:
-    - New `ancestors()` changes `isConnected()`
     - Submit form and reload page will tell you that you have unfinished business
     - “Update Participants” outside the dropdown shouldn’t show up
     - Change to “Everyone” and “Selected Participants” still show up
