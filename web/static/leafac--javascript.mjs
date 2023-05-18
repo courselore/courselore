@@ -533,9 +533,9 @@ export function morph(from, to, event = undefined) {
       ...to.getAttributeNames(),
     ])) {
       if (
-        attribute === "style" ||
+        ["value", "checked"].includes(attribute) ||
         (event?.detail?.liveUpdate &&
-          ["hidden", "value", "checked", "disabled"].includes(attribute))
+          ["style", "hidden", "disabled"].includes(attribute))
       )
         continue;
 
@@ -547,18 +547,10 @@ export function morph(from, to, event = undefined) {
         from.setAttribute(attribute, toAttribute);
     }
 
-    switch (from.tagName.toLowerCase()) {
-      case "input":
-        for (const property of ["value", "checked", "disabled"])
-          if (!event?.detail?.liveUpdate && from[property] !== to[property])
-            from[property] = to[property];
-        break;
-      case "textarea":
-        for (const property of ["value", "disabled"])
-          if (!event?.detail?.liveUpdate && from[property] !== to[property])
-            from[property] = to[property];
-        break;
-    }
+    if (["input", "textarea"].includes(from.tagName.toLowerCase()))
+      for (const property of ["value", "checked"])
+        if (!event?.detail?.liveUpdate && from[property] !== to[property])
+          from[property] = to[property];
 
     morph(from, to, event);
   }
