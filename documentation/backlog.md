@@ -5,7 +5,9 @@
 - User interface tweaks
   - Conversation Participants flaky on Live-Updates:
     - Dropdown doesn’t see the `onbeforemorphattribute`
-      - Remove `isConnected()`?
+      - New `ancestors()` changes `isConnected()`
+    - Submit form and reload page will tell you that you have unfinished business
+    - “Update Participants” outside the dropdown shouldn’t show up
   - @mention is flaky
     - Show/hide is flaky
     - Positioning in long messages
