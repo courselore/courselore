@@ -11,7 +11,6 @@ ancestors(from).every(
 - User interface tweaks
   - Conversation Participants flaky on Live-Updates:
     - Now Live-Updates may update `value` and should update `defaultValue` as well for `isModified()` to work
-      - Review uses of `style=""`
     - Dropdown doesn’t see the `onbeforemorphattribute`
   - @mention is flaky
     - Show/hide is flaky
