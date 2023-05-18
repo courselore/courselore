@@ -4,10 +4,6 @@
 
 - User interface tweaks
   - Conversation Participants flaky on Live-Updates:
-    - Change to “Everyone” and “Selected Participants” still show up
-      - In page
-      - In dropdown
-      - Probably the solution is to add `disabled`, `hidden` to `onbeforemorphattribute`
     - Submit form and reload page will tell you that you have unfinished business
     - “Update Participants”
       - Outside the dropdown shouldn’t show up?
