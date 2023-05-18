@@ -555,7 +555,11 @@ export function morph(from, to, event = undefined) {
       else if (fromAttribute !== toAttribute)
         from.setAttribute(attribute, toAttribute);
 
-      if (inputAttributes.includes(attribute)) from[attribute] = to[attribute];
+      if (
+        inputAttributes.includes(attribute) &&
+        from[attribute] !== to[attribute]
+      )
+        from[attribute] = to[attribute];
     }
 
     morph(from, to, event);
