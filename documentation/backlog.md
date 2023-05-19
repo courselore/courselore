@@ -3,8 +3,6 @@
 ## Work in Progress
 
 - User interface tweaks
-  - Conversation Participants flaky on Live-Updates:
-    - Test in other browsers and mobile
   - @mention is flaky
     - Keyboard shortcuts (return/tab) don’t work in default options before you start typing
     - Show/hide is flaky
