@@ -3,9 +3,9 @@
 ## Work in Progress
 
 - Deploy
+  - Changelog
   - Add “News”
   - Review from `2118a2c7d83b8eaed7802a4aa78701ce5c612fa8`
-  - Changelog
   - Backup
 - Fix issues with`let` in top-level of `javascript=""` code in light of Live-Updates
   - `isUpdating`
