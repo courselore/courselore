@@ -7,6 +7,7 @@
   - Review from `2118a2c7d83b8eaed7802a4aa78701ce5c612fa8`
   - Changelog
   - Backup
+- Write program to look for other occurrences of `let` in top-level of `javascript=""` code
 - Think
   - Email notifications for Selected Participants?
   - Hard split between forum and chat?
