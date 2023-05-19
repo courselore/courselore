@@ -12,21 +12,18 @@
 
 ## Unreleased
 
-- Introduced the notion of “Follow-Up Question”.
-- Introduced the notion of “Staff Whisper”.
-- Rich-text pasting
-- Several user interface improvements:
-  - Small user interface tweaks:
-    - Conversation participants
-      - The “Update Participants” button shows up on the dropdown menu.
-      - “+ Selected Students”
-      - Conversation participants: When going from “Everyone” → “Staff” or “Staff” → “Selected People” preselect as “Selected People” the people who have participated in the conversation, so that they don’t lose access to it.
-        - Use case: Student creates a question in which “Conversation Participants” is “Everyone”, but as a staff member you’d like to change that to “Staff” without cutting the student out.
-      - Save on close dropdown menu
-    - Preserve navigation state: most recently visited course/conversation.
-    - `@mention` widget: Sort by people who have recently participated in the conversation.
-    - New Note: When changing Participants, make it not an Announcement and Unpinned
-    - Fixed glitches in `@mentions`/`#references` widget
+- Introduced Rich-Text Pasting, which allows you to paste formatted text, spreadsheets, and so forth, directly into the content editor and preserve the formatting.
+- Introduced “Staff Whispers”, which are messages visible by staff only. Staff Whispers may be used, for example, to discuss how to answer a student’s question.
+- Introduced “Follow-Up Questions”, which are a new type of message in conversations of type “Question”, in addition to the existing message type of “Answer”. This helps tell apart messages simply saying “thanks for the answer” from messages that require some further action.
+- User interface improvements:
+  - Conversation participants
+    - Updating participants no longer requires you to click on the “Update Participants” button. The action is performed as soon as you close the dropdown menu.
+    - When updating from “Everyone” to “Staff”/“Selected People”, or “Staff” to “Selected People” preselect as “Selected People” the people who have participated with at least one message in the conversation, so that they don’t lose access to it. This covers the use case in which a student creates a question in which “Conversation Participants” is “Everyone”, but as a staff member you’d like to change that to “Staff” without removing the student from the conversation.
+    - Added explanatory text “+ Selected Students” when setting conversation participants to “Staff”.
+  - When you visit Courselore, instead of showing a list of courses, redirect you to the most recently visited course/conversation.
+  - New Note: When changing “Participants”, make it “Not an Announcement” and “Unpinned”.
+  - Fixed glitches in `@mentions`/`#references` widget
+  - `@mention` widget: Sort by people who have most recently participated in the conversation.
 
 ## 6.1.0
 
