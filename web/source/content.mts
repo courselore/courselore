@@ -3301,9 +3301,9 @@ export default async (application: Application): Promise<void> => {
                         };
       
                         this.dropdownMenuComplete = (text) => {
+                          tippy.hideAll();
                           this.setSelectionRange(anchorIndex, this.selectionStart);
                           textFieldEdit.insert(this, text);
-                          tippy.hideAll();
                           this.focus();
                         };
 
