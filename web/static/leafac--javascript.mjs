@@ -692,8 +692,6 @@ export function isModified(element) {
   return false;
 }
 
-window.isModified = isModified;
-
 export function serialize(element) {
   const urlSearchParams = new URLSearchParams();
   const elementsToCheck = descendants(element);
