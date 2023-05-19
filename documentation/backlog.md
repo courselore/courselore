@@ -3,10 +3,7 @@
 ## Work in Progress
 
 - User interface tweaks
-  - @mention is flaky
-    - Keyboard shortcuts (return/tab) don’t work in default options before you start typing
-    - Show/hide is flaky
-    - Positioning in long messages in long conversations
+  - @mention is flaky: Keyboard shortcuts (return/tab) don’t work in default options before you start typing
 - Deploy
   - Add “News”
   - Review from `2118a2c7d83b8eaed7802a4aa78701ce5c612fa8`
@@ -528,7 +525,9 @@ new Notification('Example');
 - Selecting multiple paragraphs and bolding doesn’t work (the same issue occurs in GitHub 🤷)
 - Don’t let `@metions` and `#references` widgets appear if you’re in the middle of a code block.
   - https://courselore.org/courses/8537410611/conversations/64
-- In long messages the widgets like `@mentions` may show out of place 🤦‍♂️
+- `@mentions`/`#references` is flaky
+  - Show/hide is flaky
+  - Positioning in long messages in long conversations
 
 **New Conversation**
 
