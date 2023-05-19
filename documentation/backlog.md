@@ -2,8 +2,6 @@
 
 ## Work in Progress
 
-- Deploy
-  - Backup
 - Fix issues with `let` in top-level of `javascript=""` code in light of Live-Updates
   - `isUpdating`
   - `shouldUpdateAgain`
