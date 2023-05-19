@@ -3213,8 +3213,6 @@ export default async (application: Application): Promise<void> => {
                           },
                         ];
       
-                        let anchorIndex = null;
-      
                         this.oninput = (() => {
                           let isUpdating = false;
                           let shouldUpdateAgain = false;
@@ -3225,15 +3223,15 @@ export default async (application: Application): Promise<void> => {
                                   (this.selectionStart > 1 && this.value[this.selectionStart - 2].match(/^\\s$/) === null) ||
                                   this.value[this.selectionStart - 1] !== trigger
                                 ) continue;
-                                anchorIndex = this.selectionStart;
+                                this.anchorIndex = this.selectionStart;
                                 const caretCoordinates = textareaCaret(this, this.selectionStart);
                                 dropdownMenuTarget.style.top = String(caretCoordinates.top - this.scrollTop) + "px";
                                 dropdownMenuTarget.style.left = String(caretCoordinates.left - 14) + "px";
                                 tippy.hideAll();
                                 dropdownMenu.show();
                               }
-                              const search = this.value.slice(anchorIndex, this.selectionStart);
-                              if (this.selectionStart < anchorIndex || search.match(/[^a-z0-9\\/]/i) !== null) {
+                              const search = this.value.slice(this.anchorIndex, this.selectionStart);
+                              if (this.selectionStart < this.anchorIndex || search.match(/[^a-z0-9\\/]/i) !== null) {
                                 dropdownMenu.hide();
                                 continue;
                               }
@@ -3303,7 +3301,7 @@ export default async (application: Application): Promise<void> => {
       
                         this.dropdownMenuComplete = (text) => {
                           tippy.hideAll();
-                          this.setSelectionRange(anchorIndex, this.selectionStart);
+                          this.setSelectionRange(this.anchorIndex, this.selectionStart);
                           textFieldEdit.insert(this, text);
                           this.focus();
                         };
