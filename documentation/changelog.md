@@ -26,6 +26,7 @@
     - Preserve navigation state: most recently visited course/conversation.
     - `@mention` widget: Sort by people who have recently participated in the conversation.
     - New Note: When changing Participants, make it not an Announcement and Unpinned
+    - Fixed glitches in `@mentions`/`#references` widget
 
 ## 6.1.0
 
