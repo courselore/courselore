@@ -12,6 +12,10 @@
 
 ## Unreleased
 
+## 6.1.1
+
+**2023-05-19 · [Download](https://github.com/courselore/courselore/releases/tag/v6.1.1) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
+
 - Introduced Rich-Text Pasting, which allows you to paste formatted text, spreadsheets, and so forth, directly into the content editor and preserve the formatting.
 - Introduced “Staff Whispers”, which are messages visible by staff only. Staff Whispers may be used, for example, to discuss how to answer a student’s question.
 - Introduced “Follow-Up Questions”, which are a new type of message in conversations of type “Question”, in addition to the existing message type of “Answer”. This helps tell apart messages simply saying “thanks for the answer” from messages that require some further action.
