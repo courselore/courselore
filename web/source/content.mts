@@ -3282,6 +3282,7 @@ export default async (application: Application): Promise<void> => {
                                 break;
                               case "Enter":
                               case "Tab":
+                                event.preventDefault();
                                 const buttonHover = content.querySelector(".button.hover");
                                 if (buttonHover === null) dropdownMenu.hide();
                                 else {
