@@ -3244,15 +3244,12 @@ export default async (application: Application): Promise<void> => {
                               isUpdating = true;
                               shouldUpdateAgain = false;
                               const content = dropdownMenu.props.content;
-                              const searchResults = content.querySelector('[key="search-results"]');
-                              searchResults.partialParentElement = true;
-                              if (search === "")
-                                searchResults.innerHTML = emptySearch;
-                              else
-                                leafac.loadPartial(
-                                  searchResults,
+                              leafac.loadPartial(
+                                content.querySelector('[key="search-results"]'),
+                                search === "" ?
+                                  emptySearch :
                                   await (await fetch(route + "?" + new URLSearchParams({ search }), { cache: "no-store" })).text()
-                                );
+                              );
                               const buttons = content.querySelectorAll(".button");
                               for (const button of buttons) button.classList.remove("hover");
                               if (buttons.length > 0) buttons[0].classList.add("hover");

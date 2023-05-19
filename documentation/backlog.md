@@ -2,8 +2,6 @@
 
 ## Work in Progress
 
-- User interface tweaks
-  - @mention is flaky: Keyboard shortcuts (return/tab) don’t work in default options before you start typing
 - Deploy
   - Add “News”
   - Review from `2118a2c7d83b8eaed7802a4aa78701ce5c612fa8`
