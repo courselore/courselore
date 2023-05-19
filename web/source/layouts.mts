@@ -2888,7 +2888,7 @@ export default async (application: Application): Promise<void> => {
                 <button
                   class="button button--transparent ${response.locals.user !==
                     undefined &&
-                  semver.lt(response.locals.user.latestNewsVersion, "6.0.11")
+                  semver.lt(response.locals.user.latestNewsVersion, "6.1.1")
                     ? "strong text--green"
                     : ""}"
                   javascript="${javascript`
@@ -2926,9 +2926,38 @@ export default async (application: Application): Promise<void> => {
                                 }
                               `}"
                             >
+                              <h4 class="strong">6.1.1 · 2023-05-19</h4>
+
+                              <p>
+                                <strong class="strong">
+                                  Rich-Text Pasting:
+                                </strong>
+                                Paste formatted text, spreadsheets, and so
+                                forth, directly into the content editor and
+                                preserve the formatting.
+                              </p>
+
+                              <p>
+                                <strong class="strong">
+                                  Staff Whispers:
+                                </strong>
+                                Messages visible by staff only for private
+                                discussions answering a student.
+                              </p>
+
+                              <p>
+                                <strong class="strong">
+                                  Follow-Up Questions:
+                                </strong>
+                                A new type of message in Questions to help keep
+                                things organized.
+                              </p>
+
                               <h4 class="strong">6.0.11 · 2023-03-16</h4>
 
-                              <p>Polls</p>
+                              <p>
+                                <strong class="strong">Polls</strong>
+                              </p>
 
                               <div>
                                 <video
