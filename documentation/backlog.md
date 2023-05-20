@@ -815,12 +815,12 @@ application.web.get("/test", (request, response) => {
 - https://community.canvaslms.com/t5/Canvas-Ideas/Discussions-Export-Discussions/idi-p/360258
 - https://community.canvaslms.com/t5/Canvas-Ideas/Discussions-Download-discussion-board-posts/idi-p/377692
 - Questions
+  - Export as SQLite database?
+  - Export all the data and let people anonymize as they see fit, or do we take over the anonymization?
+  - Only conversations to which you have access?
   - For students?
   - All courses or per-course?
   - All conversations or just questions?
-  - Only conversations to which you have access?
-  - Export all the data and let people anonymize as they see fit, or do we take over the anonymization?
-  - Export as SQLite database?
   - Attachments?
 
 ## User Interface
