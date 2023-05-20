@@ -2,6 +2,11 @@
 
 ## Work in Progress
 
+- Dragging a directory from Finder makes the request fail without even an error code(!)
+  - `content.mts` `.upload(`
+    - `console.log(await Promise.all([...event.dataTransfer.items].map((item) => item.webkitGetAsEntry())));`
+    - `console.log(await Promise.all([...event.clipboardData.items].map((item) => item.webkitGetAsEntry())));`
+  - https://web.dev/patterns/files/drag-and-drop-directories/
 - UI on the upper left
 - LTI by fall
 - Feature branches
@@ -238,7 +243,6 @@
   - Issue with indent-textarea is that it only supports tabs, not spaces https://github.com/fregante/indent-textarea/issues/21
   - CodeMirror is heavy-handed
 - If you’re in the middle of editing, and someone else edits a message (or the conversation title), then you’re going to overwrite their changes. Warn about this.
-- Dragging a directory from Finder makes the request fail without even an error code(!)
 - In programmer mode, change the behavior of when the `@mentions` and `#references` widgets appear and go away, particularly in code & mathematics blocks.
 - Load “Preview” on hover/focus to speed things up?
 - Rich-text paste
