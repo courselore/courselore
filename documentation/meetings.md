@@ -10,6 +10,11 @@
   - Have an option similar to “Announcement”, which is functionally equivalent to `@everyone`, but with a new Email Notification setting to opt out.
 - Hard split between forum and chat?
   - I’m in favor.
+- Export course information
+  - All conversations or just questions?
+  - Only conversations to which you have access?
+  - Export all the data and let people anonymize as they see fit, or do we take over the anonymization?
+  - Export as SQLite database?
 
 </details>
 

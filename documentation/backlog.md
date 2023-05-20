@@ -2,6 +2,42 @@
 
 ## Work in Progress
 
+```json
+[
+  {
+    "ID": 1,
+    "Conversation": [
+      {
+        "Role": "Student",
+        "Text": "What is the time complexity of a binary search?"
+      },
+      {
+        "Role": "Staff",
+        "Text": "The time complexity of a binary search is O(log n)."
+      },
+      {
+        "Role": "Student",
+        "Text": "Can you explain why that is?"
+      },
+      {
+        "Role": "Staff",
+        "Text": "Sure! In a binary search, you're essentially dividing the search space in half with each step. This results in a logarithmic time complexity."
+      }
+    ],
+    "Tags": ["Algorithms", "Homework-7"]
+  }
+  // More entries...
+]
+```
+
+- All personally identifiable information should be stripped out.
+  - This includes mentions of users.
+- Conversations (questions)
+- https://community.canvaslms.com/t5/Canvas-Ideas/Discussions-Export-Discussions/idi-p/360258
+- https://community.canvaslms.com/t5/Canvas-Ideas/Discussions-Download-discussion-board-posts/idi-p/377692
+
+---
+
 - A tab left open in Firefox for a long time seems to slow down the computer
 - UI on the upper left
 - LTI by fall
