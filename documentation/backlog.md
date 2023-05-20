@@ -2,7 +2,6 @@
 
 ## Work in Progress
 
-- A tab left open in Firefox for a long time seems to slow down the computer
 - UI on the upper left
 - LTI by fall
 
@@ -968,6 +967,7 @@ application.web.get("/test", (request, response) => {
 
 ## Infrastructure
 
+- A tab left open in Firefox for a long time seems to slow down the computer
 - `partialParentElement` → `this.onbeforemorph = (event) => !event?.detail?.liveUpdate;`?
 - Should `morph()` call `execute()`?
   - Improve `execute()`’s default `elements` to take `event` Live-Updates in account
