@@ -3213,49 +3213,47 @@ export default async (application: Application): Promise<void> => {
                           },
                         ];
       
-                        this.oninput = (() => {
-                          let isUpdating = false;
-                          let shouldUpdateAgain = false;
-                          return async () => {
-                            for (const { trigger, route, emptySearch, dropdownMenu } of dropdownMenus) {
-                              if (!dropdownMenu.state.isShown) {
-                                if (
-                                  (this.selectionStart > 1 && this.value[this.selectionStart - 2].match(/^\\s$/) === null) ||
-                                  this.value[this.selectionStart - 1] !== trigger
-                                ) continue;
-                                this.anchorIndex = this.selectionStart;
-                                const caretCoordinates = textareaCaret(this, this.selectionStart);
-                                dropdownMenuTarget.style.top = String(caretCoordinates.top - this.scrollTop) + "px";
-                                dropdownMenuTarget.style.left = String(caretCoordinates.left - 14) + "px";
-                                tippy.hideAll();
-                                dropdownMenu.show();
-                              }
-                              const search = this.value.slice(this.anchorIndex, this.selectionStart);
-                              if (this.selectionStart < this.anchorIndex || search.match(/[^a-z0-9\\/]/i) !== null) {
-                                dropdownMenu.hide();
-                                continue;
-                              }
-                              if (isUpdating) {
-                                shouldUpdateAgain = true;
-                                continue;
-                              }
-                              isUpdating = true;
-                              shouldUpdateAgain = false;
-                              const content = dropdownMenu.props.content;
-                              leafac.loadPartial(
-                                content.querySelector('[key="search-results"]'),
-                                search === "" ?
-                                  emptySearch :
-                                  await (await fetch(route + "?" + new URLSearchParams({ search }), { cache: "no-store" })).text()
-                              );
-                              const buttons = content.querySelectorAll(".button");
-                              for (const button of buttons) button.classList.remove("hover");
-                              if (buttons.length > 0) buttons[0].classList.add("hover");
-                              isUpdating = false;
-                              if (shouldUpdateAgain) this.oninput();
+                        this.isUpdating ??= false;
+                        this.shouldUpdateAgain ??= false;
+                        this.oninput = async () => {
+                          for (const { trigger, route, emptySearch, dropdownMenu } of dropdownMenus) {
+                            if (!dropdownMenu.state.isShown) {
+                              if (
+                                (this.selectionStart > 1 && this.value[this.selectionStart - 2].match(/^\\s$/) === null) ||
+                                this.value[this.selectionStart - 1] !== trigger
+                              ) continue;
+                              this.anchorIndex = this.selectionStart;
+                              const caretCoordinates = textareaCaret(this, this.selectionStart);
+                              dropdownMenuTarget.style.top = String(caretCoordinates.top - this.scrollTop) + "px";
+                              dropdownMenuTarget.style.left = String(caretCoordinates.left - 14) + "px";
+                              tippy.hideAll();
+                              dropdownMenu.show();
                             }
+                            const search = this.value.slice(this.anchorIndex, this.selectionStart);
+                            if (this.selectionStart < this.anchorIndex || search.match(/[^a-z0-9\\/]/i) !== null) {
+                              dropdownMenu.hide();
+                              continue;
+                            }
+                            if (this.isUpdating) {
+                              this.shouldUpdateAgain = true;
+                              continue;
+                            }
+                            this.isUpdating = true;
+                            this.shouldUpdateAgain = false;
+                            const content = dropdownMenu.props.content;
+                            leafac.loadPartial(
+                              content.querySelector('[key="search-results"]'),
+                              search === "" ?
+                                emptySearch :
+                                await (await fetch(route + "?" + new URLSearchParams({ search }), { cache: "no-store" })).text()
+                            );
+                            const buttons = content.querySelectorAll(".button");
+                            for (const button of buttons) button.classList.remove("hover");
+                            if (buttons.length > 0) buttons[0].classList.add("hover");
+                            this.isUpdating = false;
+                            if (this.shouldUpdateAgain) this.oninput();
                           }
-                        })();
+                        };
       
                         this.onkeydown = (event) => {
                           for (const { dropdownMenu } of dropdownMenus) {

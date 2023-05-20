@@ -9467,26 +9467,24 @@ export default async (application: Application): Promise<void> => {
                 javascript="${javascript`
                   this.isModified = false;
 
-                  this.oninput = (() => {
-                    let isUpdating = false;
-                    let shouldUpdateAgain = false;
-                    return async () => {
-                      if (isUpdating) {
-                        shouldUpdateAgain = true;
-                        return;
-                      }
-                      isUpdating = true;
-                      shouldUpdateAgain = false;
-                      await fetch(${`https://${application.configuration.hostname}/courses/${response.locals.course.reference}/conversations/${response.locals.conversation.reference}/messages/draft`}, {
-                        method: "POST",
-                        headers: { "CSRF-Protection": "true", },
-                        cache: "no-store",
-                        body: new URLSearchParams(new FormData(this)),
-                      });
-                      isUpdating = false;
-                      if (shouldUpdateAgain) this.oninput();
-                    };
-                  })();
+                  this.isUpdating ??= false;
+                  this.shouldUpdateAgain ??= false;
+                  this.oninput = async () => {
+                    if (this.isUpdating) {
+                      this.shouldUpdateAgain = true;
+                      return;
+                    }
+                    this.isUpdating = true;
+                    this.shouldUpdateAgain = false;
+                    await fetch(${`https://${application.configuration.hostname}/courses/${response.locals.course.reference}/conversations/${response.locals.conversation.reference}/messages/draft`}, {
+                      method: "POST",
+                      headers: { "CSRF-Protection": "true", },
+                      cache: "no-store",
+                      body: new URLSearchParams(new FormData(this)),
+                    });
+                    this.isUpdating = false;
+                    if (this.shouldUpdateAgain) this.oninput();
+                  };
 
                   this.onsubmit = () => {
                     window.setTimeout(() => {
