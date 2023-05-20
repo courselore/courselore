@@ -4,9 +4,6 @@
 
 - UI on the upper left
 - LTI by fall
-
-**Half-Implemented Features**
-
 - Feature branches
   - `poll`
     - Exam period
