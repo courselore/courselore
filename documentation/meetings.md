@@ -1,6 +1,19 @@
 # Meetings
 
 <details>
+<summary>2023-05-20</summary>
+
+- SAML: News from the Computer Science Department?
+- Deployed new features & redesigns.
+- Email notifications for Selected Participants?
+  - Have a way to prompt you to `@everyone`
+  - Have an option similar to “Announcement”, which is functionally equivalent to `@everyone`, but with a new Email Notification setting to opt out.
+- Hard split between forum and chat?
+  - I’m in favor.
+
+</details>
+
+<details>
 <summary>2023-05-13</summary>
 
 - Response from Hopkins about SAML.
