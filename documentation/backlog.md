@@ -2,42 +2,6 @@
 
 ## Work in Progress
 
-```json
-[
-  {
-    "ID": 1,
-    "Conversation": [
-      {
-        "Role": "Student",
-        "Text": "What is the time complexity of a binary search?"
-      },
-      {
-        "Role": "Staff",
-        "Text": "The time complexity of a binary search is O(log n)."
-      },
-      {
-        "Role": "Student",
-        "Text": "Can you explain why that is?"
-      },
-      {
-        "Role": "Staff",
-        "Text": "Sure! In a binary search, you're essentially dividing the search space in half with each step. This results in a logarithmic time complexity."
-      }
-    ],
-    "Tags": ["Algorithms", "Homework-7"]
-  }
-  // More entries...
-]
-```
-
-- All personally identifiable information should be stripped out.
-  - This includes mentions of users.
-- Conversations (questions)
-- https://community.canvaslms.com/t5/Canvas-Ideas/Discussions-Export-Discussions/idi-p/360258
-- https://community.canvaslms.com/t5/Canvas-Ideas/Discussions-Download-discussion-board-posts/idi-p/377692
-
----
-
 - A tab left open in Firefox for a long time seems to slow down the computer
 - UI on the upper left
 - LTI by fall
@@ -798,6 +762,63 @@ const { app, BrowserWindow } = require("electron");
       - Submitting grades (for example, if discussing a topic in Courselore is part of an assignment, add that grade to the gradebook in Blackboard).
       - https://piazza.com/product/lti
       - https://www.edu-apps.org/code.html
+
+## Export
+
+```json
+[
+  {
+    "ID": 1,
+    "Conversation": [
+      {
+        "Role": "Student",
+        "Text": "What is the time complexity of a binary search?"
+      },
+      {
+        "Role": "Staff",
+        "Text": "The time complexity of a binary search is O(log n)."
+      },
+      {
+        "Role": "Student",
+        "Text": "Can you explain why that is?"
+      },
+      {
+        "Role": "Staff",
+        "Text": "Sure! In a binary search, you're essentially dividing the search space in half with each step. This results in a logarithmic time complexity."
+      }
+    ],
+    "Tags": ["Algorithms", "Homework-7"]
+  }
+  // More entries...
+]
+```
+
+```javascript
+application.web.get("/test", (request, response) => {
+  const database = new Database(":memory:");
+  database.execute(
+    sql`
+      CREATE TABLE t (a);
+      INSERT INTO t (a) VALUES ('hi');
+      INSERT INTO t (a) VALUES ('hello');
+    `
+  );
+  response.contentType("application/vnd.sqlite3").send(database.serialize());
+  database.close();
+});
+```
+
+- All personally identifiable information should be stripped out.
+  - This includes mentions of users.
+- Conversations (questions)
+- https://community.canvaslms.com/t5/Canvas-Ideas/Discussions-Export-Discussions/idi-p/360258
+- https://community.canvaslms.com/t5/Canvas-Ideas/Discussions-Download-discussion-board-posts/idi-p/377692
+- Questions
+  - All courses or per-course?
+  - All conversations or just questions?
+  - Only conversations to which you have access?
+  - Export all the data and let people anonymize as they see fit, or do we take over the anonymization?
+  - Export as SQLite database?
 
 ## User Interface
 
