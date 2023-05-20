@@ -41,9 +41,10 @@
 
 ## Courses
 
-- “Enrollment” → “Course Participant”
-  - “Enroll” → “Join”
-- “Staff” → “Course Staff”
+- Terminology changes
+  - “Enrollment” → “Course Participant”
+    - “Enroll” → “Join”
+  - “Staff” → “Course Staff”
 - Have a setting to either let students remove themselves from the course, or let them request the staff to be removed.
 - Upload roster and show differences.
   - https://courselore.org/courses/8537410611/conversations/34
@@ -204,7 +205,7 @@
 
 **Processor**
 
-- On the `partials.content()`, maybe don’t render `@mention` widget for people who aren’t in the conversation, given that we don’t give that person as option on the `@mentions` autocomplete widget in the content editor.
+- On the `partials.content()`, maybe don’t render `@mention` widget for people who aren’t in the conversation, given that we don’t show that person as an option on the `@mentions` autocomplete widget in the content editor.
 - It’s possible to send messages that are visually empty, for example, `<!-- -->`
 - `#references` into the same conversation don’t need to load the whole `partials.conversation()`, just the message part of it.
 - Lightbox modal:
@@ -810,6 +811,7 @@ application.web.get("/test", (request, response) => {
 - https://community.canvaslms.com/t5/Canvas-Ideas/Discussions-Export-Discussions/idi-p/360258
 - https://community.canvaslms.com/t5/Canvas-Ideas/Discussions-Download-discussion-board-posts/idi-p/377692
 - Questions
+  - For students?
   - All courses or per-course?
   - All conversations or just questions?
   - Only conversations to which you have access?
