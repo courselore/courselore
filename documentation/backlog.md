@@ -2,9 +2,6 @@
 
 ## Work in Progress
 
-- Fix issues with `let` in top-level of `javascript=""` code in light of Live-Updates
-  - `isUpdating`
-  - `shouldUpdateAgain`
 - Think
   - Email notifications for Selected Participants?
   - Hard split between forum and chat?
