@@ -4853,12 +4853,30 @@ export default async (application: Application): Promise<void> => {
             <form
               method="GET"
               action="https://${application.configuration
-                .hostname}/courses/${response.locals.course.reference}/export"
+                .hostname}/courses/${response.locals.course
+                .reference}/settings/advanced/export"
+              css="${css`
+                display: flex;
+                flex-direction: column;
+                gap: var(--space--1);
+              `}"
             >
-              <button class="button button--green">
-                <i class="bi bi-journal-arrow-down"></i>
-                Download All Anonymized Questions as JSON
-              </button>
+              <div>
+                <button class="button button--green">
+                  <i class="bi bi-journal-arrow-down"></i>
+                  Download All Anonymized Questions as JSON
+                </button>
+              </div>
+              <div
+                class="secondary"
+                css="${css`
+                  font-size: var(--font-size--xs);
+                  line-height: var(--line-height--xs);
+                `}"
+              >
+                This feature is experimental and the format of the JSON will
+                change in future versions of Courselore.
+              </div>
             </form>
           `,
         })
@@ -4970,6 +4988,103 @@ export default async (application: Application): Promise<void> => {
         response,
         url: `/courses/${response.locals.course.reference}`,
       });
+    }
+  );
+
+  application.web.get<
+    { courseReference: string },
+    any,
+    {},
+    {},
+    Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+  >(
+    "/courses/:courseReference/settings/advanced/export",
+    (request, response, next) => {
+      if (
+        response.locals.course === undefined ||
+        response.locals.enrollment.courseRole !== "staff"
+      )
+        return next();
+
+      const questions = [];
+
+      for (const conversationRow of application.database.all<{
+        reference: string;
+      }>(
+        sql`
+          SELECT "conversations"."reference"
+          FROM "conversations"
+          WHERE
+            "conversations"."course" = ${response.locals.course.id} AND (
+              "conversations"."participants" = 'everyone' $${
+                response.locals.enrollment.courseRole === "staff"
+                  ? sql`OR "conversations"."participants" = 'staff'`
+                  : sql``
+              } OR EXISTS(
+                SELECT TRUE
+                FROM "conversationSelectedParticipants"
+                WHERE
+                  "conversationSelectedParticipants"."conversation" = "conversations"."id" AND
+                  "conversationSelectedParticipants"."enrollment" = ${
+                    response.locals.enrollment.id
+                  }
+              )
+            )
+            AND "conversations"."type" = 'question'
+          ORDER BY "conversations"."id" ASC
+        `
+      )) {
+        const conversation = application.web.locals.helpers.getConversation({
+          request,
+          response,
+          conversationReference: conversationRow.reference,
+        })!;
+
+        const messages = application.database
+          .all<{ reference: string }>(
+            sql`
+              SELECT "reference"
+              FROM "messages"
+              WHERE "conversation" = ${conversation.id}
+              ORDER BY "id" ASC
+            `
+          )
+          .map(
+            (messageRow) =>
+              application.web.locals.helpers.getMessage({
+                request,
+                response,
+                conversation,
+                messageReference: messageRow.reference,
+              })!
+          );
+
+        questions.push({
+          ID: conversation.reference,
+          Conversation: messages.map((message) => ({
+            Role:
+              message.authorEnrollment === "no-longer-enrolled"
+                ? "No Longer Enrolled"
+                : lodash.capitalize(message.authorEnrollment.courseRole),
+            Text: message.contentSearch.replace(
+              /(?<=^|\s)@([a-z0-9-]+)(?=[^a-z0-9-]|$)/gi,
+              "@anonymous"
+            ),
+          })),
+          Tags: conversation.taggings.map((tagging) => tagging.tag.name),
+        });
+      }
+
+      response
+        .header(
+          "Content-Disposition",
+          `attachment;filename="${response.locals.course.name.replaceAll(
+            `"`,
+            `\\"`
+          )}.json"`
+        )
+        .contentType("application/json")
+        .send(JSON.stringify(questions, undefined, 2));
     }
   );
 

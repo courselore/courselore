@@ -30,10 +30,9 @@
 ]
 ```
 
-- Export as JSON
-- Export Questions
-- Anonymize `@mentions`
+- Note that some entries may have `"Role": "No Longer Enrolled"`
 - Later
+  - More data, for example, likes, endorsements, polls, and so forth
   - Export as SQLite (`response.contentType("application/vnd.sqlite3").send(database.serialize());`)
   - Filters: Conversation types and so forth
   - Don’t anonymize

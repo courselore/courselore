@@ -1,4 +1,3 @@
-import assert from "node:assert/strict";
 import util from "node:util";
 import express from "express";
 import qs from "qs";
@@ -1012,8 +1011,7 @@ export default async (application: Application): Promise<void> => {
           request,
           response,
           conversationReference: conversationWithSearchResult.reference,
-        });
-        assert(conversation !== undefined);
+        })!;
 
         const searchResult =
           typeof conversationWithSearchResult.conversationTitleSearchResultHighlight ===
@@ -5422,12 +5420,12 @@ export default async (application: Application): Promise<void> => {
       if (moreMessagesExist) messagesRows.pop();
       if (messagesReverse) messagesRows.reverse();
       const messages = messagesRows.map(
-        (message) =>
+        (messageRow) =>
           application.web.locals.helpers.getMessage({
             request,
             response,
             conversation: response.locals.conversation,
-            messageReference: message.reference,
+            messageReference: messageRow.reference,
           })!
       );
 

@@ -8,7 +8,15 @@ export default async (application: Application): Promise<void> => {
     {},
     Application["web"]["locals"]["ResponseLocals"]["LiveConnection"]
   >("/health", (request, response) => {
-    response.json({ name: application.name, version: application.version });
+    response
+      .contentType("application/json")
+      .send(
+        JSON.stringify(
+          { name: application.name, version: application.version },
+          undefined,
+          2
+        )
+      );
   });
 
   if (application.configuration.environment !== "development") return;
