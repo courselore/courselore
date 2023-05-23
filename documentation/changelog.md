@@ -12,6 +12,12 @@
 
 ## Unreleased
 
+## 6.1.2
+
+**2023-05-23 · [Download](https://github.com/courselore/courselore/releases/tag/v6.1.1) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
+
+- Added a way for staff members to export questions as JSON for research.
+
 ## 6.1.1
 
 **2023-05-19 · [Download](https://github.com/courselore/courselore/releases/tag/v6.1.1) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
