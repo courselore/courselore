@@ -30,26 +30,11 @@
 ]
 ```
 
-```javascript
-application.web.get("/test", (request, response) => {
-  const database = new Database(":memory:");
-  database.execute(
-    sql`
-      CREATE TABLE t (a);
-      INSERT INTO t (a) VALUES ('hi');
-      INSERT INTO t (a) VALUES ('hello');
-    `
-  );
-  response.contentType("application/vnd.sqlite3").send(database.serialize());
-  database.close();
-});
-```
-
 - Export as JSON
 - Export Questions
 - Anonymize `@mentions`
 - Later
-  - Export as SQLite
+  - Export as SQLite (`response.contentType("application/vnd.sqlite3").send(database.serialize());`)
   - Filters: Conversation types and so forth
   - Don’t anonymize
   - Include attachments
