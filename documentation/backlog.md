@@ -2,48 +2,6 @@
 
 ## Work in Progress
 
-```json
-[
-  {
-    "ID": 1,
-    "Conversation": [
-      {
-        "Role": "Student",
-        "Text": "What is the time complexity of a binary search?"
-      },
-      {
-        "Role": "Staff",
-        "Text": "The time complexity of a binary search is O(log n)."
-      },
-      {
-        "Role": "Student",
-        "Text": "Can you explain why that is?"
-      },
-      {
-        "Role": "Staff",
-        "Text": "Sure! In a binary search, you're essentially dividing the search space in half with each step. This results in a logarithmic time complexity."
-      }
-    ],
-    "Tags": ["Algorithms", "Homework-7"]
-  }
-  // More entries...
-]
-```
-
-- Note that some entries may have `"Role": "No Longer Enrolled"`
-- Later
-  - More data, for example, likes, endorsements, polls, and so forth
-  - Export as SQLite (`response.contentType("application/vnd.sqlite3").send(database.serialize());`)
-  - Filters: Conversation types and so forth
-  - Don’t anonymize
-  - Include attachments
-  - Now we’re prioritizing the use case of exporting for research. In the future consider the use case of exporting for archiving your data.
-- References
-  - https://community.canvaslms.com/t5/Canvas-Ideas/Discussions-Export-Discussions/idi-p/360258
-  - https://community.canvaslms.com/t5/Canvas-Ideas/Discussions-Download-discussion-board-posts/idi-p/377692
-
----
-
 - Dragging a directory from Finder makes the request fail without even an error code(!)
   - `content.mts` `.upload(`
     - `console.log(await Promise.all([...event.dataTransfer.items].map((item) => item.webkitGetAsEntry())));`
@@ -805,6 +763,18 @@ const { app, BrowserWindow } = require("electron");
       - Submitting grades (for example, if discussing a topic in Courselore is part of an assignment, add that grade to the gradebook in Blackboard).
       - https://piazza.com/product/lti
       - https://www.edu-apps.org/code.html
+
+## Export
+
+- More data, for example, likes, endorsements, polls, and so forth
+- Export as SQLite (`response.contentType("application/vnd.sqlite3").send(database.serialize());`)
+- Filters: Conversation types and so forth
+- Don’t anonymize
+- Include attachments
+- Now we’re prioritizing the use case of exporting for research. In the future consider the use case of exporting for archiving your data.
+- References
+  - https://community.canvaslms.com/t5/Canvas-Ideas/Discussions-Export-Discussions/idi-p/360258
+  - https://community.canvaslms.com/t5/Canvas-Ideas/Discussions-Download-discussion-board-posts/idi-p/377692
 
 ## User Interface
 
