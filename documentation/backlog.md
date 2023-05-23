@@ -45,20 +45,18 @@ application.web.get("/test", (request, response) => {
 });
 ```
 
-- All personally identifiable information should be stripped out.
-  - This includes mentions of users.
-- Conversations (questions)
-- https://community.canvaslms.com/t5/Canvas-Ideas/Discussions-Export-Discussions/idi-p/360258
-- https://community.canvaslms.com/t5/Canvas-Ideas/Discussions-Download-discussion-board-posts/idi-p/377692
-- Questions
-  - Export as SQLite database or JSON? Option
-  - Export all the data and let people anonymize as they see fit, or do we take over the anonymization? Option
-  - Only conversations to which you have access? Yes
-  - For students? No
-  - All courses or per-course? Per course
-  - All conversations or just questions? Just questions
-  - Attachments? Option
-  - We’re prioritizing the use case of exporting for research, not exporting for archiving your data.
+- Export as JSON
+- Export Questions
+- Anonymize `@mentions`
+- Later
+  - Export as SQLite
+  - Filters: Conversation types and so forth
+  - Don’t anonymize
+  - Include attachments
+  - Now we’re prioritizing the use case of exporting for research. In the future consider the use case of exporting for archiving your data.
+- References
+  - https://community.canvaslms.com/t5/Canvas-Ideas/Discussions-Export-Discussions/idi-p/360258
+  - https://community.canvaslms.com/t5/Canvas-Ideas/Discussions-Download-discussion-board-posts/idi-p/377692
 
 ---
 

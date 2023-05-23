@@ -4847,6 +4847,19 @@ export default async (application: Application): Promise<void> => {
                     </div>
                   `}
             </form>
+
+            <hr class="separator" />
+
+            <form
+              method="GET"
+              action="https://${application.configuration
+                .hostname}/courses/${response.locals.course.reference}/export"
+            >
+              <button class="button button--green">
+                <i class="bi bi-journal-arrow-down"></i>
+                Download All Anonymized Questions as JSON
+              </button>
+            </form>
           `,
         })
       );
