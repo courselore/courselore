@@ -2,6 +2,10 @@
 
 ## Work in Progress
 
+- In the `@mentions` component, have some default people for when you didn’t type anything
+  - Same for the `#references`
+  - loadPartial should recompute tippy
+  - `TODO`
 - Dragging a directory from Finder makes the request fail without even an error code(!)
   - `content.mts` `.upload(`
     - `console.log(await Promise.all([...event.dataTransfer.items].map((item) => item.webkitGetAsEntry())));`
