@@ -4,8 +4,8 @@
 
 - In the `@mentions` component, have some default people for when you didn’t type anything
   - Same for the `#references`
-  - loadPartial should recompute tippy
-  - `TODO`
+  - loadPartial should recompute tippy positioning otherwise when you start typing and the dropdown grows, it falls out of the viewport
+  - Test the case in which you can’t find any `#references` on an empty search because there are no conversations.
 - Dragging a directory from Finder makes the request fail without even an error code(!)
   - `content.mts` `.upload(`
     - `console.log(await Promise.all([...event.dataTransfer.items].map((item) => item.webkitGetAsEntry())));`
