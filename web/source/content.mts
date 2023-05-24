@@ -3038,10 +3038,10 @@ export default async (application: Application): Promise<void> => {
                       this.ondragover = (event) => {
                         event.preventDefault();
                       };
-                      this.ondrop = async (event) => {
+                      this.ondrop = (event) => {
                         event.preventDefault();
                         this.classList.remove("drag");
-                        const fileList = await Promise.all([...event.dataTransfer.items].flatMap((item) => item.webkitGetAsEntry().isFile() ? [item.getAsFile()] : []));
+                        const fileList = [...event.dataTransfer.items].flatMap((item) => item.webkitGetAsEntry().isFile ? [item.getAsFile()] : []);
                         if (fileList.length > 0)
                           this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--attachments"]').upload(fileList);
                       };
@@ -3089,9 +3089,10 @@ export default async (application: Application): Promise<void> => {
                             richTextHelp.hidden = true;
                           }, 10 * 1000);
                         } else if (event.clipboardData.types.includes("Files")) {
-                          if (event.clipboardData.files.length === 0) return;
                           event.preventDefault();
-                          this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--attachments"]').upload(event.clipboardData.files);
+                          const fileList = [...event.clipboardData.items].flatMap((item) => item.webkitGetAsEntry().isFile ? [item.getAsFile()] : []);
+                          if (fileList.length > 0)
+                            this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--attachments"]').upload(fileList);
                         }
                       };
       
