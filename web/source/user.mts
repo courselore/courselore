@@ -885,6 +885,11 @@ export default async (application: Application): Promise<void> => {
                   display: flex;
                   justify-content: center;
                   align-items: center;
+
+                  &.drag {
+                    opacity: var(--opacity--50);
+                  }
+
                   & > * {
                     width: var(--space--32);
                     height: var(--space--32);
