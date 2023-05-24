@@ -907,20 +907,11 @@ export default async (application: Application): Promise<void> => {
                   }
                 `}"
                 javascript="${javascript`
-                  this.ondragenter = () => {
-                    event.preventDefault();
-                    this.classList.add("drag");
-                  };
-                  this.ondragleave = () => {
-                    event.preventDefault();
-                    this.classList.remove("drag");
-                  };
                   this.ondragover = (event) => {
                     event.preventDefault();
                   };
                   this.ondrop = (event) => {
                     event.preventDefault();
-                    this.classList.remove("drag");
                     const fileList = [...event.dataTransfer.items].flatMap((item) => item.webkitGetAsEntry().isFile ? [item.getAsFile()] : []);
                     if (fileList.length === 1)
                       this.querySelector('[key="avatar-chooser--upload"]').upload(fileList);
