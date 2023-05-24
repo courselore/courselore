@@ -3028,21 +3028,22 @@ export default async (application: Application): Promise<void> => {
                       autosize.update(this);
       
                       this.ondragenter = () => {
+                        event.preventDefault();
                         this.classList.add("drag");
                       };
                       this.ondragleave = () => {
+                        event.preventDefault();
                         this.classList.remove("drag");
                       };
-      
                       this.ondragover = (event) => {
-                        if (!event.dataTransfer.types.includes("Files")) return;
                         event.preventDefault();
                       };
-                      this.ondrop = (event) => {
-                        this.classList.remove("drag");
-                        if (event.dataTransfer.files.length === 0) return;
+                      this.ondrop = async (event) => {
                         event.preventDefault();
-                        this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--attachments"]').upload(event.dataTransfer.files);
+                        this.classList.remove("drag");
+                        const fileList = await Promise.all([...event.dataTransfer.items].flatMap((item) => item.webkitGetAsEntry().isFile() ? [item.getAsFile()] : []));
+                        if (fileList.length > 0)
+                          this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--attachments"]').upload(fileList);
                       };
       
                       this.onpaste = (event) => {
