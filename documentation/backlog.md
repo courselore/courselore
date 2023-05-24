@@ -4,7 +4,6 @@
 
 - Dragging a directory from Finder makes the request fail without even an error code(!)
   - Fix drag-and-drop into user profile picture
-  - https://web.dev/patterns/files/drag-and-drop-directories/
 - UI on the upper left
 - LTI by fall
 - Feature branches
