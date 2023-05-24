@@ -4,6 +4,8 @@
 
 - Dragging a directory from Finder makes the request fail without even an error code(!)
   - Fix drag-and-drop into user profile picture
+    - Add style to `drag` class
+  - Drag text into content editor fails
 - UI on the upper left
 - LTI by fall
 - Feature branches
