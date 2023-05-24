@@ -4737,7 +4737,7 @@ ${contentSource}</textarea
               ? html`
                   <div class="dropdown--menu--item secondary">
                     $${request.query.search.trim() === html``
-                      ? html`No conversation to refer to yet.`
+                      ? html`No conversations or messages yet.`
                       : html`Conversation or message not found.`}
                   </div>
                 `
