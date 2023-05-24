@@ -3156,7 +3156,13 @@ export default async (application: Application): Promise<void> => {
                           },
                           {
                             trigger: "#",
-                            route: ${`https://${application.configuration.hostname}/courses/${response.locals.course?.reference}/content-editor/refer-to-conversation-or-message-search`},
+                            route: ${`https://${
+                              application.configuration.hostname
+                            }/courses/${response.locals.course?.reference}/${
+                              response.locals.conversation !== undefined
+                                ? `conversations/${response.locals.conversation.reference}/`
+                                : ``
+                            }content-editor/refer-to-conversation-or-message-search`},
                             dropdownMenu: leafac.setTippy({
                               event,
                               element: dropdownMenuTarget,
@@ -4342,22 +4348,126 @@ ${contentSource}</textarea
   );
 
   application.web.get<
-    { courseReference: string },
+    { courseReference: string; conversationReference?: string },
     any,
     {},
     { search?: string },
-    Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+    Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"] &
+      Partial<Application["web"]["locals"]["ResponseLocals"]["Conversation"]>
   >(
-    "/courses/:courseReference/content-editor/refer-to-conversation-or-message-search",
+    [
+      "/courses/:courseReference/content-editor/refer-to-conversation-or-message-search",
+      "/courses/:courseReference/conversations/:conversationReference/content-editor/refer-to-conversation-or-message-search",
+    ],
     (request, response, next) => {
-      if (response.locals.course === undefined) return next();
+      if (
+        response.locals.course === undefined ||
+        (request.params.conversationReference !== undefined &&
+          response.locals.conversation === undefined)
+      )
+        return next();
 
       if (typeof request.query.search !== "string") return next("Validation");
 
       let results = html``;
 
       if (request.query.search.trim() === "") {
-        results += `TODO`;
+        if (response.locals.conversation === undefined) {
+          for (const conversationRow of application.database.all<{
+            reference: string;
+          }>(
+            sql`
+              SELECT "reference"
+              FROM "conversations"
+              WHERE "course" = ${response.locals.course.id}
+              ORDER BY "id" DESC
+              LIMIT 5
+            `
+          )) {
+            const conversation = application.web.locals.helpers.getConversation(
+              {
+                request,
+                response,
+                conversationReference: conversationRow.reference,
+              }
+            );
+            if (conversation === undefined) continue;
+            results += html`
+              <button
+                key="refer-to-conversation-or-message-search--${conversation.reference}"
+                type="button"
+                class="dropdown--menu--item button button--transparent"
+                javascript="${javascript`
+                  this.onclick = () => {
+                    this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete(${conversation.reference});
+                  };
+                `}"
+              >
+                <span>
+                  <span class="secondary">#${conversation.reference}</span>
+                  <span class="strong">${conversation.title}</span>
+                </span>
+              </button>
+            `;
+          }
+        } else {
+          for (const messageRow of application.database.all<{
+            reference: string;
+          }>(
+            sql`
+              SELECT "reference"
+              FROM "messages"
+              WHERE "conversation" = ${response.locals.conversation.id} $${
+              response.locals.enrollment.courseRole !== "staff"
+                ? sql`
+                    AND "type" != 'staff-whisper'
+                  `
+                : sql``
+            }
+              ORDER BY "id" DESC
+              LIMIT 5
+            `
+          )) {
+            const message = application.web.locals.helpers.getMessage({
+              request,
+              response,
+              conversation: response.locals.conversation,
+              messageReference: messageRow.reference,
+            });
+            if (message === undefined) continue;
+            results += html`
+              <button
+                key="refer-to-conversation-or-message-search--${response.locals
+                  .conversation.reference}/${message.reference}"
+                type="button"
+                class="dropdown--menu--item button button--transparent"
+                javascript="${javascript`
+                  this.onclick = () => {
+                    this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete(${`${response.locals.conversation.reference}/${message.reference}`});
+                  };
+                `}"
+              >
+                <div>
+                  <div>
+                    <span class="secondary">
+                      #${response.locals.conversation
+                        .reference}/${message.reference}
+                    </span>
+                    <span class="strong">
+                      ${response.locals.conversation.title}
+                    </span>
+                  </div>
+                  <div class="secondary">
+                    $${lodash.truncate(message.contentSearch, {
+                      length: 100,
+                      separator: /\W/,
+                    })}
+                  </div>
+                </div>
+              </button>
+            `;
+          }
+        }
       } else {
         if (request.query.search.match(/^\d+$/) !== null)
           for (const conversationRow of application.database.all<{
@@ -4736,9 +4846,7 @@ ${contentSource}</textarea
             $${results === html``
               ? html`
                   <div class="dropdown--menu--item secondary">
-                    $${request.query.search.trim() === html``
-                      ? html`No conversations or messages yet.`
-                      : html`Conversation or message not found.`}
+                    Conversation or message not found.
                   </div>
                 `
               : results}
