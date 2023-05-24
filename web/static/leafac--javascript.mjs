@@ -430,6 +430,9 @@ export function loadPartial(parentElement, partialString) {
   parentElement.partialParentElement = true;
   parentElement.forceIsConnected = true;
   execute({ element: parentElement });
+  const parentElementTippy = parentElement.closest("[data-tippy-root]")?._tippy;
+  if (parentElementTippy !== undefined)
+    parentElementTippy.setContent(parentElementTippy.props.content);
   parentElement.forceIsConnected = false;
 }
 

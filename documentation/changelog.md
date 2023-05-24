@@ -12,6 +12,8 @@
 
 ## Unreleased
 
+- Improved the starting state of the `@mentions` and `#references` widgets. Instead of simply saying “Start typing to search”, they now give useful options, for example, the people who authored the most recent messages.
+
 ## 6.1.2
 
 **2023-05-23 · [Download](https://github.com/courselore/courselore/releases/tag/v6.1.2) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
