@@ -907,19 +907,23 @@ export default async (application: Application): Promise<void> => {
                   }
                 `}"
                 javascript="${javascript`
-                  this.ondragenter = () => {
+                  this.dragLevel = 0;
+                  this.ondragenter = (event) => {
                     event.preventDefault();
-                    this.classList.add("drag");
+                    if (this.dragLevel === 0) this.classList.add("drag");
+                    this.dragLevel++;
                   };
-                  this.ondragleave = () => {
+                  this.ondragleave = (event) => {
                     event.preventDefault();
-                    this.classList.remove("drag");
+                    this.dragLevel--;
+                    if (this.dragLevel === 0) this.classList.remove("drag");
                   };
                   this.ondragover = (event) => {
                     event.preventDefault();
                   };
                   this.ondrop = (event) => {
                     event.preventDefault();
+                    this.dragLevel = 0;
                     this.classList.remove("drag");
                     const fileList = [...event.dataTransfer.items].flatMap((item) => item.webkitGetAsEntry().isFile ? [item.getAsFile()] : []);
                     if (fileList.length === 1)
