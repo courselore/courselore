@@ -4,16 +4,31 @@
 
 **Name Changes**
 
-- Triggers
-- Indices
-- FTS
-- SQLite takes care of renaming tables/columns in foreign keys/indices/triggers
+User interface
 
 |              |                      |
 | ------------ | -------------------- |
-| `Enroll`     | `Join`               |
-| `Enrollment` | `Course Participant` |
 | `Staff`      | `Course Staff`       |
+| `Enrollment` | `Course Participant` |
+| `Enroll`     | `Join`               |
+
+Database
+
+|              |                      |
+| ------------ | -------------------- |
+| `Staff`      | `Course Staff`       |
+| `Enrollment` | `Course Participant` |
+
+---
+
+- Triggers
+- Indices
+  - Do I have to add data by hand?
+- FTS
+  - Do I have to add data by hand?
+- SQLite takes care of renaming tables/columns in foreign keys/indices/triggers
+
+---
 
 - Review from `c903ad50a33b1b61d8674de0d8de61e8f7de7851`
 
