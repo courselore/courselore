@@ -2,6 +2,30 @@
 
 ## Work in Progress
 
+**Name Changes**
+
+Database tables
+
+|                      |                          |
+| -------------------- | ------------------------ |
+| `emailVerifications` | `userEmailVerifications` |
+| ``                   | ``                       |
+| ``                   | ``                       |
+| ``                   | ``                       |
+| ``                   | ``                       |
+
+Database columns
+
+Terminology
+
+|              |                      |
+| ------------ | -------------------- |
+| `Enroll`     | `Join`               |
+| `Enrollment` | `Course Participant` |
+| `Staff`      | `Course Staff`       |
+
+---
+
 - UI on the upper left
 - LTI by fall
 - Feature branches
@@ -40,10 +64,6 @@
 
 ## Courses
 
-- Terminology changes
-  - “Enrollment” → “Course Participant”
-    - “Enroll” → “Join”
-  - “Staff” → “Course Staff”
 - Have a setting to either let students remove themselves from the course, or let them request the staff to be removed.
 - Upload roster and show differences.
   - https://courselore.org/courses/8537410611/conversations/34
