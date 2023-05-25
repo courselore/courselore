@@ -4,19 +4,10 @@
 
 **Name Changes**
 
-Database tables
-
-|                      |                          |
-| -------------------- | ------------------------ |
-| `emailVerifications` | `userEmailVerifications` |
-| ``                   | ``                       |
-| ``                   | ``                       |
-| ``                   | ``                       |
-| ``                   | ``                       |
-
-Database columns
-
-Terminology
+- Triggers
+- Indices
+- FTS
+- SQLite takes care of renaming tables/columns in foreign keys/indices/triggers
 
 |              |                      |
 | ------------ | -------------------- |
@@ -996,7 +987,6 @@ const { app, BrowserWindow } = require("electron");
 - Use `fetch` instead of `got`?
 - Sign out is slow because of `Clear-Site-Data` header (https://bugs.chromium.org/p/chromium/issues/detail?id=762417)
 - Extract component that does reordering (tags, poll options, and so forth).
-- Rename schema to be more explicit, for example, “likes” → “messageLikes”.
 - Test process manager on Windows
   - In development, `Ctrl+C`.
   - Kill process
