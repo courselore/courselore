@@ -3051,6 +3051,8 @@ export default async (application: Application): Promise<void> => {
                       };
       
                       this.onpaste = (event) => {
+                        this.closest('[key="content-editor"]').querySelector('[key="content-editor--rich-text-help"]').hidden = true;
+
                         if (leafac.shiftKey) return;
 
                         if (event.clipboardData.types.includes("text/html")) {
