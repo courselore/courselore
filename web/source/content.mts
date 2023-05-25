@@ -3036,7 +3036,7 @@ export default async (application: Application): Promise<void> => {
                         event.preventDefault();
                       };
                       this.ondragover = (event) => {
-                        event.preventDefault();
+                        if (event.dataTransfer.types.includes("Files")) event.preventDefault();
                       };
                       this.ondrop = (event) => {
                         this.classList.remove("drag");

@@ -2,6 +2,9 @@
 
 ## Work in Progress
 
+- Helper teaching you how to plain-text pasting
+  - Hide it when plain-text pasting
+  - Perhaps show it on top of editor, not below, because when you paste the page may scroll
 - Dragging a directory from Finder makes the request fail without even an error code(!)
   - Drag text into content editor fails
     - Content editor
