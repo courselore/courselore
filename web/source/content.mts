@@ -3051,6 +3051,10 @@ export default async (application: Application): Promise<void> => {
                       };
       
                       this.onpaste = (event) => {
+                        window.setTimeout(() => {
+                          this.closest('[key="content-editor"]').scrollIntoView();
+                        });
+
                         this.closest('[key="content-editor"]').querySelector('[key="content-editor--rich-text-help"]').hidden = true;
 
                         if (leafac.shiftKey) return;

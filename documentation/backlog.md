@@ -2,9 +2,6 @@
 
 ## Work in Progress
 
-- Helper teaching you how to plain-text pasting
-  - Hide it when plain-text pasting
-  - Perhaps show it on top of editor, not below, because when you paste the page may scroll
 - UI on the upper left
 - LTI by fall
 - Feature branches
