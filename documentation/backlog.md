@@ -5,9 +5,6 @@
 - Helper teaching you how to plain-text pasting
   - Hide it when plain-text pasting
   - Perhaps show it on top of editor, not below, because when you paste the page may scroll
-- Dragging a directory from Finder makes the request fail without even an error code(!)
-  - Drag text into content editor fails
-    - User profile picture
 - UI on the upper left
 - LTI by fall
 - Feature branches
@@ -39,7 +36,6 @@
 - Authentication:
   - 2-Factor Authentication.
   - Look into SIS to get a list of courses
-- Give visual indication on dragging-and-dropping avatar on `/settings/profile`.
 - Extra fields:
   - Display name.
   - Pronoun.
