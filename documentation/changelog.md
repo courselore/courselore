@@ -13,6 +13,7 @@
 ## Unreleased
 
 - Improved the starting state of the `@mentions` and `#references` widgets. Instead of simply saying “Start typing to search”, they now give useful options, for example, the people who authored the most recent messages.
+- Fixed glitches when dragging-and-dropping or copying-and-pasting folders and text into the content editor and avatar uploader.
 
 ## 6.1.2
 
