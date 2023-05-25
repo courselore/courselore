@@ -909,24 +909,25 @@ export default async (application: Application): Promise<void> => {
                 javascript="${javascript`
                   this.dragLevel = 0;
                   this.ondragenter = (event) => {
-                    event.preventDefault();
                     if (this.dragLevel === 0) this.classList.add("drag");
                     this.dragLevel++;
+                    event.preventDefault();
                   };
                   this.ondragleave = (event) => {
-                    event.preventDefault();
                     this.dragLevel--;
                     if (this.dragLevel === 0) this.classList.remove("drag");
+                    event.preventDefault();
                   };
                   this.ondragover = (event) => {
-                    event.preventDefault();
+                    if (event.dataTransfer.types.includes("Files")) event.preventDefault();
                   };
                   this.ondrop = (event) => {
-                    event.preventDefault();
-                    this.dragLevel = 0;
                     this.classList.remove("drag");
+                    this.dragLevel = 0;
+                    if (!event.dataTransfer.types.includes("Files")) return;
+                    event.preventDefault();
                     const fileList = [...event.dataTransfer.items].flatMap((item) => item.webkitGetAsEntry().isFile ? [item.getAsFile()] : []);
-                    if (fileList.length === 1)
+                    if (fileList.length > 0)
                       this.querySelector('[key="avatar-chooser--upload"]').upload(fileList);
                   };
 

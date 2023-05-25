@@ -7,7 +7,6 @@
   - Perhaps show it on top of editor, not below, because when you paste the page may scroll
 - Dragging a directory from Finder makes the request fail without even an error code(!)
   - Drag text into content editor fails
-    - Content editor
     - User profile picture
 - UI on the upper left
 - LTI by fall
