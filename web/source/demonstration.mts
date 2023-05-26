@@ -127,7 +127,7 @@ export default async (application: Application): Promise<void> => {
                         : Math.random() < 0.1
                         ? "administrator"
                         : Math.random() < 0.3
-                        ? "staff"
+                        ? "course-staff"
                         : "none"
                     },
                     ${isEmailNotificationsForAllMessages},
@@ -377,47 +377,47 @@ export default async (application: Application): Promise<void> => {
               )!
           ),
         ];
-        const staff = enrollments.filter(
-          (enrollment) => enrollment.courseRole === "staff"
+        const courseStaff = enrollments.filter(
+          (enrollment) => enrollment.courseRole === "course-staff"
         );
         const students = enrollments.filter(
           (enrollment) => enrollment.courseRole === "student"
         );
 
         const tags: { id: number }[] = [
-          { name: "Assignment 1", staffOnlyAt: null },
-          { name: "Assignment 2", staffOnlyAt: null },
-          { name: "Assignment 3", staffOnlyAt: null },
-          { name: "Assignment 4", staffOnlyAt: null },
-          { name: "Assignment 5", staffOnlyAt: null },
-          { name: "Assignment 6", staffOnlyAt: null },
-          { name: "Assignment 7", staffOnlyAt: null },
-          { name: "Assignment 8", staffOnlyAt: null },
-          { name: "Assignment 9", staffOnlyAt: null },
-          { name: "Assignment 10", staffOnlyAt: null },
+          { name: "Assignment 1", courseStaffOnlyAt: null },
+          { name: "Assignment 2", courseStaffOnlyAt: null },
+          { name: "Assignment 3", courseStaffOnlyAt: null },
+          { name: "Assignment 4", courseStaffOnlyAt: null },
+          { name: "Assignment 5", courseStaffOnlyAt: null },
+          { name: "Assignment 6", courseStaffOnlyAt: null },
+          { name: "Assignment 7", courseStaffOnlyAt: null },
+          { name: "Assignment 8", courseStaffOnlyAt: null },
+          { name: "Assignment 9", courseStaffOnlyAt: null },
+          { name: "Assignment 10", courseStaffOnlyAt: null },
           {
             name: "Change for Next Year",
-            staffOnlyAt: new Date().toISOString(),
+            courseStaffOnlyAt: new Date().toISOString(),
           },
           {
             name: "Duplicate Question",
-            staffOnlyAt: new Date().toISOString(),
+            courseStaffOnlyAt: new Date().toISOString(),
           },
         ].map(
-          ({ name, staffOnlyAt }, order) =>
+          ({ name, courseStaffOnlyAt }, order) =>
             application.database.get<{ id: number }>(
               sql`
                 SELECT * FROM "tags" WHERE "id" = ${
                   application.database.run(
                     sql`
-                      INSERT INTO "tags" ("createdAt", "course", "reference", "order", "name", "staffOnlyAt")
+                      INSERT INTO "tags" ("createdAt", "course", "reference", "order", "name", "courseStaffOnlyAt")
                       VALUES (
                         ${new Date().toISOString()},
                         ${course.id},
                         ${cryptoRandomString({ length: 10, type: "numeric" })},
                         ${order},
                         ${name},
-                        ${staffOnlyAt}
+                        ${courseStaffOnlyAt}
                       )
                     `
                   ).lastInsertRowid
@@ -917,7 +917,7 @@ Other: @${lodash.sample(enrollments)!.reference}
 
 Non-existent: @1571024857
 
-Groups: @everyone, @staff, @students
+Course roles: @everyone, @course-staff, @students
 
 # \`#references\`
 
@@ -973,9 +973,9 @@ Message non-existent permanent link turned reference: <https://${
           const selectedParticipantEnrollments = lodash.uniq(
             participants === "everyone"
               ? []
-              : participants === "staff"
+              : participants === "course-staff"
               ? [
-                  ...(enrollment.courseRole === "staff"
+                  ...(enrollment.courseRole === "course-staff"
                     ? []
                     : Math.random() < 0.5
                     ? [enrollment]
@@ -992,8 +992,8 @@ Message non-existent permanent link turned reference: <https://${
           const participantEnrollments = lodash.uniq([
             ...(participants === "everyone"
               ? enrollments
-              : participants === "staff"
-              ? staff
+              : participants === "course-staff"
+              ? courseStaff
               : participants === "selected-people"
               ? []
               : []),
@@ -1079,7 +1079,8 @@ Message non-existent permanent link turned reference: <https://${
                           : null
                       },
                       ${
-                        conversationAuthorEnrollment?.courseRole === "staff" &&
+                        conversationAuthorEnrollment?.courseRole ===
+                          "course-staff" &&
                         type === "note" &&
                         Math.random() < 0.5
                           ? new Date().toISOString()
@@ -1199,14 +1200,15 @@ Message non-existent permanent link turned reference: <https://${
                           Math.random() < 0.5
                             ? "answer"
                             : conversation.type === "question" &&
-                              messageAuthorEnrollment?.courseRole !== "staff" &&
+                              messageAuthorEnrollment?.courseRole !==
+                                "course-staff" &&
                               Math.random() < 0.5
                             ? "follow-up-question"
                             : conversation.type !== "chat" &&
                               messageAuthorEnrollment?.courseRole !==
                                 "student" &&
                               Math.random() < 0.1
-                            ? "staff-whisper"
+                            ? "course-staff-whisper"
                             : "message"
                         },
                         ${contentSource},
@@ -1244,7 +1246,7 @@ Message non-existent permanent link turned reference: <https://${
             }
 
             for (const enrollment of lodash.sampleSize(
-              lodash.intersection(staff, participantEnrollments),
+              lodash.intersection(courseStaff, participantEnrollments),
               Math.random() < 0.8 ? 0 : lodash.random(2)
             ))
               application.database.run(

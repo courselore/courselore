@@ -38,7 +38,7 @@ export type ApplicationCourse = {
             reference: string;
             order: number;
             name: string;
-            staffOnlyAt: string | null;
+            courseStaffOnlyAt: string | null;
           }[];
         };
       };
@@ -113,7 +113,7 @@ export type ApplicationCourse = {
       };
 
       helpers: {
-        courseRoles: ["student", "staff"];
+        courseRoles: ["student", "course-staff"];
 
         enrollmentAccentColors: [
           "red",
@@ -129,7 +129,7 @@ export type ApplicationCourse = {
 };
 
 export default async (application: Application): Promise<void> => {
-  application.web.locals.helpers.courseRoles = ["student", "staff"];
+  application.web.locals.helpers.courseRoles = ["student", "course-staff"];
 
   application.web.locals.helpers.enrollmentAccentColors = [
     "red",
@@ -496,7 +496,7 @@ export default async (application: Application): Promise<void> => {
             ${response.locals.user.id},
             ${course.id},
             ${cryptoRandomString({ length: 10, type: "numeric" })},
-            ${"staff"},
+            ${"course-staff"},
             ${defaultAccentColor({ request, response })}
           )
         `
@@ -577,8 +577,8 @@ export default async (application: Application): Promise<void> => {
           WHERE
             "course" = ${response.locals.course.id} AND (
               "conversations"."participants" = 'everyone' $${
-                response.locals.enrollment.courseRole === "staff"
-                  ? sql`OR "conversations"."participants" = 'staff'`
+                response.locals.enrollment.courseRole === "course-staff"
+                  ? sql`OR "conversations"."participants" = 'course-staff'`
                   : sql``
               } OR EXISTS(
                 SELECT TRUE
@@ -601,16 +601,16 @@ export default async (application: Application): Promise<void> => {
       reference: string;
       order: number;
       name: string;
-      staffOnlyAt: string | null;
+      courseStaffOnlyAt: string | null;
     }>(
       sql`
-        SELECT "id", "reference", "order", "name", "staffOnlyAt"
+        SELECT "id", "reference", "order", "name", "courseStaffOnlyAt"
         FROM "tags"
         WHERE
           "course" = ${response.locals.course.id}
           $${
             response.locals.enrollment.courseRole === "student"
-              ? sql`AND "staffOnlyAt" IS NULL`
+              ? sql`AND "courseStaffOnlyAt" IS NULL`
               : sql``
           }
         ORDER BY "order" ASC
@@ -853,7 +853,7 @@ export default async (application: Application): Promise<void> => {
       regular: html`<i class="bi bi-person"></i>`,
       fill: html`<i class="bi bi-person-fill"></i>`,
     },
-    staff: {
+    "course-staff": {
       regular: html`<i class="bi bi-mortarboard"></i>`,
       fill: html`<i class="bi bi-mortarboard-fill"></i>`,
     },
@@ -863,7 +863,7 @@ export default async (application: Application): Promise<void> => {
     [courseRole in Application["web"]["locals"]["helpers"]["courseRoles"][number]]: string;
   } = {
     student: "",
-    staff: "text--sky",
+    "course-staff": "text--sky",
   };
 
   application.web.get<
@@ -901,7 +901,7 @@ export default async (application: Application): Promise<void> => {
               </div>
 
               <div class="menu-box">
-                $${response.locals.enrollment.courseRole === "staff"
+                $${response.locals.enrollment.courseRole === "course-staff"
                   ? html`
                       <a
                         href="https://${application.configuration
@@ -921,7 +921,8 @@ export default async (application: Application): Promise<void> => {
                     {
                       newConversation: {
                         type:
-                          response.locals.enrollment.courseRole === "staff"
+                          response.locals.enrollment.courseRole ===
+                          "course-staff"
                             ? "note"
                             : "question",
                       },
@@ -929,11 +930,11 @@ export default async (application: Application): Promise<void> => {
                     { addQueryPrefix: true }
                   )}"
                   class="menu-box--item button ${response.locals.enrollment
-                    .courseRole === "staff"
+                    .courseRole === "course-staff"
                     ? "button--transparent"
                     : "button--blue"}"
                 >
-                  $${response.locals.enrollment.courseRole === "staff"
+                  $${response.locals.enrollment.courseRole === "course-staff"
                     ? html`<i class="bi bi-chat-text"></i>`
                     : html`<i class="bi bi-chat-text-fill"></i>`}
                   Start the First Conversation
@@ -999,7 +1000,7 @@ export default async (application: Application): Promise<void> => {
       `https://${application.configuration.hostname}/courses/${
         response.locals.course.reference
       }/settings/${
-        response.locals.enrollment.courseRole === "staff"
+        response.locals.enrollment.courseRole === "course-staff"
           ? "course-information"
           : "your-enrollment"
       }`
@@ -1035,7 +1036,7 @@ export default async (application: Application): Promise<void> => {
         Course Settings
       `,
       menu:
-        response.locals.enrollment.courseRole === "staff"
+        response.locals.enrollment.courseRole === "course-staff"
           ? html`
               <a
                 href="https://${application.configuration
@@ -1149,7 +1150,7 @@ export default async (application: Application): Promise<void> => {
     (request, response, next) => {
       if (
         response.locals.course === undefined ||
-        response.locals.enrollment.courseRole !== "staff"
+        response.locals.enrollment.courseRole !== "course-staff"
       )
         return next();
 
@@ -1278,7 +1279,7 @@ export default async (application: Application): Promise<void> => {
     (request, response, next) => {
       if (
         response.locals.course === undefined ||
-        response.locals.enrollment.courseRole !== "staff"
+        response.locals.enrollment.courseRole !== "course-staff"
       )
         return next();
 
@@ -1354,7 +1355,7 @@ export default async (application: Application): Promise<void> => {
   >("/courses/:courseReference/settings/tags", (request, response, next) => {
     if (
       response.locals.course === undefined ||
-      response.locals.enrollment.courseRole !== "staff"
+      response.locals.enrollment.courseRole !== "course-staff"
     )
       return next();
 
@@ -1422,8 +1423,10 @@ export default async (application: Application): Promise<void> => {
           >
             <input
               type="checkbox"
-              name="tags[${String(order)}][isStaffOnly]"
-              $${typeof tag?.staffOnlyAt === "string" ? html`checked` : html``}
+              name="tags[${String(order)}][isCourseStaffOnly]"
+              $${typeof tag?.courseStaffOnlyAt === "string"
+                ? html`checked`
+                : html``}
               class="visually-hidden input--radio-or-checkbox--multilabel"
               $${tag === undefined
                 ? html`
@@ -1440,7 +1443,7 @@ export default async (application: Application): Promise<void> => {
                   element: this,
                   tippyProps: {
                     touch: false,
-                    content: "Set as Visible by Staff Only",
+                    content: "Set as Visible by Course Staff Only",
                   },
                 });
               `}"
@@ -1449,7 +1452,7 @@ export default async (application: Application): Promise<void> => {
               Visible by Everyone
             </span>
             <span
-              class="${textColorsCourseRole.staff}"
+              class="${textColorsCourseRole["course-staff"]}"
               javascript="${javascript`
                 leafac.setTippy({
                   event,
@@ -1462,7 +1465,7 @@ export default async (application: Application): Promise<void> => {
               `}"
             >
               <i class="bi bi-mortarboard-fill"></i>
-              Visible by Staff Only
+              Visible by Course Staff Only
             </span>
           </label>
         </div>
@@ -1831,7 +1834,7 @@ export default async (application: Application): Promise<void> => {
       tags?: {
         reference?: string | undefined;
         name?: string;
-        isStaffOnly?: "on";
+        isCourseStaffOnly?: "on";
       }[];
     },
     {},
@@ -1839,7 +1842,7 @@ export default async (application: Application): Promise<void> => {
   >("/courses/:courseReference/settings/tags", (request, response, next) => {
     if (
       response.locals.course === undefined ||
-      response.locals.enrollment.courseRole !== "staff"
+      response.locals.enrollment.courseRole !== "course-staff"
     )
       return next();
 
@@ -1855,7 +1858,7 @@ export default async (application: Application): Promise<void> => {
           ].includes(tag.reference) ||
           typeof tag.name !== "string" ||
           tag.name.trim() === "" ||
-          ![undefined, "on"].includes(tag.isStaffOnly)
+          ![undefined, "on"].includes(tag.isCourseStaffOnly)
       )
     )
       return next("Validation");
@@ -1865,14 +1868,18 @@ export default async (application: Application): Promise<void> => {
         if (tag.reference === undefined)
           application.database.run(
             sql`
-              INSERT INTO "tags" ("createdAt", "course", "reference", "order", "name", "staffOnlyAt")
+              INSERT INTO "tags" ("createdAt", "course", "reference", "order", "name", "courseStaffOnlyAt")
               VALUES (
                 ${new Date().toISOString()},
                 ${response.locals.course.id},
                 ${cryptoRandomString({ length: 10, type: "numeric" })},
                 ${order},
                 ${tag.name},
-                ${tag.isStaffOnly === "on" ? new Date().toISOString() : null}
+                ${
+                  tag.isCourseStaffOnly === "on"
+                    ? new Date().toISOString()
+                    : null
+                }
               )
             `
           );
@@ -1883,8 +1890,10 @@ export default async (application: Application): Promise<void> => {
               SET
                 "order" = ${order},
                 "name" = ${tag.name},
-                "staffOnlyAt" = ${
-                  tag.isStaffOnly === "on" ? new Date().toISOString() : null
+                "courseStaffOnlyAt" = ${
+                  tag.isCourseStaffOnly === "on"
+                    ? new Date().toISOString()
+                    : null
                 }
               WHERE
                 "course" = ${response.locals.course.id} AND
@@ -1938,7 +1947,7 @@ export default async (application: Application): Promise<void> => {
     (request, response, next) => {
       if (
         response.locals.course === undefined ||
-        response.locals.enrollment.courseRole !== "staff"
+        response.locals.enrollment.courseRole !== "course-staff"
       )
         return next();
 
@@ -2697,7 +2706,8 @@ export default async (application: Application): Promise<void> => {
                                                     $${iconsCourseRole[
                                                       courseRole
                                                     ][
-                                                      courseRole === "staff"
+                                                      courseRole ===
+                                                      "course-staff"
                                                         ? "fill"
                                                         : "regular"
                                                     ]}
@@ -2715,7 +2725,7 @@ export default async (application: Application): Promise<void> => {
                                 `}"
                               >
                                 $${iconsCourseRole[invitation.courseRole][
-                                  invitation.courseRole === "staff"
+                                  invitation.courseRole === "course-staff"
                                     ? "fill"
                                     : "regular"
                                 ]}
@@ -3128,7 +3138,7 @@ export default async (application: Application): Promise<void> => {
     (request, response, next) => {
       if (
         response.locals.course === undefined ||
-        response.locals.enrollment.courseRole !== "staff"
+        response.locals.enrollment.courseRole !== "course-staff"
       )
         return next();
 
@@ -3441,7 +3451,7 @@ export default async (application: Application): Promise<void> => {
     (request, response, next) => {
       if (
         response.locals.course === undefined ||
-        response.locals.enrollment.courseRole !== "staff" ||
+        response.locals.enrollment.courseRole !== "course-staff" ||
         response.locals.invitation === undefined
       )
         return next();
@@ -4034,7 +4044,7 @@ export default async (application: Application): Promise<void> => {
     (request, response, next) => {
       if (
         response.locals.course === undefined ||
-        response.locals.enrollment.courseRole !== "staff"
+        response.locals.enrollment.courseRole !== "course-staff"
       )
         return next();
 
@@ -4155,10 +4165,10 @@ export default async (application: Application): Promise<void> => {
             $${enrollments.map((enrollment) => {
               const action = `https://${application.configuration.hostname}/courses/${response.locals.course.reference}/settings/enrollments/${enrollment.reference}`;
               const isSelf = enrollment.id === response.locals.enrollment.id;
-              const isOnlyStaff =
+              const isOnlyCourseStaff =
                 isSelf &&
                 enrollments.filter(
-                  (enrollment) => enrollment.courseRole === "staff"
+                  (enrollment) => enrollment.courseRole === "course-staff"
                 ).length === 1;
 
               return html`
@@ -4339,7 +4349,7 @@ export default async (application: Application): Promise<void> => {
                                                   : "button--transparent"} ${textColorsCourseRole[
                                                   courseRole
                                                 ]}"
-                                                $${isOnlyStaff
+                                                $${isOnlyCourseStaff
                                                   ? html`
                                                       type="button"
                                                       javascript="${javascript`
@@ -4349,7 +4359,7 @@ export default async (application: Application): Promise<void> => {
                                                           tippyProps: {
                                                             theme: "rose",
                                                             trigger: "click",
-                                                            content: "You may not update your own course role because you’re the only staff member.",
+                                                            content: "You may not update your own course role because you’re the only course staff member.",
                                                           },
                                                         });
                                                       `}"
@@ -4430,7 +4440,7 @@ export default async (application: Application): Promise<void> => {
                                                   : html``}
                                               >
                                                 $${iconsCourseRole[courseRole][
-                                                  courseRole === "staff"
+                                                  courseRole === "course-staff"
                                                     ? "fill"
                                                     : "regular"
                                                 ]}
@@ -4447,7 +4457,7 @@ export default async (application: Application): Promise<void> => {
                           `}"
                         >
                           $${iconsCourseRole[enrollment.courseRole][
-                            enrollment.courseRole === "staff"
+                            enrollment.courseRole === "course-staff"
                               ? "fill"
                               : "regular"
                           ]}
@@ -4476,7 +4486,7 @@ export default async (application: Application): Promise<void> => {
                               },
                             });
 
-                            if (${isOnlyStaff})
+                            if (${isOnlyCourseStaff})
                               leafac.setTippy({
                                 event,
                                 element: this,
@@ -4484,7 +4494,7 @@ export default async (application: Application): Promise<void> => {
                                 tippyProps: {
                                   theme: "rose",
                                   trigger: "click",
-                                  content: "You may not remove yourself from the course because you’re the only staff member.",
+                                  content: "You may not remove yourself from the course because you’re the only course staff member.",
                                 },
                               });
                             else
@@ -4583,7 +4593,7 @@ export default async (application: Application): Promise<void> => {
     (request, response, next) => {
       if (
         response.locals.course === undefined ||
-        response.locals.enrollment.courseRole !== "staff"
+        response.locals.enrollment.courseRole !== "course-staff"
       )
         return next();
 
@@ -4613,7 +4623,7 @@ export default async (application: Application): Promise<void> => {
             FROM "enrollments"
             WHERE
               "course" = ${response.locals.course.id} AND
-              "courseRole" = ${"staff"}
+              "courseRole" = ${"course-staff"}
           `
         )!.count === 1
       )
@@ -4723,7 +4733,7 @@ export default async (application: Application): Promise<void> => {
     (request, response, next) => {
       if (
         response.locals.course === undefined ||
-        response.locals.enrollment.courseRole !== "staff"
+        response.locals.enrollment.courseRole !== "course-staff"
       )
         return next();
 
@@ -4897,7 +4907,7 @@ export default async (application: Application): Promise<void> => {
     (request, response, next) => {
       if (
         response.locals.course === undefined ||
-        response.locals.enrollment.courseRole !== "staff"
+        response.locals.enrollment.courseRole !== "course-staff"
       )
         return next();
 
@@ -4947,7 +4957,7 @@ export default async (application: Application): Promise<void> => {
     (request, response, next) => {
       if (
         response.locals.course === undefined ||
-        response.locals.enrollment.courseRole !== "staff"
+        response.locals.enrollment.courseRole !== "course-staff"
       )
         return next();
 
@@ -5002,7 +5012,7 @@ export default async (application: Application): Promise<void> => {
     (request, response, next) => {
       if (
         response.locals.course === undefined ||
-        response.locals.enrollment.courseRole !== "staff"
+        response.locals.enrollment.courseRole !== "course-staff"
       )
         return next();
 
@@ -5017,8 +5027,8 @@ export default async (application: Application): Promise<void> => {
           WHERE
             "conversations"."course" = ${response.locals.course.id} AND (
               "conversations"."participants" = 'everyone' $${
-                response.locals.enrollment.courseRole === "staff"
-                  ? sql`OR "conversations"."participants" = 'staff'`
+                response.locals.enrollment.courseRole === "course-staff"
+                  ? sql`OR "conversations"."participants" = 'course-staff'`
                   : sql``
               } OR EXISTS(
                 SELECT TRUE

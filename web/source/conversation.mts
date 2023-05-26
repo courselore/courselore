@@ -135,7 +135,11 @@ export type ApplicationConversation = {
       };
 
       helpers: {
-        conversationParticipantses: ["everyone", "staff", "selected-people"];
+        conversationParticipantses: [
+          "everyone",
+          "course-staff",
+          "selected-people"
+        ];
 
         conversationTypes: ["question", "note", "chat"];
 
@@ -179,7 +183,7 @@ export type ApplicationConversation = {
                   id: number;
                   reference: string;
                   name: string;
-                  staffOnlyAt: string | null;
+                  courseStaffOnlyAt: string | null;
                 };
               }[];
               messagesCount: number;
@@ -198,7 +202,7 @@ export type ApplicationConversation = {
 export default async (application: Application): Promise<void> => {
   application.web.locals.helpers.conversationParticipantses = [
     "everyone",
-    "staff",
+    "course-staff",
     "selected-people",
   ];
 
@@ -245,7 +249,7 @@ export default async (application: Application): Promise<void> => {
       );
 
       response.locals.enrollmentsTyping =
-        response.locals.enrollment.courseRole === "staff"
+        response.locals.enrollment.courseRole === "course-staff"
           ? application.database
               .all<{
                 enrollmentId: number;
@@ -288,7 +292,7 @@ export default async (application: Application): Promise<void> => {
                   WHERE
                     "enrollments"."id" != ${response.locals.enrollment.id}
                   ORDER BY
-                    "enrollments"."courseRole" = 'staff' DESC,
+                    "enrollments"."courseRole" = 'course-staff' DESC,
                     "users"."name" ASC
                 `
               )
@@ -395,8 +399,8 @@ export default async (application: Application): Promise<void> => {
           "conversations"."course" = ${response.locals.course.id} AND
           "conversations"."reference" = ${conversationReference} AND (
             "conversations"."participants" = 'everyone' $${
-              response.locals.enrollment.courseRole === "staff"
-                ? sql`OR "conversations"."participants" = 'staff'`
+              response.locals.enrollment.courseRole === "course-staff"
+                ? sql`OR "conversations"."participants" = 'course-staff'`
                 : sql``
             } OR EXISTS(
               SELECT TRUE
@@ -495,7 +499,7 @@ export default async (application: Application): Promise<void> => {
                   "conversationSelectedParticipants"."conversation" = ${conversation.id} AND
                   "enrollments"."id" != ${response.locals.enrollment.id}
                 ORDER BY
-                  "enrollments"."courseRole" = 'staff' DESC,
+                  "enrollments"."courseRole" = 'course-staff' DESC,
                   "users"."name" ASC
               `
             )
@@ -524,7 +528,7 @@ export default async (application: Application): Promise<void> => {
         tagId: number;
         tagReference: string;
         tagName: string;
-        tagStaffOnlyAt: string | null;
+        tagCourseStaffOnlyAt: string | null;
       }>(
         sql`
           SELECT
@@ -532,12 +536,12 @@ export default async (application: Application): Promise<void> => {
             "tags"."id" AS "tagId",
             "tags"."reference" AS "tagReference",
             "tags"."name" AS "tagName",
-            "tags"."staffOnlyAt" AS "tagStaffOnlyAt"
+            "tags"."courseStaffOnlyAt" AS "tagCourseStaffOnlyAt"
           FROM "taggings"
           JOIN "tags" ON "taggings"."tag" = "tags"."id"
           $${
             response.locals.enrollment.courseRole === "student"
-              ? sql`AND "tags"."staffOnlyAt" IS NULL`
+              ? sql`AND "tags"."courseStaffOnlyAt" IS NULL`
               : sql``
           }
           WHERE "taggings"."conversation" = ${conversation.id}
@@ -550,7 +554,7 @@ export default async (application: Application): Promise<void> => {
           id: tagging.tagId,
           reference: tagging.tagReference,
           name: tagging.tagName,
-          staffOnlyAt: tagging.tagStaffOnlyAt,
+          courseStaffOnlyAt: tagging.tagCourseStaffOnlyAt,
         },
       }));
 
@@ -562,9 +566,9 @@ export default async (application: Application): Promise<void> => {
         FROM "messages"
         WHERE
           "messages"."conversation" = ${conversation.id} $${
-        response.locals.enrollment.courseRole !== "staff"
+        response.locals.enrollment.courseRole !== "course-staff"
           ? sql`
-              AND "messages"."type" != 'staff-whisper'
+              AND "messages"."type" != 'course-staff-whisper'
             `
           : sql``
       }
@@ -580,9 +584,9 @@ export default async (application: Application): Promise<void> => {
           "messages"."conversation" = ${conversation.id}
         WHERE
           "readings"."enrollment" = ${response.locals.enrollment.id} $${
-        response.locals.enrollment.courseRole !== "staff"
+        response.locals.enrollment.courseRole !== "course-staff"
           ? sql`
-              AND "messages"."type" != 'staff-whisper'
+              AND "messages"."type" != 'course-staff-whisper'
             `
           : sql``
       }
@@ -837,14 +841,14 @@ export default async (application: Application): Promise<void> => {
                   JOIN "messages" ON
                     "enrollments"."id" = "messages"."authorEnrollment"
                     $${
-                      response.locals.enrollment.courseRole === "staff"
+                      response.locals.enrollment.courseRole === "course-staff"
                         ? sql``
                         : sql`
                             AND (
                               "messages"."anonymousAt" IS NULL OR
                               "messages"."authorEnrollment" = ${response.locals.enrollment.id}
                             ) AND
-                              "messages"."type" != 'staff-whisper'
+                              "messages"."type" != 'course-staff-whisper'
                           `
                     }
                   WHERE "usersNameSearchIndex" MATCH ${search}
@@ -860,10 +864,10 @@ export default async (application: Application): Promise<void> => {
                   JOIN "messages" ON
                     "messagesContentSearchIndex"."rowid" = "messages"."id"
                     $${
-                      response.locals.enrollment.courseRole === "staff"
+                      response.locals.enrollment.courseRole === "course-staff"
                         ? sql``
                         : sql`
-                            AND "messages"."type" != 'staff-whisper'
+                            AND "messages"."type" != 'course-staff-whisper'
                           `
                     }
                   WHERE "messagesContentSearchIndex" MATCH ${search}
@@ -883,8 +887,8 @@ export default async (application: Application): Promise<void> => {
           WHERE
             "conversations"."course" = ${response.locals.course.id} AND (
               "conversations"."participants" = 'everyone' $${
-                response.locals.enrollment.courseRole === "staff"
-                  ? sql`OR "conversations"."participants" = 'staff'`
+                response.locals.enrollment.courseRole === "course-staff"
+                  ? sql`OR "conversations"."participants" = 'course-staff'`
                   : sql``
               } OR EXISTS(
                 SELECT TRUE
@@ -924,9 +928,10 @@ export default async (application: Application): Promise<void> => {
                       WHERE
                         "conversations"."id" = "messages"."conversation" AND
                         "readings"."id" IS NULL $${
-                          response.locals.enrollment.courseRole !== "staff"
+                          response.locals.enrollment.courseRole !==
+                          "course-staff"
                             ? sql`
-                                AND "messages"."type" != 'staff-whisper'
+                                AND "messages"."type" != 'course-staff-whisper'
                               `
                             : sql``
                         }
@@ -1284,7 +1289,7 @@ export default async (application: Application): Promise<void> => {
                     >
                       New:
                     </div>
-                    $${response.locals.enrollment.courseRole === "staff"
+                    $${response.locals.enrollment.courseRole === "course-staff"
                       ? html`
                           <a
                             href="https://${application.configuration
@@ -1379,7 +1384,7 @@ export default async (application: Application): Promise<void> => {
                     >
                       Quick Filters:
                     </div>
-                    $${response.locals.enrollment.courseRole === "staff"
+                    $${response.locals.enrollment.courseRole === "course-staff"
                       ? html`
                           $${!util.isDeepStrictEqual(
                             request.query.conversations?.filters,
@@ -2365,7 +2370,7 @@ export default async (application: Application): Promise<void> => {
                                             ${tag.name}
                                           </span>
                                         </label>
-                                        $${tag.staffOnlyAt !== null
+                                        $${tag.courseStaffOnlyAt !== null
                                           ? html`
                                               <span
                                                 class="text--sky"
@@ -2375,7 +2380,7 @@ export default async (application: Application): Promise<void> => {
                                                     element: this,
                                                     tippyProps: {
                                                       touch: false,
-                                                      content: "This tag is visible by staff only.",
+                                                      content: "This tag is visible by the course staff only.",
                                                     },
                                                   });
                                                 `}"
@@ -2988,7 +2993,7 @@ export default async (application: Application): Promise<void> => {
           anonymous:
             conversation.anonymousAt === null
               ? false
-              : response.locals.enrollment.courseRole === "staff" ||
+              : response.locals.enrollment.courseRole === "course-staff" ||
                 (conversation.authorEnrollment !== "no-longer-enrolled" &&
                   conversation.authorEnrollment.id ===
                     response.locals.enrollment.id)
@@ -3069,7 +3074,7 @@ export default async (application: Application): Promise<void> => {
                   <div class="text--teal">
                     <i class="bi bi-tag-fill"></i>
                     ${tagging.tag.name}
-                    $${tagging.tag.staffOnlyAt !== null
+                    $${tagging.tag.courseStaffOnlyAt !== null
                       ? html`
                           <span
                             class="text--sky"
@@ -3079,7 +3084,7 @@ export default async (application: Application): Promise<void> => {
                                 element: this,
                                 tippyProps: {
                                   touch: false,
-                                  content: "This tag is visible by staff only.",
+                                  content: "This tag is visible by the course staff only.",
                                 },
                               });
                             `}"
@@ -3123,7 +3128,8 @@ export default async (application: Application): Promise<void> => {
                   anonymous:
                     searchResult.message.anonymousAt === null
                       ? false
-                      : response.locals.enrollment.courseRole === "staff" ||
+                      : response.locals.enrollment.courseRole ===
+                          "course-staff" ||
                         (searchResult.message.authorEnrollment !==
                           "no-longer-enrolled" &&
                           searchResult.message.authorEnrollment.id ===
@@ -3146,7 +3152,8 @@ export default async (application: Application): Promise<void> => {
                   anonymous:
                     message.anonymousAt === null
                       ? false
-                      : response.locals.enrollment.courseRole === "staff" ||
+                      : response.locals.enrollment.courseRole ===
+                          "course-staff" ||
                         (message.authorEnrollment !== "no-longer-enrolled" &&
                           message.authorEnrollment.id ===
                             response.locals.enrollment.id)
@@ -3204,7 +3211,7 @@ export default async (application: Application): Promise<void> => {
       regular: html`<i class="bi bi-people"></i>`,
       fill: html`<i class="bi bi-people-fill"></i>`,
     },
-    staff: {
+    "course-staff": {
       regular: html`<i class="bi bi-mortarboard"></i>`,
       fill: html`<i class="bi bi-mortarboard-fill"></i>`,
     },
@@ -3218,7 +3225,7 @@ export default async (application: Application): Promise<void> => {
     [conversationParticipants in Application["web"]["locals"]["helpers"]["conversationParticipantses"][number]]: string;
   } = {
     everyone: "text--green",
-    staff: "text--sky",
+    "course-staff": "text--sky",
     "selected-people": "text--purple",
   };
 
@@ -3226,7 +3233,7 @@ export default async (application: Application): Promise<void> => {
     [conversationParticipants in Application["web"]["locals"]["helpers"]["conversationParticipantses"][number]]: string;
   } = {
     everyone: html`Everyone`,
-    staff: html`Staff`,
+    "course-staff": html`Course Staff`,
     "selected-people": html`Selected People`,
   };
 
@@ -3305,9 +3312,9 @@ export default async (application: Application): Promise<void> => {
           WHERE
             "readings"."id" IS NULL AND (
             "conversations"."participants" = 'everyone' $${
-              response.locals.enrollment.courseRole === "staff"
+              response.locals.enrollment.courseRole === "course-staff"
                 ? sql`
-                    OR "conversations"."participants" = 'staff'
+                    OR "conversations"."participants" = 'course-staff'
                   `
                 : sql`
               `
@@ -3321,9 +3328,9 @@ export default async (application: Application): Promise<void> => {
                 }
             )
           ) $${
-            response.locals.enrollment.courseRole !== "staff"
+            response.locals.enrollment.courseRole !== "course-staff"
               ? sql`
-                  AND "messages"."type" != 'staff-whisper'
+                  AND "messages"."type" != 'course-staff-whisper'
                 `
               : sql``
           }
@@ -3401,7 +3408,7 @@ export default async (application: Application): Promise<void> => {
               reference: string;
               type: string | null;
               isPinned: "true" | null;
-              isStaffOnly: "true" | null;
+              isCourseStaffOnly: "true" | null;
               title: string | null;
               content: string | null;
               tagsReferences: string | null;
@@ -3413,7 +3420,7 @@ export default async (application: Application): Promise<void> => {
                   "reference",
                   "type",
                   "isPinned",
-                  "isStaffOnly",
+                  "isCourseStaffOnly",
                   "title",
                   "content",
                   "tagsReferences"
@@ -3563,7 +3570,7 @@ export default async (application: Application): Promise<void> => {
 
                               if (${
                                 response.locals.enrollment.courseRole ===
-                                "staff"
+                                "course-staff"
                               }) {
                                 const notification = form.querySelector('[key="new-conversation--announcement"]');
                                 notification.hidden = ${
@@ -3639,7 +3646,7 @@ export default async (application: Application): Promise<void> => {
                       request.query.newConversation?.type === undefined)),
               })}
               $${response.locals.tags.length === 0 &&
-              response.locals.enrollment.courseRole !== "staff"
+              response.locals.enrollment.courseRole !== "course-staff"
                 ? html``
                 : html`
                     <div class="label">
@@ -3662,7 +3669,7 @@ export default async (application: Application): Promise<void> => {
                           <i class="bi bi-info-circle"></i>
                         </button>
                         $${response.locals.tags.length > 0 &&
-                        response.locals.enrollment.courseRole === "staff"
+                        response.locals.enrollment.courseRole === "course-staff"
                           ? html`
                               <div
                                 css="${css`
@@ -3694,7 +3701,7 @@ export default async (application: Application): Promise<void> => {
                         `}"
                       >
                         $${response.locals.tags.length === 0 &&
-                        response.locals.enrollment.courseRole === "staff"
+                        response.locals.enrollment.courseRole === "course-staff"
                           ? html`
                               <a
                                 href="https://${application.configuration
@@ -3767,7 +3774,7 @@ export default async (application: Application): Promise<void> => {
                                       ${tag.name}
                                     </span>
                                   </label>
-                                  $${tag.staffOnlyAt !== null
+                                  $${tag.courseStaffOnlyAt !== null
                                     ? html`
                                         <span
                                           class="text--sky"
@@ -3777,7 +3784,7 @@ export default async (application: Application): Promise<void> => {
                                               element: this,
                                               tippyProps: {
                                                 touch: false,
-                                                content: "This tag is visible by staff only.",
+                                                content: "This tag is visible by the course staff only.",
                                               },
                                             });
                                           `}"
@@ -3828,7 +3835,7 @@ export default async (application: Application): Promise<void> => {
                         "enrollments"."course" = ${response.locals.course.id} AND
                         "enrollments"."id" != ${response.locals.enrollment.id}
                       ORDER BY
-                        "enrollments"."courseRole" = 'staff' DESC,
+                        "enrollments"."courseRole" = 'course-staff' DESC,
                         "users"."name" ASC
                     `
                   )
@@ -3924,18 +3931,18 @@ export default async (application: Application): Promise<void> => {
                                                     element.disabled = true;
                                                 } else if (${
                                                   conversationParticipants ===
-                                                  "staff"
+                                                  "course-staff"
                                                 }) {
                                                   selectedParticipants.hidden = false;
-                                                  selectedParticipants.querySelector('[key="participants--dropdown--selected-participants--separator--staff"]').hidden = false;
+                                                  selectedParticipants.querySelector('[key="participants--dropdown--selected-participants--separator--course-staff"]').hidden = false;
                                                   selectedParticipants.querySelector('[key="participants--dropdown--selected-participants--separator--selected-people"]').hidden = true;
 
-                                                  for (const element of selectedParticipants.querySelectorAll('[data-enrollment-course-role="staff"]'))
+                                                  for (const element of selectedParticipants.querySelectorAll('[data-enrollment-course-role="course-staff"]'))
                                                     element.hidden = true;
                                                   participantsDropdown.querySelector('[key="participants--dropdown--selected-participants--filter"]').oninput();
 
                                                   for (const element of this.closest("form").querySelectorAll('[name="selectedParticipantsReferences[]"]'))
-                                                    element.disabled = element.matches('[data-enrollment-course-role="staff"]');
+                                                    element.disabled = element.matches('[data-enrollment-course-role="course-staff"]');
 
                                                   (this.closest("form").querySelector('[name="isAnnouncement"]') ?? {}).checked = false;
                                                   (this.closest("form").querySelector('[name="isPinned"]') ?? {}).checked = false;
@@ -3944,10 +3951,10 @@ export default async (application: Application): Promise<void> => {
                                                   "selected-people"
                                                 }) {
                                                   selectedParticipants.hidden = false;
-                                                  selectedParticipants.querySelector('[key="participants--dropdown--selected-participants--separator--staff"]').hidden = true;
+                                                  selectedParticipants.querySelector('[key="participants--dropdown--selected-participants--separator--course-staff"]').hidden = true;
                                                   selectedParticipants.querySelector('[key="participants--dropdown--selected-participants--separator--selected-people"]').hidden = false;
 
-                                                  for (const element of selectedParticipants.querySelectorAll('[data-enrollment-course-role="staff"]'))
+                                                  for (const element of selectedParticipants.querySelectorAll('[data-enrollment-course-role="course-staff"]'))
                                                     element.hidden = false;
                                                   participantsDropdown.querySelector('[key="participants--dropdown--selected-participants--filter"]').oninput();
 
@@ -3991,7 +3998,10 @@ export default async (application: Application): Promise<void> => {
                                     key="participants--dropdown--selected-participants"
                                     $${(typeof request.query.newConversation
                                       ?.participants === "string" &&
-                                      ["staff", "selected-people"].includes(
+                                      [
+                                        "course-staff",
+                                        "selected-people",
+                                      ].includes(
                                         request.query.newConversation
                                           .participants
                                       )) ||
@@ -4007,7 +4017,7 @@ export default async (application: Application): Promise<void> => {
                                     `}"
                                   >
                                     <div
-                                      key="participants--dropdown--selected-participants--separator--staff"
+                                      key="participants--dropdown--selected-participants--separator--course-staff"
                                       css="${css`
                                         display: flex;
                                         align-items: center;
@@ -4078,9 +4088,9 @@ export default async (application: Application): Promise<void> => {
                                                   this.oninput = () => {
                                                     const filterPhrases = this.value.split(/[^a-z0-9]+/i).filter((filterPhrase) => filterPhrase.trim() !== "");
                                                     const participantsDropdown = this.closest('[key="participants--dropdown"]');
-                                                    const participantsIsStaff = participantsDropdown.querySelector('[name="participants--dropdown--participants"][value="staff"]').checked;
+                                                    const participantsIsCourseStaff = participantsDropdown.querySelector('[name="participants--dropdown--participants"][value="course-staff"]').checked;
                                                     for (const selectedParticipant of participantsDropdown.querySelectorAll('[key^="participants--dropdown--selected-participant--enrollment-reference--"]')) {
-                                                      if (participantsIsStaff && selectedParticipant.matches('[data-enrollment-course-role="staff"]'))
+                                                      if (participantsIsCourseStaff && selectedParticipant.matches('[data-enrollment-course-role="course-staff"]'))
                                                         continue;
                                                       let selectedParticipantHidden = filterPhrases.length > 0;
                                                       for (const filterablePhrasesElement of selectedParticipant.querySelectorAll("[data-filterable-phrases]")) {
@@ -4124,9 +4134,9 @@ export default async (application: Application): Promise<void> => {
                                                   $${request.query
                                                     .newConversation
                                                     ?.participants ===
-                                                    "staff" &&
+                                                    "course-staff" &&
                                                   enrollment.courseRole ===
-                                                    "staff"
+                                                    "course-staff"
                                                     ? html`hidden`
                                                     : html``}
                                                 >
@@ -4251,8 +4261,8 @@ export default async (application: Application): Promise<void> => {
                               ? html`checked`
                               : html``}
                             $${(request.query.newConversation?.participants ===
-                              "staff" &&
-                              enrollment.courseRole !== "staff") ||
+                              "course-staff" &&
+                              enrollment.courseRole !== "course-staff") ||
                             request.query.newConversation?.participants ===
                               "selected-people" ||
                             (request.query.newConversation?.participants ===
@@ -4310,7 +4320,7 @@ export default async (application: Application): Promise<void> => {
                   row-gap: var(--space--4);
                 `}"
               >
-                $${response.locals.enrollment.courseRole === "staff"
+                $${response.locals.enrollment.courseRole === "course-staff"
                   ? html`
                       <div
                         key="new-conversation--announcement"
@@ -4992,8 +5002,8 @@ export default async (application: Application): Promise<void> => {
       return next("Validation");
 
     if (
-      (request.body.participants === "staff" &&
-        response.locals.enrollment.courseRole !== "staff") ||
+      (request.body.participants === "course-staff" &&
+        response.locals.enrollment.courseRole !== "course-staff") ||
       request.body.participants === "selected-people"
     )
       request.body.selectedParticipantsReferences.push(
@@ -5018,20 +5028,21 @@ export default async (application: Application): Promise<void> => {
     if (
       request.body.selectedParticipantsReferences.length !==
         selectedParticipants.length ||
-      (request.body.participants === "staff" &&
+      (request.body.participants === "course-staff" &&
         selectedParticipants.some(
-          (selectedParticipant) => selectedParticipant.courseRole === "staff"
+          (selectedParticipant) =>
+            selectedParticipant.courseRole === "course-staff"
         )) ||
       ![undefined, "on"].includes(request.body.isAnnouncement) ||
       (request.body.isAnnouncement === "on" &&
-        (response.locals.enrollment.courseRole !== "staff" ||
+        (response.locals.enrollment.courseRole !== "course-staff" ||
           request.body.type !== "note")) ||
       ![undefined, "on"].includes(request.body.isPinned) ||
       (request.body.isPinned === "on" &&
-        response.locals.enrollment.courseRole !== "staff") ||
+        response.locals.enrollment.courseRole !== "course-staff") ||
       ![undefined, "on"].includes(request.body.isAnonymous) ||
       (request.body.isAnonymous === "on" &&
-        response.locals.enrollment.courseRole === "staff")
+        response.locals.enrollment.courseRole === "course-staff")
     )
       return next("Validation");
 
@@ -5303,7 +5314,7 @@ export default async (application: Application): Promise<void> => {
       Application["web"]["locals"]["ResponseLocals"]["Conversation"]
     >;
   }): boolean =>
-    response.locals.enrollment.courseRole === "staff" ||
+    response.locals.enrollment.courseRole === "course-staff" ||
     (response.locals.conversation.authorEnrollment !== "no-longer-enrolled" &&
       response.locals.conversation.authorEnrollment.id ===
         response.locals.enrollment.id);
@@ -5344,9 +5355,9 @@ export default async (application: Application): Promise<void> => {
                   "reference" = ${
                     request.query.messages.messagesPage.beforeMessageReference
                   } $${
-                response.locals.enrollment.courseRole !== "staff"
+                response.locals.enrollment.courseRole !== "course-staff"
                   ? sql`
-                      AND "messages"."type" != 'staff-whisper'
+                      AND "messages"."type" != 'course-staff-whisper'
                     `
                   : sql``
               }
@@ -5368,9 +5379,9 @@ export default async (application: Application): Promise<void> => {
                   "reference" = ${
                     request.query.messages.messagesPage.afterMessageReference
                   } $${
-                response.locals.enrollment.courseRole !== "staff"
+                response.locals.enrollment.courseRole !== "course-staff"
                   ? sql`
-                      AND "messages"."type" != 'staff-whisper'
+                      AND "messages"."type" != 'course-staff-whisper'
                     `
                   : sql``
               }
@@ -5406,9 +5417,9 @@ export default async (application: Application): Promise<void> => {
                 : sql``
             }
             $${
-              response.locals.enrollment.courseRole !== "staff"
+              response.locals.enrollment.courseRole !== "course-staff"
                 ? sql`
-                    AND "type" != 'staff-whisper'
+                    AND "type" != 'course-staff-whisper'
                   `
                 : sql``
             }
@@ -5684,7 +5695,7 @@ export default async (application: Application): Promise<void> => {
                         $${response.locals.conversation.type === "question"
                           ? html`
                               $${response.locals.enrollment.courseRole ===
-                              "staff"
+                              "course-staff"
                                 ? html`
                                     <form
                                       method="PATCH"
@@ -5792,7 +5803,7 @@ export default async (application: Application): Promise<void> => {
                         $${response.locals.conversation.type === "note"
                           ? html`
                               $${response.locals.enrollment.courseRole ===
-                              "staff"
+                              "course-staff"
                                 ? html`
                                     <form
                                       method="PATCH"
@@ -5876,7 +5887,8 @@ export default async (application: Application): Promise<void> => {
                                 : html``}
                             `
                           : html``}
-                        $${response.locals.enrollment.courseRole === "staff"
+                        $${response.locals.enrollment.courseRole ===
+                        "course-staff"
                           ? html`
                               <form
                                 method="PATCH"
@@ -6132,7 +6144,7 @@ export default async (application: Application): Promise<void> => {
                                         `
                                       : html``}
                                     $${response.locals.enrollment.courseRole ===
-                                      "staff" &&
+                                      "course-staff" &&
                                     response.locals.enrollments.length > 1 &&
                                     messages.length > 0 &&
                                     messages[0].reference ===
@@ -6203,7 +6215,7 @@ export default async (application: Application): Promise<void> => {
                                         `
                                       : html``}
                                     $${response.locals.enrollment.courseRole ===
-                                    "staff"
+                                    "course-staff"
                                       ? html`
                                           <div>
                                             <button
@@ -6438,7 +6450,7 @@ export default async (application: Application): Promise<void> => {
                                 <i class="bi bi-tag-fill"></i>
                                 ${tagging.tag.name}
                               </span>
-                              $${tagging.tag.staffOnlyAt !== null
+                              $${tagging.tag.courseStaffOnlyAt !== null
                                 ? html`
                                     <span
                                       class="text--sky"
@@ -6447,7 +6459,7 @@ export default async (application: Application): Promise<void> => {
                                           event,
                                           element: this,
                                           tippyProps: {
-                                            content: "This tag is visible by staff only.",
+                                            content: "This tag is visible by the course staff only.",
                                           },
                                         });
                                       `}"
@@ -6503,7 +6515,7 @@ export default async (application: Application): Promise<void> => {
                                 <i class="bi bi-tag-fill"></i>
                                 ${tagging.tag.name}
                               </button>
-                              $${tagging.tag.staffOnlyAt !== null
+                              $${tagging.tag.courseStaffOnlyAt !== null
                                 ? html`
                                     <span
                                       class="text--sky"
@@ -6512,7 +6524,7 @@ export default async (application: Application): Promise<void> => {
                                           event,
                                           element: this,
                                           tippyProps: {
-                                            content: "This tag is visible by staff only.",
+                                            content: "This tag is visible by the course staff only.",
                                           },
                                         });
                                       `}"
@@ -6525,7 +6537,8 @@ export default async (application: Application): Promise<void> => {
                           `;
 
                       if (
-                        response.locals.enrollment.courseRole === "staff" ||
+                        response.locals.enrollment.courseRole ===
+                          "course-staff" ||
                         (mayEditConversation({ request, response }) &&
                           response.locals.tags.length > 0)
                       )
@@ -6561,7 +6574,7 @@ export default async (application: Application): Promise<void> => {
                                         `}"
                                       >
                                         $${response.locals.enrollment
-                                          .courseRole === "staff"
+                                          .courseRole === "course-staff"
                                           ? html`
                                               <div class="dropdown--menu">
                                                 <a
@@ -6622,7 +6635,7 @@ export default async (application: Application): Promise<void> => {
                                                         class="bi bi-tag-fill"
                                                       ></i>
                                                       ${tag.name}
-                                                      $${tag.staffOnlyAt !==
+                                                      $${tag.courseStaffOnlyAt !==
                                                       null
                                                         ? html`
                                                             <span
@@ -6633,7 +6646,7 @@ export default async (application: Application): Promise<void> => {
                                                                   element: this,
                                                                   tippyProps: {
                                                                     touch: false,
-                                                                    content: "This tag is visible by staff only.",
+                                                                    content: "This tag is visible by the course staff only.",
                                                                   },
                                                                 });
                                                               `}"
@@ -6670,7 +6683,8 @@ export default async (application: Application): Promise<void> => {
                                                       class="bi bi-tag-fill"
                                                     ></i>
                                                     ${tag.name}
-                                                    $${tag.staffOnlyAt !== null
+                                                    $${tag.courseStaffOnlyAt !==
+                                                    null
                                                       ? html`
                                                           <span
                                                             class="text--sky"
@@ -6680,7 +6694,7 @@ export default async (application: Application): Promise<void> => {
                                                                 element: this,
                                                                 tippyProps: {
                                                                   touch: false,
-                                                                  content: "This tag is visible by staff only.",
+                                                                  content: "This tag is visible by the course staff only.",
                                                                 },
                                                               });
                                                             `}"
@@ -6727,7 +6741,7 @@ export default async (application: Application): Promise<void> => {
                                                         class="bi bi-tag-fill"
                                                       ></i>
                                                       ${tag.name}
-                                                      $${tag.staffOnlyAt !==
+                                                      $${tag.courseStaffOnlyAt !==
                                                       null
                                                         ? html`
                                                             <span
@@ -6738,7 +6752,7 @@ export default async (application: Application): Promise<void> => {
                                                                   element: this,
                                                                   tippyProps: {
                                                                     touch: false,
-                                                                    content: "This tag is visible by staff only.",
+                                                                    content: "This tag is visible by the course staff only.",
                                                                   },
                                                                 });
                                                               `}"
@@ -6825,7 +6839,7 @@ export default async (application: Application): Promise<void> => {
                                   "enrollments"."course" = ${response.locals.course.id} AND
                                   "enrollments"."id" != ${response.locals.enrollment.id}
                                 ORDER BY
-                                  "enrollments"."courseRole" = 'staff' DESC,
+                                  "enrollments"."courseRole" = 'course-staff' DESC,
                                   "users"."name" ASC
                               `
                             )
@@ -6945,27 +6959,27 @@ export default async (application: Application): Promise<void> => {
                                                               element.disabled = true;
                                                           } else if (${
                                                             conversationParticipants ===
-                                                            "staff"
+                                                            "course-staff"
                                                           }) {
                                                             selectedParticipants.hidden = false;
-                                                            selectedParticipants.querySelector('[key="participants--dropdown--selected-participants--separator--staff"]').hidden = false;
+                                                            selectedParticipants.querySelector('[key="participants--dropdown--selected-participants--separator--course-staff"]').hidden = false;
                                                             selectedParticipants.querySelector('[key="participants--dropdown--selected-participants--separator--selected-people"]').hidden = true;
 
-                                                            for (const element of selectedParticipants.querySelectorAll('[data-enrollment-course-role="staff"]'))
+                                                            for (const element of selectedParticipants.querySelectorAll('[data-enrollment-course-role="course-staff"]'))
                                                               element.hidden = true;
                                                             participantsDropdown.querySelector('[key="participants--dropdown--selected-participants--filter"]').oninput();
 
                                                             for (const element of this.closest("form").querySelectorAll('[name="selectedParticipantsReferences[]"]'))
-                                                              element.disabled = element.matches('[data-enrollment-course-role="staff"]');
+                                                              element.disabled = element.matches('[data-enrollment-course-role="course-staff"]');
                                                           } else if (${
                                                             conversationParticipants ===
                                                             "selected-people"
                                                           }) {
                                                             selectedParticipants.hidden = false;
-                                                            selectedParticipants.querySelector('[key="participants--dropdown--selected-participants--separator--staff"]').hidden = true;
+                                                            selectedParticipants.querySelector('[key="participants--dropdown--selected-participants--separator--course-staff"]').hidden = true;
                                                             selectedParticipants.querySelector('[key="participants--dropdown--selected-participants--separator--selected-people"]').hidden = false;
 
-                                                            for (const element of selectedParticipants.querySelectorAll('[data-enrollment-course-role="staff"]'))
+                                                            for (const element of selectedParticipants.querySelectorAll('[data-enrollment-course-role="course-staff"]'))
                                                               element.hidden = false;
                                                             participantsDropdown.querySelector('[key="participants--dropdown--selected-participants--filter"]').oninput();
 
@@ -7005,7 +7019,7 @@ export default async (application: Application): Promise<void> => {
                                             <div
                                               key="participants--dropdown--selected-participants"
                                               $${[
-                                                "staff",
+                                                "course-staff",
                                                 "selected-people",
                                               ].includes(
                                                 response.locals.conversation
@@ -7020,9 +7034,10 @@ export default async (application: Application): Promise<void> => {
                                               `}"
                                             >
                                               <div
-                                                key="participants--dropdown--selected-participants--separator--staff"
+                                                key="participants--dropdown--selected-participants--separator--course-staff"
                                                 $${response.locals.conversation
-                                                  .participants !== "staff"
+                                                  .participants !==
+                                                "course-staff"
                                                   ? html`hidden`
                                                   : html``}
                                                 css="${css`
@@ -7053,7 +7068,8 @@ export default async (application: Application): Promise<void> => {
                                               <hr
                                                 key="participants--dropdown--selected-participants--separator--selected-people"
                                                 $${response.locals.conversation
-                                                  .participants === "staff"
+                                                  .participants ===
+                                                "course-staff"
                                                   ? html`hidden`
                                                   : html``}
                                                 class="dropdown--separator"
@@ -7104,9 +7120,9 @@ export default async (application: Application): Promise<void> => {
                                                             this.oninput = () => {
                                                               const filterPhrases = this.value.split(/[^a-z0-9]+/i).filter((filterPhrase) => filterPhrase.trim() !== "");
                                                               const participantsDropdown = this.closest('[key="participants--dropdown"]');
-                                                              const participantsIsStaff = participantsDropdown.querySelector('[name="participants--dropdown--participants"][value="staff"]').checked;
+                                                              const participantsIsCourseStaff = participantsDropdown.querySelector('[name="participants--dropdown--participants"][value="course-staff"]').checked;
                                                               for (const selectedParticipant of participantsDropdown.querySelectorAll('[key^="participants--dropdown--selected-participant--enrollment-reference--"]')) {
-                                                                if (participantsIsStaff && selectedParticipant.matches('[data-enrollment-course-role="staff"]'))
+                                                                if (participantsIsCourseStaff && selectedParticipant.matches('[data-enrollment-course-role="course-staff"]'))
                                                                   continue;
                                                                 let selectedParticipantHidden = filterPhrases.length > 0;
                                                                 for (const filterablePhrasesElement of selectedParticipant.querySelectorAll("[data-filterable-phrases]")) {
@@ -7154,9 +7170,9 @@ export default async (application: Application): Promise<void> => {
                                                             $${response.locals
                                                               .conversation
                                                               .participants ===
-                                                              "staff" &&
+                                                              "course-staff" &&
                                                             enrollment.courseRole ===
-                                                              "staff"
+                                                              "course-staff"
                                                               ? html`hidden`
                                                               : html``}
                                                           >
@@ -7188,9 +7204,9 @@ export default async (application: Application): Promise<void> => {
                                                               (response.locals
                                                                 .conversation
                                                                 .participants ===
-                                                                "staff" &&
+                                                                "course-staff" &&
                                                                 enrollment.courseRole ===
-                                                                  "staff" &&
+                                                                  "course-staff" &&
                                                                 messages.some(
                                                                   (message) =>
                                                                     message.authorEnrollment !==
@@ -7321,8 +7337,9 @@ export default async (application: Application): Promise<void> => {
                                               enrollment.id
                                         )) ||
                                       (response.locals.conversation
-                                        .participants === "staff" &&
-                                        enrollment.courseRole === "staff" &&
+                                        .participants === "course-staff" &&
+                                        enrollment.courseRole ===
+                                          "course-staff" &&
                                         messages.some(
                                           (message) =>
                                             message.authorEnrollment !==
@@ -7333,8 +7350,9 @@ export default async (application: Application): Promise<void> => {
                                         ? html`checked`
                                         : html``}
                                       $${(response.locals.conversation
-                                        .participants === "staff" &&
-                                        enrollment.courseRole !== "staff") ||
+                                        .participants === "course-staff" &&
+                                        enrollment.courseRole !==
+                                          "course-staff") ||
                                       response.locals.conversation
                                         .participants === "selected-people"
                                         ? html``
@@ -7438,7 +7456,7 @@ export default async (application: Application): Promise<void> => {
                               ]}
                             </div>
 
-                            $${["staff", "selected-people"].includes(
+                            $${["course-staff", "selected-people"].includes(
                               response.locals.conversation.participants
                             )
                               ? html`
@@ -7975,7 +7993,8 @@ export default async (application: Application): Promise<void> => {
                                                 Follow-Up Question
                                               </div>
                                             `
-                                          : message.type === "staff-whisper" &&
+                                          : message.type ===
+                                              "course-staff-whisper" &&
                                             response.locals.conversation
                                               .type !== "chat"
                                           ? html`
@@ -8012,7 +8031,7 @@ export default async (application: Application): Promise<void> => {
                                                     element: this,
                                                     tippyProps: {
                                                       touch: false,
-                                                      content: "Staff whispers are messages visible to staff only.",
+                                                      content: "Course staff whispers are messages visible to the course staff only.",
                                                     },
                                                   });
                                                 `}"
@@ -8020,7 +8039,7 @@ export default async (application: Application): Promise<void> => {
                                                 <i
                                                   class="bi bi-mortarboard-fill"
                                                 ></i>
-                                                Staff Whisper
+                                                Course Staff Whisper
                                               </div>
                                             `
                                           : html``}
@@ -8188,7 +8207,8 @@ export default async (application: Application): Promise<void> => {
                                               message.reference !== "1" &&
                                               response.locals.conversation
                                                 .type === "question" &&
-                                              message.type !== "staff-whisper"
+                                              message.type !==
+                                                "course-staff-whisper"
                                             )
                                               header += html`
                                                 <div>
@@ -8503,7 +8523,7 @@ export default async (application: Application): Promise<void> => {
                                                             class="bi bi-award-fill"
                                                           ></i>
                                                           ${message.endorsements.length.toString()}
-                                                          Staff
+                                                          Course Staff
                                                           Endorsement${message
                                                             .endorsements
                                                             .length === 1
@@ -8565,7 +8585,7 @@ export default async (application: Application): Promise<void> => {
                                                                   .endorsements
                                                                   .length
                                                               }
-                                                              Staff Endorsement${
+                                                              Course Staff Endorsement${
                                                                 message
                                                                   .endorsements
                                                                   .length === 1
@@ -8582,7 +8602,8 @@ export default async (application: Application): Promise<void> => {
                                               (message.authorEnrollment ===
                                                 "no-longer-enrolled" ||
                                                 message.authorEnrollment
-                                                  .courseRole !== "staff") &&
+                                                  .courseRole !==
+                                                  "course-staff") &&
                                               message.endorsements.length > 0
                                             )
                                               header += html`
@@ -8626,7 +8647,7 @@ export default async (application: Application): Promise<void> => {
                                                 >
                                                   <i class="bi bi-award"></i>
                                                   ${message.endorsements.length.toString()}
-                                                  Staff
+                                                  Course Staff
                                                   Endorsement${message
                                                     .endorsements.length === 1
                                                     ? ""
@@ -8723,7 +8744,7 @@ export default async (application: Application): Promise<void> => {
                                                             : response.locals
                                                                 .enrollment
                                                                 .courseRole ===
-                                                                "staff" ||
+                                                                "course-staff" ||
                                                               (message.authorEnrollment !==
                                                                 "no-longer-enrolled" &&
                                                                 message
@@ -9117,7 +9138,8 @@ export default async (application: Application): Promise<void> => {
 
                                               if (
                                                 response.locals.enrollment
-                                                  .courseRole === "staff" &&
+                                                  .courseRole ===
+                                                  "course-staff" &&
                                                 response.locals.conversation
                                                   .type !== "chat"
                                               )
@@ -9381,7 +9403,7 @@ export default async (application: Application): Promise<void> => {
                                         )}
                                       </div>
                                       $${response.locals.enrollment
-                                        .courseRole === "staff"
+                                        .courseRole === "course-staff"
                                         ? html``
                                         : html`
                                             <div
@@ -9488,7 +9510,9 @@ export default async (application: Application): Promise<void> => {
                     window.setTimeout(() => {
                       const placeholder = document.querySelector('[key="message--new-message--placeholder"]');
                       const content = this.querySelector('[name="content"]');
-                      if (${response.locals.enrollment.courseRole !== "staff"})
+                      if (${
+                        response.locals.enrollment.courseRole !== "course-staff"
+                      })
                         placeholder.querySelector('[key="message--new-message--placeholder--anonymous--' + (!this.querySelector('[name="isAnonymous"]').checked).toString() + '"]').hidden = true;
                       placeholder.querySelector('[key="message--new-message--placeholder--content"]').textContent = content.value;
                       placeholder.hidden = false;
@@ -9632,7 +9656,7 @@ export default async (application: Application): Promise<void> => {
                       : html``}
                   </div>
 
-                  $${response.locals.enrollment.courseRole === "staff"
+                  $${response.locals.enrollment.courseRole === "course-staff"
                     ? html``
                     : html`
                         <div class="label">
@@ -9733,7 +9757,8 @@ export default async (application: Application): Promise<void> => {
                     ? (() => {
                         const sendAnswerFirst =
                           response.locals.conversation.type === "question" &&
-                          response.locals.enrollment.courseRole === "staff";
+                          response.locals.enrollment.courseRole ===
+                            "course-staff";
 
                         const sendMessage = html`
                           <div>
@@ -9858,7 +9883,8 @@ export default async (application: Application): Promise<void> => {
                                   </div>
                                 `
                               : html``}
-                            $${response.locals.enrollment.courseRole === "staff"
+                            $${response.locals.enrollment.courseRole ===
+                            "course-staff"
                               ? html`
                                   <div
                                     css="${css`
@@ -9869,11 +9895,11 @@ export default async (application: Application): Promise<void> => {
                                   >
                                     <button
                                       name="type"
-                                      value="staff-whisper"
+                                      value="course-staff-whisper"
                                       class="button button--full-width-on-small-screen button--sky"
                                     >
                                       <i class="bi bi-mortarboard-fill"></i>
-                                      Send Staff Whisper
+                                      Send Course Staff Whisper
                                     </button>
 
                                     <button
@@ -9885,7 +9911,7 @@ export default async (application: Application): Promise<void> => {
                                           element: this,
                                           tippyProps: {
                                             trigger: "click",
-                                            content: "Staff whispers are messages visible to staff only.",
+                                            content: "Course staff whispers are messages visible to the course staff only.",
                                           },
                                         });
                                       `}"
@@ -9957,8 +9983,8 @@ export default async (application: Application): Promise<void> => {
             return next("Validation");
 
           if (
-            (request.body.participants === "staff" &&
-              response.locals.enrollment.courseRole !== "staff") ||
+            (request.body.participants === "course-staff" &&
+              response.locals.enrollment.courseRole !== "course-staff") ||
             request.body.participants === "selected-people"
           )
             request.body.selectedParticipantsReferences.push(
@@ -9983,10 +10009,10 @@ export default async (application: Application): Promise<void> => {
           if (
             request.body.selectedParticipantsReferences.length !==
               selectedParticipants.length ||
-            (request.body.participants === "staff" &&
+            (request.body.participants === "course-staff" &&
               selectedParticipants.some(
                 (selectedParticipant) =>
-                  selectedParticipant.courseRole === "staff"
+                  selectedParticipant.courseRole === "course-staff"
               ))
           )
             return next("Validation");
@@ -10027,7 +10053,7 @@ export default async (application: Application): Promise<void> => {
           response.locals.conversation.authorEnrollment ===
             "no-longer-enrolled" ||
           response.locals.conversation.authorEnrollment.courseRole ===
-            "staff" ||
+            "course-staff" ||
           (request.body.isAnonymous === "true" &&
             response.locals.conversation.anonymousAt !== null) ||
           (request.body.isAnonymous === "false" &&
@@ -10089,7 +10115,7 @@ export default async (application: Application): Promise<void> => {
       if (typeof request.body.isAnnouncement === "string")
         if (
           !["true", "false"].includes(request.body.isAnnouncement) ||
-          response.locals.enrollment.courseRole !== "staff" ||
+          response.locals.enrollment.courseRole !== "course-staff" ||
           response.locals.conversation.type !== "note" ||
           (request.body.isAnnouncement === "true" &&
             response.locals.conversation.announcementAt !== null) ||
@@ -10134,7 +10160,7 @@ export default async (application: Application): Promise<void> => {
       if (typeof request.body.isPinned === "string")
         if (
           !["true", "false"].includes(request.body.isPinned) ||
-          response.locals.enrollment.courseRole !== "staff" ||
+          response.locals.enrollment.courseRole !== "course-staff" ||
           (request.body.isPinned === "true" &&
             response.locals.conversation.pinnedAt !== null) ||
           (request.body.isPinned === "false" &&
@@ -10164,7 +10190,7 @@ export default async (application: Application): Promise<void> => {
         if (
           response.locals.conversation.type !== "question" ||
           !["true", "false"].includes(request.body.isResolved) ||
-          response.locals.enrollment.courseRole !== "staff" ||
+          response.locals.enrollment.courseRole !== "course-staff" ||
           (request.body.isResolved === "true" &&
             response.locals.conversation.resolvedAt !== null) ||
           (request.body.isResolved === "false" &&
@@ -10233,7 +10259,7 @@ export default async (application: Application): Promise<void> => {
     (request, response, next) => {
       if (
         response.locals.conversation === undefined ||
-        response.locals.enrollment.courseRole !== "staff"
+        response.locals.enrollment.courseRole !== "course-staff"
       )
         return next();
 

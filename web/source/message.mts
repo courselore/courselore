@@ -47,7 +47,7 @@ export type ApplicationMessage = {
                 | "message"
                 | "answer"
                 | "follow-up-question"
-                | "staff-whisper";
+                | "course-staff-whisper";
               contentSource: string;
               contentPreprocessed: HTML;
               contentSearch: string;
@@ -245,9 +245,9 @@ export default async (application: Application): Promise<void> => {
           "messages"."conversation" = ${conversation.id} AND
           "messages"."reference" = ${messageReference}
           $${
-            response.locals.enrollment.courseRole !== "staff"
+            response.locals.enrollment.courseRole !== "course-staff"
               ? sql`
-                  AND "messages"."type" != 'staff-whisper'
+                  AND "messages"."type" != 'course-staff-whisper'
                 `
               : sql``
           }
@@ -631,7 +631,7 @@ export default async (application: Application): Promise<void> => {
                 Reply
               </button>
 
-              $${response.locals.enrollment.courseRole === "staff" &&
+              $${response.locals.enrollment.courseRole === "course-staff" &&
               response.locals.conversation.type === "chat"
                 ? html`
                     <button
@@ -872,7 +872,7 @@ export default async (application: Application): Promise<void> => {
                     </form>
                   `
                 : html``}
-              $${response.locals.enrollment.courseRole === "staff" &&
+              $${response.locals.enrollment.courseRole === "course-staff" &&
               response.locals.enrollments.length > 1
                 ? html`
                     <button
@@ -934,7 +934,7 @@ export default async (application: Application): Promise<void> => {
                     </button>
                   `
                 : html``}
-              $${response.locals.enrollment.courseRole === "staff"
+              $${response.locals.enrollment.courseRole === "course-staff"
                 ? html`
                     <div>
                       <button
@@ -1149,7 +1149,7 @@ export default async (application: Application): Promise<void> => {
     (request, response, next) => {
       if (
         response.locals.message === undefined ||
-        response.locals.enrollment.courseRole !== "staff"
+        response.locals.enrollment.courseRole !== "course-staff"
       )
         return next();
 
@@ -1278,7 +1278,7 @@ export default async (application: Application): Promise<void> => {
     {
       content?: string;
       isAnonymous?: "on";
-      type?: "answer" | "follow-up-question" | "staff-whisper";
+      type?: "answer" | "follow-up-question" | "course-staff-whisper";
     },
     {
       conversations?: object;
@@ -1295,18 +1295,21 @@ export default async (application: Application): Promise<void> => {
         request.body.content.trim() === "" ||
         ![undefined, "on"].includes(request.body.isAnonymous) ||
         (request.body.isAnonymous === "on" &&
-          response.locals.enrollment.courseRole === "staff") ||
-        ![undefined, "answer", "follow-up-question", "staff-whisper"].includes(
-          request.body.type
-        ) ||
+          response.locals.enrollment.courseRole === "course-staff") ||
+        ![
+          undefined,
+          "answer",
+          "follow-up-question",
+          "course-staff-whisper",
+        ].includes(request.body.type) ||
         (request.body.type === "answer" &&
           response.locals.conversation.type !== "question") ||
         (request.body.type === "follow-up-question" &&
           (response.locals.conversation.type !== "question" ||
             response.locals.enrollment.courseRole !== "student")) ||
-        (request.body.type === "staff-whisper" &&
+        (request.body.type === "course-staff-whisper" &&
           (response.locals.conversation.type === "chat" ||
-            response.locals.enrollment.courseRole !== "staff"))
+            response.locals.enrollment.courseRole !== "course-staff"))
       )
         return next("Validation");
 
@@ -1374,7 +1377,7 @@ export default async (application: Application): Promise<void> => {
               UPDATE "conversations"
               SET
                 $${
-                  request.body.type !== "staff-whisper"
+                  request.body.type !== "course-staff-whisper"
                     ? sql`
                         "updatedAt" = ${new Date().toISOString()},
                       `
@@ -1385,7 +1388,7 @@ export default async (application: Application): Promise<void> => {
                 }
                 $${
                   request.body.type === "answer" &&
-                  response.locals.enrollment.courseRole === "staff" &&
+                  response.locals.enrollment.courseRole === "course-staff" &&
                   response.locals.conversation.resolvedAt === null
                     ? sql`,
                         "resolvedAt" = ${new Date().toISOString()}
@@ -1497,7 +1500,7 @@ export default async (application: Application): Promise<void> => {
     response,
     message,
   }) =>
-    response.locals.enrollment.courseRole === "staff" ||
+    response.locals.enrollment.courseRole === "course-staff" ||
     (message.authorEnrollment !== "no-longer-enrolled" &&
       message.authorEnrollment.id === response.locals.enrollment.id);
 
@@ -1538,7 +1541,7 @@ export default async (application: Application): Promise<void> => {
           ) ||
           response.locals.message.reference === "1" ||
           response.locals.conversation.type !== "question" ||
-          response.locals.message.type === "staff-whisper"
+          response.locals.message.type === "course-staff-whisper"
         )
           return next("Validation");
         else
@@ -1554,7 +1557,7 @@ export default async (application: Application): Promise<void> => {
         if (
           !["true", "false"].includes(request.body.isAnonymous) ||
           response.locals.message.authorEnrollment === "no-longer-enrolled" ||
-          response.locals.message.authorEnrollment.courseRole === "staff"
+          response.locals.message.authorEnrollment.courseRole === "course-staff"
         )
           return next("Validation");
         else
@@ -1613,7 +1616,7 @@ export default async (application: Application): Promise<void> => {
               WHERE "id" = ${response.locals.message.id}
             `
           );
-          if (response.locals.message.type !== "staff-whisper")
+          if (response.locals.message.type !== "course-staff-whisper")
             application.database.run(
               sql`
                 UPDATE "conversations"
@@ -1666,7 +1669,7 @@ export default async (application: Application): Promise<void> => {
     (request, response, next) => {
       if (
         response.locals.message === undefined ||
-        response.locals.enrollment.courseRole !== "staff" ||
+        response.locals.enrollment.courseRole !== "course-staff" ||
         response.locals.enrollments.length === 1
       )
         return next();
@@ -1739,7 +1742,7 @@ export default async (application: Application): Promise<void> => {
     (request, response, next) => {
       if (
         response.locals.message === undefined ||
-        response.locals.enrollment.courseRole !== "staff"
+        response.locals.enrollment.courseRole !== "course-staff"
       )
         return next();
 
@@ -1953,12 +1956,12 @@ export default async (application: Application): Promise<void> => {
     response,
     message,
   }) =>
-    response.locals.enrollment.courseRole === "staff" &&
+    response.locals.enrollment.courseRole === "course-staff" &&
     response.locals.conversation.type === "question" &&
     message.reference !== "1" &&
     message.type === "answer" &&
     (message.authorEnrollment === "no-longer-enrolled" ||
-      message.authorEnrollment.courseRole !== "staff");
+      message.authorEnrollment.courseRole !== "course-staff");
 
   application.web.post<
     {
@@ -2388,18 +2391,18 @@ export default async (application: Application): Promise<void> => {
                   "enrollments"."id" = "emailNotificationDeliveries"."enrollment" AND
                   "emailNotificationDeliveries"."message" = ${message.id}
               ) $${
-                message.type === "staff-whisper"
+                message.type === "course-staff-whisper"
                   ? sql`
-                      AND "enrollments"."courseRole" = 'staff'
+                      AND "enrollments"."courseRole" = 'course-staff'
                     `
                   : sql``
               } $${
             conversation.participants === "everyone"
               ? sql``
-              : conversation.participants === "staff"
+              : conversation.participants === "course-staff"
               ? sql`
                   AND (
-                    "enrollments"."courseRole" = 'staff' OR EXISTS(
+                    "enrollments"."courseRole" = 'course-staff' OR EXISTS(
                       SELECT TRUE
                       FROM "conversationSelectedParticipants"
                       WHERE
@@ -2431,10 +2434,10 @@ export default async (application: Application): Promise<void> => {
                         $${
                           contentProcessed.mentions.has("everyone")
                             ? sql``
-                            : contentProcessed.mentions.has("staff")
+                            : contentProcessed.mentions.has("course-staff")
                             ? sql`
                                 AND (
-                                  "enrollments"."courseRole" = 'staff' OR
+                                  "enrollments"."courseRole" = 'course-staff' OR
                                   "enrollments"."reference" IN ${contentProcessed.mentions}
                                 )
                               `
@@ -2520,7 +2523,7 @@ export default async (application: Application): Promise<void> => {
                           ? "Someone who is no longer enrolled"
                           : message.anonymousAt !== null
                           ? `Anonymous ${
-                              enrollment.courseRole === "staff"
+                              enrollment.courseRole === "course-staff"
                                 ? `(${message.authorEnrollment.user.name})`
                                 : ""
                             }`

@@ -507,7 +507,7 @@ export default async (application: Application): Promise<void> => {
               let mentionHTML: HTML;
               switch (mention) {
                 case "everyone":
-                case "staff":
+                case "course-staff":
                 case "students":
                   mentions.add(mention);
                   mentionHTML = html`<span
@@ -517,7 +517,18 @@ export default async (application: Application): Promise<void> => {
                         element: this,
                         tippyProps: {
                           touch: false,
-                          content: ${`Mention ${mention} in the conversation`},
+                          content: ${`Mention ${
+                            {
+                              everyone: "everyone",
+                              "course-staff": "course staff",
+                              students: "students",
+                            }[
+                              mention as
+                                | "everyone"
+                                | "course-staff"
+                                | "students"
+                            ]
+                          } in the conversation`},
                         },
                       });
                     `}"
@@ -1108,7 +1119,7 @@ export default async (application: Application): Promise<void> => {
                               element: this,
                               tippyProps: {
                                 trigger: "click",
-                                content: "Staff and the poll creator may see individual votes. Students may see aggregate results.",
+                                content: "The course staff and the poll creator may see individual votes. Students may see aggregate results.",
                               },
                             });
                           `}"
@@ -4075,7 +4086,7 @@ ${contentSource}</textarea
                     element: this,
                     tippyProps: {
                       trigger: "click",
-                      content: "Staff and the poll creator may see individual votes. Students may see aggregate results.",
+                      content: "The course staff and the poll creator may see individual votes. Students may see aggregate results.",
                     },
                   });
                 `}"
@@ -4162,11 +4173,16 @@ ${contentSource}</textarea
 
       let result = html``;
 
-      for (const mention of ["everyone", "staff", "students"])
+      for (const mention of ["everyone", "course-staff", "students"])
         if (
           request.query.search.trim() === "" ||
           mention.startsWith(request.query.search.toLowerCase())
-        )
+        ) {
+          const mentionLabel = {
+            everyone: "Everyone",
+            "course-staff": "Course Staff",
+            students: "Students",
+          }[mention as "everyone" | "course-staff" | "students"];
           result += html`
             <button
               type="button"
@@ -4179,14 +4195,12 @@ ${contentSource}</textarea
             >
               <span>
                 $${request.query.search.trim() === ""
-                  ? html`${lodash.capitalize(mention)}`
-                  : html`
-                      <mark class="mark">${lodash.capitalize(mention)}</mark>
-                    `}
-                in the Conversation
+                  ? html`${mentionLabel}`
+                  : html`<mark class="mark">${mentionLabel}</mark>`}
               </span>
             </button>
           `;
+        }
 
       for (const enrollment of application.database
         .all<{
@@ -4250,8 +4264,8 @@ ${contentSource}</textarea
                         response.locals.conversation.id
                       } AND (
                         "conversations"."participants" = 'everyone' OR (
-                          "conversations"."participants" = 'staff' AND
-                          "enrollments"."courseRole" = 'staff'
+                          "conversations"."participants" = 'course-staff' AND
+                          "enrollments"."courseRole" = 'course-staff'
                         ) OR
                         EXISTS(
                           SELECT TRUE
@@ -4268,12 +4282,13 @@ ${contentSource}</textarea
                         WHERE
                           "conversations"."id" = "messages"."conversation" AND
                           "messages"."authorEnrollment" = "enrollments"."id" $${
-                            response.locals.enrollment.courseRole === "staff"
+                            response.locals.enrollment.courseRole ===
+                            "course-staff"
                               ? sql``
                               : sql`
                                   AND
                                   "messages"."anonymousAt" IS NULL AND
-                                  "messages"."type" != 'staff-whisper'
+                                  "messages"."type" != 'course-staff-whisper'
                                 `
                           }
                         ORDER BY "messages"."id" DESC
@@ -4430,9 +4445,9 @@ ${contentSource}</textarea
               SELECT "reference"
               FROM "messages"
               WHERE "conversation" = ${response.locals.conversation.id} $${
-              response.locals.enrollment.courseRole !== "staff"
+              response.locals.enrollment.courseRole !== "course-staff"
                 ? sql`
-                    AND "type" != 'staff-whisper'
+                    AND "type" != 'course-staff-whisper'
                   `
                 : sql``
             }
@@ -4563,9 +4578,9 @@ ${contentSource}</textarea
                 }
                 WHERE
                   "messages"."conversation" = ${conversation.id} $${
-                response.locals.enrollment.courseRole !== "staff"
+                response.locals.enrollment.courseRole !== "course-staff"
                   ? sql`
-                      AND "messages"."type" != 'staff-whisper'
+                      AND "messages"."type" != 'course-staff-whisper'
                     `
                   : sql``
               }
@@ -4707,7 +4722,7 @@ ${contentSource}</textarea
               "messages"."conversation" = "conversations"."id" AND
               "conversations"."course" = ${response.locals.course.id}
             $${
-              response.locals.enrollment.courseRole === "staff"
+              response.locals.enrollment.courseRole === "course-staff"
                 ? sql``
                 : sql`
                     WHERE
@@ -4715,7 +4730,7 @@ ${contentSource}</textarea
                       "messages"."anonymousAt" IS NULL OR
                       "messages"."authorEnrollment" = ${response.locals.enrollment.id}
                     ) AND
-                      "messages"."type" != 'staff-whisper'
+                      "messages"."type" != 'course-staff-whisper'
                   `
             }
             ORDER BY
@@ -4798,9 +4813,9 @@ ${contentSource}</textarea
               "messages"."conversation" = "conversations"."id" AND
               "conversations"."course" = ${response.locals.course.id}
             $${
-              response.locals.enrollment.courseRole !== "staff"
+              response.locals.enrollment.courseRole !== "course-staff"
                 ? sql`
-                    WHERE "messages"."type" != 'staff-whisper'
+                    WHERE "messages"."type" != 'course-staff-whisper'
                   `
                 : sql``
             }
@@ -5139,7 +5154,7 @@ ${contentSource}</textarea
     >;
     poll: { authorEnrollment: { id: number } | "no-longer-enrolled" };
   }): boolean =>
-    response.locals.enrollment.courseRole === "staff" ||
+    response.locals.enrollment.courseRole === "course-staff" ||
     (poll.authorEnrollment !== "no-longer-enrolled" &&
       poll.authorEnrollment.id === response.locals.enrollment.id);
 

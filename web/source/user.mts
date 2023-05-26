@@ -534,7 +534,7 @@ export default async (application: Application): Promise<void> => {
               : name}</span
           >$${enrollment !== undefined &&
           enrollment !== "no-longer-enrolled" &&
-          enrollment.courseRole === "staff"
+          enrollment.courseRole === "course-staff"
             ? html`<span
                 class="text--sky"
                 javascript="${javascript`
@@ -543,7 +543,7 @@ export default async (application: Application): Promise<void> => {
                     element: this,
                     tippyProps: {
                       touch: false,
-                      content: "Staff",
+                      content: "Course Staff",
                     },
                   });
                 `}"
@@ -616,7 +616,8 @@ export default async (application: Application): Promise<void> => {
                             : user!.name}
                         </div>
                         $${user !== "no-longer-enrolled" &&
-                        (response.locals.enrollment?.courseRole === "staff" ||
+                        (response.locals.enrollment?.courseRole ===
+                          "course-staff" ||
                           response.locals.user?.id === user!.id)
                           ? html`
                               <div class="secondary">
@@ -699,7 +700,7 @@ export default async (application: Application): Promise<void> => {
                             `}
                         $${enrollment !== undefined &&
                         enrollment !== "no-longer-enrolled" &&
-                        enrollment.courseRole === "staff"
+                        enrollment.courseRole === "course-staff"
                           ? html`
                               <div
                                 class="text--sky"
@@ -711,7 +712,7 @@ export default async (application: Application): Promise<void> => {
                                 `}"
                               >
                                 <i class="bi bi-mortarboard-fill"></i>
-                                Staff
+                                Course Staff
                               </div>
                             `
                           : html``}
@@ -2027,7 +2028,7 @@ export default async (application: Application): Promise<void> => {
                       event,
                       element: this,
                       tippyProps: {
-                        content: "You always receive email notifications for staff announcements.",
+                        content: "You always receive email notifications for course staff announcements.",
                       },
                     });
                   `}"
@@ -2038,7 +2039,7 @@ export default async (application: Application): Promise<void> => {
                     checked
                     class="input--checkbox"
                   />
-                  Staff announcements
+                  Course staff announcements
                 </label>
               </div>
             </div>
@@ -2397,7 +2398,7 @@ export default async (application: Application): Promise<void> => {
                     newConversation: {
                       title: "Feedback after having removed account",
                       tagsReferences: ["5387659377"],
-                      participants: "staff",
+                      participants: "course-staff",
                       isAnnouncement: "false",
                       isPinned: "false",
                     },

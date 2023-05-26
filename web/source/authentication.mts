@@ -582,8 +582,8 @@ export default async (application: Application): Promise<void> => {
             "courses"."id" = "mostRecentlyVisitedConversation"."course" AND
             "enrollments"."mostRecentlyVisitedConversation" = "mostRecentlyVisitedConversation"."id" AND (
               "mostRecentlyVisitedConversation"."participants" = 'everyone' OR (
-                "enrollments"."courseRole" = 'staff' AND
-                "mostRecentlyVisitedConversation"."participants" = 'staff'
+                "enrollments"."courseRole" = 'course-staff' AND
+                "mostRecentlyVisitedConversation"."participants" = 'course-staff'
               ) OR EXISTS(
                 SELECT TRUE
                 FROM "conversationSelectedParticipants"

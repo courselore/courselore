@@ -6,11 +6,29 @@
 
 User interface
 
-|              |                      |
-| ------------ | -------------------- |
-| `Staff`      | `Course Staff`       |
-| `Enrollment` | `Course Participant` |
-| `Enroll`     | `Join`               |
+- `Staff` → `Course Staff`
+  - Database migration
+    - `staff` → `course-staff`
+      - `"enrollments"."courseRole"`
+      - `"conversations"."participants"`
+    - `staff-whisper` → `course-staff-whisper`
+      - `"messages"."type"`
+    - `@staff` → `@course-staff`
+      - `"messages"."contentSource"`
+      - `"messages"."contentPreprocessed"`
+      - `"messages"."contentSearch"`
+    - `staffOnlyAt` → `courseStaffOnlyAt`
+      - `"tags"."staffOnlyAt"` → `"tags"."courseStaffOnlyAt"`
+  - `courseRole`
+    - Capitalize
+  - `isStaffOnly` → `isCourseStaffOnly`
+  - Administration’s notion of `staff` remains unchanged, to highlight the difference between it and course staff
+  - `userSystemRolesWhoMayCreateCourseses`’s `"staff-and-administrators"`
+  - `systemRoles`’s `"staff"`
+- `Enrollment` → `Course Participant`
+- `Enroll` → `Join`
+- `Selected People` → `Selected Participants`
+  - `"conversations"."participants"`
 
 Database
 
@@ -72,7 +90,7 @@ Database
 
 ## Courses
 
-- Have a setting to either let students remove themselves from the course, or let them request the staff to be removed.
+- Have a setting to either let students remove themselves from the course, or let them request the course staff to have them removed.
 - Upload roster and show differences.
   - https://courselore.org/courses/8537410611/conversations/34
 - Lock a course for a period, for example, when a take-home exam is out.
@@ -94,13 +112,13 @@ Database
 - Have an option to require approval of enrollment.
 - Have a public listing of courses in the system and allow people to request to join?
 - When the user signs up via an invitation, have a call to action to fill in profile (just like the one when you sign up without an invitation).
-- Allow staff to preview the email invitations they’re about to submit? (Think the problem with the “enroll” language.)
+- Allow course staff to preview the email invitations they’re about to submit? (Think the problem with the “enroll” language.)
 
 ## Enrollments
 
 - Have a way for a student to remove themselves from the course?
-  - Or at least have a structured way for the student to ask staff to remove them.
-- Allow the last staff member to remove themselves from the course?
+  - Or at least have a structured way for the student to ask course staff to remove them.
+- Allow the last course staff member to remove themselves from the course?
 
 ## Conversations
 
@@ -120,7 +138,7 @@ Database
   - Adapt `partials.conversation` to support drafts (many fields become optional).
   - Add a button to delete a draft directly from the sidebar.
 - Have a simple way to share “conversation templates,” which use the query parameters to pre-fill the “New Conversation” form.
-- Add the notion of “staff considers this a good question.” Similar to the notion of “endorsement,” but for questions.
+- Add the notion of “course staff considers this a good question.” Similar to the notion of “endorsement,” but for questions.
   - https://courselore.org/courses/8537410611/conversations/33
 - Streamline the creation of DMs.
 - Highlights (similar to Slack’s pins, but we’re avoiding the word “pin” because it already means “pinned conversations”). The highlights are visible to everyone in the conversation.
@@ -132,7 +150,7 @@ Database
 - Let original question asker approve an answer.
 - Add a course-wide setting to make tags optional in all kinds of conversation (not only non-chats), even if there are tags.
 - Killer feature to attract people: off-the-shelf AI
-  - Help staff write answers
+  - Help course staff write answers
   - Find similar questions (this semester, previous semesters)
   - Sentiment analysis to avoid marking question as unresolved when student just said “thank you”
   - Talk about this on home page.
@@ -144,13 +162,13 @@ Database
   - Extract and DRY.
   - Treat more elegantly the case in which the filter removed all entries.
 - More elegant treatment of edge cases:
-  - You’re the only staff member
+  - You’re the only course staff member
   - You’re the only enrollment
   - There are no students
 - Consider removing selected participants from `getConversation()` as it’s probably expensive to retrieve and isn’t always necessary.
-- Staff may allow or disallow people to have private conversations in which staff don’t participate (the default is to allow)
+- Course staff may allow or disallow people to have private conversations in which course staff don’t participate (the default is to allow)
 - Groups, for example, Graders, Project Advisors, Group members, different sections on courses.
-  - Some groups are available only to students, while others only to staff.
+  - Some groups are available only to students, while others only to course staff.
   - People assign themselves to groups.
   - Add mentions like `@group-3`.
 
@@ -160,7 +178,7 @@ Database
 
 ## Messages
 
-- Let staff endorse other staff answers.
+- Let course staff endorse other course staff answers.
 - Introduce the notion of promoting a message into its own conversation (one example use case is when someone asks a question as a follow-up to an announcement).
 - Add a notion of “reply” that’s a first-class citizen, like Discord and unlike GitHub.
   - Nested replies (similar to Slack’s threads).
@@ -174,14 +192,14 @@ Database
   - Changes to the inputs related to creating a poll don’t need to submit message draft updates
   - Finer control over who can see what results
   - Ranking: https://civs1.civs.us
-- Staff whispers
-  - Talk about staff whispers on home page.
+- Course staff whispers
+  - Talk about course staff whispers on home page.
   - Disclosure button to show/hide whispers
     - On load, it’s showing
     - On new whisper, show again
     - The point is: Don’t let people miss whispers
-  - The order or messages on the left now may be different for students and staff
-    - Two `"conversations"."updatedAt"`, one for staff (which updates on staff whispers) and one for students (which does not update on staff whispers)
+  - The order or messages on the left now may be different for students and course staff
+    - Two `"conversations"."updatedAt"`, one for course staff (which updates on course staff whispers) and one for students (which does not update on course staff whispers)
   - Reference: Discourse
 
 **Readings & Views**
@@ -207,7 +225,7 @@ Database
 - Have a way to mark several messages in a course as reusable and reuse them all at the same time on a new course.
   - The reusable messages could become “drafts” in the new course.
 - Have a way to schedule messages into the future, to have a timeline of things like homework handouts.
-  - Either automatically post, or just notify staff that it’s time to post (in case they want to double-check stuff)
+  - Either automatically post, or just notify course staff that it’s time to post (in case they want to double-check stuff)
 - Follow up with Jason
   - Ask about other features he thinks may help Courselore stand out from email lists and other communication software.
 - Introduce the notion of course resources
@@ -217,7 +235,7 @@ Database
 ## Anonymity
 
 - Allow people to create Personas.
-- Have a completely anonymous mode in which not even the staff has access to the identity.
+- Have a completely anonymous mode in which not even the course staff has access to the identity.
 
 ## Search & Filters
 
@@ -429,7 +447,7 @@ new Notification('Example');
 - Make the distinction between the types more prominent. Separate questions from chats in the list of conversations, for example.
   - Make the visualization of “types” a little more distinct, for example, make announcements pop up.
   - Improve display of endorsements & answers (on the sidebar, include number of answers).
-  - Manage answer badges more intelligently (answered at all, answered by staff).
+  - Manage answer badges more intelligently (answered at all, answered by course staff).
 - Highlight conversations that include an `@mention` to you.
 - Quick Actions:
   - Unpin
@@ -438,7 +456,7 @@ new Notification('Example');
 **Conversation**
 
 - Add “Change conversation type” and that sort of thing to the “Actions” menu?
-- First conversation for staff should default to being pinned.
+- First conversation for course staff should default to being pinned.
 - Editing tags should behave like “Selected Participants”. (You have to confirm your changes by clicking a button, the dropdown doesn’t go away on first click, and that kind of thing.)
 - Fix keyboard navigation on “Selected Participants” widget, which is a bunch of checkboxes acting as a `<select>`.
 - When navigating between conversations, preserve scrolling position
@@ -461,8 +479,8 @@ new Notification('Example');
 - Wider columns
 - Include a “set as answer and endorse” button.
 - Show a widget similar to the Views and Likes (with person & time) to endorsements.
-- Don’t show endorsements for messages that have been converted into non-answers. (They show up at least for staff.)
-- Staff endorsements should show a list of people similar to “Likes” and “Views”.
+- Don’t show endorsements for messages that have been converted into non-answers. (They show up at least for course staff.)
+- Course staff endorsements should show a list of people similar to “Likes” and “Views”.
 
 **Chat**
 
@@ -627,7 +645,7 @@ new Notification('Example');
 - How many questions & how fast they were answered.
 - Number of people who are online.
 - More statics from Piazza.
-- Staff that should be on call answering questions, but aren’t.
+- Course staff members that should be on call answering questions, but aren’t.
 - A way to grade interactions on conversations, for example, for when the homework is to discuss a certain topic. (It seems that Canvas has this feature.)
 - Gamification
   - Badges (for example, first to answer a question)
@@ -737,8 +755,8 @@ const { app, BrowserWindow } = require("electron");
     - Have a quick link to the list of enrollments
   - Have a quick way to archive a course directly from this list
 - Bulk actions on users & courses?
-- When an administrator is creating a course, ask them if they want to be staff, because perhaps they’re creating a course for someone else.
-- Deal with the case in which you’re the administrator and also the staff/student on a course.
+- When an administrator is creating a course, ask them if they want to be course staff, because perhaps they’re creating a course for someone else.
+- Deal with the case in which you’re the administrator and also the course staff/student on a course.
   - Switch in out of administrator role and see the course differently.
 - Extract a partial for user in list of users (to be used in `/courses/___/settings/enrollments` & administrative interface list of users).
 - Administrators can have further control over user accounts:
@@ -760,7 +778,7 @@ const { app, BrowserWindow } = require("electron");
   - Number of users
   - Number of **active** courses (where an **active** course is a course that has seen recent activity, for example, a new conversation).
   - Activity on conversations
-    - It’d be nice for the course staff to also have access to that
+    - It’d be nice for the course course staff to also have access to that
 - Low-level information:
   - Machine statistics, for example, disk space
   - Notifications: Disk running out of space, load average above normal, and so forth
