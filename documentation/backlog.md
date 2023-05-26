@@ -12,11 +12,9 @@ User interface
       - `"messages"."contentSource"`
       - `"messages"."contentPreprocessed"`
       - `"messages"."contentSearch"`
-    - `staffOnlyAt` → `courseStaffOnlyAt`
-      - `"tags"."staffOnlyAt"` → `"tags"."courseStaffOnlyAt"`
   - `courseRole`
     - Capitalize
-  - `isStaffOnly` → `isCourseStaffOnly`
+    - Spacing in `/settings/enrollments`
   - Administration’s notion of `staff` remains unchanged, to highlight the difference between it and course staff
   - `userSystemRolesWhoMayCreateCourseses`’s `"staff-and-administrators"`
   - `systemRoles`’s `"staff"`
