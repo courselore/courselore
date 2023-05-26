@@ -2107,7 +2107,28 @@ export default async (application: Application): Promise<void> => {
     sql`
       ALTER TABLE "users" ADD COLUMN "mostRecentlyVisitedEnrollment" INTEGER NULL REFERENCES "enrollments" ON DELETE SET NULL;
       ALTER TABLE "enrollments" ADD COLUMN "mostRecentlyVisitedConversation" INTEGER NULL REFERENCES "conversations" ON DELETE SET NULL;
-    `
+    `,
+
+    () => {
+      application.database.execute(
+        sql`
+          UPDATE "enrollments"
+          SET "courseRole" = 'course-staff'
+          WHERE "courseRole" = 'staff';
+
+          UPDATE "conversations"
+          SET "participants" = 'course-staff'
+          WHERE "participants" = 'staff';
+
+          
+          UPDATE "messages"
+          SET "type" = 'course-staff-whisper'
+          WHERE "type" = 'staff-whisper';
+
+          ALTER TABLE "tags" RENAME COLUMN "staffOnlyAt" TO "courseStaffOnlyAt";
+        `
+      );
+    }
   );
 
   application.database.run(

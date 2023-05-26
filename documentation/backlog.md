@@ -8,11 +8,6 @@ User interface
 
 - `Staff` → `Course Staff`
   - Database migration
-    - `staff` → `course-staff`
-      - `"enrollments"."courseRole"`
-      - `"conversations"."participants"`
-    - `staff-whisper` → `course-staff-whisper`
-      - `"messages"."type"`
     - `@staff` → `@course-staff`
       - `"messages"."contentSource"`
       - `"messages"."contentPreprocessed"`
