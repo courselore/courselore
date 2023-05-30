@@ -12,6 +12,11 @@ User interface
       - `"messages"."contentSource"`
       - `"messages"."contentPreprocessed"`
       - `"messages"."contentSearch"`
+      - Problem: Old messages will be reprocessed according to new rules
+      - Possible solutions:
+        - Regular expression: Brittle
+        - Add support for legacy `@staff` in addition to `@course-staff`: Legacy that we’ll have to keep around forever
+        - Reprocess messages anyway: Could be a good thing, because of new shiki versions and whatnot. We were kind of due to do it anyway 🤷‍♂️
   - `courseRole`
     - Capitalize
     - Spacing in `/settings/enrollments`
