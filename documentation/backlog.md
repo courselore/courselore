@@ -17,7 +17,8 @@ User interface
         - Regular expression: Brittle
         - Add support for legacy `@staff` in addition to `@course-staff`: Legacy that we’ll have to keep around forever
         - Reprocess messages anyway: Could be a good thing, because of new shiki versions and whatnot. We were kind of due to do it anyway 🤷‍♂️
-          - `sqlite3 data/courselore.db 'SELECT "contentSource", "contentPreprocessed", "contentSearch" FROM "messages" ORDER BY "id"' > message-contents.txt`
+          - `sqlite3 data/courselore.db 'SELECT "contentSource" FROM "messages" ORDER BY "id"' > message-contents-source.txt`
+          - `sqlite3 data/courselore.db 'SELECT "contentSource", "contentPreprocessed", "contentSearch" FROM "messages" ORDER BY "id"' > message-contents-all.txt`
   - `courseRole`
     - Capitalize
     - Spacing in `/settings/enrollments`
@@ -51,6 +52,8 @@ Database
 
 ---
 
+- Syntax highlighter throws an error when it doesn’t recognize the language
+- `contentSearch` contains syntax highlighted text twice (because of light and dark modes)
 - UI on the upper left
 - LTI by fall
 - Feature branches
