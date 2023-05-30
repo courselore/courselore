@@ -7,24 +7,12 @@
 User interface
 
 - `Staff` → `Course Staff`
-  - Database migration
-    - `@staff` → `@course-staff`
-      - `"messages"."contentSource"`
-      - `"messages"."contentPreprocessed"`
-      - `"messages"."contentSearch"`
-      - Problem: Old messages will be reprocessed according to new rules
-      - Possible solutions:
-        - Regular expression: Brittle
-        - Add support for legacy `@staff` in addition to `@course-staff`: Legacy that we’ll have to keep around forever
-        - Reprocess messages anyway: Could be a good thing, because of new shiki versions and whatnot. We were kind of due to do it anyway 🤷‍♂️
-          - `sqlite3 data/courselore.db 'SELECT "contentSource" FROM "messages" ORDER BY "id"' > message-contents-source.txt`
-          - `sqlite3 data/courselore.db 'SELECT "contentSource", "contentPreprocessed", "contentSearch" FROM "messages" ORDER BY "id"' > message-contents-all.txt`
   - `courseRole`
     - Capitalize
     - Spacing in `/settings/enrollments`
   - Administration’s notion of `staff` remains unchanged, to highlight the difference between it and course staff
-  - `userSystemRolesWhoMayCreateCourseses`’s `"staff-and-administrators"`
-  - `systemRoles`’s `"staff"`
+    - `userSystemRolesWhoMayCreateCourseses`’s `"staff-and-administrators"`
+    - `systemRoles`’s `"staff"`
 - `Enrollment` → `Course Participant`
 - `Enroll` → `Join`
 - `Selected People` → `Selected Participants`
@@ -76,6 +64,7 @@ Database
 
 ## Users
 
+- Show users their `systemRole`.
 - Improvements to the workflow for when you change your email:
   - Don’t actually change the email until it’s verified. Otherwise an attacker with a compromised password could change your email and lock you out of the “Forgot your password?” flow.
 - Allow person to have multiple emails on their account?

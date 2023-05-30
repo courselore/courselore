@@ -14,6 +14,9 @@
 
 - Improved the starting state of the `@mentions` and `#references` widgets. Instead of simply saying “Start typing to search”, they now give useful options, for example, the people who authored the most recent messages.
 - Fixed glitches when dragging-and-dropping or copying-and-pasting folders and text into the content editor and avatar uploader.
+- Changes in terminology:
+  - Staff → Course Staff (In the context of a course, to set it apart from Staff in the context of system administration)
+- Deployment may be slow and may alter messages in undesirable ways.
 
 ## 6.1.2
 
