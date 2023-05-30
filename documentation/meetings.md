@@ -1,6 +1,13 @@
 # Meetings
 
 <details>
+<summary>2023-06-03</summary>
+
+- https://matthewbutterick.com/chron/camera-obscura-the-case-against-ai-in-classrooms.html
+
+</details>
+
+<details>
 <summary>2023-05-20</summary>
 
 - SAML: News from the Computer Science Department?
