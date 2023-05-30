@@ -18,6 +18,7 @@ import rehypeParse from "rehype-parse";
 import { visit as unistUtilVisit } from "unist-util-visit";
 import { toString as hastUtilToString } from "hast-util-to-string";
 import rehypeStringify from "rehype-stringify";
+import remarkStringify from "remark-stringify";
 import { JSDOM } from "jsdom";
 import prompts from "prompts";
 import sharp from "sharp";
@@ -2145,6 +2146,12 @@ export default async (application: Application): Promise<void> => {
         `
       );
 
+      const contentTransformer = unified()
+        .use(remarkParse)
+        .use(remarkGfm, { singleTilde: false })
+        .use(remarkMath)
+        .use(remarkStringify);
+
       const contentPreprocessed = await (async () => {
         const unifiedProcessor = unified()
           .use(remarkParse)
@@ -2340,14 +2347,16 @@ export default async (application: Application): Promise<void> => {
           SELECT "id", "contentSource" FROM "messages"
         `
       )) {
-        const messageContentPreprocessed = contentPreprocessed(
-          message.contentSource
-        );
+        const messageContentSource = contentTransformer
+          .processSync(message.contentSource)
+          .toString();
+        const messageContentPreprocessed =
+          contentPreprocessed(messageContentSource);
         application.database.run(
           sql`
             UPDATE "messages"
             SET
-              "contentSource" = ${message.contentSource},
+              "contentSource" = ${messageContentSource},
               "contentPreprocessed" = ${messageContentPreprocessed.contentPreprocessed},
               "contentSearch" = ${messageContentPreprocessed.contentSearch}
             WHERE "id" = ${message.id}
