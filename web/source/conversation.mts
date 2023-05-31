@@ -4242,7 +4242,8 @@ export default async (application: Application): Promise<void> => {
                               class="visually-hidden input--visible-when-enabled-and-checked"
                               javascript="${javascript`
                                 if (${
-                                  conversationParticipants === "selected-participants"
+                                  conversationParticipants ===
+                                  "selected-participants"
                                 })
                                   this.onvalidate = () => {
                                     if (this.checked && [...this.closest("form").querySelectorAll('[name="selectedParticipantsReferences[]"]')].find(element => element.checked) === undefined)
@@ -7385,7 +7386,8 @@ export default async (application: Application): Promise<void> => {
                                         courseParticipant.courseRole !==
                                           "course-staff") ||
                                       response.locals.conversation
-                                        .participants === "selected-participants"
+                                        .participants ===
+                                        "selected-participants"
                                         ? html``
                                         : html`disabled`}
                                       tabindex="-1"
@@ -7487,7 +7489,10 @@ export default async (application: Application): Promise<void> => {
                               ]}
                             </div>
 
-                            $${["course-staff", "selected-participants"].includes(
+                            $${[
+                              "course-staff",
+                              "selected-participants",
+                            ].includes(
                               response.locals.conversation.participants
                             )
                               ? html`
