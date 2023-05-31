@@ -5071,7 +5071,7 @@ ${contentSource}</textarea
                 "createdAt",
                 "course",
                 "reference",
-                "courseParticipant",
+                "authorCourseParticipant",
                 "multipleChoicesAt",
                 "closesAt"
               )

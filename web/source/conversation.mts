@@ -5100,7 +5100,7 @@ export default async (application: Application): Promise<void> => {
                   "createdAt",
                   "course",
                   "reference",
-                  "courseParticipant",
+                  "authorCourseParticipant",
                   "participants",
                   "anonymousAt",
                   "type",
@@ -5187,7 +5187,7 @@ export default async (application: Application): Promise<void> => {
                     "createdAt",
                     "conversation",
                     "reference",
-                    "courseParticipant",
+                    "authorCourseParticipant",
                     "anonymousAt",
                     "type",
                     "contentSource",
@@ -10130,7 +10130,7 @@ export default async (application: Application): Promise<void> => {
                 WHERE
                   "conversation" = ${response.locals.conversation.id} AND
                   "reference" = '1' AND
-                  "courseParticipant" = ${
+                  "authorCourseParticipant" = ${
                     response.locals.conversation.authorCourseParticipant ===
                     "no-longer-participating"
                       ? (() => {

@@ -456,7 +456,7 @@ export default async (application: Application): Promise<void> => {
                     "createdAt",
                     "course",
                     "reference",
-                    "courseParticipant",
+                    "authorCourseParticipant",
                     "multipleChoicesAt",
                     "closesAt"
                   )
@@ -550,7 +550,7 @@ export default async (application: Application): Promise<void> => {
                     "createdAt",
                     "course",
                     "reference",
-                    "courseParticipant",
+                    "authorCourseParticipant",
                     "multipleChoicesAt",
                     "closesAt"
                   )
@@ -1060,7 +1060,7 @@ Message non-existent permanent link turned reference: <https://${
                       "updatedAt",
                       "course",
                       "reference",
-                      "courseParticipant",
+                      "authorCourseParticipant",
                       "participants",
                       "anonymousAt",
                       "type",
@@ -1173,7 +1173,7 @@ Message non-existent permanent link turned reference: <https://${
                         "updatedAt",
                         "conversation",
                         "reference",
-                        "courseParticipant",
+                        "authorCourseParticipant",
                         "anonymousAt",
                         "type",
                         "contentSource",
