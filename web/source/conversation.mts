@@ -166,7 +166,7 @@ export type ApplicationConversation = {
               createdAt: string;
               updatedAt: string | null;
               reference: string;
-              courseParticipant: Application["web"]["locals"]["Types"]["MaybeEnrollment"];
+              courseParticipant: Application["web"]["locals"]["Types"]["MaybeCourseParticipant"];
               participants: Application["web"]["locals"]["helpers"]["conversationParticipantses"][number];
               anonymousAt: string | null;
               type: Application["web"]["locals"]["helpers"]["conversationTypes"][number];
@@ -190,7 +190,7 @@ export type ApplicationConversation = {
               readingsCount: number;
               endorsements: {
                 id: number;
-                enrollment: Application["web"]["locals"]["Types"]["MaybeEnrollment"];
+                enrollment: Application["web"]["locals"]["Types"]["MaybeCourseParticipant"];
               }[];
             }
           | undefined;
@@ -252,7 +252,7 @@ export default async (application: Application): Promise<void> => {
         response.locals.courseParticipant.courseRole === "course-staff"
           ? application.database
               .all<{
-                enrollmentId: number;
+                courseParticipantId: number;
                 userId: number;
                 userLastSeenOnlineAt: string;
                 userReference: string;
@@ -267,7 +267,7 @@ export default async (application: Application): Promise<void> => {
               }>(
                 sql`
                   SELECT
-                    "courseParticipants"."id" AS "enrollmentId",
+                    "courseParticipants"."id" AS "courseParticipantId",
                     "users"."id" AS "userId",
                     "users"."lastSeenOnlineAt" AS "userLastSeenOnlineAt",
                     "users"."reference" AS "userReference",
@@ -299,7 +299,7 @@ export default async (application: Application): Promise<void> => {
                 `
               )
               .map((selectedParticipant) => ({
-                id: selectedParticipant.enrollmentId,
+                id: selectedParticipant.courseParticipantId,
                 user: {
                   id: selectedParticipant.userId,
                   lastSeenOnlineAt: selectedParticipant.userLastSeenOnlineAt,
@@ -467,7 +467,7 @@ export default async (application: Application): Promise<void> => {
         ? []
         : application.database
             .all<{
-              enrollmentId: number;
+              courseParticipantId: number;
               userId: number;
               userLastSeenOnlineAt: string;
               userReference: string;
@@ -482,7 +482,7 @@ export default async (application: Application): Promise<void> => {
             }>(
               sql`
                 SELECT
-                  "courseParticipants"."id" AS "enrollmentId",
+                  "courseParticipants"."id" AS "courseParticipantId",
                   "users"."id" AS "userId",
                   "users"."lastSeenOnlineAt" AS "userLastSeenOnlineAt",
                   "users"."reference" AS "userReference",
@@ -506,7 +506,7 @@ export default async (application: Application): Promise<void> => {
               `
             )
             .map((selectedParticipant) => ({
-              id: selectedParticipant.enrollmentId,
+              id: selectedParticipant.courseParticipantId,
               user: {
                 id: selectedParticipant.userId,
                 lastSeenOnlineAt: selectedParticipant.userLastSeenOnlineAt,
@@ -600,7 +600,7 @@ export default async (application: Application): Promise<void> => {
         ? application.database
             .all<{
               id: number;
-              enrollmentId: number | null;
+              courseParticipantId: number | null;
               userId: number | null;
               userLastSeenOnlineAt: string | null;
               userReference: string;
@@ -620,7 +620,7 @@ export default async (application: Application): Promise<void> => {
               sql`
                 SELECT
                   "endorsements"."id",
-                  "courseParticipants"."id" AS "enrollmentId",
+                  "courseParticipants"."id" AS "courseParticipantId",
                   "users"."id" AS "userId",
                   "users"."lastSeenOnlineAt" AS "userLastSeenOnlineAt",
                   "users"."reference" AS "userReference",
@@ -644,7 +644,7 @@ export default async (application: Application): Promise<void> => {
             .map((endorsement) => ({
               id: endorsement.id,
               enrollment:
-                endorsement.enrollmentId !== null &&
+                endorsement.courseParticipantId !== null &&
                 endorsement.userId !== null &&
                 endorsement.userLastSeenOnlineAt !== null &&
                 endorsement.userReference !== null &&
@@ -654,7 +654,7 @@ export default async (application: Application): Promise<void> => {
                 endorsement.enrollmentReference !== null &&
                 endorsement.enrollmentCourseRole !== null
                   ? {
-                      id: endorsement.enrollmentId,
+                      id: endorsement.courseParticipantId,
                       user: {
                         id: endorsement.userId,
                         lastSeenOnlineAt: endorsement.userLastSeenOnlineAt,

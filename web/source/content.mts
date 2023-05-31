@@ -5125,7 +5125,7 @@ ${contentSource}</textarea
         id: number;
         createdAt: string;
         reference: string;
-        courseParticipant: Application["web"]["locals"]["Types"]["MaybeEnrollment"];
+        courseParticipant: Application["web"]["locals"]["Types"]["MaybeCourseParticipant"];
         multipleChoicesAt: string | null;
         closesAt: string | null;
         options: {
@@ -5644,7 +5644,7 @@ ${contentSource}</textarea
                 <div key="poll--show--option--votes/${option.reference}">
                   $${application.database
                     .all<{
-                      enrollmentId: number | null;
+                      courseParticipantId: number | null;
                       userId: number | null;
                       userLastSeenOnlineAt: string | null;
                       userReference: string;
@@ -5663,7 +5663,7 @@ ${contentSource}</textarea
                     }>(
                       sql`
                         SELECT
-                          "courseParticipants"."id" AS "enrollmentId",
+                          "courseParticipants"."id" AS "courseParticipantId",
                           "users"."id" AS "userId",
                           "users"."lastSeenOnlineAt" AS "userLastSeenOnlineAt",
                           "users"."reference" AS "userReference",
@@ -5684,7 +5684,7 @@ ${contentSource}</textarea
                     )
                     .map((vote) => ({
                       enrollment:
-                        vote.enrollmentId !== null &&
+                        vote.courseParticipantId !== null &&
                         vote.userId !== null &&
                         vote.userLastSeenOnlineAt !== null &&
                         vote.userReference !== null &&
@@ -5694,7 +5694,7 @@ ${contentSource}</textarea
                         vote.enrollmentReference !== null &&
                         vote.enrollmentCourseRole !== null
                           ? {
-                              id: vote.enrollmentId,
+                              id: vote.courseParticipantId,
                               user: {
                                 id: vote.userId,
                                 lastSeenOnlineAt: vote.userLastSeenOnlineAt,

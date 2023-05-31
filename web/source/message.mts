@@ -41,7 +41,7 @@ export type ApplicationMessage = {
               createdAt: string;
               updatedAt: string | null;
               reference: string;
-              courseParticipant: Application["web"]["locals"]["Types"]["MaybeEnrollment"];
+              courseParticipant: Application["web"]["locals"]["Types"]["MaybeCourseParticipant"];
               anonymousAt: string | null;
               type:
                 | "message"
@@ -55,16 +55,16 @@ export type ApplicationMessage = {
               readings: {
                 id: number;
                 createdAt: string;
-                enrollment: Application["web"]["locals"]["Types"]["MaybeEnrollment"];
+                enrollment: Application["web"]["locals"]["Types"]["MaybeCourseParticipant"];
               }[];
               endorsements: {
                 id: number;
-                enrollment: Application["web"]["locals"]["Types"]["MaybeEnrollment"];
+                enrollment: Application["web"]["locals"]["Types"]["MaybeCourseParticipant"];
               }[];
               likes: {
                 id: number;
                 createdAt: string;
-                enrollment: Application["web"]["locals"]["Types"]["MaybeEnrollment"];
+                enrollment: Application["web"]["locals"]["Types"]["MaybeCourseParticipant"];
               }[];
             }
           | undefined;
@@ -302,7 +302,7 @@ export default async (application: Application): Promise<void> => {
       .all<{
         id: number;
         createdAt: string;
-        enrollmentId: number | null;
+        courseParticipantId: number | null;
         userId: number | null;
         userLastSeenOnlineAt: string | null;
         userReference: string;
@@ -323,7 +323,7 @@ export default async (application: Application): Promise<void> => {
           SELECT
             "readings"."id",
             "readings"."createdAt",
-            "courseParticipants"."id" AS "enrollmentId",
+            "courseParticipants"."id" AS "courseParticipantId",
             "users"."id" AS "userId",
             "users"."lastSeenOnlineAt" AS "userLastSeenOnlineAt",
             "users"."reference" AS "userReference",
@@ -346,7 +346,7 @@ export default async (application: Application): Promise<void> => {
         id: reading.id,
         createdAt: reading.createdAt,
         enrollment:
-          reading.enrollmentId !== null &&
+          reading.courseParticipantId !== null &&
           reading.userId !== null &&
           reading.userLastSeenOnlineAt !== null &&
           reading.userReference !== null &&
@@ -356,7 +356,7 @@ export default async (application: Application): Promise<void> => {
           reading.enrollmentReference !== null &&
           reading.enrollmentCourseRole !== null
             ? {
-                id: reading.enrollmentId,
+                id: reading.courseParticipantId,
                 user: {
                   id: reading.userId,
                   lastSeenOnlineAt: reading.userLastSeenOnlineAt,
@@ -378,7 +378,7 @@ export default async (application: Application): Promise<void> => {
     const endorsements = application.database
       .all<{
         id: number;
-        enrollmentId: number | null;
+        courseParticipantId: number | null;
         userId: number | null;
         userLastSeenOnlineAt: string | null;
         userReference: string;
@@ -398,7 +398,7 @@ export default async (application: Application): Promise<void> => {
         sql`
           SELECT
             "endorsements"."id",
-            "courseParticipants"."id" AS "enrollmentId",
+            "courseParticipants"."id" AS "courseParticipantId",
             "users"."id" AS "userId",
             "users"."lastSeenOnlineAt" AS "userLastSeenOnlineAt",
             "users"."reference" AS "userReference",
@@ -420,7 +420,7 @@ export default async (application: Application): Promise<void> => {
       .map((endorsement) => ({
         id: endorsement.id,
         enrollment:
-          endorsement.enrollmentId !== null &&
+          endorsement.courseParticipantId !== null &&
           endorsement.userId !== null &&
           endorsement.userLastSeenOnlineAt !== null &&
           endorsement.userReference !== null &&
@@ -430,7 +430,7 @@ export default async (application: Application): Promise<void> => {
           endorsement.enrollmentReference !== null &&
           endorsement.enrollmentCourseRole !== null
             ? {
-                id: endorsement.enrollmentId,
+                id: endorsement.courseParticipantId,
                 user: {
                   id: endorsement.userId,
                   lastSeenOnlineAt: endorsement.userLastSeenOnlineAt,
@@ -453,7 +453,7 @@ export default async (application: Application): Promise<void> => {
       .all<{
         id: number;
         createdAt: string;
-        enrollmentId: number | null;
+        courseParticipantId: number | null;
         userId: number | null;
         userLastSeenOnlineAt: string | null;
         userReference: string;
@@ -474,7 +474,7 @@ export default async (application: Application): Promise<void> => {
           SELECT
             "likes"."id",
             "likes"."createdAt",
-            "courseParticipants"."id" AS "enrollmentId",
+            "courseParticipants"."id" AS "courseParticipantId",
             "users"."id" AS "userId",
             "users"."lastSeenOnlineAt" AS "userLastSeenOnlineAt",
             "users"."reference" AS "userReference",
@@ -497,7 +497,7 @@ export default async (application: Application): Promise<void> => {
         id: like.id,
         createdAt: like.createdAt,
         enrollment:
-          like.enrollmentId !== null &&
+          like.courseParticipantId !== null &&
           like.userId !== null &&
           like.userLastSeenOnlineAt !== null &&
           like.userReference !== null &&
@@ -507,7 +507,7 @@ export default async (application: Application): Promise<void> => {
           like.enrollmentReference !== null &&
           like.enrollmentCourseRole !== null
             ? {
-                id: like.enrollmentId,
+                id: like.courseParticipantId,
                 user: {
                   id: like.userId,
                   lastSeenOnlineAt: like.userLastSeenOnlineAt,

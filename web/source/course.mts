@@ -22,7 +22,7 @@ export type ApplicationCourse = {
           courseRole: Application["web"]["locals"]["helpers"]["courseRoles"][number];
         };
 
-        MaybeEnrollment:
+        MaybeCourseParticipant:
           | Application["web"]["locals"]["Types"]["CourseParticipant"]
           | "no-longer-participating";
       };

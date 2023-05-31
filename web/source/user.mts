@@ -61,7 +61,7 @@ export type ApplicationUser = {
                 Application["web"]["locals"]["ResponseLocals"]["CourseParticipant"]
               >
           >;
-          courseParticipant?: Application["web"]["locals"]["Types"]["MaybeEnrollment"];
+          courseParticipant?: Application["web"]["locals"]["Types"]["MaybeCourseParticipant"];
           user?:
             | Application["web"]["locals"]["Types"]["User"]
             | "no-longer-participating";
