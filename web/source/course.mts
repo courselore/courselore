@@ -28,7 +28,7 @@ export type ApplicationCourse = {
       };
 
       ResponseLocals: {
-        CourseEnrolled: Application["web"]["locals"]["ResponseLocals"]["SignedIn"] & {
+        CourseParticipant: Application["web"]["locals"]["ResponseLocals"]["SignedIn"] & {
           enrollment: Application["web"]["locals"]["ResponseLocals"]["SignedIn"]["courseParticipants"][number];
           course: Application["web"]["locals"]["ResponseLocals"]["SignedIn"]["courseParticipants"][number]["course"];
           courseParticipantsCount: number;
