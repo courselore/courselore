@@ -175,7 +175,7 @@ export default async (application: Application): Promise<void> => {
         code,
         courseRole,
         accentColor,
-        enrollmentsUsers,
+        courseParticipantsUsers,
         isArchived,
       } of [
         {
@@ -184,7 +184,7 @@ export default async (application: Application): Promise<void> => {
           courseRole: application.web.locals.helpers.courseRoles[1],
           accentColor:
             application.web.locals.helpers.courseParticipantAccentColors[0],
-          enrollmentsUsers: users.slice(0, 100),
+          courseParticipantsUsers: users.slice(0, 100),
         },
         {
           name: "Music Theory",
@@ -192,7 +192,7 @@ export default async (application: Application): Promise<void> => {
           courseRole: application.web.locals.helpers.courseRoles[0],
           accentColor:
             application.web.locals.helpers.courseParticipantAccentColors[1],
-          enrollmentsUsers: users.slice(25, 125),
+          courseParticipantsUsers: users.slice(25, 125),
         },
         {
           name: "Object-Oriented Software Engineering",
@@ -200,7 +200,7 @@ export default async (application: Application): Promise<void> => {
           courseRole: application.web.locals.helpers.courseRoles[1],
           accentColor:
             application.web.locals.helpers.courseParticipantAccentColors[2],
-          enrollmentsUsers: users.slice(50, 150),
+          courseParticipantsUsers: users.slice(50, 150),
           isArchived: true,
         },
       ].reverse()) {
@@ -243,7 +243,7 @@ export default async (application: Application): Promise<void> => {
           `
         )!;
 
-        const enrollment = application.database.get<{
+        const courseParticipant = application.database.get<{
           id: number;
           reference: string;
           courseRole: Application["web"]["locals"]["helpers"]["courseRoles"][number];
@@ -341,10 +341,10 @@ export default async (application: Application): Promise<void> => {
           );
         }
 
-        const enrollments = [
-          enrollment,
-          ...enrollmentsUsers.map(
-            (enrollmentUser) =>
+        const courseParticipants = [
+          courseParticipant,
+          ...courseParticipantsUsers.map(
+            (courseParticipantUser) =>
               application.database.get<{
                 id: number;
                 reference: string;
@@ -357,7 +357,7 @@ export default async (application: Application): Promise<void> => {
                         INSERT INTO "courseParticipants" ("createdAt", "user", "course", "reference", "courseRole", "accentColor")
                         VALUES (
                           ${new Date().toISOString()},
-                          ${enrollmentUser.id},
+                          ${courseParticipantUser.id},
                           ${course.id},
                           ${cryptoRandomString({
                             length: 10,
@@ -380,11 +380,11 @@ export default async (application: Application): Promise<void> => {
               )!
           ),
         ];
-        const courseStaff = enrollments.filter(
-          (enrollment) => enrollment.courseRole === "course-staff"
+        const courseStaff = courseParticipants.filter(
+          (courseParticipant) => courseParticipant.courseRole === "course-staff"
         );
-        const students = enrollments.filter(
-          (enrollment) => enrollment.courseRole === "student"
+        const students = courseParticipants.filter(
+          (courseParticipant) => courseParticipant.courseRole === "student"
         );
 
         const tags: { id: number }[] = [
@@ -464,7 +464,7 @@ export default async (application: Application): Promise<void> => {
                     ${conversationCreatedAts[0]},
                     ${course.id},
                     ${cryptoRandomString({ length: 20, type: "numeric" })},
-                    ${enrollment.id},
+                    ${courseParticipant.id},
                     ${null},
                     ${null}
                   )
@@ -511,10 +511,10 @@ export default async (application: Application): Promise<void> => {
           );
         }
 
-        for (const enrollment of lodash.sampleSize(
+        for (const courseParticipant of lodash.sampleSize(
           [
-            ...enrollments,
-            ...new Array(Math.floor(enrollments.length * 0.2)).fill(null),
+            ...courseParticipants,
+            ...new Array(Math.floor(courseParticipants.length * 0.2)).fill(null),
           ],
           lodash.random(0, 50)
         ))
@@ -531,7 +531,7 @@ export default async (application: Application): Promise<void> => {
                     lodash.random(60 * 1000, 12 * 60 * 60 * 1000)
                 ).toISOString()},
                 ${lodash.sample(pollSingleChoiceOptions)!.id},
-                ${enrollment?.id}
+                ${courseParticipant?.id}
               )
             `
           );
@@ -556,7 +556,7 @@ export default async (application: Application): Promise<void> => {
                     ${conversationCreatedAts[0]},
                     ${course.id},
                     ${cryptoRandomString({ length: 20, type: "numeric" })},
-                    ${enrollment.id},
+                    ${courseParticipant.id},
                     ${new Date().toISOString()},
                     ${new Date(
                       new Date(
@@ -611,10 +611,10 @@ export default async (application: Application): Promise<void> => {
           );
         }
 
-        for (const enrollment of lodash.sampleSize(
+        for (const courseParticipant of lodash.sampleSize(
           [
-            ...enrollments,
-            ...new Array(Math.floor(enrollments.length * 0.2)).fill(null),
+            ...courseParticipants,
+            ...new Array(Math.floor(courseParticipants.length * 0.2)).fill(null),
           ],
           lodash.random(0, 50)
         ))
@@ -635,7 +635,7 @@ export default async (application: Application): Promise<void> => {
                       lodash.random(60 * 1000, 12 * 60 * 60 * 1000)
                   ).toISOString()},
                   ${option.id},
-                  ${enrollment?.id}
+                  ${courseParticipant?.id}
                 )
               `
             );
@@ -914,9 +914,9 @@ for (let orderIndex = 2; orderIndex <= order; orderIndex++) {
 
 # \`@mentions\`
 
-Self: @${enrollment.reference}
+Self: @${courseParticipant.reference}
 
-Other: @${lodash.sample(enrollments)!.reference}
+Other: @${lodash.sample(courseParticipants)!.reference}
 
 Non-existent: @1571024857
 
@@ -973,37 +973,37 @@ Message non-existent permanent link turned reference: <https://${
             : lodash.sample(
                 application.web.locals.helpers.conversationParticipantses
               )!;
-          const selectedParticipantEnrollments = lodash.uniq(
+          const selectedParticipantCourseParticipants = lodash.uniq(
             participants === "everyone"
               ? []
               : participants === "course-staff"
               ? [
-                  ...(enrollment.courseRole === "course-staff"
+                  ...(courseParticipant.courseRole === "course-staff"
                     ? []
                     : Math.random() < 0.5
-                    ? [enrollment]
+                    ? [courseParticipant]
                     : []),
                   ...lodash.sampleSize(students, lodash.random(0, 10)),
                 ]
               : participants === "selected-people"
               ? [
-                  ...(Math.random() < 0.5 ? [enrollment] : []),
-                  ...lodash.sampleSize(enrollments, lodash.random(2, 10)),
+                  ...(Math.random() < 0.5 ? [courseParticipant] : []),
+                  ...lodash.sampleSize(courseParticipants, lodash.random(2, 10)),
                 ]
               : []
           );
-          const participantEnrollments = lodash.uniq([
+          const participantCourseParticipants = lodash.uniq([
             ...(participants === "everyone"
-              ? enrollments
+              ? courseParticipants
               : participants === "course-staff"
               ? courseStaff
               : participants === "selected-people"
               ? []
               : []),
-            ...selectedParticipantEnrollments,
+            ...selectedParticipantCourseParticipants,
           ]);
           const conversationConversationParticipant =
-            Math.random() < 0.9 ? lodash.sample(participantEnrollments)! : null;
+            Math.random() < 0.9 ? lodash.sample(participantCourseParticipants)! : null;
           const type = isExampleOfAllFeaturesInRichTextMessages
             ? application.web.locals.helpers.conversationTypes[1]
             : application.web.locals.helpers.conversationTypes[
@@ -1106,14 +1106,14 @@ Message non-existent permanent link turned reference: <https://${
             `
           )!;
 
-          for (const enrollment of selectedParticipantEnrollments)
+          for (const courseParticipant of selectedParticipantCourseParticipants)
             application.database.run(
               sql`
                 INSERT INTO "conversationSelectedParticipants" ("createdAt", "conversation", "courseParticipant")
                 VALUES (
                   ${new Date().toISOString()},
                   ${conversation.id},
-                  ${enrollment.id}
+                  ${courseParticipant.id}
                 )
               `
             );
@@ -1140,7 +1140,7 @@ Message non-existent permanent link turned reference: <https://${
                 ? conversationConversationParticipant
                 : Math.random() < 0.05
                 ? null
-                : lodash.sample(participantEnrollments)!;
+                : lodash.sample(participantCourseParticipants)!;
             const contentSource = isExampleOfAllFeaturesInRichTextMessages
               ? exampleOfAllFeaturesInRichTextMessages
               : type === "chat" && Math.random() < 0.9
@@ -1225,9 +1225,9 @@ Message non-existent permanent link turned reference: <https://${
             )!;
 
             let readingCreatedAt = messageCreatedAt;
-            for (const enrollment of lodash.sampleSize(
-              participantEnrollments,
-              lodash.random(1, participantEnrollments.length)
+            for (const courseParticipant of lodash.sampleSize(
+              participantCourseParticipants,
+              lodash.random(1, participantCourseParticipants.length)
             )) {
               readingCreatedAt = new Date(
                 Math.min(
@@ -1242,14 +1242,14 @@ Message non-existent permanent link turned reference: <https://${
                   VALUES (
                     ${readingCreatedAt},
                     ${message.id},
-                    ${enrollment.id}
+                    ${courseParticipant.id}
                   )
                 `
               );
             }
 
-            for (const enrollment of lodash.sampleSize(
-              lodash.intersection(courseStaff, participantEnrollments),
+            for (const courseParticipant of lodash.sampleSize(
+              lodash.intersection(courseStaff, participantCourseParticipants),
               Math.random() < 0.8 ? 0 : lodash.random(2)
             ))
               application.database.run(
@@ -1258,13 +1258,13 @@ Message non-existent permanent link turned reference: <https://${
                   VALUES (
                     ${new Date().toISOString()},
                     ${message.id},
-                    ${enrollment.id}
+                    ${courseParticipant.id}
                   )
                 `
               );
 
-            for (const enrollment of lodash.sampleSize(
-              participantEnrollments,
+            for (const courseParticipant of lodash.sampleSize(
+              participantCourseParticipants,
               Math.random() < (conversation.type === "chat" ? 0.9 : 0.5)
                 ? 0
                 : lodash.random(5)
@@ -1275,7 +1275,7 @@ Message non-existent permanent link turned reference: <https://${
                   VALUES (
                     ${new Date().toISOString()},
                     ${message.id},
-                    ${enrollment.id}
+                    ${courseParticipant.id}
                   )
                 `
               );

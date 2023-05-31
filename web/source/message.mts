@@ -55,7 +55,7 @@ export type ApplicationMessage = {
               readings: {
                 id: number;
                 createdAt: string;
-                enrollment: Application["web"]["locals"]["Types"]["MaybeCourseParticipant"];
+                courseParticipant: Application["web"]["locals"]["Types"]["MaybeCourseParticipant"];
               }[];
               endorsements: {
                 id: number;
@@ -344,35 +344,35 @@ export default async (application: Application): Promise<void> => {
           ORDER BY "readings"."id" ASC
         `
       )
-      .map((reading) => ({
-        id: reading.id,
-        createdAt: reading.createdAt,
-        enrollment:
-          reading.courseParticipantId !== null &&
-          reading.userId !== null &&
-          reading.userLastSeenOnlineAt !== null &&
-          reading.userReference !== null &&
-          reading.userEmail !== null &&
-          reading.userName !== null &&
-          reading.userAvatarlessBackgroundColor !== null &&
-          reading.courseParticipantReference !== null &&
-          reading.courseParticipantCourseRole !== null
+      .map((readingRow) => ({
+        id: readingRow.id,
+        createdAt: readingRow.createdAt,
+        courseParticipant:
+          readingRow.courseParticipantId !== null &&
+          readingRow.userId !== null &&
+          readingRow.userLastSeenOnlineAt !== null &&
+          readingRow.userReference !== null &&
+          readingRow.userEmail !== null &&
+          readingRow.userName !== null &&
+          readingRow.userAvatarlessBackgroundColor !== null &&
+          readingRow.courseParticipantReference !== null &&
+          readingRow.courseParticipantCourseRole !== null
             ? {
-                id: reading.courseParticipantId,
+                id: readingRow.courseParticipantId,
                 user: {
-                  id: reading.userId,
-                  lastSeenOnlineAt: reading.userLastSeenOnlineAt,
-                  reference: reading.userReference,
-                  email: reading.userEmail,
-                  name: reading.userName,
-                  avatar: reading.userAvatar,
+                  id: readingRow.userId,
+                  lastSeenOnlineAt: readingRow.userLastSeenOnlineAt,
+                  reference: readingRow.userReference,
+                  email: readingRow.userEmail,
+                  name: readingRow.userName,
+                  avatar: readingRow.userAvatar,
                   avatarlessBackgroundColor:
-                    reading.userAvatarlessBackgroundColor,
-                  biographySource: reading.userBiographySource,
-                  biographyPreprocessed: reading.userBiographyPreprocessed,
+                    readingRow.userAvatarlessBackgroundColor,
+                  biographySource: readingRow.userBiographySource,
+                  biographyPreprocessed: readingRow.userBiographyPreprocessed,
                 },
-                reference: reading.courseParticipantReference,
-                courseRole: reading.courseParticipantCourseRole,
+                reference: readingRow.courseParticipantReference,
+                courseRole: readingRow.courseParticipantCourseRole,
               }
             : ("no-longer-participating" as const),
       }));
@@ -419,34 +419,34 @@ export default async (application: Application): Promise<void> => {
           ORDER BY "endorsements"."id" ASC
         `
       )
-      .map((endorsement) => ({
-        id: endorsement.id,
-        enrollment:
-          endorsement.courseParticipantId !== null &&
-          endorsement.userId !== null &&
-          endorsement.userLastSeenOnlineAt !== null &&
-          endorsement.userReference !== null &&
-          endorsement.userEmail !== null &&
-          endorsement.userName !== null &&
-          endorsement.userAvatarlessBackgroundColor !== null &&
-          endorsement.courseParticipantReference !== null &&
-          endorsement.courseParticipantCourseRole !== null
+      .map((endorsementRow) => ({
+        id: endorsementRow.id,
+        courseParticipant:
+          endorsementRow.courseParticipantId !== null &&
+          endorsementRow.userId !== null &&
+          endorsementRow.userLastSeenOnlineAt !== null &&
+          endorsementRow.userReference !== null &&
+          endorsementRow.userEmail !== null &&
+          endorsementRow.userName !== null &&
+          endorsementRow.userAvatarlessBackgroundColor !== null &&
+          endorsementRow.courseParticipantReference !== null &&
+          endorsementRow.courseParticipantCourseRole !== null
             ? {
-                id: endorsement.courseParticipantId,
+                id: endorsementRow.courseParticipantId,
                 user: {
-                  id: endorsement.userId,
-                  lastSeenOnlineAt: endorsement.userLastSeenOnlineAt,
-                  reference: endorsement.userReference,
-                  email: endorsement.userEmail,
-                  name: endorsement.userName,
-                  avatar: endorsement.userAvatar,
+                  id: endorsementRow.userId,
+                  lastSeenOnlineAt: endorsementRow.userLastSeenOnlineAt,
+                  reference: endorsementRow.userReference,
+                  email: endorsementRow.userEmail,
+                  name: endorsementRow.userName,
+                  avatar: endorsementRow.userAvatar,
                   avatarlessBackgroundColor:
-                    endorsement.userAvatarlessBackgroundColor,
-                  biographySource: endorsement.userBiographySource,
-                  biographyPreprocessed: endorsement.userBiographyPreprocessed,
+                    endorsementRow.userAvatarlessBackgroundColor,
+                  biographySource: endorsementRow.userBiographySource,
+                  biographyPreprocessed: endorsementRow.userBiographyPreprocessed,
                 },
-                reference: endorsement.courseParticipantReference,
-                courseRole: endorsement.courseParticipantCourseRole,
+                reference: endorsementRow.courseParticipantReference,
+                courseRole: endorsementRow.courseParticipantCourseRole,
               }
             : ("no-longer-participating" as const),
       }));
@@ -495,34 +495,34 @@ export default async (application: Application): Promise<void> => {
           ORDER BY "likes"."id" ASC
         `
       )
-      .map((like) => ({
-        id: like.id,
-        createdAt: like.createdAt,
-        enrollment:
-          like.courseParticipantId !== null &&
-          like.userId !== null &&
-          like.userLastSeenOnlineAt !== null &&
-          like.userReference !== null &&
-          like.userEmail !== null &&
-          like.userName !== null &&
-          like.userAvatarlessBackgroundColor !== null &&
-          like.courseParticipantReference !== null &&
-          like.courseParticipantCourseRole !== null
+      .map((likeRow) => ({
+        id: likeRow.id,
+        createdAt: likeRow.createdAt,
+        courseParticipant:
+          likeRow.courseParticipantId !== null &&
+          likeRow.userId !== null &&
+          likeRow.userLastSeenOnlineAt !== null &&
+          likeRow.userReference !== null &&
+          likeRow.userEmail !== null &&
+          likeRow.userName !== null &&
+          likeRow.userAvatarlessBackgroundColor !== null &&
+          likeRow.courseParticipantReference !== null &&
+          likeRow.courseParticipantCourseRole !== null
             ? {
-                id: like.courseParticipantId,
+                id: likeRow.courseParticipantId,
                 user: {
-                  id: like.userId,
-                  lastSeenOnlineAt: like.userLastSeenOnlineAt,
-                  reference: like.userReference,
-                  email: like.userEmail,
-                  name: like.userName,
-                  avatar: like.userAvatar,
-                  avatarlessBackgroundColor: like.userAvatarlessBackgroundColor,
-                  biographySource: like.userBiographySource,
-                  biographyPreprocessed: like.userBiographyPreprocessed,
+                  id: likeRow.userId,
+                  lastSeenOnlineAt: likeRow.userLastSeenOnlineAt,
+                  reference: likeRow.userReference,
+                  email: likeRow.userEmail,
+                  name: likeRow.userName,
+                  avatar: likeRow.userAvatar,
+                  avatarlessBackgroundColor: likeRow.userAvatarlessBackgroundColor,
+                  biographySource: likeRow.userBiographySource,
+                  biographyPreprocessed: likeRow.userBiographyPreprocessed,
                 },
-                reference: like.courseParticipantReference,
-                courseRole: like.courseParticipantCourseRole,
+                reference: likeRow.courseParticipantReference,
+                courseRole: likeRow.courseParticipantCourseRole,
               }
             : ("no-longer-participating" as const),
       }));
@@ -1173,16 +1173,16 @@ export default async (application: Application): Promise<void> => {
               $${response.locals.message.readings.reverse().map(
                 (reading) => html`
                   <div
-                    key="reading/${reading.enrollment ===
+                    key="reading/${reading.courseParticipant ===
                     "no-longer-participating"
-                      ? reading.enrollment
-                      : reading.enrollment.reference}"
+                      ? reading.courseParticipant
+                      : reading.courseParticipant.reference}"
                     class="dropdown--menu--item"
                   >
                     $${application.web.locals.partials.user({
                       request,
                       response,
-                      courseParticipant: reading.enrollment,
+                      courseParticipant: reading.courseParticipant,
                       size: "xs",
                       bold: false,
                     })}
@@ -2371,7 +2371,7 @@ export default async (application: Application): Promise<void> => {
           contentPreprocessed: message.contentPreprocessed,
         });
 
-        const enrollments = application.database.all<{
+        const courseParticipants = application.database.all<{
           id: number;
           userId: number;
           userEmail: string;
@@ -2484,9 +2484,9 @@ export default async (application: Application): Promise<void> => {
           `
         );
 
-        for (const enrollment of enrollments) {
+        for (const courseParticipant of courseParticipants) {
           // TODO: Email notification digests
-          // switch (enrollment.userEmailNotificationsForAllMessages) {
+          // switch (courseParticipant.userEmailNotificationsForAllMessages) {
           //   case "instant":
           //     break;
 
@@ -2512,7 +2512,7 @@ export default async (application: Application): Promise<void> => {
                     address:
                       application.configuration.email.defaults.from.address,
                   },
-                  to: enrollment.userEmail,
+                  to: courseParticipant.userEmail,
                   inReplyTo: `courses/${course.reference}/conversations/${conversation.reference}@${application.configuration.hostname}`,
                   references: `courses/${course.reference}/conversations/${conversation.reference}@${application.configuration.hostname}`,
                   subject: conversation.title,
@@ -2530,10 +2530,10 @@ export default async (application: Application): Promise<void> => {
                         )}"
                         >${message.courseParticipant ===
                         "no-longer-participating"
-                          ? "Someone who is no longer enrolled"
+                          ? "Someone who is no longer participating"
                           : message.anonymousAt !== null
                           ? `Anonymous ${
-                              enrollment.courseRole === "course-staff"
+                              courseParticipant.courseRole === "course-staff"
                                 ? `(${message.courseParticipant.user.name})`
                                 : ""
                             }`
@@ -2569,7 +2569,7 @@ export default async (application: Application): Promise<void> => {
               VALUES (
                 ${new Date().toISOString()},
                 ${message.id},
-                ${enrollment.id}
+                ${courseParticipant.id}
               )
             `
           );

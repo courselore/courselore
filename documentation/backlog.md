@@ -6,8 +6,6 @@
 
 User interface
 
-- `Enrollment` → `Course Participant`
-- `Enroll` → `Join`
 - `Selected People` → `Selected Participants`
   - `"conversations"."participants"`
 

@@ -2324,7 +2324,7 @@ export default async (application: Application): Promise<void> => {
                                                 element: this,
                                                 tippyProps: {
                                                   trigger: "click",
-                                                  content: "To enroll in an existing course you either have to follow an invitation link or be invited via email. Contact your course staff for more information.",
+                                                  content: "To join an existing course you either have to follow an invitation link or be invited via email. Contact your course staff for more information.",
                                                 },
                                               });
                                             `}"
@@ -2332,7 +2332,7 @@ export default async (application: Application): Promise<void> => {
                                             <i
                                               class="bi bi-journal-arrow-down"
                                             ></i>
-                                            Enroll in an Existing Course
+                                            Join an Existing Course
                                           </button>
                                           $${application.web.locals.helpers.mayCreateCourses(
                                             {

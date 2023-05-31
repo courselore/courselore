@@ -4595,7 +4595,7 @@ export default async (application: Application): Promise<void> => {
 
   type ResponseLocalsManagedCourseParticipant =
     Application["web"]["locals"]["ResponseLocals"]["CourseParticipant"] & {
-      managedEnrollment: {
+      managedCourseParticipant: {
         id: number;
         reference: string;
         isSelf: boolean;
@@ -4617,7 +4617,7 @@ export default async (application: Application): Promise<void> => {
       )
         return next();
 
-      const managedEnrollment = application.database.get<{
+      const managedCourseParticipant = application.database.get<{
         id: number;
         reference: string;
       }>(
@@ -4629,14 +4629,14 @@ export default async (application: Application): Promise<void> => {
             "reference" = ${request.params.courseParticipantReference}
         `
       );
-      if (managedEnrollment === undefined) return next();
-      response.locals.managedEnrollment = {
-        ...managedEnrollment,
-        isSelf: managedEnrollment.id === response.locals.courseParticipant.id,
+      if (managedCourseParticipant === undefined) return next();
+      response.locals.managedCourseParticipant = {
+        ...managedCourseParticipant,
+        isSelf: managedCourseParticipant.id === response.locals.courseParticipant.id,
       };
 
       if (
-        response.locals.managedEnrollment.isSelf &&
+        response.locals.managedCourseParticipant.isSelf &&
         application.database.get<{ count: number }>(
           sql`
             SELECT COUNT(*) AS "count"
@@ -4664,7 +4664,7 @@ export default async (application: Application): Promise<void> => {
   >(
     "/courses/:courseReference/settings/course-participants/:courseParticipantReference",
     (request, response, next) => {
-      if (response.locals.managedEnrollment === undefined) return next();
+      if (response.locals.managedCourseParticipant === undefined) return next();
 
       if (typeof request.body.courseRole === "string") {
         if (
@@ -4678,7 +4678,7 @@ export default async (application: Application): Promise<void> => {
           sql`
             UPDATE "courseParticipants"
             SET "courseRole" = ${request.body.courseRole}
-            WHERE "id" = ${response.locals.managedEnrollment.id}
+            WHERE "id" = ${response.locals.managedCourseParticipant.id}
           `
         );
 
@@ -4686,13 +4686,13 @@ export default async (application: Application): Promise<void> => {
           request,
           response,
           theme: "green",
-          content: html`Enrollment updated successfully.`,
+          content: html`Course participant updated successfully.`,
         });
       }
 
       response.redirect(
         303,
-        response.locals.managedEnrollment.isSelf
+        response.locals.managedCourseParticipant.isSelf
           ? `https://${application.configuration.hostname}/courses/${response.locals.course.reference}`
           : `https://${application.configuration.hostname}/courses/${response.locals.course.reference}/settings/course-participants`
       );
@@ -4714,12 +4714,12 @@ export default async (application: Application): Promise<void> => {
   >(
     "/courses/:courseReference/settings/course-participants/:courseParticipantReference",
     (request, response, next) => {
-      if (response.locals.managedEnrollment === undefined) return next();
+      if (response.locals.managedCourseParticipant === undefined) return next();
 
       application.database.run(
         sql`
           DELETE FROM "courseParticipants"
-          WHERE "id" = ${response.locals.managedEnrollment.id}
+          WHERE "id" = ${response.locals.managedCourseParticipant.id}
         `
       );
 
@@ -4728,7 +4728,7 @@ export default async (application: Application): Promise<void> => {
         response,
         theme: "green",
         content: html`
-          $${response.locals.managedEnrollment.isSelf
+          $${response.locals.managedCourseParticipant.isSelf
             ? html`You removed yourself`
             : html`Person removed`}
           from the course successfully.
@@ -4736,7 +4736,7 @@ export default async (application: Application): Promise<void> => {
       });
       response.redirect(
         303,
-        response.locals.managedEnrollment.isSelf
+        response.locals.managedCourseParticipant.isSelf
           ? `https://${application.configuration.hostname}/`
           : `https://${application.configuration.hostname}/courses/${response.locals.course.reference}/settings/course-participants`
       );
@@ -5101,7 +5101,7 @@ export default async (application: Application): Promise<void> => {
           Conversation: messages.map((message) => ({
             Role:
               message.courseParticipant === "no-longer-participating"
-                ? "No Longer Enrolled"
+                ? "No Longer Participating"
                 : labelsCourseRole[message.courseParticipant.courseRole],
             Text: message.contentSearch.replace(
               /(?<=^|\s)@([a-z0-9-]+)(?=[^a-z0-9-]|$)/gi,
@@ -5142,7 +5142,7 @@ export default async (application: Application): Promise<void> => {
           response,
           head: html`
             <title>
-              Your Enrollment · Course Settings · ${response.locals.course.name}
+              Course Participant · Course Settings · ${response.locals.course.name}
               · Courselore
             </title>
           `,
@@ -5151,7 +5151,7 @@ export default async (application: Application): Promise<void> => {
               <i class="bi bi-sliders"></i>
               Course Settings ·
               <i class="bi bi-person-fill"></i>
-              Your Enrollment
+              Course Participant
             </h2>
 
             <form
@@ -5241,7 +5241,7 @@ export default async (application: Application): Promise<void> => {
                   class="button button--full-width-on-small-screen button--blue"
                 >
                   <i class="bi bi-pencil-fill"></i>
-                  Update Your Enrollment
+                  Update Course Participant
                 </button>
               </div>
             </form>
@@ -5284,7 +5284,7 @@ export default async (application: Application): Promise<void> => {
         request,
         response,
         theme: "green",
-        content: html`Enrollment updated successfully.`,
+        content: html`Course participant updated successfully.`,
       });
 
       response.redirect(

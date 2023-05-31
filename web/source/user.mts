@@ -529,7 +529,7 @@ export default async (application: Application): Promise<void> => {
               : html``}
             >$${name === true
               ? html`${user === "no-longer-participating"
-                  ? "No Longer Enrolled"
+                  ? "No Longer Participating"
                   : user.name}`
               : name}</span
           >$${courseParticipant !== undefined &&
@@ -612,7 +612,7 @@ export default async (application: Application): Promise<void> => {
                       <div>
                         <div class="strong">
                           ${user === "no-longer-participating"
-                            ? "No Longer Enrolled"
+                            ? "No Longer Participating"
                             : user!.name}
                         </div>
                         $${user !== "no-longer-participating" &&
