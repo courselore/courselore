@@ -607,8 +607,10 @@ export default async (application: Application): Promise<void> => {
           term: courseParticipantRow.courseTerm,
           institution: courseParticipantRow.courseInstitution,
           code: courseParticipantRow.courseCode,
-          nextConversationReference: courseParticipantRow.courseNextConversationReference,
-          studentsMayCreatePollsAt: courseParticipantRow.courseStudentsMayCreatePollsAt,
+          nextConversationReference:
+            courseParticipantRow.courseNextConversationReference,
+          studentsMayCreatePollsAt:
+            courseParticipantRow.courseStudentsMayCreatePollsAt,
         },
         reference: courseParticipantRow.reference,
         courseRole: courseParticipantRow.courseRole,

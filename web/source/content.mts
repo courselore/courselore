@@ -586,7 +586,8 @@ export default async (application: Application): Promise<void> => {
                     id: courseParticipantRow.id,
                     user: {
                       id: courseParticipantRow.userId,
-                      lastSeenOnlineAt: courseParticipantRow.userLastSeenOnlineAt,
+                      lastSeenOnlineAt:
+                        courseParticipantRow.userLastSeenOnlineAt,
                       reference: courseParticipantRow.userReference,
                       email: courseParticipantRow.userEmail,
                       name: courseParticipantRow.userName,
@@ -1084,8 +1085,8 @@ export default async (application: Application): Promise<void> => {
                           <button
                             formmethod="DELETE"
                             formaction="https://${application.configuration
-                              .hostname}/courses/${responseCourseParticipant.locals
-                              .course
+                              .hostname}/courses/${responseCourseParticipant
+                              .locals.course
                               .reference}/polls/${poll.reference}/votes${qs.stringify(
                               { redirect: request.originalUrl.slice(1) },
                               { addQueryPrefix: true }
@@ -1369,7 +1370,8 @@ export default async (application: Application): Promise<void> => {
                     key="poll--show"
                     method="POST"
                     action="https://${application.configuration
-                      .hostname}/courses/${responseCourseParticipant.locals.course
+                      .hostname}/courses/${responseCourseParticipant.locals
+                      .course
                       .reference}/polls/${poll.reference}/votes${qs.stringify(
                       { redirect: request.originalUrl.slice(1) },
                       { addQueryPrefix: true }
@@ -1388,8 +1390,8 @@ export default async (application: Application): Promise<void> => {
                     key="poll--edit"
                     method="PUT"
                     action="https://${application.configuration
-                      .hostname}/courses/${responseCourseParticipant.locals.course
-                      .reference}/polls/${poll.reference}${qs.stringify(
+                      .hostname}/courses/${responseCourseParticipant.locals
+                      .course.reference}/polls/${poll.reference}${qs.stringify(
                       { redirect: request.originalUrl.slice(1) },
                       { addQueryPrefix: true }
                     )}"
@@ -5861,7 +5863,9 @@ ${contentSource}</textarea
     {},
     Application["web"]["locals"]["ResponseLocals"]["LiveConnection"] &
       Partial<Application["web"]["locals"]["ResponseLocals"]["SignedIn"]> &
-      Partial<Application["web"]["locals"]["ResponseLocals"]["CourseParticipant"]>
+      Partial<
+        Application["web"]["locals"]["ResponseLocals"]["CourseParticipant"]
+      >
   >(
     [
       "/content-editor/preview",

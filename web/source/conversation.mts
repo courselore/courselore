@@ -4169,7 +4169,8 @@ export default async (application: Application): Promise<void> => {
                                                       {
                                                         request,
                                                         response,
-                                                        courseParticipant: enrollment,
+                                                        courseParticipant:
+                                                          enrollment,
                                                         user: enrollment.user,
                                                         tooltip: false,
                                                         size: "xs",
@@ -4184,7 +4185,8 @@ export default async (application: Application): Promise<void> => {
                                                       {
                                                         request,
                                                         response,
-                                                        courseParticipant: enrollment,
+                                                        courseParticipant:
+                                                          enrollment,
                                                         user: enrollment.user,
                                                         tooltip: false,
                                                         size: "xs",
@@ -7241,7 +7243,8 @@ export default async (application: Application): Promise<void> => {
                                                                 {
                                                                   request,
                                                                   response,
-                                                                  courseParticipant: enrollment,
+                                                                  courseParticipant:
+                                                                    enrollment,
                                                                   user: enrollment.user,
                                                                   tooltip:
                                                                     false,
@@ -7257,7 +7260,8 @@ export default async (application: Application): Promise<void> => {
                                                                 {
                                                                   request,
                                                                   response,
-                                                                  courseParticipant: enrollment,
+                                                                  courseParticipant:
+                                                                    enrollment,
                                                                   user: enrollment.user,
                                                                   tooltip:
                                                                     false,
@@ -7474,7 +7478,8 @@ export default async (application: Application): Promise<void> => {
                                           {
                                             request,
                                             response,
-                                            courseParticipant: selectedParticipant,
+                                            courseParticipant:
+                                              selectedParticipant,
                                             user: selectedParticipant.user,
                                             size: "xs",
                                             bold: false,
