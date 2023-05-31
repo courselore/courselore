@@ -1096,7 +1096,7 @@ export default async (application: Application): Promise<void> => {
     //               "tagsReferences"
     //         FROM "conversationDrafts"
     //         WHERE "course" = ${response.locals.course.id} AND
-    //               "courseParticipant" = ${response.locals.enrollment.id}
+    //               "courseParticipant" = ${response.locals.courseParticipant.id}
     //         ORDER BY coalesce("updatedAt", "createdAt") DESC
     //       `
     //     )
@@ -1116,7 +1116,7 @@ export default async (application: Application): Promise<void> => {
     //             FROM "tags"
     //             WHERE "course" = ${response.locals.course.id}
     //                   $${
-    //                     response.locals.enrollment.courseRole === "student"
+    //                     response.locals.courseParticipant.courseRole === "student"
     //                       ? sql`AND "tags"."staffOnlyAt" IS NULL`
     //                       : sql``
     //                   }
@@ -1139,7 +1139,7 @@ export default async (application: Application): Promise<void> => {
     //           createdAt: conversationDraft.createdAt,
     //           updatedAt: conversationDraft.updatedAt,
     //           reference: conversationDraft.reference,
-    //           courseParticipant: response.locals.enrollment,
+    //           courseParticipant: response.locals.courseParticipant,
     //           anonymousAt: null,
     //           type: conversationDraft.type,
     //           resolvedAt: null,
@@ -3432,7 +3432,7 @@ export default async (application: Application): Promise<void> => {
       //           WHERE
       //             "course" = ${response.locals.course.id} AND
       //             "reference" = ${request.query.newConversation.conversationDraftReference} AND
-      //             "courseParticipant" = ${response.locals.enrollment.id}
+      //             "courseParticipant" = ${response.locals.courseParticipant.id}
       //         `
       //       )
       //     : undefined;
@@ -4130,15 +4130,15 @@ export default async (application: Application): Promise<void> => {
                                             `}"
                                           >
                                             $${courseParticipants.map(
-                                              (enrollment) => html`
+                                              (courseParticipant) => html`
                                                 <label
-                                                  key="participants--dropdown--selected-participant--course-participant-reference--${enrollment.reference}"
-                                                  data-course-participant-course-role="${enrollment.courseRole}"
+                                                  key="participants--dropdown--selected-participant--course-participant-reference--${courseParticipant.reference}"
+                                                  data-course-participant-course-role="${courseParticipant.courseRole}"
                                                   $${request.query
                                                     .newConversation
                                                     ?.participants ===
                                                     "course-staff" &&
-                                                  enrollment.courseRole ===
+                                                  courseParticipant.courseRole ===
                                                     "course-staff"
                                                     ? html`hidden`
                                                     : html``}
@@ -4146,9 +4146,9 @@ export default async (application: Application): Promise<void> => {
                                                   <input
                                                     type="checkbox"
                                                     name="participants--dropdown--selected-participants[]"
-                                                    value="${enrollment.reference}"
+                                                    value="${courseParticipant.reference}"
                                                     $${request.query.newConversation?.selectedParticipants?.includes(
-                                                      enrollment.reference
+                                                      courseParticipant.reference
                                                     )
                                                       ? html`checked`
                                                       : html``}
@@ -4157,7 +4157,7 @@ export default async (application: Application): Promise<void> => {
                                                       this.isModified = false;
 
                                                       this.onchange = () => {
-                                                        this.closest("form").querySelector(${`[name="selectedParticipantsReferences[]"][value="${enrollment.reference}"]`}).checked = this.checked;
+                                                        this.closest("form").querySelector(${`[name="selectedParticipantsReferences[]"][value="${courseParticipant.reference}"]`}).checked = this.checked;
                                                       };
                                                     `}"
                                                   />
@@ -4169,8 +4169,8 @@ export default async (application: Application): Promise<void> => {
                                                         request,
                                                         response,
                                                         courseParticipant:
-                                                          enrollment,
-                                                        user: enrollment.user,
+                                                          courseParticipant,
+                                                        user: courseParticipant.user,
                                                         tooltip: false,
                                                         size: "xs",
                                                         bold: false,
@@ -4185,8 +4185,8 @@ export default async (application: Application): Promise<void> => {
                                                         request,
                                                         response,
                                                         courseParticipant:
-                                                          enrollment,
-                                                        user: enrollment.user,
+                                                          courseParticipant,
+                                                        user: courseParticipant.user,
                                                         tooltip: false,
                                                         size: "xs",
                                                         bold: false,
