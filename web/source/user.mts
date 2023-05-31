@@ -64,7 +64,7 @@ export type ApplicationUser = {
           courseParticipant?: Application["web"]["locals"]["Types"]["MaybeEnrollment"];
           user?:
             | Application["web"]["locals"]["Types"]["User"]
-            | "no-longer-enrolled";
+            | "no-longer-participating";
           anonymous?: boolean | "reveal";
           avatar?: boolean;
           decorate?: boolean;
@@ -311,8 +311,8 @@ export default async (application: Application): Promise<void> => {
     courseParticipant = undefined,
     user = courseParticipant === undefined
       ? undefined
-      : courseParticipant === "no-longer-enrolled"
-      ? "no-longer-enrolled"
+      : courseParticipant === "no-longer-participating"
+      ? "no-longer-participating"
       : courseParticipant.user,
     anonymous = user === undefined,
     avatar = true,
@@ -328,7 +328,7 @@ export default async (application: Application): Promise<void> => {
     if (anonymous !== true && user !== undefined) {
       if (avatar) {
         userAvatar =
-          user === "no-longer-enrolled"
+          user === "no-longer-participating"
             ? html`<svg
                 viewBox="0 0 24 24"
                 css="${css`
@@ -449,7 +449,7 @@ export default async (application: Application): Promise<void> => {
                 </text>
               </svg>`;
 
-        if (decorate && user !== "no-longer-enrolled")
+        if (decorate && user !== "no-longer-participating")
           userAvatar = html`<span
             css="${css`
               display: inline-grid;
@@ -518,7 +518,7 @@ export default async (application: Application): Promise<void> => {
                   font-weight: var(--font-weight--bold);
                 `
               : css``}"
-            $${name === true && user !== "no-longer-enrolled"
+            $${name === true && user !== "no-longer-participating"
               ? html`
                   data-filterable-phrases="${JSON.stringify(
                     application.web.locals.helpers.splitFilterablePhrases(
@@ -528,12 +528,12 @@ export default async (application: Application): Promise<void> => {
                 `
               : html``}
             >$${name === true
-              ? html`${user === "no-longer-enrolled"
+              ? html`${user === "no-longer-participating"
                   ? "No Longer Enrolled"
                   : user.name}`
               : name}</span
           >$${courseParticipant !== undefined &&
-          courseParticipant !== "no-longer-enrolled" &&
+          courseParticipant !== "no-longer-participating" &&
           courseParticipant.courseRole === "course-staff"
             ? html`<span
                 class="text--sky"
@@ -611,11 +611,11 @@ export default async (application: Application): Promise<void> => {
                     >
                       <div>
                         <div class="strong">
-                          ${user === "no-longer-enrolled"
+                          ${user === "no-longer-participating"
                             ? "No Longer Enrolled"
                             : user!.name}
                         </div>
-                        $${user !== "no-longer-enrolled" &&
+                        $${user !== "no-longer-participating" &&
                         (response.locals.enrollment?.courseRole ===
                           "course-staff" ||
                           response.locals.user?.id === user!.id)
@@ -671,7 +671,7 @@ export default async (application: Application): Promise<void> => {
                               </div>
                             `
                           : html``}
-                        $${user === "no-longer-enrolled"
+                        $${user === "no-longer-participating"
                           ? html`
                               <div class="secondary">
                                 This person has left the course.
@@ -699,7 +699,7 @@ export default async (application: Application): Promise<void> => {
                               </div>
                             `}
                         $${courseParticipant !== undefined &&
-                        courseParticipant !== "no-longer-enrolled" &&
+                        courseParticipant !== "no-longer-participating" &&
                         courseParticipant.courseRole === "course-staff"
                           ? html`
                               <div
@@ -719,7 +719,7 @@ export default async (application: Application): Promise<void> => {
                       </div>
                     </div>
                   </div>
-                  $${user !== "no-longer-enrolled" &&
+                  $${user !== "no-longer-participating" &&
                   user!.biographyPreprocessed !== null
                     ? application.web.locals.partials.content({
                         request,
@@ -817,15 +817,15 @@ export default async (application: Application): Promise<void> => {
 
     return userHTML !== undefined && anonymousHTML !== undefined
       ? html`<span
-          key="partial--user--${user === "no-longer-enrolled"
-            ? "no-longer-enrolled"
+          key="partial--user--${user === "no-longer-participating"
+            ? "no-longer-participating"
             : user!.reference}"
           >$${anonymousHTML} ($${userHTML})</span
         >`
       : userHTML !== undefined
       ? html`<span
-          key="partial--user--${user === "no-longer-enrolled"
-            ? "no-longer-enrolled"
+          key="partial--user--${user === "no-longer-participating"
+            ? "no-longer-participating"
             : user!.reference}"
           >$${userHTML}</span
         >`
