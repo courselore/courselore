@@ -864,7 +864,7 @@ export default async (application: Application): Promise<void> => {
       institution: string | null;
       code: string | null;
       archivedAt: string | null;
-      enrollmentsCount: number;
+      courseParticipantsCount: number;
       conversationsCount: number;
       updatedAt: string;
     }>(
@@ -883,7 +883,7 @@ export default async (application: Application): Promise<void> => {
             SELECT COUNT(*)
             FROM "courseParticipants"
             WHERE "courses"."id" = "courseParticipants"."course"
-          ) AS "enrollmentsCount",
+          ) AS "courseParticipantsCount",
           (
             SELECT COUNT(*)
             FROM "conversations"
@@ -980,7 +980,7 @@ export default async (application: Application): Promise<void> => {
                     >
                       <div>
                         <i class="bi bi-people"></i>
-                        ${String(course.enrollmentsCount)} enrollments
+                        ${String(course.courseParticipantsCount)} enrollments
                       </div>
                       <div>
                         <i class="bi bi-chat-text"></i>
