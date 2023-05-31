@@ -791,7 +791,7 @@ export default async (application: Application): Promise<void> => {
             SELECT
               "messagePolls"."id",
               "messagePolls"."reference",
-              "messagePolls"."courseParticipant" AS "courseParticipantId",
+              "messagePolls"."authorCourseParticipant" AS "courseParticipantId",
               "messagePolls"."multipleChoicesAt",
               "messagePolls"."closesAt",
               COUNT("messagePollVotes"."id") AS "votesCount"
@@ -5219,7 +5219,7 @@ ${contentSource}</textarea
             "messagePolls"."multipleChoicesAt",
             "messagePolls"."closesAt"
           FROM "messagePolls"
-          LEFT JOIN "courseParticipants" AS "courseParticipant" ON "messagePolls"."courseParticipant" = "courseParticipant"."id"
+          LEFT JOIN "courseParticipants" AS "courseParticipant" ON "messagePolls"."authorCourseParticipant" = "courseParticipant"."id"
           LEFT JOIN "users" AS "authorUser" ON "courseParticipant"."user" = "authorUser"."id"
           WHERE
             "messagePolls"."course" = ${response.locals.course.id} AND

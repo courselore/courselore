@@ -395,7 +395,7 @@ export default async (application: Application): Promise<void> => {
           "conversations"."titleSearch",
           "conversations"."nextMessageReference"
         FROM "conversations"
-        LEFT JOIN "courseParticipants" AS "courseParticipant" ON "conversations"."courseParticipant" = "courseParticipant"."id"
+        LEFT JOIN "courseParticipants" AS "courseParticipant" ON "conversations"."authorCourseParticipant" = "courseParticipant"."id"
         LEFT JOIN "users" AS "authorUser" ON "courseParticipant"."user" = "authorUser"."id"
         WHERE
           "conversations"."course" = ${response.locals.course.id} AND
