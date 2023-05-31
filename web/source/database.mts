@@ -2156,6 +2156,8 @@ export default async (application: Application): Promise<void> => {
           ALTER TABLE "messagePollVotes" RENAME COLUMN "enrollment" TO "courseParticipant";
           ALTER TABLE "users" RENAME COLUMN "mostRecentlyVisitedEnrollment" TO "mostRecentlyVisitedCourseParticipant";
           ALTER TABLE "messages" RENAME COLUMN "authorEnrollment" TO "authorCourseParticipant";
+
+          UPDATE "conversations" SET "participants" = 'selected-participants' WHERE "participants" = 'selected-people';
         `
       );
 

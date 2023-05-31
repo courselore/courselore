@@ -138,7 +138,7 @@ export type ApplicationConversation = {
         conversationParticipantses: [
           "everyone",
           "course-staff",
-          "selected-people"
+          "selected-participants"
         ];
 
         conversationTypes: ["question", "note", "chat"];
@@ -203,7 +203,7 @@ export default async (application: Application): Promise<void> => {
   application.web.locals.helpers.conversationParticipantses = [
     "everyone",
     "course-staff",
-    "selected-people",
+    "selected-participants",
   ];
 
   application.web.locals.helpers.conversationTypes = [
@@ -3226,7 +3226,7 @@ export default async (application: Application): Promise<void> => {
       regular: html`<i class="bi bi-mortarboard"></i>`,
       fill: html`<i class="bi bi-mortarboard-fill"></i>`,
     },
-    "selected-people": {
+    "selected-participants": {
       regular: html`<i class="bi bi-door-closed"></i>`,
       fill: html`<i class="bi bi-door-closed-fill"></i>`,
     },
@@ -3237,7 +3237,7 @@ export default async (application: Application): Promise<void> => {
   } = {
     everyone: "text--green",
     "course-staff": "text--sky",
-    "selected-people": "text--purple",
+    "selected-participants": "text--purple",
   };
 
   const labelsConversationParticipants: {
@@ -3245,7 +3245,7 @@ export default async (application: Application): Promise<void> => {
   } = {
     everyone: html`Everyone`,
     "course-staff": html`Course Staff`,
-    "selected-people": html`Selected People`,
+    "selected-participants": html`Selected Participants`,
   };
 
   application.web.get<
@@ -3922,7 +3922,7 @@ export default async (application: Application): Promise<void> => {
                                               ((request.params.type ===
                                                 "chat" &&
                                                 conversationParticipants ===
-                                                  "selected-people") ||
+                                                  "selected-participants") ||
                                                 (request.params.type !==
                                                   "chat" &&
                                                   conversationParticipants ===
@@ -3953,7 +3953,7 @@ export default async (application: Application): Promise<void> => {
                                                 }) {
                                                   selectedParticipants.hidden = false;
                                                   selectedParticipants.querySelector('[key="participants--dropdown--selected-participants--separator--course-staff"]').hidden = false;
-                                                  selectedParticipants.querySelector('[key="participants--dropdown--selected-participants--separator--selected-people"]').hidden = true;
+                                                  selectedParticipants.querySelector('[key="participants--dropdown--selected-participants--separator--selected-participants"]').hidden = true;
 
                                                   for (const element of selectedParticipants.querySelectorAll('[data-course-participant-course-role="course-staff"]'))
                                                     element.hidden = true;
@@ -3966,11 +3966,11 @@ export default async (application: Application): Promise<void> => {
                                                   (this.closest("form").querySelector('[name="isPinned"]') ?? {}).checked = false;
                                                 } else if (${
                                                   conversationParticipants ===
-                                                  "selected-people"
+                                                  "selected-participants"
                                                 }) {
                                                   selectedParticipants.hidden = false;
                                                   selectedParticipants.querySelector('[key="participants--dropdown--selected-participants--separator--course-staff"]').hidden = true;
-                                                  selectedParticipants.querySelector('[key="participants--dropdown--selected-participants--separator--selected-people"]').hidden = false;
+                                                  selectedParticipants.querySelector('[key="participants--dropdown--selected-participants--separator--selected-participants"]').hidden = false;
 
                                                   for (const element of selectedParticipants.querySelectorAll('[data-course-participant-course-role="course-staff"]'))
                                                     element.hidden = false;
@@ -4018,7 +4018,7 @@ export default async (application: Application): Promise<void> => {
                                       ?.participants === "string" &&
                                       [
                                         "course-staff",
-                                        "selected-people",
+                                        "selected-participants",
                                       ].includes(
                                         request.query.newConversation
                                           .participants
@@ -4061,7 +4061,7 @@ export default async (application: Application): Promise<void> => {
                                     </div>
 
                                     <hr
-                                      key="participants--dropdown--selected-participants--separator--selected-people"
+                                      key="participants--dropdown--selected-participants--separator--selected-participants"
                                       class="dropdown--separator"
                                     />
 
@@ -4232,7 +4232,7 @@ export default async (application: Application): Promise<void> => {
                                 undefined &&
                                 ((request.params.type === "chat" &&
                                   conversationParticipants ===
-                                    "selected-people") ||
+                                    "selected-participants") ||
                                   (request.params.type !== "chat" &&
                                     conversationParticipants === "everyone")))
                                 ? html`checked`
@@ -4242,7 +4242,7 @@ export default async (application: Application): Promise<void> => {
                               class="visually-hidden input--visible-when-enabled-and-checked"
                               javascript="${javascript`
                                 if (${
-                                  conversationParticipants === "selected-people"
+                                  conversationParticipants === "selected-participants"
                                 })
                                   this.onvalidate = () => {
                                     if (this.checked && [...this.closest("form").querySelectorAll('[name="selectedParticipantsReferences[]"]')].find(element => element.checked) === undefined)
@@ -4285,7 +4285,7 @@ export default async (application: Application): Promise<void> => {
                               courseParticipant.courseRole !==
                                 "course-staff") ||
                             request.query.newConversation?.participants ===
-                              "selected-people" ||
+                              "selected-participants" ||
                             (request.query.newConversation?.participants ===
                               undefined &&
                               request.params.type === "chat")
@@ -4369,7 +4369,7 @@ export default async (application: Application): Promise<void> => {
                                 element: this,
                                 tippyProps: {
                                   trigger: "click",
-                                  content: "People receive immediate email notifications for announcements.",
+                                  content: "Course participants receive immediate email notifications for announcements.",
                                 },
                               });
                             `}"
@@ -5012,7 +5012,7 @@ export default async (application: Application): Promise<void> => {
       !Array.isArray(request.body.selectedParticipantsReferences) ||
       (request.body.participants === "everyone" &&
         request.body.selectedParticipantsReferences.length > 0) ||
-      (request.body.participants === "selected-people" &&
+      (request.body.participants === "selected-participants" &&
         request.body.selectedParticipantsReferences.length === 0) ||
       request.body.selectedParticipantsReferences.some(
         (selectedParticipantReference) =>
@@ -5026,7 +5026,7 @@ export default async (application: Application): Promise<void> => {
     if (
       (request.body.participants === "course-staff" &&
         response.locals.courseParticipant.courseRole !== "course-staff") ||
-      request.body.participants === "selected-people"
+      request.body.participants === "selected-participants"
     )
       request.body.selectedParticipantsReferences.push(
         response.locals.courseParticipant.reference
@@ -6990,7 +6990,7 @@ export default async (application: Application): Promise<void> => {
                                                           }) {
                                                             selectedParticipants.hidden = false;
                                                             selectedParticipants.querySelector('[key="participants--dropdown--selected-participants--separator--course-staff"]').hidden = false;
-                                                            selectedParticipants.querySelector('[key="participants--dropdown--selected-participants--separator--selected-people"]').hidden = true;
+                                                            selectedParticipants.querySelector('[key="participants--dropdown--selected-participants--separator--selected-participants"]').hidden = true;
 
                                                             for (const element of selectedParticipants.querySelectorAll('[data-course-participant-course-role="course-staff"]'))
                                                               element.hidden = true;
@@ -7000,11 +7000,11 @@ export default async (application: Application): Promise<void> => {
                                                               element.disabled = element.matches('[data-course-participant-course-role="course-staff"]');
                                                           } else if (${
                                                             conversationParticipants ===
-                                                            "selected-people"
+                                                            "selected-participants"
                                                           }) {
                                                             selectedParticipants.hidden = false;
                                                             selectedParticipants.querySelector('[key="participants--dropdown--selected-participants--separator--course-staff"]').hidden = true;
-                                                            selectedParticipants.querySelector('[key="participants--dropdown--selected-participants--separator--selected-people"]').hidden = false;
+                                                            selectedParticipants.querySelector('[key="participants--dropdown--selected-participants--separator--selected-participants"]').hidden = false;
 
                                                             for (const element of selectedParticipants.querySelectorAll('[data-course-participant-course-role="course-staff"]'))
                                                               element.hidden = false;
@@ -7047,7 +7047,7 @@ export default async (application: Application): Promise<void> => {
                                               key="participants--dropdown--selected-participants"
                                               $${[
                                                 "course-staff",
-                                                "selected-people",
+                                                "selected-participants",
                                               ].includes(
                                                 response.locals.conversation
                                                   .participants
@@ -7093,7 +7093,7 @@ export default async (application: Application): Promise<void> => {
                                               </div>
 
                                               <hr
-                                                key="participants--dropdown--selected-participants--separator--selected-people"
+                                                key="participants--dropdown--selected-participants--separator--selected-participants"
                                                 $${response.locals.conversation
                                                   .participants ===
                                                 "course-staff"
@@ -7319,7 +7319,7 @@ export default async (application: Application): Promise<void> => {
                                         javascript="${javascript`
                                           if (${
                                             conversationParticipants ===
-                                            "selected-people"
+                                            "selected-participants"
                                           })
                                             this.onvalidate = () => {
                                               if (this.checked && [...this.closest("form").querySelectorAll('[name="selectedParticipantsReferences[]"]')].find(element => element.checked) === undefined)
@@ -7385,7 +7385,7 @@ export default async (application: Application): Promise<void> => {
                                         courseParticipant.courseRole !==
                                           "course-staff") ||
                                       response.locals.conversation
-                                        .participants === "selected-people"
+                                        .participants === "selected-participants"
                                         ? html``
                                         : html`disabled`}
                                       tabindex="-1"
@@ -7487,7 +7487,7 @@ export default async (application: Application): Promise<void> => {
                               ]}
                             </div>
 
-                            $${["course-staff", "selected-people"].includes(
+                            $${["course-staff", "selected-participants"].includes(
                               response.locals.conversation.participants
                             )
                               ? html`
@@ -9096,7 +9096,7 @@ export default async (application: Application): Promise<void> => {
                                                                 element: this,
                                                                 tippyProps: {
                                                                   touch: false,
-                                                                  content: "See people who liked",
+                                                                  content: "See course participants who liked",
                                                                 },
                                                               });
                                                               
@@ -10009,7 +10009,7 @@ export default async (application: Application): Promise<void> => {
             !Array.isArray(request.body.selectedParticipantsReferences) ||
             (request.body.participants === "everyone" &&
               request.body.selectedParticipantsReferences.length > 0) ||
-            (request.body.participants === "selected-people" &&
+            (request.body.participants === "selected-participants" &&
               request.body.selectedParticipantsReferences.length === 0) ||
             request.body.selectedParticipantsReferences.some(
               (selectedParticipantReference) =>
@@ -10024,7 +10024,7 @@ export default async (application: Application): Promise<void> => {
             (request.body.participants === "course-staff" &&
               response.locals.courseParticipant.courseRole !==
                 "course-staff") ||
-            request.body.participants === "selected-people"
+            request.body.participants === "selected-participants"
           )
             request.body.selectedParticipantsReferences.push(
               response.locals.courseParticipant.reference

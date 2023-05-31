@@ -2422,7 +2422,7 @@ export default async (application: Application): Promise<void> => {
                     )
                   )
                 `
-              : conversation.participants === "selected-people"
+              : conversation.participants === "selected-participants"
               ? sql`
                   AND EXISTS(
                     SELECT TRUE

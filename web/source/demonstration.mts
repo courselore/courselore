@@ -989,7 +989,7 @@ Message non-existent permanent link turned reference: <https://${
                     : []),
                   ...lodash.sampleSize(students, lodash.random(0, 10)),
                 ]
-              : participants === "selected-people"
+              : participants === "selected-participants"
               ? [
                   ...(Math.random() < 0.5 ? [courseParticipant] : []),
                   ...lodash.sampleSize(
@@ -1004,7 +1004,7 @@ Message non-existent permanent link turned reference: <https://${
               ? courseParticipants
               : participants === "course-staff"
               ? courseStaff
-              : participants === "selected-people"
+              : participants === "selected-participants"
               ? []
               : []),
             ...selectedParticipantCourseParticipants,

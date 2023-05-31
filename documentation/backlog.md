@@ -4,13 +4,6 @@
 
 **Name Changes**
 
-User interface
-
-- `Selected People` → `Selected Participants`
-  - `"conversations"."participants"`
-
----
-
 - Review from `c903ad50a33b1b61d8674de0d8de61e8f7de7851`
 
 ---
