@@ -341,7 +341,7 @@ export default async (application: Application): Promise<void> => {
       createdAt: string;
       updatedAt: string | null;
       reference: string;
-      authorEnrollmentId: number | null;
+      courseParticipantId: number | null;
       authorUserId: number | null;
       authorUserLastSeenOnlineAt: string | null;
       authorUserReference: string;
@@ -373,7 +373,7 @@ export default async (application: Application): Promise<void> => {
           "conversations"."createdAt",
           "conversations"."updatedAt",
           "conversations"."reference",
-          "authorEnrollment"."id" AS "authorEnrollmentId",
+          "authorEnrollment"."id" AS "courseParticipantId",
           "authorUser"."id" AS "authorUserId",
           "authorUser"."lastSeenOnlineAt" AS "authorUserLastSeenOnlineAt",
           "authorUser"."reference" AS "authorUserReference",
@@ -423,7 +423,7 @@ export default async (application: Application): Promise<void> => {
       updatedAt: conversationRow.updatedAt,
       reference: conversationRow.reference,
       authorEnrollment:
-        conversationRow.authorEnrollmentId !== null &&
+        conversationRow.courseParticipantId !== null &&
         conversationRow.authorUserId !== null &&
         conversationRow.authorUserLastSeenOnlineAt !== null &&
         conversationRow.authorUserReference !== null &&
@@ -433,7 +433,7 @@ export default async (application: Application): Promise<void> => {
         conversationRow.authorEnrollmentReference !== null &&
         conversationRow.authorEnrollmentCourseRole !== null
           ? {
-              id: conversationRow.authorEnrollmentId,
+              id: conversationRow.courseParticipantId,
               user: {
                 id: conversationRow.authorUserId,
                 lastSeenOnlineAt: conversationRow.authorUserLastSeenOnlineAt,

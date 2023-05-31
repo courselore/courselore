@@ -782,7 +782,7 @@ export default async (application: Application): Promise<void> => {
         const pollRow = application.database.get<{
           id: number;
           reference: string;
-          authorEnrollmentId: number | null;
+          courseParticipantId: number | null;
           multipleChoicesAt: string | null;
           closesAt: string | null;
           votesCount: number;
@@ -791,7 +791,7 @@ export default async (application: Application): Promise<void> => {
             SELECT
               "messagePolls"."id",
               "messagePolls"."reference",
-              "messagePolls"."authorEnrollment" AS "authorEnrollmentId",
+              "messagePolls"."authorEnrollment" AS "courseParticipantId",
               "messagePolls"."multipleChoicesAt",
               "messagePolls"."closesAt",
               COUNT("messagePollVotes"."id") AS "votesCount"
@@ -812,8 +812,8 @@ export default async (application: Application): Promise<void> => {
           id: pollRow.id,
           reference: pollRow.reference,
           authorEnrollment:
-            pollRow.authorEnrollmentId !== null
-              ? { id: pollRow.authorEnrollmentId }
+            pollRow.courseParticipantId !== null
+              ? { id: pollRow.courseParticipantId }
               : ("no-longer-enrolled" as const),
           multipleChoicesAt: pollRow.multipleChoicesAt,
           closesAt: pollRow.closesAt,
@@ -5175,7 +5175,7 @@ ${contentSource}</textarea
         id: number;
         createdAt: string;
         reference: string;
-        authorEnrollmentId: number | null;
+        courseParticipantId: number | null;
         authorUserId: number | null;
         authorUserLastSeenOnlineAt: string | null;
         authorUserReference: string;
@@ -5199,7 +5199,7 @@ ${contentSource}</textarea
             "messagePolls"."id",
             "messagePolls"."createdAt",
             "messagePolls"."reference",
-            "authorEnrollment"."id" AS "authorEnrollmentId",
+            "authorEnrollment"."id" AS "courseParticipantId",
             "authorUser"."id" AS "authorUserId",
             "authorUser"."lastSeenOnlineAt" AS "authorUserLastSeenOnlineAt",
             "authorUser"."reference" AS "authorUserReference",
@@ -5227,7 +5227,7 @@ ${contentSource}</textarea
         createdAt: pollRow.createdAt,
         reference: pollRow.reference,
         authorEnrollment:
-          pollRow.authorEnrollmentId !== null &&
+          pollRow.courseParticipantId !== null &&
           pollRow.authorUserId !== null &&
           pollRow.authorUserLastSeenOnlineAt !== null &&
           pollRow.authorUserReference !== null &&
@@ -5237,7 +5237,7 @@ ${contentSource}</textarea
           pollRow.authorEnrollmentReference !== null &&
           pollRow.authorEnrollmentCourseRole !== null
             ? {
-                id: pollRow.authorEnrollmentId,
+                id: pollRow.courseParticipantId,
                 user: {
                   id: pollRow.authorUserId,
                   lastSeenOnlineAt: pollRow.authorUserLastSeenOnlineAt,
