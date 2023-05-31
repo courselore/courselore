@@ -190,7 +190,7 @@ export type ApplicationConversation = {
               readingsCount: number;
               endorsements: {
                 id: number;
-                enrollment: Application["web"]["locals"]["Types"]["MaybeCourseParticipant"];
+                courseParticipant: Application["web"]["locals"]["Types"]["MaybeCourseParticipant"];
               }[];
             }
           | undefined;
@@ -641,35 +641,35 @@ export default async (application: Application): Promise<void> => {
                 ORDER BY "endorsements"."id" ASC
               `
             )
-            .map((endorsement) => ({
-              id: endorsement.id,
-              enrollment:
-                endorsement.courseParticipantId !== null &&
-                endorsement.userId !== null &&
-                endorsement.userLastSeenOnlineAt !== null &&
-                endorsement.userReference !== null &&
-                endorsement.userEmail !== null &&
-                endorsement.userName !== null &&
-                endorsement.userAvatarlessBackgroundColor !== null &&
-                endorsement.courseParticipantReference !== null &&
-                endorsement.courseParticipantCourseRole !== null
+            .map((endorsementRow) => ({
+              id: endorsementRow.id,
+              courseParticipant:
+                endorsementRow.courseParticipantId !== null &&
+                endorsementRow.userId !== null &&
+                endorsementRow.userLastSeenOnlineAt !== null &&
+                endorsementRow.userReference !== null &&
+                endorsementRow.userEmail !== null &&
+                endorsementRow.userName !== null &&
+                endorsementRow.userAvatarlessBackgroundColor !== null &&
+                endorsementRow.courseParticipantReference !== null &&
+                endorsementRow.courseParticipantCourseRole !== null
                   ? {
-                      id: endorsement.courseParticipantId,
+                      id: endorsementRow.courseParticipantId,
                       user: {
-                        id: endorsement.userId,
-                        lastSeenOnlineAt: endorsement.userLastSeenOnlineAt,
-                        reference: endorsement.userReference,
-                        email: endorsement.userEmail,
-                        name: endorsement.userName,
-                        avatar: endorsement.userAvatar,
+                        id: endorsementRow.userId,
+                        lastSeenOnlineAt: endorsementRow.userLastSeenOnlineAt,
+                        reference: endorsementRow.userReference,
+                        email: endorsementRow.userEmail,
+                        name: endorsementRow.userName,
+                        avatar: endorsementRow.userAvatar,
                         avatarlessBackgroundColor:
-                          endorsement.userAvatarlessBackgroundColor,
-                        biographySource: endorsement.userBiographySource,
+                          endorsementRow.userAvatarlessBackgroundColor,
+                        biographySource: endorsementRow.userBiographySource,
                         biographyPreprocessed:
-                          endorsement.userBiographyPreprocessed,
+                          endorsementRow.userBiographyPreprocessed,
                       },
-                      reference: endorsement.courseParticipantReference,
-                      courseRole: endorsement.courseParticipantCourseRole,
+                      reference: endorsementRow.courseParticipantReference,
+                      courseRole: endorsementRow.courseParticipantCourseRole,
                     }
                   : ("no-longer-participating" as const),
             }))
@@ -3804,7 +3804,7 @@ export default async (application: Application): Promise<void> => {
                     </div>
                   `}
               $${(() => {
-                const enrollments = application.database
+                const courseParticipants = application.database
                   .all<{
                     id: number;
                     userId: number;
@@ -3843,23 +3843,23 @@ export default async (application: Application): Promise<void> => {
                         "users"."name" ASC
                     `
                   )
-                  .map((enrollment) => ({
-                    id: enrollment.id,
+                  .map((courseParticipantRow) => ({
+                    id: courseParticipantRow.id,
                     user: {
-                      id: enrollment.userId,
-                      lastSeenOnlineAt: enrollment.userLastSeenOnlineAt,
-                      reference: enrollment.userReference,
-                      email: enrollment.userEmail,
-                      name: enrollment.userName,
-                      avatar: enrollment.userAvatar,
+                      id: courseParticipantRow.userId,
+                      lastSeenOnlineAt: courseParticipantRow.userLastSeenOnlineAt,
+                      reference: courseParticipantRow.userReference,
+                      email: courseParticipantRow.userEmail,
+                      name: courseParticipantRow.userName,
+                      avatar: courseParticipantRow.userAvatar,
                       avatarlessBackgroundColor:
-                        enrollment.userAvatarlessBackgroundColor,
-                      biographySource: enrollment.userBiographySource,
+                        courseParticipantRow.userAvatarlessBackgroundColor,
+                      biographySource: courseParticipantRow.userBiographySource,
                       biographyPreprocessed:
-                        enrollment.userBiographyPreprocessed,
+                        courseParticipantRow.userBiographyPreprocessed,
                     },
-                    reference: enrollment.reference,
-                    courseRole: enrollment.courseRole,
+                    reference: courseParticipantRow.reference,
+                    courseRole: courseParticipantRow.courseRole,
                   }));
 
                 return html`
@@ -4130,7 +4130,7 @@ export default async (application: Application): Promise<void> => {
                                               overflow: auto;
                                             `}"
                                           >
-                                            $${enrollments.map(
+                                            $${courseParticipants.map(
                                               (enrollment) => html`
                                                 <label
                                                   key="participants--dropdown--selected-participant--enrollment-reference--${enrollment.reference}"
@@ -4254,7 +4254,7 @@ export default async (application: Application): Promise<void> => {
                         )}
                       </div>
 
-                      $${enrollments.map(
+                      $${courseParticipants.map(
                         (enrollment) => html`
                           <input
                             key="selected-participants--input--${enrollment.reference}"
