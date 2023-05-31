@@ -282,7 +282,7 @@ export default async (application: Application): Promise<void> => {
                   FROM "courseParticipants"
                   JOIN "users" ON "courseParticipants"."user" = "users"."id"
                   JOIN "messageDrafts" ON
-                    "courseParticipants"."id" = "messageDrafts"."courseParticipant" AND
+                    "courseParticipants"."id" = "messageDrafts"."authorCourseParticipant" AND
                     "messageDrafts"."conversation" = ${
                       response.locals.conversation.id
                     } AND
@@ -409,7 +409,7 @@ export default async (application: Application): Promise<void> => {
               FROM "conversationSelectedParticipants"
               WHERE
                 "conversationSelectedParticipants"."conversation" = "conversations"."id" AND 
-                "conversationSelectedParticipants"."authorCourseParticipant" = ${
+                "conversationSelectedParticipants"."courseParticipant" = ${
                   response.locals.courseParticipant.id
                 }
             )
