@@ -15,7 +15,7 @@ export type ApplicationCourse = {
   web: {
     locals: {
       Types: {
-        Enrollment: {
+        CourseParticipant: {
           id: number;
           user: Application["web"]["locals"]["Types"]["User"];
           reference: string;
