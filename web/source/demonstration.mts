@@ -1002,7 +1002,7 @@ Message non-existent permanent link turned reference: <https://${
               : []),
             ...selectedParticipantEnrollments,
           ]);
-          const conversationAuthorEnrollment =
+          const conversationConversationParticipant =
             Math.random() < 0.9 ? lodash.sample(participantEnrollments)! : null;
           const type = isExampleOfAllFeaturesInRichTextMessages
             ? application.web.locals.helpers.conversationTypes[1]
@@ -1067,10 +1067,10 @@ Message non-existent permanent link turned reference: <https://${
                       ${messageCreatedAts.at(-1)},
                       ${course.id},
                       ${String(conversationReference)},
-                      ${conversationAuthorEnrollment?.id},
+                      ${conversationConversationParticipant?.id},
                       ${participants},
                       ${
-                        conversationAuthorEnrollment?.courseRole ===
+                        conversationConversationParticipant?.courseRole ===
                           "student" && Math.random() < 0.5
                           ? new Date().toISOString()
                           : null
@@ -1082,7 +1082,7 @@ Message non-existent permanent link turned reference: <https://${
                           : null
                       },
                       ${
-                        conversationAuthorEnrollment?.courseRole ===
+                        conversationConversationParticipant?.courseRole ===
                           "course-staff" &&
                         type === "note" &&
                         Math.random() < 0.5
@@ -1135,9 +1135,9 @@ Message non-existent permanent link turned reference: <https://${
             messageReference++
           ) {
             const messageCreatedAt = messageCreatedAts[messageReference - 1];
-            const messageAuthorEnrollment =
+            const messageConversationParticipant =
               messageReference === 1
-                ? conversationAuthorEnrollment
+                ? conversationConversationParticipant
                 : Math.random() < 0.05
                 ? null
                 : lodash.sample(participantEnrollments)!;
@@ -1189,11 +1189,11 @@ Message non-existent permanent link turned reference: <https://${
                         },
                         ${conversation.id},
                         ${String(messageReference)},
-                        ${messageAuthorEnrollment?.id},
+                        ${messageConversationParticipant?.id},
                         ${
                           messageReference === 1
                             ? conversation.anonymousAt
-                            : messageAuthorEnrollment?.courseRole ===
+                            : messageConversationParticipant?.courseRole ===
                                 "student" && Math.random() < 0.5
                             ? new Date().toISOString()
                             : null
@@ -1203,12 +1203,12 @@ Message non-existent permanent link turned reference: <https://${
                           Math.random() < 0.5
                             ? "answer"
                             : conversation.type === "question" &&
-                              messageAuthorEnrollment?.courseRole !==
+                              messageConversationParticipant?.courseRole !==
                                 "course-staff" &&
                               Math.random() < 0.5
                             ? "follow-up-question"
                             : conversation.type !== "chat" &&
-                              messageAuthorEnrollment?.courseRole !==
+                              messageConversationParticipant?.courseRole !==
                                 "student" &&
                               Math.random() < 0.1
                             ? "course-staff-whisper"
