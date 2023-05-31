@@ -4593,7 +4593,7 @@ export default async (application: Application): Promise<void> => {
     }
   );
 
-  type ResponseLocalsManagedEnrollment =
+  type ResponseLocalsManagedCourseParticipant =
     Application["web"]["locals"]["ResponseLocals"]["CourseParticipant"] & {
       managedEnrollment: {
         id: number;
@@ -4607,7 +4607,7 @@ export default async (application: Application): Promise<void> => {
     any,
     {},
     {},
-    ResponseLocalsManagedEnrollment
+    ResponseLocalsManagedCourseParticipant
   >(
     "/courses/:courseReference/settings/course-participants/:courseParticipantReference",
     (request, response, next) => {
@@ -4660,7 +4660,7 @@ export default async (application: Application): Promise<void> => {
       courseRole?: Application["web"]["locals"]["helpers"]["courseRoles"][number];
     },
     {},
-    ResponseLocalsManagedEnrollment
+    ResponseLocalsManagedCourseParticipant
   >(
     "/courses/:courseReference/settings/course-participants/:courseParticipantReference",
     (request, response, next) => {
@@ -4710,7 +4710,7 @@ export default async (application: Application): Promise<void> => {
     HTML,
     {},
     {},
-    ResponseLocalsManagedEnrollment
+    ResponseLocalsManagedCourseParticipant
   >(
     "/courses/:courseReference/settings/course-participants/:courseParticipantReference",
     (request, response, next) => {
