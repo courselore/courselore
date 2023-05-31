@@ -7,25 +7,10 @@
 User interface
 
 - `Enrollment` → `Course Participant`
+  - No longer enrolled → No longer participating
 - `Enroll` → `Join`
 - `Selected People` → `Selected Participants`
   - `"conversations"."participants"`
-
-Database
-
-|              |                      |
-| ------------ | -------------------- |
-| `Staff`      | `Course Staff`       |
-| `Enrollment` | `Course Participant` |
-
----
-
-- Triggers
-- Indices
-  - Do I have to add data by hand?
-- FTS
-  - Do I have to add data by hand?
-- SQLite takes care of renaming tables/columns in foreign keys/indices/triggers
 
 ---
 
@@ -94,12 +79,12 @@ Database
 
 - Simplify the system by having a single invitation link per course role that you can enable/disable/reset.
 - Limit invitation links to certain email domains, for example, “this link may only be used by people whose emails end with `@jhu.edu`.”
-- Have an option to require approval of enrollment.
+- Have an option to require approval of course participant.
 - Have a public listing of courses in the system and allow people to request to join?
 - When the user signs up via an invitation, have a call to action to fill in profile (just like the one when you sign up without an invitation).
-- Allow course staff to preview the email invitations they’re about to submit? (Think the problem with the “enroll” language.)
+- Allow course staff to preview the email invitations they’re about to submit? (Think the problem with the “enroll” vs “course participant” language.)
 
-## Enrollments
+## Course Participants
 
 - Have a way for a student to remove themselves from the course?
   - Or at least have a structured way for the student to ask course staff to remove them.
@@ -143,12 +128,12 @@ Database
 
 **Participants**
 
-- Client-side filters like **Course Settings > Enrollments**, **Administration > Users**, Conversation Participants, and so forth:
+- Client-side filters like **Course Settings > Course Participants**, **Administration > Users**, Conversation Participants, and so forth:
   - Extract and DRY.
   - Treat more elegantly the case in which the filter removed all entries.
 - More elegant treatment of edge cases:
   - You’re the only course staff member
-  - You’re the only enrollment
+  - You’re the only course participant
   - There are no students
 - Consider removing selected participants from `getConversation()` as it’s probably expensive to retrieve and isn’t always necessary.
 - Course staff may allow or disallow people to have private conversations in which course staff don’t participate (the default is to allow)
@@ -227,7 +212,7 @@ Database
 - Search should display multiple messages in the same conversation. (Right now it’s only showing the highest ranked message and grouping by conversation.)
 - Search in all courses you’re taking (for example, search for `deadline extension`) (see how GitHub does it).
 - Filter by date.
-- `@mentions` are awkward in search results, because they take in account the original `@<enrollment-reference>--<name-slug>` instead of the rendered person’s name.
+- `@mentions` are awkward in search results, because they take in account the original `@<course-participant-reference>--<name-slug>` instead of the rendered person’s name.
 - When filtering by “Selected People”, allow you to select **which** people.
 - Include tags in freeform search
 
@@ -605,7 +590,7 @@ new Notification('Example');
 - Edge case: Show next/previous page on “no more messages”.
   - This is an edge case because people should only be able to get there when they manipulate the URL (or because they’re loading the next page right when an item has been deleted)
   - Difficult because we don’t have a “before” or “after” message to anchor to.
-- Paginate other things, for example, Course Settings · Enrollments, and invitations.
+- Paginate other things, for example, Course Settings · Course Participants, and invitations.
 - Things like clearing search and filters may affect query parameters.
 - Rendering the sidebar is about 10% of the response time. When paginating, don’t include the sidebar.
 
@@ -737,16 +722,16 @@ const { app, BrowserWindow } = require("electron");
   - See what courses people are on
 - Courses
   - Access the course
-    - Have a quick link to the list of enrollments
+    - Have a quick link to the list of course participants
   - Have a quick way to archive a course directly from this list
 - Bulk actions on users & courses?
 - When an administrator is creating a course, ask them if they want to be course staff, because perhaps they’re creating a course for someone else.
 - Deal with the case in which you’re the administrator and also the course staff/student on a course.
   - Switch in out of administrator role and see the course differently.
-- Extract a partial for user in list of users (to be used in `/courses/___/settings/enrollments` & administrative interface list of users).
+- Extract a partial for user in list of users (to be used in `/courses/___/settings/course-participants` & administrative interface list of users).
 - Administrators can have further control over user accounts:
   - Create a password reset link (for people who forgot their password and can’t receive email with the registered address)
-  - Enroll people in courses
+  - Add people as participants in courses
   - Impersonate users & see the system just like the user sees it.
   - Remove a person from the system entirely
   - Manage sessions, for example, force a sign-out if it’s believed that an account is compromised
@@ -852,7 +837,7 @@ const { app, BrowserWindow } = require("electron");
       - This doesn’t seem like a good approach. On the one hand, it’d render the message more accurately. But it would incur a roundtrip to the server, so might as well do the action in the first place.
       - But we could pre-fetch…
 - Preserve more client-side state, for example:
-  - On the list of enrollments (or list of users in administrative panel while it’s still naively implemented as a filter on the client side) the filter resets on form submission (for example, changing a person’s role).
+  - On the list of course participants (or list of users in administrative panel while it’s still naively implemented as a filter on the client side) the filter resets on form submission (for example, changing a person’s role).
   - In chats, submitting a form collapses the `conversation--header--full`.
 - Scroll to URL `#hashes`, which may occur in the middle of a message.
 - Prevent event attempting a Live-Navigation if the Live-Connection determines that you’re offline.
@@ -906,8 +891,8 @@ const { app, BrowserWindow } = require("electron");
   - There are some links that have side-effects
     - Marking messages as read.
     - Maintain navigation state:
-      - `"users"."mostRecentlyVisitedEnrollment"`
-      - `"enrollments"."mostRecentlyVisitedConversation"`
+      - `"users"."mostRecentlyVisitedCourseParticipant"`
+      - `"courseParticipants"."mostRecentlyVisitedConversation"`
   - Potential workaround: Have some flag that the request is a pre-fetching (say, an HTTP header) and don’t perform these side-effects
   - All links in viewport
     - https://getquick.link/
@@ -935,7 +920,7 @@ const { app, BrowserWindow } = require("electron");
       - `getConversation()`.
       - `getMessage()`.
       - Treatment of `@mentions` in Content Processor.
-      - Finding which enrollments to notify (not exactly an n+1, but we’re filtering in JavaScript what could maybe filtered in SQL (if we’re willing to use the `IN` operator)).
+      - Finding which course participants to notify (not exactly an n+1, but we’re filtering in JavaScript what could maybe filtered in SQL (if we’re willing to use the `IN` operator)).
     - Potential solutions:
       - Single follow-up query with `IN` operator (but then you end up with a bunch of prepared statements in the cache).
       - Use a temporary table instead of `IN`.
@@ -972,7 +957,7 @@ const { app, BrowserWindow } = require("electron");
     - Add support for `HTTP-POST` in addition to `HTTP-Redirect`
     - Single logout back channel (synchronous) (SOAP) (server-to-server from identity provider to service provider)
   - Interface
-    - When there are many universities, add a filter to the user interface, similar to Gradescope has, and similar to what we do in the list of enrollments.
+    - When there are many universities, add a filter to the user interface, similar to Gradescope has, and similar to what we do in the list of course participants.
     - Long SAML identity provider name may break the interface (use ellipsis to fix it?)
   - Sign up with SAML if identity provider doesn’t provide a name
     - Create a session without a user, but with an email address instead.
