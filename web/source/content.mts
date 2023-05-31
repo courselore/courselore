@@ -791,7 +791,7 @@ export default async (application: Application): Promise<void> => {
             SELECT
               "messagePolls"."id",
               "messagePolls"."reference",
-              "messagePolls"."authorEnrollment" AS "courseParticipantId",
+              "messagePolls"."courseParticipant" AS "courseParticipantId",
               "messagePolls"."multipleChoicesAt",
               "messagePolls"."closesAt",
               COUNT("messagePollVotes"."id") AS "votesCount"
@@ -811,7 +811,7 @@ export default async (application: Application): Promise<void> => {
         const poll = {
           id: pollRow.id,
           reference: pollRow.reference,
-          authorEnrollment:
+          courseParticipant:
             pollRow.courseParticipantId !== null
               ? { id: pollRow.courseParticipantId }
               : ("no-longer-enrolled" as const),
@@ -4283,7 +4283,7 @@ ${contentSource}</textarea
                         FROM "messages"
                         WHERE
                           "conversations"."id" = "messages"."conversation" AND
-                          "messages"."authorEnrollment" = "courseParticipants"."id" $${
+                          "messages"."courseParticipant" = "courseParticipants"."id" $${
                             response.locals.enrollment.courseRole ===
                             "course-staff"
                               ? sql``
@@ -4713,7 +4713,7 @@ ${contentSource}</textarea
               "conversations"."reference" AS "conversationReference",
               highlight("usersNameSearchIndex", 0, '<mark class="mark">', '</mark>') AS "messageAuthorUserNameSearchResultHighlight"
             FROM "messages"
-            JOIN "courseParticipants" ON "messages"."authorEnrollment" = "courseParticipants"."id"
+            JOIN "courseParticipants" ON "messages"."courseParticipant" = "courseParticipants"."id"
             JOIN "usersNameSearchIndex" ON
               "courseParticipants"."user" = "usersNameSearchIndex"."rowid" AND
               "usersNameSearchIndex" MATCH ${application.web.locals.helpers.sanitizeSearch(
@@ -4730,7 +4730,7 @@ ${contentSource}</textarea
                     WHERE
                       (
                         "messages"."anonymousAt" IS NULL OR
-                        "messages"."authorEnrollment" = ${response.locals.enrollment.id}
+                        "messages"."courseParticipant" = ${response.locals.enrollment.id}
                       ) AND
                         "messages"."type" != 'course-staff-whisper'
                   `
@@ -4777,7 +4777,7 @@ ${contentSource}</textarea
                     $${application.web.locals.partials.user({
                       request,
                       response,
-                      courseParticipant: message.authorEnrollment,
+                      courseParticipant: message.courseParticipant,
                       name: messageRow.messageAuthorUserNameSearchResultHighlight,
                       tooltip: false,
                     })}
@@ -5066,7 +5066,7 @@ ${contentSource}</textarea
                 "createdAt",
                 "course",
                 "reference",
-                "authorEnrollment",
+                "courseParticipant",
                 "multipleChoicesAt",
                 "closesAt"
               )
@@ -5125,7 +5125,7 @@ ${contentSource}</textarea
         id: number;
         createdAt: string;
         reference: string;
-        authorEnrollment: Application["web"]["locals"]["Types"]["MaybeEnrollment"];
+        courseParticipant: Application["web"]["locals"]["Types"]["MaybeEnrollment"];
         multipleChoicesAt: string | null;
         closesAt: string | null;
         options: {
@@ -5154,11 +5154,11 @@ ${contentSource}</textarea
       any,
       Application["web"]["locals"]["ResponseLocals"]["CourseParticipant"]
     >;
-    poll: { authorEnrollment: { id: number } | "no-longer-enrolled" };
+    poll: { courseParticipant: { id: number } | "no-longer-enrolled" };
   }): boolean =>
     response.locals.enrollment.courseRole === "course-staff" ||
-    (poll.authorEnrollment !== "no-longer-enrolled" &&
-      poll.authorEnrollment.id === response.locals.enrollment.id);
+    (poll.courseParticipant !== "no-longer-enrolled" &&
+      poll.courseParticipant.id === response.locals.enrollment.id);
 
   application.web.use<
     { courseReference: string; pollReference: string },
@@ -5187,8 +5187,8 @@ ${contentSource}</textarea
           | null;
         authorUserBiographySource: string | null;
         authorUserBiographyPreprocessed: HTML | null;
-        authorEnrollmentReference: string | null;
-        authorEnrollmentCourseRole:
+        courseParticipantReference: string | null;
+        courseParticipantCourseRole:
           | Application["web"]["locals"]["helpers"]["courseRoles"][number]
           | null;
         multipleChoicesAt: string | null;
@@ -5199,7 +5199,7 @@ ${contentSource}</textarea
             "messagePolls"."id",
             "messagePolls"."createdAt",
             "messagePolls"."reference",
-            "authorEnrollment"."id" AS "courseParticipantId",
+            "courseParticipant"."id" AS "courseParticipantId",
             "authorUser"."id" AS "authorUserId",
             "authorUser"."lastSeenOnlineAt" AS "authorUserLastSeenOnlineAt",
             "authorUser"."reference" AS "authorUserReference",
@@ -5209,13 +5209,13 @@ ${contentSource}</textarea
             "authorUser"."avatarlessBackgroundColor" AS "authorUserAvatarlessBackgroundColors",
             "authorUser"."biographySource" AS "authorUserBiographySource",
             "authorUser"."biographyPreprocessed" AS "authorUserBiographyPreprocessed",
-            "authorEnrollment"."reference" AS "authorEnrollmentReference",
-            "authorEnrollment"."courseRole" AS "authorEnrollmentCourseRole",  
+            "courseParticipant"."reference" AS "courseParticipantReference",
+            "courseParticipant"."courseRole" AS "courseParticipantCourseRole",  
             "messagePolls"."multipleChoicesAt",
             "messagePolls"."closesAt"
           FROM "messagePolls"
-          LEFT JOIN "courseParticipants" AS "authorEnrollment" ON "messagePolls"."authorEnrollment" = "authorEnrollment"."id"
-          LEFT JOIN "users" AS "authorUser" ON "authorEnrollment"."user" = "authorUser"."id"
+          LEFT JOIN "courseParticipants" AS "courseParticipant" ON "messagePolls"."courseParticipant" = "courseParticipant"."id"
+          LEFT JOIN "users" AS "authorUser" ON "courseParticipant"."user" = "authorUser"."id"
           WHERE
             "messagePolls"."course" = ${response.locals.course.id} AND
             "messagePolls"."reference" = ${request.params.pollReference}
@@ -5226,7 +5226,7 @@ ${contentSource}</textarea
         id: pollRow.id,
         createdAt: pollRow.createdAt,
         reference: pollRow.reference,
-        authorEnrollment:
+        courseParticipant:
           pollRow.courseParticipantId !== null &&
           pollRow.authorUserId !== null &&
           pollRow.authorUserLastSeenOnlineAt !== null &&
@@ -5234,8 +5234,8 @@ ${contentSource}</textarea
           pollRow.authorUserEmail !== null &&
           pollRow.authorUserName !== null &&
           pollRow.authorUserAvatarlessBackgroundColors !== null &&
-          pollRow.authorEnrollmentReference !== null &&
-          pollRow.authorEnrollmentCourseRole !== null
+          pollRow.courseParticipantReference !== null &&
+          pollRow.courseParticipantCourseRole !== null
             ? {
                 id: pollRow.courseParticipantId,
                 user: {
@@ -5251,8 +5251,8 @@ ${contentSource}</textarea
                   biographyPreprocessed:
                     pollRow.authorUserBiographyPreprocessed,
                 },
-                reference: pollRow.authorEnrollmentReference,
-                courseRole: pollRow.authorEnrollmentCourseRole,
+                reference: pollRow.courseParticipantReference,
+                courseRole: pollRow.courseParticipantCourseRole,
               }
             : ("no-longer-enrolled" as const),
         multipleChoicesAt: pollRow.multipleChoicesAt,

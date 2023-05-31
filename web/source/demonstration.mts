@@ -456,7 +456,7 @@ export default async (application: Application): Promise<void> => {
                     "createdAt",
                     "course",
                     "reference",
-                    "authorEnrollment",
+                    "courseParticipant",
                     "multipleChoicesAt",
                     "closesAt"
                   )
@@ -548,7 +548,7 @@ export default async (application: Application): Promise<void> => {
                     "createdAt",
                     "course",
                     "reference",
-                    "authorEnrollment",
+                    "courseParticipant",
                     "multipleChoicesAt",
                     "closesAt"
                   )
@@ -1036,7 +1036,7 @@ Message non-existent permanent link turned reference: <https://${
             );
           const conversation = application.database.get<{
             id: number;
-            authorEnrollment: number | null;
+            courseParticipant: number | null;
             participants: Application["web"]["locals"]["helpers"]["conversationParticipantses"][number];
             anonymousAt: string | null;
             type: Application["web"]["locals"]["helpers"]["conversationTypes"][number];
@@ -1051,7 +1051,7 @@ Message non-existent permanent link turned reference: <https://${
                       "updatedAt",
                       "course",
                       "reference",
-                      "authorEnrollment",
+                      "courseParticipant",
                       "participants",
                       "anonymousAt",
                       "type",
@@ -1164,7 +1164,7 @@ Message non-existent permanent link turned reference: <https://${
                         "updatedAt",
                         "conversation",
                         "reference",
-                        "authorEnrollment",
+                        "courseParticipant",
                         "anonymousAt",
                         "type",
                         "contentSource",

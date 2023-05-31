@@ -41,7 +41,7 @@ export type ApplicationMessage = {
               createdAt: string;
               updatedAt: string | null;
               reference: string;
-              authorEnrollment: Application["web"]["locals"]["Types"]["MaybeEnrollment"];
+              courseParticipant: Application["web"]["locals"]["Types"]["MaybeEnrollment"];
               anonymousAt: string | null;
               type:
                 | "message"
@@ -198,8 +198,8 @@ export default async (application: Application): Promise<void> => {
         | null;
       authorUserBiographySource: string | null;
       authorUserBiographyPreprocessed: HTML | null;
-      authorEnrollmentReference: string | null;
-      authorEnrollmentCourseRole:
+      courseParticipantReference: string | null;
+      courseParticipantCourseRole:
         | Application["web"]["locals"]["helpers"]["courseRoles"][number]
         | null;
       anonymousAt: string | null;
@@ -217,7 +217,7 @@ export default async (application: Application): Promise<void> => {
           "messages"."createdAt",
           "messages"."updatedAt",
           "messages"."reference",
-          "authorEnrollment"."id" AS "courseParticipantId",
+          "courseParticipant"."id" AS "courseParticipantId",
           "authorUser"."id" AS "authorUserId",
           "authorUser"."lastSeenOnlineAt" AS "authorUserLastSeenOnlineAt",
           "authorUser"."reference" AS "authorUserReference",
@@ -227,8 +227,8 @@ export default async (application: Application): Promise<void> => {
           "authorUser"."avatarlessBackgroundColor" AS "authorUserAvatarlessBackgroundColors",
           "authorUser"."biographySource" AS "authorUserBiographySource",
           "authorUser"."biographyPreprocessed" AS "authorUserBiographyPreprocessed",
-          "authorEnrollment"."reference" AS "authorEnrollmentReference",
-          "authorEnrollment"."courseRole" AS "authorEnrollmentCourseRole",
+          "courseParticipant"."reference" AS "courseParticipantReference",
+          "courseParticipant"."courseRole" AS "courseParticipantCourseRole",
           "messages"."anonymousAt",
           "messages"."type",
           "messages"."contentSource",
@@ -236,8 +236,8 @@ export default async (application: Application): Promise<void> => {
           "messages"."contentSearch",
           "readings"."id" AS "readingId"
         FROM "messages"
-        LEFT JOIN "courseParticipants" AS "authorEnrollment" ON "messages"."authorEnrollment" = "authorEnrollment"."id"
-        LEFT JOIN "users" AS "authorUser" ON "authorEnrollment"."user" = "authorUser"."id"
+        LEFT JOIN "courseParticipants" AS "courseParticipant" ON "messages"."courseParticipant" = "courseParticipant"."id"
+        LEFT JOIN "users" AS "authorUser" ON "courseParticipant"."user" = "authorUser"."id"
         LEFT JOIN "readings" ON
           "messages"."id" = "readings"."message" AND
           "readings"."courseParticipant" = ${response.locals.enrollment.id}
@@ -260,7 +260,7 @@ export default async (application: Application): Promise<void> => {
       createdAt: messageRow.createdAt,
       updatedAt: messageRow.updatedAt,
       reference: messageRow.reference,
-      authorEnrollment:
+      courseParticipant:
         messageRow.courseParticipantId !== null &&
         messageRow.authorUserId !== null &&
         messageRow.authorUserLastSeenOnlineAt !== null &&
@@ -268,8 +268,8 @@ export default async (application: Application): Promise<void> => {
         messageRow.authorUserEmail !== null &&
         messageRow.authorUserName !== null &&
         messageRow.authorUserAvatarlessBackgroundColors !== null &&
-        messageRow.authorEnrollmentReference !== null &&
-        messageRow.authorEnrollmentCourseRole !== null
+        messageRow.courseParticipantReference !== null &&
+        messageRow.courseParticipantCourseRole !== null
           ? {
               id: messageRow.courseParticipantId,
               user: {
@@ -285,8 +285,8 @@ export default async (application: Application): Promise<void> => {
                 biographyPreprocessed:
                   messageRow.authorUserBiographyPreprocessed,
               },
-              reference: messageRow.authorEnrollmentReference,
-              courseRole: messageRow.authorEnrollmentCourseRole,
+              reference: messageRow.courseParticipantReference,
+              courseRole: messageRow.courseParticipantCourseRole,
             }
           : ("no-longer-enrolled" as const),
       anonymousAt: messageRow.anonymousAt,
@@ -601,16 +601,16 @@ export default async (application: Application): Promise<void> => {
                     textFieldEdit.wrapSelection(
                       element,
                       ((element.selectionStart > 0) ? "\\n\\n" : "") + "> " + ${
-                        response.locals.message.authorEnrollment ===
+                        response.locals.message.courseParticipant ===
                         "no-longer-enrolled"
                           ? ``
                           : `@${
                               response.locals.message.anonymousAt === null
                                 ? `${
-                                    response.locals.message.authorEnrollment
+                                    response.locals.message.courseParticipant
                                       .reference
                                   }--${slugify(
-                                    response.locals.message.authorEnrollment
+                                    response.locals.message.courseParticipant
                                       .user.name
                                   )}`
                                 : `anonymous`
@@ -783,9 +783,9 @@ export default async (application: Application): Promise<void> => {
                     </button>
                   `
                 : html``}
-              $${response.locals.message.authorEnrollment !==
+              $${response.locals.message.courseParticipant !==
                 "no-longer-enrolled" &&
-              response.locals.message.authorEnrollment.courseRole ===
+              response.locals.message.courseParticipant.courseRole ===
                 "student" &&
               application.web.locals.helpers.mayEditMessage({
                 request,
@@ -854,7 +854,7 @@ export default async (application: Application): Promise<void> => {
                                 $${application.web.locals.partials.user({
                                   request,
                                   response,
-                                  user: response.locals.message.authorEnrollment
+                                  user: response.locals.message.courseParticipant
                                     .user,
                                   decorate: false,
                                   name: false,
@@ -862,10 +862,10 @@ export default async (application: Application): Promise<void> => {
                                 })}
                               </span>
                               Set as Signed by
-                              ${response.locals.message.authorEnrollment.id ===
+                              ${response.locals.message.courseParticipant.id ===
                               response.locals.enrollment.id
                                 ? "You"
-                                : response.locals.message.authorEnrollment.user
+                                : response.locals.message.courseParticipant.user
                                     .name}
                             </button>
                           `}
@@ -1230,7 +1230,7 @@ export default async (application: Application): Promise<void> => {
           FROM "messageDrafts"
           WHERE
             "conversation" = ${response.locals.conversation.id} AND
-            "authorEnrollment" = ${response.locals.enrollment.id} AND
+            "courseParticipant" = ${response.locals.enrollment.id} AND
             ${new Date(Date.now() - 5 * 60 * 1000).toISOString()} < "createdAt"
         `
         ) === undefined
@@ -1247,7 +1247,7 @@ export default async (application: Application): Promise<void> => {
             DELETE FROM "messageDrafts"
             WHERE
               "conversation" = ${response.locals.conversation.id} AND
-              "authorEnrollment" = ${response.locals.enrollment.id}
+              "courseParticipant" = ${response.locals.enrollment.id}
           `
         );
       else
@@ -1256,7 +1256,7 @@ export default async (application: Application): Promise<void> => {
             INSERT INTO "messageDrafts" (
               "createdAt",
               "conversation",
-              "authorEnrollment",
+              "courseParticipant",
               "contentSource"
             )
             VALUES (
@@ -1325,9 +1325,9 @@ export default async (application: Application): Promise<void> => {
       if (
         response.locals.conversation.type === "chat" &&
         mostRecentMessage !== undefined &&
-        mostRecentMessage.authorEnrollment !== "no-longer-enrolled" &&
+        mostRecentMessage.courseParticipant !== "no-longer-enrolled" &&
         response.locals.enrollment.id ===
-          mostRecentMessage.authorEnrollment.id &&
+          mostRecentMessage.courseParticipant.id &&
         mostRecentMessage.anonymousAt === null &&
         request.body.isAnonymous !== "on" &&
         new Date().getTime() - new Date(mostRecentMessage.createdAt).getTime() <
@@ -1414,7 +1414,7 @@ export default async (application: Application): Promise<void> => {
                       "createdAt",
                       "conversation",
                       "reference",
-                      "authorEnrollment",
+                      "courseParticipant",
                       "anonymousAt",
                       "type",
                       "contentSource",
@@ -1460,7 +1460,7 @@ export default async (application: Application): Promise<void> => {
           DELETE FROM "messageDrafts"
           WHERE
             "conversation" = ${response.locals.conversation.id} AND
-            "authorEnrollment" = ${response.locals.enrollment.id}
+            "courseParticipant" = ${response.locals.enrollment.id}
         `
       );
       application.web.locals.helpers.emailNotifications({
@@ -1501,8 +1501,8 @@ export default async (application: Application): Promise<void> => {
     message,
   }) =>
     response.locals.enrollment.courseRole === "course-staff" ||
-    (message.authorEnrollment !== "no-longer-enrolled" &&
-      message.authorEnrollment.id === response.locals.enrollment.id);
+    (message.courseParticipant !== "no-longer-enrolled" &&
+      message.courseParticipant.id === response.locals.enrollment.id);
 
   application.web.patch<
     {
@@ -1556,8 +1556,8 @@ export default async (application: Application): Promise<void> => {
       if (typeof request.body.isAnonymous === "string")
         if (
           !["true", "false"].includes(request.body.isAnonymous) ||
-          response.locals.message.authorEnrollment === "no-longer-enrolled" ||
-          response.locals.message.authorEnrollment.courseRole === "course-staff"
+          response.locals.message.courseParticipant === "no-longer-enrolled" ||
+          response.locals.message.courseParticipant.courseRole === "course-staff"
         )
           return next("Validation");
         else
@@ -1575,12 +1575,12 @@ export default async (application: Application): Promise<void> => {
             );
             if (
               response.locals.message.reference === "1" &&
-              response.locals.conversation.authorEnrollment !==
+              response.locals.conversation.courseParticipant !==
                 "no-longer-enrolled" &&
-              response.locals.message.authorEnrollment !==
+              response.locals.message.courseParticipant !==
                 "no-longer-enrolled" &&
-              response.locals.conversation.authorEnrollment.id ===
-                response.locals.message.authorEnrollment.id
+              response.locals.conversation.courseParticipant.id ===
+                response.locals.message.courseParticipant.id
             )
               application.database.run(
                 sql`
@@ -1698,16 +1698,16 @@ export default async (application: Application): Promise<void> => {
                     newConversation: {
                       title: response.locals.conversation.title,
                       content:
-                        response.locals.message.authorEnrollment !==
+                        response.locals.message.courseParticipant !==
                           "no-longer-enrolled" &&
-                        response.locals.message.authorEnrollment.id !==
+                        response.locals.message.courseParticipant.id !==
                           response.locals.enrollment.id &&
                         !(
-                          response.locals.message.authorEnrollment
+                          response.locals.message.courseParticipant
                             .courseRole === "student" &&
                           response.locals.message.anonymousAt !== null
                         )
-                          ? `> Original author: ${response.locals.message.authorEnrollment.user.name}\n\n${response.locals.message.contentSource}`
+                          ? `> Original author: ${response.locals.message.courseParticipant.user.name}\n\n${response.locals.message.contentSource}`
                           : response.locals.message.contentSource,
                       isAnnouncement:
                         response.locals.conversation.announcementAt !== null,
@@ -1960,8 +1960,8 @@ export default async (application: Application): Promise<void> => {
     response.locals.conversation.type === "question" &&
     message.reference !== "1" &&
     message.type === "answer" &&
-    (message.authorEnrollment === "no-longer-enrolled" ||
-      message.authorEnrollment.courseRole !== "course-staff");
+    (message.courseParticipant === "no-longer-enrolled" ||
+      message.courseParticipant.courseRole !== "course-staff");
 
   application.web.post<
     {
@@ -2112,14 +2112,14 @@ export default async (application: Application): Promise<void> => {
           )
         `
       );
-      if (message.authorEnrollment !== "no-longer-enrolled")
+      if (message.courseParticipant !== "no-longer-enrolled")
         application.database.run(
           sql`
             INSERT INTO "emailNotificationDeliveries" ("createdAt", "message", "courseParticipant")
             VALUES (
               ${new Date().toISOString()},
               ${message.id},
-              ${message.authorEnrollment.id}
+              ${message.courseParticipant.id}
             )
           `
         );
@@ -2304,15 +2304,15 @@ export default async (application: Application): Promise<void> => {
             FROM "messages"
             JOIN "conversations" ON "messages"."conversation" = "conversations"."id"
             JOIN "courses" ON "conversations"."course" = "courses"."id"
-            LEFT JOIN "courseParticipants" AS "authorEnrollment" ON "messages"."authorEnrollment" = "authorEnrollment"."id"
-            LEFT JOIN "users" AS "authorUser" ON "authorEnrollment"."user" = "authorUser"."id"    
+            LEFT JOIN "courseParticipants" AS "courseParticipant" ON "messages"."courseParticipant" = "courseParticipant"."id"
+            LEFT JOIN "users" AS "authorUser" ON "courseParticipant"."user" = "authorUser"."id"    
             WHERE "messages"."id" = ${job.message}
           `
         )!;
         const message = {
           id: messageRow.id,
           reference: messageRow.reference,
-          authorEnrollment:
+          courseParticipant:
             messageRow.authorUserName !== null
               ? {
                   user: {
@@ -2458,7 +2458,7 @@ export default async (application: Application): Promise<void> => {
                         FROM "messages"
                         WHERE
                           "conversation" = ${conversation.id} AND
-                          "authorEnrollment" = "courseParticipants"."id"
+                          "courseParticipant" = "courseParticipants"."id"
                       )
                     ) OR (
                       "users"."emailNotificationsForMessagesInConversationsYouStartedAt" IS NOT NULL AND EXISTS(
@@ -2466,7 +2466,7 @@ export default async (application: Application): Promise<void> => {
                         FROM "conversations"
                         WHERE
                           "id" = ${conversation.id} AND
-                          "authorEnrollment" = "courseParticipants"."id"
+                          "courseParticipant" = "courseParticipants"."id"
                       )
                     )
                   )
@@ -2519,15 +2519,15 @@ export default async (application: Application): Promise<void> => {
                           },
                           { addQueryPrefix: true }
                         )}"
-                        >${message.authorEnrollment === "no-longer-enrolled"
+                        >${message.courseParticipant === "no-longer-enrolled"
                           ? "Someone who is no longer enrolled"
                           : message.anonymousAt !== null
                           ? `Anonymous ${
                               enrollment.courseRole === "course-staff"
-                                ? `(${message.authorEnrollment.user.name})`
+                                ? `(${message.courseParticipant.user.name})`
                                 : ""
                             }`
-                          : message.authorEnrollment.user.name}
+                          : message.courseParticipant.user.name}
                         says</a
                       >:
                     </p>
