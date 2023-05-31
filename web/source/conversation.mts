@@ -3941,12 +3941,12 @@ export default async (application: Application): Promise<void> => {
                                                   selectedParticipants.querySelector('[key="participants--dropdown--selected-participants--separator--course-staff"]').hidden = false;
                                                   selectedParticipants.querySelector('[key="participants--dropdown--selected-participants--separator--selected-people"]').hidden = true;
 
-                                                  for (const element of selectedParticipants.querySelectorAll('[data-enrollment-course-role="course-staff"]'))
+                                                  for (const element of selectedParticipants.querySelectorAll('[data-course-participant-course-role="course-staff"]'))
                                                     element.hidden = true;
                                                   participantsDropdown.querySelector('[key="participants--dropdown--selected-participants--filter"]').oninput();
 
                                                   for (const element of this.closest("form").querySelectorAll('[name="selectedParticipantsReferences[]"]'))
-                                                    element.disabled = element.matches('[data-enrollment-course-role="course-staff"]');
+                                                    element.disabled = element.matches('[data-course-participant-course-role="course-staff"]');
 
                                                   (this.closest("form").querySelector('[name="isAnnouncement"]') ?? {}).checked = false;
                                                   (this.closest("form").querySelector('[name="isPinned"]') ?? {}).checked = false;
@@ -3958,7 +3958,7 @@ export default async (application: Application): Promise<void> => {
                                                   selectedParticipants.querySelector('[key="participants--dropdown--selected-participants--separator--course-staff"]').hidden = true;
                                                   selectedParticipants.querySelector('[key="participants--dropdown--selected-participants--separator--selected-people"]').hidden = false;
 
-                                                  for (const element of selectedParticipants.querySelectorAll('[data-enrollment-course-role="course-staff"]'))
+                                                  for (const element of selectedParticipants.querySelectorAll('[data-course-participant-course-role="course-staff"]'))
                                                     element.hidden = false;
                                                   participantsDropdown.querySelector('[key="participants--dropdown--selected-participants--filter"]').oninput();
 
@@ -4094,7 +4094,7 @@ export default async (application: Application): Promise<void> => {
                                                     const participantsDropdown = this.closest('[key="participants--dropdown"]');
                                                     const participantsIsCourseStaff = participantsDropdown.querySelector('[name="participants--dropdown--participants"][value="course-staff"]').checked;
                                                     for (const selectedParticipant of participantsDropdown.querySelectorAll('[key^="participants--dropdown--selected-participant--enrollment-reference--"]')) {
-                                                      if (participantsIsCourseStaff && selectedParticipant.matches('[data-enrollment-course-role="course-staff"]'))
+                                                      if (participantsIsCourseStaff && selectedParticipant.matches('[data-course-participant-course-role="course-staff"]'))
                                                         continue;
                                                       let selectedParticipantHidden = filterPhrases.length > 0;
                                                       for (const filterablePhrasesElement of selectedParticipant.querySelectorAll("[data-filterable-phrases]")) {
@@ -4134,7 +4134,7 @@ export default async (application: Application): Promise<void> => {
                                               (enrollment) => html`
                                                 <label
                                                   key="participants--dropdown--selected-participant--enrollment-reference--${enrollment.reference}"
-                                                  data-enrollment-course-role="${enrollment.courseRole}"
+                                                  data-course-participant-course-role="${enrollment.courseRole}"
                                                   $${request.query
                                                     .newConversation
                                                     ?.participants ===
@@ -4278,7 +4278,7 @@ export default async (application: Application): Promise<void> => {
                               : html`disabled`}
                             tabindex="-1"
                             class="visually-hidden input--visible-when-enabled-and-checked"
-                            data-enrollment-course-role="${enrollment.courseRole}"
+                            data-course-participant-course-role="${enrollment.courseRole}"
                           />
                           <button
                             key="selected-participants--button--${enrollment.reference}"
@@ -6974,12 +6974,12 @@ export default async (application: Application): Promise<void> => {
                                                             selectedParticipants.querySelector('[key="participants--dropdown--selected-participants--separator--course-staff"]').hidden = false;
                                                             selectedParticipants.querySelector('[key="participants--dropdown--selected-participants--separator--selected-people"]').hidden = true;
 
-                                                            for (const element of selectedParticipants.querySelectorAll('[data-enrollment-course-role="course-staff"]'))
+                                                            for (const element of selectedParticipants.querySelectorAll('[data-course-participant-course-role="course-staff"]'))
                                                               element.hidden = true;
                                                             participantsDropdown.querySelector('[key="participants--dropdown--selected-participants--filter"]').oninput();
 
                                                             for (const element of this.closest("form").querySelectorAll('[name="selectedParticipantsReferences[]"]'))
-                                                              element.disabled = element.matches('[data-enrollment-course-role="course-staff"]');
+                                                              element.disabled = element.matches('[data-course-participant-course-role="course-staff"]');
                                                           } else if (${
                                                             conversationParticipants ===
                                                             "selected-people"
@@ -6988,7 +6988,7 @@ export default async (application: Application): Promise<void> => {
                                                             selectedParticipants.querySelector('[key="participants--dropdown--selected-participants--separator--course-staff"]').hidden = true;
                                                             selectedParticipants.querySelector('[key="participants--dropdown--selected-participants--separator--selected-people"]').hidden = false;
 
-                                                            for (const element of selectedParticipants.querySelectorAll('[data-enrollment-course-role="course-staff"]'))
+                                                            for (const element of selectedParticipants.querySelectorAll('[data-course-participant-course-role="course-staff"]'))
                                                               element.hidden = false;
                                                             participantsDropdown.querySelector('[key="participants--dropdown--selected-participants--filter"]').oninput();
 
@@ -7131,7 +7131,7 @@ export default async (application: Application): Promise<void> => {
                                                               const participantsDropdown = this.closest('[key="participants--dropdown"]');
                                                               const participantsIsCourseStaff = participantsDropdown.querySelector('[name="participants--dropdown--participants"][value="course-staff"]').checked;
                                                               for (const selectedParticipant of participantsDropdown.querySelectorAll('[key^="participants--dropdown--selected-participant--enrollment-reference--"]')) {
-                                                                if (participantsIsCourseStaff && selectedParticipant.matches('[data-enrollment-course-role="course-staff"]'))
+                                                                if (participantsIsCourseStaff && selectedParticipant.matches('[data-course-participant-course-role="course-staff"]'))
                                                                   continue;
                                                                 let selectedParticipantHidden = filterPhrases.length > 0;
                                                                 for (const filterablePhrasesElement of selectedParticipant.querySelectorAll("[data-filterable-phrases]")) {
@@ -7175,7 +7175,7 @@ export default async (application: Application): Promise<void> => {
                                                         (enrollment) => html`
                                                           <label
                                                             key="participants--dropdown--selected-participant--enrollment-reference--${enrollment.reference}"
-                                                            data-enrollment-course-role="${enrollment.courseRole}"
+                                                            data-course-participant-course-role="${enrollment.courseRole}"
                                                             $${response.locals
                                                               .conversation
                                                               .participants ===
@@ -7370,7 +7370,7 @@ export default async (application: Application): Promise<void> => {
                                         : html`disabled`}
                                       tabindex="-1"
                                       class="visually-hidden input--visible-when-enabled-and-checked"
-                                      data-enrollment-course-role="${enrollment.courseRole}"
+                                      data-course-participant-course-role="${enrollment.courseRole}"
                                     />
                                     <button
                                       key="selected-participants--button--${enrollment.reference}"
