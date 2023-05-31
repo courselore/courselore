@@ -428,14 +428,14 @@ export default async (application: Application): Promise<void> => {
         element.remove();
 
     if (response.locals.course !== undefined && context !== "plain") {
-      const requestCourseEnrolled = request as express.Request<
+      const requestCourseParticipant = request as express.Request<
         {},
         any,
         {},
         {},
         Application["web"]["locals"]["ResponseLocals"]["CourseParticipant"]
       >;
-      const responseCourseEnrolled = response as express.Response<
+      const responseCourseParticipant = response as express.Response<
         any,
         Application["web"]["locals"]["ResponseLocals"]["CourseParticipant"]
       >;
@@ -455,8 +455,8 @@ export default async (application: Application): Promise<void> => {
           match.groups;
         if (courseReference !== response.locals.course.reference) continue;
         const conversation = application.web.locals.helpers.getConversation({
-          request: requestCourseEnrolled,
-          response: responseCourseEnrolled,
+          request: requestCourseParticipant,
+          response: responseCourseParticipant,
           conversationReference,
         });
         if (conversation === undefined) continue;
@@ -474,8 +474,8 @@ export default async (application: Application): Promise<void> => {
           continue;
         }
         const message = application.web.locals.helpers.getMessage({
-          request: requestCourseEnrolled,
-          response: responseCourseEnrolled,
+          request: requestCourseParticipant,
+          response: responseCourseParticipant,
           conversation,
           messageReference,
         });
@@ -622,8 +622,8 @@ export default async (application: Application): Promise<void> => {
             (match, conversationReference, messageReference) => {
               const conversation =
                 application.web.locals.helpers.getConversation({
-                  request: requestCourseEnrolled,
-                  response: responseCourseEnrolled,
+                  request: requestCourseParticipant,
+                  response: responseCourseParticipant,
                   conversationReference,
                 });
               if (conversation === undefined) return match;
@@ -639,8 +639,8 @@ export default async (application: Application): Promise<void> => {
                   >${match}</a
                 >`;
               const message = application.web.locals.helpers.getMessage({
-                request: requestCourseEnrolled,
-                response: responseCourseEnrolled,
+                request: requestCourseParticipant,
+                response: responseCourseParticipant,
                 conversation,
                 messageReference,
               });
@@ -694,8 +694,8 @@ export default async (application: Application): Promise<void> => {
         )
           continue;
         const conversation = application.web.locals.helpers.getConversation({
-          request: requestCourseEnrolled,
-          response: responseCourseEnrolled,
+          request: requestCourseParticipant,
+          response: responseCourseParticipant,
           conversationReference: hrefConversationReference,
         });
         if (conversation === undefined) continue;
@@ -717,8 +717,8 @@ export default async (application: Application): Promise<void> => {
                       `}"
                     >
                       $${application.web.locals.partials.conversation({
-                        request: requestCourseEnrolled,
-                        response: responseCourseEnrolled,
+                        request: requestCourseParticipant,
+                        response: responseCourseParticipant,
                         conversation,
                       })}
                     </div>
@@ -730,8 +730,8 @@ export default async (application: Application): Promise<void> => {
           continue;
         }
         const message = application.web.locals.helpers.getMessage({
-          request: requestCourseEnrolled,
-          response: responseCourseEnrolled,
+          request: requestCourseParticipant,
+          response: responseCourseParticipant,
           conversation,
           messageReference: hrefMessageReference,
         });
@@ -756,8 +756,8 @@ export default async (application: Application): Promise<void> => {
                     `}"
                   >
                     $${application.web.locals.partials.conversation({
-                      request: requestCourseEnrolled,
-                      response: responseCourseEnrolled,
+                      request: requestCourseParticipant,
+                      response: responseCourseParticipant,
                       conversation,
                       message,
                     })}
@@ -798,7 +798,7 @@ export default async (application: Application): Promise<void> => {
             LEFT JOIN "messagePollOptions" ON "messagePolls"."id" = "messagePollOptions"."messagePoll"
             LEFT JOIN "messagePollVotes" ON "messagePollOptions"."id" = "messagePollVotes"."messagePollOption"
             WHERE
-              "messagePolls"."course" = ${responseCourseEnrolled.locals.course.id} AND
+              "messagePolls"."course" = ${responseCourseParticipant.locals.course.id} AND
               "messagePolls"."reference" = ${pollReference}
             GROUP BY "messagePolls"."id"
           `
@@ -836,7 +836,7 @@ export default async (application: Application): Promise<void> => {
             FROM "messagePollOptions"
             LEFT JOIN "messagePollVotes" AS "messagePollVotesEnrollmentVote" ON
               "messagePollOptions"."id" = "messagePollVotesEnrollmentVote"."messagePollOption" AND
-              "messagePollVotesEnrollmentVote"."courseParticipant" = ${responseCourseEnrolled.locals.enrollment.id}
+              "messagePollVotesEnrollmentVote"."courseParticipant" = ${responseCourseParticipant.locals.enrollment.id}
             LEFT JOIN "messagePollVotes" AS "messagePollVotesCount" ON "messagePollOptions"."id" = "messagePollVotesCount"."messagePollOption"
             WHERE "messagePollOptions"."messagePoll" = ${poll.id}
             GROUP BY "messagePollOptions"."id"
@@ -846,8 +846,8 @@ export default async (application: Application): Promise<void> => {
 
         const voted = options.some((option) => option.enrollmentVote !== null);
         const mayEdit = mayEditPoll({
-          request: requestCourseEnrolled,
-          response: responseCourseEnrolled,
+          request: requestCourseParticipant,
+          response: responseCourseParticipant,
           poll,
         });
         const closed = application.web.locals.helpers.isPast(poll.closesAt);
@@ -1084,7 +1084,7 @@ export default async (application: Application): Promise<void> => {
                           <button
                             formmethod="DELETE"
                             formaction="https://${application.configuration
-                              .hostname}/courses/${responseCourseEnrolled.locals
+                              .hostname}/courses/${responseCourseParticipant.locals
                               .course
                               .reference}/polls/${poll.reference}/votes${qs.stringify(
                               { redirect: request.originalUrl.slice(1) },
@@ -1190,7 +1190,7 @@ export default async (application: Application): Promise<void> => {
                             const poll = this.closest('[key="poll--show"]');
                             const loading = poll.querySelector('[key="poll--show--actions--show-votes--loading"]');
                             loading.hidden = false;
-                            const partial = leafac.stringToElement(await (await fetch(${`https://${application.configuration.hostname}/courses/${responseCourseEnrolled.locals.course.reference}/polls/${poll.reference}/votes`}, { cache: "no-store" })).text());
+                            const partial = leafac.stringToElement(await (await fetch(${`https://${application.configuration.hostname}/courses/${responseCourseParticipant.locals.course.reference}/polls/${poll.reference}/votes`}, { cache: "no-store" })).text());
                             for (const partialElement of partial.querySelectorAll('[key^="poll--show--option--votes/"]')) {
                               const element = poll.querySelector('[key="' + partialElement.getAttribute("key") + '"]');
                               element.onbeforemorph = (event) => !event?.detail?.liveUpdate;
@@ -1290,7 +1290,7 @@ export default async (application: Application): Promise<void> => {
                       <button
                         formmethod="PATCH"
                         formaction="https://${application.configuration
-                          .hostname}/courses/${responseCourseEnrolled.locals
+                          .hostname}/courses/${responseCourseParticipant.locals
                           .course
                           .reference}/polls/${poll.reference}${qs.stringify(
                           { redirect: request.originalUrl.slice(1) },
@@ -1369,7 +1369,7 @@ export default async (application: Application): Promise<void> => {
                     key="poll--show"
                     method="POST"
                     action="https://${application.configuration
-                      .hostname}/courses/${responseCourseEnrolled.locals.course
+                      .hostname}/courses/${responseCourseParticipant.locals.course
                       .reference}/polls/${poll.reference}/votes${qs.stringify(
                       { redirect: request.originalUrl.slice(1) },
                       { addQueryPrefix: true }
@@ -1388,7 +1388,7 @@ export default async (application: Application): Promise<void> => {
                     key="poll--edit"
                     method="PUT"
                     action="https://${application.configuration
-                      .hostname}/courses/${responseCourseEnrolled.locals.course
+                      .hostname}/courses/${responseCourseParticipant.locals.course
                       .reference}/polls/${poll.reference}${qs.stringify(
                       { redirect: request.originalUrl.slice(1) },
                       { addQueryPrefix: true }
