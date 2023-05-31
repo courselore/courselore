@@ -31,7 +31,7 @@ export type ApplicationCourse = {
         CourseEnrolled: Application["web"]["locals"]["ResponseLocals"]["SignedIn"] & {
           enrollment: Application["web"]["locals"]["ResponseLocals"]["SignedIn"]["courseParticipants"][number];
           course: Application["web"]["locals"]["ResponseLocals"]["SignedIn"]["courseParticipants"][number]["course"];
-          courseEnrollmentsCount: number;
+          courseParticipantsCount: number;
           mostRecentlyUpdatedConversationReference: string | null;
           tags: {
             id: number;
@@ -557,7 +557,7 @@ export default async (application: Application): Promise<void> => {
     response.locals.enrollment = enrollment;
     response.locals.course = enrollment.course;
 
-    response.locals.courseEnrollmentsCount = application.database.get<{
+    response.locals.courseParticipantsCount = application.database.get<{
       count: number;
     }>(
       sql`

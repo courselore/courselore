@@ -4050,7 +4050,7 @@ export default async (application: Application): Promise<void> => {
                                     />
 
                                     $${response.locals
-                                      .courseEnrollmentsCount === 1
+                                      .courseParticipantsCount === 1
                                       ? html`
                                           <p
                                             class="secondary"
@@ -7080,7 +7080,7 @@ export default async (application: Application): Promise<void> => {
                                               />
 
                                               $${response.locals
-                                                .courseEnrollmentsCount === 1
+                                                .courseParticipantsCount === 1
                                                 ? html`
                                                     <p
                                                       class="secondary"
