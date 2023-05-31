@@ -4061,9 +4061,8 @@ export default async (application: Application): Promise<void> => {
                                                 var(--space--2) var(--space--2);
                                             `}"
                                           >
-                                            You may select participants when
-                                            there are more people enrolled in
-                                            the course.
+                                            You may select conversation participants when
+                                            there are more course participants.
                                           </p>
                                         `
                                       : html`
@@ -4093,7 +4092,7 @@ export default async (application: Application): Promise<void> => {
                                                     const filterPhrases = this.value.split(/[^a-z0-9]+/i).filter((filterPhrase) => filterPhrase.trim() !== "");
                                                     const participantsDropdown = this.closest('[key="participants--dropdown"]');
                                                     const participantsIsCourseStaff = participantsDropdown.querySelector('[name="participants--dropdown--participants"][value="course-staff"]').checked;
-                                                    for (const selectedParticipant of participantsDropdown.querySelectorAll('[key^="participants--dropdown--selected-participant--enrollment-reference--"]')) {
+                                                    for (const selectedParticipant of participantsDropdown.querySelectorAll('[key^="participants--dropdown--selected-participant--course-participant-reference--"]')) {
                                                       if (participantsIsCourseStaff && selectedParticipant.matches('[data-course-participant-course-role="course-staff"]'))
                                                         continue;
                                                       let selectedParticipantHidden = filterPhrases.length > 0;
@@ -4133,7 +4132,7 @@ export default async (application: Application): Promise<void> => {
                                             $${courseParticipants.map(
                                               (enrollment) => html`
                                                 <label
-                                                  key="participants--dropdown--selected-participant--enrollment-reference--${enrollment.reference}"
+                                                  key="participants--dropdown--selected-participant--course-participant-reference--${enrollment.reference}"
                                                   data-course-participant-course-role="${enrollment.courseRole}"
                                                   $${request.query
                                                     .newConversation
@@ -7130,7 +7129,7 @@ export default async (application: Application): Promise<void> => {
                                                               const filterPhrases = this.value.split(/[^a-z0-9]+/i).filter((filterPhrase) => filterPhrase.trim() !== "");
                                                               const participantsDropdown = this.closest('[key="participants--dropdown"]');
                                                               const participantsIsCourseStaff = participantsDropdown.querySelector('[name="participants--dropdown--participants"][value="course-staff"]').checked;
-                                                              for (const selectedParticipant of participantsDropdown.querySelectorAll('[key^="participants--dropdown--selected-participant--enrollment-reference--"]')) {
+                                                              for (const selectedParticipant of participantsDropdown.querySelectorAll('[key^="participants--dropdown--selected-participant--course-participant-reference--"]')) {
                                                                 if (participantsIsCourseStaff && selectedParticipant.matches('[data-course-participant-course-role="course-staff"]'))
                                                                   continue;
                                                                 let selectedParticipantHidden = filterPhrases.length > 0;
@@ -7174,7 +7173,7 @@ export default async (application: Application): Promise<void> => {
                                                       $${enrollments.map(
                                                         (enrollment) => html`
                                                           <label
-                                                            key="participants--dropdown--selected-participant--enrollment-reference--${enrollment.reference}"
+                                                            key="participants--dropdown--selected-participant--course-participant-reference--${enrollment.reference}"
                                                             data-course-participant-course-role="${enrollment.courseRole}"
                                                             $${response.locals
                                                               .conversation
