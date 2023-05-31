@@ -782,7 +782,7 @@ export default async (application: Application): Promise<void> => {
         const pollRow = application.database.get<{
           id: number;
           reference: string;
-          courseParticipantId: number | null;
+          authorCourseParticipantId: number | null;
           multipleChoicesAt: string | null;
           closesAt: string | null;
           votesCount: number;
@@ -791,7 +791,7 @@ export default async (application: Application): Promise<void> => {
             SELECT
               "messagePolls"."id",
               "messagePolls"."reference",
-              "messagePolls"."authorCourseParticipant" AS "courseParticipantId",
+              "messagePolls"."authorCourseParticipant" AS "authorCourseParticipantId",
               "messagePolls"."multipleChoicesAt",
               "messagePolls"."closesAt",
               COUNT("messagePollVotes"."id") AS "votesCount"
@@ -811,9 +811,9 @@ export default async (application: Application): Promise<void> => {
         const poll = {
           id: pollRow.id,
           reference: pollRow.reference,
-          courseParticipant:
-            pollRow.courseParticipantId !== null
-              ? { id: pollRow.courseParticipantId }
+          authorCourseParticipant:
+            pollRow.authorCourseParticipantId !== null
+              ? { id: pollRow.authorCourseParticipantId }
               : ("no-longer-participating" as const),
           multipleChoicesAt: pollRow.multipleChoicesAt,
           closesAt: pollRow.closesAt,
@@ -5180,7 +5180,7 @@ ${contentSource}</textarea
         id: number;
         createdAt: string;
         reference: string;
-        courseParticipantId: number | null;
+        authorCourseParticipantId: number | null;
         authorUserId: number | null;
         authorUserLastSeenOnlineAt: string | null;
         authorUserReference: string;
@@ -5192,8 +5192,8 @@ ${contentSource}</textarea
           | null;
         authorUserBiographySource: string | null;
         authorUserBiographyPreprocessed: HTML | null;
-        courseParticipantReference: string | null;
-        courseParticipantCourseRole:
+        authorCourseParticipantReference: string | null;
+        authorCourseParticipantCourseRole:
           | Application["web"]["locals"]["helpers"]["courseRoles"][number]
           | null;
         multipleChoicesAt: string | null;
@@ -5204,7 +5204,7 @@ ${contentSource}</textarea
             "messagePolls"."id",
             "messagePolls"."createdAt",
             "messagePolls"."reference",
-            "courseParticipant"."id" AS "courseParticipantId",
+            "authorCourseParticipant"."id" AS "authorCourseParticipantId",
             "authorUser"."id" AS "authorUserId",
             "authorUser"."lastSeenOnlineAt" AS "authorUserLastSeenOnlineAt",
             "authorUser"."reference" AS "authorUserReference",
@@ -5214,13 +5214,13 @@ ${contentSource}</textarea
             "authorUser"."avatarlessBackgroundColor" AS "authorUserAvatarlessBackgroundColors",
             "authorUser"."biographySource" AS "authorUserBiographySource",
             "authorUser"."biographyPreprocessed" AS "authorUserBiographyPreprocessed",
-            "courseParticipant"."reference" AS "courseParticipantReference",
-            "courseParticipant"."courseRole" AS "courseParticipantCourseRole",  
+            "authorCourseParticipant"."reference" AS "authorCourseParticipantReference",
+            "authorCourseParticipant"."courseRole" AS "authorCourseParticipantCourseRole",  
             "messagePolls"."multipleChoicesAt",
             "messagePolls"."closesAt"
           FROM "messagePolls"
-          LEFT JOIN "courseParticipants" AS "courseParticipant" ON "messagePolls"."authorCourseParticipant" = "courseParticipant"."id"
-          LEFT JOIN "users" AS "authorUser" ON "courseParticipant"."user" = "authorUser"."id"
+          LEFT JOIN "courseParticipants" AS "authorCourseParticipant" ON "messagePolls"."authorCourseParticipant" = "authorCourseParticipant"."id"
+          LEFT JOIN "users" AS "authorUser" ON "authorCourseParticipant"."user" = "authorUser"."id"
           WHERE
             "messagePolls"."course" = ${response.locals.course.id} AND
             "messagePolls"."reference" = ${request.params.pollReference}
@@ -5231,18 +5231,18 @@ ${contentSource}</textarea
         id: pollRow.id,
         createdAt: pollRow.createdAt,
         reference: pollRow.reference,
-        courseParticipant:
-          pollRow.courseParticipantId !== null &&
+        authorCourseParticipant:
+          pollRow.authorCourseParticipantId !== null &&
           pollRow.authorUserId !== null &&
           pollRow.authorUserLastSeenOnlineAt !== null &&
           pollRow.authorUserReference !== null &&
           pollRow.authorUserEmail !== null &&
           pollRow.authorUserName !== null &&
           pollRow.authorUserAvatarlessBackgroundColors !== null &&
-          pollRow.courseParticipantReference !== null &&
-          pollRow.courseParticipantCourseRole !== null
+          pollRow.authorCourseParticipantReference !== null &&
+          pollRow.authorCourseParticipantCourseRole !== null
             ? {
-                id: pollRow.courseParticipantId,
+                id: pollRow.authorCourseParticipantId,
                 user: {
                   id: pollRow.authorUserId,
                   lastSeenOnlineAt: pollRow.authorUserLastSeenOnlineAt,
@@ -5256,8 +5256,8 @@ ${contentSource}</textarea
                   biographyPreprocessed:
                     pollRow.authorUserBiographyPreprocessed,
                 },
-                reference: pollRow.courseParticipantReference,
-                courseRole: pollRow.courseParticipantCourseRole,
+                reference: pollRow.authorCourseParticipantReference,
+                courseRole: pollRow.authorCourseParticipantCourseRole,
               }
             : ("no-longer-participating" as const),
         multipleChoicesAt: pollRow.multipleChoicesAt,

@@ -341,7 +341,7 @@ export default async (application: Application): Promise<void> => {
       createdAt: string;
       updatedAt: string | null;
       reference: string;
-      courseParticipantId: number | null;
+      authorCourseParticipantId: number | null;
       authorUserId: number | null;
       authorUserLastSeenOnlineAt: string | null;
       authorUserReference: string;
@@ -353,8 +353,8 @@ export default async (application: Application): Promise<void> => {
         | null;
       authorUserBiographySource: string | null;
       authorUserBiographyPreprocessed: HTML | null;
-      courseParticipantReference: string | null;
-      courseParticipantCourseRole:
+      authorCourseParticipantReference: string | null;
+      authorCourseParticipantCourseRole:
         | Application["web"]["locals"]["helpers"]["courseRoles"][number]
         | null;
       participants: Application["web"]["locals"]["helpers"]["conversationParticipantses"][number];
@@ -373,7 +373,7 @@ export default async (application: Application): Promise<void> => {
           "conversations"."createdAt",
           "conversations"."updatedAt",
           "conversations"."reference",
-          "courseParticipant"."id" AS "courseParticipantId",
+          "authorCourseParticipant"."id" AS "authorCourseParticipantId",
           "authorUser"."id" AS "authorUserId",
           "authorUser"."lastSeenOnlineAt" AS "authorUserLastSeenOnlineAt",
           "authorUser"."reference" AS "authorUserReference",
@@ -383,8 +383,8 @@ export default async (application: Application): Promise<void> => {
           "authorUser"."avatarlessBackgroundColor" AS "authorUserAvatarlessBackgroundColor",
           "authorUser"."biographySource" AS "authorUserBiographySource",
           "authorUser"."biographyPreprocessed" AS "authorUserBiographyPreprocessed",
-          "courseParticipant"."reference" AS "courseParticipantReference",
-          "courseParticipant"."courseRole" AS "courseParticipantCourseRole",
+          "authorCourseParticipant"."reference" AS "authorCourseParticipantReference",
+          "authorCourseParticipant"."courseRole" AS "authorCourseParticipantCourseRole",
           "conversations"."participants",
           "conversations"."anonymousAt",
           "conversations"."type",
@@ -395,8 +395,8 @@ export default async (application: Application): Promise<void> => {
           "conversations"."titleSearch",
           "conversations"."nextMessageReference"
         FROM "conversations"
-        LEFT JOIN "courseParticipants" AS "courseParticipant" ON "conversations"."authorCourseParticipant" = "courseParticipant"."id"
-        LEFT JOIN "users" AS "authorUser" ON "courseParticipant"."user" = "authorUser"."id"
+        LEFT JOIN "courseParticipants" AS "authorCourseParticipant" ON "conversations"."authorCourseParticipant" = "authorCourseParticipant"."id"
+        LEFT JOIN "users" AS "authorUser" ON "authorCourseParticipant"."user" = "authorUser"."id"
         WHERE
           "conversations"."course" = ${response.locals.course.id} AND
           "conversations"."reference" = ${conversationReference} AND (
@@ -409,7 +409,7 @@ export default async (application: Application): Promise<void> => {
               FROM "conversationSelectedParticipants"
               WHERE
                 "conversationSelectedParticipants"."conversation" = "conversations"."id" AND 
-                "conversationSelectedParticipants"."courseParticipant" = ${
+                "conversationSelectedParticipants"."authorCourseParticipant" = ${
                   response.locals.courseParticipant.id
                 }
             )
@@ -422,18 +422,18 @@ export default async (application: Application): Promise<void> => {
       createdAt: conversationRow.createdAt,
       updatedAt: conversationRow.updatedAt,
       reference: conversationRow.reference,
-      courseParticipant:
-        conversationRow.courseParticipantId !== null &&
+      authorCourseParticipant:
+        conversationRow.authorCourseParticipantId !== null &&
         conversationRow.authorUserId !== null &&
         conversationRow.authorUserLastSeenOnlineAt !== null &&
         conversationRow.authorUserReference !== null &&
         conversationRow.authorUserEmail !== null &&
         conversationRow.authorUserName !== null &&
         conversationRow.authorUserAvatarlessBackgroundColor !== null &&
-        conversationRow.courseParticipantReference !== null &&
-        conversationRow.courseParticipantCourseRole !== null
+        conversationRow.authorCourseParticipantReference !== null &&
+        conversationRow.authorCourseParticipantCourseRole !== null
           ? {
-              id: conversationRow.courseParticipantId,
+              id: conversationRow.authorCourseParticipantId,
               user: {
                 id: conversationRow.authorUserId,
                 lastSeenOnlineAt: conversationRow.authorUserLastSeenOnlineAt,
@@ -447,8 +447,8 @@ export default async (application: Application): Promise<void> => {
                 biographyPreprocessed:
                   conversationRow.authorUserBiographyPreprocessed,
               },
-              reference: conversationRow.courseParticipantReference,
-              courseRole: conversationRow.courseParticipantCourseRole,
+              reference: conversationRow.authorCourseParticipantReference,
+              courseRole: conversationRow.authorCourseParticipantCourseRole,
             }
           : ("no-longer-participating" as const),
       participants: conversationRow.participants,

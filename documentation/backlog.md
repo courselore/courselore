@@ -4,6 +4,11 @@
 
 **Name Changes**
 
+- `"authorCourseParticipant"`
+  - `"conversations"`
+  - `"messages"`
+  - `"messageDrafts"`
+  - `"messagePolls"`
 - Review from `c903ad50a33b1b61d8674de0d8de61e8f7de7851`
 
 ---
