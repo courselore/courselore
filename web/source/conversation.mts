@@ -4254,20 +4254,20 @@ export default async (application: Application): Promise<void> => {
                       </div>
 
                       $${courseParticipants.map(
-                        (enrollment) => html`
+                        (courseParticipant) => html`
                           <input
-                            key="selected-participants--input--${enrollment.reference}"
+                            key="selected-participants--input--${courseParticipant.reference}"
                             type="checkbox"
                             name="selectedParticipantsReferences[]"
-                            value="${enrollment.reference}"
+                            value="${courseParticipant.reference}"
                             $${request.query.newConversation?.selectedParticipants?.includes(
-                              enrollment.reference
+                              courseParticipant.reference
                             )
                               ? html`checked`
                               : html``}
                             $${(request.query.newConversation?.participants ===
                               "course-staff" &&
-                              enrollment.courseRole !== "course-staff") ||
+                              courseParticipant.courseRole !== "course-staff") ||
                             request.query.newConversation?.participants ===
                               "selected-people" ||
                             (request.query.newConversation?.participants ===
@@ -4277,10 +4277,10 @@ export default async (application: Application): Promise<void> => {
                               : html`disabled`}
                             tabindex="-1"
                             class="visually-hidden input--visible-when-enabled-and-checked"
-                            data-course-participant-course-role="${enrollment.courseRole}"
+                            data-course-participant-course-role="${courseParticipant.courseRole}"
                           />
                           <button
-                            key="selected-participants--button--${enrollment.reference}"
+                            key="selected-participants--button--${courseParticipant.reference}"
                             type="button"
                             class="button button--tight button--tight--inline button--transparent"
                             javascript="${javascript`
@@ -4296,15 +4296,15 @@ export default async (application: Application): Promise<void> => {
                               this.onclick = () => {
                                 this.previousElementSibling.checked = false;
 
-                                this.closest("form").querySelector('[key="participants"]').dropdown.props.content.querySelector(${`[name="participants--dropdown--selected-participants[]"][value="${enrollment.reference}"]`}).checked = false;
+                                this.closest("form").querySelector('[key="participants"]').dropdown.props.content.querySelector(${`[name="participants--dropdown--selected-participants[]"][value="${courseParticipant.reference}"]`}).checked = false;
                               };
                             `}"
                           >
                             $${application.web.locals.partials.user({
                               request,
                               response,
-                              courseParticipant: enrollment,
-                              user: enrollment.user,
+                              courseParticipant: courseParticipant,
+                              user: courseParticipant.user,
                               tooltip: false,
                               size: "xs",
                               bold: false,
@@ -4841,7 +4841,7 @@ export default async (application: Application): Promise<void> => {
       //           FROM "conversationDrafts"
       //           WHERE "course" = ${response.locals.course.id} AND
       //                 "reference" = ${request.body.conversationDraftReference} AND
-      //                 "courseParticipant" = ${response.locals.enrollment.id}
+      //                 "courseParticipant" = ${response.locals.courseParticipant.id}
       //         `
       //       )
       //     : undefined;
@@ -4866,7 +4866,7 @@ export default async (application: Application): Promise<void> => {
       //         ${new Date().toISOString()},
       //         ${response.locals.course.id},
       //         ${cryptoRandomString({ length: 10, type: "numeric" })},
-      //         ${response.locals.enrollment.id},
+      //         ${response.locals.courseParticipant.id},
       //         ${
       //           typeof request.body.type === "string" &&
       //           request.body.type.trim() !== ""
@@ -5232,7 +5232,7 @@ export default async (application: Application): Promise<void> => {
       //       WHERE
       //         "course" = ${response.locals.course.id} AND
       //         "reference" = ${request.body.conversationDraftReference} AND
-      //         "courseParticipant" = ${response.locals.enrollment.id}
+      //         "courseParticipant" = ${response.locals.courseParticipant.id}
       //     `
       //   );
 
@@ -5283,7 +5283,7 @@ export default async (application: Application): Promise<void> => {
   //         WHERE
   //           "course" = ${response.locals.course.id} AND
   //           "reference" = ${request.body.conversationDraftReference} AND
-  //           "courseParticipant" = ${response.locals.enrollment.id}
+  //           "courseParticipant" = ${response.locals.courseParticipant.id}
   //       `
   //     );
   //     if (conversationDraft === undefined) return next("Validation");
@@ -6812,7 +6812,7 @@ export default async (application: Application): Promise<void> => {
                     })()}
                     $${mayEditConversation({ request, response })
                       ? (() => {
-                          const enrollments = application.database
+                          const courseParticipants = application.database
                             .all<{
                               id: number;
                               userId: number;
@@ -6851,24 +6851,24 @@ export default async (application: Application): Promise<void> => {
                                   "users"."name" ASC
                               `
                             )
-                            .map((enrollment) => ({
-                              id: enrollment.id,
+                            .map((courseParticipantRow) => ({
+                              id: courseParticipantRow.id,
                               user: {
-                                id: enrollment.userId,
+                                id: courseParticipantRow.userId,
                                 lastSeenOnlineAt:
-                                  enrollment.userLastSeenOnlineAt,
-                                reference: enrollment.userReference,
-                                email: enrollment.userEmail,
-                                name: enrollment.userName,
-                                avatar: enrollment.userAvatar,
+                                  courseParticipantRow.userLastSeenOnlineAt,
+                                reference: courseParticipantRow.userReference,
+                                email: courseParticipantRow.userEmail,
+                                name: courseParticipantRow.userName,
+                                avatar: courseParticipantRow.userAvatar,
                                 avatarlessBackgroundColor:
-                                  enrollment.userAvatarlessBackgroundColor,
-                                biographySource: enrollment.userBiographySource,
+                                  courseParticipantRow.userAvatarlessBackgroundColor,
+                                biographySource: courseParticipantRow.userBiographySource,
                                 biographyPreprocessed:
-                                  enrollment.userBiographyPreprocessed,
+                                  courseParticipantRow.userBiographyPreprocessed,
                               },
-                              reference: enrollment.reference,
-                              courseRole: enrollment.courseRole,
+                              reference: courseParticipantRow.reference,
+                              courseRole: courseParticipantRow.courseRole,
                             }));
 
                           return html`
@@ -7094,10 +7094,8 @@ export default async (application: Application): Promise<void> => {
                                                           var(--space--2);
                                                       `}"
                                                     >
-                                                      You may select
-                                                      participants when there
-                                                      are more people enrolled
-                                                      in the course.
+                                                    You may select conversation participants when
+                                                    there are more course participants.
                                                     </p>
                                                   `
                                                 : html`
@@ -7170,16 +7168,16 @@ export default async (application: Application): Promise<void> => {
                                                         overflow: auto;
                                                       `}"
                                                     >
-                                                      $${enrollments.map(
-                                                        (enrollment) => html`
+                                                      $${courseParticipants.map(
+                                                        (courseParticipant) => html`
                                                           <label
-                                                            key="participants--dropdown--selected-participant--course-participant-reference--${enrollment.reference}"
-                                                            data-course-participant-course-role="${enrollment.courseRole}"
+                                                            key="participants--dropdown--selected-participant--course-participant-reference--${courseParticipant.reference}"
+                                                            data-course-participant-course-role="${courseParticipant.courseRole}"
                                                             $${response.locals
                                                               .conversation
                                                               .participants ===
                                                               "course-staff" &&
-                                                            enrollment.courseRole ===
+                                                            courseParticipant.courseRole ===
                                                               "course-staff"
                                                               ? html`hidden`
                                                               : html``}
@@ -7187,13 +7185,13 @@ export default async (application: Application): Promise<void> => {
                                                             <input
                                                               type="checkbox"
                                                               name="participants--dropdown--selected-participants[]"
-                                                              value="${enrollment.reference}"
+                                                              value="${courseParticipant.reference}"
                                                               $${response.locals.conversation.selectedParticipants.find(
                                                                 (
                                                                   selectedParticipant
                                                                 ) =>
                                                                   selectedParticipant.id ===
-                                                                  enrollment.id
+                                                                  courseParticipant.id
                                                               ) !== undefined ||
                                                               // TODO: Pagination
                                                               (response.locals
@@ -7207,13 +7205,13 @@ export default async (application: Application): Promise<void> => {
                                                                     message
                                                                       .courseParticipant
                                                                       .id ===
-                                                                      enrollment.id
+                                                                      courseParticipant.id
                                                                 )) ||
                                                               (response.locals
                                                                 .conversation
                                                                 .participants ===
                                                                 "course-staff" &&
-                                                                enrollment.courseRole ===
+                                                                courseParticipant.courseRole ===
                                                                   "course-staff" &&
                                                                 messages.some(
                                                                   (message) =>
@@ -7222,7 +7220,7 @@ export default async (application: Application): Promise<void> => {
                                                                     message
                                                                       .courseParticipant
                                                                       .id ===
-                                                                      enrollment.id
+                                                                      courseParticipant.id
                                                                 ))
                                                                 ? html`checked`
                                                                 : html``}
@@ -7231,7 +7229,7 @@ export default async (application: Application): Promise<void> => {
                                                                 this.isModified = false;
 
                                                                 this.onchange = () => {
-                                                                  this.closest("form").querySelector(${`[name="selectedParticipantsReferences[]"][value="${enrollment.reference}"]`}).checked = this.checked;
+                                                                  this.closest("form").querySelector(${`[name="selectedParticipantsReferences[]"][value="${courseParticipant.reference}"]`}).checked = this.checked;
                                                                 };
                                                               `}"
                                                             />
@@ -7243,8 +7241,8 @@ export default async (application: Application): Promise<void> => {
                                                                   request,
                                                                   response,
                                                                   courseParticipant:
-                                                                    enrollment,
-                                                                  user: enrollment.user,
+                                                                    courseParticipant,
+                                                                  user: courseParticipant.user,
                                                                   tooltip:
                                                                     false,
                                                                   size: "xs",
@@ -7260,8 +7258,8 @@ export default async (application: Application): Promise<void> => {
                                                                   request,
                                                                   response,
                                                                   courseParticipant:
-                                                                    enrollment,
-                                                                  user: enrollment.user,
+                                                                    courseParticipant,
+                                                                  user: courseParticipant.user,
                                                                   tooltip:
                                                                     false,
                                                                   size: "xs",
@@ -7324,17 +7322,17 @@ export default async (application: Application): Promise<void> => {
                                   )}
                                 </div>
 
-                                $${enrollments.map(
-                                  (enrollment) => html`
+                                $${courseParticipants.map(
+                                  (courseParticipant) => html`
                                     <input
-                                      key="selected-participants--input--${enrollment.reference}"
+                                      key="selected-participants--input--${courseParticipant.reference}"
                                       type="checkbox"
                                       name="selectedParticipantsReferences[]"
-                                      value="${enrollment.reference}"
+                                      value="${courseParticipant.reference}"
                                       $${response.locals.conversation.selectedParticipants.find(
                                         (selectedParticipant) =>
                                           selectedParticipant.id ===
-                                          enrollment.id
+                                          courseParticipant.id
                                       ) !== undefined ||
                                       // TODO: Pagination
                                       (response.locals.conversation
@@ -7344,24 +7342,24 @@ export default async (application: Application): Promise<void> => {
                                             message.courseParticipant !==
                                               "no-longer-participating" &&
                                             message.courseParticipant.id ===
-                                              enrollment.id
+                                              courseParticipant.id
                                         )) ||
                                       (response.locals.conversation
                                         .participants === "course-staff" &&
-                                        enrollment.courseRole ===
+                                        courseParticipant.courseRole ===
                                           "course-staff" &&
                                         messages.some(
                                           (message) =>
                                             message.courseParticipant !==
                                               "no-longer-participating" &&
                                             message.courseParticipant.id ===
-                                              enrollment.id
+                                              courseParticipant.id
                                         ))
                                         ? html`checked`
                                         : html``}
                                       $${(response.locals.conversation
                                         .participants === "course-staff" &&
-                                        enrollment.courseRole !==
+                                        courseParticipant.courseRole !==
                                           "course-staff") ||
                                       response.locals.conversation
                                         .participants === "selected-people"
@@ -7369,10 +7367,10 @@ export default async (application: Application): Promise<void> => {
                                         : html`disabled`}
                                       tabindex="-1"
                                       class="visually-hidden input--visible-when-enabled-and-checked"
-                                      data-course-participant-course-role="${enrollment.courseRole}"
+                                      data-course-participant-course-role="${courseParticipant.courseRole}"
                                     />
                                     <button
-                                      key="selected-participants--button--${enrollment.reference}"
+                                      key="selected-participants--button--${courseParticipant.reference}"
                                       type="button"
                                       class="button button--tight button--tight--inline button--transparent"
                                       javascript="${javascript`
@@ -7388,7 +7386,7 @@ export default async (application: Application): Promise<void> => {
                                         this.onclick = () => {
                                           this.previousElementSibling.checked = false;
 
-                                          this.closest("form").querySelector('[key="participants"]').dropdown.props.content.querySelector(${`[name="participants--dropdown--selected-participants[]"][value="${enrollment.reference}"]`}).checked = false;
+                                          this.closest("form").querySelector('[key="participants"]').dropdown.props.content.querySelector(${`[name="participants--dropdown--selected-participants[]"][value="${courseParticipant.reference}"]`}).checked = false;
 
                                           this.closest("form").querySelector('[key="submit"]').hidden = !leafac.isModified(this.closest("form"));
                                         };
@@ -7397,8 +7395,8 @@ export default async (application: Application): Promise<void> => {
                                       $${application.web.locals.partials.user({
                                         request,
                                         response,
-                                        courseParticipant: enrollment,
-                                        user: enrollment.user,
+                                        courseParticipant: courseParticipant,
+                                        user: courseParticipant.user,
                                         tooltip: false,
                                         size: "xs",
                                         bold: false,
