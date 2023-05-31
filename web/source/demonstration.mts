@@ -520,7 +520,7 @@ export default async (application: Application): Promise<void> => {
               INSERT INTO "messagePollVotes" (
                 "createdAt",
                 "messagePollOption",
-                "enrollment"
+                "courseParticipant"
               )
               VALUES (
                 ${new Date(
@@ -624,7 +624,7 @@ export default async (application: Application): Promise<void> => {
                 INSERT INTO "messagePollVotes" (
                   "createdAt",
                   "messagePollOption",
-                  "enrollment"
+                  "courseParticipant"
                 )
                 VALUES (
                   ${new Date(
@@ -1106,7 +1106,7 @@ Message non-existent permanent link turned reference: <https://${
           for (const enrollment of selectedParticipantEnrollments)
             application.database.run(
               sql`
-                INSERT INTO "conversationSelectedParticipants" ("createdAt", "conversation", "enrollment")
+                INSERT INTO "conversationSelectedParticipants" ("createdAt", "conversation", "courseParticipant")
                 VALUES (
                   ${new Date().toISOString()},
                   ${conversation.id},
@@ -1235,7 +1235,7 @@ Message non-existent permanent link turned reference: <https://${
               ).toISOString();
               application.database.run(
                 sql`
-                  INSERT INTO "readings" ("createdAt", "message", "enrollment")
+                  INSERT INTO "readings" ("createdAt", "message", "courseParticipant")
                   VALUES (
                     ${readingCreatedAt},
                     ${message.id},
@@ -1251,7 +1251,7 @@ Message non-existent permanent link turned reference: <https://${
             ))
               application.database.run(
                 sql`
-                  INSERT INTO "endorsements" ("createdAt", "message", "enrollment")
+                  INSERT INTO "endorsements" ("createdAt", "message", "courseParticipant")
                   VALUES (
                     ${new Date().toISOString()},
                     ${message.id},
@@ -1268,7 +1268,7 @@ Message non-existent permanent link turned reference: <https://${
             ))
               application.database.run(
                 sql`
-                  INSERT INTO "likes" ("createdAt", "message", "enrollment")
+                  INSERT INTO "likes" ("createdAt", "message", "courseParticipant")
                   VALUES (
                     ${new Date().toISOString()},
                     ${message.id},

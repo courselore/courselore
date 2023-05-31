@@ -23,7 +23,7 @@ export type ApplicationCourse = {
         };
 
         MaybeEnrollment:
-          | Application["web"]["locals"]["Types"]["Enrollment"]
+          | Application["web"]["locals"]["Types"]["CourseParticipant"]
           | "no-longer-enrolled";
       };
 
@@ -374,7 +374,8 @@ export default async (application: Application): Promise<void> => {
                 autocomplete="off"
                 placeholder="Your University"
                 value="${response.locals.courseParticipations.length > 0
-                  ? response.locals.courseParticipations.at(-1)!.course.institution ?? ""
+                  ? response.locals.courseParticipations.at(-1)!.course
+                      .institution ?? ""
                   : ""}"
               />
             </label>
@@ -585,7 +586,7 @@ export default async (application: Application): Promise<void> => {
                 FROM "conversationSelectedParticipants"
                 WHERE
                   "conversationSelectedParticipants"."conversation" = "conversations"."id" AND 
-                  "conversationSelectedParticipants"."enrollment" = ${
+                  "conversationSelectedParticipants"."courseParticipant" = ${
                     response.locals.enrollment.id
                   }
               )
@@ -5055,7 +5056,7 @@ export default async (application: Application): Promise<void> => {
                 FROM "conversationSelectedParticipants"
                 WHERE
                   "conversationSelectedParticipants"."conversation" = "conversations"."id" AND
-                  "conversationSelectedParticipants"."enrollment" = ${
+                  "conversationSelectedParticipants"."courseParticipant" = ${
                     response.locals.enrollment.id
                   }
               )

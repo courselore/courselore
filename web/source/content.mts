@@ -836,7 +836,7 @@ export default async (application: Application): Promise<void> => {
             FROM "messagePollOptions"
             LEFT JOIN "messagePollVotes" AS "messagePollVotesEnrollmentVote" ON
               "messagePollOptions"."id" = "messagePollVotesEnrollmentVote"."messagePollOption" AND
-              "messagePollVotesEnrollmentVote"."enrollment" = ${responseCourseEnrolled.locals.enrollment.id}
+              "messagePollVotesEnrollmentVote"."courseParticipant" = ${responseCourseEnrolled.locals.enrollment.id}
             LEFT JOIN "messagePollVotes" AS "messagePollVotesCount" ON "messagePollOptions"."id" = "messagePollVotesCount"."messagePollOption"
             WHERE "messagePollOptions"."messagePoll" = ${poll.id}
             GROUP BY "messagePollOptions"."id"
@@ -4272,7 +4272,7 @@ ${contentSource}</textarea
                           FROM "conversationSelectedParticipants"
                           WHERE
                             "conversationSelectedParticipants"."conversation" = "conversations"."id" AND
-                            "conversationSelectedParticipants"."enrollment" = "courseParticipants"."id"
+                            "conversationSelectedParticipants"."courseParticipant" = "courseParticipants"."id"
                         )
                       )
                     LEFT JOIN "messages" ON
@@ -5532,7 +5532,7 @@ ${contentSource}</textarea
               "messagePollOption" IN ${response.locals.poll.options.map(
                 (option) => option.id
               )} AND
-              "enrollment" = ${response.locals.enrollment.id}
+              "courseParticipant" = ${response.locals.enrollment.id}
           `
         ) !== undefined
       )
@@ -5544,7 +5544,7 @@ ${contentSource}</textarea
             INSERT INTO "messagePollVotes" (
               "createdAt",
               "messagePollOption",
-              "enrollment"
+              "courseParticipant"
             )
             VALUES (
               ${new Date().toISOString()},
@@ -5596,7 +5596,7 @@ ${contentSource}</textarea
             "messagePollOption" IN ${response.locals.poll.options.map(
               (option) => option.id
             )} AND
-            "enrollment" = ${response.locals.enrollment.id}
+            "courseParticipant" = ${response.locals.enrollment.id}
         `
       );
 
@@ -5674,7 +5674,7 @@ ${contentSource}</textarea
                           "courseParticipants"."reference" AS "enrollmentReference",
                           "courseParticipants"."courseRole" AS "enrollmentCourseRole"
                         FROM "messagePollVotes"
-                        LEFT JOIN "courseParticipants" ON "messagePollVotes"."enrollment" = "courseParticipants"."id"
+                        LEFT JOIN "courseParticipants" ON "messagePollVotes"."courseParticipant" = "courseParticipants"."id"
                         LEFT JOIN "users" ON "courseParticipants"."user" = "users"."id"
                         WHERE "messagePollVotes"."messagePollOption" = ${option.id}
                         ORDER BY "messagePollVotes"."createdAt" ASC

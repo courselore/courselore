@@ -589,7 +589,7 @@ export default async (application: Application): Promise<void> => {
                 FROM "conversationSelectedParticipants"
                 WHERE
                   "conversationSelectedParticipants"."conversation" = "mostRecentlyVisitedConversation"."id" AND 
-                  "conversationSelectedParticipants"."enrollment" = "courseParticipants"."id"
+                  "conversationSelectedParticipants"."courseParticipant" = "courseParticipants"."id"
               )
             )
           WHERE "courseParticipants"."user" = ${response.locals.user.id}

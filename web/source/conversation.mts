@@ -26,7 +26,7 @@ export type ApplicationConversation = {
                 contentSource: string;
               }
             | undefined;
-          enrollmentsTyping: Application["web"]["locals"]["Types"]["Enrollment"][];
+          enrollmentsTyping: Application["web"]["locals"]["Types"]["CourseParticipant"][];
         };
       };
 
@@ -176,7 +176,7 @@ export type ApplicationConversation = {
               title: string;
               titleSearch: string;
               nextMessageReference: number;
-              selectedParticipants: Application["web"]["locals"]["Types"]["Enrollment"][];
+              selectedParticipants: Application["web"]["locals"]["Types"]["CourseParticipant"][];
               taggings: {
                 id: number;
                 tag: {
@@ -290,7 +290,9 @@ export default async (application: Application): Promise<void> => {
                       Date.now() - 5 * 60 * 1000
                     ).toISOString()} < "messageDrafts"."createdAt"
                   WHERE
-                    "courseParticipants"."id" != ${response.locals.enrollment.id}
+                    "courseParticipants"."id" != ${
+                      response.locals.enrollment.id
+                    }
                   ORDER BY
                     "courseParticipants"."courseRole" = 'course-staff' DESC,
                     "users"."name" ASC
@@ -407,7 +409,7 @@ export default async (application: Application): Promise<void> => {
               FROM "conversationSelectedParticipants"
               WHERE
                 "conversationSelectedParticipants"."conversation" = "conversations"."id" AND 
-                "conversationSelectedParticipants"."enrollment" = ${
+                "conversationSelectedParticipants"."courseParticipant" = ${
                   response.locals.enrollment.id
                 }
             )
@@ -493,7 +495,7 @@ export default async (application: Application): Promise<void> => {
                   "courseParticipants"."reference" AS "enrollmentReference",
                   "courseParticipants"."courseRole" AS "enrollmentCourseRole"
                 FROM "conversationSelectedParticipants"
-                JOIN "courseParticipants" ON "conversationSelectedParticipants"."enrollment" = "courseParticipants"."id"
+                JOIN "courseParticipants" ON "conversationSelectedParticipants"."courseParticipant" = "courseParticipants"."id"
                 JOIN "users" ON "courseParticipants"."user" = "users"."id"
                 WHERE
                   "conversationSelectedParticipants"."conversation" = ${conversation.id} AND
@@ -583,7 +585,7 @@ export default async (application: Application): Promise<void> => {
           "readings"."message" = "messages"."id" AND
           "messages"."conversation" = ${conversation.id}
         WHERE
-          "readings"."enrollment" = ${response.locals.enrollment.id} $${
+          "readings"."courseParticipant" = ${response.locals.enrollment.id} $${
         response.locals.enrollment.courseRole !== "course-staff"
           ? sql`
               AND "messages"."type" != 'course-staff-whisper'
@@ -631,7 +633,7 @@ export default async (application: Application): Promise<void> => {
                   "courseParticipants"."reference" AS "enrollmentReference",
                   "courseParticipants"."courseRole" AS "enrollmentCourseRole"
                 FROM "endorsements"
-                JOIN "courseParticipants" ON "endorsements"."enrollment" = "courseParticipants"."id"
+                JOIN "courseParticipants" ON "endorsements"."courseParticipant" = "courseParticipants"."id"
                 JOIN "users" ON "courseParticipants"."user" = "users"."id"
                 JOIN "messages" ON
                   "endorsements"."message" = "messages"."id" AND
@@ -895,7 +897,7 @@ export default async (application: Application): Promise<void> => {
                 FROM "conversationSelectedParticipants"
                 WHERE
                   "conversationSelectedParticipants"."conversation" = "conversations"."id" AND 
-                  "conversationSelectedParticipants"."enrollment" = ${
+                  "conversationSelectedParticipants"."courseParticipant" = ${
                     response.locals.enrollment.id
                   }
               )
@@ -922,7 +924,7 @@ export default async (application: Application): Promise<void> => {
                       FROM "messages"
                       LEFT JOIN "readings" ON
                         "messages"."id" = "readings"."message" AND
-                        "readings"."enrollment" = ${
+                        "readings"."courseParticipant" = ${
                           response.locals.enrollment.id
                         }
                       WHERE
@@ -3308,7 +3310,7 @@ export default async (application: Application): Promise<void> => {
             "conversations"."course" = ${response.locals.course.id}
           LEFT JOIN "readings" ON
             "messages"."id" = "readings"."message" AND
-            "readings"."enrollment" = ${response.locals.enrollment.id}
+            "readings"."courseParticipant" = ${response.locals.enrollment.id}
           WHERE
             "readings"."id" IS NULL AND (
             "conversations"."participants" = 'everyone' $${
@@ -3323,7 +3325,7 @@ export default async (application: Application): Promise<void> => {
               FROM "conversationSelectedParticipants"
               WHERE
                 "conversationSelectedParticipants"."conversation" = "conversations"."id" AND
-                "conversationSelectedParticipants"."enrollment" = ${
+                "conversationSelectedParticipants"."courseParticipant" = ${
                   response.locals.enrollment.id
                 }
             )
@@ -3340,7 +3342,7 @@ export default async (application: Application): Promise<void> => {
       for (const message of messages)
         application.database.run(
           sql`
-            INSERT INTO "readings" ("createdAt", "message", "enrollment")
+            INSERT INTO "readings" ("createdAt", "message", "courseParticipant")
             VALUES (
               ${new Date().toISOString()},
               ${message.id},
@@ -5123,7 +5125,7 @@ export default async (application: Application): Promise<void> => {
       for (const selectedParticipant of selectedParticipants)
         application.database.run(
           sql`
-            INSERT INTO "conversationSelectedParticipants" ("createdAt", "conversation", "enrollment")
+            INSERT INTO "conversationSelectedParticipants" ("createdAt", "conversation", "courseParticipant")
             VALUES (
               ${new Date().toISOString()},
               ${conversation.id},
@@ -5194,7 +5196,7 @@ export default async (application: Application): Promise<void> => {
         )!;
         application.database.run(
           sql`
-            INSERT INTO "readings" ("createdAt", "message", "enrollment")
+            INSERT INTO "readings" ("createdAt", "message", "courseParticipant")
             VALUES (
               ${new Date().toISOString()},
               ${message.id},
@@ -5447,7 +5449,7 @@ export default async (application: Application): Promise<void> => {
       for (const message of messages)
         application.database.run(
           sql`
-            INSERT INTO "readings" ("createdAt", "message", "enrollment")
+            INSERT INTO "readings" ("createdAt", "message", "courseParticipant")
             VALUES (
               ${new Date().toISOString()},
               ${message.id},
@@ -6149,7 +6151,8 @@ export default async (application: Application): Promise<void> => {
                                       : html``}
                                     $${response.locals.enrollment.courseRole ===
                                       "course-staff" &&
-                                    response.locals.courseParticipations.length > 1 &&
+                                    response.locals.courseParticipations
+                                      .length > 1 &&
                                     messages.length > 0 &&
                                     messages[0].reference ===
                                       "1" /* TODO: Pagination */
@@ -10033,7 +10036,7 @@ export default async (application: Application): Promise<void> => {
               DELETE FROM "conversationSelectedParticipants"
               WHERE
                 "conversation" = ${response.locals.conversation.id} AND
-                "enrollment" NOT IN ${selectedParticipants.map(
+                "courseParticipant" NOT IN ${selectedParticipants.map(
                   (selectedParticipant) => selectedParticipant.id
                 )}
             `
@@ -10041,7 +10044,7 @@ export default async (application: Application): Promise<void> => {
           for (const selectedParticipant of selectedParticipants)
             application.database.run(
               sql`
-                INSERT INTO "conversationSelectedParticipants" ("createdAt", "conversation", "enrollment")
+                INSERT INTO "conversationSelectedParticipants" ("createdAt", "conversation", "courseParticipant")
                 VALUES (
                   ${new Date().toISOString()},
                   ${response.locals.conversation.id},

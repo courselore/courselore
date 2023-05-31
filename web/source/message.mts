@@ -240,7 +240,7 @@ export default async (application: Application): Promise<void> => {
         LEFT JOIN "users" AS "authorUser" ON "authorEnrollment"."user" = "authorUser"."id"
         LEFT JOIN "readings" ON
           "messages"."id" = "readings"."message" AND
-          "readings"."enrollment" = ${response.locals.enrollment.id}
+          "readings"."courseParticipant" = ${response.locals.enrollment.id}
         WHERE
           "messages"."conversation" = ${conversation.id} AND
           "messages"."reference" = ${messageReference}
@@ -336,7 +336,7 @@ export default async (application: Application): Promise<void> => {
             "courseParticipants"."reference" AS "enrollmentReference",
             "courseParticipants"."courseRole" AS "enrollmentCourseRole"
           FROM "readings"
-          JOIN "courseParticipants" ON "readings"."enrollment" = "courseParticipants"."id"
+          JOIN "courseParticipants" ON "readings"."courseParticipant" = "courseParticipants"."id"
           JOIN "users" ON "courseParticipants"."user" = "users"."id"
           WHERE "readings"."message" = ${message.id}
           ORDER BY "readings"."id" ASC
@@ -411,7 +411,7 @@ export default async (application: Application): Promise<void> => {
             "courseParticipants"."reference" AS "enrollmentReference",
             "courseParticipants"."courseRole" AS "enrollmentCourseRole"
           FROM "endorsements"
-          JOIN "courseParticipants" ON "endorsements"."enrollment" = "courseParticipants"."id"
+          JOIN "courseParticipants" ON "endorsements"."courseParticipant" = "courseParticipants"."id"
           JOIN "users" ON "courseParticipants"."user" = "users"."id"
           WHERE "endorsements"."message" = ${message.id}
           ORDER BY "endorsements"."id" ASC
@@ -487,7 +487,7 @@ export default async (application: Application): Promise<void> => {
             "courseParticipants"."reference" AS "enrollmentReference",
             "courseParticipants"."courseRole" AS "enrollmentCourseRole"
           FROM "likes"
-          LEFT JOIN "courseParticipants" ON "likes"."enrollment" = "courseParticipants"."id"
+          LEFT JOIN "courseParticipants" ON "likes"."courseParticipant" = "courseParticipants"."id"
           LEFT JOIN "users" ON "courseParticipants"."user" = "users"."id"
           WHERE "likes"."message" = ${message.id}
           ORDER BY "likes"."id" ASC
@@ -1361,7 +1361,7 @@ export default async (application: Application): Promise<void> => {
               DELETE FROM "readings"
               WHERE
                 "message" = ${mostRecentMessage.id} AND
-                "enrollment" != ${response.locals.enrollment.id}
+                "courseParticipant" != ${response.locals.enrollment.id}
             `
           );
         });
@@ -1445,7 +1445,7 @@ export default async (application: Application): Promise<void> => {
           )!;
           application.database.run(
             sql`
-              INSERT INTO "readings" ("createdAt", "message", "enrollment")
+              INSERT INTO "readings" ("createdAt", "message", "courseParticipant")
               VALUES (
                 ${new Date().toISOString()},
                 ${message.id},
@@ -1869,7 +1869,7 @@ export default async (application: Application): Promise<void> => {
 
       application.database.run(
         sql`
-          INSERT INTO "likes" ("createdAt", "message", "enrollment")
+          INSERT INTO "likes" ("createdAt", "message", "courseParticipant")
           VALUES (
             ${new Date().toISOString()},
             ${response.locals.message.id},
@@ -2000,7 +2000,7 @@ export default async (application: Application): Promise<void> => {
 
       application.database.run(
         sql`
-          INSERT INTO "endorsements" ("createdAt", "message", "enrollment")
+          INSERT INTO "endorsements" ("createdAt", "message", "courseParticipant")
           VALUES (
             ${new Date().toISOString()},
             ${response.locals.message.id},
@@ -2104,7 +2104,7 @@ export default async (application: Application): Promise<void> => {
     application.database.executeTransaction(() => {
       application.database.run(
         sql`
-          INSERT INTO "emailNotificationDeliveries" ("createdAt", "message", "enrollment")
+          INSERT INTO "emailNotificationDeliveries" ("createdAt", "message", "courseParticipant")
           VALUES (
             ${new Date().toISOString()},
             ${message.id},
@@ -2115,7 +2115,7 @@ export default async (application: Application): Promise<void> => {
       if (message.authorEnrollment !== "no-longer-enrolled")
         application.database.run(
           sql`
-            INSERT INTO "emailNotificationDeliveries" ("createdAt", "message", "enrollment")
+            INSERT INTO "emailNotificationDeliveries" ("createdAt", "message", "courseParticipant")
             VALUES (
               ${new Date().toISOString()},
               ${message.id},
@@ -2388,7 +2388,7 @@ export default async (application: Application): Promise<void> => {
                 SELECT TRUE
                 FROM "emailNotificationDeliveries"
                 WHERE
-                  "courseParticipants"."id" = "emailNotificationDeliveries"."enrollment" AND
+                  "courseParticipants"."id" = "emailNotificationDeliveries"."courseParticipant" AND
                   "emailNotificationDeliveries"."message" = ${message.id}
               ) $${
                 message.type === "course-staff-whisper"
@@ -2407,7 +2407,7 @@ export default async (application: Application): Promise<void> => {
                       FROM "conversationSelectedParticipants"
                       WHERE
                         "conversationSelectedParticipants"."conversation" = ${conversation.id} AND
-                        "conversationSelectedParticipants"."enrollment" = "courseParticipants"."id"
+                        "conversationSelectedParticipants"."courseParticipant" = "courseParticipants"."id"
                     )
                   )
                 `
@@ -2418,7 +2418,7 @@ export default async (application: Application): Promise<void> => {
                     FROM "conversationSelectedParticipants"
                     WHERE
                       "conversationSelectedParticipants"."conversation" = ${conversation.id} AND
-                      "conversationSelectedParticipants"."enrollment" = "courseParticipants"."id"
+                      "conversationSelectedParticipants"."courseParticipant" = "courseParticipants"."id"
                   )
                 `
               : sql``
@@ -2555,7 +2555,7 @@ export default async (application: Application): Promise<void> => {
 
           application.database.run(
             sql`
-              INSERT INTO "emailNotificationDeliveries" ("createdAt", "message", "enrollment")
+              INSERT INTO "emailNotificationDeliveries" ("createdAt", "message", "courseParticipant")
               VALUES (
                 ${new Date().toISOString()},
                 ${message.id},
