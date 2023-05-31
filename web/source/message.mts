@@ -59,7 +59,7 @@ export type ApplicationMessage = {
               }[];
               endorsements: {
                 id: number;
-                enrollment: Application["web"]["locals"]["Types"]["MaybeCourseParticipant"];
+                courseParticipant: Application["web"]["locals"]["Types"]["MaybeCourseParticipant"];
               }[];
               likes: {
                 id: number;
@@ -1992,8 +1992,8 @@ export default async (application: Application): Promise<void> => {
       if (
         response.locals.message.endorsements.some(
           (endorsement) =>
-            endorsement.enrollment !== "no-longer-participating" &&
-            endorsement.enrollment.id === response.locals.courseParticipant.id
+            endorsement.courseParticipant !== "no-longer-participating" &&
+            endorsement.courseParticipant.id === response.locals.courseParticipant.id
         )
       )
         return next("Validation");
@@ -2066,8 +2066,8 @@ export default async (application: Application): Promise<void> => {
 
       const endorsement = response.locals.message.endorsements.find(
         (endorsement) =>
-          endorsement.enrollment !== "no-longer-participating" &&
-          endorsement.enrollment.id === response.locals.courseParticipant.id
+          endorsement.courseParticipant !== "no-longer-participating" &&
+          endorsement.courseParticipant.id === response.locals.courseParticipant.id
       );
       if (endorsement === undefined) return next("Validation");
 

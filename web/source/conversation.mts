@@ -8438,9 +8438,9 @@ export default async (application: Application): Promise<void> => {
                                               const isEndorsed =
                                                 message.endorsements.some(
                                                   (endorsement) =>
-                                                    endorsement.enrollment !==
+                                                    endorsement.courseParticipant !==
                                                       "no-longer-participating" &&
-                                                    endorsement.enrollment
+                                                    endorsement.courseParticipant
                                                       .id ===
                                                       response.locals.courseParticipant
                                                         .id
@@ -8483,10 +8483,10 @@ export default async (application: Application): Promise<void> => {
                                                                     (
                                                                       endorsement
                                                                     ) =>
-                                                                      endorsement.enrollment !==
+                                                                      endorsement.courseParticipant !==
                                                                         "no-longer-participating" &&
                                                                       endorsement
-                                                                        .enrollment
+                                                                        .courseParticipant
                                                                         .id !==
                                                                         response
                                                                           .locals
@@ -8503,10 +8503,10 @@ export default async (application: Application): Promise<void> => {
                                                                             (
                                                                               endorsement
                                                                             ) =>
-                                                                              endorsement.enrollment !==
+                                                                              endorsement.courseParticipant !==
                                                                                 "no-longer-participating" &&
                                                                               endorsement
-                                                                                .enrollment
+                                                                                .courseParticipant
                                                                                 .id !==
                                                                                 response
                                                                                   .locals
@@ -8514,7 +8514,7 @@ export default async (application: Application): Promise<void> => {
                                                                                   .id
                                                                                 ? [
                                                                                     endorsement
-                                                                                      .enrollment
+                                                                                      .courseParticipant
                                                                                       .user
                                                                                       .name,
                                                                                   ]
@@ -8545,7 +8545,7 @@ export default async (application: Application): Promise<void> => {
                                                           class="button button--tight button--tight--inline button--tight-gap button--transparent text--lime"
                                                           $${message.endorsements.filter(
                                                             (endorsement) =>
-                                                              endorsement.enrollment !==
+                                                              endorsement.courseParticipant !==
                                                               "no-longer-participating"
                                                           ).length === 0
                                                             ? html``
@@ -8566,12 +8566,12 @@ export default async (application: Application): Promise<void> => {
                                                                             (
                                                                               endorsement
                                                                             ) =>
-                                                                              endorsement.enrollment ===
+                                                                              endorsement.courseParticipant ===
                                                                               "no-longer-participating"
                                                                                 ? []
                                                                                 : [
                                                                                     endorsement
-                                                                                      .enrollment
+                                                                                      .courseParticipant
                                                                                       .user
                                                                                       .name,
                                                                                   ]
@@ -8622,7 +8622,7 @@ export default async (application: Application): Promise<void> => {
                                                     if (${
                                                       message.endorsements.filter(
                                                         (endorsement) =>
-                                                          endorsement.enrollment !==
+                                                          endorsement.courseParticipant !==
                                                           "no-longer-participating"
                                                       ).length > 0
                                                     })
@@ -8638,12 +8638,12 @@ export default async (application: Application): Promise<void> => {
                                                             ).format(
                                                               message.endorsements.flatMap(
                                                                 (endorsement) =>
-                                                                  endorsement.enrollment ===
+                                                                  endorsement.courseParticipant ===
                                                                   "no-longer-participating"
                                                                     ? []
                                                                     : [
                                                                         endorsement
-                                                                          .enrollment
+                                                                          .courseParticipant
                                                                           .user
                                                                           .name,
                                                                       ]
