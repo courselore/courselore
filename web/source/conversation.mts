@@ -2945,7 +2945,7 @@ export default async (application: Application): Promise<void> => {
                   ($${application.web.locals.partials.user({
                     request,
                     response,
-                    enrollment: conversation.selectedParticipants[0],
+                    courseParticipant: conversation.selectedParticipants[0],
                     size: "xs",
                     bold: false,
                   })})
@@ -2991,7 +2991,7 @@ export default async (application: Application): Promise<void> => {
         $${application.web.locals.partials.user({
           request,
           response,
-          enrollment: conversation.authorEnrollment,
+          courseParticipant: conversation.authorEnrollment,
           anonymous:
             conversation.anonymousAt === null
               ? false
@@ -3107,7 +3107,7 @@ export default async (application: Application): Promise<void> => {
                 $${application.web.locals.partials.user({
                   request,
                   response,
-                  enrollment: searchResult.message.authorEnrollment,
+                  courseParticipant: searchResult.message.authorEnrollment,
                   name: searchResult.highlight,
                 })}
               </div>
@@ -3126,7 +3126,7 @@ export default async (application: Application): Promise<void> => {
                 $${application.web.locals.partials.user({
                   request,
                   response,
-                  enrollment: searchResult.message.authorEnrollment,
+                  courseParticipant: searchResult.message.authorEnrollment,
                   anonymous:
                     searchResult.message.anonymousAt === null
                       ? false
@@ -3150,7 +3150,7 @@ export default async (application: Application): Promise<void> => {
                 $${application.web.locals.partials.user({
                   request,
                   response,
-                  enrollment: message.authorEnrollment,
+                  courseParticipant: message.authorEnrollment,
                   anonymous:
                     message.anonymousAt === null
                       ? false
@@ -3276,7 +3276,7 @@ export default async (application: Application): Promise<void> => {
                     $${application.web.locals.partials.user({
                       request,
                       response,
-                      enrollment: selectedParticipant,
+                      courseParticipant: selectedParticipant,
                       size: "xs",
                       bold: false,
                     })}
@@ -4169,7 +4169,7 @@ export default async (application: Application): Promise<void> => {
                                                       {
                                                         request,
                                                         response,
-                                                        enrollment,
+                                                        courseParticipant: enrollment,
                                                         user: enrollment.user,
                                                         tooltip: false,
                                                         size: "xs",
@@ -4184,7 +4184,7 @@ export default async (application: Application): Promise<void> => {
                                                       {
                                                         request,
                                                         response,
-                                                        enrollment,
+                                                        courseParticipant: enrollment,
                                                         user: enrollment.user,
                                                         tooltip: false,
                                                         size: "xs",
@@ -4302,7 +4302,7 @@ export default async (application: Application): Promise<void> => {
                             $${application.web.locals.partials.user({
                               request,
                               response,
-                              enrollment,
+                              courseParticipant: enrollment,
                               user: enrollment.user,
                               tooltip: false,
                               size: "xs",
@@ -7241,7 +7241,7 @@ export default async (application: Application): Promise<void> => {
                                                                 {
                                                                   request,
                                                                   response,
-                                                                  enrollment,
+                                                                  courseParticipant: enrollment,
                                                                   user: enrollment.user,
                                                                   tooltip:
                                                                     false,
@@ -7257,7 +7257,7 @@ export default async (application: Application): Promise<void> => {
                                                                 {
                                                                   request,
                                                                   response,
-                                                                  enrollment,
+                                                                  courseParticipant: enrollment,
                                                                   user: enrollment.user,
                                                                   tooltip:
                                                                     false,
@@ -7394,7 +7394,7 @@ export default async (application: Application): Promise<void> => {
                                       $${application.web.locals.partials.user({
                                         request,
                                         response,
-                                        enrollment,
+                                        courseParticipant: enrollment,
                                         user: enrollment.user,
                                         tooltip: false,
                                         size: "xs",
@@ -7474,7 +7474,7 @@ export default async (application: Application): Promise<void> => {
                                           {
                                             request,
                                             response,
-                                            enrollment: selectedParticipant,
+                                            courseParticipant: selectedParticipant,
                                             user: selectedParticipant.user,
                                             size: "xs",
                                             bold: false,
@@ -8742,7 +8742,7 @@ export default async (application: Application): Promise<void> => {
                                                       {
                                                         request,
                                                         response,
-                                                        enrollment:
+                                                        courseParticipant:
                                                           message.authorEnrollment,
                                                         anonymous:
                                                           message.anonymousAt ===
@@ -9402,7 +9402,7 @@ export default async (application: Application): Promise<void> => {
                                           {
                                             request,
                                             response,
-                                            enrollment: {
+                                            courseParticipant: {
                                               ...response.locals.enrollment,
                                               user: response.locals.user,
                                             },
@@ -9427,7 +9427,7 @@ export default async (application: Application): Promise<void> => {
                                                 {
                                                   request,
                                                   response,
-                                                  enrollment: {
+                                                  courseParticipant: {
                                                     ...response.locals
                                                       .enrollment,
                                                     user: response.locals.user,
@@ -9652,7 +9652,7 @@ export default async (application: Application): Promise<void> => {
                                 application.web.locals.partials.user({
                                   request,
                                   response,
-                                  enrollment,
+                                  courseParticipant: enrollment,
                                   size: "xs",
                                   bold: false,
                                 })

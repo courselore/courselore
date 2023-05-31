@@ -4204,7 +4204,7 @@ export default async (application: Application): Promise<void> => {
                     $${application.web.locals.partials.user({
                       request,
                       response,
-                      enrollment,
+                      courseParticipant: enrollment,
                       name: false,
                     })}
                   </div>

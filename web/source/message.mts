@@ -1178,7 +1178,7 @@ export default async (application: Application): Promise<void> => {
                     $${application.web.locals.partials.user({
                       request,
                       response,
-                      enrollment: reading.enrollment,
+                      courseParticipant: reading.enrollment,
                       size: "xs",
                       bold: false,
                     })}
@@ -1811,7 +1811,7 @@ export default async (application: Application): Promise<void> => {
                     $${application.web.locals.partials.user({
                       request,
                       response,
-                      enrollment: like.enrollment,
+                      courseParticipant: like.enrollment,
                       size: "xs",
                       bold: false,
                     })}

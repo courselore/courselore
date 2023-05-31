@@ -34,7 +34,7 @@ export type ApplicationUser = {
         user: ({
           request,
           response,
-          enrollment,
+          courseParticipant,
           user,
           anonymous,
           avatar,
@@ -61,7 +61,7 @@ export type ApplicationUser = {
                 Application["web"]["locals"]["ResponseLocals"]["CourseParticipant"]
               >
           >;
-          enrollment?: Application["web"]["locals"]["Types"]["MaybeEnrollment"];
+          courseParticipant?: Application["web"]["locals"]["Types"]["MaybeEnrollment"];
           user?:
             | Application["web"]["locals"]["Types"]["User"]
             | "no-longer-enrolled";
@@ -308,12 +308,12 @@ export default async (application: Application): Promise<void> => {
   application.web.locals.partials.user = ({
     request,
     response,
-    enrollment = undefined,
-    user = enrollment === undefined
+    courseParticipant = undefined,
+    user = courseParticipant === undefined
       ? undefined
-      : enrollment === "no-longer-enrolled"
+      : courseParticipant === "no-longer-enrolled"
       ? "no-longer-enrolled"
-      : enrollment.user,
+      : courseParticipant.user,
     anonymous = user === undefined,
     avatar = true,
     decorate = user !== undefined,
@@ -532,9 +532,9 @@ export default async (application: Application): Promise<void> => {
                   ? "No Longer Enrolled"
                   : user.name}`
               : name}</span
-          >$${enrollment !== undefined &&
-          enrollment !== "no-longer-enrolled" &&
-          enrollment.courseRole === "course-staff"
+          >$${courseParticipant !== undefined &&
+          courseParticipant !== "no-longer-enrolled" &&
+          courseParticipant.courseRole === "course-staff"
             ? html`<span
                 class="text--sky"
                 javascript="${javascript`
@@ -595,7 +595,7 @@ export default async (application: Application): Promise<void> => {
                       $${application.web.locals.partials.user({
                         request,
                         response,
-                        enrollment,
+                        courseParticipant: courseParticipant,
                         user,
                         name: false,
                         size: "xl",
@@ -698,9 +698,9 @@ export default async (application: Application): Promise<void> => {
                                 </span>
                               </div>
                             `}
-                        $${enrollment !== undefined &&
-                        enrollment !== "no-longer-enrolled" &&
-                        enrollment.courseRole === "course-staff"
+                        $${courseParticipant !== undefined &&
+                        courseParticipant !== "no-longer-enrolled" &&
+                        courseParticipant.courseRole === "course-staff"
                           ? html`
                               <div
                                 class="text--sky"

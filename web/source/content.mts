@@ -543,8 +543,8 @@ export default async (application: Application): Promise<void> => {
                   })}`;
                   break;
                 default:
-                  const enrollmentReference = mention.split("--")[0];
-                  const enrollmentRow = application.database.get<{
+                  const courseParticipantReference = mention.split("--")[0];
+                  const courseParticipantRow = application.database.get<{
                     id: number;
                     userId: number;
                     userLastSeenOnlineAt: string;
@@ -578,36 +578,36 @@ export default async (application: Application): Promise<void> => {
                         "courseParticipants"."course" = ${
                           response.locals.course!.id
                         } AND
-                        "courseParticipants"."reference" = ${enrollmentReference}
+                        "courseParticipants"."reference" = ${courseParticipantReference}
                     `
                   );
-                  if (enrollmentRow === undefined) return match;
-                  const enrollment = {
-                    id: enrollmentRow.id,
+                  if (courseParticipantRow === undefined) return match;
+                  const courseParticipant = {
+                    id: courseParticipantRow.id,
                     user: {
-                      id: enrollmentRow.userId,
-                      lastSeenOnlineAt: enrollmentRow.userLastSeenOnlineAt,
-                      reference: enrollmentRow.userReference,
-                      email: enrollmentRow.userEmail,
-                      name: enrollmentRow.userName,
-                      avatar: enrollmentRow.userAvatar,
+                      id: courseParticipantRow.userId,
+                      lastSeenOnlineAt: courseParticipantRow.userLastSeenOnlineAt,
+                      reference: courseParticipantRow.userReference,
+                      email: courseParticipantRow.userEmail,
+                      name: courseParticipantRow.userName,
+                      avatar: courseParticipantRow.userAvatar,
                       avatarlessBackgroundColor:
-                        enrollmentRow.userAvatarlessBackgroundColor,
-                      biographySource: enrollmentRow.userBiographySource,
+                        courseParticipantRow.userAvatarlessBackgroundColor,
+                      biographySource: courseParticipantRow.userBiographySource,
                       biographyPreprocessed:
-                        enrollmentRow.userBiographyPreprocessed,
+                        courseParticipantRow.userBiographyPreprocessed,
                     },
-                    reference: enrollmentRow.reference,
-                    courseRole: enrollmentRow.courseRole,
+                    reference: courseParticipantRow.reference,
+                    courseRole: courseParticipantRow.courseRole,
                   };
-                  mentions.add(enrollment.reference);
+                  mentions.add(courseParticipant.reference);
                   mentionHTML = html`@$${application.web.locals.partials.user({
                     request,
                     response,
-                    enrollment,
+                    courseParticipant,
                     avatar: false,
                   })}`;
-                  if (enrollment.user.id === response.locals.user!.id)
+                  if (courseParticipant.user.id === response.locals.user!.id)
                     mentionHTML = html`<mark class="mark"
                       >$${mentionHTML}</mark
                     >`;
@@ -4347,7 +4347,7 @@ ${contentSource}</textarea
             $${application.web.locals.partials.user({
               request,
               response,
-              enrollment,
+              courseParticipant: enrollment,
               name: enrollment.user.nameSearchResultHighlight,
               tooltip: false,
               size: "xs",
@@ -4775,7 +4775,7 @@ ${contentSource}</textarea
                     $${application.web.locals.partials.user({
                       request,
                       response,
-                      enrollment: message.authorEnrollment,
+                      courseParticipant: message.authorEnrollment,
                       name: messageRow.messageAuthorUserNameSearchResultHighlight,
                       tooltip: false,
                     })}
@@ -5716,7 +5716,7 @@ ${contentSource}</textarea
                         $${application.web.locals.partials.user({
                           request,
                           response,
-                          enrollment: vote.enrollment,
+                          courseParticipant: vote.enrollment,
                           size: "xs",
                         })}
                       `
