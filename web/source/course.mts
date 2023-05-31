@@ -115,7 +115,7 @@ export type ApplicationCourse = {
       helpers: {
         courseRoles: ["student", "course-staff"];
 
-        enrollmentAccentColors: [
+        courseParticipantAccentColors: [
           "red",
           "yellow",
           "emerald",
@@ -131,7 +131,7 @@ export type ApplicationCourse = {
 export default async (application: Application): Promise<void> => {
   application.web.locals.helpers.courseRoles = ["student", "course-staff"];
 
-  application.web.locals.helpers.enrollmentAccentColors = [
+  application.web.locals.helpers.courseParticipantAccentColors = [
     "red",
     "yellow",
     "emerald",
@@ -525,9 +525,9 @@ export default async (application: Application): Promise<void> => {
       any,
       Application["web"]["locals"]["ResponseLocals"]["SignedIn"]
     >;
-  }): Application["web"]["locals"]["helpers"]["enrollmentAccentColors"][number] => {
+  }): Application["web"]["locals"]["helpers"]["courseParticipantAccentColors"][number] => {
     const accentColorsAvailable = new Set(
-      application.web.locals.helpers.enrollmentAccentColors
+      application.web.locals.helpers.courseParticipantAccentColors
     );
     for (const enrollment of response.locals.courseParticipations) {
       accentColorsAvailable.delete(enrollment.accentColor);
@@ -5186,7 +5186,7 @@ export default async (application: Application): Promise<void> => {
                     gap: var(--space--2);
                   `}"
                 >
-                  $${application.web.locals.helpers.enrollmentAccentColors.map(
+                  $${application.web.locals.helpers.courseParticipantAccentColors.map(
                     (accentColor) => html`
                       <input
                         type="radio"
@@ -5248,7 +5248,7 @@ export default async (application: Application): Promise<void> => {
     { courseReference: string },
     HTML,
     {
-      accentColor?: Application["web"]["locals"]["helpers"]["enrollmentAccentColors"][number];
+      accentColor?: Application["web"]["locals"]["helpers"]["courseParticipantAccentColors"][number];
     },
     {},
     Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
@@ -5259,7 +5259,7 @@ export default async (application: Application): Promise<void> => {
 
       if (
         typeof request.body.accentColor !== "string" ||
-        !application.web.locals.helpers.enrollmentAccentColors.includes(
+        !application.web.locals.helpers.courseParticipantAccentColors.includes(
           request.body.accentColor
         )
       )

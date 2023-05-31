@@ -980,7 +980,7 @@ export default async (application: Application): Promise<void> => {
                     >
                       <div>
                         <i class="bi bi-people"></i>
-                        ${String(course.courseParticipantsCount)} enrollments
+                        ${String(course.courseParticipantsCount)} participants
                       </div>
                       <div>
                         <i class="bi bi-chat-text"></i>

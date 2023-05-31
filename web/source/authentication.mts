@@ -86,7 +86,7 @@ export type ApplicationAuthentication = {
             };
             reference: string;
             courseRole: Application["web"]["locals"]["helpers"]["courseRoles"][number];
-            accentColor: Application["web"]["locals"]["helpers"]["enrollmentAccentColors"][number];
+            accentColor: Application["web"]["locals"]["helpers"]["courseParticipantAccentColors"][number];
             mostRecentlyVisitedConversationReference: string | null;
           }[];
 
@@ -556,7 +556,7 @@ export default async (application: Application): Promise<void> => {
         courseStudentsMayCreatePollsAt: string | null;
         reference: string;
         courseRole: Application["web"]["locals"]["helpers"]["courseRoles"][number];
-        accentColor: Application["web"]["locals"]["helpers"]["enrollmentAccentColors"][number];
+        accentColor: Application["web"]["locals"]["helpers"]["courseParticipantAccentColors"][number];
         mostRecentlyVisitedConversationReference: string | null;
       }>(
         sql`
