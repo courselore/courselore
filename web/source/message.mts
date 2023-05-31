@@ -873,7 +873,7 @@ export default async (application: Application): Promise<void> => {
                   `
                 : html``}
               $${response.locals.enrollment.courseRole === "course-staff" &&
-              response.locals.enrollments.length > 1
+              response.locals.courseParticipations.length > 1
                 ? html`
                     <button
                       class="dropdown--menu--item button button--transparent"
@@ -1670,7 +1670,7 @@ export default async (application: Application): Promise<void> => {
       if (
         response.locals.message === undefined ||
         response.locals.enrollment.courseRole !== "course-staff" ||
-        response.locals.enrollments.length === 1
+        response.locals.courseParticipations.length === 1
       )
         return next();
 

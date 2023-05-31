@@ -153,7 +153,7 @@ export default async (application: Application): Promise<void> => {
     )
       return next();
 
-    if (response.locals.enrollments.length === 0)
+    if (response.locals.courseParticipations.length === 0)
       return response.send(
         application.web.locals.layouts.main({
           request,
@@ -279,7 +279,7 @@ export default async (application: Application): Promise<void> => {
       303,
       `https://${application.configuration.hostname}/courses/${
         response.locals.user.mostRecentlyVisitedCourseReference ??
-        response.locals.enrollments[0].course.reference
+        response.locals.courseParticipations[0].course.reference
       }`
     );
   });
@@ -373,8 +373,8 @@ export default async (application: Application): Promise<void> => {
                 class="input--text"
                 autocomplete="off"
                 placeholder="Your University"
-                value="${response.locals.enrollments.length > 0
-                  ? response.locals.enrollments.at(-1)!.course.institution ?? ""
+                value="${response.locals.courseParticipations.length > 0
+                  ? response.locals.courseParticipations.at(-1)!.course.institution ?? ""
                   : ""}"
               />
             </label>
@@ -529,7 +529,7 @@ export default async (application: Application): Promise<void> => {
     const accentColorsAvailable = new Set(
       application.web.locals.helpers.enrollmentAccentColors
     );
-    for (const enrollment of response.locals.enrollments) {
+    for (const enrollment of response.locals.courseParticipations) {
       accentColorsAvailable.delete(enrollment.accentColor);
       if (accentColorsAvailable.size === 1) break;
     }
@@ -549,7 +549,7 @@ export default async (application: Application): Promise<void> => {
     )
       return next();
 
-    const enrollment = response.locals.enrollments.find(
+    const enrollment = response.locals.courseParticipations.find(
       (enrollment) =>
         enrollment.course.reference === request.params.courseReference
     );
@@ -736,7 +736,7 @@ export default async (application: Application): Promise<void> => {
     let courses = html``;
 
     const [unarchived, archived] = lodash.partition(
-      response.locals.enrollments,
+      response.locals.courseParticipations,
       (enrollment) => enrollment.course.archivedAt === null
     );
 

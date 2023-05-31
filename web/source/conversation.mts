@@ -6149,7 +6149,7 @@ export default async (application: Application): Promise<void> => {
                                       : html``}
                                     $${response.locals.enrollment.courseRole ===
                                       "course-staff" &&
-                                    response.locals.enrollments.length > 1 &&
+                                    response.locals.courseParticipations.length > 1 &&
                                     messages.length > 0 &&
                                     messages[0].reference ===
                                       "1" /* TODO: Pagination */

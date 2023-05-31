@@ -70,7 +70,7 @@ export type ApplicationAuthentication = {
             courseRole: Application["web"]["locals"]["helpers"]["courseRoles"][number];
           }[];
 
-          enrollments: {
+          courseParticipations: {
             id: number;
             course: {
               id: number;
@@ -541,7 +541,7 @@ export default async (application: Application): Promise<void> => {
         courseRole: invitation.courseRole,
       }));
 
-    response.locals.enrollments = application.database
+    response.locals.courseParticipations = application.database
       .all<{
         id: number;
         courseId: number;
