@@ -244,7 +244,7 @@ export default async (application: Application): Promise<void> => {
           FROM "messageDrafts"
           WHERE
             "conversation" = ${response.locals.conversation.id} AND
-            "courseParticipant" = ${response.locals.courseParticipant.id}
+            "authorCourseParticipant" = ${response.locals.courseParticipant.id}
         `
       );
 
@@ -843,7 +843,7 @@ export default async (application: Application): Promise<void> => {
                   JOIN "users" ON "usersNameSearchIndex"."rowid" = "users"."id"
                   JOIN "courseParticipants" ON "users"."id" = "courseParticipants"."user"
                   JOIN "messages" ON
-                    "courseParticipants"."id" = "messages"."courseParticipant"
+                    "courseParticipants"."id" = "messages"."authorCourseParticipant"
                     $${
                       response.locals.courseParticipant.courseRole ===
                       "course-staff"
@@ -851,7 +851,7 @@ export default async (application: Application): Promise<void> => {
                         : sql`
                             AND (
                               "messages"."anonymousAt" IS NULL OR
-                              "messages"."courseParticipant" = ${response.locals.courseParticipant.id}
+                              "messages"."authorCourseParticipant" = ${response.locals.courseParticipant.id}
                             ) AND
                               "messages"."type" != 'course-staff-whisper'
                           `

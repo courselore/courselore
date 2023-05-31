@@ -236,7 +236,7 @@ export default async (application: Application): Promise<void> => {
           "messages"."contentSearch",
           "readings"."id" AS "readingId"
         FROM "messages"
-        LEFT JOIN "courseParticipants" AS "courseParticipant" ON "messages"."courseParticipant" = "courseParticipant"."id"
+        LEFT JOIN "courseParticipants" AS "courseParticipant" ON "messages"."authorCourseParticipant" = "courseParticipant"."id"
         LEFT JOIN "users" AS "authorUser" ON "courseParticipant"."user" = "authorUser"."id"
         LEFT JOIN "readings" ON
           "messages"."id" = "readings"."message" AND
@@ -2315,7 +2315,7 @@ export default async (application: Application): Promise<void> => {
             FROM "messages"
             JOIN "conversations" ON "messages"."conversation" = "conversations"."id"
             JOIN "courses" ON "conversations"."course" = "courses"."id"
-            LEFT JOIN "courseParticipants" AS "courseParticipant" ON "messages"."courseParticipant" = "courseParticipant"."id"
+            LEFT JOIN "courseParticipants" AS "courseParticipant" ON "messages"."authorCourseParticipant" = "courseParticipant"."id"
             LEFT JOIN "users" AS "authorUser" ON "courseParticipant"."user" = "authorUser"."id"    
             WHERE "messages"."id" = ${job.message}
           `

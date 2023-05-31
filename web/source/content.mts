@@ -4285,7 +4285,7 @@ ${contentSource}</textarea
                         FROM "messages"
                         WHERE
                           "conversations"."id" = "messages"."conversation" AND
-                          "messages"."courseParticipant" = "courseParticipants"."id" $${
+                          "messages"."authorCourseParticipant" = "courseParticipants"."id" $${
                             response.locals.courseParticipant.courseRole ===
                             "course-staff"
                               ? sql``
@@ -4718,7 +4718,7 @@ ${contentSource}</textarea
               "conversations"."reference" AS "conversationReference",
               highlight("usersNameSearchIndex", 0, '<mark class="mark">', '</mark>') AS "messageAuthorUserNameSearchResultHighlight"
             FROM "messages"
-            JOIN "courseParticipants" ON "messages"."courseParticipant" = "courseParticipants"."id"
+            JOIN "courseParticipants" ON "messages"."authorCourseParticipant" = "courseParticipants"."id"
             JOIN "usersNameSearchIndex" ON
               "courseParticipants"."user" = "usersNameSearchIndex"."rowid" AND
               "usersNameSearchIndex" MATCH ${application.web.locals.helpers.sanitizeSearch(
@@ -4735,7 +4735,7 @@ ${contentSource}</textarea
                     WHERE
                       (
                         "messages"."anonymousAt" IS NULL OR
-                        "messages"."courseParticipant" = ${response.locals.courseParticipant.id}
+                        "messages"."authorCourseParticipant" = ${response.locals.courseParticipant.id}
                       ) AND
                         "messages"."type" != 'course-staff-whisper'
                   `
