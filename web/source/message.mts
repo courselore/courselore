@@ -64,7 +64,7 @@ export type ApplicationMessage = {
               likes: {
                 id: number;
                 createdAt: string;
-                enrollment: Application["web"]["locals"]["Types"]["MaybeCourseParticipant"];
+                courseParticipant: Application["web"]["locals"]["Types"]["MaybeCourseParticipant"];
               }[];
             }
           | undefined;
@@ -1810,15 +1810,15 @@ export default async (application: Application): Promise<void> => {
               $${response.locals.message.likes.reverse().map(
                 (like) => html`
                   <div
-                    key="like/${like.enrollment === "no-longer-participating"
-                      ? like.enrollment
-                      : like.enrollment.reference}"
+                    key="like/${like.courseParticipant === "no-longer-participating"
+                      ? like.courseParticipant
+                      : like.courseParticipant.reference}"
                     class="dropdown--menu--item"
                   >
                     $${application.web.locals.partials.user({
                       request,
                       response,
-                      courseParticipant: like.enrollment,
+                      courseParticipant: like.courseParticipant,
                       size: "xs",
                       bold: false,
                     })}
@@ -1868,8 +1868,8 @@ export default async (application: Application): Promise<void> => {
       if (
         response.locals.message.likes.some(
           (like) =>
-            like.enrollment !== "no-longer-participating" &&
-            like.enrollment.id === response.locals.courseParticipant.id
+            like.courseParticipant !== "no-longer-participating" &&
+            like.courseParticipant.id === response.locals.courseParticipant.id
         )
       )
         return next("Validation");
@@ -1926,8 +1926,8 @@ export default async (application: Application): Promise<void> => {
 
       const like = response.locals.message.likes.find(
         (like) =>
-          like.enrollment !== "no-longer-participating" &&
-          like.enrollment.id === response.locals.courseParticipant.id
+          like.courseParticipant !== "no-longer-participating" &&
+          like.courseParticipant.id === response.locals.courseParticipant.id
       );
       if (like === undefined) return next("Validation");
 

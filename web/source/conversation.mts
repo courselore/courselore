@@ -9002,9 +9002,9 @@ export default async (application: Application): Promise<void> => {
                                               const isLiked =
                                                 message.likes.some(
                                                   (like) =>
-                                                    like.enrollment !==
+                                                    like.courseParticipant !==
                                                       "no-longer-participating" &&
-                                                    like.enrollment.id ===
+                                                    like.courseParticipant.id ===
                                                       response.locals
                                                         .courseParticipant.id
                                                 );
