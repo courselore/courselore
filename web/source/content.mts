@@ -845,7 +845,9 @@ export default async (application: Application): Promise<void> => {
           `
         );
 
-        const voted = options.some((option) => option.courseParticipantVote !== null);
+        const voted = options.some(
+          (option) => option.courseParticipantVote !== null
+        );
         const mayEdit = mayEditPoll({
           request: requestCourseParticipant,
           response: responseCourseParticipant,
@@ -4325,10 +4327,13 @@ ${contentSource}</textarea
             email: courseParticipantRow.userEmail,
             name: courseParticipantRow.userName,
             avatar: courseParticipantRow.userAvatar,
-            avatarlessBackgroundColor: courseParticipantRow.userAvatarlessBackgroundColor,
+            avatarlessBackgroundColor:
+              courseParticipantRow.userAvatarlessBackgroundColor,
             biographySource: courseParticipantRow.userBiographySource,
-            biographyPreprocessed: courseParticipantRow.userBiographyPreprocessed,
-            nameSearchResultHighlight: courseParticipantRow.userNameSearchResultHighlight,
+            biographyPreprocessed:
+              courseParticipantRow.userBiographyPreprocessed,
+            nameSearchResultHighlight:
+              courseParticipantRow.userNameSearchResultHighlight,
           },
           reference: courseParticipantRow.reference,
           courseRole: courseParticipantRow.courseRole,

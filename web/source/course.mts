@@ -909,7 +909,8 @@ export default async (application: Application): Promise<void> => {
               </div>
 
               <div class="menu-box">
-                $${response.locals.courseParticipant.courseRole === "course-staff"
+                $${response.locals.courseParticipant.courseRole ===
+                "course-staff"
                   ? html`
                       <a
                         href="https://${application.configuration
@@ -937,12 +938,13 @@ export default async (application: Application): Promise<void> => {
                     },
                     { addQueryPrefix: true }
                   )}"
-                  class="menu-box--item button ${response.locals.courseParticipant
-                    .courseRole === "course-staff"
+                  class="menu-box--item button ${response.locals
+                    .courseParticipant.courseRole === "course-staff"
                     ? "button--transparent"
                     : "button--blue"}"
                 >
-                  $${response.locals.courseParticipant.courseRole === "course-staff"
+                  $${response.locals.courseParticipant.courseRole ===
+                  "course-staff"
                     ? html`<i class="bi bi-chat-text"></i>`
                     : html`<i class="bi bi-chat-text-fill"></i>`}
                   Start the First Conversation
@@ -980,7 +982,8 @@ export default async (application: Application): Promise<void> => {
       `https://${application.configuration.hostname}/courses/${
         response.locals.course.reference
       }/conversations/${
-        response.locals.courseParticipant.mostRecentlyVisitedConversationReference ??
+        response.locals.courseParticipant
+          .mostRecentlyVisitedConversationReference ??
         response.locals.mostRecentlyUpdatedConversationReference
       }${qs.stringify(
         {
@@ -4176,7 +4179,8 @@ export default async (application: Application): Promise<void> => {
 
             $${enrollments.map((enrollment) => {
               const action = `https://${application.configuration.hostname}/courses/${response.locals.course.reference}/settings/enrollments/${enrollment.reference}`;
-              const isSelf = enrollment.id === response.locals.courseParticipant.id;
+              const isSelf =
+                enrollment.id === response.locals.courseParticipant.id;
               const isOnlyCourseStaff =
                 isSelf &&
                 enrollments.filter(
