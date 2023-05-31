@@ -263,7 +263,7 @@ export default async (application: Application): Promise<void> => {
                 userBiographySource: string | null;
                 userBiographyPreprocessed: HTML | null;
                 courseParticipantReference: string;
-                enrollmentCourseRole: Application["web"]["locals"]["helpers"]["courseRoles"][number];
+                courseParticipantCourseRole: Application["web"]["locals"]["helpers"]["courseRoles"][number];
               }>(
                 sql`
                   SELECT
@@ -278,7 +278,7 @@ export default async (application: Application): Promise<void> => {
                     "users"."biographySource" AS "userBiographySource",
                     "users"."biographyPreprocessed" AS "userBiographyPreprocessed",
                     "courseParticipants"."reference" AS "courseParticipantReference",
-                    "courseParticipants"."courseRole" AS "enrollmentCourseRole"
+                    "courseParticipants"."courseRole" AS "courseParticipantCourseRole"
                   FROM "courseParticipants"
                   JOIN "users" ON "courseParticipants"."user" = "users"."id"
                   JOIN "messageDrafts" ON
@@ -314,7 +314,7 @@ export default async (application: Application): Promise<void> => {
                     selectedParticipant.userBiographyPreprocessed,
                 },
                 reference: selectedParticipant.courseParticipantReference,
-                courseRole: selectedParticipant.enrollmentCourseRole,
+                courseRole: selectedParticipant.courseParticipantCourseRole,
               }))
           : [];
 
@@ -478,7 +478,7 @@ export default async (application: Application): Promise<void> => {
               userBiographySource: string | null;
               userBiographyPreprocessed: HTML | null;
               courseParticipantReference: string;
-              enrollmentCourseRole: Application["web"]["locals"]["helpers"]["courseRoles"][number];
+              courseParticipantCourseRole: Application["web"]["locals"]["helpers"]["courseRoles"][number];
             }>(
               sql`
                 SELECT
@@ -493,7 +493,7 @@ export default async (application: Application): Promise<void> => {
                   "users"."biographySource" AS "userBiographySource",
                   "users"."biographyPreprocessed" AS "userBiographyPreprocessed",
                   "courseParticipants"."reference" AS "courseParticipantReference",
-                  "courseParticipants"."courseRole" AS "enrollmentCourseRole"
+                  "courseParticipants"."courseRole" AS "courseParticipantCourseRole"
                 FROM "conversationSelectedParticipants"
                 JOIN "courseParticipants" ON "conversationSelectedParticipants"."courseParticipant" = "courseParticipants"."id"
                 JOIN "users" ON "courseParticipants"."user" = "users"."id"
@@ -521,7 +521,7 @@ export default async (application: Application): Promise<void> => {
                   selectedParticipant.userBiographyPreprocessed,
               },
               reference: selectedParticipant.courseParticipantReference,
-              courseRole: selectedParticipant.enrollmentCourseRole,
+              courseRole: selectedParticipant.courseParticipantCourseRole,
             }));
 
     const taggings = application.database
@@ -613,7 +613,7 @@ export default async (application: Application): Promise<void> => {
               userBiographySource: string | null;
               userBiographyPreprocessed: HTML | null;
               courseParticipantReference: string | null;
-              enrollmentCourseRole:
+              courseParticipantCourseRole:
                 | Application["web"]["locals"]["helpers"]["courseRoles"][number]
                 | null;
             }>(
@@ -631,7 +631,7 @@ export default async (application: Application): Promise<void> => {
                   "users"."biographySource" AS "userBiographySource",
                   "users"."biographyPreprocessed" AS "userBiographyPreprocessed",
                   "courseParticipants"."reference" AS "courseParticipantReference",
-                  "courseParticipants"."courseRole" AS "enrollmentCourseRole"
+                  "courseParticipants"."courseRole" AS "courseParticipantCourseRole"
                 FROM "endorsements"
                 JOIN "courseParticipants" ON "endorsements"."courseParticipant" = "courseParticipants"."id"
                 JOIN "users" ON "courseParticipants"."user" = "users"."id"
@@ -652,7 +652,7 @@ export default async (application: Application): Promise<void> => {
                 endorsement.userName !== null &&
                 endorsement.userAvatarlessBackgroundColor !== null &&
                 endorsement.courseParticipantReference !== null &&
-                endorsement.enrollmentCourseRole !== null
+                endorsement.courseParticipantCourseRole !== null
                   ? {
                       id: endorsement.courseParticipantId,
                       user: {
@@ -669,7 +669,7 @@ export default async (application: Application): Promise<void> => {
                           endorsement.userBiographyPreprocessed,
                       },
                       reference: endorsement.courseParticipantReference,
-                      courseRole: endorsement.enrollmentCourseRole,
+                      courseRole: endorsement.courseParticipantCourseRole,
                     }
                   : ("no-longer-participating" as const),
             }))

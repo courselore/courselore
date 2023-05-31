@@ -5657,7 +5657,7 @@ ${contentSource}</textarea
                       userBiographySource: string | null;
                       userBiographyPreprocessed: HTML | null;
                       courseParticipantReference: string | null;
-                      enrollmentCourseRole:
+                      courseParticipantCourseRole:
                         | Application["web"]["locals"]["helpers"]["courseRoles"][number]
                         | null;
                     }>(
@@ -5674,7 +5674,7 @@ ${contentSource}</textarea
                           "users"."biographySource" AS "userBiographySource",
                           "users"."biographyPreprocessed" AS "userBiographyPreprocessed",
                           "courseParticipants"."reference" AS "courseParticipantReference",
-                          "courseParticipants"."courseRole" AS "enrollmentCourseRole"
+                          "courseParticipants"."courseRole" AS "courseParticipantCourseRole"
                         FROM "messagePollVotes"
                         LEFT JOIN "courseParticipants" ON "messagePollVotes"."courseParticipant" = "courseParticipants"."id"
                         LEFT JOIN "users" ON "courseParticipants"."user" = "users"."id"
@@ -5692,7 +5692,7 @@ ${contentSource}</textarea
                         vote.userName !== null &&
                         vote.userAvatarlessBackgroundColors !== null &&
                         vote.courseParticipantReference !== null &&
-                        vote.enrollmentCourseRole !== null
+                        vote.courseParticipantCourseRole !== null
                           ? {
                               id: vote.courseParticipantId,
                               user: {
@@ -5709,7 +5709,7 @@ ${contentSource}</textarea
                                   vote.userBiographyPreprocessed,
                               },
                               reference: vote.courseParticipantReference,
-                              courseRole: vote.enrollmentCourseRole,
+                              courseRole: vote.courseParticipantCourseRole,
                             }
                           : ("no-longer-participating" as const),
                     }))

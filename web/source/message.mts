@@ -315,7 +315,7 @@ export default async (application: Application): Promise<void> => {
         userBiographySource: string | null;
         userBiographyPreprocessed: HTML | null;
         courseParticipantReference: string | null;
-        enrollmentCourseRole:
+        courseParticipantCourseRole:
           | Application["web"]["locals"]["helpers"]["courseRoles"][number]
           | null;
       }>(
@@ -334,7 +334,7 @@ export default async (application: Application): Promise<void> => {
             "users"."biographySource" AS "userBiographySource",
             "users"."biographyPreprocessed" AS "userBiographyPreprocessed",
             "courseParticipants"."reference" AS "courseParticipantReference",
-            "courseParticipants"."courseRole" AS "enrollmentCourseRole"
+            "courseParticipants"."courseRole" AS "courseParticipantCourseRole"
           FROM "readings"
           JOIN "courseParticipants" ON "readings"."courseParticipant" = "courseParticipants"."id"
           JOIN "users" ON "courseParticipants"."user" = "users"."id"
@@ -354,7 +354,7 @@ export default async (application: Application): Promise<void> => {
           reading.userName !== null &&
           reading.userAvatarlessBackgroundColor !== null &&
           reading.courseParticipantReference !== null &&
-          reading.enrollmentCourseRole !== null
+          reading.courseParticipantCourseRole !== null
             ? {
                 id: reading.courseParticipantId,
                 user: {
@@ -370,7 +370,7 @@ export default async (application: Application): Promise<void> => {
                   biographyPreprocessed: reading.userBiographyPreprocessed,
                 },
                 reference: reading.courseParticipantReference,
-                courseRole: reading.enrollmentCourseRole,
+                courseRole: reading.courseParticipantCourseRole,
               }
             : ("no-longer-participating" as const),
       }));
@@ -391,7 +391,7 @@ export default async (application: Application): Promise<void> => {
         userBiographySource: string | null;
         userBiographyPreprocessed: HTML | null;
         courseParticipantReference: string | null;
-        enrollmentCourseRole:
+        courseParticipantCourseRole:
           | Application["web"]["locals"]["helpers"]["courseRoles"][number]
           | null;
       }>(
@@ -409,7 +409,7 @@ export default async (application: Application): Promise<void> => {
             "users"."biographySource" AS "userBiographySource",
             "users"."biographyPreprocessed" AS "userBiographyPreprocessed",
             "courseParticipants"."reference" AS "courseParticipantReference",
-            "courseParticipants"."courseRole" AS "enrollmentCourseRole"
+            "courseParticipants"."courseRole" AS "courseParticipantCourseRole"
           FROM "endorsements"
           JOIN "courseParticipants" ON "endorsements"."courseParticipant" = "courseParticipants"."id"
           JOIN "users" ON "courseParticipants"."user" = "users"."id"
@@ -428,7 +428,7 @@ export default async (application: Application): Promise<void> => {
           endorsement.userName !== null &&
           endorsement.userAvatarlessBackgroundColor !== null &&
           endorsement.courseParticipantReference !== null &&
-          endorsement.enrollmentCourseRole !== null
+          endorsement.courseParticipantCourseRole !== null
             ? {
                 id: endorsement.courseParticipantId,
                 user: {
@@ -444,7 +444,7 @@ export default async (application: Application): Promise<void> => {
                   biographyPreprocessed: endorsement.userBiographyPreprocessed,
                 },
                 reference: endorsement.courseParticipantReference,
-                courseRole: endorsement.enrollmentCourseRole,
+                courseRole: endorsement.courseParticipantCourseRole,
               }
             : ("no-longer-participating" as const),
       }));
@@ -466,7 +466,7 @@ export default async (application: Application): Promise<void> => {
         userBiographySource: string | null;
         userBiographyPreprocessed: HTML | null;
         courseParticipantReference: string | null;
-        enrollmentCourseRole:
+        courseParticipantCourseRole:
           | Application["web"]["locals"]["helpers"]["courseRoles"][number]
           | null;
       }>(
@@ -485,7 +485,7 @@ export default async (application: Application): Promise<void> => {
             "users"."biographySource" AS "userBiographySource",
             "users"."biographyPreprocessed" AS "userBiographyPreprocessed",
             "courseParticipants"."reference" AS "courseParticipantReference",
-            "courseParticipants"."courseRole" AS "enrollmentCourseRole"
+            "courseParticipants"."courseRole" AS "courseParticipantCourseRole"
           FROM "likes"
           LEFT JOIN "courseParticipants" ON "likes"."courseParticipant" = "courseParticipants"."id"
           LEFT JOIN "users" ON "courseParticipants"."user" = "users"."id"
@@ -505,7 +505,7 @@ export default async (application: Application): Promise<void> => {
           like.userName !== null &&
           like.userAvatarlessBackgroundColor !== null &&
           like.courseParticipantReference !== null &&
-          like.enrollmentCourseRole !== null
+          like.courseParticipantCourseRole !== null
             ? {
                 id: like.courseParticipantId,
                 user: {
@@ -520,7 +520,7 @@ export default async (application: Application): Promise<void> => {
                   biographyPreprocessed: like.userBiographyPreprocessed,
                 },
                 reference: like.courseParticipantReference,
-                courseRole: like.enrollmentCourseRole,
+                courseRole: like.courseParticipantCourseRole,
               }
             : ("no-longer-participating" as const),
       }));
