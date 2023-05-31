@@ -244,12 +244,12 @@ export default async (application: Application): Promise<void> => {
           FROM "messageDrafts"
           WHERE
             "conversation" = ${response.locals.conversation.id} AND
-            "courseParticipant" = ${response.locals.enrollment.id}
+            "courseParticipant" = ${response.locals.courseParticipant.id}
         `
       );
 
       response.locals.enrollmentsTyping =
-        response.locals.enrollment.courseRole === "course-staff"
+        response.locals.courseParticipant.courseRole === "course-staff"
           ? application.database
               .all<{
                 enrollmentId: number;
@@ -291,7 +291,7 @@ export default async (application: Application): Promise<void> => {
                     ).toISOString()} < "messageDrafts"."createdAt"
                   WHERE
                     "courseParticipants"."id" != ${
-                      response.locals.enrollment.id
+                      response.locals.courseParticipant.id
                     }
                   ORDER BY
                     "courseParticipants"."courseRole" = 'course-staff' DESC,
@@ -323,7 +323,7 @@ export default async (application: Application): Promise<void> => {
           sql`
             UPDATE "courseParticipants"
             SET "mostRecentlyVisitedConversation" = ${response.locals.conversation.id}
-            WHERE "id" = ${response.locals.enrollment.id}
+            WHERE "id" = ${response.locals.courseParticipant.id}
           `
         );
 
@@ -401,7 +401,7 @@ export default async (application: Application): Promise<void> => {
           "conversations"."course" = ${response.locals.course.id} AND
           "conversations"."reference" = ${conversationReference} AND (
             "conversations"."participants" = 'everyone' $${
-              response.locals.enrollment.courseRole === "course-staff"
+              response.locals.courseParticipant.courseRole === "course-staff"
                 ? sql`OR "conversations"."participants" = 'course-staff'`
                 : sql``
             } OR EXISTS(
@@ -410,7 +410,7 @@ export default async (application: Application): Promise<void> => {
               WHERE
                 "conversationSelectedParticipants"."conversation" = "conversations"."id" AND 
                 "conversationSelectedParticipants"."courseParticipant" = ${
-                  response.locals.enrollment.id
+                  response.locals.courseParticipant.id
                 }
             )
           )
@@ -499,7 +499,7 @@ export default async (application: Application): Promise<void> => {
                 JOIN "users" ON "courseParticipants"."user" = "users"."id"
                 WHERE
                   "conversationSelectedParticipants"."conversation" = ${conversation.id} AND
-                  "courseParticipants"."id" != ${response.locals.enrollment.id}
+                  "courseParticipants"."id" != ${response.locals.courseParticipant.id}
                 ORDER BY
                   "courseParticipants"."courseRole" = 'course-staff' DESC,
                   "users"."name" ASC
@@ -542,7 +542,7 @@ export default async (application: Application): Promise<void> => {
           FROM "taggings"
           JOIN "tags" ON "taggings"."tag" = "tags"."id"
           $${
-            response.locals.enrollment.courseRole === "student"
+            response.locals.courseParticipant.courseRole === "student"
               ? sql`AND "tags"."courseStaffOnlyAt" IS NULL`
               : sql``
           }
@@ -568,7 +568,7 @@ export default async (application: Application): Promise<void> => {
         FROM "messages"
         WHERE
           "messages"."conversation" = ${conversation.id} $${
-        response.locals.enrollment.courseRole !== "course-staff"
+        response.locals.courseParticipant.courseRole !== "course-staff"
           ? sql`
               AND "messages"."type" != 'course-staff-whisper'
             `
@@ -585,8 +585,8 @@ export default async (application: Application): Promise<void> => {
           "readings"."message" = "messages"."id" AND
           "messages"."conversation" = ${conversation.id}
         WHERE
-          "readings"."courseParticipant" = ${response.locals.enrollment.id} $${
-        response.locals.enrollment.courseRole !== "course-staff"
+          "readings"."courseParticipant" = ${response.locals.courseParticipant.id} $${
+        response.locals.courseParticipant.courseRole !== "course-staff"
           ? sql`
               AND "messages"."type" != 'course-staff-whisper'
             `
@@ -843,12 +843,12 @@ export default async (application: Application): Promise<void> => {
                   JOIN "messages" ON
                     "courseParticipants"."id" = "messages"."courseParticipant"
                     $${
-                      response.locals.enrollment.courseRole === "course-staff"
+                      response.locals.courseParticipant.courseRole === "course-staff"
                         ? sql``
                         : sql`
                             AND (
                               "messages"."anonymousAt" IS NULL OR
-                              "messages"."courseParticipant" = ${response.locals.enrollment.id}
+                              "messages"."courseParticipant" = ${response.locals.courseParticipant.id}
                             ) AND
                               "messages"."type" != 'course-staff-whisper'
                           `
@@ -866,7 +866,7 @@ export default async (application: Application): Promise<void> => {
                   JOIN "messages" ON
                     "messagesContentSearchIndex"."rowid" = "messages"."id"
                     $${
-                      response.locals.enrollment.courseRole === "course-staff"
+                      response.locals.courseParticipant.courseRole === "course-staff"
                         ? sql``
                         : sql`
                             AND "messages"."type" != 'course-staff-whisper'
@@ -889,7 +889,7 @@ export default async (application: Application): Promise<void> => {
           WHERE
             "conversations"."course" = ${response.locals.course.id} AND (
               "conversations"."participants" = 'everyone' $${
-                response.locals.enrollment.courseRole === "course-staff"
+                response.locals.courseParticipant.courseRole === "course-staff"
                   ? sql`OR "conversations"."participants" = 'course-staff'`
                   : sql``
               } OR EXISTS(
@@ -898,7 +898,7 @@ export default async (application: Application): Promise<void> => {
                 WHERE
                   "conversationSelectedParticipants"."conversation" = "conversations"."id" AND 
                   "conversationSelectedParticipants"."courseParticipant" = ${
-                    response.locals.enrollment.id
+                    response.locals.courseParticipant.id
                   }
               )
             )
@@ -925,12 +925,12 @@ export default async (application: Application): Promise<void> => {
                       LEFT JOIN "readings" ON
                         "messages"."id" = "readings"."message" AND
                         "readings"."courseParticipant" = ${
-                          response.locals.enrollment.id
+                          response.locals.courseParticipant.id
                         }
                       WHERE
                         "conversations"."id" = "messages"."conversation" AND
                         "readings"."id" IS NULL $${
-                          response.locals.enrollment.courseRole !==
+                          response.locals.courseParticipant.courseRole !==
                           "course-staff"
                             ? sql`
                                 AND "messages"."type" != 'course-staff-whisper'
@@ -1291,7 +1291,7 @@ export default async (application: Application): Promise<void> => {
                     >
                       New:
                     </div>
-                    $${response.locals.enrollment.courseRole === "course-staff"
+                    $${response.locals.courseParticipant.courseRole === "course-staff"
                       ? html`
                           <a
                             href="https://${application.configuration
@@ -1386,7 +1386,7 @@ export default async (application: Application): Promise<void> => {
                     >
                       Quick Filters:
                     </div>
-                    $${response.locals.enrollment.courseRole === "course-staff"
+                    $${response.locals.courseParticipant.courseRole === "course-staff"
                       ? html`
                           $${!util.isDeepStrictEqual(
                             request.query.conversations?.filters,
@@ -1486,7 +1486,7 @@ export default async (application: Application): Promise<void> => {
                             Announcements
                           </a>
                         `}
-                    $${response.locals.enrollment.courseRole === "student"
+                    $${response.locals.courseParticipant.courseRole === "student"
                       ? html`
                           $${!util.isDeepStrictEqual(
                             request.query.conversations?.filters,
@@ -2995,10 +2995,10 @@ export default async (application: Application): Promise<void> => {
           anonymous:
             conversation.anonymousAt === null
               ? false
-              : response.locals.enrollment.courseRole === "course-staff" ||
+              : response.locals.courseParticipant.courseRole === "course-staff" ||
                 (conversation.courseParticipant !== "no-longer-participating" &&
                   conversation.courseParticipant.id ===
-                    response.locals.enrollment.id)
+                    response.locals.courseParticipant.id)
               ? "reveal"
               : true,
           size: "xs",
@@ -3130,12 +3130,12 @@ export default async (application: Application): Promise<void> => {
                   anonymous:
                     searchResult.message.anonymousAt === null
                       ? false
-                      : response.locals.enrollment.courseRole ===
+                      : response.locals.courseParticipant.courseRole ===
                           "course-staff" ||
                         (searchResult.message.courseParticipant !==
                           "no-longer-participating" &&
                           searchResult.message.courseParticipant.id ===
-                            response.locals.enrollment.id)
+                            response.locals.courseParticipant.id)
                       ? "reveal"
                       : true,
                 })}
@@ -3154,11 +3154,11 @@ export default async (application: Application): Promise<void> => {
                   anonymous:
                     message.anonymousAt === null
                       ? false
-                      : response.locals.enrollment.courseRole ===
+                      : response.locals.courseParticipant.courseRole ===
                           "course-staff" ||
                         (message.courseParticipant !== "no-longer-participating" &&
                           message.courseParticipant.id ===
-                            response.locals.enrollment.id)
+                            response.locals.courseParticipant.id)
                       ? "reveal"
                       : true,
                 })}
@@ -3310,11 +3310,11 @@ export default async (application: Application): Promise<void> => {
             "conversations"."course" = ${response.locals.course.id}
           LEFT JOIN "readings" ON
             "messages"."id" = "readings"."message" AND
-            "readings"."courseParticipant" = ${response.locals.enrollment.id}
+            "readings"."courseParticipant" = ${response.locals.courseParticipant.id}
           WHERE
             "readings"."id" IS NULL AND (
             "conversations"."participants" = 'everyone' $${
-              response.locals.enrollment.courseRole === "course-staff"
+              response.locals.courseParticipant.courseRole === "course-staff"
                 ? sql`
                     OR "conversations"."participants" = 'course-staff'
                   `
@@ -3326,11 +3326,11 @@ export default async (application: Application): Promise<void> => {
               WHERE
                 "conversationSelectedParticipants"."conversation" = "conversations"."id" AND
                 "conversationSelectedParticipants"."courseParticipant" = ${
-                  response.locals.enrollment.id
+                  response.locals.courseParticipant.id
                 }
             )
           ) $${
-            response.locals.enrollment.courseRole !== "course-staff"
+            response.locals.courseParticipant.courseRole !== "course-staff"
               ? sql`
                   AND "messages"."type" != 'course-staff-whisper'
                 `
@@ -3346,7 +3346,7 @@ export default async (application: Application): Promise<void> => {
             VALUES (
               ${new Date().toISOString()},
               ${message.id},
-              ${response.locals.enrollment.id}
+              ${response.locals.courseParticipant.id}
             )
           `
         );
@@ -3573,7 +3573,7 @@ export default async (application: Application): Promise<void> => {
                                 };
 
                               if (${
-                                response.locals.enrollment.courseRole ===
+                                response.locals.courseParticipant.courseRole ===
                                 "course-staff"
                               }) {
                                 const notification = form.querySelector('[key="new-conversation--announcement"]');
@@ -3650,7 +3650,7 @@ export default async (application: Application): Promise<void> => {
                       request.query.newConversation?.type === undefined)),
               })}
               $${response.locals.tags.length === 0 &&
-              response.locals.enrollment.courseRole !== "course-staff"
+              response.locals.courseParticipant.courseRole !== "course-staff"
                 ? html``
                 : html`
                     <div class="label">
@@ -3673,7 +3673,7 @@ export default async (application: Application): Promise<void> => {
                           <i class="bi bi-info-circle"></i>
                         </button>
                         $${response.locals.tags.length > 0 &&
-                        response.locals.enrollment.courseRole === "course-staff"
+                        response.locals.courseParticipant.courseRole === "course-staff"
                           ? html`
                               <div
                                 css="${css`
@@ -3705,7 +3705,7 @@ export default async (application: Application): Promise<void> => {
                         `}"
                       >
                         $${response.locals.tags.length === 0 &&
-                        response.locals.enrollment.courseRole === "course-staff"
+                        response.locals.courseParticipant.courseRole === "course-staff"
                           ? html`
                               <a
                                 href="https://${application.configuration
@@ -3837,7 +3837,7 @@ export default async (application: Application): Promise<void> => {
                       JOIN "users" ON "courseParticipants"."user" = "users"."id"
                       WHERE
                         "courseParticipants"."course" = ${response.locals.course.id} AND
-                        "courseParticipants"."id" != ${response.locals.enrollment.id}
+                        "courseParticipants"."id" != ${response.locals.courseParticipant.id}
                       ORDER BY
                         "courseParticipants"."courseRole" = 'course-staff' DESC,
                         "users"."name" ASC
@@ -4326,7 +4326,7 @@ export default async (application: Application): Promise<void> => {
                   row-gap: var(--space--4);
                 `}"
               >
-                $${response.locals.enrollment.courseRole === "course-staff"
+                $${response.locals.courseParticipant.courseRole === "course-staff"
                   ? html`
                       <div
                         key="new-conversation--announcement"
@@ -5009,11 +5009,11 @@ export default async (application: Application): Promise<void> => {
 
     if (
       (request.body.participants === "course-staff" &&
-        response.locals.enrollment.courseRole !== "course-staff") ||
+        response.locals.courseParticipant.courseRole !== "course-staff") ||
       request.body.participants === "selected-people"
     )
       request.body.selectedParticipantsReferences.push(
-        response.locals.enrollment.reference
+        response.locals.courseParticipant.reference
       );
     const selectedParticipants =
       request.body.selectedParticipantsReferences.length === 0
@@ -5041,14 +5041,14 @@ export default async (application: Application): Promise<void> => {
         )) ||
       ![undefined, "on"].includes(request.body.isAnnouncement) ||
       (request.body.isAnnouncement === "on" &&
-        (response.locals.enrollment.courseRole !== "course-staff" ||
+        (response.locals.courseParticipant.courseRole !== "course-staff" ||
           request.body.type !== "note")) ||
       ![undefined, "on"].includes(request.body.isPinned) ||
       (request.body.isPinned === "on" &&
-        response.locals.enrollment.courseRole !== "course-staff") ||
+        response.locals.courseParticipant.courseRole !== "course-staff") ||
       ![undefined, "on"].includes(request.body.isAnonymous) ||
       (request.body.isAnonymous === "on" &&
-        response.locals.enrollment.courseRole === "course-staff")
+        response.locals.courseParticipant.courseRole === "course-staff")
     )
       return next("Validation");
 
@@ -5096,7 +5096,7 @@ export default async (application: Application): Promise<void> => {
                   ${new Date().toISOString()},
                   ${response.locals.course.id},
                   ${String(response.locals.course.nextConversationReference)},
-                  ${response.locals.enrollment.id},
+                  ${response.locals.courseParticipant.id},
                   ${request.body.participants},
                   ${
                     request.body.isAnonymous === "on"
@@ -5180,7 +5180,7 @@ export default async (application: Application): Promise<void> => {
                     ${new Date().toISOString()},
                     ${conversation.id},
                     ${"1"},
-                    ${response.locals.enrollment.id},
+                    ${response.locals.courseParticipant.id},
                     ${
                       request.body.isAnonymous === "on"
                         ? new Date().toISOString()
@@ -5202,7 +5202,7 @@ export default async (application: Application): Promise<void> => {
             VALUES (
               ${new Date().toISOString()},
               ${message.id},
-              ${response.locals.enrollment.id}
+              ${response.locals.courseParticipant.id}
             )
           `
         );
@@ -5322,10 +5322,10 @@ export default async (application: Application): Promise<void> => {
       Application["web"]["locals"]["ResponseLocals"]["Conversation"]
     >;
   }): boolean =>
-    response.locals.enrollment.courseRole === "course-staff" ||
+    response.locals.courseParticipant.courseRole === "course-staff" ||
     (response.locals.conversation.courseParticipant !== "no-longer-participating" &&
       response.locals.conversation.courseParticipant.id ===
-        response.locals.enrollment.id);
+        response.locals.courseParticipant.id);
 
   application.web.get<
     { courseReference: string; conversationReference: string },
@@ -5363,7 +5363,7 @@ export default async (application: Application): Promise<void> => {
                   "reference" = ${
                     request.query.messages.messagesPage.beforeMessageReference
                   } $${
-                response.locals.enrollment.courseRole !== "course-staff"
+                response.locals.courseParticipant.courseRole !== "course-staff"
                   ? sql`
                       AND "messages"."type" != 'course-staff-whisper'
                     `
@@ -5387,7 +5387,7 @@ export default async (application: Application): Promise<void> => {
                   "reference" = ${
                     request.query.messages.messagesPage.afterMessageReference
                   } $${
-                response.locals.enrollment.courseRole !== "course-staff"
+                response.locals.courseParticipant.courseRole !== "course-staff"
                   ? sql`
                       AND "messages"."type" != 'course-staff-whisper'
                     `
@@ -5425,7 +5425,7 @@ export default async (application: Application): Promise<void> => {
                 : sql``
             }
             $${
-              response.locals.enrollment.courseRole !== "course-staff"
+              response.locals.courseParticipant.courseRole !== "course-staff"
                 ? sql`
                     AND "type" != 'course-staff-whisper'
                   `
@@ -5455,7 +5455,7 @@ export default async (application: Application): Promise<void> => {
             VALUES (
               ${new Date().toISOString()},
               ${message.id},
-              ${response.locals.enrollment.id}
+              ${response.locals.courseParticipant.id}
             )
           `
         );
@@ -5702,7 +5702,7 @@ export default async (application: Application): Promise<void> => {
                             `}
                         $${response.locals.conversation.type === "question"
                           ? html`
-                              $${response.locals.enrollment.courseRole ===
+                              $${response.locals.courseParticipant.courseRole ===
                               "course-staff"
                                 ? html`
                                     <form
@@ -5810,7 +5810,7 @@ export default async (application: Application): Promise<void> => {
                           : html``}
                         $${response.locals.conversation.type === "note"
                           ? html`
-                              $${response.locals.enrollment.courseRole ===
+                              $${response.locals.courseParticipant.courseRole ===
                               "course-staff"
                                 ? html`
                                     <form
@@ -5895,7 +5895,7 @@ export default async (application: Application): Promise<void> => {
                                 : html``}
                             `
                           : html``}
-                        $${response.locals.enrollment.courseRole ===
+                        $${response.locals.courseParticipant.courseRole ===
                         "course-staff"
                           ? html`
                               <form
@@ -6139,7 +6139,7 @@ export default async (application: Application): Promise<void> => {
                                                     ${response.locals
                                                       .conversation
                                                       .courseParticipant.id ===
-                                                    response.locals.enrollment
+                                                    response.locals.courseParticipant
                                                       .id
                                                       ? "You"
                                                       : response.locals
@@ -6151,7 +6151,7 @@ export default async (application: Application): Promise<void> => {
                                           </form>
                                         `
                                       : html``}
-                                    $${response.locals.enrollment.courseRole ===
+                                    $${response.locals.courseParticipant.courseRole ===
                                       "course-staff" &&
                                     response.locals.courseParticipations
                                       .length > 1 &&
@@ -6223,7 +6223,7 @@ export default async (application: Application): Promise<void> => {
                                           </button>
                                         `
                                       : html``}
-                                    $${response.locals.enrollment.courseRole ===
+                                    $${response.locals.courseParticipant.courseRole ===
                                     "course-staff"
                                       ? html`
                                           <div>
@@ -6546,7 +6546,7 @@ export default async (application: Application): Promise<void> => {
                           `;
 
                       if (
-                        response.locals.enrollment.courseRole ===
+                        response.locals.courseParticipant.courseRole ===
                           "course-staff" ||
                         (mayEditConversation({ request, response }) &&
                           response.locals.tags.length > 0)
@@ -6582,7 +6582,7 @@ export default async (application: Application): Promise<void> => {
                                           gap: var(--space--2);
                                         `}"
                                       >
-                                        $${response.locals.enrollment
+                                        $${response.locals.courseParticipant
                                           .courseRole === "course-staff"
                                           ? html`
                                               <div class="dropdown--menu">
@@ -6846,7 +6846,7 @@ export default async (application: Application): Promise<void> => {
                                 JOIN "users" ON "courseParticipants"."user" = "users"."id"
                                 WHERE
                                   "courseParticipants"."course" = ${response.locals.course.id} AND
-                                  "courseParticipants"."id" != ${response.locals.enrollment.id}
+                                  "courseParticipants"."id" != ${response.locals.courseParticipant.id}
                                 ORDER BY
                                   "courseParticipants"."courseRole" = 'course-staff' DESC,
                                   "users"."name" ASC
@@ -8445,7 +8445,7 @@ export default async (application: Application): Promise<void> => {
                                                       "no-longer-participating" &&
                                                     endorsement.enrollment
                                                       .id ===
-                                                      response.locals.enrollment
+                                                      response.locals.courseParticipant
                                                         .id
                                                 );
 
@@ -8493,7 +8493,7 @@ export default async (application: Application): Promise<void> => {
                                                                         .id !==
                                                                         response
                                                                           .locals
-                                                                          .enrollment
+                                                                          .courseParticipant
                                                                           .id
                                                                   ).length > 0
                                                                     ? ` (Also endorsed by ${
@@ -8513,7 +8513,7 @@ export default async (application: Application): Promise<void> => {
                                                                                 .id !==
                                                                                 response
                                                                                   .locals
-                                                                                  .enrollment
+                                                                                  .courseParticipant
                                                                                   .id
                                                                                 ? [
                                                                                     endorsement
@@ -8754,7 +8754,7 @@ export default async (application: Application): Promise<void> => {
                                                           null
                                                             ? false
                                                             : response.locals
-                                                                .enrollment
+                                                                .courseParticipant
                                                                 .courseRole ===
                                                                 "course-staff" ||
                                                               (message.courseParticipant !==
@@ -8764,7 +8764,7 @@ export default async (application: Application): Promise<void> => {
                                                                   .id ===
                                                                   response
                                                                     .locals
-                                                                    .enrollment
+                                                                    .courseParticipant
                                                                     .id)
                                                             ? "reveal"
                                                             : true,
@@ -8985,7 +8985,7 @@ export default async (application: Application): Promise<void> => {
                                                     like.enrollment !==
                                                       "no-longer-participating" &&
                                                     like.enrollment.id ===
-                                                      response.locals.enrollment
+                                                      response.locals.courseParticipant
                                                         .id
                                                 );
                                               const likesCount =
@@ -9149,7 +9149,7 @@ export default async (application: Application): Promise<void> => {
                                                 `;
 
                                               if (
-                                                response.locals.enrollment
+                                                response.locals.courseParticipant
                                                   .courseRole ===
                                                   "course-staff" &&
                                                 response.locals.conversation
@@ -9408,13 +9408,13 @@ export default async (application: Application): Promise<void> => {
                                             request,
                                             response,
                                             courseParticipant: {
-                                              ...response.locals.enrollment,
+                                              ...response.locals.courseParticipant,
                                               user: response.locals.user,
                                             },
                                           }
                                         )}
                                       </div>
-                                      $${response.locals.enrollment
+                                      $${response.locals.courseParticipant
                                         .courseRole === "course-staff"
                                         ? html``
                                         : html`
@@ -9434,7 +9434,7 @@ export default async (application: Application): Promise<void> => {
                                                   response,
                                                   courseParticipant: {
                                                     ...response.locals
-                                                      .enrollment,
+                                                      .courseParticipant,
                                                     user: response.locals.user,
                                                   },
                                                   anonymous: "reveal",
@@ -9523,7 +9523,7 @@ export default async (application: Application): Promise<void> => {
                       const placeholder = document.querySelector('[key="message--new-message--placeholder"]');
                       const content = this.querySelector('[name="content"]');
                       if (${
-                        response.locals.enrollment.courseRole !== "course-staff"
+                        response.locals.courseParticipant.courseRole !== "course-staff"
                       })
                         placeholder.querySelector('[key="message--new-message--placeholder--anonymous--' + (!this.querySelector('[name="isAnonymous"]').checked).toString() + '"]').hidden = true;
                       placeholder.querySelector('[key="message--new-message--placeholder--content"]').textContent = content.value;
@@ -9668,7 +9668,7 @@ export default async (application: Application): Promise<void> => {
                       : html``}
                   </div>
 
-                  $${response.locals.enrollment.courseRole === "course-staff"
+                  $${response.locals.courseParticipant.courseRole === "course-staff"
                     ? html``
                     : html`
                         <div class="label">
@@ -9769,7 +9769,7 @@ export default async (application: Application): Promise<void> => {
                     ? (() => {
                         const sendAnswerFirst =
                           response.locals.conversation.type === "question" &&
-                          response.locals.enrollment.courseRole ===
+                          response.locals.courseParticipant.courseRole ===
                             "course-staff";
 
                         const sendMessage = html`
@@ -9881,7 +9881,7 @@ export default async (application: Application): Promise<void> => {
                               : html`$${sendMessage} $${sendAnswer}`}
                             $${response.locals.conversation.type ===
                               "question" &&
-                            response.locals.enrollment.courseRole === "student"
+                            response.locals.courseParticipant.courseRole === "student"
                               ? html`
                                   <div>
                                     <button
@@ -9895,7 +9895,7 @@ export default async (application: Application): Promise<void> => {
                                   </div>
                                 `
                               : html``}
-                            $${response.locals.enrollment.courseRole ===
+                            $${response.locals.courseParticipant.courseRole ===
                             "course-staff"
                               ? html`
                                   <div
@@ -9996,11 +9996,11 @@ export default async (application: Application): Promise<void> => {
 
           if (
             (request.body.participants === "course-staff" &&
-              response.locals.enrollment.courseRole !== "course-staff") ||
+              response.locals.courseParticipant.courseRole !== "course-staff") ||
             request.body.participants === "selected-people"
           )
             request.body.selectedParticipantsReferences.push(
-              response.locals.enrollment.reference
+              response.locals.courseParticipant.reference
             );
           const selectedParticipants =
             request.body.selectedParticipantsReferences.length === 0
@@ -10127,7 +10127,7 @@ export default async (application: Application): Promise<void> => {
       if (typeof request.body.isAnnouncement === "string")
         if (
           !["true", "false"].includes(request.body.isAnnouncement) ||
-          response.locals.enrollment.courseRole !== "course-staff" ||
+          response.locals.courseParticipant.courseRole !== "course-staff" ||
           response.locals.conversation.type !== "note" ||
           (request.body.isAnnouncement === "true" &&
             response.locals.conversation.announcementAt !== null) ||
@@ -10172,7 +10172,7 @@ export default async (application: Application): Promise<void> => {
       if (typeof request.body.isPinned === "string")
         if (
           !["true", "false"].includes(request.body.isPinned) ||
-          response.locals.enrollment.courseRole !== "course-staff" ||
+          response.locals.courseParticipant.courseRole !== "course-staff" ||
           (request.body.isPinned === "true" &&
             response.locals.conversation.pinnedAt !== null) ||
           (request.body.isPinned === "false" &&
@@ -10202,7 +10202,7 @@ export default async (application: Application): Promise<void> => {
         if (
           response.locals.conversation.type !== "question" ||
           !["true", "false"].includes(request.body.isResolved) ||
-          response.locals.enrollment.courseRole !== "course-staff" ||
+          response.locals.courseParticipant.courseRole !== "course-staff" ||
           (request.body.isResolved === "true" &&
             response.locals.conversation.resolvedAt !== null) ||
           (request.body.isResolved === "false" &&
@@ -10271,7 +10271,7 @@ export default async (application: Application): Promise<void> => {
     (request, response, next) => {
       if (
         response.locals.conversation === undefined ||
-        response.locals.enrollment.courseRole !== "course-staff"
+        response.locals.courseParticipant.courseRole !== "course-staff"
       )
         return next();
 

@@ -1686,10 +1686,10 @@ export default async (application: Application): Promise<void> => {
               }
 
               document.querySelector('[key="theme-color--light"]').setAttribute("content", getComputedStyle(document.documentElement).getPropertyValue(${`--color--${
-                response.locals.enrollment?.accentColor ?? ""
+                response.locals.courseParticipant?.accentColor ?? ""
               }--500`}));
               document.querySelector('[key="theme-color--dark"]').setAttribute("content", getComputedStyle(document.documentElement).getPropertyValue(${`--color--${
-                response.locals.enrollment?.accentColor ?? ""
+                response.locals.courseParticipant?.accentColor ?? ""
               }--600`}));
 
               if (${
@@ -1722,7 +1722,7 @@ export default async (application: Application): Promise<void> => {
               };
             `}"
           >
-            $${response.locals.enrollment === undefined
+            $${response.locals.courseParticipant === undefined
               ? html``
               : html`
                   <div
@@ -1736,9 +1736,9 @@ export default async (application: Application): Promise<void> => {
                       class="button"
                       style="
                         --color--accent-color--500: var(--color--${response
-                        .locals.enrollment.accentColor}--500);
+                        .locals.courseParticipant.accentColor}--500);
                         --color--accent-color--600: var(--color--${response
-                        .locals.enrollment.accentColor}--600);
+                        .locals.courseParticipant.accentColor}--600);
                       "
                       css="${css`
                         background-color: var(--color--accent-color--500);
@@ -1749,8 +1749,8 @@ export default async (application: Application): Promise<void> => {
                         flex: 1;
                       `}"
                       javascript="${javascript`
-                        this.style.setProperty("--color--accent-color--500", ${`var(--color--${response.locals.enrollment.accentColor}--500)`});
-                        this.style.setProperty("--color--accent-color--600", ${`var(--color--${response.locals.enrollment.accentColor}--600)`});
+                        this.style.setProperty("--color--accent-color--500", ${`var(--color--${response.locals.courseParticipant.accentColor}--500)`});
+                        this.style.setProperty("--color--accent-color--600", ${`var(--color--${response.locals.courseParticipant.accentColor}--600)`});
 
                         leafac.setTippy({
                           event,

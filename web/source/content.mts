@@ -837,7 +837,7 @@ export default async (application: Application): Promise<void> => {
             FROM "messagePollOptions"
             LEFT JOIN "messagePollVotes" AS "messagePollVotesCourseParticipantVote" ON
               "messagePollOptions"."id" = "messagePollVotesCourseParticipantVote"."messagePollOption" AND
-              "messagePollVotesCourseParticipantVote"."courseParticipant" = ${responseCourseParticipant.locals.enrollment.id}
+              "messagePollVotesCourseParticipantVote"."courseParticipant" = ${responseCourseParticipant.locals.courseParticipant.id}
             LEFT JOIN "messagePollVotes" AS "messagePollVotesCount" ON "messagePollOptions"."id" = "messagePollVotesCount"."messagePollOption"
             WHERE "messagePollOptions"."messagePoll" = ${poll.id}
             GROUP BY "messagePollOptions"."id"
@@ -2400,7 +2400,7 @@ export default async (application: Application): Promise<void> => {
                       >
                         $${response.locals.course !== undefined &&
                         !(
-                          response.locals.enrollment?.courseRole ===
+                          response.locals.courseParticipant?.courseRole ===
                             "student" &&
                           response.locals.course.studentsMayCreatePollsAt ===
                             null
@@ -4284,7 +4284,7 @@ ${contentSource}</textarea
                         WHERE
                           "conversations"."id" = "messages"."conversation" AND
                           "messages"."courseParticipant" = "courseParticipants"."id" $${
-                            response.locals.enrollment.courseRole ===
+                            response.locals.courseParticipant.courseRole ===
                             "course-staff"
                               ? sql``
                               : sql`
@@ -4447,7 +4447,7 @@ ${contentSource}</textarea
               SELECT "reference"
               FROM "messages"
               WHERE "conversation" = ${response.locals.conversation.id} $${
-              response.locals.enrollment.courseRole !== "course-staff"
+              response.locals.courseParticipant.courseRole !== "course-staff"
                 ? sql`
                     AND "type" != 'course-staff-whisper'
                   `
@@ -4580,7 +4580,7 @@ ${contentSource}</textarea
                 }
                 WHERE
                   "messages"."conversation" = ${conversation.id} $${
-                response.locals.enrollment.courseRole !== "course-staff"
+                response.locals.courseParticipant.courseRole !== "course-staff"
                   ? sql`
                       AND "messages"."type" != 'course-staff-whisper'
                     `
@@ -4724,13 +4724,13 @@ ${contentSource}</textarea
               "messages"."conversation" = "conversations"."id" AND
               "conversations"."course" = ${response.locals.course.id}
             $${
-              response.locals.enrollment.courseRole === "course-staff"
+              response.locals.courseParticipant.courseRole === "course-staff"
                 ? sql``
                 : sql`
                     WHERE
                       (
                         "messages"."anonymousAt" IS NULL OR
-                        "messages"."courseParticipant" = ${response.locals.enrollment.id}
+                        "messages"."courseParticipant" = ${response.locals.courseParticipant.id}
                       ) AND
                         "messages"."type" != 'course-staff-whisper'
                   `
@@ -4815,7 +4815,7 @@ ${contentSource}</textarea
               "messages"."conversation" = "conversations"."id" AND
               "conversations"."course" = ${response.locals.course.id}
             $${
-              response.locals.enrollment.courseRole !== "course-staff"
+              response.locals.courseParticipant.courseRole !== "course-staff"
                 ? sql`
                     WHERE "messages"."type" != 'course-staff-whisper'
                   `
@@ -5031,7 +5031,7 @@ ${contentSource}</textarea
   >("/courses/:courseReference/polls", (request, response, next) => {
     if (
       response.locals.course === undefined ||
-      (response.locals.enrollment.courseRole === "student" &&
+      (response.locals.courseParticipant.courseRole === "student" &&
         response.locals.course.studentsMayCreatePollsAt === null)
     )
       return next();
@@ -5074,7 +5074,7 @@ ${contentSource}</textarea
                 ${new Date().toISOString()},
                 ${response.locals.course.id},
                 ${cryptoRandomString({ length: 20, type: "numeric" })},
-                ${response.locals.enrollment.id},
+                ${response.locals.courseParticipant.id},
                 ${
                   request.body.choices === "multiple"
                     ? new Date().toISOString()
@@ -5156,9 +5156,9 @@ ${contentSource}</textarea
     >;
     poll: { courseParticipant: { id: number } | "no-longer-participating" };
   }): boolean =>
-    response.locals.enrollment.courseRole === "course-staff" ||
+    response.locals.courseParticipant.courseRole === "course-staff" ||
     (poll.courseParticipant !== "no-longer-participating" &&
-      poll.courseParticipant.id === response.locals.enrollment.id);
+      poll.courseParticipant.id === response.locals.courseParticipant.id);
 
   application.web.use<
     { courseReference: string; pollReference: string },
@@ -5534,7 +5534,7 @@ ${contentSource}</textarea
               "messagePollOption" IN ${response.locals.poll.options.map(
                 (option) => option.id
               )} AND
-              "courseParticipant" = ${response.locals.enrollment.id}
+              "courseParticipant" = ${response.locals.courseParticipant.id}
           `
         ) !== undefined
       )
@@ -5555,7 +5555,7 @@ ${contentSource}</textarea
                   (option) => option.reference === optionReference
                 )!.id
               },
-              ${response.locals.enrollment.id}
+              ${response.locals.courseParticipant.id}
             )
           `
         );
@@ -5598,7 +5598,7 @@ ${contentSource}</textarea
             "messagePollOption" IN ${response.locals.poll.options.map(
               (option) => option.id
             )} AND
-            "courseParticipant" = ${response.locals.enrollment.id}
+            "courseParticipant" = ${response.locals.courseParticipant.id}
         `
       );
 

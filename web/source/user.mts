@@ -616,7 +616,7 @@ export default async (application: Application): Promise<void> => {
                             : user!.name}
                         </div>
                         $${user !== "no-longer-participating" &&
-                        (response.locals.enrollment?.courseRole ===
+                        (response.locals.courseParticipant?.courseRole ===
                           "course-staff" ||
                           response.locals.user?.id === user!.id)
                           ? html`
