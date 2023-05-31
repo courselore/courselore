@@ -2135,27 +2135,27 @@ export default async (application: Application): Promise<void> => {
           UPDATE "messages" SET "type" = 'course-staff-whisper' WHERE "type" = 'staff-whisper';
           ALTER TABLE "tags" RENAME COLUMN "staffOnlyAt" TO "courseStaffOnlyAt";
 
-          ALTER TABLE "enrollments" RENAME TO "courseParticipations";
+          ALTER TABLE "enrollments" RENAME TO "courseParticipants";
           DROP INDEX "enrollmentsUserIndex";
-          CREATE INDEX "courseParticipationsUserIndex" ON "courseParticipations" ("user");
+          CREATE INDEX "courseParticipantsUserIndex" ON "courseParticipants" ("user");
           DROP INDEX "enrollmentsCourseIndex";
-          CREATE INDEX "courseParticipationsCourseIndex" ON "courseParticipations" ("course");
-          ALTER TABLE "readings" RENAME COLUMN "enrollment" TO "courseParticipation";
-          ALTER TABLE "emailNotificationDeliveries" RENAME COLUMN "enrollment" TO "courseParticipation";
-          ALTER TABLE "endorsements" RENAME COLUMN "enrollment" TO "courseParticipation";
-          ALTER TABLE "likes" RENAME COLUMN "enrollment" TO "courseParticipation";
-          ALTER TABLE "emailNotificationDigestMessages" RENAME COLUMN "enrollment" TO "courseParticipation";
+          CREATE INDEX "courseParticipantsCourseIndex" ON "courseParticipants" ("course");
+          ALTER TABLE "readings" RENAME COLUMN "enrollment" TO "courseParticipant";
+          ALTER TABLE "emailNotificationDeliveries" RENAME COLUMN "enrollment" TO "courseParticipant";
+          ALTER TABLE "endorsements" RENAME COLUMN "enrollment" TO "courseParticipant";
+          ALTER TABLE "likes" RENAME COLUMN "enrollment" TO "courseParticipant";
+          ALTER TABLE "emailNotificationDigestMessages" RENAME COLUMN "enrollment" TO "courseParticipant";
           DROP INDEX "emailNotificationDigestMessagesEnrollmentIndex";
-          CREATE INDEX "emailNotificationDigestMessagesCourseParticipationIndex" ON "emailNotificationDigestMessages" ("courseParticipation");
-          ALTER TABLE "conversations" RENAME COLUMN "authorEnrollment" TO "authorCourseParticipation";
-          ALTER TABLE "conversationSelectedParticipants" RENAME COLUMN "enrollment" TO "courseParticipation";
+          CREATE INDEX "emailNotificationDigestMessagesCourseParticipantIndex" ON "emailNotificationDigestMessages" ("courseParticipant");
+          ALTER TABLE "conversations" RENAME COLUMN "authorEnrollment" TO "authorCourseParticipant";
+          ALTER TABLE "conversationSelectedParticipants" RENAME COLUMN "enrollment" TO "courseParticipant";
           DROP INDEX "conversationSelectedParticipantsEnrollmentIndex";
-          CREATE INDEX "conversationSelectedParticipantsCourseParticipationIndex" ON "conversationSelectedParticipants" ("courseParticipation");
-          ALTER TABLE "messageDrafts" RENAME COLUMN "authorEnrollment" TO "authorCourseParticipation";
-          ALTER TABLE "messagePolls" RENAME COLUMN "authorEnrollment" TO "authorCourseParticipation";
-          ALTER TABLE "messagePollVotes" RENAME COLUMN "enrollment" TO "courseParticipation";
-          ALTER TABLE "users" RENAME COLUMN "mostRecentlyVisitedEnrollment" TO "mostRecentlyVisitedCourseParticipation";
-          ALTER TABLE "messages" RENAME COLUMN "authorEnrollment" TO "authorCourseParticipation";
+          CREATE INDEX "conversationSelectedParticipantsCourseParticipantIndex" ON "conversationSelectedParticipants" ("courseParticipant");
+          ALTER TABLE "messageDrafts" RENAME COLUMN "authorEnrollment" TO "authorCourseParticipant";
+          ALTER TABLE "messagePolls" RENAME COLUMN "authorEnrollment" TO "authorCourseParticipant";
+          ALTER TABLE "messagePollVotes" RENAME COLUMN "enrollment" TO "courseParticipant";
+          ALTER TABLE "users" RENAME COLUMN "mostRecentlyVisitedEnrollment" TO "mostRecentlyVisitedCourseParticipant";
+          ALTER TABLE "messages" RENAME COLUMN "authorEnrollment" TO "authorCourseParticipant";
         `
       );
 
