@@ -6170,7 +6170,7 @@ export default async (application: Application): Promise<void> => {
                                       : html``}
                                     $${response.locals.courseParticipant
                                       .courseRole === "course-staff" &&
-                                    response.locals.courseParticipations
+                                    response.locals.courseParticipants
                                       .length > 1 &&
                                     messages.length > 0 &&
                                     messages[0].reference ===
