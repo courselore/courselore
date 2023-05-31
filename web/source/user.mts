@@ -595,7 +595,7 @@ export default async (application: Application): Promise<void> => {
                       $${application.web.locals.partials.user({
                         request,
                         response,
-                        courseParticipant: courseParticipant,
+                        courseParticipant,
                         user,
                         name: false,
                         size: "xl",
@@ -674,7 +674,7 @@ export default async (application: Application): Promise<void> => {
                         $${user === "no-longer-participating"
                           ? html`
                               <div class="secondary">
-                                This person has left the course.
+                                This course participant has left the course.
                               </div>
                             `
                           : html`

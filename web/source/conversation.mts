@@ -4319,7 +4319,7 @@ export default async (application: Application): Promise<void> => {
                             $${application.web.locals.partials.user({
                               request,
                               response,
-                              courseParticipant: courseParticipant,
+                              courseParticipant,
                               user: courseParticipant.user,
                               tooltip: false,
                               size: "xs",
@@ -7418,7 +7418,7 @@ export default async (application: Application): Promise<void> => {
                                       $${application.web.locals.partials.user({
                                         request,
                                         response,
-                                        courseParticipant: courseParticipant,
+                                        courseParticipant,
                                         user: courseParticipant.user,
                                         tooltip: false,
                                         size: "xs",

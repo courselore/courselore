@@ -762,7 +762,7 @@ export default async (application: Application): Promise<void> => {
                   request,
                   response,
                   course: courseParticipant.course,
-                  courseParticipant: courseParticipant,
+                  courseParticipant,
                   tight,
                 })}
               </a>
@@ -815,7 +815,7 @@ export default async (application: Application): Promise<void> => {
                   request,
                   response,
                   course: courseParticipant.course,
-                  courseParticipant: courseParticipant,
+                  courseParticipant,
                   tight,
                 })}
               </a>
@@ -4213,7 +4213,7 @@ export default async (application: Application): Promise<void> => {
                     $${application.web.locals.partials.user({
                       request,
                       response,
-                      courseParticipant: courseParticipant,
+                      courseParticipant,
                       name: false,
                     })}
                   </div>
@@ -4542,7 +4542,9 @@ export default async (application: Application): Promise<void> => {
                                     >
                                       <p>
                                         Are you sure you want to remove
-                                        ${isSelf ? "yourself" : "this person"}
+                                        ${isSelf
+                                          ? "yourself"
+                                          : "this course participant"}
                                         from the course?
                                       </p>
                                       <p>
@@ -4734,7 +4736,7 @@ export default async (application: Application): Promise<void> => {
         content: html`
           $${response.locals.managedCourseParticipant.isSelf
             ? html`You removed yourself`
-            : html`Person removed`}
+            : html`Course participant removed`}
           from the course successfully.
         `,
       });

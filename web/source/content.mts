@@ -2871,7 +2871,7 @@ export default async (application: Application): Promise<void> => {
                                   `}"
                                 >
                                   <i class="bi bi-at"></i>
-                                  Mention Person
+                                  Mention Course Participant
                                   <span class="keyboard-shortcut">@</span>
                                 </button>
                                 <button
@@ -3164,7 +3164,7 @@ export default async (application: Application): Promise<void> => {
                                   >
                                     <p class="heading">
                                       <i class="bi bi-at"></i>
-                                      Mention Person
+                                      Mention Course Participant
                                     </p>
                                     <div
                                       key="search-results"
@@ -4354,7 +4354,7 @@ ${contentSource}</textarea
             $${application.web.locals.partials.user({
               request,
               response,
-              courseParticipant: courseParticipant,
+              courseParticipant,
               name: courseParticipant.user.nameSearchResultHighlight,
               tooltip: false,
               size: "xs",
@@ -4371,7 +4371,7 @@ ${contentSource}</textarea
             $${result === html``
               ? html`
                   <div class="dropdown--menu--item secondary">
-                    Person not found.
+                    Course participant not found.
                   </div>
                 `
               : result}
