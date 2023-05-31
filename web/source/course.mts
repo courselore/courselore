@@ -747,7 +747,7 @@ export default async (application: Application): Promise<void> => {
           (courseParticipant) =>
             html`
               <a
-                key="enrollment--${courseParticipant.reference}"
+                key="course-participant--${courseParticipant.reference}"
                 href="https://${application.configuration
                   .hostname}/courses/${courseParticipant.course
                   .reference}${hrefSuffix}"
@@ -775,7 +775,7 @@ export default async (application: Application): Promise<void> => {
         $${courses !== html`` ? html`<hr class="separator" />` : html``}
 
         <button
-          key="enrollment--archived"
+          key="course-participant--archived"
           class="dropdown--menu--item menu-box--item button ${tight
             ? ""
             : "button--tight"} button--transparent secondary"
@@ -799,7 +799,7 @@ export default async (application: Application): Promise<void> => {
           (enrollment) =>
             html`
               <a
-                key="enrollment--${enrollment.reference}"
+                key="course-participant--${enrollment.reference}"
                 href="https://${application.configuration
                   .hostname}/courses/${enrollment.course
                   .reference}${hrefSuffix}"
