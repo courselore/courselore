@@ -1583,11 +1583,11 @@ export default async (application: Application): Promise<void> => {
             );
             if (
               response.locals.message.reference === "1" &&
-              response.locals.conversation.courseParticipant !==
+              response.locals.conversation.authorCourseParticipant !==
                 "no-longer-participating" &&
               response.locals.message.courseParticipant !==
                 "no-longer-participating" &&
-              response.locals.conversation.courseParticipant.id ===
+              response.locals.conversation.authorCourseParticipant.id ===
                 response.locals.message.courseParticipant.id
             )
               application.database.run(

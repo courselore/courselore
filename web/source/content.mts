@@ -5130,7 +5130,7 @@ ${contentSource}</textarea
         id: number;
         createdAt: string;
         reference: string;
-        courseParticipant: Application["web"]["locals"]["Types"]["MaybeCourseParticipant"];
+        authorCourseParticipant: Application["web"]["locals"]["Types"]["MaybeCourseParticipant"];
         multipleChoicesAt: string | null;
         closesAt: string | null;
         options: {
@@ -5159,11 +5159,13 @@ ${contentSource}</textarea
       any,
       Application["web"]["locals"]["ResponseLocals"]["CourseParticipant"]
     >;
-    poll: { courseParticipant: { id: number } | "no-longer-participating" };
+    poll: {
+      authorCourseParticipant: { id: number } | "no-longer-participating";
+    };
   }): boolean =>
     response.locals.courseParticipant.courseRole === "course-staff" ||
-    (poll.courseParticipant !== "no-longer-participating" &&
-      poll.courseParticipant.id === response.locals.courseParticipant.id);
+    (poll.authorCourseParticipant !== "no-longer-participating" &&
+      poll.authorCourseParticipant.id === response.locals.courseParticipant.id);
 
   application.web.use<
     { courseReference: string; pollReference: string },

@@ -166,7 +166,7 @@ export type ApplicationConversation = {
               createdAt: string;
               updatedAt: string | null;
               reference: string;
-              courseParticipant: Application["web"]["locals"]["Types"]["MaybeCourseParticipant"];
+              authorCourseParticipant: Application["web"]["locals"]["Types"]["MaybeCourseParticipant"];
               participants: Application["web"]["locals"]["helpers"]["conversationParticipantses"][number];
               anonymousAt: string | null;
               type: Application["web"]["locals"]["helpers"]["conversationTypes"][number];
@@ -2998,14 +2998,15 @@ export default async (application: Application): Promise<void> => {
         $${application.web.locals.partials.user({
           request,
           response,
-          courseParticipant: conversation.courseParticipant,
+          courseParticipant: conversation.authorCourseParticipant,
           anonymous:
             conversation.anonymousAt === null
               ? false
               : response.locals.courseParticipant.courseRole ===
                   "course-staff" ||
-                (conversation.courseParticipant !== "no-longer-participating" &&
-                  conversation.courseParticipant.id ===
+                (conversation.authorCourseParticipant !==
+                  "no-longer-participating" &&
+                  conversation.authorCourseParticipant.id ===
                     response.locals.courseParticipant.id)
               ? "reveal"
               : true,
@@ -5340,9 +5341,9 @@ export default async (application: Application): Promise<void> => {
     >;
   }): boolean =>
     response.locals.courseParticipant.courseRole === "course-staff" ||
-    (response.locals.conversation.courseParticipant !==
+    (response.locals.conversation.authorCourseParticipant !==
       "no-longer-participating" &&
-      response.locals.conversation.courseParticipant.id ===
+      response.locals.conversation.authorCourseParticipant.id ===
         response.locals.courseParticipant.id);
 
   application.web.get<
@@ -6064,10 +6065,10 @@ export default async (application: Application): Promise<void> => {
                                         `
                                       : html``}
                                     $${response.locals.conversation
-                                      .courseParticipant !==
+                                      .authorCourseParticipant !==
                                       "no-longer-participating" &&
                                     response.locals.conversation
-                                      .courseParticipant.courseRole ===
+                                      .authorCourseParticipant.courseRole ===
                                       "student" &&
                                     mayEditConversation({ request, response })
                                       ? html`
@@ -6145,7 +6146,7 @@ export default async (application: Application): Promise<void> => {
                                                           response,
                                                           user: response.locals
                                                             .conversation
-                                                            .courseParticipant
+                                                            .authorCourseParticipant
                                                             .user,
                                                           decorate: false,
                                                           name: false,
@@ -6156,13 +6157,14 @@ export default async (application: Application): Promise<void> => {
                                                     Set as Signed by
                                                     ${response.locals
                                                       .conversation
-                                                      .courseParticipant.id ===
+                                                      .authorCourseParticipant
+                                                      .id ===
                                                     response.locals
                                                       .courseParticipant.id
                                                       ? "You"
                                                       : response.locals
                                                           .conversation
-                                                          .courseParticipant
+                                                          .authorCourseParticipant
                                                           .user.name}
                                                   </button>
                                                 `}
@@ -10094,9 +10096,9 @@ export default async (application: Application): Promise<void> => {
       if (typeof request.body.isAnonymous === "string")
         if (
           !["true", "false"].includes(request.body.isAnonymous) ||
-          response.locals.conversation.courseParticipant ===
+          response.locals.conversation.authorCourseParticipant ===
             "no-longer-participating" ||
-          response.locals.conversation.courseParticipant.courseRole ===
+          response.locals.conversation.authorCourseParticipant.courseRole ===
             "course-staff" ||
           (request.body.isAnonymous === "true" &&
             response.locals.conversation.anonymousAt !== null) ||
@@ -10129,12 +10131,12 @@ export default async (application: Application): Promise<void> => {
                   "conversation" = ${response.locals.conversation.id} AND
                   "reference" = '1' AND
                   "courseParticipant" = ${
-                    response.locals.conversation.courseParticipant ===
+                    response.locals.conversation.authorCourseParticipant ===
                     "no-longer-participating"
                       ? (() => {
                           throw new Error();
                         })()
-                      : response.locals.conversation.courseParticipant.id
+                      : response.locals.conversation.authorCourseParticipant.id
                   }
               `
             );
