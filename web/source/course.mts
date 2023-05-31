@@ -709,7 +709,7 @@ export default async (application: Application): Promise<void> => {
             : html`
                 <div>
                   $${iconsCourseRole[enrollment.courseRole]
-                    .regular} ${lodash.capitalize(enrollment.courseRole)}
+                    .regular} ${labelsCourseRole[enrollment.courseRole]}
                 </div>
               `}
           $${course.archivedAt !== null
@@ -857,6 +857,13 @@ export default async (application: Application): Promise<void> => {
       regular: html`<i class="bi bi-mortarboard"></i>`,
       fill: html`<i class="bi bi-mortarboard-fill"></i>`,
     },
+  };
+
+  const labelsCourseRole: {
+    [courseRole in Application["web"]["locals"]["helpers"]["courseRoles"][number]]: string;
+  } = {
+    student: "Student",
+    "course-staff": "Course Staff",
   };
 
   const textColorsCourseRole: {
@@ -2169,11 +2176,11 @@ export default async (application: Application): Promise<void> => {
                           />
                           <span>
                             $${iconsCourseRole[courseRole].regular}
-                            ${lodash.capitalize(courseRole)}
+                            ${labelsCourseRole[courseRole]}
                           </span>
                           <span class="text--blue">
                             $${iconsCourseRole[courseRole].fill}
-                            ${lodash.capitalize(courseRole)}
+                            ${labelsCourseRole[courseRole]}
                           </span>
                         </label>
                       `
@@ -2623,7 +2630,7 @@ export default async (application: Application): Promise<void> => {
                           >
                             <div
                               css="${css`
-                                width: var(--space--28);
+                                width: var(--space--36);
                                 display: flex;
                                 justify-content: flex-start;
                               `}"
@@ -2711,9 +2718,9 @@ export default async (application: Application): Promise<void> => {
                                                         ? "fill"
                                                         : "regular"
                                                     ]}
-                                                    ${lodash.capitalize(
+                                                    ${labelsCourseRole[
                                                       courseRole
-                                                    )}
+                                                    ]}
                                                   </button>
                                                 </form>
                                               `
@@ -2729,7 +2736,7 @@ export default async (application: Application): Promise<void> => {
                                     ? "fill"
                                     : "regular"
                                 ]}
-                                ${lodash.capitalize(invitation.courseRole)}
+                                ${labelsCourseRole[invitation.courseRole]}
                                 <i class="bi bi-chevron-down"></i>
                               </button>
                             </div>
@@ -3493,7 +3500,11 @@ export default async (application: Application): Promise<void> => {
           return next("Validation");
 
         application.database.run(
-          sql`UPDATE "invitations" SET "courseRole" = ${request.body.courseRole} WHERE "id" = ${response.locals.invitation.id}`
+          sql`
+            UPDATE "invitations"
+            SET "courseRole" = ${request.body.courseRole}
+            WHERE "id" = ${response.locals.invitation.id}
+          `
         );
 
         application.web.locals.helpers.Flash.set({
@@ -3966,7 +3977,7 @@ export default async (application: Application): Promise<void> => {
               >
                 <i class="bi bi-journal-arrow-down"></i>
                 Enroll as
-                ${lodash.capitalize(response.locals.invitation.courseRole)}
+                ${labelsCourseRole[response.locals.invitation.courseRole]}
               </button>
             </form>
           `,
@@ -4300,7 +4311,7 @@ export default async (application: Application): Promise<void> => {
                     >
                       <div
                         css="${css`
-                          width: var(--space--28);
+                          width: var(--space--36);
                           display: flex;
                           justify-content: flex-start;
                         `}"
@@ -4404,7 +4415,9 @@ export default async (application: Application): Promise<void> => {
                                                                   update your
                                                                   own course
                                                                   role to
-                                                                  ${courseRole}?
+                                                                  ${labelsCourseRole[
+                                                                    courseRole
+                                                                  ].toLowerCase()}?
                                                                 </p>
                                                                 <p>
                                                                   <strong
@@ -4427,9 +4440,9 @@ export default async (application: Application): Promise<void> => {
                                                                   ></i>
                                                                   Update My Own
                                                                   Course Role to
-                                                                  ${lodash.capitalize(
+                                                                  ${labelsCourseRole[
                                                                     courseRole
-                                                                  )}
+                                                                  ]}
                                                                 </button>
                                                               </form>
                                                             `},  
@@ -4444,7 +4457,7 @@ export default async (application: Application): Promise<void> => {
                                                     ? "fill"
                                                     : "regular"
                                                 ]}
-                                                ${lodash.capitalize(courseRole)}
+                                                ${labelsCourseRole[courseRole]}
                                               </button>
                                             </div>
                                           </form>
@@ -4461,7 +4474,7 @@ export default async (application: Application): Promise<void> => {
                               ? "fill"
                               : "regular"
                           ]}
-                          ${lodash.capitalize(enrollment.courseRole)}
+                          ${labelsCourseRole[enrollment.courseRole]}
                           <i class="bi bi-chevron-down"></i>
                         </button>
                       </div>
@@ -4655,7 +4668,11 @@ export default async (application: Application): Promise<void> => {
           return next("Validation");
 
         application.database.run(
-          sql`UPDATE "enrollments" SET "courseRole" = ${request.body.courseRole} WHERE "id" = ${response.locals.managedEnrollment.id}`
+          sql`
+            UPDATE "enrollments"
+            SET "courseRole" = ${request.body.courseRole}
+            WHERE "id" = ${response.locals.managedEnrollment.id}
+          `
         );
 
         application.web.locals.helpers.Flash.set({
@@ -5075,7 +5092,7 @@ export default async (application: Application): Promise<void> => {
             Role:
               message.authorEnrollment === "no-longer-enrolled"
                 ? "No Longer Enrolled"
-                : lodash.capitalize(message.authorEnrollment.courseRole),
+                : labelsCourseRole[message.authorEnrollment.courseRole],
             Text: message.contentSearch.replace(
               /(?<=^|\s)@([a-z0-9-]+)(?=[^a-z0-9-]|$)/gi,
               "@anonymous"

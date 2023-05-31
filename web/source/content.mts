@@ -4726,11 +4726,11 @@ ${contentSource}</textarea
                 ? sql``
                 : sql`
                     WHERE
-                    (
-                      "messages"."anonymousAt" IS NULL OR
-                      "messages"."authorEnrollment" = ${response.locals.enrollment.id}
-                    ) AND
-                      "messages"."type" != 'course-staff-whisper'
+                      (
+                        "messages"."anonymousAt" IS NULL OR
+                        "messages"."authorEnrollment" = ${response.locals.enrollment.id}
+                      ) AND
+                        "messages"."type" != 'course-staff-whisper'
                   `
             }
             ORDER BY

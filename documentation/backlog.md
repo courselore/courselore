@@ -6,13 +6,6 @@
 
 User interface
 
-- `Staff` → `Course Staff`
-  - `courseRole`
-    - Capitalize
-    - Spacing in `/settings/enrollments`
-  - Administration’s notion of `staff` remains unchanged, to highlight the difference between it and course staff
-    - `userSystemRolesWhoMayCreateCourseses`’s `"staff-and-administrators"`
-    - `systemRoles`’s `"staff"`
 - `Enrollment` → `Course Participant`
 - `Enroll` → `Join`
 - `Selected People` → `Selected Participants`
@@ -40,6 +33,7 @@ Database
 
 ---
 
+- Replace instances of `lodash.capitalize()` with a proper map
 - Syntax highlighter throws an error when it doesn’t recognize the language
 - `contentSearch` contains syntax highlighted text twice (because of light and dark modes)
 - UI on the upper left

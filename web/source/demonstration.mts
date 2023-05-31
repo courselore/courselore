@@ -173,7 +173,7 @@ export default async (application: Application): Promise<void> => {
       for (const {
         name,
         code,
-        courseRole: courseRole,
+        courseRole,
         accentColor,
         enrollmentsUsers,
         isArchived,
