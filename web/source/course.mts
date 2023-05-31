@@ -1107,11 +1107,13 @@ export default async (application: Application): Promise<void> => {
                   : "button--transparent"}"
               >
                 <i
-                  class="bi ${request.path.match(/\/settings\/course-participants\/?$/i)
+                  class="bi ${request.path.match(
+                    /\/settings\/course-participants\/?$/i
+                  )
                     ? "bi-people-fill"
                     : "bi-people"}"
                 ></i>
-                Enrollments
+                Courses Participants
               </a>
               <a
                 href="https://${application.configuration
@@ -1143,7 +1145,7 @@ export default async (application: Application): Promise<void> => {
                     ? "bi-person-fill"
                     : "bi-person"}"
                 ></i>
-                Your Enrollment
+                Course Participant
               </a>
             `
           : html``,
@@ -3101,10 +3103,10 @@ export default async (application: Application): Promise<void> => {
               address: application.configuration.email.defaults.from.address,
             },
             to: invitation.email!,
-            subject: `Enroll in ${invitation.course.name}`,
+            subject: `Join ${invitation.course.name}`,
             html: html`
               <p>
-                Enroll in ${invitation.course.name}:<br />
+                Join ${invitation.course.name}:<br />
                 <a href="${link}" target="_blank">${link}</a>
               </p>
               $${invitation.expiresAt === null
@@ -3850,7 +3852,7 @@ export default async (application: Application): Promise<void> => {
                   })}
                 </a>
                 <hr class="separator" />
-                <p class="strong">You’re already enrolled.</p>
+                <p class="strong">You’re already participating.</p>
 
                 $${response.locals.invitation.email === null
                   ? html`
@@ -3980,7 +3982,7 @@ export default async (application: Application): Promise<void> => {
                 `}"
               >
                 <i class="bi bi-journal-arrow-down"></i>
-                Enroll as
+                Join as
                 ${labelsCourseRole[response.locals.invitation.courseRole]}
               </button>
             </form>
@@ -4063,7 +4065,7 @@ export default async (application: Application): Promise<void> => {
       )
         return next();
 
-      const enrollments = application.database
+      const courseParticipants = application.database
         .all<{
           id: number;
           userId: number;
@@ -4100,21 +4102,21 @@ export default async (application: Application): Promise<void> => {
               "users"."name" ASC
           `
         )
-        .map((enrollment) => ({
-          id: enrollment.id,
+        .map((courseParticipantRow) => ({
+          id: courseParticipantRow.id,
           user: {
-            id: enrollment.userId,
-            lastSeenOnlineAt: enrollment.userLastSeenOnlineAt,
-            reference: enrollment.userReference,
-            email: enrollment.userEmail,
-            name: enrollment.userName,
-            avatar: enrollment.userAvatar,
-            avatarlessBackgroundColor: enrollment.userAvatarlessBackgroundColor,
-            biographySource: enrollment.userBiographySource,
-            biographyPreprocessed: enrollment.userBiographyPreprocessed,
+            id: courseParticipantRow.userId,
+            lastSeenOnlineAt: courseParticipantRow.userLastSeenOnlineAt,
+            reference: courseParticipantRow.userReference,
+            email: courseParticipantRow.userEmail,
+            name: courseParticipantRow.userName,
+            avatar: courseParticipantRow.userAvatar,
+            avatarlessBackgroundColor: courseParticipantRow.userAvatarlessBackgroundColor,
+            biographySource: courseParticipantRow.userBiographySource,
+            biographyPreprocessed: courseParticipantRow.userBiographyPreprocessed,
           },
-          reference: enrollment.reference,
-          courseRole: enrollment.courseRole,
+          reference: courseParticipantRow.reference,
+          courseRole: courseParticipantRow.courseRole,
         }));
 
       response.send(
@@ -4123,7 +4125,7 @@ export default async (application: Application): Promise<void> => {
           response,
           head: html`
             <title>
-              Enrollments · Course Settings · ${response.locals.course.name} ·
+              Course Participants · Course Settings · ${response.locals.course.name} ·
               Courselore
             </title>
           `,
@@ -4132,7 +4134,7 @@ export default async (application: Application): Promise<void> => {
               <i class="bi bi-sliders"></i>
               Course Settings ·
               <i class="bi bi-people-fill"></i>
-              Enrollments
+              Course Participants
             </h2>
 
             <label
@@ -4152,9 +4154,9 @@ export default async (application: Application): Promise<void> => {
 
                   this.oninput = () => {
                     const filterPhrases = this.value.split(/[^a-z0-9]+/i).filter((filterPhrase) => filterPhrase.trim() !== "");
-                    for (const enrollment of document.querySelectorAll('[key^="enrollment/"]')) {
-                      let enrollmentHidden = filterPhrases.length > 0;
-                      for (const filterablePhrasesElement of enrollment.querySelectorAll("[data-filterable-phrases]")) {
+                    for (const courseParticipant of document.querySelectorAll('[key^="course-participant/"]')) {
+                      let courseParticipantHidden = filterPhrases.length > 0;
+                      for (const filterablePhrasesElement of courseParticipant.querySelectorAll("[data-filterable-phrases]")) {
                         const filterablePhrases = JSON.parse(filterablePhrasesElement.getAttribute("data-filterable-phrases"));
                         const filterablePhrasesElementChildren = [];
                         for (const filterablePhrase of filterablePhrases) {
@@ -4162,7 +4164,7 @@ export default async (application: Application): Promise<void> => {
                           if (filterPhrases.some(filterPhrase => filterablePhrase.toLowerCase().startsWith(filterPhrase.toLowerCase()))) {
                             filterablePhraseElement = document.createElement("mark");
                             filterablePhraseElement.classList.add("mark");
-                            enrollmentHidden = false;
+                            courseParticipantHidden = false;
                           } else
                             filterablePhraseElement = document.createElement("span");
                           filterablePhraseElement.textContent = filterablePhrase;
@@ -4170,26 +4172,26 @@ export default async (application: Application): Promise<void> => {
                         }
                         filterablePhrasesElement.replaceChildren(...filterablePhrasesElementChildren);
                       }
-                      enrollment.hidden = enrollmentHidden;
+                      courseParticipant.hidden = courseParticipantHidden;
                     }
                   };
                 `}"
               />
             </label>
 
-            $${enrollments.map((enrollment) => {
+            $${courseParticipants.map((enrollment) => {
               const action = `https://${application.configuration.hostname}/courses/${response.locals.course.reference}/settings/course-participants/${enrollment.reference}`;
               const isSelf =
                 enrollment.id === response.locals.courseParticipant.id;
               const isOnlyCourseStaff =
                 isSelf &&
-                enrollments.filter(
+                courseParticipants.filter(
                   (enrollment) => enrollment.courseRole === "course-staff"
                 ).length === 1;
 
               return html`
                 <div
-                  key="enrollment/${enrollment.reference}"
+                  key="course-participant/${enrollment.reference}"
                   css="${css`
                     padding-top: var(--space--2);
                     border-top: var(--border-width--1) solid
