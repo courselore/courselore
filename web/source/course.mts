@@ -1099,15 +1099,15 @@ export default async (application: Application): Promise<void> => {
               <a
                 href="https://${application.configuration
                   .hostname}/courses/${response.locals.course
-                  .reference}/settings/enrollments"
+                  .reference}/settings/course-participants"
                 class="dropdown--menu--item menu-box--item button ${request.path.match(
-                  /\/settings\/enrollments\/?$/i
+                  /\/settings\/course-participants\/?$/i
                 )
                   ? "button--blue"
                   : "button--transparent"}"
               >
                 <i
-                  class="bi ${request.path.match(/\/settings\/enrollments\/?$/i)
+                  class="bi ${request.path.match(/\/settings\/course-participants\/?$/i)
                     ? "bi-people-fill"
                     : "bi-people"}"
                 ></i>
@@ -4055,7 +4055,7 @@ export default async (application: Application): Promise<void> => {
     {},
     Application["web"]["locals"]["ResponseLocals"]["CourseParticipant"]
   >(
-    "/courses/:courseReference/settings/enrollments",
+    "/courses/:courseReference/settings/course-participants",
     (request, response, next) => {
       if (
         response.locals.course === undefined ||
@@ -4178,7 +4178,7 @@ export default async (application: Application): Promise<void> => {
             </label>
 
             $${enrollments.map((enrollment) => {
-              const action = `https://${application.configuration.hostname}/courses/${response.locals.course.reference}/settings/enrollments/${enrollment.reference}`;
+              const action = `https://${application.configuration.hostname}/courses/${response.locals.course.reference}/settings/course-participants/${enrollment.reference}`;
               const isSelf =
                 enrollment.id === response.locals.courseParticipant.id;
               const isOnlyCourseStaff =
@@ -4607,7 +4607,7 @@ export default async (application: Application): Promise<void> => {
     {},
     ResponseLocalsManagedEnrollment
   >(
-    "/courses/:courseReference/settings/enrollments/:courseParticipantReference",
+    "/courses/:courseReference/settings/course-participants/:courseParticipantReference",
     (request, response, next) => {
       if (
         response.locals.course === undefined ||
@@ -4660,7 +4660,7 @@ export default async (application: Application): Promise<void> => {
     {},
     ResponseLocalsManagedEnrollment
   >(
-    "/courses/:courseReference/settings/enrollments/:courseParticipantReference",
+    "/courses/:courseReference/settings/course-participants/:courseParticipantReference",
     (request, response, next) => {
       if (response.locals.managedEnrollment === undefined) return next();
 
@@ -4692,7 +4692,7 @@ export default async (application: Application): Promise<void> => {
         303,
         response.locals.managedEnrollment.isSelf
           ? `https://${application.configuration.hostname}/courses/${response.locals.course.reference}`
-          : `https://${application.configuration.hostname}/courses/${response.locals.course.reference}/settings/enrollments`
+          : `https://${application.configuration.hostname}/courses/${response.locals.course.reference}/settings/course-participants`
       );
 
       application.web.locals.helpers.liveUpdates({
@@ -4710,7 +4710,7 @@ export default async (application: Application): Promise<void> => {
     {},
     ResponseLocalsManagedEnrollment
   >(
-    "/courses/:courseReference/settings/enrollments/:courseParticipantReference",
+    "/courses/:courseReference/settings/course-participants/:courseParticipantReference",
     (request, response, next) => {
       if (response.locals.managedEnrollment === undefined) return next();
 
@@ -4736,7 +4736,7 @@ export default async (application: Application): Promise<void> => {
         303,
         response.locals.managedEnrollment.isSelf
           ? `https://${application.configuration.hostname}/`
-          : `https://${application.configuration.hostname}/courses/${response.locals.course.reference}/settings/enrollments`
+          : `https://${application.configuration.hostname}/courses/${response.locals.course.reference}/settings/course-participants`
       );
 
       application.web.locals.helpers.liveUpdates({
