@@ -6170,8 +6170,8 @@ export default async (application: Application): Promise<void> => {
                                       : html``}
                                     $${response.locals.courseParticipant
                                       .courseRole === "course-staff" &&
-                                    response.locals.courseParticipants
-                                      .length > 1 &&
+                                    response.locals.courseParticipants.length >
+                                      1 &&
                                     messages.length > 0 &&
                                     messages[0].reference ===
                                       "1" /* TODO: Pagination */
@@ -9004,7 +9004,8 @@ export default async (application: Application): Promise<void> => {
                                                   (like) =>
                                                     like.courseParticipant !==
                                                       "no-longer-participating" &&
-                                                    like.courseParticipant.id ===
+                                                    like.courseParticipant
+                                                      .id ===
                                                       response.locals
                                                         .courseParticipant.id
                                                 );

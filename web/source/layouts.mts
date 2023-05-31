@@ -2197,8 +2197,8 @@ export default async (application: Application): Promise<void> => {
                               </button>
                             `
                           : showCourseSwitcher &&
-                            responseSignedIn.locals.courseParticipants
-                              .length > 0
+                            responseSignedIn.locals.courseParticipants.length >
+                              0
                           ? html`
                               <button
                                 class="button button--tight button--tight--inline button--transparent"

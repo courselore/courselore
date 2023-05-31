@@ -4111,9 +4111,11 @@ export default async (application: Application): Promise<void> => {
             email: courseParticipantRow.userEmail,
             name: courseParticipantRow.userName,
             avatar: courseParticipantRow.userAvatar,
-            avatarlessBackgroundColor: courseParticipantRow.userAvatarlessBackgroundColor,
+            avatarlessBackgroundColor:
+              courseParticipantRow.userAvatarlessBackgroundColor,
             biographySource: courseParticipantRow.userBiographySource,
-            biographyPreprocessed: courseParticipantRow.userBiographyPreprocessed,
+            biographyPreprocessed:
+              courseParticipantRow.userBiographyPreprocessed,
           },
           reference: courseParticipantRow.reference,
           courseRole: courseParticipantRow.courseRole,
@@ -4125,8 +4127,8 @@ export default async (application: Application): Promise<void> => {
           response,
           head: html`
             <title>
-              Course Participants · Course Settings · ${response.locals.course.name} ·
-              Courselore
+              Course Participants · Course Settings ·
+              ${response.locals.course.name} · Courselore
             </title>
           `,
           body: html`
@@ -4186,7 +4188,8 @@ export default async (application: Application): Promise<void> => {
               const isOnlyCourseStaff =
                 isSelf &&
                 courseParticipants.filter(
-                  (courseParticipant) => courseParticipant.courseRole === "course-staff"
+                  (courseParticipant) =>
+                    courseParticipant.courseRole === "course-staff"
                 ).length === 1;
 
               return html`
@@ -4632,7 +4635,8 @@ export default async (application: Application): Promise<void> => {
       if (managedCourseParticipant === undefined) return next();
       response.locals.managedCourseParticipant = {
         ...managedCourseParticipant,
-        isSelf: managedCourseParticipant.id === response.locals.courseParticipant.id,
+        isSelf:
+          managedCourseParticipant.id === response.locals.courseParticipant.id,
       };
 
       if (
@@ -5142,8 +5146,8 @@ export default async (application: Application): Promise<void> => {
           response,
           head: html`
             <title>
-              Course Participant · Course Settings · ${response.locals.course.name}
-              · Courselore
+              Course Participant · Course Settings ·
+              ${response.locals.course.name} · Courselore
             </title>
           `,
           body: html`

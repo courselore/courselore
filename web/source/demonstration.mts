@@ -514,7 +514,9 @@ export default async (application: Application): Promise<void> => {
         for (const courseParticipant of lodash.sampleSize(
           [
             ...courseParticipants,
-            ...new Array(Math.floor(courseParticipants.length * 0.2)).fill(null),
+            ...new Array(Math.floor(courseParticipants.length * 0.2)).fill(
+              null
+            ),
           ],
           lodash.random(0, 50)
         ))
@@ -614,7 +616,9 @@ export default async (application: Application): Promise<void> => {
         for (const courseParticipant of lodash.sampleSize(
           [
             ...courseParticipants,
-            ...new Array(Math.floor(courseParticipants.length * 0.2)).fill(null),
+            ...new Array(Math.floor(courseParticipants.length * 0.2)).fill(
+              null
+            ),
           ],
           lodash.random(0, 50)
         ))
@@ -988,7 +992,10 @@ Message non-existent permanent link turned reference: <https://${
               : participants === "selected-people"
               ? [
                   ...(Math.random() < 0.5 ? [courseParticipant] : []),
-                  ...lodash.sampleSize(courseParticipants, lodash.random(2, 10)),
+                  ...lodash.sampleSize(
+                    courseParticipants,
+                    lodash.random(2, 10)
+                  ),
                 ]
               : []
           );
@@ -1003,7 +1010,9 @@ Message non-existent permanent link turned reference: <https://${
             ...selectedParticipantCourseParticipants,
           ]);
           const conversationConversationParticipant =
-            Math.random() < 0.9 ? lodash.sample(participantCourseParticipants)! : null;
+            Math.random() < 0.9
+              ? lodash.sample(participantCourseParticipants)!
+              : null;
           const type = isExampleOfAllFeaturesInRichTextMessages
             ? application.web.locals.helpers.conversationTypes[1]
             : application.web.locals.helpers.conversationTypes[

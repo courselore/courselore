@@ -443,7 +443,8 @@ export default async (application: Application): Promise<void> => {
                   avatarlessBackgroundColor:
                     endorsementRow.userAvatarlessBackgroundColor,
                   biographySource: endorsementRow.userBiographySource,
-                  biographyPreprocessed: endorsementRow.userBiographyPreprocessed,
+                  biographyPreprocessed:
+                    endorsementRow.userBiographyPreprocessed,
                 },
                 reference: endorsementRow.courseParticipantReference,
                 courseRole: endorsementRow.courseParticipantCourseRole,
@@ -517,7 +518,8 @@ export default async (application: Application): Promise<void> => {
                   email: likeRow.userEmail,
                   name: likeRow.userName,
                   avatar: likeRow.userAvatar,
-                  avatarlessBackgroundColor: likeRow.userAvatarlessBackgroundColor,
+                  avatarlessBackgroundColor:
+                    likeRow.userAvatarlessBackgroundColor,
                   biographySource: likeRow.userBiographySource,
                   biographyPreprocessed: likeRow.userBiographyPreprocessed,
                 },
@@ -875,8 +877,7 @@ export default async (application: Application): Promise<void> => {
                   `
                 : html``}
               $${response.locals.courseParticipant.courseRole ===
-                "course-staff" &&
-              response.locals.courseParticipants.length > 1
+                "course-staff" && response.locals.courseParticipants.length > 1
                 ? html`
                     <button
                       class="dropdown--menu--item button button--transparent"
@@ -1810,7 +1811,8 @@ export default async (application: Application): Promise<void> => {
               $${response.locals.message.likes.reverse().map(
                 (like) => html`
                   <div
-                    key="like/${like.courseParticipant === "no-longer-participating"
+                    key="like/${like.courseParticipant ===
+                    "no-longer-participating"
                       ? like.courseParticipant
                       : like.courseParticipant.reference}"
                     class="dropdown--menu--item"
