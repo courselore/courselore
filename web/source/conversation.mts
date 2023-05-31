@@ -9676,11 +9676,11 @@ export default async (application: Application): Promise<void> => {
                               Typing:
                             </span>
                             $${response.locals.courseParticipantsTyping
-                              .map((enrollment) =>
+                              .map((courseParticipant) =>
                                 application.web.locals.partials.user({
                                   request,
                                   response,
-                                  courseParticipant: enrollment,
+                                  courseParticipant,
                                   size: "xs",
                                   bold: false,
                                 })
