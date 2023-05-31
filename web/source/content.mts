@@ -824,7 +824,7 @@ export default async (application: Application): Promise<void> => {
           id: number;
           reference: string;
           contentPreprocessed: string;
-          enrollmentVote: number | null;
+          courseParticipantVote: number | null;
           votesCount: number;
         }>(
           sql`
@@ -832,12 +832,12 @@ export default async (application: Application): Promise<void> => {
               "messagePollOptions"."id",
               "messagePollOptions"."reference",
               "messagePollOptions"."contentPreprocessed",
-              "messagePollVotesEnrollmentVote"."id" AS "enrollmentVote",
+              "messagePollVotesCourseParticipantVote"."id" AS "courseParticipantVote",
               COUNT("messagePollVotesCount"."id") AS "votesCount"
             FROM "messagePollOptions"
-            LEFT JOIN "messagePollVotes" AS "messagePollVotesEnrollmentVote" ON
-              "messagePollOptions"."id" = "messagePollVotesEnrollmentVote"."messagePollOption" AND
-              "messagePollVotesEnrollmentVote"."courseParticipant" = ${responseCourseParticipant.locals.enrollment.id}
+            LEFT JOIN "messagePollVotes" AS "messagePollVotesCourseParticipantVote" ON
+              "messagePollOptions"."id" = "messagePollVotesCourseParticipantVote"."messagePollOption" AND
+              "messagePollVotesCourseParticipantVote"."courseParticipant" = ${responseCourseParticipant.locals.enrollment.id}
             LEFT JOIN "messagePollVotes" AS "messagePollVotesCount" ON "messagePollOptions"."id" = "messagePollVotesCount"."messagePollOption"
             WHERE "messagePollOptions"."messagePoll" = ${poll.id}
             GROUP BY "messagePollOptions"."id"
@@ -845,7 +845,7 @@ export default async (application: Application): Promise<void> => {
           `
         );
 
-        const voted = options.some((option) => option.enrollmentVote !== null);
+        const voted = options.some((option) => option.courseParticipantVote !== null);
         const mayEdit = mayEditPoll({
           request: requestCourseParticipant,
           response: responseCourseParticipant,
@@ -876,7 +876,7 @@ export default async (application: Application): Promise<void> => {
                   name="optionsReferences[]"
                   value="${option.reference}"
                   required
-                  ${option.enrollmentVote ? html`checked` : html``}
+                  ${option.courseParticipantVote ? html`checked` : html``}
                   ${voted || closed || context === "preview"
                     ? html`disabled`
                     : html``}
