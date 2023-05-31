@@ -4597,13 +4597,13 @@ export default async (application: Application): Promise<void> => {
     };
 
   application.web.use<
-    { courseReference: string; enrollmentReference: string },
+    { courseReference: string; courseParticipantReference: string },
     any,
     {},
     {},
     ResponseLocalsManagedEnrollment
   >(
-    "/courses/:courseReference/settings/enrollments/:enrollmentReference",
+    "/courses/:courseReference/settings/enrollments/:courseParticipantReference",
     (request, response, next) => {
       if (
         response.locals.course === undefined ||
@@ -4620,7 +4620,7 @@ export default async (application: Application): Promise<void> => {
           FROM "courseParticipants"
           WHERE
             "course" = ${response.locals.course.id} AND
-            "reference" = ${request.params.enrollmentReference}
+            "reference" = ${request.params.courseParticipantReference}
         `
       );
       if (managedEnrollment === undefined) return next();
@@ -4648,7 +4648,7 @@ export default async (application: Application): Promise<void> => {
   );
 
   application.web.patch<
-    { courseReference: string; enrollmentReference: string },
+    { courseReference: string; courseParticipantReference: string },
     HTML,
     {
       courseRole?: Application["web"]["locals"]["helpers"]["courseRoles"][number];
@@ -4656,7 +4656,7 @@ export default async (application: Application): Promise<void> => {
     {},
     ResponseLocalsManagedEnrollment
   >(
-    "/courses/:courseReference/settings/enrollments/:enrollmentReference",
+    "/courses/:courseReference/settings/enrollments/:courseParticipantReference",
     (request, response, next) => {
       if (response.locals.managedEnrollment === undefined) return next();
 
@@ -4700,13 +4700,13 @@ export default async (application: Application): Promise<void> => {
   );
 
   application.web.delete<
-    { courseReference: string; enrollmentReference: string },
+    { courseReference: string; courseParticipantReference: string },
     HTML,
     {},
     {},
     ResponseLocalsManagedEnrollment
   >(
-    "/courses/:courseReference/settings/enrollments/:enrollmentReference",
+    "/courses/:courseReference/settings/enrollments/:courseParticipantReference",
     (request, response, next) => {
       if (response.locals.managedEnrollment === undefined) return next();
 
