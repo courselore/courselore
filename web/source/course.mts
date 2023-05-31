@@ -4179,19 +4179,19 @@ export default async (application: Application): Promise<void> => {
               />
             </label>
 
-            $${courseParticipants.map((enrollment) => {
-              const action = `https://${application.configuration.hostname}/courses/${response.locals.course.reference}/settings/course-participants/${enrollment.reference}`;
+            $${courseParticipants.map((courseParticipant) => {
+              const action = `https://${application.configuration.hostname}/courses/${response.locals.course.reference}/settings/course-participants/${courseParticipant.reference}`;
               const isSelf =
-                enrollment.id === response.locals.courseParticipant.id;
+                courseParticipant.id === response.locals.courseParticipant.id;
               const isOnlyCourseStaff =
                 isSelf &&
                 courseParticipants.filter(
-                  (enrollment) => enrollment.courseRole === "course-staff"
+                  (courseParticipant) => courseParticipant.courseRole === "course-staff"
                 ).length === 1;
 
               return html`
                 <div
-                  key="course-participant/${enrollment.reference}"
+                  key="course-participant/${courseParticipant.reference}"
                   css="${css`
                     padding-top: var(--space--2);
                     border-top: var(--border-width--1) solid
@@ -4210,7 +4210,7 @@ export default async (application: Application): Promise<void> => {
                     $${application.web.locals.partials.user({
                       request,
                       response,
-                      courseParticipant: enrollment,
+                      courseParticipant: courseParticipant,
                       name: false,
                     })}
                   </div>
@@ -4230,11 +4230,11 @@ export default async (application: Application): Promise<void> => {
                         class="strong"
                         data-filterable-phrases="${JSON.stringify(
                           application.web.locals.helpers.splitFilterablePhrases(
-                            enrollment.user.name
+                            courseParticipant.user.name
                           )
                         )}"
                       >
-                        ${enrollment.user.name}
+                        ${courseParticipant.user.name}
                       </div>
                       <div class="secondary">
                         <span
@@ -4243,11 +4243,11 @@ export default async (application: Application): Promise<void> => {
                           `}"
                           data-filterable-phrases="${JSON.stringify(
                             application.web.locals.helpers.splitFilterablePhrases(
-                              enrollment.user.email
+                              courseParticipant.user.email
                             )
                           )}"
                         >
-                          ${enrollment.user.email}
+                          ${courseParticipant.user.email}
                         </span>
                         <button
                           class="button button--tight button--tight--inline button--transparent"
@@ -4279,7 +4279,7 @@ export default async (application: Application): Promise<void> => {
                             });
 
                             this.onclick = async () => {
-                              await navigator.clipboard.writeText(${enrollment.user.email});
+                              await navigator.clipboard.writeText(${courseParticipant.user.email});
                               this.copied.show();
                               await new Promise((resolve) => { window.setTimeout(resolve, 1000); });
                               this.copied.hide();
@@ -4299,7 +4299,7 @@ export default async (application: Application): Promise<void> => {
                           Last seen online
                           <time
                             datetime="${new Date(
-                              enrollment.user.lastSeenOnlineAt
+                              courseParticipant.user.lastSeenOnlineAt
                             ).toISOString()}"
                             javascript="${javascript`
                               leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
@@ -4325,7 +4325,7 @@ export default async (application: Application): Promise<void> => {
                       >
                         <button
                           class="button button--tight button--tight--inline button--transparent ${textColorsCourseRole[
-                            enrollment.courseRole
+                            courseParticipant.courseRole
                           ]}"
                           javascript="${javascript`
                             leafac.setTippy({
@@ -4362,7 +4362,7 @@ export default async (application: Application): Promise<void> => {
                                             <div>
                                               <button
                                                 class="dropdown--menu--item button ${courseRole ===
-                                                enrollment.courseRole
+                                                courseParticipant.courseRole
                                                   ? "button--blue"
                                                   : "button--transparent"} ${textColorsCourseRole[
                                                   courseRole
@@ -4476,12 +4476,12 @@ export default async (application: Application): Promise<void> => {
                             });
                           `}"
                         >
-                          $${iconsCourseRole[enrollment.courseRole][
-                            enrollment.courseRole === "course-staff"
+                          $${iconsCourseRole[courseParticipant.courseRole][
+                            courseParticipant.courseRole === "course-staff"
                               ? "fill"
                               : "regular"
                           ]}
-                          ${labelsCourseRole[enrollment.courseRole]}
+                          ${labelsCourseRole[courseParticipant.courseRole]}
                           <i class="bi bi-chevron-down"></i>
                         </button>
                       </div>
@@ -4569,7 +4569,7 @@ export default async (application: Application): Promise<void> => {
                       </div>
                     </div>
 
-                    $${enrollment.user.biographyPreprocessed !== null
+                    $${courseParticipant.user.biographyPreprocessed !== null
                       ? html`
                           <details class="details">
                             <summary>Biography</summary>
@@ -4577,7 +4577,7 @@ export default async (application: Application): Promise<void> => {
                               request,
                               response,
                               contentPreprocessed:
-                                enrollment.user.biographyPreprocessed,
+                                courseParticipant.user.biographyPreprocessed,
                               context: "plain",
                             }).contentProcessed}
                           </details>
