@@ -796,17 +796,17 @@ export default async (application: Application): Promise<void> => {
         </button>
 
         $${archived.map(
-          (enrollment) =>
+          (courseParticipant) =>
             html`
               <a
-                key="course-participant--${enrollment.reference}"
+                key="course-participant--${courseParticipant.reference}"
                 href="https://${application.configuration
-                  .hostname}/courses/${enrollment.course
+                  .hostname}/courses/${courseParticipant.course
                   .reference}${hrefSuffix}"
                 hidden
                 class="dropdown--menu--item menu-box--item button ${tight
                   ? ""
-                  : "button--tight"} ${enrollment.id ===
+                  : "button--tight"} ${courseParticipant.id ===
                 response.locals.courseParticipant?.id
                   ? "button--blue"
                   : "button--transparent"}"
@@ -814,8 +814,8 @@ export default async (application: Application): Promise<void> => {
                 $${application.web.locals.partials.course({
                   request,
                   response,
-                  course: enrollment.course,
-                  courseParticipant: enrollment,
+                  course: courseParticipant.course,
+                  courseParticipant: courseParticipant,
                   tight,
                 })}
               </a>
