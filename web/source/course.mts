@@ -620,7 +620,7 @@ export default async (application: Application): Promise<void> => {
     application.database.run(
       sql`
         UPDATE "users"
-        SET "mostRecentlyVisitedEnrollment" = ${response.locals.enrollment.id}
+        SET "mostRecentlyVisitedCourseParticipation" = ${response.locals.enrollment.id}
         WHERE "id" = ${response.locals.user.id}
       `
     );
