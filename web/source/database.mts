@@ -2128,12 +2128,12 @@ export default async (application: Application): Promise<void> => {
     async () => {
       application.database.execute(
         sql`
+          DROP TABLE "conversationDrafts";
+
           UPDATE "enrollments" SET "courseRole" = 'course-staff' WHERE "courseRole" = 'staff';
           UPDATE "conversations" SET "participants" = 'course-staff' WHERE "participants" = 'staff';
           UPDATE "messages" SET "type" = 'course-staff-whisper' WHERE "type" = 'staff-whisper';
           ALTER TABLE "tags" RENAME COLUMN "staffOnlyAt" TO "courseStaffOnlyAt";
-
-          DROP TABLE "conversationDrafts";
 
           ALTER TABLE "enrollments" RENAME TO "courseParticipations";
           DROP INDEX "enrollmentsUserIndex";
