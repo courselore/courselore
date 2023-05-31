@@ -236,7 +236,7 @@ export default async (application: Application): Promise<void> => {
           "messages"."contentSearch",
           "readings"."id" AS "readingId"
         FROM "messages"
-        LEFT JOIN "enrollments" AS "authorEnrollment" ON "messages"."authorEnrollment" = "authorEnrollment"."id"
+        LEFT JOIN "courseParticipants" AS "authorEnrollment" ON "messages"."authorEnrollment" = "authorEnrollment"."id"
         LEFT JOIN "users" AS "authorUser" ON "authorEnrollment"."user" = "authorUser"."id"
         LEFT JOIN "readings" ON
           "messages"."id" = "readings"."message" AND
@@ -323,7 +323,7 @@ export default async (application: Application): Promise<void> => {
           SELECT
             "readings"."id",
             "readings"."createdAt",
-            "enrollments"."id" AS "enrollmentId",
+            "courseParticipants"."id" AS "enrollmentId",
             "users"."id" AS "userId",
             "users"."lastSeenOnlineAt" AS "userLastSeenOnlineAt",
             "users"."reference" AS "userReference",
@@ -333,11 +333,11 @@ export default async (application: Application): Promise<void> => {
             "users"."avatarlessBackgroundColor" AS "userAvatarlessBackgroundColor",
             "users"."biographySource" AS "userBiographySource",
             "users"."biographyPreprocessed" AS "userBiographyPreprocessed",
-            "enrollments"."reference" AS "enrollmentReference",
-            "enrollments"."courseRole" AS "enrollmentCourseRole"
+            "courseParticipants"."reference" AS "enrollmentReference",
+            "courseParticipants"."courseRole" AS "enrollmentCourseRole"
           FROM "readings"
-          JOIN "enrollments" ON "readings"."enrollment" = "enrollments"."id"
-          JOIN "users" ON "enrollments"."user" = "users"."id"
+          JOIN "courseParticipants" ON "readings"."enrollment" = "courseParticipants"."id"
+          JOIN "users" ON "courseParticipants"."user" = "users"."id"
           WHERE "readings"."message" = ${message.id}
           ORDER BY "readings"."id" ASC
         `
@@ -398,7 +398,7 @@ export default async (application: Application): Promise<void> => {
         sql`
           SELECT
             "endorsements"."id",
-            "enrollments"."id" AS "enrollmentId",
+            "courseParticipants"."id" AS "enrollmentId",
             "users"."id" AS "userId",
             "users"."lastSeenOnlineAt" AS "userLastSeenOnlineAt",
             "users"."reference" AS "userReference",
@@ -408,11 +408,11 @@ export default async (application: Application): Promise<void> => {
             "users"."avatarlessBackgroundColor" AS "userAvatarlessBackgroundColor",
             "users"."biographySource" AS "userBiographySource",
             "users"."biographyPreprocessed" AS "userBiographyPreprocessed",
-            "enrollments"."reference" AS "enrollmentReference",
-            "enrollments"."courseRole" AS "enrollmentCourseRole"
+            "courseParticipants"."reference" AS "enrollmentReference",
+            "courseParticipants"."courseRole" AS "enrollmentCourseRole"
           FROM "endorsements"
-          JOIN "enrollments" ON "endorsements"."enrollment" = "enrollments"."id"
-          JOIN "users" ON "enrollments"."user" = "users"."id"
+          JOIN "courseParticipants" ON "endorsements"."enrollment" = "courseParticipants"."id"
+          JOIN "users" ON "courseParticipants"."user" = "users"."id"
           WHERE "endorsements"."message" = ${message.id}
           ORDER BY "endorsements"."id" ASC
         `
@@ -474,7 +474,7 @@ export default async (application: Application): Promise<void> => {
           SELECT
             "likes"."id",
             "likes"."createdAt",
-            "enrollments"."id" AS "enrollmentId",
+            "courseParticipants"."id" AS "enrollmentId",
             "users"."id" AS "userId",
             "users"."lastSeenOnlineAt" AS "userLastSeenOnlineAt",
             "users"."reference" AS "userReference",
@@ -484,11 +484,11 @@ export default async (application: Application): Promise<void> => {
             "users"."avatarlessBackgroundColor" AS "userAvatarlessBackgroundColor",
             "users"."biographySource" AS "userBiographySource",
             "users"."biographyPreprocessed" AS "userBiographyPreprocessed",
-            "enrollments"."reference" AS "enrollmentReference",
-            "enrollments"."courseRole" AS "enrollmentCourseRole"
+            "courseParticipants"."reference" AS "enrollmentReference",
+            "courseParticipants"."courseRole" AS "enrollmentCourseRole"
           FROM "likes"
-          LEFT JOIN "enrollments" ON "likes"."enrollment" = "enrollments"."id"
-          LEFT JOIN "users" ON "enrollments"."user" = "users"."id"
+          LEFT JOIN "courseParticipants" ON "likes"."enrollment" = "courseParticipants"."id"
+          LEFT JOIN "users" ON "courseParticipants"."user" = "users"."id"
           WHERE "likes"."message" = ${message.id}
           ORDER BY "likes"."id" ASC
         `
@@ -2304,7 +2304,7 @@ export default async (application: Application): Promise<void> => {
             FROM "messages"
             JOIN "conversations" ON "messages"."conversation" = "conversations"."id"
             JOIN "courses" ON "conversations"."course" = "courses"."id"
-            LEFT JOIN "enrollments" AS "authorEnrollment" ON "messages"."authorEnrollment" = "authorEnrollment"."id"
+            LEFT JOIN "courseParticipants" AS "authorEnrollment" ON "messages"."authorEnrollment" = "authorEnrollment"."id"
             LEFT JOIN "users" AS "authorUser" ON "authorEnrollment"."user" = "authorUser"."id"    
             WHERE "messages"."id" = ${job.message}
           `
@@ -2372,28 +2372,28 @@ export default async (application: Application): Promise<void> => {
         }>(
           sql`
             SELECT
-              "enrollments"."id",
+              "courseParticipants"."id",
               "users"."id" AS "userId",
               "users"."email" AS "userEmail",
               "users"."emailNotificationsForAllMessages" AS "userEmailNotificationsForAllMessages",
-              "enrollments"."reference",
-              "enrollments"."courseRole"
-            FROM "enrollments"
+              "courseParticipants"."reference",
+              "courseParticipants"."courseRole"
+            FROM "courseParticipants"
             JOIN "users" ON
-              "enrollments"."user" = "users"."id" AND
+              "courseParticipants"."user" = "users"."id" AND
               "users"."emailVerifiedAt" IS NOT NULL
             WHERE
-              "enrollments"."course" = ${course.id} AND
+              "courseParticipants"."course" = ${course.id} AND
               NOT EXISTS(
                 SELECT TRUE
                 FROM "emailNotificationDeliveries"
                 WHERE
-                  "enrollments"."id" = "emailNotificationDeliveries"."enrollment" AND
+                  "courseParticipants"."id" = "emailNotificationDeliveries"."enrollment" AND
                   "emailNotificationDeliveries"."message" = ${message.id}
               ) $${
                 message.type === "course-staff-whisper"
                   ? sql`
-                      AND "enrollments"."courseRole" = 'course-staff'
+                      AND "courseParticipants"."courseRole" = 'course-staff'
                     `
                   : sql``
               } $${
@@ -2402,12 +2402,12 @@ export default async (application: Application): Promise<void> => {
               : conversation.participants === "course-staff"
               ? sql`
                   AND (
-                    "enrollments"."courseRole" = 'course-staff' OR EXISTS(
+                    "courseParticipants"."courseRole" = 'course-staff' OR EXISTS(
                       SELECT TRUE
                       FROM "conversationSelectedParticipants"
                       WHERE
                         "conversationSelectedParticipants"."conversation" = ${conversation.id} AND
-                        "conversationSelectedParticipants"."enrollment" = "enrollments"."id"
+                        "conversationSelectedParticipants"."enrollment" = "courseParticipants"."id"
                     )
                   )
                 `
@@ -2418,7 +2418,7 @@ export default async (application: Application): Promise<void> => {
                     FROM "conversationSelectedParticipants"
                     WHERE
                       "conversationSelectedParticipants"."conversation" = ${conversation.id} AND
-                      "conversationSelectedParticipants"."enrollment" = "enrollments"."id"
+                      "conversationSelectedParticipants"."enrollment" = "courseParticipants"."id"
                   )
                 `
               : sql``
@@ -2437,19 +2437,19 @@ export default async (application: Application): Promise<void> => {
                             : contentProcessed.mentions.has("course-staff")
                             ? sql`
                                 AND (
-                                  "enrollments"."courseRole" = 'course-staff' OR
-                                  "enrollments"."reference" IN ${contentProcessed.mentions}
+                                  "courseParticipants"."courseRole" = 'course-staff' OR
+                                  "courseParticipants"."reference" IN ${contentProcessed.mentions}
                                 )
                               `
                             : contentProcessed.mentions.has("students")
                             ? sql`
                                 AND (
-                                  "enrollments"."courseRole" = 'student' OR
-                                  "enrollments"."reference" IN ${contentProcessed.mentions}
+                                  "courseParticipants"."courseRole" = 'student' OR
+                                  "courseParticipants"."reference" IN ${contentProcessed.mentions}
                                 )
                               `
                             : sql`
-                                AND "enrollments"."reference" IN ${contentProcessed.mentions}
+                                AND "courseParticipants"."reference" IN ${contentProcessed.mentions}
                               `
                         }
                     ) OR (
@@ -2458,7 +2458,7 @@ export default async (application: Application): Promise<void> => {
                         FROM "messages"
                         WHERE
                           "conversation" = ${conversation.id} AND
-                          "authorEnrollment" = "enrollments"."id"
+                          "authorEnrollment" = "courseParticipants"."id"
                       )
                     ) OR (
                       "users"."emailNotificationsForMessagesInConversationsYouStartedAt" IS NOT NULL AND EXISTS(
@@ -2466,7 +2466,7 @@ export default async (application: Application): Promise<void> => {
                         FROM "conversations"
                         WHERE
                           "id" = ${conversation.id} AND
-                          "authorEnrollment" = "enrollments"."id"
+                          "authorEnrollment" = "courseParticipants"."id"
                       )
                     )
                   )

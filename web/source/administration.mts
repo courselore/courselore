@@ -881,8 +881,8 @@ export default async (application: Application): Promise<void> => {
           "archivedAt",
           (
             SELECT COUNT(*)
-            FROM "enrollments"
-            WHERE "courses"."id" = "enrollments"."course"
+            FROM "courseParticipants"
+            WHERE "courses"."id" = "courseParticipants"."course"
           ) AS "enrollmentsCount",
           (
             SELECT COUNT(*)

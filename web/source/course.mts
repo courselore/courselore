@@ -29,8 +29,8 @@ export type ApplicationCourse = {
 
       ResponseLocals: {
         CourseEnrolled: Application["web"]["locals"]["ResponseLocals"]["SignedIn"] & {
-          enrollment: Application["web"]["locals"]["ResponseLocals"]["SignedIn"]["enrollments"][number];
-          course: Application["web"]["locals"]["ResponseLocals"]["SignedIn"]["enrollments"][number]["course"];
+          enrollment: Application["web"]["locals"]["ResponseLocals"]["SignedIn"]["courseParticipants"][number];
+          course: Application["web"]["locals"]["ResponseLocals"]["SignedIn"]["courseParticipants"][number]["course"];
           courseEnrollmentsCount: number;
           mostRecentlyUpdatedConversationReference: string | null;
           tags: {
@@ -62,8 +62,8 @@ export type ApplicationCourse = {
             any,
             Application["web"]["locals"]["ResponseLocals"]["LiveConnection"]
           >;
-          course: Application["web"]["locals"]["ResponseLocals"]["SignedIn"]["enrollments"][number]["course"];
-          enrollment?: Application["web"]["locals"]["ResponseLocals"]["SignedIn"]["enrollments"][number];
+          course: Application["web"]["locals"]["ResponseLocals"]["SignedIn"]["courseParticipants"][number]["course"];
+          enrollment?: Application["web"]["locals"]["ResponseLocals"]["SignedIn"]["courseParticipants"][number];
           tight?: boolean;
         }) => HTML;
 
@@ -490,7 +490,7 @@ export default async (application: Application): Promise<void> => {
       )!;
       application.database.run(
         sql`
-          INSERT INTO "enrollments" ("createdAt", "user", "course", "reference", "courseRole", "accentColor")
+          INSERT INTO "courseParticipants" ("createdAt", "user", "course", "reference", "courseRole", "accentColor")
           VALUES (
             ${new Date().toISOString()},
             ${response.locals.user.id},
@@ -562,7 +562,7 @@ export default async (application: Application): Promise<void> => {
     }>(
       sql`
         SELECT COUNT(*) AS "count"
-        FROM "enrollments"
+        FROM "courseParticipants"
         WHERE "course" = ${response.locals.course.id}
       `
     )!.count;
@@ -955,7 +955,7 @@ export default async (application: Application): Promise<void> => {
     if (request.query.sidebarOnSmallScreen === "true") {
       application.database.run(
         sql`
-          UPDATE "enrollments"
+          UPDATE "courseParticipants"
           SET "mostRecentlyVisitedConversation" = NULL
           WHERE "id" = ${response.locals.enrollment.id}
         `
@@ -3239,11 +3239,11 @@ export default async (application: Application): Promise<void> => {
               application.database.get<{}>(
                 sql`
                   SELECT TRUE
-                  FROM "enrollments"
+                  FROM "courseParticipants"
                   JOIN "users" ON
-                    "enrollments"."user" = "users"."id" AND
+                    "courseParticipants"."user" = "users"."id" AND
                     "users"."email" = ${email}
-                  WHERE "enrollments"."course" = ${response.locals.course.id}
+                  WHERE "courseParticipants"."course" = ${response.locals.course.id}
                 `
               ) !== undefined
             )
@@ -4010,7 +4010,7 @@ export default async (application: Application): Promise<void> => {
       application.database.executeTransaction(() => {
         application.database.run(
           sql`
-            INSERT INTO "enrollments" ("createdAt", "user", "course", "reference", "courseRole", "accentColor")
+            INSERT INTO "courseParticipants" ("createdAt", "user", "course", "reference", "courseRole", "accentColor")
             VALUES (
               ${new Date().toISOString()},
               ${response.locals.user.id},
@@ -4076,7 +4076,7 @@ export default async (application: Application): Promise<void> => {
         }>(
           sql`
             SELECT
-              "enrollments"."id",
+              "courseParticipants"."id",
               "users"."id" AS "userId",
               "users"."lastSeenOnlineAt" AS "userLastSeenOnlineAt",
               "users"."reference" AS "userReference",
@@ -4086,13 +4086,13 @@ export default async (application: Application): Promise<void> => {
               "users"."avatarlessBackgroundColor" AS "userAvatarlessBackgroundColor",
               "users"."biographySource" AS "userBiographySource",
               "users"."biographyPreprocessed" AS "userBiographyPreprocessed",
-              "enrollments"."reference",
-              "enrollments"."courseRole"
-            FROM "enrollments"
-            JOIN "users" ON "enrollments"."user" = "users"."id"
-            WHERE "enrollments"."course" = ${response.locals.course.id}
+              "courseParticipants"."reference",
+              "courseParticipants"."courseRole"
+            FROM "courseParticipants"
+            JOIN "users" ON "courseParticipants"."user" = "users"."id"
+            WHERE "courseParticipants"."course" = ${response.locals.course.id}
             ORDER BY
-              "enrollments"."courseRole" ASC,
+              "courseParticipants"."courseRole" ASC,
               "users"."name" ASC
           `
         )
@@ -4616,7 +4616,7 @@ export default async (application: Application): Promise<void> => {
       }>(
         sql`
           SELECT "id", "reference"
-          FROM "enrollments"
+          FROM "courseParticipants"
           WHERE
             "course" = ${response.locals.course.id} AND
             "reference" = ${request.params.enrollmentReference}
@@ -4633,7 +4633,7 @@ export default async (application: Application): Promise<void> => {
         application.database.get<{ count: number }>(
           sql`
             SELECT COUNT(*) AS "count"
-            FROM "enrollments"
+            FROM "courseParticipants"
             WHERE
               "course" = ${response.locals.course.id} AND
               "courseRole" = ${"course-staff"}
@@ -4669,7 +4669,7 @@ export default async (application: Application): Promise<void> => {
 
         application.database.run(
           sql`
-            UPDATE "enrollments"
+            UPDATE "courseParticipants"
             SET "courseRole" = ${request.body.courseRole}
             WHERE "id" = ${response.locals.managedEnrollment.id}
           `
@@ -4710,7 +4710,10 @@ export default async (application: Application): Promise<void> => {
       if (response.locals.managedEnrollment === undefined) return next();
 
       application.database.run(
-        sql`DELETE FROM "enrollments" WHERE "id" = ${response.locals.managedEnrollment.id}`
+        sql`
+          DELETE FROM "courseParticipants"
+          WHERE "id" = ${response.locals.managedEnrollment.id}
+        `
       );
 
       application.web.locals.helpers.Flash.set({
@@ -5263,7 +5266,11 @@ export default async (application: Application): Promise<void> => {
         return next("Validation");
 
       application.database.run(
-        sql`UPDATE "enrollments" SET "accentColor" = ${request.body.accentColor} WHERE "id" = ${response.locals.enrollment.id}`
+        sql`
+          UPDATE "courseParticipants"
+          SET "accentColor" = ${request.body.accentColor}
+          WHERE "id" = ${response.locals.enrollment.id}
+        `
       );
 
       application.web.locals.helpers.Flash.set({

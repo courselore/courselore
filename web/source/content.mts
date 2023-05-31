@@ -560,7 +560,7 @@ export default async (application: Application): Promise<void> => {
                   }>(
                     sql`
                       SELECT
-                        "enrollments"."id",
+                        "courseParticipants"."id",
                         "users"."id" AS "userId",
                         "users"."lastSeenOnlineAt" AS "userLastSeenOnlineAt",
                         "users"."reference" AS "userReference",
@@ -570,15 +570,15 @@ export default async (application: Application): Promise<void> => {
                         "users"."avatarlessBackgroundColor" AS  "userAvatarlessBackgroundColor",
                         "users"."biographySource" AS "userBiographySource",
                         "users"."biographyPreprocessed" AS "userBiographyPreprocessed",
-                        "enrollments"."reference",
-                        "enrollments"."courseRole"
-                      FROM "enrollments"
-                      JOIN "users" ON "enrollments"."user" = "users"."id"
+                        "courseParticipants"."reference",
+                        "courseParticipants"."courseRole"
+                      FROM "courseParticipants"
+                      JOIN "users" ON "courseParticipants"."user" = "users"."id"
                       WHERE
-                        "enrollments"."course" = ${
+                        "courseParticipants"."course" = ${
                           response.locals.course!.id
                         } AND
-                        "enrollments"."reference" = ${enrollmentReference}
+                        "courseParticipants"."reference" = ${enrollmentReference}
                     `
                   );
                   if (enrollmentRow === undefined) return match;
@@ -4220,7 +4220,7 @@ ${contentSource}</textarea
         }>(
           sql`
             SELECT
-              "enrollments"."id",
+              "courseParticipants"."id",
               "users"."id" AS "userId",
               "users"."lastSeenOnlineAt" AS "userLastSeenOnlineAt",
               "users"."reference" AS "userReference",
@@ -4237,12 +4237,12 @@ ${contentSource}</textarea
                     `
                   : sql``
               }
-              "enrollments"."reference",
-              "enrollments"."courseRole"
-            FROM "enrollments"
+              "courseParticipants"."reference",
+              "courseParticipants"."courseRole"
+            FROM "courseParticipants"
             JOIN "users" ON
-              "enrollments"."user" = "users"."id" AND
-              "enrollments"."course" = ${response.locals.course.id} AND
+              "courseParticipants"."user" = "users"."id" AND
+              "courseParticipants"."course" = ${response.locals.course.id} AND
               "users"."id" != ${response.locals.user.id}
               $${
                 request.query.search.trim() !== ""
@@ -4265,14 +4265,14 @@ ${contentSource}</textarea
                       } AND (
                         "conversations"."participants" = 'everyone' OR (
                           "conversations"."participants" = 'course-staff' AND
-                          "enrollments"."courseRole" = 'course-staff'
+                          "courseParticipants"."courseRole" = 'course-staff'
                         ) OR
                         EXISTS(
                           SELECT TRUE
                           FROM "conversationSelectedParticipants"
                           WHERE
                             "conversationSelectedParticipants"."conversation" = "conversations"."id" AND
-                            "conversationSelectedParticipants"."enrollment" = "enrollments"."id"
+                            "conversationSelectedParticipants"."enrollment" = "courseParticipants"."id"
                         )
                       )
                     LEFT JOIN "messages" ON
@@ -4281,7 +4281,7 @@ ${contentSource}</textarea
                         FROM "messages"
                         WHERE
                           "conversations"."id" = "messages"."conversation" AND
-                          "messages"."authorEnrollment" = "enrollments"."id" $${
+                          "messages"."authorEnrollment" = "courseParticipants"."id" $${
                             response.locals.enrollment.courseRole ===
                             "course-staff"
                               ? sql``
@@ -4711,9 +4711,9 @@ ${contentSource}</textarea
               "conversations"."reference" AS "conversationReference",
               highlight("usersNameSearchIndex", 0, '<mark class="mark">', '</mark>') AS "messageAuthorUserNameSearchResultHighlight"
             FROM "messages"
-            JOIN "enrollments" ON "messages"."authorEnrollment" = "enrollments"."id"
+            JOIN "courseParticipants" ON "messages"."authorEnrollment" = "courseParticipants"."id"
             JOIN "usersNameSearchIndex" ON
-              "enrollments"."user" = "usersNameSearchIndex"."rowid" AND
+              "courseParticipants"."user" = "usersNameSearchIndex"."rowid" AND
               "usersNameSearchIndex" MATCH ${application.web.locals.helpers.sanitizeSearch(
                 request.query.search,
                 { prefix: true }
@@ -5212,7 +5212,7 @@ ${contentSource}</textarea
             "messagePolls"."multipleChoicesAt",
             "messagePolls"."closesAt"
           FROM "messagePolls"
-          LEFT JOIN "enrollments" AS "authorEnrollment" ON "messagePolls"."authorEnrollment" = "authorEnrollment"."id"
+          LEFT JOIN "courseParticipants" AS "authorEnrollment" ON "messagePolls"."authorEnrollment" = "authorEnrollment"."id"
           LEFT JOIN "users" AS "authorUser" ON "authorEnrollment"."user" = "authorUser"."id"
           WHERE
             "messagePolls"."course" = ${response.locals.course.id} AND
@@ -5661,7 +5661,7 @@ ${contentSource}</textarea
                     }>(
                       sql`
                         SELECT
-                          "enrollments"."id" AS "enrollmentId",
+                          "courseParticipants"."id" AS "enrollmentId",
                           "users"."id" AS "userId",
                           "users"."lastSeenOnlineAt" AS "userLastSeenOnlineAt",
                           "users"."reference" AS "userReference",
@@ -5671,11 +5671,11 @@ ${contentSource}</textarea
                           "users"."avatarlessBackgroundColor" AS "userAvatarlessBackgroundColors",
                           "users"."biographySource" AS "userBiographySource",
                           "users"."biographyPreprocessed" AS "userBiographyPreprocessed",
-                          "enrollments"."reference" AS "enrollmentReference",
-                          "enrollments"."courseRole" AS "enrollmentCourseRole"
+                          "courseParticipants"."reference" AS "enrollmentReference",
+                          "courseParticipants"."courseRole" AS "enrollmentCourseRole"
                         FROM "messagePollVotes"
-                        LEFT JOIN "enrollments" ON "messagePollVotes"."enrollment" = "enrollments"."id"
-                        LEFT JOIN "users" ON "enrollments"."user" = "users"."id"
+                        LEFT JOIN "courseParticipants" ON "messagePollVotes"."enrollment" = "courseParticipants"."id"
+                        LEFT JOIN "users" ON "courseParticipants"."user" = "users"."id"
                         WHERE "messagePollVotes"."messagePollOption" = ${option.id}
                         ORDER BY "messagePollVotes"."createdAt" ASC
                       `

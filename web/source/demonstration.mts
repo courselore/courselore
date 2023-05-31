@@ -246,10 +246,10 @@ export default async (application: Application): Promise<void> => {
           courseRole: Application["web"]["locals"]["helpers"]["courseRoles"][number];
         }>(
           sql`
-            SELECT * FROM "enrollments" WHERE "id" = ${
+            SELECT * FROM "courseParticipants" WHERE "id" = ${
               application.database.run(
                 sql`
-                  INSERT INTO "enrollments" ("createdAt", "user", "course", "reference", "courseRole", "accentColor")
+                  INSERT INTO "courseParticipants" ("createdAt", "user", "course", "reference", "courseRole", "accentColor")
                   VALUES (
                     ${new Date().toISOString()},
                     ${demonstrationUser.id},
@@ -348,10 +348,10 @@ export default async (application: Application): Promise<void> => {
                 courseRole: Application["web"]["locals"]["helpers"]["courseRoles"][number];
               }>(
                 sql`
-                  SELECT * FROM "enrollments" WHERE "id" = ${
+                  SELECT * FROM "courseParticipants" WHERE "id" = ${
                     application.database.run(
                       sql`
-                        INSERT INTO "enrollments" ("createdAt", "user", "course", "reference", "courseRole", "accentColor")
+                        INSERT INTO "courseParticipants" ("createdAt", "user", "course", "reference", "courseRole", "accentColor")
                         VALUES (
                           ${new Date().toISOString()},
                           ${enrollmentUser.id},

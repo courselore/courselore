@@ -267,7 +267,7 @@ export default async (application: Application): Promise<void> => {
               }>(
                 sql`
                   SELECT
-                    "enrollments"."id" AS "enrollmentId",
+                    "courseParticipants"."id" AS "enrollmentId",
                     "users"."id" AS "userId",
                     "users"."lastSeenOnlineAt" AS "userLastSeenOnlineAt",
                     "users"."reference" AS "userReference",
@@ -277,12 +277,12 @@ export default async (application: Application): Promise<void> => {
                     "users"."avatarlessBackgroundColor" AS "userAvatarlessBackgroundColor",
                     "users"."biographySource" AS "userBiographySource",
                     "users"."biographyPreprocessed" AS "userBiographyPreprocessed",
-                    "enrollments"."reference" AS "enrollmentReference",
-                    "enrollments"."courseRole" AS "enrollmentCourseRole"
-                  FROM "enrollments"
-                  JOIN "users" ON "enrollments"."user" = "users"."id"
+                    "courseParticipants"."reference" AS "enrollmentReference",
+                    "courseParticipants"."courseRole" AS "enrollmentCourseRole"
+                  FROM "courseParticipants"
+                  JOIN "users" ON "courseParticipants"."user" = "users"."id"
                   JOIN "messageDrafts" ON
-                    "enrollments"."id" = "messageDrafts"."authorEnrollment" AND
+                    "courseParticipants"."id" = "messageDrafts"."authorEnrollment" AND
                     "messageDrafts"."conversation" = ${
                       response.locals.conversation.id
                     } AND
@@ -290,9 +290,9 @@ export default async (application: Application): Promise<void> => {
                       Date.now() - 5 * 60 * 1000
                     ).toISOString()} < "messageDrafts"."createdAt"
                   WHERE
-                    "enrollments"."id" != ${response.locals.enrollment.id}
+                    "courseParticipants"."id" != ${response.locals.enrollment.id}
                   ORDER BY
-                    "enrollments"."courseRole" = 'course-staff' DESC,
+                    "courseParticipants"."courseRole" = 'course-staff' DESC,
                     "users"."name" ASC
                 `
               )
@@ -319,7 +319,7 @@ export default async (application: Application): Promise<void> => {
       if (request.query.sidebarOnSmallScreen !== "true")
         application.database.run(
           sql`
-            UPDATE "enrollments"
+            UPDATE "courseParticipants"
             SET "mostRecentlyVisitedConversation" = ${response.locals.conversation.id}
             WHERE "id" = ${response.locals.enrollment.id}
           `
@@ -393,7 +393,7 @@ export default async (application: Application): Promise<void> => {
           "conversations"."titleSearch",
           "conversations"."nextMessageReference"
         FROM "conversations"
-        LEFT JOIN "enrollments" AS "authorEnrollment" ON "conversations"."authorEnrollment" = "authorEnrollment"."id"
+        LEFT JOIN "courseParticipants" AS "authorEnrollment" ON "conversations"."authorEnrollment" = "authorEnrollment"."id"
         LEFT JOIN "users" AS "authorUser" ON "authorEnrollment"."user" = "authorUser"."id"
         WHERE
           "conversations"."course" = ${response.locals.course.id} AND
@@ -480,7 +480,7 @@ export default async (application: Application): Promise<void> => {
             }>(
               sql`
                 SELECT
-                  "enrollments"."id" AS "enrollmentId",
+                  "courseParticipants"."id" AS "enrollmentId",
                   "users"."id" AS "userId",
                   "users"."lastSeenOnlineAt" AS "userLastSeenOnlineAt",
                   "users"."reference" AS "userReference",
@@ -490,16 +490,16 @@ export default async (application: Application): Promise<void> => {
                   "users"."avatarlessBackgroundColor" AS "userAvatarlessBackgroundColor",
                   "users"."biographySource" AS "userBiographySource",
                   "users"."biographyPreprocessed" AS "userBiographyPreprocessed",
-                  "enrollments"."reference" AS "enrollmentReference",
-                  "enrollments"."courseRole" AS "enrollmentCourseRole"
+                  "courseParticipants"."reference" AS "enrollmentReference",
+                  "courseParticipants"."courseRole" AS "enrollmentCourseRole"
                 FROM "conversationSelectedParticipants"
-                JOIN "enrollments" ON "conversationSelectedParticipants"."enrollment" = "enrollments"."id"
-                JOIN "users" ON "enrollments"."user" = "users"."id"
+                JOIN "courseParticipants" ON "conversationSelectedParticipants"."enrollment" = "courseParticipants"."id"
+                JOIN "users" ON "courseParticipants"."user" = "users"."id"
                 WHERE
                   "conversationSelectedParticipants"."conversation" = ${conversation.id} AND
-                  "enrollments"."id" != ${response.locals.enrollment.id}
+                  "courseParticipants"."id" != ${response.locals.enrollment.id}
                 ORDER BY
-                  "enrollments"."courseRole" = 'course-staff' DESC,
+                  "courseParticipants"."courseRole" = 'course-staff' DESC,
                   "users"."name" ASC
               `
             )
@@ -618,7 +618,7 @@ export default async (application: Application): Promise<void> => {
               sql`
                 SELECT
                   "endorsements"."id",
-                  "enrollments"."id" AS "enrollmentId",
+                  "courseParticipants"."id" AS "enrollmentId",
                   "users"."id" AS "userId",
                   "users"."lastSeenOnlineAt" AS "userLastSeenOnlineAt",
                   "users"."reference" AS "userReference",
@@ -628,11 +628,11 @@ export default async (application: Application): Promise<void> => {
                   "users"."avatarlessBackgroundColor" AS "userAvatarlessBackgroundColor",
                   "users"."biographySource" AS "userBiographySource",
                   "users"."biographyPreprocessed" AS "userBiographyPreprocessed",
-                  "enrollments"."reference" AS "enrollmentReference",
-                  "enrollments"."courseRole" AS "enrollmentCourseRole"
+                  "courseParticipants"."reference" AS "enrollmentReference",
+                  "courseParticipants"."courseRole" AS "enrollmentCourseRole"
                 FROM "endorsements"
-                JOIN "enrollments" ON "endorsements"."enrollment" = "enrollments"."id"
-                JOIN "users" ON "enrollments"."user" = "users"."id"
+                JOIN "courseParticipants" ON "endorsements"."enrollment" = "courseParticipants"."id"
+                JOIN "users" ON "courseParticipants"."user" = "users"."id"
                 JOIN "messages" ON
                   "endorsements"."message" = "messages"."id" AND
                   "messages"."conversation" = ${conversation.id}
@@ -837,9 +837,9 @@ export default async (application: Application): Promise<void> => {
                     highlight("usersNameSearchIndex", 0, '<mark class="mark">', '</mark>') AS "highlight"
                   FROM "usersNameSearchIndex"
                   JOIN "users" ON "usersNameSearchIndex"."rowid" = "users"."id"
-                  JOIN "enrollments" ON "users"."id" = "enrollments"."user"
+                  JOIN "courseParticipants" ON "users"."id" = "courseParticipants"."user"
                   JOIN "messages" ON
-                    "enrollments"."id" = "messages"."authorEnrollment"
+                    "courseParticipants"."id" = "messages"."authorEnrollment"
                     $${
                       response.locals.enrollment.courseRole === "course-staff"
                         ? sql``
@@ -3819,7 +3819,7 @@ export default async (application: Application): Promise<void> => {
                   }>(
                     sql`
                       SELECT
-                        "enrollments"."id",
+                        "courseParticipants"."id",
                         "users"."id" AS "userId",
                         "users"."lastSeenOnlineAt" AS "userLastSeenOnlineAt",
                         "users"."reference" AS "userReference",
@@ -3829,15 +3829,15 @@ export default async (application: Application): Promise<void> => {
                         "users"."avatarlessBackgroundColor" AS "userAvatarlessBackgroundColor",
                         "users"."biographySource" AS "userBiographySource",
                         "users"."biographyPreprocessed" AS "userBiographyPreprocessed",
-                        "enrollments"."reference",
-                        "enrollments"."courseRole"
-                      FROM "enrollments"
-                      JOIN "users" ON "enrollments"."user" = "users"."id"
+                        "courseParticipants"."reference",
+                        "courseParticipants"."courseRole"
+                      FROM "courseParticipants"
+                      JOIN "users" ON "courseParticipants"."user" = "users"."id"
                       WHERE
-                        "enrollments"."course" = ${response.locals.course.id} AND
-                        "enrollments"."id" != ${response.locals.enrollment.id}
+                        "courseParticipants"."course" = ${response.locals.course.id} AND
+                        "courseParticipants"."id" != ${response.locals.enrollment.id}
                       ORDER BY
-                        "enrollments"."courseRole" = 'course-staff' DESC,
+                        "courseParticipants"."courseRole" = 'course-staff' DESC,
                         "users"."name" ASC
                     `
                   )
@@ -5020,9 +5020,9 @@ export default async (application: Application): Promise<void> => {
           }>(
             sql`
               SELECT "id", "courseRole"
-              FROM "enrollments"
+              FROM "courseParticipants"
               WHERE
-                "enrollments"."course" = ${response.locals.course.id} AND
+                "courseParticipants"."course" = ${response.locals.course.id} AND
                 "reference" IN ${request.body.selectedParticipantsReferences}
             `
           );
@@ -6825,7 +6825,7 @@ export default async (application: Application): Promise<void> => {
                             }>(
                               sql`
                                 SELECT
-                                  "enrollments"."id",
+                                  "courseParticipants"."id",
                                   "users"."id" AS "userId",
                                   "users"."lastSeenOnlineAt" AS "userLastSeenOnlineAt",
                                   "users"."reference" AS "userReference",
@@ -6835,15 +6835,15 @@ export default async (application: Application): Promise<void> => {
                                   "users"."avatarlessBackgroundColor" AS "userAvatarlessBackgroundColor",
                                   "users"."biographySource" AS "userBiographySource",
                                   "users"."biographyPreprocessed" AS "userBiographyPreprocessed",
-                                  "enrollments"."reference",
-                                  "enrollments"."courseRole"
-                                FROM "enrollments"
-                                JOIN "users" ON "enrollments"."user" = "users"."id"
+                                  "courseParticipants"."reference",
+                                  "courseParticipants"."courseRole"
+                                FROM "courseParticipants"
+                                JOIN "users" ON "courseParticipants"."user" = "users"."id"
                                 WHERE
-                                  "enrollments"."course" = ${response.locals.course.id} AND
-                                  "enrollments"."id" != ${response.locals.enrollment.id}
+                                  "courseParticipants"."course" = ${response.locals.course.id} AND
+                                  "courseParticipants"."id" != ${response.locals.enrollment.id}
                                 ORDER BY
-                                  "enrollments"."courseRole" = 'course-staff' DESC,
+                                  "courseParticipants"."courseRole" = 'course-staff' DESC,
                                   "users"."name" ASC
                               `
                             )
@@ -10003,9 +10003,9 @@ export default async (application: Application): Promise<void> => {
                 }>(
                   sql`
                     SELECT "id", "courseRole"
-                    FROM "enrollments"
+                    FROM "courseParticipants"
                     WHERE
-                      "enrollments"."course" = ${response.locals.course.id} AND
+                      "courseParticipants"."course" = ${response.locals.course.id} AND
                       "reference" IN ${request.body.selectedParticipantsReferences}
                   `
                 );

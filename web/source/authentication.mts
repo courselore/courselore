@@ -472,7 +472,7 @@ export default async (application: Application): Promise<void> => {
           "users"."latestNewsVersion",
           "mostRecentlyVisitedCourse"."reference" AS "mostRecentlyVisitedCourseReference"
         FROM "users"
-        LEFT JOIN "enrollments" AS "mostRecentlyVisitedEnrollment" ON
+        LEFT JOIN "courseParticipants" AS "mostRecentlyVisitedEnrollment" ON
           "users"."id" = "mostRecentlyVisitedEnrollment"."user" AND
           "mostRecentlyVisitedEnrollment"."id" = "users"."mostRecentlyVisitedEnrollment"
         LEFT JOIN "courses" AS "mostRecentlyVisitedCourse" ON
@@ -561,7 +561,7 @@ export default async (application: Application): Promise<void> => {
       }>(
         sql`
           SELECT
-            "enrollments"."id",
+            "courseParticipants"."id",
             "courses"."id" AS "courseId",
             "courses"."reference" AS "courseReference",
             "courses"."archivedAt" AS "courseArchivedAt",
@@ -572,28 +572,28 @@ export default async (application: Application): Promise<void> => {
             "courses"."code" AS "courseCode",
             "courses"."nextConversationReference" AS "courseNextConversationReference",
             "courses"."studentsMayCreatePollsAt" AS "courseStudentsMayCreatePollsAt",
-            "enrollments"."reference",
-            "enrollments"."courseRole",
-            "enrollments"."accentColor",
+            "courseParticipants"."reference",
+            "courseParticipants"."courseRole",
+            "courseParticipants"."accentColor",
             "mostRecentlyVisitedConversation"."reference" AS "mostRecentlyVisitedConversationReference"
-          FROM "enrollments"
-          JOIN "courses" ON "enrollments"."course" = "courses"."id"
+          FROM "courseParticipants"
+          JOIN "courses" ON "courseParticipants"."course" = "courses"."id"
           LEFT JOIN "conversations" AS "mostRecentlyVisitedConversation" ON
             "courses"."id" = "mostRecentlyVisitedConversation"."course" AND
-            "enrollments"."mostRecentlyVisitedConversation" = "mostRecentlyVisitedConversation"."id" AND (
+            "courseParticipants"."mostRecentlyVisitedConversation" = "mostRecentlyVisitedConversation"."id" AND (
               "mostRecentlyVisitedConversation"."participants" = 'everyone' OR (
-                "enrollments"."courseRole" = 'course-staff' AND
+                "courseParticipants"."courseRole" = 'course-staff' AND
                 "mostRecentlyVisitedConversation"."participants" = 'course-staff'
               ) OR EXISTS(
                 SELECT TRUE
                 FROM "conversationSelectedParticipants"
                 WHERE
                   "conversationSelectedParticipants"."conversation" = "mostRecentlyVisitedConversation"."id" AND 
-                  "conversationSelectedParticipants"."enrollment" = "enrollments"."id"
+                  "conversationSelectedParticipants"."enrollment" = "courseParticipants"."id"
               )
             )
-          WHERE "enrollments"."user" = ${response.locals.user.id}
-          ORDER BY "enrollments"."id" DESC
+          WHERE "courseParticipants"."user" = ${response.locals.user.id}
+          ORDER BY "courseParticipants"."id" DESC
         `
       )
       .map((enrollment) => ({
