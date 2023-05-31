@@ -4204,7 +4204,7 @@ ${contentSource}</textarea
           `;
         }
 
-      for (const enrollment of application.database
+      for (const courseParticipant of application.database
         .all<{
           id: number;
           userId: number;
@@ -4316,41 +4316,41 @@ ${contentSource}</textarea
             LIMIT 5
           `
         )
-        .map((enrollment) => ({
-          id: enrollment.id,
+        .map((courseParticipantRow) => ({
+          id: courseParticipantRow.id,
           user: {
-            id: enrollment.userId,
-            lastSeenOnlineAt: enrollment.userLastSeenOnlineAt,
-            reference: enrollment.userReference,
-            email: enrollment.userEmail,
-            name: enrollment.userName,
-            avatar: enrollment.userAvatar,
-            avatarlessBackgroundColor: enrollment.userAvatarlessBackgroundColor,
-            biographySource: enrollment.userBiographySource,
-            biographyPreprocessed: enrollment.userBiographyPreprocessed,
-            nameSearchResultHighlight: enrollment.userNameSearchResultHighlight,
+            id: courseParticipantRow.userId,
+            lastSeenOnlineAt: courseParticipantRow.userLastSeenOnlineAt,
+            reference: courseParticipantRow.userReference,
+            email: courseParticipantRow.userEmail,
+            name: courseParticipantRow.userName,
+            avatar: courseParticipantRow.userAvatar,
+            avatarlessBackgroundColor: courseParticipantRow.userAvatarlessBackgroundColor,
+            biographySource: courseParticipantRow.userBiographySource,
+            biographyPreprocessed: courseParticipantRow.userBiographyPreprocessed,
+            nameSearchResultHighlight: courseParticipantRow.userNameSearchResultHighlight,
           },
-          reference: enrollment.reference,
-          courseRole: enrollment.courseRole,
+          reference: courseParticipantRow.reference,
+          courseRole: courseParticipantRow.courseRole,
         })))
         result += html`
           <button
-            key="mention-user-search--${enrollment.reference}"
+            key="mention-user-search--${courseParticipant.reference}"
             type="button"
             class="dropdown--menu--item button button--transparent"
             javascript="${javascript`
               this.onclick = () => {
                 this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--textarea"]').dropdownMenuComplete(${`${
-                  enrollment.reference
-                }--${slugify(enrollment.user.name)}`});
+                  courseParticipant.reference
+                }--${slugify(courseParticipant.user.name)}`});
               };
           `}"
           >
             $${application.web.locals.partials.user({
               request,
               response,
-              courseParticipant: enrollment,
-              name: enrollment.user.nameSearchResultHighlight,
+              courseParticipant: courseParticipant,
+              name: courseParticipant.user.nameSearchResultHighlight,
               tooltip: false,
               size: "xs",
               bold: false,
