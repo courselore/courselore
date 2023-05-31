@@ -5682,34 +5682,34 @@ ${contentSource}</textarea
                         ORDER BY "messagePollVotes"."createdAt" ASC
                       `
                     )
-                    .map((vote) => ({
-                      enrollment:
-                        vote.courseParticipantId !== null &&
-                        vote.userId !== null &&
-                        vote.userLastSeenOnlineAt !== null &&
-                        vote.userReference !== null &&
-                        vote.userEmail !== null &&
-                        vote.userName !== null &&
-                        vote.userAvatarlessBackgroundColors !== null &&
-                        vote.courseParticipantReference !== null &&
-                        vote.courseParticipantCourseRole !== null
+                    .map((voteRow) => ({
+                      courseParticipant:
+                        voteRow.courseParticipantId !== null &&
+                        voteRow.userId !== null &&
+                        voteRow.userLastSeenOnlineAt !== null &&
+                        voteRow.userReference !== null &&
+                        voteRow.userEmail !== null &&
+                        voteRow.userName !== null &&
+                        voteRow.userAvatarlessBackgroundColors !== null &&
+                        voteRow.courseParticipantReference !== null &&
+                        voteRow.courseParticipantCourseRole !== null
                           ? {
-                              id: vote.courseParticipantId,
+                              id: voteRow.courseParticipantId,
                               user: {
-                                id: vote.userId,
-                                lastSeenOnlineAt: vote.userLastSeenOnlineAt,
-                                reference: vote.userReference,
-                                email: vote.userEmail,
-                                name: vote.userName,
-                                avatar: vote.userAvatar,
+                                id: voteRow.userId,
+                                lastSeenOnlineAt: voteRow.userLastSeenOnlineAt,
+                                reference: voteRow.userReference,
+                                email: voteRow.userEmail,
+                                name: voteRow.userName,
+                                avatar: voteRow.userAvatar,
                                 avatarlessBackgroundColor:
-                                  vote.userAvatarlessBackgroundColors,
-                                biographySource: vote.userBiographySource,
+                                  voteRow.userAvatarlessBackgroundColors,
+                                biographySource: voteRow.userBiographySource,
                                 biographyPreprocessed:
-                                  vote.userBiographyPreprocessed,
+                                  voteRow.userBiographyPreprocessed,
                               },
-                              reference: vote.courseParticipantReference,
-                              courseRole: vote.courseParticipantCourseRole,
+                              reference: voteRow.courseParticipantReference,
+                              courseRole: voteRow.courseParticipantCourseRole,
                             }
                           : ("no-longer-participating" as const),
                     }))
@@ -5718,7 +5718,7 @@ ${contentSource}</textarea
                         $${application.web.locals.partials.user({
                           request,
                           response,
-                          courseParticipant: vote.enrollment,
+                          courseParticipant: vote.courseParticipant,
                           size: "xs",
                         })}
                       `
