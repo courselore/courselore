@@ -48,7 +48,7 @@ export type ApplicationCourse = {
           request,
           response,
           course,
-          enrollment,
+          courseParticipant,
           tight,
         }: {
           request: express.Request<
@@ -63,7 +63,7 @@ export type ApplicationCourse = {
             Application["web"]["locals"]["ResponseLocals"]["LiveConnection"]
           >;
           course: Application["web"]["locals"]["ResponseLocals"]["SignedIn"]["courseParticipants"][number]["course"];
-          enrollment?: Application["web"]["locals"]["ResponseLocals"]["SignedIn"]["courseParticipants"][number];
+          courseParticipant?: Application["web"]["locals"]["ResponseLocals"]["SignedIn"]["courseParticipants"][number];
           tight?: boolean;
         }) => HTML;
 
@@ -193,13 +193,13 @@ export default async (application: Application): Promise<void> => {
                       element: this,
                       tippyProps: {
                         trigger: "click",
-                        content: "To enroll in an existing course you either have to follow an invitation link or be invited via email. Contact your course staff for more information.",
+                        content: "To join an existing course you either have to follow an invitation link or be invited via email. Contact your course staff for more information.",
                       },
                     });
                   `}"
                 >
                   <i class="bi bi-journal-arrow-down"></i>
-                  Enroll in an Existing Course
+                  Join an Existing Course
                 </button>
                 $${application.web.locals.helpers.mayCreateCourses({
                   request,
@@ -244,7 +244,7 @@ export default async (application: Application): Promise<void> => {
                                     ].name},
                                     but you may already have a Courselore
                                     account with a different email address in
-                                    which you enrolled in courses.
+                                    which you participate in courses.
                                   </p>
 
                                   <p>
@@ -530,8 +530,8 @@ export default async (application: Application): Promise<void> => {
     const accentColorsAvailable = new Set(
       application.web.locals.helpers.courseParticipantAccentColors
     );
-    for (const enrollment of response.locals.courseParticipants) {
-      accentColorsAvailable.delete(enrollment.accentColor);
+    for (const courseParticipant of response.locals.courseParticipants) {
+      accentColorsAvailable.delete(courseParticipant.accentColor);
       if (accentColorsAvailable.size === 1) break;
     }
     return [...accentColorsAvailable][0];
@@ -550,13 +550,13 @@ export default async (application: Application): Promise<void> => {
     )
       return next();
 
-    const enrollment = response.locals.courseParticipants.find(
+    const courseParticipant = response.locals.courseParticipants.find(
       (enrollment) =>
         enrollment.course.reference === request.params.courseReference
     );
-    if (enrollment === undefined) return next();
-    response.locals.courseParticipant = enrollment;
-    response.locals.course = enrollment.course;
+    if (courseParticipant === undefined) return next();
+    response.locals.courseParticipant = courseParticipant;
+    response.locals.course = courseParticipant.course;
 
     response.locals.courseParticipantsCount = application.database.get<{
       count: number;
@@ -621,7 +621,7 @@ export default async (application: Application): Promise<void> => {
     application.database.run(
       sql`
         UPDATE "users"
-        SET "mostRecentlyVisitedCourseParticipation" = ${response.locals.courseParticipant.id}
+        SET "mostRecentlyVisitedCourseParticipant" = ${response.locals.courseParticipant.id}
         WHERE "id" = ${response.locals.user.id}
       `
     );
@@ -633,7 +633,7 @@ export default async (application: Application): Promise<void> => {
     request,
     response,
     course,
-    enrollment = undefined,
+    courseParticipant = undefined,
     tight = false,
   }) => html`
     <div
@@ -648,18 +648,18 @@ export default async (application: Application): Promise<void> => {
         <div
           class="button button--tight ${tight ? "button--tight--inline" : ""}"
           style="
-            --color--accent-color--100: var(--color--${enrollment?.accentColor ??
+            --color--accent-color--100: var(--color--${courseParticipant?.accentColor ??
           ""}--100);
-            --color--accent-color--200: var(--color--${enrollment?.accentColor ??
+            --color--accent-color--200: var(--color--${courseParticipant?.accentColor ??
           ""}--200);
-            --color--accent-color--700: var(--color--${enrollment?.accentColor ??
+            --color--accent-color--700: var(--color--${courseParticipant?.accentColor ??
           ""}--700);
-            --color--accent-color--800: var(--color--${enrollment?.accentColor ??
+            --color--accent-color--800: var(--color--${courseParticipant?.accentColor ??
           ""}--800);
           "
           css="${css`
             cursor: default;
-          `} ${enrollment === undefined
+          `} ${courseParticipant === undefined
             ? css``
             : css`
                 color: var(--color--accent-color--700);
@@ -670,13 +670,13 @@ export default async (application: Application): Promise<void> => {
                 }
               `}"
           javascript="${javascript`
-            this.style.setProperty("--color--accent-color--100", ${`var(--color--${enrollment?.accentColor}--100)`});
-            this.style.setProperty("--color--accent-color--200", ${`var(--color--${enrollment?.accentColor}--200)`});
-            this.style.setProperty("--color--accent-color--700", ${`var(--color--${enrollment?.accentColor}--700)`});
-            this.style.setProperty("--color--accent-color--800", ${`var(--color--${enrollment?.accentColor}--800)`});
+            this.style.setProperty("--color--accent-color--100", ${`var(--color--${courseParticipant?.accentColor}--100)`});
+            this.style.setProperty("--color--accent-color--200", ${`var(--color--${courseParticipant?.accentColor}--200)`});
+            this.style.setProperty("--color--accent-color--700", ${`var(--color--${courseParticipant?.accentColor}--700)`});
+            this.style.setProperty("--color--accent-color--800", ${`var(--color--${courseParticipant?.accentColor}--800)`});
           `}"
         >
-          $${enrollment === undefined
+          $${courseParticipant === undefined
             ? html`<i class="bi bi-journal-arrow-down"></i>`
             : html`<i class="bi bi-journal-text"></i>`}
         </div>
@@ -705,12 +705,12 @@ export default async (application: Application): Promise<void> => {
                   `,
                 ];
           })}
-          $${enrollment === undefined
+          $${courseParticipant === undefined
             ? html``
             : html`
                 <div>
-                  $${iconsCourseRole[enrollment.courseRole]
-                    .regular} ${labelsCourseRole[enrollment.courseRole]}
+                  $${iconsCourseRole[courseParticipant.courseRole]
+                    .regular} ${labelsCourseRole[courseParticipant.courseRole]}
                 </div>
               `}
           $${course.archivedAt !== null
@@ -762,7 +762,7 @@ export default async (application: Application): Promise<void> => {
                   request,
                   response,
                   course: enrollment.course,
-                  enrollment,
+                  courseParticipant: enrollment,
                   tight,
                 })}
               </a>
@@ -815,7 +815,7 @@ export default async (application: Application): Promise<void> => {
                   request,
                   response,
                   course: enrollment.course,
-                  enrollment,
+                  courseParticipant: enrollment,
                   tight,
                 })}
               </a>

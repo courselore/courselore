@@ -472,11 +472,11 @@ export default async (application: Application): Promise<void> => {
           "users"."latestNewsVersion",
           "mostRecentlyVisitedCourse"."reference" AS "mostRecentlyVisitedCourseReference"
         FROM "users"
-        LEFT JOIN "courseParticipants" AS "mostRecentlyVisitedCourseParticipation" ON
-          "users"."id" = "mostRecentlyVisitedCourseParticipation"."user" AND
-          "mostRecentlyVisitedCourseParticipation"."id" = "users"."mostRecentlyVisitedCourseParticipation"
+        LEFT JOIN "courseParticipants" AS "mostRecentlyVisitedCourseParticipant" ON
+          "users"."id" = "mostRecentlyVisitedCourseParticipant"."user" AND
+          "mostRecentlyVisitedCourseParticipant"."id" = "users"."mostRecentlyVisitedCourseParticipant"
         LEFT JOIN "courses" AS "mostRecentlyVisitedCourse" ON
-          "mostRecentlyVisitedCourseParticipation"."course" = "mostRecentlyVisitedCourse"."id"
+          "mostRecentlyVisitedCourseParticipant"."course" = "mostRecentlyVisitedCourse"."id"
         WHERE "users"."id" = ${response.locals.session.userId}
       `
     )!;
