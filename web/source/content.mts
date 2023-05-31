@@ -60,14 +60,14 @@ export type ApplicationContent = {
             { conversations?: object },
             Application["web"]["locals"]["ResponseLocals"]["LiveConnection"] &
               Partial<
-                Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+                Application["web"]["locals"]["ResponseLocals"]["CourseParticipant"]
               >
           >;
           response: express.Response<
             any,
             Application["web"]["locals"]["ResponseLocals"]["LiveConnection"] &
               Partial<
-                Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+                Application["web"]["locals"]["ResponseLocals"]["CourseParticipant"]
               >
           >;
           id?: string;
@@ -95,7 +95,7 @@ export type ApplicationContent = {
             {},
             Application["web"]["locals"]["ResponseLocals"]["LiveConnection"] &
               Partial<
-                Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+                Application["web"]["locals"]["ResponseLocals"]["CourseParticipant"]
               > &
               Partial<
                 Application["web"]["locals"]["ResponseLocals"]["Conversation"]
@@ -105,7 +105,7 @@ export type ApplicationContent = {
             any,
             Application["web"]["locals"]["ResponseLocals"]["LiveConnection"] &
               Partial<
-                Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+                Application["web"]["locals"]["ResponseLocals"]["CourseParticipant"]
               > &
               Partial<
                 Application["web"]["locals"]["ResponseLocals"]["Conversation"]
@@ -433,11 +433,11 @@ export default async (application: Application): Promise<void> => {
         any,
         {},
         {},
-        Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+        Application["web"]["locals"]["ResponseLocals"]["CourseParticipant"]
       >;
       const responseCourseEnrolled = response as express.Response<
         any,
-        Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+        Application["web"]["locals"]["ResponseLocals"]["CourseParticipant"]
       >;
 
       for (const element of contentElement.querySelectorAll("a")) {
@@ -2420,12 +2420,12 @@ export default async (application: Application): Promise<void> => {
                                             any,
                                             {},
                                             { redirect?: string },
-                                            Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+                                            Application["web"]["locals"]["ResponseLocals"]["CourseParticipant"]
                                           >,
                                           response:
                                             response as express.Response<
                                               any,
-                                              Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+                                              Application["web"]["locals"]["ResponseLocals"]["CourseParticipant"]
                                             >,
                                         }
                                       )}).querySelector('[key="poll-editor"]');
@@ -3550,11 +3550,11 @@ ${contentSource}</textarea
       any,
       {},
       { redirect?: string },
-      Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+      Application["web"]["locals"]["ResponseLocals"]["CourseParticipant"]
     >;
     response: express.Response<
       any,
-      Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+      Application["web"]["locals"]["ResponseLocals"]["CourseParticipant"]
     >;
     poll?: ResponseLocalsPoll["poll"];
   }): HTML => {
@@ -4154,7 +4154,7 @@ ${contentSource}</textarea
     any,
     {},
     { search?: string },
-    Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"] &
+    Application["web"]["locals"]["ResponseLocals"]["CourseParticipant"] &
       Partial<Application["web"]["locals"]["ResponseLocals"]["Conversation"]>
   >(
     [
@@ -4379,7 +4379,7 @@ ${contentSource}</textarea
     any,
     {},
     { search?: string },
-    Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"] &
+    Application["web"]["locals"]["ResponseLocals"]["CourseParticipant"] &
       Partial<Application["web"]["locals"]["ResponseLocals"]["Conversation"]>
   >(
     [
@@ -5025,7 +5025,7 @@ ${contentSource}</textarea
       }[];
     },
     {},
-    Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+    Application["web"]["locals"]["ResponseLocals"]["CourseParticipant"]
   >("/courses/:courseReference/polls", (request, response, next) => {
     if (
       response.locals.course === undefined ||
@@ -5118,7 +5118,7 @@ ${contentSource}</textarea
   });
 
   type ResponseLocalsPoll =
-    Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"] & {
+    Application["web"]["locals"]["ResponseLocals"]["CourseParticipant"] & {
       poll: {
         id: number;
         createdAt: string;
@@ -5146,11 +5146,11 @@ ${contentSource}</textarea
       any,
       {},
       {},
-      Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+      Application["web"]["locals"]["ResponseLocals"]["CourseParticipant"]
     >;
     response: express.Response<
       any,
-      Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+      Application["web"]["locals"]["ResponseLocals"]["CourseParticipant"]
     >;
     poll: { authorEnrollment: { id: number } | "no-longer-enrolled" };
   }): boolean =>
@@ -5861,7 +5861,7 @@ ${contentSource}</textarea
     {},
     Application["web"]["locals"]["ResponseLocals"]["LiveConnection"] &
       Partial<Application["web"]["locals"]["ResponseLocals"]["SignedIn"]> &
-      Partial<Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]>
+      Partial<Application["web"]["locals"]["ResponseLocals"]["CourseParticipant"]>
   >(
     [
       "/content-editor/preview",

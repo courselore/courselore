@@ -51,14 +51,14 @@ export type ApplicationUser = {
             {},
             Application["web"]["locals"]["ResponseLocals"]["LiveConnection"] &
               Partial<
-                Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+                Application["web"]["locals"]["ResponseLocals"]["CourseParticipant"]
               >
           >;
           response: express.Response<
             any,
             Application["web"]["locals"]["ResponseLocals"]["LiveConnection"] &
               Partial<
-                Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+                Application["web"]["locals"]["ResponseLocals"]["CourseParticipant"]
               >
           >;
           enrollment?: Application["web"]["locals"]["Types"]["MaybeEnrollment"];

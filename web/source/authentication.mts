@@ -596,25 +596,25 @@ export default async (application: Application): Promise<void> => {
           ORDER BY "courseParticipants"."id" DESC
         `
       )
-      .map((enrollment) => ({
-        id: enrollment.id,
+      .map((courseParticipantRow) => ({
+        id: courseParticipantRow.id,
         course: {
-          id: enrollment.courseId,
-          reference: enrollment.courseReference,
-          archivedAt: enrollment.courseArchivedAt,
-          name: enrollment.courseName,
-          year: enrollment.courseYear,
-          term: enrollment.courseTerm,
-          institution: enrollment.courseInstitution,
-          code: enrollment.courseCode,
-          nextConversationReference: enrollment.courseNextConversationReference,
-          studentsMayCreatePollsAt: enrollment.courseStudentsMayCreatePollsAt,
+          id: courseParticipantRow.courseId,
+          reference: courseParticipantRow.courseReference,
+          archivedAt: courseParticipantRow.courseArchivedAt,
+          name: courseParticipantRow.courseName,
+          year: courseParticipantRow.courseYear,
+          term: courseParticipantRow.courseTerm,
+          institution: courseParticipantRow.courseInstitution,
+          code: courseParticipantRow.courseCode,
+          nextConversationReference: courseParticipantRow.courseNextConversationReference,
+          studentsMayCreatePollsAt: courseParticipantRow.courseStudentsMayCreatePollsAt,
         },
-        reference: enrollment.reference,
-        courseRole: enrollment.courseRole,
-        accentColor: enrollment.accentColor,
+        reference: courseParticipantRow.reference,
+        courseRole: courseParticipantRow.courseRole,
+        accentColor: courseParticipantRow.accentColor,
         mostRecentlyVisitedConversationReference:
-          enrollment.mostRecentlyVisitedConversationReference,
+          courseParticipantRow.mostRecentlyVisitedConversationReference,
       }));
 
     response.locals.administrationOptions =

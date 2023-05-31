@@ -13,7 +13,7 @@ export type ApplicationConversation = {
   web: {
     locals: {
       ResponseLocals: {
-        Conversation: Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"] & {
+        Conversation: Application["web"]["locals"]["ResponseLocals"]["CourseParticipant"] & {
           conversation: NonNullable<
             ReturnType<
               Application["web"]["locals"]["helpers"]["getConversation"]
@@ -62,14 +62,14 @@ export type ApplicationConversation = {
               newConversation?: object;
               sidebarOnSmallScreen?: "true";
             },
-            Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"] &
+            Application["web"]["locals"]["ResponseLocals"]["CourseParticipant"] &
               Partial<
                 Application["web"]["locals"]["ResponseLocals"]["Conversation"]
               >
           >;
           response: express.Response<
             HTML,
-            Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"] &
+            Application["web"]["locals"]["ResponseLocals"]["CourseParticipant"] &
               Partial<
                 Application["web"]["locals"]["ResponseLocals"]["Conversation"]
               >
@@ -94,11 +94,11 @@ export type ApplicationConversation = {
             any,
             {},
             {},
-            Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+            Application["web"]["locals"]["ResponseLocals"]["CourseParticipant"]
           >;
           response: express.Response<
             any,
-            Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+            Application["web"]["locals"]["ResponseLocals"]["CourseParticipant"]
           >;
           conversation: NonNullable<
             ReturnType<
@@ -153,11 +153,11 @@ export type ApplicationConversation = {
             any,
             {},
             {},
-            Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+            Application["web"]["locals"]["ResponseLocals"]["CourseParticipant"]
           >;
           response: express.Response<
             any,
-            Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+            Application["web"]["locals"]["ResponseLocals"]["CourseParticipant"]
           >;
           conversationReference: string;
         }) =>
@@ -3295,7 +3295,7 @@ export default async (application: Application): Promise<void> => {
     any,
     {},
     { redirect?: string },
-    Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+    Application["web"]["locals"]["ResponseLocals"]["CourseParticipant"]
   >(
     "/courses/:courseReference/conversations/mark-all-conversations-as-read",
     (request, response, next) => {
@@ -3383,7 +3383,7 @@ export default async (application: Application): Promise<void> => {
         isPinned?: "true";
       };
     },
-    Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+    Application["web"]["locals"]["ResponseLocals"]["CourseParticipant"]
   >(
     `/courses/:courseReference/conversations/new(/:type(${application.web.locals.helpers.conversationTypes.join(
       "|"
@@ -4823,7 +4823,7 @@ export default async (application: Application): Promise<void> => {
       conversationDraftReference?: string;
     },
     { conversations?: object },
-    Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+    Application["web"]["locals"]["ResponseLocals"]["CourseParticipant"]
   >("/courses/:courseReference/conversations", (request, response, next) => {
     if (response.locals.course === undefined) return next();
 
@@ -5261,7 +5261,7 @@ export default async (application: Application): Promise<void> => {
   //   HTML,
   //   { conversationDraftReference?: string },
   //   { conversations?: object },
-  //   Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+  //   Application["web"]["locals"]["ResponseLocals"]["CourseParticipant"]
   // >(
   //   "/courses/:courseReference/conversations/new",
   //   (request, response, next) => {

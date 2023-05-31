@@ -32,7 +32,7 @@ export type ApplicationLayouts = {
                 Application["web"]["locals"]["ResponseLocals"]["SignedIn"]
               > &
               Partial<
-                Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+                Application["web"]["locals"]["ResponseLocals"]["CourseParticipant"]
               >
           >;
           response: express.Response<
@@ -42,7 +42,7 @@ export type ApplicationLayouts = {
                 Application["web"]["locals"]["ResponseLocals"]["SignedIn"]
               > &
               Partial<
-                Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+                Application["web"]["locals"]["ResponseLocals"]["CourseParticipant"]
               >
           >;
           head: HTML;
@@ -67,7 +67,7 @@ export type ApplicationLayouts = {
                 Application["web"]["locals"]["ResponseLocals"]["SignedIn"]
               > &
               Partial<
-                Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+                Application["web"]["locals"]["ResponseLocals"]["CourseParticipant"]
               >
           >;
           response: express.Response<
@@ -77,7 +77,7 @@ export type ApplicationLayouts = {
                 Application["web"]["locals"]["ResponseLocals"]["SignedIn"]
               > &
               Partial<
-                Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+                Application["web"]["locals"]["ResponseLocals"]["CourseParticipant"]
               >
           >;
           head: HTML;
@@ -101,7 +101,7 @@ export type ApplicationLayouts = {
                 Application["web"]["locals"]["ResponseLocals"]["SignedIn"]
               > &
               Partial<
-                Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+                Application["web"]["locals"]["ResponseLocals"]["CourseParticipant"]
               >
           >;
           response: express.Response<
@@ -111,7 +111,7 @@ export type ApplicationLayouts = {
                 Application["web"]["locals"]["ResponseLocals"]["SignedIn"]
               > &
               Partial<
-                Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+                Application["web"]["locals"]["ResponseLocals"]["CourseParticipant"]
               >
           >;
           head: HTML;
@@ -137,7 +137,7 @@ export type ApplicationLayouts = {
                 Application["web"]["locals"]["ResponseLocals"]["SignedIn"]
               > &
               Partial<
-                Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+                Application["web"]["locals"]["ResponseLocals"]["CourseParticipant"]
               >
           >;
           response: express.Response<
@@ -147,7 +147,7 @@ export type ApplicationLayouts = {
                 Application["web"]["locals"]["ResponseLocals"]["SignedIn"]
               > &
               Partial<
-                Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+                Application["web"]["locals"]["ResponseLocals"]["CourseParticipant"]
               >
           >;
           head: HTML;

@@ -23,11 +23,11 @@ export type ApplicationMessage = {
             any,
             {},
             {},
-            Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+            Application["web"]["locals"]["ResponseLocals"]["CourseParticipant"]
           >;
           response: express.Response<
             any,
-            Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+            Application["web"]["locals"]["ResponseLocals"]["CourseParticipant"]
           >;
           conversation: NonNullable<
             ReturnType<
@@ -124,11 +124,11 @@ export type ApplicationMessage = {
             any,
             {},
             {},
-            Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+            Application["web"]["locals"]["ResponseLocals"]["CourseParticipant"]
           >;
           response: express.Response<
             any,
-            Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+            Application["web"]["locals"]["ResponseLocals"]["CourseParticipant"]
           >;
           message: NonNullable<
             ReturnType<Application["web"]["locals"]["helpers"]["getMessage"]>

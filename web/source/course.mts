@@ -80,14 +80,14 @@ export type ApplicationCourse = {
             {},
             Application["web"]["locals"]["ResponseLocals"]["SignedIn"] &
               Partial<
-                Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+                Application["web"]["locals"]["ResponseLocals"]["CourseParticipant"]
               >
           >;
           response: express.Response<
             any,
             Application["web"]["locals"]["ResponseLocals"]["SignedIn"] &
               Partial<
-                Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+                Application["web"]["locals"]["ResponseLocals"]["CourseParticipant"]
               >
           >;
           tight?: boolean;
@@ -542,7 +542,7 @@ export default async (application: Application): Promise<void> => {
     HTML,
     {},
     {},
-    Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+    Application["web"]["locals"]["ResponseLocals"]["CourseParticipant"]
   >("/courses/:courseReference", (request, response, next) => {
     if (
       response.locals.user === undefined ||
@@ -879,7 +879,7 @@ export default async (application: Application): Promise<void> => {
     HTML,
     {},
     { sidebarOnSmallScreen?: "true" },
-    Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+    Application["web"]["locals"]["ResponseLocals"]["CourseParticipant"]
   >("/courses/:courseReference", (request, response, next) => {
     if (response.locals.course === undefined) return next();
 
@@ -999,7 +999,7 @@ export default async (application: Application): Promise<void> => {
     HTML,
     {},
     {},
-    Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+    Application["web"]["locals"]["ResponseLocals"]["CourseParticipant"]
   >("/courses/:courseReference/settings", (request, response, next) => {
     if (response.locals.course === undefined) return next();
 
@@ -1026,11 +1026,11 @@ export default async (application: Application): Promise<void> => {
       any,
       {},
       {},
-      Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+      Application["web"]["locals"]["ResponseLocals"]["CourseParticipant"]
     >;
     response: express.Response<
       any,
-      Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+      Application["web"]["locals"]["ResponseLocals"]["CourseParticipant"]
     >;
     head: HTML;
     body: HTML;
@@ -1152,7 +1152,7 @@ export default async (application: Application): Promise<void> => {
     HTML,
     {},
     {},
-    Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+    Application["web"]["locals"]["ResponseLocals"]["CourseParticipant"]
   >(
     "/courses/:courseReference/settings/course-information",
     (request, response, next) => {
@@ -1281,7 +1281,7 @@ export default async (application: Application): Promise<void> => {
       code?: string;
     },
     {},
-    Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+    Application["web"]["locals"]["ResponseLocals"]["CourseParticipant"]
   >(
     "/courses/:courseReference/settings/course-information",
     (request, response, next) => {
@@ -1359,7 +1359,7 @@ export default async (application: Application): Promise<void> => {
     HTML,
     {},
     {},
-    Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+    Application["web"]["locals"]["ResponseLocals"]["CourseParticipant"]
   >("/courses/:courseReference/settings/tags", (request, response, next) => {
     if (
       response.locals.course === undefined ||
@@ -1846,7 +1846,7 @@ export default async (application: Application): Promise<void> => {
       }[];
     },
     {},
-    Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+    Application["web"]["locals"]["ResponseLocals"]["CourseParticipant"]
   >("/courses/:courseReference/settings/tags", (request, response, next) => {
     if (
       response.locals.course === undefined ||
@@ -1949,7 +1949,7 @@ export default async (application: Application): Promise<void> => {
     HTML,
     {},
     {},
-    Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+    Application["web"]["locals"]["ResponseLocals"]["CourseParticipant"]
   >(
     "/courses/:courseReference/settings/invitations",
     (request, response, next) => {
@@ -3140,7 +3140,7 @@ export default async (application: Application): Promise<void> => {
       emails?: string;
     },
     {},
-    Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+    Application["web"]["locals"]["ResponseLocals"]["CourseParticipant"]
   >(
     "/courses/:courseReference/settings/invitations",
     (request, response, next) => {
@@ -3452,7 +3452,7 @@ export default async (application: Application): Promise<void> => {
       expire?: "true";
     },
     {},
-    Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"] &
+    Application["web"]["locals"]["ResponseLocals"]["CourseParticipant"] &
       ResponseLocalsInvitation
   >(
     "/courses/:courseReference/settings/invitations/:invitationReference",
@@ -3582,7 +3582,7 @@ export default async (application: Application): Promise<void> => {
     HTML,
     {},
     { redirect?: string },
-    Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"] &
+    Application["web"]["locals"]["ResponseLocals"]["CourseParticipant"] &
       ResponseLocalsInvitation
   >(
     "/courses/:courseReference/invitations/:invitationReference",
@@ -3994,7 +3994,7 @@ export default async (application: Application): Promise<void> => {
     { redirect?: string },
     Application["web"]["locals"]["ResponseLocals"]["SignedIn"] &
       Partial<
-        Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+        Application["web"]["locals"]["ResponseLocals"]["CourseParticipant"]
       > &
       ResponseLocalsInvitation
   >(
@@ -4050,7 +4050,7 @@ export default async (application: Application): Promise<void> => {
     HTML,
     {},
     {},
-    Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+    Application["web"]["locals"]["ResponseLocals"]["CourseParticipant"]
   >(
     "/courses/:courseReference/settings/enrollments",
     (request, response, next) => {
@@ -4588,7 +4588,7 @@ export default async (application: Application): Promise<void> => {
   );
 
   type ResponseLocalsManagedEnrollment =
-    Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"] & {
+    Application["web"]["locals"]["ResponseLocals"]["CourseParticipant"] & {
       managedEnrollment: {
         id: number;
         reference: string;
@@ -4748,7 +4748,7 @@ export default async (application: Application): Promise<void> => {
     HTML,
     {},
     {},
-    Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+    Application["web"]["locals"]["ResponseLocals"]["CourseParticipant"]
   >(
     "/courses/:courseReference/settings/advanced",
     (request, response, next) => {
@@ -4922,7 +4922,7 @@ export default async (application: Application): Promise<void> => {
       studentsMayCreatePolls?: "on";
     },
     {},
-    Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+    Application["web"]["locals"]["ResponseLocals"]["CourseParticipant"]
   >(
     "/courses/:courseReference/settings/advanced",
     (request, response, next) => {
@@ -4972,7 +4972,7 @@ export default async (application: Application): Promise<void> => {
     HTML,
     { isArchived?: "true" | "false" },
     {},
-    Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+    Application["web"]["locals"]["ResponseLocals"]["CourseParticipant"]
   >(
     "/courses/:courseReference/settings/advanced/archived",
     (request, response, next) => {
@@ -5027,7 +5027,7 @@ export default async (application: Application): Promise<void> => {
     any,
     {},
     {},
-    Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+    Application["web"]["locals"]["ResponseLocals"]["CourseParticipant"]
   >(
     "/courses/:courseReference/settings/advanced/export",
     (request, response, next) => {
@@ -5124,7 +5124,7 @@ export default async (application: Application): Promise<void> => {
     HTML,
     {},
     {},
-    Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+    Application["web"]["locals"]["ResponseLocals"]["CourseParticipant"]
   >(
     "/courses/:courseReference/settings/your-enrollment",
     (request, response, next) => {
@@ -5252,7 +5252,7 @@ export default async (application: Application): Promise<void> => {
       accentColor?: Application["web"]["locals"]["helpers"]["courseParticipantAccentColors"][number];
     },
     {},
-    Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+    Application["web"]["locals"]["ResponseLocals"]["CourseParticipant"]
   >(
     "/courses/:courseReference/settings/your-enrollment",
     (request, response, next) => {
