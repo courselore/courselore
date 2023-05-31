@@ -26,7 +26,7 @@ export type ApplicationConversation = {
                 contentSource: string;
               }
             | undefined;
-          enrollmentsTyping: Application["web"]["locals"]["Types"]["CourseParticipant"][];
+          courseParticipantsTyping: Application["web"]["locals"]["Types"]["CourseParticipant"][];
         };
       };
 
@@ -248,7 +248,7 @@ export default async (application: Application): Promise<void> => {
         `
       );
 
-      response.locals.enrollmentsTyping =
+      response.locals.courseParticipantsTyping =
         response.locals.courseParticipant.courseRole === "course-staff"
           ? application.database
               .all<{
@@ -9634,7 +9634,7 @@ export default async (application: Application): Promise<void> => {
                         : html``}
                     </div>
 
-                    $${response.locals.enrollmentsTyping.length > 0
+                    $${response.locals.courseParticipantsTyping.length > 0
                       ? html`
                           <div
                             class="secondary"
@@ -9652,7 +9652,7 @@ export default async (application: Application): Promise<void> => {
                             >
                               Typing:
                             </span>
-                            $${response.locals.enrollmentsTyping
+                            $${response.locals.courseParticipantsTyping
                               .map((enrollment) =>
                                 application.web.locals.partials.user({
                                   request,
