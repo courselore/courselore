@@ -3396,42 +3396,44 @@ export default async (application: Application): Promise<void> => {
       )
         return next();
 
-      const conversationDraft =
-        typeof request.query.newConversation?.conversationDraftReference ===
-          "string" &&
-        request.query.newConversation.conversationDraftReference.match(
-          /^[0-9]+$/
-        )
-          ? application.database.get<{
-              createdAt: string;
-              updatedAt: string | null;
-              reference: string;
-              type: string | null;
-              isPinned: "true" | null;
-              isCourseStaffOnly: "true" | null;
-              title: string | null;
-              content: string | null;
-              tagsReferences: string | null;
-            }>(
-              sql`
-                SELECT
-                  "createdAt",
-                  "updatedAt",
-                  "reference",
-                  "type",
-                  "isPinned",
-                  "isCourseStaffOnly",
-                  "title",
-                  "content",
-                  "tagsReferences"
-                FROM "conversationDrafts"
-                WHERE
-                  "course" = ${response.locals.course.id} AND
-                  "reference" = ${request.query.newConversation.conversationDraftReference} AND
-                  "authorEnrollment" = ${response.locals.enrollment.id}
-              `
-            )
-          : undefined;
+      // TODO: Conversation drafts
+      const conversationDraft: any = undefined;
+      // const conversationDraft =
+      //   typeof request.query.newConversation?.conversationDraftReference ===
+      //     "string" &&
+      //   request.query.newConversation.conversationDraftReference.match(
+      //     /^[0-9]+$/
+      //   )
+      //     ? application.database.get<{
+      //         createdAt: string;
+      //         updatedAt: string | null;
+      //         reference: string;
+      //         type: string | null;
+      //         isPinned: "true" | null;
+      //         isCourseStaffOnly: "true" | null;
+      //         title: string | null;
+      //         content: string | null;
+      //         tagsReferences: string | null;
+      //       }>(
+      //         sql`
+      //           SELECT
+      //             "createdAt",
+      //             "updatedAt",
+      //             "reference",
+      //             "type",
+      //             "isPinned",
+      //             "isCourseStaffOnly",
+      //             "title",
+      //             "content",
+      //             "tagsReferences"
+      //           FROM "conversationDrafts"
+      //           WHERE
+      //             "course" = ${response.locals.course.id} AND
+      //             "reference" = ${request.query.newConversation.conversationDraftReference} AND
+      //             "authorEnrollment" = ${response.locals.enrollment.id}
+      //         `
+      //       )
+      //     : undefined;
 
       response.send(
         (response.locals.mostRecentlyUpdatedConversationReference === null
@@ -5216,19 +5218,20 @@ export default async (application: Application): Promise<void> => {
         });
       }
 
-      if (
-        typeof request.body.conversationDraftReference === "string" &&
-        request.body.conversationDraftReference.match(/^[0-9]+$/)
-      )
-        application.database.run(
-          sql`
-            DELETE FROM "conversationDrafts"
-            WHERE
-              "course" = ${response.locals.course.id} AND
-              "reference" = ${request.body.conversationDraftReference} AND
-              "authorEnrollment" = ${response.locals.enrollment.id}
-          `
-        );
+      // TODO: Conversation drafts
+      // if (
+      //   typeof request.body.conversationDraftReference === "string" &&
+      //   request.body.conversationDraftReference.match(/^[0-9]+$/)
+      // )
+      //   application.database.run(
+      //     sql`
+      //       DELETE FROM "conversationDrafts"
+      //       WHERE
+      //         "course" = ${response.locals.course.id} AND
+      //         "reference" = ${request.body.conversationDraftReference} AND
+      //         "authorEnrollment" = ${response.locals.enrollment.id}
+      //     `
+      //   );
 
       return conversation;
     });
@@ -5250,53 +5253,54 @@ export default async (application: Application): Promise<void> => {
     });
   });
 
-  application.web.delete<
-    { courseReference: string },
-    HTML,
-    { conversationDraftReference?: string },
-    { conversations?: object },
-    Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
-  >(
-    "/courses/:courseReference/conversations/new",
-    (request, response, next) => {
-      if (response.locals.course === undefined) return next();
+  // TODO: Conversation drafts
+  // application.web.delete<
+  //   { courseReference: string },
+  //   HTML,
+  //   { conversationDraftReference?: string },
+  //   { conversations?: object },
+  //   Application["web"]["locals"]["ResponseLocals"]["CourseEnrolled"]
+  // >(
+  //   "/courses/:courseReference/conversations/new",
+  //   (request, response, next) => {
+  //     if (response.locals.course === undefined) return next();
 
-      if (
-        typeof request.body.conversationDraftReference !== "string" ||
-        !request.body.conversationDraftReference.match(/^[0-9]+$/)
-      )
-        return next("Validation");
+  //     if (
+  //       typeof request.body.conversationDraftReference !== "string" ||
+  //       !request.body.conversationDraftReference.match(/^[0-9]+$/)
+  //     )
+  //       return next("Validation");
 
-      const conversationDraft = application.database.get<{
-        id: number;
-      }>(
-        sql`
-          SELECT "id"
-          FROM "conversationDrafts"
-          WHERE
-            "course" = ${response.locals.course.id} AND
-            "reference" = ${request.body.conversationDraftReference} AND
-            "authorEnrollment" = ${response.locals.enrollment.id}
-        `
-      );
-      if (conversationDraft === undefined) return next("Validation");
-      application.database.run(
-        sql`
-          DELETE FROM "conversationDrafts" WHERE "id" = ${conversationDraft.id}
-        `
-      );
+  //     const conversationDraft = application.database.get<{
+  //       id: number;
+  //     }>(
+  //       sql`
+  //         SELECT "id"
+  //         FROM "conversationDrafts"
+  //         WHERE
+  //           "course" = ${response.locals.course.id} AND
+  //           "reference" = ${request.body.conversationDraftReference} AND
+  //           "authorEnrollment" = ${response.locals.enrollment.id}
+  //       `
+  //     );
+  //     if (conversationDraft === undefined) return next("Validation");
+  //     application.database.run(
+  //       sql`
+  //         DELETE FROM "conversationDrafts" WHERE "id" = ${conversationDraft.id}
+  //       `
+  //     );
 
-      response.redirect(
-        303,
-        `https://${application.configuration.hostname}/courses/${
-          response.locals.course.reference
-        }/conversations/new${qs.stringify(
-          { conversations: request.query.conversations },
-          { addQueryPrefix: true }
-        )}`
-      );
-    }
-  );
+  //     response.redirect(
+  //       303,
+  //       `https://${application.configuration.hostname}/courses/${
+  //         response.locals.course.reference
+  //       }/conversations/new${qs.stringify(
+  //         { conversations: request.query.conversations },
+  //         { addQueryPrefix: true }
+  //       )}`
+  //     );
+  //   }
+  // );
 
   const mayEditConversation = ({
     request,
