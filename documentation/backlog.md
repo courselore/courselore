@@ -8,7 +8,6 @@
 
 ---
 
-- Syntax highlighter throws an error when it doesn’t recognize the language
 - `contentSearch` contains syntax highlighted text twice (because of light and dark modes)
 - UI on the upper left
 - LTI by fall
