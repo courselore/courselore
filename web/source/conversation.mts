@@ -3116,7 +3116,8 @@ export default async (application: Application): Promise<void> => {
                 $${application.web.locals.partials.user({
                   request,
                   response,
-                  courseParticipant: searchResult.message.authorCourseParticipant,
+                  courseParticipant:
+                    searchResult.message.authorCourseParticipant,
                   name: searchResult.highlight,
                 })}
               </div>
@@ -3135,7 +3136,8 @@ export default async (application: Application): Promise<void> => {
                 $${application.web.locals.partials.user({
                   request,
                   response,
-                  courseParticipant: searchResult.message.authorCourseParticipant,
+                  courseParticipant:
+                    searchResult.message.authorCourseParticipant,
                   anonymous:
                     searchResult.message.anonymousAt === null
                       ? false
@@ -7367,8 +7369,8 @@ export default async (application: Application): Promise<void> => {
                                           (message) =>
                                             message.authorCourseParticipant !==
                                               "no-longer-participating" &&
-                                            message.authorCourseParticipant.id ===
-                                              courseParticipant.id
+                                            message.authorCourseParticipant
+                                              .id === courseParticipant.id
                                         )) ||
                                       (response.locals.conversation
                                         .participants === "course-staff" &&
@@ -7378,8 +7380,8 @@ export default async (application: Application): Promise<void> => {
                                           (message) =>
                                             message.authorCourseParticipant !==
                                               "no-longer-participating" &&
-                                            message.authorCourseParticipant.id ===
-                                              courseParticipant.id
+                                            message.authorCourseParticipant
+                                              .id === courseParticipant.id
                                         ))
                                         ? html`checked`
                                         : html``}

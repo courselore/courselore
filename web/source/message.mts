@@ -611,11 +611,11 @@ export default async (application: Application): Promise<void> => {
                           : `@${
                               response.locals.message.anonymousAt === null
                                 ? `${
-                                    response.locals.message.authorCourseParticipant
-                                      .reference
+                                    response.locals.message
+                                      .authorCourseParticipant.reference
                                   }--${slugify(
-                                    response.locals.message.authorCourseParticipant
-                                      .user.name
+                                    response.locals.message
+                                      .authorCourseParticipant.user.name
                                   )}`
                                 : `anonymous`
                             } · `
@@ -866,11 +866,11 @@ export default async (application: Application): Promise<void> => {
                                 })}
                               </span>
                               Set as Signed by
-                              ${response.locals.message.authorCourseParticipant.id ===
-                              response.locals.courseParticipant.id
+                              ${response.locals.message.authorCourseParticipant
+                                .id === response.locals.courseParticipant.id
                                 ? "You"
-                                : response.locals.message.authorCourseParticipant.user
-                                    .name}
+                                : response.locals.message
+                                    .authorCourseParticipant.user.name}
                             </button>
                           `}
                     </form>
@@ -1235,8 +1235,12 @@ export default async (application: Application): Promise<void> => {
             FROM "messageDrafts"
             WHERE
               "conversation" = ${response.locals.conversation.id} AND
-              "authorCourseParticipant" = ${response.locals.courseParticipant.id} AND
-              ${new Date(Date.now() - 5 * 60 * 1000).toISOString()} < "createdAt"
+              "authorCourseParticipant" = ${
+                response.locals.courseParticipant.id
+              } AND
+              ${new Date(
+                Date.now() - 5 * 60 * 1000
+              ).toISOString()} < "createdAt"
           `
         ) === undefined
       )
@@ -1330,7 +1334,8 @@ export default async (application: Application): Promise<void> => {
       if (
         response.locals.conversation.type === "chat" &&
         mostRecentMessage !== undefined &&
-        mostRecentMessage.authorCourseParticipant !== "no-longer-participating" &&
+        mostRecentMessage.authorCourseParticipant !==
+          "no-longer-participating" &&
         response.locals.courseParticipant.id ===
           mostRecentMessage.authorCourseParticipant.id &&
         mostRecentMessage.anonymousAt === null &&
@@ -1508,7 +1513,8 @@ export default async (application: Application): Promise<void> => {
   }) =>
     response.locals.courseParticipant.courseRole === "course-staff" ||
     (message.authorCourseParticipant !== "no-longer-participating" &&
-      message.authorCourseParticipant.id === response.locals.courseParticipant.id);
+      message.authorCourseParticipant.id ===
+        response.locals.courseParticipant.id);
 
   application.web.patch<
     {
