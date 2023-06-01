@@ -3960,7 +3960,7 @@ export default async (application: Application): Promise<void> => {
 
                                                   for (const element of selectedParticipants.querySelectorAll('[data-course-participant-course-role="course-staff"]'))
                                                     element.hidden = true;
-                                                  participantsDropdown.querySelector('[key="participants--dropdown--selected-participants--filter"]').oninput();
+                                                  participantsDropdown.querySelector('[key="participants--dropdown--selected-participants--filter"]')?.oninput();
 
                                                   for (const element of this.closest("form").querySelectorAll('[name="selectedParticipantsReferences[]"]'))
                                                     element.disabled = element.matches('[data-course-participant-course-role="course-staff"]');
@@ -3977,7 +3977,7 @@ export default async (application: Application): Promise<void> => {
 
                                                   for (const element of selectedParticipants.querySelectorAll('[data-course-participant-course-role="course-staff"]'))
                                                     element.hidden = false;
-                                                  participantsDropdown.querySelector('[key="participants--dropdown--selected-participants--filter"]').oninput();
+                                                  participantsDropdown.querySelector('[key="participants--dropdown--selected-participants--filter"]')?.oninput();
 
                                                   for (const element of this.closest("form").querySelectorAll('[name="selectedParticipantsReferences[]"]'))
                                                     element.disabled = false;
@@ -6997,7 +6997,7 @@ export default async (application: Application): Promise<void> => {
 
                                                             for (const element of selectedParticipants.querySelectorAll('[data-course-participant-course-role="course-staff"]'))
                                                               element.hidden = true;
-                                                            participantsDropdown.querySelector('[key="participants--dropdown--selected-participants--filter"]').oninput();
+                                                            participantsDropdown.querySelector('[key="participants--dropdown--selected-participants--filter"]')?.oninput();
 
                                                             for (const element of this.closest("form").querySelectorAll('[name="selectedParticipantsReferences[]"]'))
                                                               element.disabled = element.matches('[data-course-participant-course-role="course-staff"]');
@@ -7011,7 +7011,7 @@ export default async (application: Application): Promise<void> => {
 
                                                             for (const element of selectedParticipants.querySelectorAll('[data-course-participant-course-role="course-staff"]'))
                                                               element.hidden = false;
-                                                            participantsDropdown.querySelector('[key="participants--dropdown--selected-participants--filter"]').oninput();
+                                                            participantsDropdown.querySelector('[key="participants--dropdown--selected-participants--filter"]')?.oninput();
 
                                                             for (const element of this.closest("form").querySelectorAll('[name="selectedParticipantsReferences[]"]'))
                                                               element.disabled = false;
