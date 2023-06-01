@@ -301,10 +301,13 @@ export default async (application: Application): Promise<void> => {
         </div>
       `).firstElementChild!;
 
-      return {
-        contentPreprocessed: contentElement.innerHTML,
-        contentSearch: contentElement.textContent!,
-      };
+      const contentPreprocessed = contentElement.innerHTML;
+
+      for (const element of contentElement.querySelectorAll(".dark"))
+        element.remove();
+      const contentSearch = contentElement.textContent!;
+
+      return { contentPreprocessed, contentSearch };
     };
   })();
 
