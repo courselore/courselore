@@ -2482,8 +2482,8 @@ export default async (application: Application): Promise<void> => {
                         SELECT TRUE
                         FROM "conversations"
                         WHERE
-                          "messages"."id" = ${conversation.id} AND
-                          "messages"."authorCourseParticipant" = "courseParticipants"."id"
+                          "conversations"."id" = ${conversation.id} AND
+                          "conversations"."authorCourseParticipant" = "courseParticipants"."id"
                       )
                     )
                   )
