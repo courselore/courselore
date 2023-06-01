@@ -3116,7 +3116,7 @@ export default async (application: Application): Promise<void> => {
                 $${application.web.locals.partials.user({
                   request,
                   response,
-                  courseParticipant: searchResult.message.courseParticipant,
+                  courseParticipant: searchResult.message.authorCourseParticipant,
                   name: searchResult.highlight,
                 })}
               </div>
@@ -3135,15 +3135,15 @@ export default async (application: Application): Promise<void> => {
                 $${application.web.locals.partials.user({
                   request,
                   response,
-                  courseParticipant: searchResult.message.courseParticipant,
+                  courseParticipant: searchResult.message.authorCourseParticipant,
                   anonymous:
                     searchResult.message.anonymousAt === null
                       ? false
                       : response.locals.courseParticipant.courseRole ===
                           "course-staff" ||
-                        (searchResult.message.courseParticipant !==
+                        (searchResult.message.authorCourseParticipant !==
                           "no-longer-participating" &&
-                          searchResult.message.courseParticipant.id ===
+                          searchResult.message.authorCourseParticipant.id ===
                             response.locals.courseParticipant.id)
                       ? "reveal"
                       : true,
@@ -3159,15 +3159,15 @@ export default async (application: Application): Promise<void> => {
                 $${application.web.locals.partials.user({
                   request,
                   response,
-                  courseParticipant: message.courseParticipant,
+                  courseParticipant: message.authorCourseParticipant,
                   anonymous:
                     message.anonymousAt === null
                       ? false
                       : response.locals.courseParticipant.courseRole ===
                           "course-staff" ||
-                        (message.courseParticipant !==
+                        (message.authorCourseParticipant !==
                           "no-longer-participating" &&
-                          message.courseParticipant.id ===
+                          message.authorCourseParticipant.id ===
                             response.locals.courseParticipant.id)
                       ? "reveal"
                       : true,
@@ -7226,10 +7226,10 @@ export default async (application: Application): Promise<void> => {
                                                                 "everyone" &&
                                                                 messages.some(
                                                                   (message) =>
-                                                                    message.courseParticipant !==
+                                                                    message.authorCourseParticipant !==
                                                                       "no-longer-participating" &&
                                                                     message
-                                                                      .courseParticipant
+                                                                      .authorCourseParticipant
                                                                       .id ===
                                                                       courseParticipant.id
                                                                 )) ||
@@ -7241,10 +7241,10 @@ export default async (application: Application): Promise<void> => {
                                                                   "course-staff" &&
                                                                 messages.some(
                                                                   (message) =>
-                                                                    message.courseParticipant !==
+                                                                    message.authorCourseParticipant !==
                                                                       "no-longer-participating" &&
                                                                     message
-                                                                      .courseParticipant
+                                                                      .authorCourseParticipant
                                                                       .id ===
                                                                       courseParticipant.id
                                                                 ))
@@ -7365,9 +7365,9 @@ export default async (application: Application): Promise<void> => {
                                         .participants === "everyone" &&
                                         messages.some(
                                           (message) =>
-                                            message.courseParticipant !==
+                                            message.authorCourseParticipant !==
                                               "no-longer-participating" &&
-                                            message.courseParticipant.id ===
+                                            message.authorCourseParticipant.id ===
                                               courseParticipant.id
                                         )) ||
                                       (response.locals.conversation
@@ -7376,9 +7376,9 @@ export default async (application: Application): Promise<void> => {
                                           "course-staff" &&
                                         messages.some(
                                           (message) =>
-                                            message.courseParticipant !==
+                                            message.authorCourseParticipant !==
                                               "no-longer-participating" &&
-                                            message.courseParticipant.id ===
+                                            message.authorCourseParticipant.id ===
                                               courseParticipant.id
                                         ))
                                         ? html`checked`
@@ -8638,9 +8638,9 @@ export default async (application: Application): Promise<void> => {
                                             } else if (
                                               response.locals.conversation
                                                 .type === "question" &&
-                                              (message.courseParticipant ===
+                                              (message.authorCourseParticipant ===
                                                 "no-longer-participating" ||
-                                                message.courseParticipant
+                                                message.authorCourseParticipant
                                                   .courseRole !==
                                                   "course-staff") &&
                                               message.endorsements.length > 0
@@ -8775,7 +8775,7 @@ export default async (application: Application): Promise<void> => {
                                                         request,
                                                         response,
                                                         courseParticipant:
-                                                          message.courseParticipant,
+                                                          message.authorCourseParticipant,
                                                         anonymous:
                                                           message.anonymousAt ===
                                                           null
@@ -8784,10 +8784,10 @@ export default async (application: Application): Promise<void> => {
                                                                 .courseParticipant
                                                                 .courseRole ===
                                                                 "course-staff" ||
-                                                              (message.courseParticipant !==
+                                                              (message.authorCourseParticipant !==
                                                                 "no-longer-participating" &&
                                                                 message
-                                                                  .courseParticipant
+                                                                  .authorCourseParticipant
                                                                   .id ===
                                                                   response
                                                                     .locals
@@ -8796,12 +8796,12 @@ export default async (application: Application): Promise<void> => {
                                                             ? "reveal"
                                                             : true,
                                                         name:
-                                                          message.courseParticipant ===
+                                                          message.authorCourseParticipant ===
                                                           "no-longer-participating"
                                                             ? undefined
                                                             : application.web.locals.helpers.highlightSearchResult(
                                                                 html`${message
-                                                                  .courseParticipant
+                                                                  .authorCourseParticipant
                                                                   .user.name}`,
                                                                 typeof request
                                                                   .query
@@ -8919,7 +8919,7 @@ export default async (application: Application): Promise<void> => {
                                                                 textFieldEdit.wrapSelection(
                                                                   element,
                                                                   ((element.selectionStart > 0) ? "\\n\\n" : "") + "> " + ${
-                                                                    message.courseParticipant ===
+                                                                    message.authorCourseParticipant ===
                                                                     "no-longer-participating"
                                                                       ? ``
                                                                       : `@${
@@ -8927,11 +8927,11 @@ export default async (application: Application): Promise<void> => {
                                                                           null
                                                                             ? `${
                                                                                 message
-                                                                                  .courseParticipant
+                                                                                  .authorCourseParticipant
                                                                                   .reference
                                                                               }--${slugify(
                                                                                 message
-                                                                                  .courseParticipant
+                                                                                  .authorCourseParticipant
                                                                                   .user
                                                                                   .name
                                                                               )}`

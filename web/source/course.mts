@@ -5106,9 +5106,9 @@ export default async (application: Application): Promise<void> => {
           ID: conversation.reference,
           Conversation: messages.map((message) => ({
             Role:
-              message.courseParticipant === "no-longer-participating"
+              message.authorCourseParticipant === "no-longer-participating"
                 ? "No Longer Participating"
-                : labelsCourseRole[message.courseParticipant.courseRole],
+                : labelsCourseRole[message.authorCourseParticipant.courseRole],
             Text: message.contentSearch.replace(
               /(?<=^|\s)@([a-z0-9-]+)(?=[^a-z0-9-]|$)/gi,
               "@anonymous"

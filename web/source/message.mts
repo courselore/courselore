@@ -41,7 +41,7 @@ export type ApplicationMessage = {
               createdAt: string;
               updatedAt: string | null;
               reference: string;
-              courseParticipant: Application["web"]["locals"]["Types"]["MaybeCourseParticipant"];
+              authorCourseParticipant: Application["web"]["locals"]["Types"]["MaybeCourseParticipant"];
               anonymousAt: string | null;
               type:
                 | "message"
@@ -605,16 +605,16 @@ export default async (application: Application): Promise<void> => {
                     textFieldEdit.wrapSelection(
                       element,
                       ((element.selectionStart > 0) ? "\\n\\n" : "") + "> " + ${
-                        response.locals.message.courseParticipant ===
+                        response.locals.message.authorCourseParticipant ===
                         "no-longer-participating"
                           ? ``
                           : `@${
                               response.locals.message.anonymousAt === null
                                 ? `${
-                                    response.locals.message.courseParticipant
+                                    response.locals.message.authorCourseParticipant
                                       .reference
                                   }--${slugify(
-                                    response.locals.message.courseParticipant
+                                    response.locals.message.authorCourseParticipant
                                       .user.name
                                   )}`
                                 : `anonymous`
@@ -787,9 +787,9 @@ export default async (application: Application): Promise<void> => {
                     </button>
                   `
                 : html``}
-              $${response.locals.message.courseParticipant !==
+              $${response.locals.message.authorCourseParticipant !==
                 "no-longer-participating" &&
-              response.locals.message.courseParticipant.courseRole ===
+              response.locals.message.authorCourseParticipant.courseRole ===
                 "student" &&
               application.web.locals.helpers.mayEditMessage({
                 request,
@@ -859,17 +859,17 @@ export default async (application: Application): Promise<void> => {
                                   request,
                                   response,
                                   user: response.locals.message
-                                    .courseParticipant.user,
+                                    .authorCourseParticipant.user,
                                   decorate: false,
                                   name: false,
                                   size: "xs",
                                 })}
                               </span>
                               Set as Signed by
-                              ${response.locals.message.courseParticipant.id ===
+                              ${response.locals.message.authorCourseParticipant.id ===
                               response.locals.courseParticipant.id
                                 ? "You"
-                                : response.locals.message.courseParticipant.user
+                                : response.locals.message.authorCourseParticipant.user
                                     .name}
                             </button>
                           `}
@@ -1330,9 +1330,9 @@ export default async (application: Application): Promise<void> => {
       if (
         response.locals.conversation.type === "chat" &&
         mostRecentMessage !== undefined &&
-        mostRecentMessage.courseParticipant !== "no-longer-participating" &&
+        mostRecentMessage.authorCourseParticipant !== "no-longer-participating" &&
         response.locals.courseParticipant.id ===
-          mostRecentMessage.courseParticipant.id &&
+          mostRecentMessage.authorCourseParticipant.id &&
         mostRecentMessage.anonymousAt === null &&
         request.body.isAnonymous !== "on" &&
         new Date().getTime() - new Date(mostRecentMessage.createdAt).getTime() <
@@ -1507,8 +1507,8 @@ export default async (application: Application): Promise<void> => {
     message,
   }) =>
     response.locals.courseParticipant.courseRole === "course-staff" ||
-    (message.courseParticipant !== "no-longer-participating" &&
-      message.courseParticipant.id === response.locals.courseParticipant.id);
+    (message.authorCourseParticipant !== "no-longer-participating" &&
+      message.authorCourseParticipant.id === response.locals.courseParticipant.id);
 
   application.web.patch<
     {
@@ -1562,9 +1562,9 @@ export default async (application: Application): Promise<void> => {
       if (typeof request.body.isAnonymous === "string")
         if (
           !["true", "false"].includes(request.body.isAnonymous) ||
-          response.locals.message.courseParticipant ===
+          response.locals.message.authorCourseParticipant ===
             "no-longer-participating" ||
-          response.locals.message.courseParticipant.courseRole ===
+          response.locals.message.authorCourseParticipant.courseRole ===
             "course-staff"
         )
           return next("Validation");
@@ -1585,10 +1585,10 @@ export default async (application: Application): Promise<void> => {
               response.locals.message.reference === "1" &&
               response.locals.conversation.authorCourseParticipant !==
                 "no-longer-participating" &&
-              response.locals.message.courseParticipant !==
+              response.locals.message.authorCourseParticipant !==
                 "no-longer-participating" &&
               response.locals.conversation.authorCourseParticipant.id ===
-                response.locals.message.courseParticipant.id
+                response.locals.message.authorCourseParticipant.id
             )
               application.database.run(
                 sql`
@@ -1706,16 +1706,16 @@ export default async (application: Application): Promise<void> => {
                     newConversation: {
                       title: response.locals.conversation.title,
                       content:
-                        response.locals.message.courseParticipant !==
+                        response.locals.message.authorCourseParticipant !==
                           "no-longer-participating" &&
-                        response.locals.message.courseParticipant.id !==
+                        response.locals.message.authorCourseParticipant.id !==
                           response.locals.courseParticipant.id &&
                         !(
-                          response.locals.message.courseParticipant
+                          response.locals.message.authorCourseParticipant
                             .courseRole === "student" &&
                           response.locals.message.anonymousAt !== null
                         )
-                          ? `> Original author: ${response.locals.message.courseParticipant.user.name}\n\n${response.locals.message.contentSource}`
+                          ? `> Original author: ${response.locals.message.authorCourseParticipant.user.name}\n\n${response.locals.message.contentSource}`
                           : response.locals.message.contentSource,
                       isAnnouncement:
                         response.locals.conversation.announcementAt !== null,
@@ -1969,8 +1969,8 @@ export default async (application: Application): Promise<void> => {
     response.locals.conversation.type === "question" &&
     message.reference !== "1" &&
     message.type === "answer" &&
-    (message.courseParticipant === "no-longer-participating" ||
-      message.courseParticipant.courseRole !== "course-staff");
+    (message.authorCourseParticipant === "no-longer-participating" ||
+      message.authorCourseParticipant.courseRole !== "course-staff");
 
   application.web.post<
     {
@@ -2123,14 +2123,14 @@ export default async (application: Application): Promise<void> => {
           )
         `
       );
-      if (message.courseParticipant !== "no-longer-participating")
+      if (message.authorCourseParticipant !== "no-longer-participating")
         application.database.run(
           sql`
             INSERT INTO "emailNotificationDeliveries" ("createdAt", "message", "courseParticipant")
             VALUES (
               ${new Date().toISOString()},
               ${message.id},
-              ${message.courseParticipant.id}
+              ${message.authorCourseParticipant.id}
             )
           `
         );

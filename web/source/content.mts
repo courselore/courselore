@@ -4782,7 +4782,7 @@ ${contentSource}</textarea
                     $${application.web.locals.partials.user({
                       request,
                       response,
-                      courseParticipant: message.courseParticipant,
+                      courseParticipant: message.authorCourseParticipant,
                       name: messageRow.messageAuthorUserNameSearchResultHighlight,
                       tooltip: false,
                     })}
