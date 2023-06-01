@@ -702,9 +702,9 @@ export default async (application: Application): Promise<void> => {
                                                                 ></i>
                                                                 Update My Own
                                                                 Role to
-                                                                ${lodash.capitalize(
+                                                                ${labelsSystemRole[
                                                                   systemRole
-                                                                )}
+                                                                ]}
                                                               </button>
                                                             </form>
                                                           `},  
@@ -715,7 +715,7 @@ export default async (application: Application): Promise<void> => {
                                                 : html``}
                                             >
                                               $${iconsSystemRole[systemRole]}
-                                              ${lodash.capitalize(systemRole)}
+                                              ${labelsSystemRole[systemRole]}
                                             </button>
                                           </div>
                                         </form>
@@ -728,7 +728,7 @@ export default async (application: Application): Promise<void> => {
                         `}"
                       >
                         $${iconsSystemRole[user.systemRole]}
-                        ${lodash.capitalize(user.systemRole)}
+                        ${labelsSystemRole[user.systemRole]}
                         <i class="bi bi-chevron-down"></i>
                       </button>
                     </div>
@@ -761,6 +761,14 @@ export default async (application: Application): Promise<void> => {
     none: html`<i class="bi bi-dash-circle"></i>`,
     staff: html`<i class="bi bi-person-badge-fill"></i>`,
     administrator: html`<i class="bi bi-pc-display-horizontal"></i>`,
+  };
+
+  const labelsSystemRole: {
+    [systemRole in Application["web"]["locals"]["helpers"]["systemRoles"][number]]: string;
+  } = {
+    none: "None",
+    staff: "Staff",
+    administrator: "Administrator",
   };
 
   const textColorsSystemRole: {

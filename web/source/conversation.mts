@@ -1984,7 +1984,7 @@ export default async (application: Application): Promise<void> => {
                                   <span>
                                     $${iconsConversationType[conversationType]
                                       .regular}
-                                    $${lodash.capitalize(conversationType)}
+                                    $${labelsConversationType[conversationType]}
                                   </span>
                                   <span
                                     class="${textColorsConversationType[
@@ -1993,7 +1993,7 @@ export default async (application: Application): Promise<void> => {
                                   >
                                     $${iconsConversationType[conversationType]
                                       .fill}
-                                    $${lodash.capitalize(conversationType)}
+                                    $${labelsConversationType[conversationType]}
                                   </span>
                                 </label>
                               `
@@ -2849,7 +2849,7 @@ export default async (application: Application): Promise<void> => {
             : textColorsConversationType[conversation.type]}"
         >
           $${iconsConversationType[conversation.type].fill}
-          ${lodash.capitalize(conversation.type)}
+          ${labelsConversationType[conversation.type]}
         </div>
         $${conversation.type === "question"
           ? html`
@@ -3205,6 +3205,14 @@ export default async (application: Application): Promise<void> => {
       regular: html`<i class="bi bi-chat-text"></i>`,
       fill: html`<i class="bi bi-chat-text-fill"></i>`,
     },
+  };
+
+  const labelsConversationType: {
+    [conversationType in Application["web"]["locals"]["helpers"]["conversationTypes"][number]]: string;
+  } = {
+    question: "Question",
+    note: "Note",
+    chat: "Chat",
   };
 
   const textColorsConversationType: {
@@ -3605,7 +3613,7 @@ export default async (application: Application): Promise<void> => {
                         />
                         <span>
                           $${iconsConversationType[conversationType].regular}
-                          $${lodash.capitalize(conversationType)}
+                          $${labelsConversationType[conversationType]}
                         </span>
                         <span
                           class="${textColorsConversationType[
@@ -3613,7 +3621,7 @@ export default async (application: Application): Promise<void> => {
                           ]}"
                         >
                           $${iconsConversationType[conversationType].fill}
-                          $${lodash.capitalize(conversationType)}
+                          $${labelsConversationType[conversationType]}
                         </span>
                       </label>
                     `
@@ -5679,9 +5687,9 @@ export default async (application: Application): Promise<void> => {
                                                     $${iconsConversationType[
                                                       conversationType
                                                     ].fill}
-                                                    $${lodash.capitalize(
+                                                    $${labelsConversationType[
                                                       conversationType
-                                                    )}
+                                                    ]}
                                                   </button>
                                                 </form>
                                               `
@@ -5695,9 +5703,9 @@ export default async (application: Application): Promise<void> => {
                                   $${iconsConversationType[
                                     response.locals.conversation.type
                                   ].fill}
-                                  $${lodash.capitalize(
+                                  $${labelsConversationType[
                                     response.locals.conversation.type
-                                  )}
+                                  ]}
                                 </button>
                               </div>
                             `
@@ -5714,9 +5722,9 @@ export default async (application: Application): Promise<void> => {
                                 $${iconsConversationType[
                                   response.locals.conversation.type
                                 ].fill}
-                                $${lodash.capitalize(
+                                $${labelsConversationType[
                                   response.locals.conversation.type
-                                )}
+                                ]}
                               </div>
                             `}
                         $${response.locals.conversation.type === "question"
