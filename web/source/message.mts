@@ -1231,13 +1231,13 @@ export default async (application: Application): Promise<void> => {
         removeDraft ||
         application.database.get<{}>(
           sql`
-          SELECT TRUE
-          FROM "messageDrafts"
-          WHERE
-            "conversation" = ${response.locals.conversation.id} AND
-            "courseParticipant" = ${response.locals.courseParticipant.id} AND
-            ${new Date(Date.now() - 5 * 60 * 1000).toISOString()} < "createdAt"
-        `
+            SELECT TRUE
+            FROM "messageDrafts"
+            WHERE
+              "conversation" = ${response.locals.conversation.id} AND
+              "authorCourseParticipant" = ${response.locals.courseParticipant.id} AND
+              ${new Date(Date.now() - 5 * 60 * 1000).toISOString()} < "createdAt"
+          `
         ) === undefined
       )
         application.web.locals.helpers.liveUpdates({
@@ -1252,7 +1252,7 @@ export default async (application: Application): Promise<void> => {
             DELETE FROM "messageDrafts"
             WHERE
               "conversation" = ${response.locals.conversation.id} AND
-              "courseParticipant" = ${response.locals.courseParticipant.id}
+              "authorCourseParticipant" = ${response.locals.courseParticipant.id}
           `
         );
       else
@@ -1261,7 +1261,7 @@ export default async (application: Application): Promise<void> => {
             INSERT INTO "messageDrafts" (
               "createdAt",
               "conversation",
-              "courseParticipant",
+              "authorCourseParticipant",
               "contentSource"
             )
             VALUES (
@@ -2315,8 +2315,8 @@ export default async (application: Application): Promise<void> => {
             FROM "messages"
             JOIN "conversations" ON "messages"."conversation" = "conversations"."id"
             JOIN "courses" ON "conversations"."course" = "courses"."id"
-            LEFT JOIN "courseParticipants" AS "courseParticipant" ON "messages"."authorCourseParticipant" = "courseParticipant"."id"
-            LEFT JOIN "users" AS "authorUser" ON "courseParticipant"."user" = "authorUser"."id"    
+            LEFT JOIN "courseParticipants" AS "authorCourseParticipant" ON "messages"."authorCourseParticipant" = "authorCourseParticipant"."id"
+            LEFT JOIN "users" AS "authorUser" ON "authorCourseParticipant"."user" = "authorUser"."id"
             WHERE "messages"."id" = ${job.message}
           `
         )!;
@@ -2468,16 +2468,16 @@ export default async (application: Application): Promise<void> => {
                         SELECT TRUE
                         FROM "messages"
                         WHERE
-                          "conversation" = ${conversation.id} AND
-                          "courseParticipant" = "courseParticipants"."id"
+                          "messages"."conversation" = ${conversation.id} AND
+                          "messages"."authorCourseParticipant" = "courseParticipants"."id"
                       )
                     ) OR (
                       "users"."emailNotificationsForMessagesInConversationsYouStartedAt" IS NOT NULL AND EXISTS(
                         SELECT TRUE
                         FROM "conversations"
                         WHERE
-                          "id" = ${conversation.id} AND
-                          "courseParticipant" = "courseParticipants"."id"
+                          "messages"."id" = ${conversation.id} AND
+                          "messages"."authorCourseParticipant" = "courseParticipants"."id"
                       )
                     )
                   )
