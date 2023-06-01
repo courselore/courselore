@@ -8,7 +8,6 @@
 
 ---
 
-- `contentSearch` contains syntax highlighted text twice (because of light and dark modes)
 - UI on the upper left
 - LTI by fall
 - Feature branches
