@@ -262,7 +262,7 @@ export default async (application: Application): Promise<void> => {
       createdAt: messageRow.createdAt,
       updatedAt: messageRow.updatedAt,
       reference: messageRow.reference,
-      courseParticipant:
+      authorCourseParticipant:
         messageRow.authorCourseParticipantId !== null &&
         messageRow.authorUserId !== null &&
         messageRow.authorUserLastSeenOnlineAt !== null &&
