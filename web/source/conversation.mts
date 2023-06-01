@@ -4186,8 +4186,7 @@ export default async (application: Application): Promise<void> => {
                                                       {
                                                         request,
                                                         response,
-                                                        courseParticipant:
-                                                          courseParticipant,
+                                                        courseParticipant,
                                                         user: courseParticipant.user,
                                                         tooltip: false,
                                                         size: "xs",
@@ -4202,8 +4201,7 @@ export default async (application: Application): Promise<void> => {
                                                       {
                                                         request,
                                                         response,
-                                                        courseParticipant:
-                                                          courseParticipant,
+                                                        courseParticipant,
                                                         user: courseParticipant.user,
                                                         tooltip: false,
                                                         size: "xs",
@@ -7268,8 +7266,7 @@ export default async (application: Application): Promise<void> => {
                                                                 {
                                                                   request,
                                                                   response,
-                                                                  courseParticipant:
-                                                                    courseParticipant,
+                                                                  courseParticipant,
                                                                   user: courseParticipant.user,
                                                                   tooltip:
                                                                     false,
@@ -7285,8 +7282,7 @@ export default async (application: Application): Promise<void> => {
                                                                 {
                                                                   request,
                                                                   response,
-                                                                  courseParticipant:
-                                                                    courseParticipant,
+                                                                  courseParticipant,
                                                                   user: courseParticipant.user,
                                                                   tooltip:
                                                                     false,
