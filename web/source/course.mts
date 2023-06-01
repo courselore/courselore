@@ -1428,7 +1428,7 @@ export default async (application: Application): Promise<void> => {
 
         <div
           css="${css`
-            width: var(--space--72);
+            width: calc(var(--space--96) + var(--space--12));
           `}"
         >
           <label
