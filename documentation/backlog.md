@@ -31,8 +31,7 @@
 ## Users
 
 - Show users their `systemRole`.
-- Improvements to the workflow for when you change your email:
-  - Don’t actually change the email until it’s verified. Otherwise an attacker with a compromised password could change your email and lock you out of the “Forgot your password?” flow.
+- When you change your email, don’t actually change the email until it’s verified. Otherwise an attacker with a compromised password could change your email and lock you out of the “Forgot your password?” flow.
 - Allow person to have multiple emails on their account?
 - Online indicators.
   - Turn them on as soon as someone who was offline becomes online (right now it may take up to 5 minutes in next periodic Live-Update).
@@ -47,16 +46,22 @@
 
 ## Courses
 
-- Have a setting to either let students remove themselves from the course, or let them request the course staff to have them removed.
-- Upload roster and show differences.
-  - https://courselore.org/courses/8537410611/conversations/34
 - Lock a course for a period, for example, when a take-home exam is out.
   - Still allow students to ask private questions
   - Multiple locks, scheduled in advance?
-- Introduce the notion of sections:
-  - Invitations per section.
-  - Choose a section when joining the course or when already joined.
-- Introduce the notion of “groups”, for example, “group of TAs who work on grading”.
+- Groups
+  - For example, Graders, Project Advisors, Groups in OOSE, different sections on courses.
+  - Some groups are available to everyone, some only to course staff, some only to students
+  - Invitations per group.
+  - Choose a group:
+    - When joining the course
+    - When already joined.
+  - Manage groups participants
+    - Course staff may manage groups participants
+    - Course group participants manage themselves?
+  - May you be part of more than one group, or no group at all?
+  - Conversation Participants should be aware of groups
+  - Mentions like `@group-3`.
 - Pretty URLs for courses (for example, `https://courselore.org/principles-of-programming-languages--2023`)?
   - https://courselore.org/courses/8537410611/conversations/44
 - Have a way to delete a course entirely?
@@ -66,52 +71,49 @@
 
 - Simplify the system by having a single invitation link per course role that you can enable/disable/reset.
 - Limit invitation links to certain email domains, for example, “this link may only be used by people whose emails end with `@jhu.edu`.”
-- Have an option to require approval of course participant.
+- Have an option to require the course staff to approve course participants.
 - Have a public listing of courses in the system and allow people to request to join?
 - When the user signs up via an invitation, have a call to action to fill in profile (just like the one when you sign up without an invitation).
 - Allow course staff to preview the email invitations they’re about to submit? (Think the problem with the “enroll” vs “course participant” language.)
 
 ## Course Participants
 
-- Have a way for a student to remove themselves from the course?
-  - Or at least have a structured way for the student to ask course staff to remove them.
-- Allow the last course staff member to remove themselves from the course?
+- Have a setting to either let students remove themselves from the course or request the course staff to have them removed.
+- Allow the last course staff member to remove themselves from the course? (Might as well, since we put this protection in place to prevent “orphan courses” which no one can manage, but since then we introduced the possibility of removing your account entirely, so orphan courses are a possibility.)
+- Upload roster and show differences.
+  - https://courselore.org/courses/8537410611/conversations/34
 
 ## Conversations
 
 - Drafts:
-  - Unhide buttons
-    - Perhaps don’t have them styled as links…
-  - Review database schema:
-    - Include `shouldNotify`.
-    - Include indices.
-    - Include search indices, because search should work over the content of drafts.
-  - Mix drafts with other conversations on sidebar.
-    - `TODO`
-    - Group them together
-    - Visually distinct (grayed out).
-    - Search.
-    - Filters.
-  - Adapt `partials.conversation` to support drafts (many fields become optional).
-  - Add a button to delete a draft directly from the sidebar.
-- Have a simple way to share “conversation templates,” which use the query parameters to pre-fill the “New Conversation” form.
+  - Database schema
+    - Recreate table
+    - Indices
+    - Search indices (because search should work over the content of drafts)
+  - User interface
+    - Unhide buttons
+      - Perhaps don’t have them styled as links…
+    - Adapt `partials.conversation` to support drafts (many fields become optional).
+    - Mix drafts with other conversations on sidebar
+      - Group them together
+      - Visually distinct (grayed out)
+      - Add a button to delete a draft directly from the sidebar.
+    - Search
+    - Filters
+  - Server code
+    - Create, edit, and remove conversation draft
+  - `TODO`
+- Have a simple way to share “conversation starters,” which use the query parameters to pre-fill the “New Conversation” form.
 - Add the notion of “course staff considers this a good question.” Similar to the notion of “endorsement,” but for questions.
   - https://courselore.org/courses/8537410611/conversations/33
 - Streamline the creation of DMs.
 - Highlights (similar to Slack’s pins, but we’re avoiding the word “pin” because it already means “pinned conversations”). The highlights are visible to everyone in the conversation.
 - Bookmarks / flags / saved items. These are personal, for example, for something you have to follow up on.
 - Assign questions to CAs.
-- `position: sticky` headers (showing author name) in messages?
 - Different states: Open, locked, archived.
 - “Mark all conversations as read” could work with search & filters, marking as read only the conversations that matched the search & filters.
 - Let original question asker approve an answer.
 - Add a course-wide setting to make tags optional in all kinds of conversation (not only non-chats), even if there are tags.
-- Killer feature to attract people: off-the-shelf AI
-  - Help course staff write answers
-  - Find similar questions (this semester, previous semesters)
-  - Sentiment analysis to avoid marking question as unresolved when student just said “thank you”
-  - Talk about this on home page.
-- Introduce panes so you can have multiple conversations open on the same window, side-by-side (particularly useful on desktop application, maybe even on mobile application).
 
 **Participants**
 
@@ -124,10 +126,6 @@
   - There are no students
 - Consider removing selected participants from `getConversation()` as it’s probably expensive to retrieve and isn’t always necessary.
 - Course staff may allow or disallow people to have private conversations in which course staff don’t participate (the default is to allow)
-- Groups, for example, Graders, Project Advisors, Group members, different sections on courses.
-  - Some groups are available only to students, while others only to course staff.
-  - People assign themselves to groups.
-  - Add mentions like `@group-3`.
 
 **Chats**
 
@@ -240,11 +238,11 @@
   - Issue with indent-textarea is that it only supports tabs, not spaces https://github.com/fregante/indent-textarea/issues/21
   - CodeMirror is heavy-handed
 - If you’re in the middle of editing, and someone else edits a message (or the conversation title), then you’re going to overwrite their changes. Warn about this.
-- In programmer mode, change the behavior of when the `@mentions` and `#references` widgets appear and go away, particularly in code & mathematics blocks.
+- In programmer mode, change the behavior of when the `@mentions` and `#references` widgets appear and go away, particularly in code & mathematics blocks. (Not even GitHub is that smart)
 - Load “Preview” on hover/focus to speed things up?
 - Rich-text paste
   - Mobile
-    - Rich-text pasting is flaky
+    - Rich-text pasting is flaky. For the time being it’s just turned off
     - There’s no way to force a plain-text pasting: Perhaps do a toggle, just like Programmer Mode, for rich-text pasting?
   - Bundle size got bigger:
     - Do it on the server?
@@ -258,7 +256,7 @@
       - https://www.mathjax.org/
       - https://en.wikipedia.org/wiki/Big_O_notation
       - https://cs226sp23.github.io/notes/10-asymptotics/step05.html
-  - @github/paste-markdown: More sophisticated in mixing rich-text with pain-text without resorting to different pasting modalities
+  - @github/paste-markdown: More sophisticated in mixing rich-text with pain-text without resorting to different pasting modalities, but more limited in the kind of rich-text that’s supported.
 
 ## Notifications
 
@@ -418,6 +416,7 @@ new Notification('Example');
 - Fix keyboard navigation on “Selected Participants” widget, which is a bunch of checkboxes acting as a `<select>`.
 - When navigating between conversations, preserve scrolling position
   - https://courselore.org/courses/8537410611/conversations/66
+- Introduce panes so you can have multiple conversations open on the same window, side-by-side (particularly useful on desktop application, maybe even on mobile application).
 
 **Messages**
 
@@ -438,6 +437,7 @@ new Notification('Example');
 - Show a widget similar to the Views and Likes (with person & time) to endorsements.
 - Don’t show endorsements for messages that have been converted into non-answers. (They show up at least for course staff.)
 - Course staff endorsements should show a list of people similar to “Likes” and “Views”.
+- `position: sticky` headers (showing author name, and so forth)
 
 **Chat**
 
@@ -772,6 +772,13 @@ const { app, BrowserWindow } = require("electron");
 - References
   - https://community.canvaslms.com/t5/Canvas-Ideas/Discussions-Export-Discussions/idi-p/360258
   - https://community.canvaslms.com/t5/Canvas-Ideas/Discussions-Download-discussion-board-posts/idi-p/377692
+
+## AI
+
+- Help course staff write answers
+- Find similar questions (this semester, previous semesters)
+- Sentiment analysis to avoid marking question as unresolved when student just said “thank you”
+- Talk about this on home page.
 
 ## User Interface
 
