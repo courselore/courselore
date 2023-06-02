@@ -4501,7 +4501,9 @@ export default async (application: Application): Promise<void> => {
                                   "true" ||
                                   (request.query.newConversation?.isPinned ===
                                     undefined &&
-                                    request.params.type === "note")))
+                                    [undefined, "note"].includes(
+                                      request.params.type
+                                    ))))
                                 ? html`checked`
                                 : html``}
                               class="visually-hidden input--radio-or-checkbox--multilabel"

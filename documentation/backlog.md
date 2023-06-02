@@ -263,13 +263,13 @@
 **Email**
 
 - Grace period between sending a message and triggering the email notifications
-  - Allow users to configure it?
+  - Allow users to configure it? (It’s difficult because it’d have to become a per-user setting, while now it’s one setting for the entire system)
   - The feature is effectively turned off with a grace period of zero
   - https://courselore.org/courses/8537410611/conversations/28
 - Allow replying to a message by replying to the email notification
   - Obfuscate email addresses in the message (like GitHub does).
-  - Use IMAP on an existing inbox instead of SMTP?
-  - There’s nothing we can do about replying to an email notifications digest, so it should still go to the system administrator, or perhaps have an automatic bounce reply.
+  - Have an SMTP server to receive messages directly, or consume an inbox with IMAP/POP?
+  - There’s nothing we can do about replying to an email notifications digest, so it should still go to the system administrator, or perhaps have an automatic bounce reply 🤷‍♂️
 - Don’t send notifications when the person is online and/or has seen the message.
   - Explain this in Notifications Settings page.
 - More granular control over what to be notified about.
@@ -288,7 +288,7 @@
   - Periodically check digests queue and enqueue `sendEmailJobs` for delivery
     - Enqueue hourly digests on the hour and daily digests at 07:00 UTC.
   - Digests should use `contentSearch` truncated?
-  - Digests group messages from different courses
+  - Digests group messages from different courses?
   - `notificationDigestJobs`
     - Existence indicates active worker to avoid race condition
     - `startedAt` is used for timeout
@@ -403,7 +403,6 @@ new Notification('Example');
   - Make the visualization of “types” a little more distinct, for example, make announcements pop up.
   - Improve display of endorsements & answers (on the sidebar, include number of answers).
   - Manage answer badges more intelligently (answered at all, answered by course staff).
-- Highlight conversations that include an `@mention` to you.
 - Quick Actions:
   - Unpin
   - Resolve a Question.
@@ -411,7 +410,6 @@ new Notification('Example');
 **Conversation**
 
 - Add “Change conversation type” and that sort of thing to the “Actions” menu?
-- First conversation for course staff should default to being pinned.
 - Editing tags should behave like “Selected Participants”. (You have to confirm your changes by clicking a button, the dropdown doesn’t go away on first click, and that kind of thing.)
 - Fix keyboard navigation on “Selected Participants” widget, which is a bunch of checkboxes acting as a `<select>`.
 - When navigating between conversations, preserve scrolling position
