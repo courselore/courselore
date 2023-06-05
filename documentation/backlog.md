@@ -25,6 +25,52 @@
 - Conversation drafts
 - Pagination
 
+## Authentication
+
+**SAML**
+
+- Perhaps there should be a per-identity-provider option of show/hide in the user interface to help you deploy a new identity provider and test it out before users see it.
+- Infrastructure
+  - Add support for other `nameIDFormat`s
+    - Store in `users` table: `samlIdentifier`, `nameIDFormat`, and `nameID`
+    - Dealing with transient `nameID`s is tricky
+  - Add support for `emailAdress`es that doesn’t follow our more strict rules for email address format
+  - Add support for `HTTP-POST` in addition to `HTTP-Redirect`
+  - Single logout back channel (synchronous) (SOAP) (server-to-server from identity provider to service provider)
+- Interface
+  - When there are many universities, add a filter to the user interface, similar to Gradescope has, and similar to what we do in the list of course participants.
+  - Long SAML identity provider name may break the interface (use ellipsis to fix it?)
+- Sign up with SAML if identity provider doesn’t provide a name
+  - Create a session without a user, but with an email address instead.
+    - It doesn’t have to use a cookie, it can be a short-lived session as a `hidden` field in the form, similar to password reset.
+      - `flashes`
+        - Yes
+      - `sessions`
+        - No, because token is long-lived, sliding, and there’s a foreign key to the `user`
+      - `passwordResets`
+        - No, because there’s a foreign key to the `user` (but the concept o `nonce` is what we want)
+      - `emailVerifications`
+        - No, because there’s a foreign key to the `user` (but the concept o `nonce` is what we want)
+  - Create user interface with form for name (and other data we might want to ask from the user)
+  - Create the backend that makes sign up with SAML work.
+    - Reuse the existing sign-up route, or create a new one?
+  - Make invitation name & email work as well?
+  - Grab avatar from SAML assertions.
+  - Document in `example.mjs` that `extractName` is optional.
+- Changing user information on SAML sign in
+  - Passwords
+    - Allow user to create a password after the fact
+      - Security concern: When creating a password, you can’t verify that you are yourself by typing in your old password.
+        - Perhaps just use the password reset workflow, which sends an email instead?
+    - Insist on administrators having a password
+  - Email
+    - Perhaps have a more elegant solution for when you sign in with SAML and try to change your email, which would cause sign out to not work.
+      - For the time being we just disallow it.
+  - Let the person remove their account that they created via SAML.
+- Allow people to disconnect the SAML identity from their account? (As long as they have a password?)
+- Have a way for system administrators to turn off sign in via email and password
+- Introduce a way for system administrators to clear all sessions for when they need to remove a SAML identity provider
+
 ## Users
 
 - Show users their `systemRole`.
@@ -407,7 +453,7 @@ new Notification('Example');
 **Conversation**
 
 - Add “Change conversation type” and that sort of thing to the “Actions” menu?
-- Editing tags should behave like “Selected Participants”. (You have to confirm your changes by clicking a button, the dropdown doesn’t go away on first click, and that kind of thing.)
+- Editing tags should behave like “Selected Participants” (save on dropdown close, and so forth)
 - Fix keyboard navigation on “Selected Participants” widget, which is a bunch of checkboxes acting as a `<select>`.
 - When navigating between conversations, preserve scrolling position
   - https://courselore.org/courses/8537410611/conversations/66
@@ -415,12 +461,6 @@ new Notification('Example');
 
 **Messages**
 
-- On conversation of type Question, have separate buttons for:
-  - Sending an answer
-  - Follow-up question (resets the resolved status)
-  - Regular message (doesn’t reset the resolved status)
-  - (Remove the “Type” selector for messages)
-  - (Introduce the notion of “message type” for follow-up question as a first class citizen and things like that?)
 - Higher contrast between background and text?
 - Blockquotes
   - Faint background color to help differentiate them?
@@ -429,7 +469,6 @@ new Notification('Example');
 - Bigger font (15pt).
 - Wider columns
 - Include a “set as answer and endorse” button.
-- Show a widget similar to the Views and Likes (with person & time) to endorsements.
 - Don’t show endorsements for messages that have been converted into non-answers. (They show up at least for course staff.)
 - Course staff endorsements should show a list of people similar to “Likes” and “Views”.
 - `position: sticky` headers (showing author name, and so forth)
@@ -492,7 +531,7 @@ new Notification('Example');
 - Help page
   - Clarify that “Programmer Mode” is for your input only. Unlike other buttons on the toolbar, it doesn’t affect the rendered text.
 - When editing, and trying to send empty message, propose to delete (like Discord does).
-- When pressing up on an empty chat box, start editing the your most recently sent message (if it’s still the most recently sent message in the conversation) (like Discord does).
+- When pressing `↑` on an empty chat box, start editing the your most recently sent message (if it’s still the most recently sent message in the conversation) (like Discord does).
 - Issue with autosizing:
   - Slows down the typing in iOS
     - https://courselore.org/courses/8537410611/conversations/66
@@ -500,17 +539,12 @@ new Notification('Example');
   - When you’re typing, there’s a weird scrollbar glitch: it shows up for a split second and hides back again. I observed this in Meta Courselore using Safari.
   - Leaks resources because of the global `Map` of bound textareas. It should be using `WeakMap` instead.
   - Also slows down “Reply” of long messages, like the rich-text demonstration message.
-  - Look into using `fit-textarea@2.0.0` instead.
   - https://css-tricks.com/the-cleanest-trick-for-autogrowing-textareas/
   - https://github.com/fregante/fit-textarea **Use v2**.
   - https://courselore.org/courses/8537410611/conversations/66
-- The HTML for latency-compensate sending a message could be embedded in the JavaScript, now that embedding HTML in JavaScript is a thing.
 - Selecting multiple paragraphs and bolding doesn’t work (the same issue occurs in GitHub 🤷)
 - Don’t let `@metions` and `#references` widgets appear if you’re in the middle of a code block.
   - https://courselore.org/courses/8537410611/conversations/64
-- `@mentions`/`#references` is flaky
-  - Show/hide is flaky
-  - Positioning in long messages in long conversations
 
 **New Conversation**
 
@@ -812,6 +846,8 @@ const { app, BrowserWindow } = require("electron");
 - The submission of a form resets the state of the rest of the page.
   - For example, start editing the title of a conversation, then click on “Pin”. The editing form will go away.
     - Another example: When performing any simple form submission, for example, “Like”, the “NEW” message separator goes away. But maybe that’s a good thing: Once you interacted with the page, you probably already read the new messages, so it maybe it’s better for that separator to go away.
+  - Even worse: When there are multiple forms on the page, and you partially fill both of them, submitting one will lose inputs on the other.
+    - For example, when you’re filling in the “Start a New Conversation” form, and you do a search on the sidebar.
   - The first step would be keep the `hidden` state on form submission, but then other things break, for example, if you’re actually submitting a conversation title update, then the form should be hidden. As far as I can tell, there’s no way to detect what should be hidden and what should be shown automatically: We’d have to write special cases. For example, on the `onsubmit` of the conversation title update, we could add actions to reset the hidden state of the involved components.
   - Then, on `morph()`, we must look at the `originalEvent` and avoid updating form fields that aren’t the submitted form. This part is actually relatively straightforward: `detail.originalEvent instanceof SubmitEvent && detail.originalEvent.target.contains(from)`
 - In response to a `POST`, don’t redirect, but render the page right away, saving one round trip. This is similar to the Turbo Streams approach, in which a stream is sent as a response to the `POST`.
@@ -843,7 +879,6 @@ const { app, BrowserWindow } = require("electron");
 - Live-Updates can freeze the user interface for a split second, as the morphing is happening.
   - Examples of issues:
     - Typing on an inbox lags.
-    - Pressing buttons such as the “Conversations” disclosure button on mobile.
   - Potential solutions:
     - Break the work up by introducing some `await`s, which hopefully would give the event loop an opportunity to process user interactions.
     - Minimize the work on the client-side by making the pages small, so there’s less to diff.
@@ -860,7 +895,7 @@ const { app, BrowserWindow } = require("electron");
 - Currently, if a connection comes in with a token we don’t identify, we treat that as a browser tab that was offline for a while and just reconnected, which means it receives a Live-Update right away. This can be superfluous if no change actually took place. This may be a minor issue—or not an issue at all. And addressing it probably complicates the Live-Updates mechanisms quite a bit. But, in any case, one potential solution is, instead of keeping tokens on the server and scheduling events to them, keep a notion of when things were updated, this way upon reconnection the client can say when it was the last time it got a Live-Update, and the server can know if another Live-Update is necessary. But the notion of tracking which parts of which pages require which data sounds error-prone.
 - Authentication:
   - When the user signs out, send a Live-Update to all other browser tabs.
-    - Store user in Live-Updates metadata database table.
+    - Store session in Live-Updates metadata database table.
   - When the user `Session.closeAllAndReopen()` (for example, when resetting the password), also send Live-Update, which will have the effect of signing you out to prevent personal information from being exposed.
 - Pause after some period of inactivity?
 
@@ -894,7 +929,7 @@ const { app, BrowserWindow } = require("electron");
 - Write a function to determine if processing content is even necessary. Most content doesn’t use extra features and could skip JSDOM entirely.
 - Investigate other potential bottlenecks:
   - Synchronous stuff that could be async.
-- Framing?
+- Divide the page into frames that are lazy loaded independently, for example, the sidebar vs the main conversation pane?
   - Disadvantage: One more roundtrip to the server to complete the page.
   - Sidebar vs main content
     - On mobile may not need to load the sidebar at all
@@ -936,50 +971,8 @@ const { app, BrowserWindow } = require("electron");
   - `leafac--javascript.mjs`
   - `javascript=" ... "`
 - Use `node --test` in other projects: look for uses of the `TEST` environment variable
-- SAML
-  - Perhaps there should be a per-identity-provider option of show/hide in the user interface to help you deploy a new identity provider and test it out before users see it.
-  - Infrastructure
-    - Add support for other `nameIDFormat`s
-      - Store in `users` table: `samlIdentifier`, `nameIDFormat`, and `nameID`
-      - Dealing with transient `nameID`s is tricky
-    - Add support for `emailAdress`es that doesn’t follow our more strict rules for email address format
-    - Add support for `HTTP-POST` in addition to `HTTP-Redirect`
-    - Single logout back channel (synchronous) (SOAP) (server-to-server from identity provider to service provider)
-  - Interface
-    - When there are many universities, add a filter to the user interface, similar to Gradescope has, and similar to what we do in the list of course participants.
-    - Long SAML identity provider name may break the interface (use ellipsis to fix it?)
-  - Sign up with SAML if identity provider doesn’t provide a name
-    - Create a session without a user, but with an email address instead.
-      - It doesn’t have to use a cookie, it can be a short-lived session as a `hidden` field in the form, similar to password reset.
-        - `flashes`
-          - Yes
-        - `sessions`
-          - No, because token is long-lived, sliding, and there’s a foreign key to the `user`
-        - `passwordResets`
-          - No, because there’s a foreign key to the `user` (but the concept o `nonce` is what we want)
-        - `emailVerifications`
-          - No, because there’s a foreign key to the `user` (but the concept o `nonce` is what we want)
-    - Create user interface with form for name (and other data we might want to ask from the user)
-    - Create the backend that makes sign up with SAML work.
-      - Reuse the existing sign-up route, or create a new one?
-    - Make invitation name & email work as well?
-    - Grab avatar from SAML assertions.
-    - Document in `example.mjs` that `extractName` is optional.
-  - Changing user information on SAML sign in
-    - Passwords
-      - Allow user to create a password after the fact
-        - Security concern: When creating a password, you can’t verify that you are yourself by typing in your old password.
-          - Perhaps just use the password reset workflow, which sends an email instead?
-      - Insist on administrators having a password
-    - Email
-      - Perhaps have a more elegant solution for when you sign in with SAML and try to change your email, which would cause sign out to not work.
-        - For the time being we just disallow it.
-    - Let the person remove their account that they created via SAML.
-  - Allow people to disconnect the SAML identity from their account? (As long as they have a password?)
-  - Have a way for system administrators to turn off sign in via email and password
-  - Introduce a way for system administrators to clear all sessions for when they need to remove a SAML identity provider
 - Use `fetch` instead of `got`?
-- Sign out is slow because of `Clear-Site-Data` header (https://bugs.chromium.org/p/chromium/issues/detail?id=762417)
+- Sign out is slow because of `Clear-Site-Data` header (https://bugs.chromium.org/p/chromium/issues/detail?id=762417) (Apparently only an issue in Google Chrome)
 - Extract component that does reordering (tags, poll options, and so forth).
 - Test process manager on Windows
   - In development, `Ctrl+C`.
@@ -1016,6 +1009,8 @@ const { app, BrowserWindow } = require("electron");
   - @leafac/javascript
   - @leafac/express
   - @radically-straightforward
+  - Move some of the non-application-specific server-side code into a library (for example, cookie settings, server-sent events, logging, and that sort of thing).
+    - Maybe move @leafac/express-async-handler into that library as well.
 - Make top-level `await` available for `` javascript`...` ``.
   - Complication: many things, like `setTippy()` would become `async` as well.
   - Convert infinite loops with `update()` and `setTimeout()` into `while (true)` (search for `update(`).
@@ -1032,7 +1027,7 @@ const { app, BrowserWindow } = require("electron");
 - Inconsistency: In the `liveConnectionsMetadata` (and possibly others) we store `expiredAt`, but in `session` (and possible others) we store `createdAt` and let the notion of expiration be represented in the code.
 - autocannon: produce graphs (HDRHistogram)
 - There’s a small chance (once every tens of thousands of requests) that you’ll get an “SQLite busy” error. I observed it when creating `liveConnectionsMetadata`, which is the only write in a hot path of the application. Treat that case gracefully.
-- There’s a issue when running for the first time: Caddy may ask for your password, but you may not see it.
+- There’s an issue when running for the first time: Caddy may ask for your password, but you may not see it.
   - It still works if you see it and type in the password, even as other stuff has scrolled by.
   - Potential solutions:
     - Run Caddy before spawning other children processes (but how do you know that Caddy is done?)
@@ -1049,8 +1044,6 @@ const { app, BrowserWindow } = require("electron");
     - It requires a secret known by the server to implement most securely. Note how everything boils down to the server recognizing itself by seeing a secret piece of data that it created.
 - `filenamify` may generate long names in pathological cases in which the extension is long.
 - Things like `text--sky` and `mortarboard` are repeated throughout the application. DRY these up.
-- Windows development:
-  - `Ctrl+C` leaves the Caddy process behind, failing subsequent runs because the port is taken
 - When we start receiving code contributions, we might want to ask for people to sign a contributor’s agreement, because otherwise we’re locking ourselves out of the possibility of dual-licensing & perhaps selling closed-source extensions.
 - Do things break if you’re trying to run Courselore from a directory that includes spaces & weird characters?
   - Note Caddy’s configuration and the serving of static files.
@@ -1065,9 +1058,7 @@ const { app, BrowserWindow } = require("electron");
   - `class=`
   - `querySelector`
   - `map(`
-- Mark all conversations as read may be slow because it does a bunch of in `INSERT`s.
-- Move some of the non-application-specific server-side code into a library (for example, cookie settings, server-sent events, logging, and that sort of thing).
-  - Maybe move @leafac/express-async-handler into that library as well.
+- “Mark all conversations as read” may be slow because it does a bunch of in `INSERT`s.
 - Make Demonstration Data load faster by having a cache of pre-built data.
 - Using `getConversation()` to enforce permissions may not be a great idea. It limits the number of search results in a weird way, that even leaks a bit of data. Also, it isn’t the most performant thing, probably (see point about n+1 queries). Maybe a better idea would be to `WHERE` the permissions everywhere, or use a database view.
 - Rate limiting.
@@ -1077,7 +1068,6 @@ const { app, BrowserWindow } = require("electron");
     - Signed in → user identifier
   - Response: either a special HTTP status that means “rate limited,” or just delay the response.
 - Find more places where we should be using database transactions.
-- Maintenance:
 - Automate:
   - Updates.
   - Backups.
@@ -1087,11 +1077,10 @@ const { app, BrowserWindow } = require("electron");
 - Have a way for self-hosters to migrate domains.
   - Rewrite avatars.
   - Rewrite URLs in messages.
+  - Alternative: Don’t hard-code `hostname` into avatars & attachments, use `/absolute-paths` instead. (We can do that because Courselore doesn’t work from within a `/subpath` anyway, for cookie reasons.)
 - In some situations, we’re unnecessarily updating the boolean fields in the database that are represented as dates. For example, `"tags"."staffOnlyAt"` on `PUT /courses/:courseReference/settings/tags`.
 - Right now we’re allowing any other website to embed images. If we detect abuse, add an allowlist.
 - Caddy could silence logs **after** a successful startup.
-- Live-Navigation usability issue: When there are multiple forms on the page, and you partially fill both of them, submitting one will lose inputs on the other.
-  - For example, when you’re filling in the “Start a New Conversation” form, and you do a search on the sidebar.
 - Image proxy
   - Max size 5242880
   - Max number of redirects 4
