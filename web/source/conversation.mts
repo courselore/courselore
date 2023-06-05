@@ -8086,7 +8086,7 @@ export default async (application: Application): Promise<void> => {
                                                 <i
                                                   class="bi bi-mortarboard-fill"
                                                 ></i>
-                                                Course Staff Whisper
+                                                Staff Whisper
                                               </div>
                                             `
                                           : html``}
@@ -9952,7 +9952,7 @@ export default async (application: Application): Promise<void> => {
                                       class="button button--full-width-on-small-screen button--sky"
                                     >
                                       <i class="bi bi-mortarboard-fill"></i>
-                                      Send Course Staff Whisper
+                                      Send Staff Whisper
                                     </button>
 
                                     <button

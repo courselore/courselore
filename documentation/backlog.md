@@ -2,7 +2,6 @@
 
 ## Work in Progress
 
-- “Course Staff Whisper” → “Staff Whisper”
 - SAML changes for Hopkins
 
 **Name Changes**
