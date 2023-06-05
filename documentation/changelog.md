@@ -12,11 +12,15 @@
 
 ## Unreleased
 
+## 6.1.3
+
+**2023-06-05 · [Download](https://github.com/courselore/courselore/releases/tag/v6.1.3) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
+
+- Changes in terminology:
+  - “Enroll in Course” → “Join Course” / “Enrollment” → “Course Participants”: Avoid students thinking that they got off the waiting list because they’re invited to Courselore.
+  - “Staff” → “Course Staff”: Avoid people thinking that “Staff” includes, for example, department administrators.
 - Improved the starting state of the `@mentions` and `#references` widgets. Instead of simply saying “Start typing to search”, they now give useful options, for example, the people who authored the most recent messages.
 - Fixed glitches when dragging-and-dropping or copying-and-pasting folders and text into the content editor and avatar uploader.
-- Changes in terminology:
-  - Staff → Course Staff (In the context of a course, to set it apart from Staff in the context of system administration)
-- Deployment may be slow and may alter messages in undesirable ways.
 
 ## 6.1.2
 
