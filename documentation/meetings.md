@@ -3,6 +3,11 @@
 <details>
 <summary>2023-06-03</summary>
 
+- Changes in terminology:
+  - Staff → Course Staff (In the context of a course, to set it apart from Staff in the context of system administration)
+- Improved the starting state of the `@mentions` and `#references` widgets. Instead of simply saying “Start typing to search”, they now give useful options, for example, the people who authored the most recent messages.
+- Fixed glitches when dragging-and-dropping or copying-and-pasting folders and text into the content editor and avatar uploader.
+- Added a way for staff members to export questions as JSON for research.
 - https://matthewbutterick.com/chron/camera-obscura-the-case-against-ai-in-classrooms.html
 
 </details>

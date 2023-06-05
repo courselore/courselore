@@ -2,6 +2,9 @@
 
 ## Work in Progress
 
+- “Course Staff Whisper” → “Staff Whisper”
+- SAML changes for Hopkins
+
 **Name Changes**
 
 - Review from `b7641a2d40078b9be7faee7d17b4b8f689a232bb`
