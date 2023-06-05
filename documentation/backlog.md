@@ -4,10 +4,6 @@
 
 **Name Changes**
 
-- Review from `b7641a2d40078b9be7faee7d17b4b8f689a232bb`
-
----
-
 - SAML changes for Hopkins
 - UI on the upper left
 - LTI by fall
