@@ -5,6 +5,11 @@
 **SAML**
 
 - Perhaps there should be a per-identity-provider option of show/hide in the user interface to help you deploy a new identity provider and test it out before users see it.
+  - Remove `saml` feature flag
+    - `features:`
+    - `features.`
+  - Add some sort of `experimental` flag on a per-provider basis
+  - De-duplicate `/sign-in/saml`
 - Infrastructure
   - Add support for other `nameIDFormat`s
     - Store in `users` table: `samlIdentifier`, `nameIDFormat`, and `nameID`
