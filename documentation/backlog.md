@@ -5,15 +5,16 @@
 **SAML**
 
 - Issue: Hopkins’s NameID isn’t an actual inbox: Ignore the NameID and just get the email
-  - Introduce a configuration field for extracting email address (similar to the one for name)
-    - Use
-      - `/single-logout-service` may need `nameID`, so we may need to store it 🤦‍♂️
-    - Test
-    - Deploy
-    - Test
-  - Changelog: Minor.
-    - `features` → `public: false,`
-    - `extractName` → `attributes`
+  - Use
+    - Store `nameID`
+      - `/logout-request`
+      - `/single-logout-service`
+  - Test
+  - Deploy
+  - Test
+- Changelog: Minor.
+  - `features` → `public: false,`
+  - `extractName` → `attributes`
 
 ---
 

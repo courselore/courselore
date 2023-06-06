@@ -2310,7 +2310,8 @@ export default async (application: Application): Promise<void> => {
       if (response.locals.saml.public === false)
         response.locals.log(
           "SAML RESPONSE",
-          JSON.stringify(samlResponse, undefined, 2)
+          JSON.stringify(samlResponse, undefined, 2),
+          JSON.stringify(samlResponseAttributes, undefined, 2)
         );
 
       if (
