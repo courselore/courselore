@@ -666,7 +666,7 @@ export default async (application: Application): Promise<void> => {
     { redirect?: string; invitation?: { email?: string; name?: string } },
     Application["web"]["locals"]["ResponseLocals"]["LiveConnection"] &
       Partial<Application["web"]["locals"]["ResponseLocals"]["SignedIn"]>
-  >(["/", "/sign-in"], (request, response, next) => {
+  >(["/", "/sign-in", "/sign-in/saml"], (request, response, next) => {
     if (
       response.locals.user !== undefined ||
       (request.originalUrl === "/" &&
@@ -674,6 +674,15 @@ export default async (application: Application): Promise<void> => {
           application.addresses.canonicalHostname)
     )
       return next();
+
+    const visibleSamls =
+      request.originalUrl === "/sign-in/saml"
+        ? samls
+        : Object.fromEntries(
+            Object.entries(samls).filter(
+              ([samlIdentifier, options]) => options.public !== false
+            )
+          );
 
     response.send(
       application.web.locals.layouts.box({
@@ -782,8 +791,7 @@ export default async (application: Application): Promise<void> => {
             </p>
           </div>
 
-          $${application.configuration.features.saml === true &&
-          Object.keys(samls).length > 0
+          $${Object.keys(visibleSamls).length > 0
             ? html`
                 <div
                   css="${css`
@@ -807,7 +815,7 @@ export default async (application: Application): Promise<void> => {
                   />
                 </div>
 
-                $${Object.entries(samls).map(
+                $${Object.entries(visibleSamls).map(
                   ([samlIdentifier, options]) => html`
                     <a
                       href="https://${application.configuration
@@ -2222,203 +2230,6 @@ export default async (application: Application): Promise<void> => {
       saml: (typeof samls)[string];
     };
 
-  application.web.get<
-    {},
-    HTML,
-    {},
-    { redirect?: string; invitation?: { email?: string; name?: string } },
-    Application["web"]["locals"]["ResponseLocals"]["LiveConnection"] &
-      Partial<Application["web"]["locals"]["ResponseLocals"]["SignedIn"]>
-  >("/saml", (request, response, next) => {
-    if (response.locals.user !== undefined) return next();
-
-    response.send(
-      application.web.locals.layouts.box({
-        request,
-        response,
-        head: html`
-          <title>
-            Sign In · Courselore · Communication Platform for Education
-          </title>
-        `,
-        body: html`
-          <h2 class="heading">
-            <i class="bi bi-box-arrow-in-right"></i>
-            Sign In
-          </h2>
-
-          <form
-            method="POST"
-            action="https://${application.configuration
-              .hostname}/sign-in${qs.stringify(
-              {
-                redirect: request.query.redirect,
-                invitation: request.query.invitation,
-              },
-              { addQueryPrefix: true }
-            )}"
-            novalidate
-            css="${css`
-              display: flex;
-              flex-direction: column;
-              gap: var(--space--4);
-            `}"
-          >
-            <label class="label">
-              <p class="label--text">Email</p>
-              <input
-                type="email"
-                name="email"
-                placeholder="you@educational-institution.edu"
-                value="${typeof request.query.invitation?.email === "string" &&
-                request.query.invitation.email.trim() !== ""
-                  ? request.query.invitation.email
-                  : ""}"
-                required
-                autofocus
-                class="input--text"
-                javascript="${javascript`
-              this.isModified = false;
-            `}"
-              />
-            </label>
-            <label class="label">
-              <p class="label--text">Password</p>
-              <input
-                type="password"
-                name="password"
-                required
-                class="input--text"
-                javascript="${javascript`
-              this.isModified = false;
-            `}"
-              />
-            </label>
-            <button class="button button--blue">
-              <i class="bi bi-box-arrow-in-right"></i>
-              Sign In
-            </button>
-          </form>
-
-          <div
-            css="${css`
-              display: flex;
-              flex-direction: column;
-              gap: var(--space--2);
-            `}"
-          >
-            <p>
-              Don’t have an account?
-              <a
-                href="https://${application.configuration
-                  .hostname}/sign-up${qs.stringify(
-                  {
-                    redirect: request.query.redirect,
-                    invitation: request.query.invitation,
-                  },
-                  { addQueryPrefix: true }
-                )}"
-                class="link"
-                >Sign up</a
-              >.
-            </p>
-            <p>
-              Forgot your password?
-              <a
-                href="https://${application.configuration
-                  .hostname}/reset-password${qs.stringify(
-                  {
-                    redirect: request.query.redirect,
-                    invitation: request.query.invitation,
-                  },
-                  { addQueryPrefix: true }
-                )}"
-                class="link"
-                >Reset password</a
-              >.
-            </p>
-          </div>
-
-          $${Object.keys(samls).length > 0
-            ? html`
-                <div
-                  css="${css`
-                    display: flex;
-                    gap: var(--space--4);
-                    align-items: center;
-                  `}"
-                >
-                  <hr
-                    class="separator"
-                    css="${css`
-                      flex: 1;
-                    `}"
-                  />
-                  <span class="heading">Or</span>
-                  <hr
-                    class="separator"
-                    css="${css`
-                      flex: 1;
-                    `}"
-                  />
-                </div>
-
-                $${Object.entries(samls).map(
-                  ([samlIdentifier, options]) => html`
-                    <a
-                      href="https://${application.configuration
-                        .hostname}/saml/${samlIdentifier}/authentication-request${qs.stringify(
-                        { redirect: request.query.redirect },
-                        { addQueryPrefix: true }
-                      )}"
-                      class="button button--transparent"
-                      javascript="${javascript`
-                    this.onbeforelivenavigate = () => false;
-                  `}"
-                    >
-                      $${options.logo !== undefined
-                        ? html`
-                            <img
-                              src="https://${application.configuration
-                                .hostname}/${options.logo.light}"
-                              alt="${options.name}"
-                              class="light"
-                              style="width: ${String(
-                                options.logo.width / 2
-                              )}px;"
-                              css="${css`
-                                max-width: 100%;
-                                height: auto;
-                              `}"
-                            />
-                            <img
-                              src="https://${application.configuration
-                                .hostname}/${options.logo.dark}"
-                              alt="${options.name}"
-                              class="dark"
-                              style="width: ${String(
-                                options.logo.width / 2
-                              )}px;"
-                              css="${css`
-                                max-width: 100%;
-                                height: auto;
-                              `}"
-                            />
-                          `
-                        : html`
-                            <i class="bi bi-bank"></i>
-                            ${options.name}
-                          `}
-                    </a>
-                  `
-                )}
-              `
-            : html``}
-        `,
-      })
-    );
-  });
-
   application.web.use<
     { samlIdentifier: string },
     any,
@@ -2494,7 +2305,7 @@ export default async (application: Application): Promise<void> => {
         .validatePostResponseAsync(request.body)
         .catch(() => undefined);
 
-      if (application.configuration.features.saml !== true)
+      if (response.locals.saml.public === false)
         response.locals.log(
           "SAML RESPONSE",
           JSON.stringify(samlResponse, undefined, 2)
@@ -3134,7 +2945,7 @@ export default async (application: Application): Promise<void> => {
         .validatePostRequestAsync(request.body)
         .catch(() => undefined);
 
-      if (application.configuration.features.saml !== true)
+      if (response.locals.saml.public === false)
         response.locals.log(
           "SAML REQUEST",
           JSON.stringify(samlRequest, undefined, 2)
@@ -3276,7 +3087,7 @@ export default async (application: Application): Promise<void> => {
         .validatePostResponseAsync(request.body)
         .catch(() => undefined);
 
-      if (application.configuration.features.saml !== true)
+      if (response.locals.saml.public === false)
         response.locals.log(
           "SAML RESPONSE",
           JSON.stringify(samlResponse, undefined, 2)

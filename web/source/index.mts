@@ -59,12 +59,10 @@ export type Application = {
       };
     };
     administratorEmail: string;
-    features: {
-      saml?: boolean;
-    };
     staticPaths: string[];
     saml: {
       [identifier: string]: {
+        public?: boolean;
         name: string;
         logo?: {
           light: string;
@@ -213,7 +211,6 @@ if (await node.isExecuted(import.meta.url)) {
           workerEvents: express() as any,
         } as Application;
 
-        application.configuration.features ??= {};
         application.configuration.staticPaths ??= [];
         application.configuration.saml ??= {};
         application.configuration.environment ??= "production";

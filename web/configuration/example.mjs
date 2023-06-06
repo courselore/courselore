@@ -36,11 +36,6 @@ export default {
   //    In case something goes wrong with the certificate, they’ll contact you at this address.
   administratorEmail: "administrator@your-domain.edu",
 
-  // [OPTIONAL] Feature flags for experimental features.
-  // features: {
-  //   saml: true,
-  // },
-
   // [OPTIONAL] Paths to folders with static files.
   // They’re useful, for example, to serve logos for SAML configuration (see below).
   // Files must be immutable. If the contents of a file changes, then change its name as well.
@@ -56,6 +51,11 @@ export default {
   //   // - https://your-domain.edu/saml/educational-institution/assertion-consumer-service
   //   // - https://your-domain.edu/saml/educational-institution/single-logout-service
   //   "educational-institution": {
+  //     // [OPTIONAL] Set ‘public’ to ‘false’ to hide this educational institution from the main sign in page.
+  //     // It will be available from ‘/sign-in/saml’ and may be used for testing and setting up with the identity provider.
+  //     // It also enables special logging including, for example, the SAML response from the identity provider.
+  //     // public: false,
+
   //     name: "Educational Institution",
 
   //     // [OPTIONAL] Images for the logo of the educational institution.
