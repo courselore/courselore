@@ -2376,7 +2376,12 @@ export default async (application: Application): Promise<void> => {
           `
         );
       }
-    }
+    },
+
+    sql`
+      ALTER TABLE "sessions" ADD COLUMN "samlNameID" TEXT NULL;
+      DELETE FROM "sessions" WHERE "samlIdentifier" IS NOT NULL;
+    `
   );
 
   application.database.run(

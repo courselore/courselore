@@ -21,6 +21,7 @@ export type ApplicationAuthentication = {
             userId: number;
             samlIdentifier?: string;
             samlSessionIndex?: string;
+            samlNameID?: string;
           };
 
           user: {
@@ -111,6 +112,7 @@ export type ApplicationAuthentication = {
             userId,
             samlIdentifier,
             samlSessionIndex,
+            samlNameID,
           }: {
             request: express.Request<
               {},
@@ -126,6 +128,7 @@ export type ApplicationAuthentication = {
             userId: number;
             samlIdentifier?: string;
             samlSessionIndex?: string;
+            samlNameID?: string;
           }) => void;
 
           get: ({
@@ -148,6 +151,7 @@ export type ApplicationAuthentication = {
                 userId: number;
                 samlIdentifier?: string;
                 samlSessionIndex?: string;
+                samlNameID?: string;
               }
             | undefined;
 
@@ -266,6 +270,7 @@ export default async (application: Application): Promise<void> => {
       userId,
       samlIdentifier = undefined,
       samlSessionIndex = undefined,
+      samlNameID = undefined,
     }) => {
       const session = application.database.get<{
         token: string;
@@ -279,14 +284,16 @@ export default async (application: Application): Promise<void> => {
                   "token",
                   "user",
                   "samlIdentifier",
-                  "samlSessionIndex"
+                  "samlSessionIndex",
+                  "samlNameID"
                 )
                 VALUES (
                   ${new Date().toISOString()},
                   ${cryptoRandomString({ length: 100, type: "alphanumeric" })},
                   ${userId},
                   ${samlIdentifier},
-                  ${samlSessionIndex}
+                  ${samlSessionIndex},
+                  ${samlNameID}
                 )
               `
             ).lastInsertRowid
@@ -309,13 +316,15 @@ export default async (application: Application): Promise<void> => {
         userId: number;
         samlIdentifier: string | null;
         samlSessionIndex: string | null;
+        samlNameID: string | null;
       }>(
         sql`
           SELECT
             "createdAt",
             "user" AS "userId",
             "samlIdentifier",
-            "samlSessionIndex"
+            "samlSessionIndex",
+            "samlNameID"
           FROM "sessions"
           WHERE "token" = ${request.cookies["__Host-Session"]}
         `
@@ -340,6 +349,7 @@ export default async (application: Application): Promise<void> => {
           userId: session.userId,
           samlIdentifier: session.samlIdentifier ?? undefined,
           samlSessionIndex: session.samlSessionIndex ?? undefined,
+          samlNameID: session.samlNameID ?? undefined,
         });
       }
 
@@ -347,6 +357,7 @@ export default async (application: Application): Promise<void> => {
         userId: session.userId,
         samlIdentifier: session.samlIdentifier ?? undefined,
         samlSessionIndex: session.samlSessionIndex ?? undefined,
+        samlNameID: session.samlNameID ?? undefined,
       };
     },
 
@@ -382,6 +393,7 @@ export default async (application: Application): Promise<void> => {
         userId,
         samlIdentifier: session?.samlIdentifier,
         samlSessionIndex: session?.samlSessionIndex,
+        samlNameID: session?.samlNameID,
       });
     },
   };
@@ -2321,15 +2333,20 @@ export default async (application: Application): Promise<void> => {
         if (response.locals.user.email === samlResponseAttributes.email) {
           if (
             typeof samlResponse?.profile?.sessionIndex === "string" &&
-            samlResponse.profile.sessionIndex.trim() !== ""
+            samlResponse.profile.sessionIndex.trim() !== "" &&
+            typeof samlResponse?.profile?.nameID === "string" &&
+            samlResponse.profile.nameID.trim() !== ""
           )
             application.database.run(
               sql`
                 UPDATE "sessions"
-                SET "samlSessionIndex" = ${samlResponse.profile.sessionIndex}
+                SET
+                  "samlSessionIndex" = ${samlResponse.profile.sessionIndex},
+                  "samlNameID" = ${samlResponse.profile.nameID}
                 WHERE
                   "samlIdentifier" = ${response.locals.session.samlIdentifier} AND
-                  "samlSessionIndex" = ${response.locals.session.samlSessionIndex}
+                  "samlSessionIndex" = ${response.locals.session.samlSessionIndex} AND
+                  "samlNameID" = ${response.locals.session.samlNameID}
               `
             );
 
@@ -2370,6 +2387,8 @@ export default async (application: Application): Promise<void> => {
         samlResponse === undefined ||
         typeof samlResponse?.profile?.sessionIndex !== "string" ||
         samlResponse.profile.sessionIndex.trim() === "" ||
+        typeof samlResponse?.profile?.nameID !== "string" ||
+        samlResponse.profile.nameID.trim() === "" ||
         typeof samlResponseAttributes.email !== "string" ||
         samlResponseAttributes.email.trim() === "" ||
         typeof samlResponseAttributes.name !== "string" ||
@@ -2746,6 +2765,7 @@ export default async (application: Application): Promise<void> => {
         userId: user.id,
         samlIdentifier: response.locals.saml.samlIdentifier,
         samlSessionIndex: samlResponse.profile.sessionIndex,
+        samlNameID: samlResponse.profile.nameID,
       });
 
       response.redirect(
@@ -2773,7 +2793,8 @@ export default async (application: Application): Promise<void> => {
         response.locals.saml === undefined ||
         response.locals.user === undefined ||
         response.locals.session.samlIdentifier !==
-          response.locals.saml.samlIdentifier
+          response.locals.saml.samlIdentifier ||
+        typeof response.locals.session.samlNameID !== "string"
       )
         return next();
 
@@ -2786,7 +2807,7 @@ export default async (application: Application): Promise<void> => {
               sessionIndex: response.locals.session.samlSessionIndex,
               nameIDFormat:
                 "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress",
-              nameID: response.locals.user.email,
+              nameID: response.locals.session.samlNameID,
             },
             "",
             {}
@@ -2826,8 +2847,7 @@ export default async (application: Application): Promise<void> => {
             response.locals.saml.samlIdentifier ||
           response.locals.session.samlSessionIndex !==
             samlRequest.profile.sessionIndex ||
-          typeof samlRequest.profile?.nameID !== "string" ||
-          samlRequest.profile.nameID !== response.locals.user.email ||
+          response.locals.session.samlNameID !== samlRequest.profile.nameID ||
           samlRequest.loggedOut !== true
         )
           return response.redirect(
@@ -3010,7 +3030,7 @@ export default async (application: Application): Promise<void> => {
           samlResponse.profile.sessionIndex !==
             response.locals.session.samlSessionIndex) ||
         (typeof samlResponse.profile?.nameID === "string" &&
-          samlResponse.profile.nameID !== response.locals.user.email)
+          samlResponse.profile.nameID !== response.locals.session.samlNameID)
       )
         return response.status(422).send(
           application.web.locals.layouts.box({

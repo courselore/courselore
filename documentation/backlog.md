@@ -5,11 +5,6 @@
 **SAML**
 
 - Issue: Hopkins’s NameID isn’t an actual inbox: Ignore the NameID and just get the email
-  - Use
-    - Store `nameID`
-      - `/logout-request`
-      - `/single-logout-service`
-  - Test
   - Deploy
   - Test
 - Changelog: Minor.
