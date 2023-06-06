@@ -7,6 +7,7 @@
 - Infrastructure
   - Add support for other `nameIDFormat`s
     - Store in `users` table: `samlIdentifier`, `nameIDFormat`, and `nameID`
+    - Double-check whether we need something at the `sessions` table.
     - Dealing with transient `nameID`s is tricky
   - Add support for `emailAdress`es that doesn’t follow our more strict rules for email address format
 
