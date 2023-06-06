@@ -10,6 +10,34 @@
     - Store in `users` table: `samlIdentifier`, `nameIDFormat`, and `nameID`
     - Dealing with transient `nameID`s is tricky
   - Add support for `emailAdress`es that doesn’t follow our more strict rules for email address format
+
+---
+
+- UI on the upper left
+- LTI by fall
+- Feature branches
+  - `poll`
+    - Exam period
+    - Files
+      - `authentication.ts`
+      - `content.ts`
+      - `conversation.ts`
+      - `course.ts`
+      - `database.ts`
+      - `index.ts`
+      - `layouts.ts`
+      - `message.ts`
+      - `user.ts`
+  - `app-mobile`
+- Email notification digests
+- Conversation drafts
+- Pagination
+
+## Authentication
+
+**SAML**
+
+- Infrastructure
   - Add support for `HTTP-POST` in addition to `HTTP-Redirect`
   - Single logout back channel (synchronous) (SOAP) (server-to-server from identity provider to service provider)
 - Interface
@@ -45,28 +73,6 @@
 - Allow people to disconnect the SAML identity from their account? (As long as they have a password?)
 - Have a way for system administrators to turn off sign in via email and password
 - Introduce a way for system administrators to clear all sessions for when they need to remove a SAML identity provider
-
----
-
-- UI on the upper left
-- LTI by fall
-- Feature branches
-  - `poll`
-    - Exam period
-    - Files
-      - `authentication.ts`
-      - `content.ts`
-      - `conversation.ts`
-      - `course.ts`
-      - `database.ts`
-      - `index.ts`
-      - `layouts.ts`
-      - `message.ts`
-      - `user.ts`
-  - `app-mobile`
-- Email notification digests
-- Conversation drafts
-- Pagination
 
 ## Users
 
