@@ -4,12 +4,13 @@
 
 **SAML**
 
-- Infrastructure
-  - Add support for other `nameIDFormat`s
-    - Store in `users` table: `samlIdentifier`, `nameIDFormat`, and `nameID`
-    - Double-check whether we need something at the `sessions` table.
-    - Dealing with transient `nameID`s is tricky
-  - Add support for `emailAdress`es that doesn’t follow our more strict rules for email address format
+- Issue: Hopkins’s NameID isn’t an actual inbox: Ignore the NameID and just get the email
+  - Introduce a configuration field for extracting email address
+    - Document
+    - Use
+    - Test
+    - Deploy
+    - Test
 
 ---
 
@@ -40,6 +41,14 @@
 - Infrastructure
   - Add support for `HTTP-POST` in addition to `HTTP-Redirect`
   - Single logout back channel (synchronous) (SOAP) (server-to-server from identity provider to service provider)
+- NameID
+  - Right now we have sort of a hack to allow for NameIDs which are emails that don’t have inboxes associated with them: we look at another attribute for the email and ignore the NameID. Strictly speaking, people could change these addresses and impersonate one another. In practice, this isn’t a big deal: They’d be able to impersonate one another anyway using the “Forgot Your Password?” feature. In any case, it’d be more principled to use the NameID and store it separate from the email address in which you receive email.
+  - Add support for other `nameIDFormat`s
+    - Store in `users` table: `samlIdentifier`, `nameIDFormat`, and `nameID`
+    - Double-check whether we need something at the `sessions` table.
+    - Dealing with transient `nameID`s is tricky
+    - Review code in `authentication.mts`
+  - Add support for `emailAdress`es that doesn’t follow our more strict rules for email address format
 - Interface
   - When there are many universities, add a filter to the user interface, similar to Gradescope has, and similar to what we do in the list of course participants.
   - Long SAML identity provider name may break the interface (use ellipsis to fix it?)
