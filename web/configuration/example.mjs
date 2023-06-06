@@ -75,9 +75,12 @@ export default {
   //     // For example, for the ‘educational-institution.edu’ domain, Courselore trusts this educational institution with ‘scott@educational-institution.edu’ and ‘leandro@alumni.educational-institution.edu’.
   //     domains: ["educational-institution.edu"],
 
-  //     // A function that, given a SAML response from the educational institution, produces a user name for sign up.
+  //     // Functions that, given a SAML response from the educational institution, produce the user attributes for sign up and sign in.
   //     // See https://github.com/node-saml/node-saml/blob/e85389560a36b624ad5d399ee85e1c8a3b8adbea/src/saml.ts#L669 and https://github.com/node-saml/node-saml/blob/e85389560a36b624ad5d399ee85e1c8a3b8adbea/src/types.ts#L236-L251
-  //     extractName: (samlResponse) => samlResponse?.profile?.attributes?.name,
+  //     attributes: {
+  //       email: (samlResponse) => samlResponse?.profile?.nameID,
+  //       name: (samlResponse) => samlResponse?.profile?.attributes?.name,
+  //     },
 
   //     // Options for Node SAML.
   //     // See https://github.com/node-saml/node-saml

@@ -5,12 +5,14 @@
 **SAML**
 
 - Issue: Hopkins’s NameID isn’t an actual inbox: Ignore the NameID and just get the email
-  - Introduce a configuration field for extracting email address
-    - Document
+  - Introduce a configuration field for extracting email address (similar to the one for name)
     - Use
     - Test
     - Deploy
     - Test
+  - Changelog: Minor.
+    - `features` → `public: false,`
+    - `extractName` → `attributes`
 
 ---
 

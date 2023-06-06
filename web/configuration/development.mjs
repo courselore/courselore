@@ -33,7 +33,10 @@ export default {
           }
         : {}),
       domains: ["courselore.org"],
-      extractName: (samlResponse) => samlResponse?.profile?.attributes?.name,
+      attributes: {
+        email: (samlResponse) => samlResponse?.profile?.nameID,
+        name: (samlResponse) => samlResponse?.profile?.attributes?.name,
+      },
       options: {
         idpIssuer: "http://localhost:9000/metadata",
         entryPoint: "http://localhost:9000/saml/sso",
