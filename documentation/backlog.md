@@ -7,6 +7,7 @@
 - Issue: Hopkins’s NameID isn’t an actual inbox: Ignore the NameID and just get the email
   - Introduce a configuration field for extracting email address (similar to the one for name)
     - Use
+      - `nameID`
     - Test
     - Deploy
     - Test
@@ -70,7 +71,7 @@
     - Reuse the existing sign-up route, or create a new one?
   - Make invitation name & email work as well?
   - Grab avatar from SAML assertions.
-  - Document in `example.mjs` that `extractName` is optional.
+  - Document in `example.mjs` that `attributes` is optional.
 - Changing user information on SAML sign in
   - Passwords
     - Allow user to create a password after the fact

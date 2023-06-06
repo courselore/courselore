@@ -2304,6 +2304,8 @@ export default async (application: Application): Promise<void> => {
       const samlResponse = await response.locals.saml.saml
         .validatePostResponseAsync(request.body)
         .catch(() => undefined);
+      const samlResponseEmail =
+        response.locals.saml.attributes.email(samlResponse);
 
       if (response.locals.saml.public === false)
         response.locals.log(
@@ -2315,9 +2317,9 @@ export default async (application: Application): Promise<void> => {
         response.locals.user !== undefined &&
         response.locals.session !== undefined
       ) {
-        if (response.locals.user.email === samlResponse?.profile?.nameID) {
+        if (response.locals.user.email === samlResponseEmail) {
           if (
-            typeof samlResponse.profile.sessionIndex === "string" &&
+            typeof samlResponse?.profile?.sessionIndex === "string" &&
             samlResponse.profile.sessionIndex.trim() !== ""
           )
             application.database.run(
@@ -2368,8 +2370,8 @@ export default async (application: Application): Promise<void> => {
         samlResponse.profile === null ||
         typeof samlResponse.profile.sessionIndex !== "string" ||
         samlResponse.profile.sessionIndex.trim() === "" ||
-        typeof samlResponse.profile.nameID !== "string" ||
-        samlResponse.profile.nameID.trim() === "" ||
+        typeof samlResponseEmail !== "string" ||
+        samlResponseEmail.trim() === "" ||
         samlResponse.loggedOut
       )
         return response.status(422).send(
@@ -2459,87 +2461,8 @@ export default async (application: Application): Promise<void> => {
         );
 
       if (
-        samlResponse.profile.nameIDFormat !==
-        "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress"
-      )
-        return response.status(422).send(
-          application.web.locals.layouts.box({
-            request,
-            response,
-            head: html`
-              <title>${response.locals.saml.name} · Sign In · Courselore</title>
-            `,
-            body: html`
-              <h2 class="heading">
-                <i class="bi bi-box-arrow-in-right"></i>
-                Sign In ·
-                <i class="bi bi-bank"></i>
-                ${response.locals.saml.name}
-              </h2>
-
-              <p>
-                The <code class="code">nameIDFormat</code> in the information
-                that Courselore received from ${response.locals.saml.name} is
-                <code class="code">${samlResponse.profile.nameIDFormat}</code>
-                and currently Courselore only supports
-                <code class="code"
-                  >urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress</code
-                >.
-              </p>
-
-              <p>
-                Please contact the Courselore development team at
-                <a
-                  href="mailto:development@courselore.org"
-                  target="_blank"
-                  class="link"
-                  >development@courselore.org</a
-                >
-                and manifest your interest in adding support for other
-                <code class="code">nameIDFormat</code>s.
-              </p>
-
-              <p>
-                For the time being, please
-                <a
-                  href="https://${application.configuration
-                    .hostname}/sign-in${qs.stringify(
-                    {
-                      redirect:
-                        typeof request.body.RelayState === "string"
-                          ? request.body.RelayState
-                          : undefined,
-                    },
-                    { addQueryPrefix: true }
-                  )}"
-                  class="link"
-                  >sign in</a
-                >
-                or
-                <a
-                  href="https://${application.configuration
-                    .hostname}/sign-up${qs.stringify(
-                    {
-                      redirect:
-                        typeof request.body.RelayState === "string"
-                          ? request.body.RelayState
-                          : undefined,
-                    },
-                    { addQueryPrefix: true }
-                  )}"
-                  class="link"
-                  >sign up</a
-                >
-                to Courselore using email and password.
-              </p>
-            `,
-          })
-        );
-
-      if (
-        samlResponse.profile.nameID.match(
-          application.web.locals.helpers.emailRegExp
-        ) === null
+        samlResponseEmail.match(application.web.locals.helpers.emailRegExp) ===
+        null
       )
         return response.status(422).send(
           application.web.locals.layouts.box({
@@ -2614,8 +2537,8 @@ export default async (application: Application): Promise<void> => {
       if (
         !response.locals.saml.domains.some(
           (domain) =>
-            samlResponse.profile!.nameID.endsWith(`@${domain}`) ||
-            samlResponse.profile!.nameID.endsWith(`.${domain}`)
+            samlResponseEmail.endsWith(`@${domain}`) ||
+            samlResponseEmail.endsWith(`.${domain}`)
         )
       )
         return response.status(422).send(
@@ -2687,11 +2610,11 @@ export default async (application: Application): Promise<void> => {
         );
 
       let user = application.database.get<{ id: number; email: string }>(
-        sql`SELECT "id", "email" FROM "users" WHERE "email" = ${samlResponse.profile.nameID}`
+        sql`SELECT "id", "email" FROM "users" WHERE "email" = ${samlResponseEmail}`
       );
 
       if (user === undefined) {
-        const userName = response.locals.saml.extractName?.(samlResponse);
+        const userName = response.locals.saml.attributes.name(samlResponse);
         if (typeof userName !== "string" || userName.trim() === "")
           return response.send(
             application.web.locals.layouts.box({
