@@ -4,10 +4,6 @@
 
 **SAML**
 
-- Perhaps there should be a per-identity-provider option of show/hide in the user interface to help you deploy a new identity provider and test it out before users see it.
-  - Test `public: false`
-    - Visibility
-    - Logging
 - Infrastructure
   - Add support for other `nameIDFormat`s
     - Store in `users` table: `samlIdentifier`, `nameIDFormat`, and `nameID`
