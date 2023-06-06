@@ -1516,13 +1516,12 @@ export default async (application: Application): Promise<void> => {
 
                 blockquote {
                   padding-left: var(--space--4);
-                  color: var(--color--zinc--500);
                   border-left: var(--border-width--4) solid
                     var(--color--zinc--300);
                   @media (prefers-color-scheme: dark) {
-                    color: var(--color--zinc--400);
                     border-color: var(--color--zinc--600);
                   }
+                  opacity: var(--opacity--75);
                 }
 
                 table {

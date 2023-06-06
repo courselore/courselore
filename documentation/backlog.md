@@ -2,8 +2,6 @@
 
 ## Work in Progress
 
-**Name Changes**
-
 - SAML changes for Hopkins
 - UI on the upper left
 - LTI by fall
@@ -811,6 +809,7 @@ const { app, BrowserWindow } = require("electron");
 
 ## User Interface
 
+- Allow for forcing light or dark mode: https://courselore.org/courses/8537410611/conversations/74
 - Forms:
   - Use `maxlength`.
   - Keep the buttons disabled while the form isn’t in a valid state.
@@ -958,6 +957,7 @@ const { app, BrowserWindow } = require("electron");
 ## Infrastructure
 
 - A tab left open in Firefox for a long time seems to slow down the computer
+  - https://courselore.org/courses/8537410611/conversations/75
 - `partialParentElement` → `this.onbeforemorph = (event) => !event?.detail?.liveUpdate;`?
 - Should `morph()` call `execute()`?
   - Improve `execute()`’s default `elements` to take `event` Live-Updates in account
