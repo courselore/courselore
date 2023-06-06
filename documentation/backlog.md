@@ -7,9 +7,6 @@
 - Issue: Hopkins’s NameID isn’t an actual inbox: Ignore the NameID and just get the email
   - Deploy
   - Test
-- Changelog: Minor.
-  - `features` → `public: false,`
-  - `extractName` → `attributes`
 
 ---
 

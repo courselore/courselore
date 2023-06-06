@@ -12,6 +12,10 @@
 
 ## Unreleased
 
+- Changed the configuration for SAML. Please refer to https://github.com/courselore/courselore/blob/248863d9d069c890522219c6e6de01a60b9fa937/web/configuration/example.mjs for details. In particular:
+  - The feature flag under `features` that hid all identity providers from the users has been replaced with the `public: false` attribute on a per-identity provider basis.
+  - The `extractName` function has been replaced with the `attributes`, which also needs to provide an email address.
+
 ## 6.1.3
 
 **2023-06-05 · [Download](https://github.com/courselore/courselore/releases/tag/v6.1.3) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
