@@ -17,9 +17,6 @@ export default {
     },
   },
   administratorEmail: "development@courselore.org",
-  features: {
-    saml: true,
-  },
   staticPaths: [
     url.fileURLToPath(new URL("./development--static/", import.meta.url)),
   ],
