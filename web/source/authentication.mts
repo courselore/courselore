@@ -2304,8 +2304,8 @@ export default async (application: Application): Promise<void> => {
       const samlResponse = await response.locals.saml.saml
         .validatePostResponseAsync(request.body)
         .catch(() => undefined);
-      const samlResponseEmail =
-        response.locals.saml.attributes.email(samlResponse);
+      const samlResponseAttributes =
+        response.locals.saml.attributes(samlResponse);
 
       if (response.locals.saml.public === false)
         response.locals.log(
@@ -2317,7 +2317,7 @@ export default async (application: Application): Promise<void> => {
         response.locals.user !== undefined &&
         response.locals.session !== undefined
       ) {
-        if (response.locals.user.email === samlResponseEmail) {
+        if (response.locals.user.email === samlResponseAttributes.email) {
           if (
             typeof samlResponse?.profile?.sessionIndex === "string" &&
             samlResponse.profile.sessionIndex.trim() !== ""
@@ -2367,11 +2367,12 @@ export default async (application: Application): Promise<void> => {
 
       if (
         samlResponse === undefined ||
-        samlResponse.profile === null ||
-        typeof samlResponse.profile.sessionIndex !== "string" ||
+        typeof samlResponse?.profile?.sessionIndex !== "string" ||
         samlResponse.profile.sessionIndex.trim() === "" ||
-        typeof samlResponseEmail !== "string" ||
-        samlResponseEmail.trim() === "" ||
+        typeof samlResponseAttributes.email !== "string" ||
+        samlResponseAttributes.email.trim() === "" ||
+        typeof samlResponseAttributes.name !== "string" ||
+        samlResponseAttributes.name.trim() === "" ||
         samlResponse.loggedOut
       )
         return response.status(422).send(
@@ -2461,8 +2462,9 @@ export default async (application: Application): Promise<void> => {
         );
 
       if (
-        samlResponseEmail.match(application.web.locals.helpers.emailRegExp) ===
-        null
+        samlResponseAttributes.email.match(
+          application.web.locals.helpers.emailRegExp
+        ) === null
       )
         return response.status(422).send(
           application.web.locals.layouts.box({
@@ -2537,8 +2539,8 @@ export default async (application: Application): Promise<void> => {
       if (
         !response.locals.saml.domains.some(
           (domain) =>
-            samlResponseEmail.endsWith(`@${domain}`) ||
-            samlResponseEmail.endsWith(`.${domain}`)
+            samlResponseAttributes.email!.endsWith(`@${domain}`) ||
+            samlResponseAttributes.email!.endsWith(`.${domain}`)
         )
       )
         return response.status(422).send(
@@ -2610,69 +2612,10 @@ export default async (application: Application): Promise<void> => {
         );
 
       let user = application.database.get<{ id: number; email: string }>(
-        sql`SELECT "id", "email" FROM "users" WHERE "email" = ${samlResponseEmail}`
+        sql`SELECT "id", "email" FROM "users" WHERE "email" = ${samlResponseAttributes.email}`
       );
 
       if (user === undefined) {
-        const userName = response.locals.saml.attributes.name(samlResponse);
-        if (typeof userName !== "string" || userName.trim() === "")
-          return response.send(
-            application.web.locals.layouts.box({
-              request,
-              response,
-              head: html`
-                <title>
-                  ${response.locals.saml.name} · Sign Up · Courselore ·
-                  Communication Platform for Education
-                </title>
-              `,
-              body: html`
-                <h2 class="heading">
-                  <i class="bi bi-person-plus"></i>
-                  Sign Up ·
-                  <i class="bi bi-bank"></i>
-                  ${response.locals.saml.name}
-                </h2>
-
-                <p>
-                  The information Courselore received from
-                  ${response.locals.saml.name} doesn’t include your name.
-                </p>
-
-                <p>
-                  Please contact the Courselore development team at
-                  <a
-                    href="mailto:development@courselore.org"
-                    target="_blank"
-                    class="link"
-                    >development@courselore.org</a
-                  >
-                  and manifest your interest in adding support for signing up
-                  under these conditions.
-                </p>
-
-                <p>
-                  For the time being, you may also
-                  <a
-                    href="https://${application.configuration
-                      .hostname}/sign-up${qs.stringify(
-                      {
-                        redirect:
-                          typeof request.body.RelayState === "string"
-                            ? request.body.RelayState
-                            : undefined,
-                      },
-                      { addQueryPrefix: true }
-                    )}"
-                    class="link"
-                    >sign up</a
-                  >
-                  to Courselore using email and password.
-                </p>
-              `,
-            })
-          );
-
         user = application.database.get<{ id: number; email: string }>(
           sql`
             SELECT * FROM "users" WHERE "id" = ${
@@ -2700,11 +2643,11 @@ export default async (application: Application): Promise<void> => {
                     ${new Date().toISOString()},
                     ${new Date().toISOString()},
                     ${cryptoRandomString({ length: 20, type: "numeric" })},
-                    ${samlResponse.profile.nameID},
+                    ${samlResponseAttributes.email},
                     ${null},
                     ${new Date().toISOString()},
-                    ${userName},
-                    ${html`${userName}`},
+                    ${samlResponseAttributes.name},
+                    ${html`${samlResponseAttributes.name}`},
                     ${lodash.sample(
                       application.web.locals.helpers
                         .userAvatarlessBackgroundColors

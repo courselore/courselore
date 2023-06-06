@@ -70,9 +70,9 @@ export type Application = {
           width: number;
         };
         domains: string[];
-        attributes: {
-          email: (samlResponse: object | undefined) => string | undefined;
-          name: (samlResponse: object | undefined) => string | undefined;
+        attributes: (samlResponse: object | undefined) => {
+          email: string | undefined;
+          name: string | undefined;
         };
         options: ConstructorParameters<typeof saml.SAML>[0] & {
           decryptionCert?: string;

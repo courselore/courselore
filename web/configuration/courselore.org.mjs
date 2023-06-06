@@ -35,13 +35,12 @@ export default {
         width: 300,
       },
       domains: ["jhu.edu", "jh.edu", "jhmi.edu"],
-      attributes: {
-        email: (samlResponse) => samlResponse?.profile?.attributes?.Email,
-        name: (samlResponse) =>
-          `${samlResponse?.profile?.attributes?.FirstName ?? ""} ${
-            samlResponse?.profile?.attributes?.LastName ?? ""
-          }`,
-      },
+      attributes: (samlResponse) => ({
+        email: samlResponse?.profile?.attributes?.Email,
+        name: `${samlResponse?.profile?.attributes?.FirstName ?? ""} ${
+          samlResponse?.profile?.attributes?.LastName ?? ""
+        }`,
+      }),
       options: {
         idpIssuer: "https://idp.jh.edu/idp/shibboleth",
         entryPoint: "https://idp.jh.edu/idp/profile/SAML2/Redirect/SSO",
