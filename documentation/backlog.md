@@ -2,29 +2,6 @@
 
 ## Work in Progress
 
-- SAML changes for Hopkins
-- UI on the upper left
-- LTI by fall
-- Feature branches
-  - `poll`
-    - Exam period
-    - Files
-      - `authentication.ts`
-      - `content.ts`
-      - `conversation.ts`
-      - `course.ts`
-      - `database.ts`
-      - `index.ts`
-      - `layouts.ts`
-      - `message.ts`
-      - `user.ts`
-  - `app-mobile`
-- Email notification digests
-- Conversation drafts
-- Pagination
-
-## Authentication
-
 **SAML**
 
 - Perhaps there should be a per-identity-provider option of show/hide in the user interface to help you deploy a new identity provider and test it out before users see it.
@@ -68,6 +45,28 @@
 - Allow people to disconnect the SAML identity from their account? (As long as they have a password?)
 - Have a way for system administrators to turn off sign in via email and password
 - Introduce a way for system administrators to clear all sessions for when they need to remove a SAML identity provider
+
+---
+
+- UI on the upper left
+- LTI by fall
+- Feature branches
+  - `poll`
+    - Exam period
+    - Files
+      - `authentication.ts`
+      - `content.ts`
+      - `conversation.ts`
+      - `course.ts`
+      - `database.ts`
+      - `index.ts`
+      - `layouts.ts`
+      - `message.ts`
+      - `user.ts`
+  - `app-mobile`
+- Email notification digests
+- Conversation drafts
+- Pagination
 
 ## Users
 
