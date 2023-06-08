@@ -1135,7 +1135,9 @@ const { app, BrowserWindow } = require("electron");
   - But only start charging when we have a thousand users.
 - Homepage:
   - Better printscreens without `lorem ipsum`.
-  - Example of design that we like: https://capacitorjs.com
+  - Example of designs that we like:
+    - https://capacitorjs.com
+    - https://circle.so
   - At some point hire a designer to make it shinier
   - Comparison chart: Courselore, Piazza, Campuswire, edstem, and so forth.
     - Make sure to mention that we’re open-source.
