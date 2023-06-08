@@ -2,16 +2,49 @@
 
 ## Work in Progress
 
-**SAML**
+**Learning Tools Interoperability (LTI)**
 
-- Issue: Hopkins’s NameID isn’t an actual inbox: Ignore the NameID and just get the email
-  - Deploy
-  - Test
+- Notes
+  - We want to use version 1.3
+    - It’s newer than version 2.0 🤦‍♂️
+  - Based on
+    - OAuth2
+      - Authenticating services
+    - JWT
+      - Secure message signing
+    - OpenID Connect Core
+      - An identity layer, from OpenID Foundation, on top of OAuth 2.0
+  - Test with mock Tool Consumers
+    - Courselore embedded in the LMS
+    - https://lti-ri.imsglobal.org
+  - Glossary
+    - Tool Consumer: The LMS, for example, Canvas.
+    - Tool Provider: Courselore
+  - Certification testing:
+    - https://www.imsglobal.org/lti-advantage-certification-suite
+    - https://site.imsglobal.org/certifications
+  - OneRoster
+- Purposes of LTI:
+  - Identity management (for example, correlate a student in Courselore with a student in Blackboard).
+    - Automatically remove from the course the people who dropped.
+- Or perhaps not—do something more lightweight if LTI is too bureaucratic.
+- References
+  - Information
+    - https://en.wikipedia.org/wiki/Learning_Tools_Interoperability
+    - https://www.imsglobal.org/lti-adoption-roadmap
+    - https://www.imsglobal.org/1edtech-security-framework
+    - https://elearningindustry.com/learning-tool-interoperability-part-elearning-application
+    - http://www.dr-chuck.com/csev-blog/2012/03/connecting-ims-learning-tools-interoperability-and-saml/
+    - https://www.edu-apps.org/code.html
+  - Existing services
+    - https://piazza.com/product/lti
+    - https://docs.moodle.org/402/en/LTI_and_Moodle
+    - https://mlm.pearson.com/global/educators/support/lms-integration-services/index.html
+  - https://courselore.org/courses/8537410611/conversations/79
 
----
+**Other**
 
 - UI on the upper left
-- LTI by fall
 - Feature branches
   - `poll`
     - Exam period
@@ -788,15 +821,8 @@ const { app, BrowserWindow } = require("electron");
   - Though we won’t necessarily be going to those areas right away.
   - Integration is part of our short-term strategy.
 - To build extensions, for example, ask a question from within the text editor.
-- Integrate with other platforms, for example, LMSs.
-  - Learning Tools Interoperability (LTI).
-    - Or perhaps not—do something more lightweight if LTI is too bureaucratic.
-    - Purposes of LTI:
-      - Identity management (for example, correlate a student in Courselore with a student in Blackboard).
-        - Automatically remove from the course the people who dropped.
-      - Submitting grades (for example, if discussing a topic in Courselore is part of an assignment, add that grade to the gradebook in Blackboard).
-      - https://piazza.com/product/lti
-      - https://www.edu-apps.org/code.html
+- LTI
+  - Submitting grades (for example, if discussing a topic in Courselore is part of an assignment, add that grade to the gradebook in Blackboard).
 
 ## Export
 
