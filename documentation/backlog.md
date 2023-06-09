@@ -2,6 +2,19 @@
 
 ## Work in Progress
 
+- SAML
+
+```
+openssl req -x509 -newkey rsa:2048 -nodes -days 365000 -subj "/" -keyout educational-institution--saml--service-provider--signing.key -out educational-institution--saml--service-provider--signing.crt
+openssl req -x509 -newkey rsa:2048 -nodes -days 365000 -subj "/" -keyout educational-institution--saml--service-provider--encryption.key -out educational-institution--saml--service-provider--encryption.crt
+
+
+'/C=US/ST=California/L=San Francisco/O=JankyCo/CN=Test Identity Provider'
+
+Issuer
+Subject
+```
+
 **Learning Tools Interoperability (LTI)**
 
 - https://events.educause.edu/annual-conference
