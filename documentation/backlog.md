@@ -4,6 +4,7 @@
 
 **Learning Tools Interoperability (LTI)**
 
+- https://events.educause.edu/annual-conference
 - Notes
   - We want to use version 1.3
     - It’s newer than version 2.0 🤦‍♂️
