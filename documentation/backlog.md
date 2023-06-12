@@ -42,14 +42,22 @@ Subject
   - Identity management (for example, correlate a student in Courselore with a student in Blackboard).
     - Automatically remove from the course the people who dropped.
 - Or perhaps not—do something more lightweight if LTI is too bureaucratic.
+- Perhaps replace our own authentication with OAuth?
+  - And what about our future API?
 - References
   - Information
     - https://en.wikipedia.org/wiki/Learning_Tools_Interoperability
+    - https://www.imsglobal.org/activity/learning-tools-interoperability
+    - https://www.imsglobal.org/lti-advantage-overview
     - https://www.imsglobal.org/lti-adoption-roadmap
     - https://www.imsglobal.org/1edtech-security-framework
+    - https://www.imsglobal.org/spec/lti/v1p3/
     - https://elearningindustry.com/learning-tool-interoperability-part-elearning-application
     - http://www.dr-chuck.com/csev-blog/2012/03/connecting-ims-learning-tools-interoperability-and-saml/
     - https://www.edu-apps.org/code.html
+    - https://canvas.instructure.com/courses/785215/pages/introduction-to-lti-apps?module_item_id=4761747
+    - https://oauth.net
+    - https://fusionauth.io/articles/oauth/modern-guide-to-oauth
   - Existing services
     - https://piazza.com/product/lti
     - https://docs.moodle.org/402/en/LTI_and_Moodle
