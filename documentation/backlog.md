@@ -58,11 +58,18 @@ Subject
     - https://canvas.instructure.com/courses/785215/pages/introduction-to-lti-apps?module_item_id=4761747
     - https://oauth.net
     - https://fusionauth.io/articles/oauth/modern-guide-to-oauth
+    - https://drops.dagstuhl.de/opus/volltexte/2022/16616/pdf/OASIcs-ICPEC-2022-12.pdf
   - Implementations
     - https://cvmcosta.me/ltijs/
       - https://github.com/Cvmcosta/ltijs-demo-server
       - https://github.com/Cvmcosta/ltijs-demo-client
     - https://github.com/blackboard/BBDN-LTI-Tool-Provider-Node
+    - https://github.com/SanDiegoCodeSchool/lti-node-example
+  - LMSs to test with
+    - https://github.com/instructure/canvas-lms
+    - https://github.com/moodle/moodle
+    - https://github.com/sakaiproject/sakai
+    - https://demo.moodle.net
   - Existing services
     - https://piazza.com/product/lti
     - https://docs.moodle.org/402/en/LTI_and_Moodle
@@ -799,6 +806,7 @@ const { app, BrowserWindow } = require("electron");
   - Have a way to sign in to multiple Courselore instances
 - Have registry of Courselore instances. For example, in a phone application we could show a list of existing instances. (You could always not list yourself in the registry and enter the URL for your instance manually on the phone application.)
   - Perhaps this would be paid, to support our work of verifying the validity of the instance
+  - That’s what Moodle does: https://moodle.com/solutions/moodle-app/
 
 ## Administrative Interface
 
