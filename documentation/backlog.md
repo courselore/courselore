@@ -40,7 +40,7 @@ Subject
   - OneRoster
 - Purposes of LTI:
   - Identity management (for example, correlate a student in Courselore with a student in Blackboard).
-    - Automatically remove from the course the people who dropped.
+    - Automatically remove from the course the people who dropped? Or perhaps quarantine them, because we can’t trust the registrar 100%.
 - Or perhaps not—do something more lightweight if LTI is too bureaucratic.
 - Perhaps replace our own authentication with OAuth?
   - And what about our future API?
@@ -58,6 +58,11 @@ Subject
     - https://canvas.instructure.com/courses/785215/pages/introduction-to-lti-apps?module_item_id=4761747
     - https://oauth.net
     - https://fusionauth.io/articles/oauth/modern-guide-to-oauth
+  - Implementations
+    - https://cvmcosta.me/ltijs/
+      - https://github.com/Cvmcosta/ltijs-demo-server
+      - https://github.com/Cvmcosta/ltijs-demo-client
+    - https://github.com/blackboard/BBDN-LTI-Tool-Provider-Node
   - Existing services
     - https://piazza.com/product/lti
     - https://docs.moodle.org/402/en/LTI_and_Moodle
