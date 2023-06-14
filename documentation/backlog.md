@@ -18,6 +18,24 @@ Subject
 **Learning Tools Interoperability (LTI)**
 
 - https://events.educause.edu/annual-conference
+- Try to connect Piazza & Moodle
+  - https://support.piazza.com/support/solutions/articles/48001065448-configure-piazza-within-moodle
+  - https://demo.moodle.net
+- Read
+  - https://www.imsglobal.org/spec/lti/v1p3/
+  - https://www.imsglobal.org/oneroster-v11-final-specification
+  - https://github.com/sakaiproject/sakai
+- Standards to look into
+  - IMS LTI Names and Role Provisioning
+  - OneRoster
+- Questions
+  - Quarantine people who dropped, because we can’t trust the registrar 100%?
+  - Are we integrating with SIS, or with Canvas (the former, I think)
+  - Integration at course level, or at installation level?
+    - Automatic course creation?
+  - Courselore embedded in the LMS?
+  - Certification?
+  - Now that the `password` column is optional in the `users` table in the database, perhaps we could create users and course participants when you “create invitation via email?”
 - Notes
   - We want to use version 1.3
     - It’s newer than version 2.0 🤦‍♂️
@@ -28,19 +46,12 @@ Subject
       - Secure message signing
     - OpenID Connect Core
       - An identity layer, from OpenID Foundation, on top of OAuth 2.0
-  - Test with mock Tool Consumers
-    - Courselore embedded in the LMS
-    - https://lti-ri.imsglobal.org
   - Glossary
     - Tool Consumer: The LMS, for example, Canvas.
     - Tool Provider: Courselore
   - Certification testing:
     - https://www.imsglobal.org/lti-advantage-certification-suite
     - https://site.imsglobal.org/certifications
-  - OneRoster
-- Purposes of LTI:
-  - Identity management (for example, correlate a student in Courselore with a student in Blackboard).
-    - Automatically remove from the course the people who dropped? Or perhaps quarantine them, because we can’t trust the registrar 100%.
 - Or perhaps not—do something more lightweight if LTI is too bureaucratic.
 - Perhaps replace our own authentication with OAuth?
   - And what about our future API?
@@ -59,17 +70,21 @@ Subject
     - https://oauth.net
     - https://fusionauth.io/articles/oauth/modern-guide-to-oauth
     - https://drops.dagstuhl.de/opus/volltexte/2022/16616/pdf/OASIcs-ICPEC-2022-12.pdf
+  - OneRoster
+    - https://www.imsglobal.org/oneroster-11-introduction
+    - https://www.imsglobal.org/activity/onerosterlis
   - Implementations
     - https://cvmcosta.me/ltijs/
       - https://github.com/Cvmcosta/ltijs-demo-server
       - https://github.com/Cvmcosta/ltijs-demo-client
     - https://github.com/blackboard/BBDN-LTI-Tool-Provider-Node
     - https://github.com/SanDiegoCodeSchool/lti-node-example
-  - LMSs to test with
+  - Service Consumers (LMSs) to test with
+    - https://demo.moodle.net
+    - https://lti-ri.imsglobal.org
     - https://github.com/instructure/canvas-lms
     - https://github.com/moodle/moodle
     - https://github.com/sakaiproject/sakai
-    - https://demo.moodle.net
   - Existing services
     - https://piazza.com/product/lti
     - https://docs.moodle.org/402/en/LTI_and_Moodle
@@ -1027,6 +1042,7 @@ const { app, BrowserWindow } = require("electron");
 
 ## Infrastructure
 
+- If you created a course using Demonstration Data, perhaps sometimes inject new messages/conversations/likes, and so forth, to pretend that there are other people using the course. The demonstration in Moodle does something like that.
 - A tab left open in Firefox for a long time seems to slow down the computer
   - https://courselore.org/courses/8537410611/conversations/75
 - `partialParentElement` → `this.onbeforemorph = (event) => !event?.detail?.liveUpdate;`?
