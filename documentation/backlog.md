@@ -18,6 +18,11 @@ Subject
 **Learning Tools Interoperability (LTI)**
 
 - https://events.educause.edu/annual-conference
+- Install
+  - Discourse
+  - Moodle
+  - Canvas
+  - Sakai
 - Read
   - https://www.imsglobal.org/spec/lti/v1p3/
   - https://www.imsglobal.org/oneroster-v11-final-specification
@@ -1217,6 +1222,7 @@ const { app, BrowserWindow } = require("electron");
   - Example of designs that we like:
     - https://capacitorjs.com
     - https://circle.so
+    - https://www.docker.com
   - At some point hire a designer to make it shinier
   - Comparison chart: Courselore, Piazza, Campuswire, edstem, and so forth.
     - Make sure to mention that we’re open-source.
