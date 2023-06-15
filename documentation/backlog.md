@@ -1284,5 +1284,6 @@ const { app, BrowserWindow } = require("electron");
   - <https://www.notion.so>
   - <https://marktext.app>
 - Conferences
+  - <https://events.educause.edu/annual-conference>
   - <https://openeducationconference.org>
   - <https://www.digitallyengagedlearning.net>
