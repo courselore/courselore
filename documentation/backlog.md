@@ -18,7 +18,7 @@ Subject
 **Learning Tools Interoperability (LTI)**
 
 - https://events.educause.edu/annual-conference
-- Try to connect Piazza & Moodle
+- Try to add students after having connected Piazza & Moodle
   - https://support.piazza.com/support/solutions/articles/48001065448-configure-piazza-within-moodle
   - https://demo.moodle.net
 - Read
@@ -29,7 +29,8 @@ Subject
   - IMS LTI Names and Role Provisioning
   - OneRoster
 - Questions
-  - Quarantine people who dropped, because we can’t trust the registrar 100%?
+  - Send email invitations to people who enrolled, and quarantine people who dropped?
+    - Quarantine people who dropped, because we can’t trust the registrar 100%?
   - Are we integrating with SIS, or with Canvas (the former, I think)
   - Integration at course level, or at installation level?
     - Automatic course creation?
@@ -39,6 +40,7 @@ Subject
 - Notes
   - We want to use version 1.3
     - It’s newer than version 2.0 🤦‍♂️
+    - But Piazza uses 1.0/1.1 🤔
   - Based on
     - OAuth2
       - Authenticating services
