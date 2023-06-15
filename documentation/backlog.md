@@ -17,6 +17,7 @@ Subject
 
 **Learning Tools Interoperability (LTI)**
 
+- What happens to the default avatar when the person has a single name?
 - https://events.educause.edu/annual-conference
 - Install
   - Discourse
