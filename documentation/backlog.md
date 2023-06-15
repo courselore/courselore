@@ -18,9 +18,6 @@ Subject
 **Learning Tools Interoperability (LTI)**
 
 - https://events.educause.edu/annual-conference
-- Try to add students after having connected Piazza & Moodle
-  - https://support.piazza.com/support/solutions/articles/48001065448-configure-piazza-within-moodle
-  - https://demo.moodle.net
 - Read
   - https://www.imsglobal.org/spec/lti/v1p3/
   - https://www.imsglobal.org/oneroster-v11-final-specification
@@ -87,6 +84,9 @@ Subject
     - https://github.com/instructure/canvas-lms
     - https://github.com/moodle/moodle
     - https://github.com/sakaiproject/sakai
+  - Example of connecting Moodle & Piazza
+    - https://support.piazza.com/support/solutions/articles/48001065448-configure-piazza-within-moodle
+    - https://demo.moodle.net
   - Existing services
     - https://piazza.com/product/lti
     - https://docs.moodle.org/402/en/LTI_and_Moodle
