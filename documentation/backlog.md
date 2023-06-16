@@ -20,9 +20,9 @@ Subject
 - What happens to the default avatar when the person has a single name?
 - https://events.educause.edu/annual-conference
 - Install
-  - Discourse
-  - Moodle
+  - Discourse: https://meta.discourse.org/t/install-discourse-for-development-using-docker/102009
   - Canvas
+  - Moodle
   - Sakai
 - Read
   - https://www.imsglobal.org/spec/lti/v1p3/
