@@ -2,23 +2,6 @@
 
 ## Work in Progress
 
-```
-@babel/core                   ^7.21.8  →    ^7.22.5
-@babel/preset-typescript      ^7.21.5  →    ^7.22.5
-@fontsource/jetbrains-mono    ^4.5.12  →     ^5.0.3
-@fontsource/public-sans       ^4.5.12  →     ^5.0.3
-@types/lodash               ^4.14.194  →  ^4.14.195
-@types/node                   ^20.2.1  →    ^20.3.1
-commander                     ^10.0.1  →    ^11.0.0
-esbuild                      ^0.17.19  →    ^0.18.3
-got                           ^12.6.0  →    ^13.0.0
-jsdom                         ^22.0.0  →    ^22.1.0
-nodemailer                     ^6.9.2  →     ^6.9.3
-postcss                       ^8.4.23  →    ^8.4.24
-semver                         ^7.5.1  →     ^7.5.2
-typescript                     ^5.0.4  →     ^5.1.3
-```
-
 - SAML
 
 ```
