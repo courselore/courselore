@@ -15,10 +15,10 @@ import javascript from "@leafac/javascript";
 
 let staticCSS = css``;
 let staticJavaScript = javascript`
-  import "@fontsource/public-sans/variable.css";
-  import "@fontsource/public-sans/variable-italic.css";
-  import "@fontsource/jetbrains-mono/variable.css";
-  import "@fontsource/jetbrains-mono/variable-italic.css";
+  import "@fontsource-variable/public-sans";
+  import "@fontsource-variable/public-sans/wght-italic.css";
+  import "@fontsource-variable/jetbrains-mono";
+  import "@fontsource-variable/jetbrains-mono/wght-italic.css";
   import "bootstrap-icons/font/bootstrap-icons.css";
   import "katex/dist/katex.css";
   import "tippy.js/dist/tippy.css";

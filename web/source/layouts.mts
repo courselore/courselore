@@ -880,7 +880,7 @@ export default async (application: Application): Promise<void> => {
 
               .code,
               .pre > code {
-                font-family: "JetBrains MonoVariable",
+                font-family: "JetBrains Mono Variable",
                   var(--font-family--monospace);
                 font-variant-ligatures: none;
               }
@@ -1231,7 +1231,7 @@ export default async (application: Application): Promise<void> => {
                 }
 
                 code {
-                  font-family: "JetBrains MonoVariable",
+                  font-family: "JetBrains Mono Variable",
                     var(--font-family--monospace);
                   font-variant-ligatures: none;
                   background-color: var(--color--zinc--300);
@@ -1618,7 +1618,7 @@ export default async (application: Application): Promise<void> => {
               }
             }
 
-            font-family: "Public SansVariable", var(--font-family--sans-serif);
+            font-family: "Public Sans Variable", var(--font-family--sans-serif);
             font-size: var(--font-size--sm);
             line-height: var(--line-height--sm);
             color: var(--color--zinc--700);

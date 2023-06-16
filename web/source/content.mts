@@ -3030,7 +3030,7 @@ export default async (application: Application): Promise<void> => {
                       }
 
                       &.content-editor--write--textarea--programmer-mode {
-                        font-family: "JetBrains MonoVariable",
+                        font-family: "JetBrains Mono Variable",
                           var(--font-family--monospace);
                         font-variant-ligatures: none;
                       }
