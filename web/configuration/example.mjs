@@ -116,9 +116,9 @@ export default {
   //         "utf-8"
   //       ),
 
-  //       // You may create the following keys and certificates with the following commands:
-  //       // $ openssl req -x509 -newkey rsa:2048 -nodes -days 365000 -subj "/" -keyout educational-institution--saml--service-provider--signing.key -out educational-institution--saml--service-provider--signing.crt
-  //       // $ openssl req -x509 -newkey rsa:2048 -nodes -days 365000 -subj "/" -keyout educational-institution--saml--service-provider--encryption.key -out educational-institution--saml--service-provider--encryption.crt
+  //       // You may create the following keys and certificates with the following commands (see https://knowledge.digicert.com/generalinformation/INFO1745.html for more information on the ‘-subj’ parameter):
+  //       // $ openssl req -x509 -newkey rsa:2048 -nodes -days 365000 -subj "/C=US/ST=Maryland/L=Baltimore/O=Courselore/CN=courselore.org" -keyout educational-institution--saml--service-provider--signing.key -out educational-institution--saml--service-provider--signing.crt
+  //       // $ openssl req -x509 -newkey rsa:2048 -nodes -days 365000 -subj "/C=US/ST=Maryland/L=Baltimore/O=Courselore/CN=courselore.org" -keyout educational-institution--saml--service-provider--encryption.key -out educational-institution--saml--service-provider--encryption.crt
   //       privateKey: await fs.readFile(
   //         new URL(
   //           "./educational-institution--saml--service-provider--signing.key",
