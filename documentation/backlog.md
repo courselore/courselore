@@ -13,11 +13,10 @@
     - `open http://localhost:4200`
   - Canvas
     - https://github.com/instructure/canvas-lms/blob/master/doc/docker/developing_with_docker.md
-    - `dory up`
-    - `docker-compose up -d`
-    - `open http://canvas.docker/`
+    - `dory up && docker-compose up -d && open http://canvas.docker/`
   - Moodle
     - https://github.com/moodlehq/moodle-docker/
+      - `export MOODLE_DOCKER_WWWROOT=/Users/leafac/Downloads/COURSELORE-REFERENCES/moodle && export MOODLE_DOCKER_DB=pgsql && bin/moodle-docker-compose up -d && open http://localhost:8000/`
     - https://hub.docker.com/r/bitnami/moodle
     - https://download.moodle.org/releases/latest/
   - Sakai
@@ -750,6 +749,7 @@ new Notification('Example');
 
 ## Native Mobile & Desktop Applications
 
+- Reference: https://github.com/moodlehq/moodleapp
 - `NODE_EXTRA_CA_CERTS=".../Application Support/Caddy/pki/authorities/local/root.crt"`
 - PWA: https://checkvist.com/auth/mobile
 - Consider https://tauri.app
