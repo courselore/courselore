@@ -17,8 +17,10 @@ Subject
 
 Dory
 
+/etc/resolver
+
 ```
-$ cat /etc/resolv.conf 
+$ cat /etc/resolv.conf
 #
 # macOS Notice
 #
@@ -47,9 +49,16 @@ nameserver 192.168.1.1
     - https://meta.discourse.org/t/install-discourse-for-development-using-docker/102009
     - `d/rails s`
     - `d/ember-cli`
+    - `open http://localhost:4200`
   - Canvas
     - https://github.com/instructure/canvas-lms/blob/master/doc/docker/developing_with_docker.md
+    - `dory up`
+    - `docker-compose up -d`
+    - `open http://canvas.docker/`
   - Moodle
+    - https://github.com/moodlehq/moodle-docker/
+    - https://hub.docker.com/r/bitnami/moodle
+    - https://download.moodle.org/releases/latest/
   - Sakai
 - Read
   - https://www.imsglobal.org/spec/lti/v1p3/
@@ -58,15 +67,6 @@ nameserver 192.168.1.1
 - Standards to look into
   - IMS LTI Names and Role Provisioning
   - OneRoster
-- Questions
-  - Send email invitations to people who enrolled, and quarantine people who dropped?
-    - Quarantine people who dropped, because we can’t trust the registrar 100%?
-  - Are we integrating with SIS, or with Canvas (the former, I think)
-  - Integration at course level, or at installation level?
-    - Automatic course creation?
-  - Courselore embedded in the LMS?
-  - Certification?
-  - Now that the `password` column is optional in the `users` table in the database, perhaps we could create users and course participants when you “create invitation via email?”
 - Notes
   - We want to use version 1.3
     - It’s newer than version 2.0 🤦‍♂️
