@@ -67,6 +67,19 @@ nameserver 192.168.1.1
 - Standards to look into
   - IMS LTI Names and Role Provisioning
   - OneRoster
+- SAML vs OAuth for authentication
+  - It is possible that they give you different identifiers for the same person 🤦‍♂️
+  - Introduce the notion of multiple emails per account
+  - Introduce a way to merge accounts
+  - Splash screen prompting to merge accounts
+- At Hopkins we’re integrating with Canvas, not SIS
+- Initially, we’re integrating at the level of the course, with course staff taking action
+- How the synchronization of course participants behaves:
+  - If someone appears in the LMS, sign them up in Courselore and add them as course participant. Mark their participation as having come from the LMS.
+  - In general, mark everyone who appears in the LMS.
+  - If someone disappears from the LMS, and they have been marked as appearing in LMS in the first place, then it’s okay to remove them.
+- Perhaps replace our own authentication with OAuth?
+  - And what about our future API?
 - Notes
   - We want to use version 1.3
     - It’s newer than version 2.0 🤦‍♂️
@@ -84,9 +97,6 @@ nameserver 192.168.1.1
   - Certification testing:
     - https://www.imsglobal.org/lti-advantage-certification-suite
     - https://site.imsglobal.org/certifications
-- Or perhaps not—do something more lightweight if LTI is too bureaucratic.
-- Perhaps replace our own authentication with OAuth?
-  - And what about our future API?
 - References
   - Information
     - https://en.wikipedia.org/wiki/Learning_Tools_Interoperability
@@ -125,6 +135,10 @@ nameserver 192.168.1.1
     - https://docs.moodle.org/402/en/LTI_and_Moodle
     - https://mlm.pearson.com/global/educators/support/lms-integration-services/index.html
   - https://courselore.org/courses/8537410611/conversations/79
+- Later
+  - Perhaps integrate at the application level and create courses automatically
+  - Allow staff members to control the process of synchronizing course participants in more detail, for example, have some options to quarantine instead of removing. (Some people may not trust the registrar 100%)
+  - Certification: https://www.1edtech.org/certification/get-certified
 
 **Other**
 
@@ -237,6 +251,7 @@ nameserver 192.168.1.1
 
 ## Invitations
 
+- Now that SAML made us change the `password` column into optional in the `users` table in the database, perhaps we could create users and course participants when you “create invitation via email?”
 - Simplify the system by having a single invitation link per course role that you can enable/disable/reset.
 - Limit invitation links to certain email domains, for example, “this link may only be used by people whose emails end with `@jhu.edu`.”
 - Have an option to require the course staff to approve course participants.

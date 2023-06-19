@@ -1,6 +1,30 @@
 # Meetings
 
 <details>
+<summary>2023-06-17</summary>
+
+- SAML
+- Zach: SAML, LTI, and AI
+- LTI
+  - SAML vs OAuth for authentication
+    - It is possible that they give you different identifiers for the same person 🤦‍♂️
+    - Introduce the notion of multiple emails per account
+    - Introduce a way to merge accounts
+    - Splash screen prompting to merge accounts
+  - At Hopkins we’re integrating with Canvas, not SIS
+  - Initially, we’re integrating at the level of the course, with course staff taking action
+    - **Later:** Perhaps integrate at the application level and create courses automatically
+  - How the synchronization of course participants behaves:
+    - If someone appears in the LMS, sign them up in Courselore and add them as course participant. Mark their participation as having come from the LMS.
+    - In general, mark everyone who appears in the LMS.
+    - If someone disappears from the LMS, and they have been marked as appearing in LMS in the first place, then it’s okay to remove them.
+    - **Later:** Allow staff members to control this process in more detail, for example, have some options to quarantine instead of removing. (Some people may not trust the registrar 100%)
+  - Courselore embedded in the LMS? No.
+  - Certification? Not yet.
+
+</details>
+
+<details>
 <summary>2023-06-03</summary>
 
 - Changes in terminology:
