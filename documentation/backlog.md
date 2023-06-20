@@ -5,19 +5,8 @@
 **Learning Tools Interoperability (LTI)**
 
 - Install
-  - Discourse
-    - https://meta.discourse.org/t/install-discourse-for-development-using-docker/102009
-    - `d/rails s`
-    - `d/ember-cli`
-    - `open http://localhost:4200`
   - Canvas
-    - https://github.com/instructure/canvas-lms/blob/master/doc/docker/developing_with_docker.md
-    - `dory up && docker-compose up -d && open http://canvas.docker/`
   - Moodle
-    - https://github.com/moodlehq/moodle-docker/
-      - `export MOODLE_DOCKER_WWWROOT=/Users/leafac/Downloads/COURSELORE-REFERENCES/moodle && export MOODLE_DOCKER_DB=pgsql && bin/moodle-docker-compose up -d && open http://localhost:8000/`
-    - https://hub.docker.com/r/bitnami/moodle
-    - https://download.moodle.org/releases/latest/
   - Sakai
   - Dory
     - `/etc/resolver`
@@ -1258,6 +1247,20 @@ const { app, BrowserWindow } = require("electron");
 
 ## References
 
+- Main
+  - <https://canvaslms.com>
+    - https://github.com/instructure/canvas-lms/blob/master/doc/docker/developing_with_docker.md
+    - `dory up && docker-compose up -d && open http://canvas.docker/`
+  - <https://moodle.org>
+    - https://github.com/moodlehq/moodle-docker/
+      - `export MOODLE_DOCKER_WWWROOT=/Users/leafac/Downloads/COURSELORE-REFERENCES/moodle && export MOODLE_DOCKER_DB=pgsql && bin/moodle-docker-compose up -d && open http://localhost:8000/`
+    - https://hub.docker.com/r/bitnami/moodle
+    - https://download.moodle.org/releases/latest/
+  - <https://discourse.org>
+    - https://meta.discourse.org/t/install-discourse-for-development-using-docker/102009
+    - `d/rails s`
+    - `d/ember-cli`
+    - `open http://localhost:4200`
 - Communication platforms for education
   - <https://piazza.com>
   - <https://campuswire.com>
@@ -1266,13 +1269,11 @@ const { app, BrowserWindow } = require("electron");
   - <https://aula.education>
   - <https://yellowdig.com>
     - Point-based system; gamification.
-  - <https://moodle.org>
-  - <https://canvaslms.com>
+  - <https://github.com/sakaiproject/sakai>
   - <https://www.acadly.com/>
   - <https://www.d2l.com/products/>
 - General-purpose communication platforms
   - <https://github.com>
-  - <https://discourse.org>
   - <https://reddit.com>
   - <https://basecamp.com>
   - <https://slack.com>
