@@ -4,16 +4,10 @@
 
 **Learning Tools Interoperability (LTI)**
 
-- Install
-  - Canvas
-  - Moodle
-  - Sakai
-  - Dory
-    - `/etc/resolver`
 - Read
+  - https://github.com/sakaiproject/sakai
   - https://www.imsglobal.org/spec/lti/v1p3/
   - https://www.imsglobal.org/oneroster-v11-final-specification
-  - https://github.com/sakaiproject/sakai
 - Standards to look into
   - IMS LTI Names and Role Provisioning
   - OneRoster
@@ -30,6 +24,9 @@
   - If someone disappears from the LMS, and they have been marked as appearing in LMS in the first place, then it’s okay to remove them.
 - Perhaps replace our own authentication with OAuth?
   - And what about our future API?
+- Test with
+  - Canvas
+  - Moodle
 - Document how to use in different LMSs
   - https://support.piazza.com/support/solutions/folders/48000669350
   - https://s3.amazonaws.com/piazza-materials/LTI-Setup/piazza-canvas.xml

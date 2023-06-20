@@ -27,7 +27,6 @@ export default {
   staticPaths: [url.fileURLToPath(new URL("./static/", import.meta.url))],
   saml: {
     "johns-hopkins-university": {
-      public: false,
       name: "Johns Hopkins University",
       logo: {
         light: "johns-hopkins-university--light--2023-03-28.webp",
