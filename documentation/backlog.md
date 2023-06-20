@@ -76,6 +76,7 @@
       - https://oauth.net/code/nodejs/
       - https://github.com/axa-group/oauth2-mock-server
       - https://github.com/oauthjs/node-oauth2-server
+      - https://github.com/dexidp/dex (Go)
       - https://github.com/navikt/mock-oauth2-server (Java)
     - JWT
       - https://github.com/auth0/node-jsonwebtoken
