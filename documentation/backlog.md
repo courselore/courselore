@@ -4,7 +4,6 @@
 
 **Learning Tools Interoperability (LTI)**
 
-- What happens to the default avatar when the person has a single name?
 - Install
   - Discourse
     - https://meta.discourse.org/t/install-discourse-for-development-using-docker/102009

@@ -443,7 +443,7 @@ export default async (application: Application): Promise<void> => {
                   ${(() => {
                     const nameParts = user.name.split(/\s+/);
                     return `${nameParts[0][0]}${
-                      nameParts.length > 0 ? nameParts.at(-1)![0] : ""
+                      nameParts.length > 1 ? nameParts.at(-1)![0] : ""
                     }`.toUpperCase();
                   })()}
                 </text>
