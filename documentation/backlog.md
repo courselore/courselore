@@ -5,7 +5,6 @@
 **Learning Tools Interoperability (LTI)**
 
 - Read
-  - https://github.com/sakaiproject/sakai
   - https://www.imsglobal.org/spec/lti/v1p3/
   - https://www.imsglobal.org/oneroster-v11-final-specification
 - Standards to look into
@@ -56,15 +55,25 @@
     - https://oauth.net
     - https://fusionauth.io/articles/oauth/modern-guide-to-oauth
     - https://drops.dagstuhl.de/opus/volltexte/2022/16616/pdf/OASIcs-ICPEC-2022-12.pdf
+    - https://auth0.com/docs/secure/tokens/json-web-tokens
   - OneRoster
     - https://www.imsglobal.org/oneroster-11-introduction
     - https://www.imsglobal.org/activity/onerosterlis
   - Implementations
-    - https://cvmcosta.me/ltijs/
-      - https://github.com/Cvmcosta/ltijs-demo-server
-      - https://github.com/Cvmcosta/ltijs-demo-client
-    - https://github.com/blackboard/BBDN-LTI-Tool-Provider-Node
-    - https://github.com/SanDiegoCodeSchool/lti-node-example
+    - LTI
+      - https://cvmcosta.me/ltijs/
+        - https://github.com/Cvmcosta/ltijs-demo-server
+        - https://github.com/Cvmcosta/ltijs-demo-client
+      - https://github.com/blackboard/BBDN-LTI-Tool-Provider-Node
+      - https://github.com/SanDiegoCodeSchool/lti-node-example
+    - OAuth2
+      - https://oauth.net/code/nodejs/
+      - https://github.com/axa-group/oauth2-mock-server
+      - https://github.com/oauthjs/node-oauth2-server
+      - https://github.com/navikt/mock-oauth2-server (Java)
+    - JWT
+      - https://github.com/auth0/node-jsonwebtoken
+      - https://github.com/panva/jose
   - Service Consumers (LMSs) to test with
     - https://demo.moodle.net
     - https://lti-ri.imsglobal.org
