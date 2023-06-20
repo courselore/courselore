@@ -5,11 +5,12 @@
 **Learning Tools Interoperability (LTI)**
 
 - Read
-  - https://www.imsglobal.org/spec/lti/v1p3/
+  - https://www.imsglobal.org/spec/lti/v1p3/impl/
+  - https://www.imsglobal.org/spec/lti-nrps/v2p0/
   - https://www.imsglobal.org/oneroster-v11-final-specification
 - Standards to look into
   - IMS LTI Names and Role Provisioning
-  - OneRoster
+  - OneRoster (Doesn’t seem as well supported, for example, in Moodle it’s a plugin in alpha stage that hasn’t been updated in a while)
 - SAML vs OAuth for authentication
   - It is possible that they give you different identifiers for the same person 🤦‍♂️
   - Introduce the notion of multiple emails per account
@@ -38,9 +39,14 @@
     - JWT: Secure message signing
     - OpenID Connect Core: An identity layer, from OpenID Foundation, on top of OAuth 2.0
   - Glossary
-    - Tool Consumer: The LMS, for example, Canvas.
-    - Tool Provider: Courselore
+    - Platform (previously Tool Consumer): The LMS, for example, Canvas.
+    - Tool (previously Tool Provider): Courselore
 - References
+  - Specifications
+    - https://www.imsglobal.org/spec/lti/v1p3/
+    - https://www.imsglobal.org/spec/lti/v1p3/impl/
+    - https://www.imsglobal.org/spec/lti-nrps/v2p0/
+    - https://www.imsglobal.org/oneroster-v11-final-specification
   - Information
     - https://en.wikipedia.org/wiki/Learning_Tools_Interoperability
     - https://www.imsglobal.org/activity/learning-tools-interoperability
