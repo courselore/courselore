@@ -83,6 +83,8 @@
     - JWT
       - https://github.com/auth0/node-jsonwebtoken
       - https://github.com/panva/jose
+  - Tools
+    - https://jwt.io
   - Service Consumers (LMSs) to test with
     - https://demo.moodle.net
     - https://lti-ri.imsglobal.org
