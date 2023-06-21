@@ -4,6 +4,84 @@
 
 **Learning Tools Interoperability (LTI)**
 
+- Implement example
+
+  - GitHub client
+
+    ```
+    {
+      "scripts": {
+        "start": "nodemon --watch \"./index.mjs\" --ext \"*\" --exec \"node ./index.mjs\""
+      },
+      "dependencies": {
+        "express": "^4.18.2",
+        "got": "^13.0.0",
+        "qs": "^6.11.2"
+      },
+      "devDependencies": {
+        "nodemon": "^2.0.22"
+      }
+    }
+
+
+    import express from "express";
+    import qs from "qs";
+    import got from "got";
+
+    const clientId = "___";
+    const clientSecret = "___";
+
+    let accessToken;
+
+    const application = express();
+
+    application.get("/", async (request, response) => {
+      if (typeof accessToken !== "string")
+        return response.redirect(
+          `https://github.com/login/oauth/authorize${qs.stringify(
+            {
+              scope: "read:user",
+              client_id: clientId,
+            },
+            {
+              addQueryPrefix: true,
+            }
+          )}`
+        );
+
+      const githubResponse = await got
+        .get("https://api.github.com/user", {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        })
+        .json();
+      console.log(githubResponse);
+      response.end();
+    });
+
+    application.get("/callback", async (request, response) => {
+      console.log(request.query);
+      const githubResponse = await got
+        .post("https://github.com/login/oauth/access_token", {
+          form: {
+            client_id: clientId,
+            client_secret: clientSecret,
+            code: request.query.code,
+            accept: "json",
+          },
+        })
+        .json();
+      console.log(githubResponse);
+      accessToken = githubResponse.access_token;
+      response.redirect("/");
+    });
+
+    application.listen(3000);
+    ```
+
+  - OAuth2 client
+  - OpenID Connect client
+  - LTI
+
 - Read
   - https://www.imsglobal.org/spec/lti/v1p3/impl/
   - https://www.imsglobal.org/spec/lti-nrps/v2p0/
@@ -239,7 +317,7 @@
 
 ## Conversations
 
-- Have a course setting for the defaults of the “New Conversation” form. For example, in Meta Courselore, it makes sense for new conversations to *not* be announcements, not even for course staff.
+- Have a course setting for the defaults of the “New Conversation” form. For example, in Meta Courselore, it makes sense for new conversations to **not** be announcements, not even for course staff.
 - Drafts:
   - Database schema
     - Recreate table
