@@ -62,6 +62,8 @@
     - https://fusionauth.io/articles/oauth/modern-guide-to-oauth
     - https://drops.dagstuhl.de/opus/volltexte/2022/16616/pdf/OASIcs-ICPEC-2022-12.pdf
     - https://auth0.com/docs/secure/tokens/json-web-tokens
+    - https://workos.com/blog/the-developers-guide-to-sso
+    - https://workos.com/blog/fun-with-saml-sso-vulnerabilities-and-footguns
   - OneRoster
     - https://www.imsglobal.org/oneroster-11-introduction
     - https://www.imsglobal.org/activity/onerosterlis
@@ -129,6 +131,9 @@
 
 **SAML**
 
+- Security
+  - Prevent replay attacks by storing assertion IDs that have already been seen (and purge them when `NotOnOrAfter` has passed)
+  - Does the library we use validate the XML and the signature?
 - Infrastructure
   - Add support for `HTTP-POST` in addition to `HTTP-Redirect`
   - Single logout back channel (synchronous) (SOAP) (server-to-server from identity provider to service provider)
