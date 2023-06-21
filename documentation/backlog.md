@@ -239,6 +239,7 @@
 
 ## Conversations
 
+- Have a course setting for the defaults of the “New Conversation” form. For example, in Meta Courselore, it makes sense for new conversations to *not* be announcements, not even for course staff.
 - Drafts:
   - Database schema
     - Recreate table
