@@ -79,6 +79,84 @@
     ```
 
   - OAuth2 client
+
+    ```
+    {
+      "scripts": {
+        "start:server": "oauth2-mock-server",
+        "start:client": "nodemon --watch \"./index.mjs\" --ext \"*\" --exec \"node ./index.mjs\""
+      },
+      "dependencies": {
+        "express": "^4.18.2",
+        "got": "^13.0.0",
+        "oauth2-mock-server": "^6.0.0",
+        "qs": "^6.11.2"
+      },
+      "devDependencies": {
+        "nodemon": "^2.0.22"
+      }
+    }
+
+    import express from "express";
+    import qs from "qs";
+    import got from "got";
+
+    // $ curl -X POST -d "client_id=example-oauth-client&client_secret=password&grant_type=client_credentials" "http://localhost:8080/token"
+
+    const application = express();
+
+    let token;
+
+    application.get("/", (request, response) => {
+      if (token === undefined)
+        return response.redirect(
+          `http://localhost:8080/authorize${qs.stringify(
+            {
+              client_id: "example-oauth-client",
+              response_type: "code",
+              scope: "openid",
+              redirect_uri: "http://localhost:3000/callback",
+            },
+            { addQueryPrefix: true }
+          )}`
+        );
+
+      console.log(token);
+      response.end();
+    });
+
+    application.get("/callback", async (request, response) => {
+      console.log(request.query);
+      token = await got
+        .post("http://localhost:8080/token", {
+          form: {
+            client_id: "example-oauth-client",
+            client_secret: "password",
+            grant_type: "authorization_code",
+            code: request.query.code,
+          },
+        })
+        .json();
+      response.redirect("/");
+    });
+
+    application.get("/refresh", async (request, response) => {
+      token = await got
+        .post("http://localhost:8080/token", {
+          form: {
+            client_id: "example-oauth-client",
+            client_secret: "password",
+            grant_type: "refresh_token",
+            refresh_token: token.refresh_token,
+          },
+        })
+        .json();
+      response.redirect("/");
+    });
+
+    application.listen(3000);
+    ```
+
   - OpenID Connect client
   - LTI
 
@@ -142,6 +220,7 @@
     - https://auth0.com/docs/secure/tokens/json-web-tokens
     - https://workos.com/blog/the-developers-guide-to-sso
     - https://workos.com/blog/fun-with-saml-sso-vulnerabilities-and-footguns
+    - https://developer.okta.com/blog/2019/10/21/illustrated-guide-to-oauth-and-oidc
   - OneRoster
     - https://www.imsglobal.org/oneroster-11-introduction
     - https://www.imsglobal.org/activity/onerosterlis

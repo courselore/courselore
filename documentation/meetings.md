@@ -1,6 +1,14 @@
 # Meetings
 
 <details>
+<summary>2023-06-24</summary>
+
+- SAML at Hopkins is working!
+- Investigated the technical details of LTI, OAuth2, OpenID Connect, JWTs, and so forth.
+
+</details>
+
+<details>
 <summary>2023-06-17</summary>
 
 - SAML
