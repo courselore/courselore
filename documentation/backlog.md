@@ -221,6 +221,8 @@
     - https://workos.com/blog/the-developers-guide-to-sso
     - https://workos.com/blog/fun-with-saml-sso-vulnerabilities-and-footguns
     - https://developer.okta.com/blog/2019/10/21/illustrated-guide-to-oauth-and-oidc
+    - https://www.azureblue.io/oauth2-openid-connect-in-a-nutshell-part-1/
+    - https://www.youtube.com/watch?v=996OiexHze0
   - OneRoster
     - https://www.imsglobal.org/oneroster-11-introduction
     - https://www.imsglobal.org/activity/onerosterlis
