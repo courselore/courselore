@@ -160,10 +160,6 @@
   - OpenID Connect client
   - LTI
 
-- Read
-  - https://www.imsglobal.org/spec/lti/v1p3/impl/
-  - https://www.imsglobal.org/spec/lti-nrps/v2p0/
-  - https://www.imsglobal.org/oneroster-v11-final-specification
 - Standards to look into
   - IMS LTI Names and Role Provisioning
   - OneRoster (Doesn’t seem as well supported, for example, in Moodle it’s a plugin in alpha stage that hasn’t been updated in a while)
@@ -178,6 +174,7 @@
   - If someone appears in the LMS, sign them up in Courselore and add them as course participant. Mark their participation as having come from the LMS.
   - In general, mark everyone who appears in the LMS.
   - If someone disappears from the LMS, and they have been marked as appearing in LMS in the first place, then it’s okay to remove them.
+- Deep linking for people to put an LMS entry with a link to a specific conversation?
 - Perhaps replace our own authentication with OAuth?
   - And what about our future API?
 - Test with
@@ -223,6 +220,7 @@
     - https://developer.okta.com/blog/2019/10/21/illustrated-guide-to-oauth-and-oidc
     - https://www.azureblue.io/oauth2-openid-connect-in-a-nutshell-part-1/
     - https://www.youtube.com/watch?v=996OiexHze0
+    - https://auth0.com/blog/refresh-tokens-what-are-they-and-when-to-use-them/
   - OneRoster
     - https://www.imsglobal.org/oneroster-11-introduction
     - https://www.imsglobal.org/activity/onerosterlis
