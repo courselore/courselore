@@ -221,6 +221,8 @@
     - https://www.azureblue.io/oauth2-openid-connect-in-a-nutshell-part-1/
     - https://www.youtube.com/watch?v=996OiexHze0
     - https://auth0.com/blog/refresh-tokens-what-are-they-and-when-to-use-them/
+    - https://oauth.net/2/
+    - https://www.oauth.com
   - OneRoster
     - https://www.imsglobal.org/oneroster-11-introduction
     - https://www.imsglobal.org/activity/onerosterlis
