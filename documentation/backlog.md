@@ -159,7 +159,13 @@
 
   - OpenID Connect client
   - LTI
-
+- OAuth
+  - Include `state` on authorization request:
+    - Redirect URL for when we’re back from authorization flow (deep link)
+    - CSRF: Random value stored in session and checked on callback
+  - Include PKCE
+- SAML
+  - Include random value in `RelayState` to prevent CSRF?
 - Standards to look into
   - IMS LTI Names and Role Provisioning
   - OneRoster (Doesn’t seem as well supported, for example, in Moodle it’s a plugin in alpha stage that hasn’t been updated in a while)
@@ -243,7 +249,7 @@
       - https://github.com/auth0/node-jsonwebtoken
       - https://github.com/panva/jose
   - Tools
-    - https://jwt.io
+    - https://www.oauth.com/oauth2-servers/tools-and-libraries/
   - Service Consumers (LMSs) to test with
     - https://demo.moodle.net
     - https://lti-ri.imsglobal.org
