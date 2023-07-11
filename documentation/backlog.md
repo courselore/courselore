@@ -229,6 +229,7 @@
     - https://auth0.com/blog/refresh-tokens-what-are-they-and-when-to-use-them/
     - https://oauth.net/2/
     - https://www.oauth.com
+    - https://www.passportjs.org/concepts/oauth2/
   - OneRoster
     - https://www.imsglobal.org/oneroster-11-introduction
     - https://www.imsglobal.org/activity/onerosterlis
@@ -240,11 +241,24 @@
       - https://github.com/blackboard/BBDN-LTI-Tool-Provider-Node
       - https://github.com/SanDiegoCodeSchool/lti-node-example
     - OAuth2
-      - https://oauth.net/code/nodejs/
-      - https://github.com/axa-group/oauth2-mock-server
-      - https://github.com/oauthjs/node-oauth2-server
-      - https://github.com/dexidp/dex (Go)
-      - https://github.com/navikt/mock-oauth2-server (Java)
+      - Lists
+        - https://oauth.net/code/nodejs/
+      - Testing server
+        - https://github.com/axa-group/oauth2-mock-server
+        - https://github.com/dexidp/dex (Go)
+        - https://github.com/navikt/mock-oauth2-server (Java)
+      - Client
+        - https://npmtrends.com/@badgateway/oauth2-client-vs-oauth-vs-oauth4webapi-vs-openid-client
+        - https://github.com/panva/node-openid-client
+        - https://github.com/ciaranj/node-oauth
+        - https://github.com/panva/oauth4webapi (a version of https://github.com/panva/node-openid-client that works in JavaScript environments other than Node.js)
+        - https://github.com/badgateway/oauth2-client
+        - https://github.com/authts/oidc-client-ts (for the browser only)
+      - Server
+        - https://npmtrends.com/@node-oauth/oauth2-server-vs-oidc-provider
+        - https://github.com/panva/node-oidc-provider
+        - https://github.com/node-oauth/express-oauth-server
+          - https://github.com/node-oauth/node-oauth2-server
     - JWT
       - https://github.com/auth0/node-jsonwebtoken
       - https://github.com/panva/jose
