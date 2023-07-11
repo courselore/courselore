@@ -159,6 +159,15 @@
 
   - OpenID Connect client
   - LTI
+    - https://www.youtube.com/watch?v=Llk-t8sN3zo
+      - https://community.canvaslms.com/t5/Canvas-Developers-Group/Any-recommendations-for-Java-based-LTI-1-3-libraries/td-p/419568
+    - https://medium.com/voxy-engineering/introduction-to-lti-1-3-270f17505d75
+    - https://docs.anthology.com/docs/LTI/Tutorials/lti-lti_impl_guide
+    - https://learn.microsoft.com/en-us/linkedin/learning/sso-auth/sso-docs/lti-13-implementation
+    - https://moodle.org/mod/forum/discuss.php?d=430016
+    - Canvas + https://github.com/Cvmcosta/ltijs-demo-client
+    - https://github.com/UOC/java-lti-1.3-provider-example
+
 - OAuth
   - Include `state` on authorization request:
     - Redirect URL for when we’re back from authorization flow (deep link)
