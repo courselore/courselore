@@ -1458,6 +1458,7 @@ const { app, BrowserWindow } = require("electron");
   - <https://github.com/sakaiproject/sakai>
   - <https://www.acadly.com/>
   - <https://www.d2l.com/products/>
+  - <https://www.nectir.io>
 - General-purpose communication platforms
   - <https://github.com>
   - <https://reddit.com>
