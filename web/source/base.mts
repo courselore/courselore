@@ -79,6 +79,12 @@ export default async (application: Application): Promise<void> => {
     Application["web"]["locals"]["ResponseLocals"]["Logging"]
   >((request, response, next) => {
     if (
+      application.configuration.environment === "development" &&
+      !["GET", "HEAD", "OPTIONS", "TRACE"].includes(request.method)
+    )
+      response.locals.log(JSON.stringify(request.body, undefined, 2));
+
+    if (
       !(
         request.originalUrl.startsWith("/saml/") &&
         (request.originalUrl.endsWith("/assertion-consumer-service") ||

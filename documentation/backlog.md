@@ -159,12 +159,6 @@
 
   - OpenID Connect client
   - LTI
-    - https://www.youtube.com/watch?v=Llk-t8sN3zo
-      - https://community.canvaslms.com/t5/Canvas-Developers-Group/Any-recommendations-for-Java-based-LTI-1-3-libraries/td-p/419568
-    - https://medium.com/voxy-engineering/introduction-to-lti-1-3-270f17505d75
-    - https://docs.anthology.com/docs/LTI/Tutorials/lti-lti_impl_guide
-    - https://learn.microsoft.com/en-us/linkedin/learning/sso-auth/sso-docs/lti-13-implementation
-    - https://moodle.org/mod/forum/discuss.php?d=430016
     - Canvas + https://github.com/Cvmcosta/ltijs-demo-client
     - https://github.com/UOC/java-lti-1.3-provider-example
 
@@ -239,6 +233,14 @@
     - https://oauth.net/2/
     - https://www.oauth.com
     - https://www.passportjs.org/concepts/oauth2/
+    - https://www.youtube.com/watch?v=Llk-t8sN3zo
+      - https://community.canvaslms.com/t5/Canvas-Developers-Group/Any-recommendations-for-Java-based-LTI-1-3-libraries/td-p/419568
+    - https://medium.com/voxy-engineering/introduction-to-lti-1-3-270f17505d75
+    - https://docs.anthology.com/docs/LTI/Tutorials/lti-lti_impl_guide
+    - https://github.com/1EdTech/ltibootcamp
+    - https://github.com/blackboard/BBDN-LTI-Tool-Provider-Node/tree/master
+    - https://learn.microsoft.com/en-us/linkedin/learning/sso-auth/sso-docs/lti-13-implementation
+    - https://moodle.org/mod/forum/discuss.php?d=430016
   - OneRoster
     - https://www.imsglobal.org/oneroster-11-introduction
     - https://www.imsglobal.org/activity/onerosterlis
@@ -286,6 +288,7 @@
     - https://piazza.com/product/lti
     - https://docs.moodle.org/402/en/LTI_and_Moodle
     - https://mlm.pearson.com/global/educators/support/lms-integration-services/index.html
+    - https://github.com/microsoftarchive/Learn-LTI/blob/main/docs/CONFIGURATION_GUIDE.md
   - https://courselore.org/courses/8537410611/conversations/79
 - Later
   - Perhaps integrate at the application level and create courses automatically
