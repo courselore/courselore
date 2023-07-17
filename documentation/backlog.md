@@ -2,7 +2,6 @@
 
 ## Work in Progress
 
-- https://help.gradescope.com/category/kiu9t7kmdt-administrator
 
 **Learning Tools Interoperability (LTI)**
 
@@ -192,8 +191,6 @@
   - Canvas
   - Moodle
 - Document how to use in different LMSs
-  - https://support.piazza.com/support/solutions/folders/48000669350
-  - https://s3.amazonaws.com/piazza-materials/LTI-Setup/piazza-canvas.xml
 - Notes
   - We want to use version 1.3
     - It’s newer than version 2.0 🤦‍♂️
@@ -287,10 +284,13 @@
     - https://support.piazza.com/support/solutions/articles/48001065448-configure-piazza-within-moodle
     - https://demo.moodle.net
   - Existing services
+    - https://help.gradescope.com/category/kiu9t7kmdt-administrator
     - https://piazza.com/product/lti
+      - https://support.piazza.com/support/solutions/folders/48000669350
+      - https://s3.amazonaws.com/piazza-materials/LTI-Setup/piazza-canvas.xml
+    - https://github.com/microsoftarchive/Learn-LTI/blob/main/docs/CONFIGURATION_GUIDE.md
     - https://docs.moodle.org/402/en/LTI_and_Moodle
     - https://mlm.pearson.com/global/educators/support/lms-integration-services/index.html
-    - https://github.com/microsoftarchive/Learn-LTI/blob/main/docs/CONFIGURATION_GUIDE.md
   - https://courselore.org/courses/8537410611/conversations/79
 - Later
   - Perhaps integrate at the application level and create courses automatically
