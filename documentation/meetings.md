@@ -1,6 +1,13 @@
 # Meetings
 
 <details>
+<summary>2023-07-15</summary>
+
+- Figuring out LTI.
+
+</details>
+
+<details>
 <summary>2023-06-24</summary>
 
 - SAML at Hopkins is working!
