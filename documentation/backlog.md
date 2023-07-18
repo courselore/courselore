@@ -163,6 +163,7 @@
     - Canvas + https://github.com/Cvmcosta/ltijs-demo-client
     - https://github.com/UOC/java-lti-1.3-provider-example
 
+- Ponder whether to use LTI 1.1 or 1.3
 - OAuth
   - Include `state` on authorization request:
     - Redirect URL for when we’re back from authorization flow (deep link)
@@ -285,9 +286,8 @@
     - https://demo.moodle.net
   - Existing services
     - https://help.gradescope.com/category/kiu9t7kmdt-administrator
-    - https://piazza.com/product/lti
-      - https://support.piazza.com/support/solutions/folders/48000669350
-      - https://s3.amazonaws.com/piazza-materials/LTI-Setup/piazza-canvas.xml
+    - https://support.piazza.com/support/solutions/folders/48000669350
+      - https://piazza.com/product/lti
     - https://github.com/microsoftarchive/Learn-LTI/blob/main/docs/CONFIGURATION_GUIDE.md
     - https://docs.moodle.org/402/en/LTI_and_Moodle
     - https://mlm.pearson.com/global/educators/support/lms-integration-services/index.html
