@@ -2,7 +2,6 @@
 
 ## Work in Progress
 
-
 **Learning Tools Interoperability (LTI)**
 
 - Implement example
@@ -163,6 +162,11 @@
     - Canvas + https://github.com/Cvmcosta/ltijs-demo-client
     - https://github.com/UOC/java-lti-1.3-provider-example
 
+- Implementation strategy
+  - Use Ltijs
+    - Reimplement the database layer
+  - Do it by hand
+    - Reimplement a lot of OAuth, OpenID, etc.
 - OAuth
   - Include `state` on authorization request:
     - Redirect URL for when we’re back from authorization flow (deep link)
