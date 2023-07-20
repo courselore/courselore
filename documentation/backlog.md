@@ -163,7 +163,6 @@
     - Canvas + https://github.com/Cvmcosta/ltijs-demo-client
     - https://github.com/UOC/java-lti-1.3-provider-example
 
-- Ponder whether to use LTI 1.1 or 1.3
 - OAuth
   - Include `state` on authorization request:
     - Redirect URL for when we’re back from authorization flow (deep link)
@@ -251,6 +250,7 @@
         - https://github.com/Cvmcosta/ltijs-demo-client
       - https://github.com/blackboard/BBDN-LTI-Tool-Provider-Node
       - https://github.com/SanDiegoCodeSchool/lti-node-example
+      - https://github.com/oat-sa/devkit-lti1p3
     - OAuth2
       - Lists
         - https://oauth.net/code/nodejs/
@@ -291,6 +291,7 @@
     - https://github.com/microsoftarchive/Learn-LTI/blob/main/docs/CONFIGURATION_GUIDE.md
     - https://docs.moodle.org/402/en/LTI_and_Moodle
     - https://mlm.pearson.com/global/educators/support/lms-integration-services/index.html
+    - https://kb.wisc.edu/luwmad/page.php?id=123560
   - https://courselore.org/courses/8537410611/conversations/79
 - Later
   - Perhaps integrate at the application level and create courses automatically
