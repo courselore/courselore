@@ -2,6 +2,8 @@
 
 ## Work in Progress
 
+- Allow people to create a chat with only themselves: https://courselore.org/courses/8537410611/conversations/80
+
 **Learning Tools Interoperability (LTI)**
 
 - Implement example
