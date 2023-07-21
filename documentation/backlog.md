@@ -164,6 +164,42 @@
     - Canvas + https://github.com/Cvmcosta/ltijs-demo-client
     - https://github.com/UOC/java-lti-1.3-provider-example
 
+```
+    "start:localtunnel": "lt --port 3000"
+
+
+    // https://loose-dolls-beg.loca.lt/register
+    dynReg: {
+      url: 'https://loose-dolls-beg.loca.lt', // Tool Provider URL. Required field.
+      name: 'Example of Ltijs', // Tool Provider name. Required field.
+      logo: 'https://leafac.com/avatar.webp', // Tool Provider logo URL.
+      description: 'Example Tool Description', // Tool Provider description.
+      autoActivate: true // Whether or not dynamically registered Platforms should be automatically activated. Defaults to false.
+    }
+
+
+  // MOODLE
+  await lti.registerPlatform({
+    url: 'http://localhost:8000',
+    name: 'Example of Platform MOODLE',
+    clientId: 'gIrpGGmztzpiBhF',
+    authenticationEndpoint: 'http://localhost:8000/mod/lti/auth.php',
+    accesstokenEndpoint: 'http://localhost:8000/mod/lti/token.php',
+    authConfig: { method: 'JWK_SET', key: 'http://localhost:8000/mod/lti/certs.php' }
+  })
+
+  // CANVAS
+  await lti.registerPlatform({
+    url: 'https://canvas.instructure.com',
+    name: 'Example of Platform CANVAS',
+    clientId: '10000000000003',
+    authenticationEndpoint: 'http://canvas.docker/api/lti/authorize_redirect',
+    accesstokenEndpoint: 'http://canvas.docker/login/oauth2/token',
+    authConfig: { method: 'JWK_SET', key: 'http://canvas.docker/api/lti/security/jwks' }
+  })
+
+```
+
 - Implementation strategy
   - Use Ltijs
     - Reimplement the database layer
