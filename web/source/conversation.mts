@@ -4249,16 +4249,6 @@ export default async (application: Application): Promise<void> => {
                               required
                               tabindex="-1"
                               class="visually-hidden input--visible-when-enabled-and-checked"
-                              javascript="${javascript`
-                                if (${
-                                  conversationParticipants ===
-                                  "selected-participants"
-                                })
-                                  this.onvalidate = () => {
-                                    if (this.checked && [...this.closest("form").querySelectorAll('[name="selectedParticipantsReferences[]"]')].find(element => element.checked) === undefined)
-                                      return "Please select at least one participant.";
-                                  };
-                                `}"
                             />
                             <button
                               type="button"
@@ -5024,8 +5014,6 @@ export default async (application: Application): Promise<void> => {
       !Array.isArray(request.body.selectedParticipantsReferences) ||
       (request.body.participants === "everyone" &&
         request.body.selectedParticipantsReferences.length > 0) ||
-      (request.body.participants === "selected-participants" &&
-        request.body.selectedParticipantsReferences.length === 0) ||
       request.body.selectedParticipantsReferences.some(
         (selectedParticipantReference) =>
           typeof selectedParticipantReference !== "string"
@@ -7327,16 +7315,6 @@ export default async (application: Application): Promise<void> => {
                                         required
                                         tabindex="-1"
                                         class="visually-hidden input--visible-when-enabled-and-checked"
-                                        javascript="${javascript`
-                                          if (${
-                                            conversationParticipants ===
-                                            "selected-participants"
-                                          })
-                                            this.onvalidate = () => {
-                                              if (this.checked && [...this.closest("form").querySelectorAll('[name="selectedParticipantsReferences[]"]')].find(element => element.checked) === undefined)
-                                                return "Please select at least one participant.";
-                                            };
-                                        `}"
                                       />
                                       <button
                                         type="button"
@@ -10024,8 +10002,6 @@ export default async (application: Application): Promise<void> => {
             !Array.isArray(request.body.selectedParticipantsReferences) ||
             (request.body.participants === "everyone" &&
               request.body.selectedParticipantsReferences.length > 0) ||
-            (request.body.participants === "selected-participants" &&
-              request.body.selectedParticipantsReferences.length === 0) ||
             request.body.selectedParticipantsReferences.some(
               (selectedParticipantReference) =>
                 typeof selectedParticipantReference !== "string"

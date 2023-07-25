@@ -12,6 +12,8 @@
 
 ## Unreleased
 
+- Allow people to create a chat with only themselves: https://courselore.org/courses/8537410611/conversations/80
+
 ## 6.2.0
 
 **2023-06-08 · [Download](https://github.com/courselore/courselore/releases/tag/v6.2.0) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
