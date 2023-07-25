@@ -159,10 +159,8 @@
 
   - OpenID Connect client
   - LTI
-    - Canvas + https://github.com/Cvmcosta/ltijs-demo-client
-    - https://github.com/UOC/java-lti-1.3-provider-example
 
-```
+    ```
     "start:localtunnel": "lt --port 3000"
 
 
@@ -176,27 +174,26 @@
     }
 
 
-  // MOODLE
-  await lti.registerPlatform({
-    url: 'http://localhost:8000',
-    name: 'Example of Platform MOODLE',
-    clientId: 'gIrpGGmztzpiBhF',
-    authenticationEndpoint: 'http://localhost:8000/mod/lti/auth.php',
-    accesstokenEndpoint: 'http://localhost:8000/mod/lti/token.php',
-    authConfig: { method: 'JWK_SET', key: 'http://localhost:8000/mod/lti/certs.php' }
-  })
+    // MOODLE
+    await lti.registerPlatform({
+      url: 'http://localhost:8000',
+      name: 'Example of Platform MOODLE',
+      clientId: 'gIrpGGmztzpiBhF',
+      authenticationEndpoint: 'http://localhost:8000/mod/lti/auth.php',
+      accesstokenEndpoint: 'http://localhost:8000/mod/lti/token.php',
+      authConfig: { method: 'JWK_SET', key: 'http://localhost:8000/mod/lti/certs.php' }
+    })
 
-  // CANVAS
-  await lti.registerPlatform({
-    url: 'https://canvas.instructure.com',
-    name: 'Example of Platform CANVAS',
-    clientId: '10000000000003',
-    authenticationEndpoint: 'http://canvas.docker/api/lti/authorize_redirect',
-    accesstokenEndpoint: 'http://canvas.docker/login/oauth2/token',
-    authConfig: { method: 'JWK_SET', key: 'http://canvas.docker/api/lti/security/jwks' }
-  })
-
-```
+    // CANVAS
+    await lti.registerPlatform({
+      url: 'https://canvas.instructure.com',
+      name: 'Example of Platform CANVAS',
+      clientId: '10000000000003',
+      authenticationEndpoint: 'http://canvas.docker/api/lti/authorize_redirect',
+      accesstokenEndpoint: 'http://canvas.docker/login/oauth2/token',
+      authConfig: { method: 'JWK_SET', key: 'http://canvas.docker/api/lti/security/jwks' }
+    })
+    ```
 
 - Implementation strategy
   - Use Ltijs
@@ -210,15 +207,11 @@
   - Include PKCE
 - SAML
   - Include random value in `RelayState` to prevent CSRF?
-- Standards to look into
-  - IMS LTI Names and Role Provisioning
-  - OneRoster (Doesn’t seem as well supported, for example, in Moodle it’s a plugin in alpha stage that hasn’t been updated in a while)
 - SAML vs OAuth for authentication
   - It is possible that they give you different identifiers for the same person 🤦‍♂️
   - Introduce the notion of multiple emails per account
   - Introduce a way to merge accounts
   - Splash screen prompting to merge accounts
-- At Hopkins we’re integrating with Canvas, not SIS
 - How the synchronization of course participants behaves:
   - If someone appears in the LMS, sign them up in Courselore and add them as course participant. Mark their participation as having come from the LMS.
   - In general, mark everyone who appears in the LMS.
@@ -276,6 +269,7 @@
       - https://github.com/blackboard/BBDN-LTI-Tool-Provider-Node
       - https://github.com/SanDiegoCodeSchool/lti-node-example
       - https://github.com/oat-sa/devkit-lti1p3
+      - https://github.com/UOC/java-lti-1.3-provider-example
     - OAuth2
       - Lists
         - https://oauth.net/code/nodejs/
