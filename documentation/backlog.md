@@ -2,14 +2,13 @@
 
 ## Work in Progress
 
-- Update dependencies
-
 - Prettier 
   - `--parser=css` `postcss-scss` `postcss-less`
   - `prettier.format`
 - Type errors
 
 - `brew update && brew upgrade`
+  - Docker
 
 - Schedule meeting
 
