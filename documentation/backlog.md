@@ -2,6 +2,8 @@
 
 ## Work in Progress
 
+- Schedule meeting
+
 - Use node instead of nvm
   - Update documentation
 - Prettier 
@@ -69,8 +71,6 @@ video {
 
 
 - Type errors
-
-- Schedule meeting
 
 - `host.docker.internal`
 - `docker run --rm -it ubuntu bash`
