@@ -4,16 +4,14 @@
 
 - Update dependencies
 
-```
-https://npm.im/prettier                                ^2.8.8  →     ^3.0.1
-https://npm.im/semver                                  ^7.5.2  →     ^7.5.4
-https://npm.im/sharp                                  ^0.32.1  →    ^0.32.4
-https://npm.im/shiki                                  ^0.14.2  →    ^0.14.3
-https://npm.im/typescript                              ^5.1.3  →     ^5.1.6
-https://npm.im/unist-util-visit                        ^4.1.2  →     ^5.0.0
-```
+- Prettier 
+  - `--parser=css` `postcss-scss` `postcss-less`
+  - `prettier.format`
+- Type errors
 
 - `brew update && brew upgrade`
+
+- Schedule meeting
 
 - `host.docker.internal`
 - `docker run --rm -it ubuntu bash`
