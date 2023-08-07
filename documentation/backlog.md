@@ -4,11 +4,69 @@
 
 - Prettier 
   - `--parser=css` `postcss-scss` `postcss-less`
-  - `prettier.format`
-- Type errors
+  - `prettier.format()`
+    - How important is it to canonicalize?
+    - Use something other than Prettier to canonicalize the snippets of CSS & JavaScript
+      - Babel / PostCSS
+        - Synchronous APIs? Babel: Yes / PostCSS: Yes
+        - Canonicale? Babel: ? / PostCSS: https://www.npmjs.com/package/postcss-normalize-whitespace
+      - esbuild
+        - Fix spurious `{}` at the end of CSS snippets
+        - Test that differences in whitespace have been canonicalized
+        - Review options starting at https://esbuild.github.io/api/#output-contents
+        - BAD: Doesn’t understand nested selectors like PostCSS (and Prettier, for that matter)
+    - https://github.com/prettier/prettier-synchronized
+    - https://www.npmjs.com/package/synckit
+    - Some hack to let a Babel visitor run async code
+    - Rework the code to do a traversal only collecting the code, and a separate pass computing the canonical versions and so forth
+    - Old version of Prettier
+  - Get Visual Studio Code extension working with the latest version
 
-- `brew update && brew upgrade`
-  - Docker
+
+```javascript
+import esbuild from "esbuild";
+
+// console.log(esbuild.transformSync(`const a = 2;`, {loader: "js"}).code);
+// console.log(esbuild.transformSync(`const    =    2;`, {loader: "js"}).code);
+// console.log(esbuild.transformSync(`.a { background-color: blue; }`, {loader: "css"}).code);
+// console.log(esbuild.transformSync(`.a {       background-color: blue;         }`, {loader: "css"}).code);
+
+// console.log(esbuild.transformSync(`const a =    await    fn(   );`, {loader: "js"}).code);
+
+console.log(esbuild.transformSync(`&{padding: var(--space--2);
+display: flex;
+flex-direction: column;
+gap: var(--space--2);
+
+video {
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--border-radius--xl);
+  display: block;
+}}`, {loader: "css"}).code);
+
+
+
+import postcss from "postcss";
+
+console.log(postcss().process(`
+padding:       var(--space--2);
+display: flex;
+flex-direction: column;
+gap: var(--space--2);
+
+video {
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--border-radius--xl);
+  display: block;
+}
+`).sync().css);
+
+```
+
+
+- Type errors
 
 - Schedule meeting
 
