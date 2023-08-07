@@ -172,7 +172,7 @@ export default async (application: Application): Promise<void> => {
       response.locals.message = message;
 
       next();
-    }
+    },
   );
 
   application.web.locals.helpers.getMessage = ({
@@ -254,7 +254,7 @@ export default async (application: Application): Promise<void> => {
               : sql``
           }
         ORDER BY "messages"."id" ASC
-      `
+      `,
     );
     if (messageRow === undefined) return undefined;
     const message = {
@@ -342,7 +342,7 @@ export default async (application: Application): Promise<void> => {
           JOIN "users" ON "courseParticipants"."user" = "users"."id"
           WHERE "readings"."message" = ${message.id}
           ORDER BY "readings"."id" ASC
-        `
+        `,
       )
       .map((readingRow) => ({
         id: readingRow.id,
@@ -417,7 +417,7 @@ export default async (application: Application): Promise<void> => {
           JOIN "users" ON "courseParticipants"."user" = "users"."id"
           WHERE "endorsements"."message" = ${message.id}
           ORDER BY "endorsements"."id" ASC
-        `
+        `,
       )
       .map((endorsementRow) => ({
         id: endorsementRow.id,
@@ -494,7 +494,7 @@ export default async (application: Application): Promise<void> => {
           LEFT JOIN "users" ON "courseParticipants"."user" = "users"."id"
           WHERE "likes"."message" = ${message.id}
           ORDER BY "likes"."id" ASC
-        `
+        `,
       )
       .map((likeRow) => ({
         id: likeRow.id,
@@ -581,7 +581,7 @@ export default async (application: Application): Promise<void> => {
                         },
                         {
                           addQueryPrefix: true,
-                        }
+                        },
                       )}"
                     >
                       <button
@@ -615,15 +615,15 @@ export default async (application: Application): Promise<void> => {
                                       .authorCourseParticipant.reference
                                   }--${slugify(
                                     response.locals.message
-                                      .authorCourseParticipant.user.name
+                                      .authorCourseParticipant.user.name,
                                   )}`
                                 : `anonymous`
                             } · `
                       } + "#" + ${
-                  response.locals.conversation.reference
-                } + "/" + ${
-                  response.locals.message.reference
-                } + "\\n>\\n> " + content.replaceAll("\\n", "\\n> ") + "\\n\\n",
+                        response.locals.conversation.reference
+                      } + "/" + ${
+                        response.locals.message.reference
+                      } + "\\n>\\n> " + content.replaceAll("\\n", "\\n> ") + "\\n\\n",
                       ""
                     );
                     element.focus();
@@ -728,7 +728,7 @@ export default async (application: Application): Promise<void> => {
                       },
                       {
                         addQueryPrefix: true,
-                      }
+                      },
                     )}`});
                     this.copied.show();
                     await new Promise((resolve) => { window.setTimeout(resolve, 1000); });
@@ -767,7 +767,7 @@ export default async (application: Application): Promise<void> => {
                               conversations: request.query.conversations,
                               messages: request.query.messages,
                             },
-                            { addQueryPrefix: true }
+                            { addQueryPrefix: true },
                           )}`}, { cache: "no-store" })).text());
                           messageEdit.querySelector('[key="loading"]').hidden = true;
                           messageEdit.querySelector('[key="form"]').hidden = false;
@@ -810,7 +810,7 @@ export default async (application: Application): Promise<void> => {
                         },
                         {
                           addQueryPrefix: true,
-                        }
+                        },
                       )}"
                       class="dropdown--menu"
                     >
@@ -967,7 +967,7 @@ export default async (application: Application): Promise<void> => {
                                     },
                                     {
                                       addQueryPrefix: true,
-                                    }
+                                    },
                                   )}"
                                   css="${css`
                                     padding: var(--space--2);
@@ -1007,9 +1007,9 @@ export default async (application: Application): Promise<void> => {
                 : html``}
             </div>
           `,
-        })
+        }),
       );
-    }
+    },
   );
 
   application.web.get<
@@ -1051,7 +1051,7 @@ export default async (application: Application): Promise<void> => {
                   conversations: request.query.conversations,
                   messages: request.query.messages,
                 },
-                { addQueryPrefix: true }
+                { addQueryPrefix: true },
               )}"
               novalidate
               css="${css`
@@ -1133,9 +1133,9 @@ export default async (application: Application): Promise<void> => {
               </div>
             </form>
           `,
-        })
+        }),
       );
-    }
+    },
   );
 
   application.web.get<
@@ -1203,13 +1203,13 @@ export default async (application: Application): Promise<void> => {
                       ></time>
                     </span>
                   </div>
-                `
+                `,
               )}
             </div>
           `,
-        })
+        }),
       );
-    }
+    },
   );
 
   application.web.post<
@@ -1239,9 +1239,9 @@ export default async (application: Application): Promise<void> => {
                 response.locals.courseParticipant.id
               } AND
               ${new Date(
-                Date.now() - 5 * 60 * 1000
+                Date.now() - 5 * 60 * 1000,
               ).toISOString()} < "createdAt"
-          `
+          `,
         ) === undefined
       )
         application.web.locals.helpers.liveUpdates({
@@ -1257,7 +1257,7 @@ export default async (application: Application): Promise<void> => {
             WHERE
               "conversation" = ${response.locals.conversation.id} AND
               "authorCourseParticipant" = ${response.locals.courseParticipant.id}
-          `
+          `,
         );
       else
         application.database.run(
@@ -1274,11 +1274,11 @@ export default async (application: Application): Promise<void> => {
               ${response.locals.courseParticipant.id},
               ${request.body.content}
             )
-          `
+          `,
         );
 
       response.end();
-    }
+    },
   );
 
   application.web.post<
@@ -1327,7 +1327,7 @@ export default async (application: Application): Promise<void> => {
         response,
         conversation: response.locals.conversation,
         messageReference: String(
-          response.locals.conversation.nextMessageReference - 1
+          response.locals.conversation.nextMessageReference - 1,
         ),
       });
       let message: { id: number; reference: string };
@@ -1353,7 +1353,7 @@ export default async (application: Application): Promise<void> => {
               UPDATE "conversations"
               SET "updatedAt" = ${new Date().toISOString()}
               WHERE "id" = ${response.locals.conversation.id}
-            `
+            `,
           );
           application.database.run(
             sql`
@@ -1363,7 +1363,7 @@ export default async (application: Application): Promise<void> => {
                 "contentPreprocessed" = ${contentPreprocessed.contentPreprocessed},
                 "contentSearch" = ${contentPreprocessed.contentSearch}
               WHERE "id" = ${mostRecentMessage.id}
-            `
+            `,
           );
           message = mostRecentMessage;
           application.database.run(
@@ -1372,13 +1372,13 @@ export default async (application: Application): Promise<void> => {
               WHERE
                 "message" = ${mostRecentMessage.id} AND
                 "courseParticipant" != ${response.locals.courseParticipant.id}
-            `
+            `,
           );
         });
       } else {
         const contentPreprocessed =
           application.web.locals.partials.contentPreprocessed(
-            request.body.content
+            request.body.content,
           );
 
         application.database.executeTransaction(() => {
@@ -1411,7 +1411,7 @@ export default async (application: Application): Promise<void> => {
                     : sql``
                 }
               WHERE "id" = ${response.locals.conversation.id}
-            `
+            `,
           );
           message = application.database.get<{
             id: number;
@@ -1436,7 +1436,7 @@ export default async (application: Application): Promise<void> => {
                       ${new Date().toISOString()},
                       ${response.locals.conversation.id},
                       ${String(
-                        response.locals.conversation.nextMessageReference
+                        response.locals.conversation.nextMessageReference,
                       )},
                       ${response.locals.courseParticipant.id},
                       ${
@@ -1449,10 +1449,10 @@ export default async (application: Application): Promise<void> => {
                       ${contentPreprocessed.contentPreprocessed},
                       ${contentPreprocessed.contentSearch}
                     )
-                  `
+                  `,
                 ).lastInsertRowid
               }
-            `
+            `,
           )!;
           application.database.run(
             sql`
@@ -1462,7 +1462,7 @@ export default async (application: Application): Promise<void> => {
                 ${message.id},
                 ${response.locals.courseParticipant.id}
               )
-            `
+            `,
           );
         });
       }
@@ -1472,7 +1472,7 @@ export default async (application: Application): Promise<void> => {
           WHERE
             "conversation" = ${response.locals.conversation.id} AND
             "authorCourseParticipant" = ${response.locals.courseParticipant.id}
-        `
+        `,
       );
       application.web.locals.helpers.emailNotifications({
         request,
@@ -1494,8 +1494,8 @@ export default async (application: Application): Promise<void> => {
             conversations: request.query.conversations,
             messages: request.query.messages,
           },
-          { addQueryPrefix: true }
-        )}`
+          { addQueryPrefix: true },
+        )}`,
       );
 
       application.web.locals.helpers.liveUpdates({
@@ -1503,7 +1503,7 @@ export default async (application: Application): Promise<void> => {
         response,
         url: `/courses/${response.locals.course.reference}`,
       });
-    }
+    },
   );
 
   application.web.locals.helpers.mayEditMessage = ({
@@ -1549,7 +1549,7 @@ export default async (application: Application): Promise<void> => {
       if (typeof request.body.type === "string")
         if (
           !["message", "answer", "follow-up-question"].includes(
-            request.body.type
+            request.body.type,
           ) ||
           response.locals.message.reference === "1" ||
           response.locals.conversation.type !== "question" ||
@@ -1562,7 +1562,7 @@ export default async (application: Application): Promise<void> => {
               UPDATE "messages"
               SET "type" = ${request.body.type}
               WHERE "id" = ${response.locals.message.id}
-            `
+            `,
           );
 
       if (typeof request.body.isAnonymous === "string")
@@ -1585,7 +1585,7 @@ export default async (application: Application): Promise<void> => {
                     : null
                 }
                 WHERE "id" = ${response.locals.message.id}
-              `
+              `,
             );
             if (
               response.locals.message.reference === "1" &&
@@ -1605,7 +1605,7 @@ export default async (application: Application): Promise<void> => {
                       : null
                   }
                   WHERE "id" = ${response.locals.conversation.id}
-                `
+                `,
               );
           });
 
@@ -1613,7 +1613,7 @@ export default async (application: Application): Promise<void> => {
         if (request.body.content.trim() === "") return next("Validation");
         const contentPreprocessed =
           application.web.locals.partials.contentPreprocessed(
-            request.body.content
+            request.body.content,
           );
 
         application.database.executeTransaction(() => {
@@ -1628,7 +1628,7 @@ export default async (application: Application): Promise<void> => {
                 "contentSearch" = ${contentPreprocessed.contentSearch},
                 "updatedAt" = ${new Date().toISOString()}
               WHERE "id" = ${response.locals.message.id}
-            `
+            `,
           );
           if (response.locals.message.type !== "course-staff-whisper")
             application.database.run(
@@ -1636,7 +1636,7 @@ export default async (application: Application): Promise<void> => {
                 UPDATE "conversations"
                 SET "updatedAt" = ${new Date().toISOString()}
                 WHERE "id" = ${response.locals.conversation.id}
-              `
+              `,
             );
         });
 
@@ -1656,8 +1656,8 @@ export default async (application: Application): Promise<void> => {
             conversations: request.query.conversations,
             messages: request.query.messages,
           },
-          { addQueryPrefix: true }
-        )}`
+          { addQueryPrefix: true },
+        )}`,
       );
 
       application.web.locals.helpers.liveUpdates({
@@ -1665,7 +1665,7 @@ export default async (application: Application): Promise<void> => {
         response,
         url: `/courses/${response.locals.course.reference}`,
       });
-    }
+    },
   );
 
   application.web.get<
@@ -1728,14 +1728,14 @@ export default async (application: Application): Promise<void> => {
                       isPinned: response.locals.conversation.pinnedAt !== null,
                     },
                   },
-                  { addQueryPrefix: true }
+                  { addQueryPrefix: true },
                 )}`,
               })}
             </div>
           `,
-        })
+        }),
       );
-    }
+    },
   );
 
   application.web.delete<
@@ -1761,7 +1761,7 @@ export default async (application: Application): Promise<void> => {
         return next();
 
       application.database.run(
-        sql`DELETE FROM "messages" WHERE "id" = ${response.locals.message.id}`
+        sql`DELETE FROM "messages" WHERE "id" = ${response.locals.message.id}`,
       );
 
       response.redirect(
@@ -1773,8 +1773,8 @@ export default async (application: Application): Promise<void> => {
             conversations: request.query.conversations,
             messages: request.query.messages,
           },
-          { addQueryPrefix: true }
-        )}`
+          { addQueryPrefix: true },
+        )}`,
       );
 
       application.web.locals.helpers.liveUpdates({
@@ -1782,7 +1782,7 @@ export default async (application: Application): Promise<void> => {
         response,
         url: `/courses/${response.locals.course.reference}/conversations/${response.locals.conversation.reference}`,
       });
-    }
+    },
   );
 
   application.web.get<
@@ -1846,13 +1846,13 @@ export default async (application: Application): Promise<void> => {
                       ></time>
                     </span>
                   </div>
-                `
+                `,
               )}
             </div>
           `,
-        })
+        }),
       );
-    }
+    },
   );
 
   application.web.post<
@@ -1877,7 +1877,7 @@ export default async (application: Application): Promise<void> => {
         response.locals.message.likes.some(
           (like) =>
             like.courseParticipant !== "no-longer-participating" &&
-            like.courseParticipant.id === response.locals.courseParticipant.id
+            like.courseParticipant.id === response.locals.courseParticipant.id,
         )
       )
         return next("Validation");
@@ -1890,7 +1890,7 @@ export default async (application: Application): Promise<void> => {
             ${response.locals.message.id},
             ${response.locals.courseParticipant.id}
           )
-        `
+        `,
       );
 
       response.redirect(
@@ -1902,8 +1902,8 @@ export default async (application: Application): Promise<void> => {
             conversations: request.query.conversations,
             messages: request.query.messages,
           },
-          { addQueryPrefix: true }
-        )}`
+          { addQueryPrefix: true },
+        )}`,
       );
 
       application.web.locals.helpers.liveUpdates({
@@ -1911,7 +1911,7 @@ export default async (application: Application): Promise<void> => {
         response,
         url: `/courses/${response.locals.course.reference}/conversations/${response.locals.conversation.reference}`,
       });
-    }
+    },
   );
 
   application.web.delete<
@@ -1935,14 +1935,14 @@ export default async (application: Application): Promise<void> => {
       const like = response.locals.message.likes.find(
         (like) =>
           like.courseParticipant !== "no-longer-participating" &&
-          like.courseParticipant.id === response.locals.courseParticipant.id
+          like.courseParticipant.id === response.locals.courseParticipant.id,
       );
       if (like === undefined) return next("Validation");
 
       application.database.run(
         sql`
           DELETE FROM "likes" WHERE "id" = ${like.id}
-        `
+        `,
       );
 
       response.redirect(
@@ -1954,8 +1954,8 @@ export default async (application: Application): Promise<void> => {
             conversations: request.query.conversations,
             messages: request.query.messages,
           },
-          { addQueryPrefix: true }
-        )}`
+          { addQueryPrefix: true },
+        )}`,
       );
 
       application.web.locals.helpers.liveUpdates({
@@ -1963,7 +1963,7 @@ export default async (application: Application): Promise<void> => {
         response,
         url: `/courses/${response.locals.course.reference}/conversations/${response.locals.conversation.reference}`,
       });
-    }
+    },
   );
 
   application.web.locals.helpers.mayEndorseMessage = ({
@@ -2009,7 +2009,7 @@ export default async (application: Application): Promise<void> => {
           (endorsement) =>
             endorsement.courseParticipant !== "no-longer-participating" &&
             endorsement.courseParticipant.id ===
-              response.locals.courseParticipant.id
+              response.locals.courseParticipant.id,
         )
       )
         return next("Validation");
@@ -2022,7 +2022,7 @@ export default async (application: Application): Promise<void> => {
             ${response.locals.message.id},
             ${response.locals.courseParticipant.id}
           )
-        `
+        `,
       );
       if (response.locals.conversation.resolvedAt === null)
         application.database.run(
@@ -2030,7 +2030,7 @@ export default async (application: Application): Promise<void> => {
             UPDATE "conversations"
             SET "resolvedAt" = ${new Date().toISOString()}
             WHERE "id" = ${response.locals.conversation.id}
-          `
+          `,
         );
 
       response.redirect(
@@ -2042,8 +2042,8 @@ export default async (application: Application): Promise<void> => {
             conversations: request.query.conversations,
             messages: request.query.messages,
           },
-          { addQueryPrefix: true }
-        )}`
+          { addQueryPrefix: true },
+        )}`,
       );
 
       application.web.locals.helpers.liveUpdates({
@@ -2051,7 +2051,7 @@ export default async (application: Application): Promise<void> => {
         response,
         url: `/courses/${response.locals.course.reference}/conversations/${response.locals.conversation.reference}`,
       });
-    }
+    },
   );
 
   application.web.delete<
@@ -2084,12 +2084,12 @@ export default async (application: Application): Promise<void> => {
         (endorsement) =>
           endorsement.courseParticipant !== "no-longer-participating" &&
           endorsement.courseParticipant.id ===
-            response.locals.courseParticipant.id
+            response.locals.courseParticipant.id,
       );
       if (endorsement === undefined) return next("Validation");
 
       application.database.run(
-        sql`DELETE FROM "endorsements" WHERE "id" = ${endorsement.id}`
+        sql`DELETE FROM "endorsements" WHERE "id" = ${endorsement.id}`,
       );
 
       response.redirect(
@@ -2101,8 +2101,8 @@ export default async (application: Application): Promise<void> => {
             conversations: request.query.conversations,
             messages: request.query.messages,
           },
-          { addQueryPrefix: true }
-        )}`
+          { addQueryPrefix: true },
+        )}`,
       );
 
       application.web.locals.helpers.liveUpdates({
@@ -2110,7 +2110,7 @@ export default async (application: Application): Promise<void> => {
         response,
         url: `/courses/${response.locals.course.reference}/conversations/${response.locals.conversation.reference}`,
       });
-    }
+    },
   );
 
   application.web.locals.helpers.emailNotifications = ({
@@ -2127,7 +2127,7 @@ export default async (application: Application): Promise<void> => {
             ${message.id},
             ${response.locals.courseParticipant.id}
           )
-        `
+        `,
       );
       if (message.authorCourseParticipant !== "no-longer-participating")
         application.database.run(
@@ -2138,7 +2138,7 @@ export default async (application: Application): Promise<void> => {
               ${message.id},
               ${message.authorCourseParticipant.id}
             )
-          `
+          `,
         );
 
       const job = application.database.get<{ id: number }>(
@@ -2148,7 +2148,7 @@ export default async (application: Application): Promise<void> => {
           WHERE
             "message" = ${message.id} AND
             "startedAt" IS NULL
-        `
+        `,
       );
       if (job === undefined)
         application.database.run(
@@ -2162,12 +2162,12 @@ export default async (application: Application): Promise<void> => {
             VALUES (
               ${new Date().toISOString()},
               ${new Date(
-                Date.now() /* TODO: Email notification digests: + 5 * 60 * 1000 */
+                Date.now() /* TODO: Email notification digests: + 5 * 60 * 1000 */,
               ).toISOString()},
               ${new Date(Date.now() + 5 * 60 * 60 * 1000).toISOString()},
               ${message.id}
             )
-          `
+          `,
         );
       else
         application.database.run(
@@ -2175,13 +2175,13 @@ export default async (application: Application): Promise<void> => {
             UPDATE "emailNotificationMessageJobs"
             SET
               "startAt" = ${new Date(
-                Date.now() /* TODO: Email notification digests: + 5 * 60 * 1000 */
+                Date.now() /* TODO: Email notification digests: + 5 * 60 * 1000 */,
               ).toISOString()},
               "expiresAt" = ${new Date(
-                Date.now() + 5 * 60 * 60 * 1000
+                Date.now() + 5 * 60 * 60 * 1000,
               ).toISOString()}
             WHERE "id" = ${job.id}
-          `
+          `,
         );
     });
   };
@@ -2199,17 +2199,17 @@ export default async (application: Application): Promise<void> => {
             SELECT "id", "message"
             FROM "emailNotificationMessageJobs"
             WHERE "expiresAt" < ${new Date().toISOString()}
-          `
+          `,
         )) {
           application.database.run(
             sql`
               DELETE FROM "emailNotificationMessageJobs" WHERE "id" = ${job.id}
-            `
+            `,
           );
           application.log(
             "emailNotificationMessageJobs",
             "EXPIRED",
-            `message = ${job.message}`
+            `message = ${job.message}`,
           );
         }
       });
@@ -2223,21 +2223,21 @@ export default async (application: Application): Promise<void> => {
             SELECT "id", "message"
             FROM "emailNotificationMessageJobs"
             WHERE "startedAt" < ${new Date(
-              Date.now() - 2 * 60 * 1000
+              Date.now() - 2 * 60 * 1000,
             ).toISOString()}
-          `
+          `,
         )) {
           application.database.run(
             sql`
               UPDATE "emailNotificationMessageJobs"
               SET "startedAt" = NULL
               WHERE "id" = ${job.id}
-            `
+            `,
           );
           application.log(
             "emailNotificationMessageJobs",
             "TIMED OUT",
-            `message = ${job.message}`
+            `message = ${job.message}`,
           );
         }
       });
@@ -2256,7 +2256,7 @@ export default async (application: Application): Promise<void> => {
                 "startedAt" IS NULL
               ORDER BY "startAt" ASC
               LIMIT 1
-            `
+            `,
           );
           if (job !== undefined)
             application.database.run(
@@ -2264,7 +2264,7 @@ export default async (application: Application): Promise<void> => {
                 UPDATE "emailNotificationMessageJobs"
                 SET "startedAt" = ${new Date().toISOString()}
                 WHERE "id" = ${job.id}
-              `
+              `,
             );
           return job;
         });
@@ -2324,7 +2324,7 @@ export default async (application: Application): Promise<void> => {
             LEFT JOIN "courseParticipants" AS "authorCourseParticipant" ON "messages"."authorCourseParticipant" = "authorCourseParticipant"."id"
             LEFT JOIN "users" AS "authorUser" ON "authorCourseParticipant"."user" = "authorUser"."id"
             WHERE "messages"."id" = ${job.message}
-          `
+          `,
         )!;
         const message = {
           id: messageRow.id,
@@ -2414,10 +2414,10 @@ export default async (application: Application): Promise<void> => {
                     `
                   : sql``
               } $${
-            conversation.participants === "everyone"
-              ? sql``
-              : conversation.participants === "course-staff"
-              ? sql`
+                conversation.participants === "everyone"
+                  ? sql``
+                  : conversation.participants === "course-staff"
+                  ? sql`
                   AND (
                     "courseParticipants"."courseRole" = 'course-staff' OR EXISTS(
                       SELECT TRUE
@@ -2428,8 +2428,8 @@ export default async (application: Application): Promise<void> => {
                     )
                   )
                 `
-              : conversation.participants === "selected-participants"
-              ? sql`
+                  : conversation.participants === "selected-participants"
+                  ? sql`
                   AND EXISTS(
                     SELECT TRUE
                     FROM "conversationSelectedParticipants"
@@ -2438,13 +2438,13 @@ export default async (application: Application): Promise<void> => {
                       "conversationSelectedParticipants"."courseParticipant" = "courseParticipants"."id"
                   )
                 `
-              : sql``
-          } $${
-            conversation.type === "note" &&
-            conversation.announcementAt !== null &&
-            message.reference === "1"
-              ? sql``
-              : sql`
+                  : sql``
+              } $${
+                conversation.type === "note" &&
+                conversation.announcementAt !== null &&
+                message.reference === "1"
+                  ? sql``
+                  : sql`
                   AND (
                     "users"."emailNotificationsForAllMessages" != 'none' OR (
                       "users"."emailNotificationsForMentionsAt" IS NOT NULL
@@ -2488,8 +2488,8 @@ export default async (application: Application): Promise<void> => {
                     )
                   )
                 `
-          }
-          `
+              }
+          `,
         );
 
         for (const courseParticipant of courseParticipants) {
@@ -2534,7 +2534,7 @@ export default async (application: Application): Promise<void> => {
                               messageReference: message.reference,
                             },
                           },
-                          { addQueryPrefix: true }
+                          { addQueryPrefix: true },
                         )}"
                         >${message.courseParticipant ===
                         "no-longer-participating"
@@ -2568,7 +2568,7 @@ export default async (application: Application): Promise<void> => {
                   `,
                 })}
               )
-            `
+            `,
           );
 
           application.database.run(
@@ -2579,20 +2579,20 @@ export default async (application: Application): Promise<void> => {
                 ${message.id},
                 ${courseParticipant.id}
               )
-            `
+            `,
           );
         }
 
         application.database.run(
           sql`
             DELETE FROM "emailNotificationMessageJobs" WHERE "id" = ${job.id}
-          `
+          `,
         );
 
         application.log(
           "emailNotificationMessageJobs",
           "SUCCEEDED",
-          `message = ${job.message}`
+          `message = ${job.message}`,
         );
 
         await timers.setTimeout(100 + Math.random() * 100, undefined, {
@@ -2605,7 +2605,7 @@ export default async (application: Application): Promise<void> => {
       await timers.setTimeout(
         2 * 60 * 1000 + Math.random() * 30 * 1000,
         undefined,
-        { ref: false }
+        { ref: false },
       );
     }
   });

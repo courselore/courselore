@@ -21,14 +21,14 @@ export default async (application: Application): Promise<void> => {
           303,
           `https://${application.configuration.hostname}/sign-in${qs.stringify(
             { redirect: request.originalUrl.slice(1) },
-            { addQueryPrefix: true }
-          )}`
+            { addQueryPrefix: true },
+          )}`,
         );
 
       if (typeof request.query.redirect === "string")
         return response.redirect(
           303,
-          `https://${application.configuration.hostname}/${request.query.redirect}`
+          `https://${application.configuration.hostname}/${request.query.redirect}`,
         );
     }
 
@@ -56,7 +56,7 @@ export default async (application: Application): Promise<void> => {
               action="https://${application.configuration
                 .hostname}/resend-email-verification${qs.stringify(
                 { redirect: request.originalUrl.slice(1) },
-                { addQueryPrefix: true }
+                { addQueryPrefix: true },
               )}"
             >
               Didn’t receive the email? Already checked your spam inbox?
@@ -85,7 +85,7 @@ export default async (application: Application): Promise<void> => {
               action="https://${application.configuration
                 .hostname}/settings/email-and-password${qs.stringify(
                 { redirect: request.originalUrl.slice(1) },
-                { addQueryPrefix: true }
+                { addQueryPrefix: true },
               )}"
               hidden
               novalidate
@@ -157,7 +157,7 @@ export default async (application: Application): Promise<void> => {
                   }>(
                     sql`
                       SELECT "nonce" FROM "emailVerifications" WHERE "user" = ${response.locals.user.id}
-                    `
+                    `,
                   );
                   if (emailVerification === undefined) {
                     application.web.locals.helpers.emailVerification({
@@ -171,7 +171,7 @@ export default async (application: Application): Promise<void> => {
                     }>(
                       sql`
                         SELECT "nonce" FROM "emailVerifications" WHERE "user" = ${response.locals.user.id}
-                      `
+                      `,
                     )!;
                   }
                   return html`
@@ -188,7 +188,7 @@ export default async (application: Application): Promise<void> => {
                         href="https://${application.configuration
                           .hostname}/email-verification/${emailVerification.nonce}${qs.stringify(
                           { redirect: request.originalUrl.slice(1) },
-                          { addQueryPrefix: true }
+                          { addQueryPrefix: true },
                         )}"
                         class="link"
                         >Verify email</a
@@ -198,7 +198,7 @@ export default async (application: Application): Promise<void> => {
                 })()
               : html``}
           `,
-        })
+        }),
       );
 
     response.status(404).send(
@@ -222,7 +222,7 @@ export default async (application: Application): Promise<void> => {
             >.
           </p>
         `,
-      })
+      }),
     );
   });
 
@@ -238,7 +238,7 @@ export default async (application: Application): Promise<void> => {
           ? 403
           : error === "Validation"
           ? 422
-          : 500
+          : 500,
       )
       .send(
         application.web.locals.layouts.box({
@@ -263,7 +263,13 @@ export default async (application: Application): Promise<void> => {
               >.
             </p>
           `,
-        })
+        }),
       );
-  }) as express.ErrorRequestHandler<{}, any, {}, {}, Application["web"]["locals"]["ResponseLocals"]["LiveConnection"]>);
+  }) as express.ErrorRequestHandler<
+    {},
+    any,
+    {},
+    {},
+    Application["web"]["locals"]["ResponseLocals"]["LiveConnection"]
+  >);
 };

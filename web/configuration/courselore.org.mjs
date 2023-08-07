@@ -2,7 +2,7 @@ import url from "node:url";
 import fs from "node:fs/promises";
 
 const secrets = JSON.parse(
-  await fs.readFile(new URL("./secrets.json", import.meta.url), "utf8")
+  await fs.readFile(new URL("./secrets.json", import.meta.url), "utf8"),
 );
 
 export default {
@@ -50,37 +50,37 @@ export default {
         cert: await fs.readFile(
           new URL(
             "./keys/johns-hopkins-university--saml--identity-provider--signing.crt",
-            import.meta.url
+            import.meta.url,
           ),
-          "utf-8"
+          "utf-8",
         ),
         privateKey: await fs.readFile(
           new URL(
             "./keys/johns-hopkins-university--saml--service-provider--signing.key",
-            import.meta.url
+            import.meta.url,
           ),
-          "utf-8"
+          "utf-8",
         ),
         signingCert: await fs.readFile(
           new URL(
             "./keys/johns-hopkins-university--saml--service-provider--signing.crt",
-            import.meta.url
+            import.meta.url,
           ),
-          "utf-8"
+          "utf-8",
         ),
         decryptionPvk: await fs.readFile(
           new URL(
             "./keys/johns-hopkins-university--saml--service-provider--encryption.key",
-            import.meta.url
+            import.meta.url,
           ),
-          "utf-8"
+          "utf-8",
         ),
         decryptionCert: await fs.readFile(
           new URL(
             "./keys/johns-hopkins-university--saml--service-provider--encryption.crt",
-            import.meta.url
+            import.meta.url,
           ),
-          "utf-8"
+          "utf-8",
         ),
       },
     },

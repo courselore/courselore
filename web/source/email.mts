@@ -12,21 +12,21 @@ export default async (application: Application): Promise<void> => {
   application.workerEvents.once("start", async () => {
     const sendMailTransport = nodemailer.createTransport(
       application.configuration.email.options,
-      application.configuration.email.defaults
+      application.configuration.email.defaults,
     );
     const sendMail =
       application.configuration.email.options.streamTransport &&
       application.configuration.email.options.buffer
         ? async (mailOptions: nodemailer.SendMailOptions) => {
             const sentMessageInfo = await sendMailTransport.sendMail(
-              mailOptions
+              mailOptions,
             );
             const emailFile = path.join(
               application.configuration.dataDirectory,
               "emails",
               filenamify(`${new Date().toISOString()}--${mailOptions.to}.eml`, {
                 replacement: "-",
-              })
+              }),
             );
             await fs.mkdir(path.dirname(emailFile), { recursive: true });
             await fs.writeFile(emailFile, (sentMessageInfo as any).message);
@@ -47,17 +47,17 @@ export default async (application: Application): Promise<void> => {
             SELECT "id", "mailOptions"
             FROM "sendEmailJobs"
             WHERE "expiresAt" < ${new Date().toISOString()}
-          `
+          `,
         )) {
           application.database.run(
             sql`
               DELETE FROM "sendEmailJobs" WHERE "id" = ${job.id}
-            `
+            `,
           );
           application.log(
             "sendEmailJobs",
             "EXPIRED",
-            JSON.stringify(JSON.parse(job.mailOptions), undefined, 2)
+            JSON.stringify(JSON.parse(job.mailOptions), undefined, 2),
           );
         }
       });
@@ -71,21 +71,21 @@ export default async (application: Application): Promise<void> => {
             SELECT "id", "mailOptions"
             FROM "sendEmailJobs"
             WHERE "startedAt" < ${new Date(
-              Date.now() - 2 * 60 * 1000
+              Date.now() - 2 * 60 * 1000,
             ).toISOString()}
-          `
+          `,
         )) {
           application.database.run(
             sql`
               UPDATE "sendEmailJobs"
               SET "startedAt" = NULL
               WHERE "id" = ${job.id}
-            `
+            `,
           );
           application.log(
             "sendEmailJobs",
             "TIMED OUT",
-            JSON.stringify(JSON.parse(job.mailOptions), undefined, 2)
+            JSON.stringify(JSON.parse(job.mailOptions), undefined, 2),
           );
         }
       });
@@ -104,7 +104,7 @@ export default async (application: Application): Promise<void> => {
                 "startedAt" IS NULL
               ORDER BY "startAt" ASC
               LIMIT 1
-            `
+            `,
           );
           if (job !== undefined)
             application.database.run(
@@ -112,7 +112,7 @@ export default async (application: Application): Promise<void> => {
                 UPDATE "sendEmailJobs"
                 SET "startedAt" = ${new Date().toISOString()}
                 WHERE "id" = ${job.id}
-              `
+              `,
             );
           return job;
         });
@@ -124,14 +124,14 @@ export default async (application: Application): Promise<void> => {
           application.database.run(
             sql`
               DELETE FROM "sendEmailJobs" WHERE "id" = ${job.id}
-            `
+            `,
           );
           application.log(
             "sendEmailJobs",
             "SUCCEEDED",
             sentMessageInfo.response ?? "",
             mailOptions.to,
-            mailOptions.subject
+            mailOptions.subject,
           );
         } catch (error: nodemailer.SentMessageInfo) {
           application.database.run(
@@ -139,11 +139,11 @@ export default async (application: Application): Promise<void> => {
               UPDATE "sendEmailJobs"
               SET
                 "startAt" = ${new Date(
-                  Date.now() + 5 * 60 * 1000
+                  Date.now() + 5 * 60 * 1000,
                 ).toISOString()},
                 "startedAt" = NULL
               WHERE "id" = ${job.id}
-            `
+            `,
           );
           application.log(
             "sendEmailJobs",
@@ -152,7 +152,7 @@ export default async (application: Application): Promise<void> => {
             mailOptions.to,
             mailOptions.subject,
             String(error),
-            error?.stack
+            error?.stack,
           );
         }
 
@@ -178,6 +178,6 @@ export default async (application: Application): Promise<void> => {
     (request, response) => {
       timerAbortController?.abort();
       response.end();
-    }
+    },
   );
 };

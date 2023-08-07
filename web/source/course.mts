@@ -121,7 +121,7 @@ export type ApplicationCourse = {
           "emerald",
           "sky",
           "violet",
-          "pink"
+          "pink",
         ];
       };
     };
@@ -272,7 +272,7 @@ export default async (application: Application): Promise<void> => {
               </div>
             </div>
           `,
-        })
+        }),
       );
 
     response.redirect(
@@ -280,7 +280,7 @@ export default async (application: Application): Promise<void> => {
       `https://${application.configuration.hostname}/courses/${
         response.locals.user.mostRecentlyVisitedCourseReference ??
         response.locals.courseParticipants[0].course.reference
-      }`
+      }`,
     );
   });
 
@@ -399,7 +399,7 @@ export default async (application: Application): Promise<void> => {
             </div>
           </form>
         `,
-      })
+      }),
     );
   });
 
@@ -484,10 +484,10 @@ export default async (application: Application): Promise<void> => {
                   ${1},
                   ${new Date().toISOString()}
                 )
-              `
+              `,
             ).lastInsertRowid
           }
-        `
+        `,
       )!;
       application.database.run(
         sql`
@@ -500,14 +500,14 @@ export default async (application: Application): Promise<void> => {
             ${"course-staff"},
             ${defaultAccentColor({ request, response })}
           )
-        `
+        `,
       );
       return course;
     });
 
     response.redirect(
       303,
-      `https://${application.configuration.hostname}/courses/${course.reference}`
+      `https://${application.configuration.hostname}/courses/${course.reference}`,
     );
   });
 
@@ -528,7 +528,7 @@ export default async (application: Application): Promise<void> => {
     >;
   }): Application["web"]["locals"]["helpers"]["courseParticipantAccentColors"][number] => {
     const accentColorsAvailable = new Set(
-      application.web.locals.helpers.courseParticipantAccentColors
+      application.web.locals.helpers.courseParticipantAccentColors,
     );
     for (const courseParticipant of response.locals.courseParticipants) {
       accentColorsAvailable.delete(courseParticipant.accentColor);
@@ -552,7 +552,7 @@ export default async (application: Application): Promise<void> => {
 
     const courseParticipant = response.locals.courseParticipants.find(
       (courseParticipant) =>
-        courseParticipant.course.reference === request.params.courseReference
+        courseParticipant.course.reference === request.params.courseReference,
     );
     if (courseParticipant === undefined) return next();
     response.locals.courseParticipant = courseParticipant;
@@ -565,7 +565,7 @@ export default async (application: Application): Promise<void> => {
         SELECT COUNT(*) AS "count"
         FROM "courseParticipants"
         WHERE "course" = ${response.locals.course.id}
-      `
+      `,
     )!.count;
 
     response.locals.mostRecentlyUpdatedConversationReference =
@@ -594,7 +594,7 @@ export default async (application: Application): Promise<void> => {
           ORDER BY
             "conversations"."pinnedAt" IS NOT NULL DESC,
             coalesce("updatedAt", "createdAt") DESC
-        `
+        `,
       )?.reference ?? null;
 
     response.locals.tags = application.database.all<{
@@ -615,7 +615,7 @@ export default async (application: Application): Promise<void> => {
               : sql``
           }
         ORDER BY "order" ASC
-      `
+      `,
     );
 
     application.database.run(
@@ -623,7 +623,7 @@ export default async (application: Application): Promise<void> => {
         UPDATE "users"
         SET "mostRecentlyVisitedCourseParticipant" = ${response.locals.courseParticipant.id}
         WHERE "id" = ${response.locals.user.id}
-      `
+      `,
     );
 
     next();
@@ -738,35 +738,34 @@ export default async (application: Application): Promise<void> => {
 
     const [unarchived, archived] = lodash.partition(
       response.locals.courseParticipants,
-      (courseParticipant) => courseParticipant.course.archivedAt === null
+      (courseParticipant) => courseParticipant.course.archivedAt === null,
     );
 
     if (unarchived.length > 0)
       courses += html`
         $${unarchived.map(
-          (courseParticipant) =>
-            html`
-              <a
-                key="course-participant--${courseParticipant.reference}"
-                href="https://${application.configuration
-                  .hostname}/courses/${courseParticipant.course
-                  .reference}${hrefSuffix}"
-                class="dropdown--menu--item menu-box--item button ${tight
-                  ? ""
-                  : "button--tight"} ${courseParticipant.id ===
-                response.locals.courseParticipant?.id
-                  ? "button--blue"
-                  : "button--transparent"}"
-              >
-                $${application.web.locals.partials.course({
-                  request,
-                  response,
-                  course: courseParticipant.course,
-                  courseParticipant,
-                  tight,
-                })}
-              </a>
-            `
+          (courseParticipant) => html`
+            <a
+              key="course-participant--${courseParticipant.reference}"
+              href="https://${application.configuration
+                .hostname}/courses/${courseParticipant.course
+                .reference}${hrefSuffix}"
+              class="dropdown--menu--item menu-box--item button ${tight
+                ? ""
+                : "button--tight"} ${courseParticipant.id ===
+              response.locals.courseParticipant?.id
+                ? "button--blue"
+                : "button--transparent"}"
+            >
+              $${application.web.locals.partials.course({
+                request,
+                response,
+                course: courseParticipant.course,
+                courseParticipant,
+                tight,
+              })}
+            </a>
+          `,
         )}
       `;
 
@@ -796,30 +795,29 @@ export default async (application: Application): Promise<void> => {
         </button>
 
         $${archived.map(
-          (courseParticipant) =>
-            html`
-              <a
-                key="course-participant--${courseParticipant.reference}"
-                href="https://${application.configuration
-                  .hostname}/courses/${courseParticipant.course
-                  .reference}${hrefSuffix}"
-                hidden
-                class="dropdown--menu--item menu-box--item button ${tight
-                  ? ""
-                  : "button--tight"} ${courseParticipant.id ===
-                response.locals.courseParticipant?.id
-                  ? "button--blue"
-                  : "button--transparent"}"
-              >
-                $${application.web.locals.partials.course({
-                  request,
-                  response,
-                  course: courseParticipant.course,
-                  courseParticipant,
-                  tight,
-                })}
-              </a>
-            `
+          (courseParticipant) => html`
+            <a
+              key="course-participant--${courseParticipant.reference}"
+              href="https://${application.configuration
+                .hostname}/courses/${courseParticipant.course
+                .reference}${hrefSuffix}"
+              hidden
+              class="dropdown--menu--item menu-box--item button ${tight
+                ? ""
+                : "button--tight"} ${courseParticipant.id ===
+              response.locals.courseParticipant?.id
+                ? "button--blue"
+                : "button--transparent"}"
+            >
+              $${application.web.locals.partials.course({
+                request,
+                response,
+                course: courseParticipant.course,
+                courseParticipant,
+                tight,
+              })}
+            </a>
+          `,
         )}
       `;
 
@@ -936,7 +934,7 @@ export default async (application: Application): Promise<void> => {
                             : "question",
                       },
                     },
-                    { addQueryPrefix: true }
+                    { addQueryPrefix: true },
                   )}"
                   class="menu-box--item button ${response.locals
                     .courseParticipant.courseRole === "course-staff"
@@ -952,7 +950,7 @@ export default async (application: Application): Promise<void> => {
               </div>
             </div>
           `,
-        })
+        }),
       );
 
     if (request.query.sidebarOnSmallScreen === "true") {
@@ -961,7 +959,7 @@ export default async (application: Application): Promise<void> => {
           UPDATE "courseParticipants"
           SET "mostRecentlyVisitedConversation" = NULL
           WHERE "id" = ${response.locals.courseParticipant.id}
-        `
+        `,
       );
 
       return response.send(
@@ -973,7 +971,7 @@ export default async (application: Application): Promise<void> => {
           `,
           sidebarOnSmallScreen: true,
           body: html`<p class="secondary">No conversation selected.</p>`,
-        })
+        }),
       );
     }
 
@@ -992,8 +990,8 @@ export default async (application: Application): Promise<void> => {
             ? { sidebarOnSmallScreen: true }
             : {}),
         },
-        { addQueryPrefix: true }
-      )}`
+        { addQueryPrefix: true },
+      )}`,
     );
   });
 
@@ -1014,7 +1012,7 @@ export default async (application: Application): Promise<void> => {
         response.locals.courseParticipant.courseRole === "course-staff"
           ? "course-information"
           : "course-participant"
-      }`
+      }`,
     );
   });
 
@@ -1054,7 +1052,7 @@ export default async (application: Application): Promise<void> => {
                   .hostname}/courses/${response.locals.course
                   .reference}/settings/course-information"
                 class="dropdown--menu--item menu-box--item button ${request.path.match(
-                  /\/settings\/course-information\/?$/i
+                  /\/settings\/course-information\/?$/i,
                 )
                   ? "button--blue"
                   : "button--transparent"}"
@@ -1067,7 +1065,7 @@ export default async (application: Application): Promise<void> => {
                   .hostname}/courses/${response.locals.course
                   .reference}/settings/tags"
                 class="dropdown--menu--item menu-box--item button ${request.path.match(
-                  /\/settings\/tags\/?$/i
+                  /\/settings\/tags\/?$/i,
                 )
                   ? "button--blue"
                   : "button--transparent"}"
@@ -1084,7 +1082,7 @@ export default async (application: Application): Promise<void> => {
                   .hostname}/courses/${response.locals.course
                   .reference}/settings/invitations"
                 class="dropdown--menu--item menu-box--item button ${request.path.match(
-                  /\/settings\/invitations\/?$/i
+                  /\/settings\/invitations\/?$/i,
                 )
                   ? "button--blue"
                   : "button--transparent"}"
@@ -1101,14 +1099,14 @@ export default async (application: Application): Promise<void> => {
                   .hostname}/courses/${response.locals.course
                   .reference}/settings/course-participants"
                 class="dropdown--menu--item menu-box--item button ${request.path.match(
-                  /\/settings\/course-participants\/?$/i
+                  /\/settings\/course-participants\/?$/i,
                 )
                   ? "button--blue"
                   : "button--transparent"}"
               >
                 <i
                   class="bi ${request.path.match(
-                    /\/settings\/course-participants\/?$/i
+                    /\/settings\/course-participants\/?$/i,
                   )
                     ? "bi-people-fill"
                     : "bi-people"}"
@@ -1120,7 +1118,7 @@ export default async (application: Application): Promise<void> => {
                   .hostname}/courses/${response.locals.course
                   .reference}/settings/advanced"
                 class="dropdown--menu--item menu-box--item button ${request.path.match(
-                  /\/settings\/advanced\/?$/i
+                  /\/settings\/advanced\/?$/i,
                 )
                   ? "button--blue"
                   : "button--transparent"}"
@@ -1133,14 +1131,14 @@ export default async (application: Application): Promise<void> => {
                   .hostname}/courses/${response.locals.course
                   .reference}/settings/course-participant"
                 class="dropdown--menu--item menu-box--item button ${request.path.match(
-                  /\/settings\/course-participant\/?$/i
+                  /\/settings\/course-participant\/?$/i,
                 )
                   ? "button--blue"
                   : "button--transparent"}"
               >
                 <i
                   class="bi ${request.path.match(
-                    /\/settings\/course-participant\/?$/i
+                    /\/settings\/course-participant\/?$/i,
                   )
                     ? "bi-person-fill"
                     : "bi-person"}"
@@ -1270,9 +1268,9 @@ export default async (application: Application): Promise<void> => {
               </div>
             </form>
           `,
-        })
+        }),
       );
-    }
+    },
   );
 
   application.web.patch<
@@ -1336,7 +1334,7 @@ export default async (application: Application): Promise<void> => {
                 : null
             }
           WHERE "id" = ${response.locals.course.id}
-        `
+        `,
       );
 
       application.web.locals.helpers.Flash.set({
@@ -1348,7 +1346,7 @@ export default async (application: Application): Promise<void> => {
 
       response.redirect(
         303,
-        `https://${application.configuration.hostname}/courses/${response.locals.course.reference}/settings/course-information`
+        `https://${application.configuration.hostname}/courses/${response.locals.course.reference}/settings/course-information`,
       );
 
       application.web.locals.helpers.liveUpdates({
@@ -1356,7 +1354,7 @@ export default async (application: Application): Promise<void> => {
         response,
         url: `/courses/${response.locals.course.reference}`,
       });
-    }
+    },
   );
 
   application.web.get<
@@ -1619,7 +1617,7 @@ export default async (application: Application): Promise<void> => {
                       filters: { tagsReferences: [tag?.reference] },
                     },
                   },
-                  { addQueryPrefix: true }
+                  { addQueryPrefix: true },
                 )}"
                 target="_blank"
                 class="button button--tight button--tight--inline button--transparent"
@@ -1793,7 +1791,7 @@ export default async (application: Application): Promise<void> => {
                 `}"
               >
                 $${response.locals.tags.map((tag, order) =>
-                  partialTag({ tag, order })
+                  partialTag({ tag, order }),
                 )}
               </div>
               <div
@@ -1836,7 +1834,7 @@ export default async (application: Application): Promise<void> => {
             </div>
           </form>
         `,
-      })
+      }),
     );
   });
 
@@ -1871,7 +1869,7 @@ export default async (application: Application): Promise<void> => {
           ].includes(tag.reference) ||
           typeof tag.name !== "string" ||
           tag.name.trim() === "" ||
-          ![undefined, "on"].includes(tag.isCourseStaffOnly)
+          ![undefined, "on"].includes(tag.isCourseStaffOnly),
       )
     )
       return next("Validation");
@@ -1894,7 +1892,7 @@ export default async (application: Application): Promise<void> => {
                     : null
                 }
               )
-            `
+            `,
           );
         else
           application.database.run(
@@ -1911,14 +1909,14 @@ export default async (application: Application): Promise<void> => {
               WHERE
                 "course" = ${response.locals.course.id} AND
                 "reference" = ${tag.reference}
-            `
+            `,
           );
 
       for (const tag of response.locals.tags.filter(
         (tag) =>
           !request.body
             .tags!.map((tag) => tag.reference)
-            .includes(tag.reference)
+            .includes(tag.reference),
       ))
         application.database.run(
           sql`
@@ -1926,7 +1924,7 @@ export default async (application: Application): Promise<void> => {
             WHERE
               "course" = ${response.locals.course.id} AND
               "reference" = ${tag.reference}
-          `
+          `,
         );
     });
 
@@ -1939,7 +1937,7 @@ export default async (application: Application): Promise<void> => {
 
     response.redirect(
       303,
-      `https://${application.configuration.hostname}/courses/${response.locals.course.reference}/settings/tags`
+      `https://${application.configuration.hostname}/courses/${response.locals.course.reference}/settings/tags`,
     );
 
     application.web.locals.helpers.liveUpdates({
@@ -1978,7 +1976,7 @@ export default async (application: Application): Promise<void> => {
           FROM "invitations"
           WHERE "course" = ${response.locals.course.id}
           ORDER BY "id" DESC
-        `
+        `,
       );
 
       response.send(
@@ -2168,28 +2166,27 @@ export default async (application: Application): Promise<void> => {
                   `}"
                 >
                   $${application.web.locals.helpers.courseRoles.map(
-                    (courseRole) =>
-                      html`
-                        <label
-                          class="button button--tight button--tight--inline button--transparent"
-                        >
-                          <input
-                            type="radio"
-                            name="courseRole"
-                            value="${courseRole}"
-                            required
-                            class="visually-hidden input--radio-or-checkbox--multilabel"
-                          />
-                          <span>
-                            $${iconsCourseRole[courseRole].regular}
-                            ${labelsCourseRole[courseRole]}
-                          </span>
-                          <span class="text--blue">
-                            $${iconsCourseRole[courseRole].fill}
-                            ${labelsCourseRole[courseRole]}
-                          </span>
-                        </label>
-                      `
+                    (courseRole) => html`
+                      <label
+                        class="button button--tight button--tight--inline button--transparent"
+                      >
+                        <input
+                          type="radio"
+                          name="courseRole"
+                          value="${courseRole}"
+                          required
+                          class="visually-hidden input--radio-or-checkbox--multilabel"
+                        />
+                        <span>
+                          $${iconsCourseRole[courseRole].regular}
+                          ${labelsCourseRole[courseRole]}
+                        </span>
+                        <span class="text--blue">
+                          $${iconsCourseRole[courseRole].fill}
+                          ${labelsCourseRole[courseRole]}
+                        </span>
+                      </label>
+                    `,
                   )}
                 </div>
               </div>
@@ -2327,7 +2324,7 @@ export default async (application: Application): Promise<void> => {
                     const action = `https://${application.configuration.hostname}/courses/${response.locals.course.reference}/settings/invitations/${invitation.reference}`;
                     const isInvitationExpired =
                       application.web.locals.helpers.isPast(
-                        invitation.expiresAt
+                        invitation.expiresAt,
                       );
                     const isUsed = invitation.usedAt !== null;
 
@@ -2525,7 +2522,7 @@ export default async (application: Application): Promise<void> => {
                                     `}"
                                   >
                                     ${"*".repeat(
-                                      6
+                                      6,
                                     )}${invitation.reference.slice(6)}
                                     <i class="bi bi-chevron-down"></i>
                                   </button>
@@ -2665,29 +2662,28 @@ export default async (application: Application): Promise<void> => {
                                       content: ${html`
                                         <div class="dropdown--menu">
                                           $${application.web.locals.helpers.courseRoles.map(
-                                            (courseRole) =>
-                                              html`
-                                                <form
-                                                  key="course-role--${courseRole}"
-                                                  method="PATCH"
-                                                  action="${action}"
-                                                >
-                                                  <input
-                                                    type="hidden"
-                                                    name="courseRole"
-                                                    value="${courseRole}"
-                                                  />
-                                                  <button
-                                                    class="dropdown--menu--item button ${courseRole ===
-                                                    invitation.courseRole
-                                                      ? "button--blue"
-                                                      : "button--transparent"} ${textColorsCourseRole[
-                                                      courseRole
-                                                    ]}"
-                                                    $${isUsed
-                                                      ? html`
-                                                          type="button"
-                                                          javascript="${javascript`
+                                            (courseRole) => html`
+                                              <form
+                                                key="course-role--${courseRole}"
+                                                method="PATCH"
+                                                action="${action}"
+                                              >
+                                                <input
+                                                  type="hidden"
+                                                  name="courseRole"
+                                                  value="${courseRole}"
+                                                />
+                                                <button
+                                                  class="dropdown--menu--item button ${courseRole ===
+                                                  invitation.courseRole
+                                                    ? "button--blue"
+                                                    : "button--transparent"} ${textColorsCourseRole[
+                                                    courseRole
+                                                  ]}"
+                                                  $${isUsed
+                                                    ? html`
+                                                        type="button"
+                                                        javascript="${javascript`
                                                             leafac.setTippy({
                                                               event,
                                                               element: this,
@@ -2698,11 +2694,11 @@ export default async (application: Application): Promise<void> => {
                                                               },
                                                             });
                                                           `}"
-                                                        `
-                                                      : isInvitationExpired
-                                                      ? html`
-                                                          type="button"
-                                                          javascript="${javascript`
+                                                      `
+                                                    : isInvitationExpired
+                                                    ? html`
+                                                        type="button"
+                                                        javascript="${javascript`
                                                             leafac.setTippy({
                                                               event,
                                                               element: this,
@@ -2713,23 +2709,23 @@ export default async (application: Application): Promise<void> => {
                                                               },
                                                             });
                                                           `}"
-                                                        `
-                                                      : html``}
-                                                  >
-                                                    $${iconsCourseRole[
-                                                      courseRole
-                                                    ][
-                                                      courseRole ===
-                                                      "course-staff"
-                                                        ? "fill"
-                                                        : "regular"
-                                                    ]}
-                                                    ${labelsCourseRole[
-                                                      courseRole
-                                                    ]}
-                                                  </button>
-                                                </form>
-                                              `
+                                                      `
+                                                    : html``}
+                                                >
+                                                  $${iconsCourseRole[
+                                                    courseRole
+                                                  ][
+                                                    courseRole ===
+                                                    "course-staff"
+                                                      ? "fill"
+                                                      : "regular"
+                                                  ]}
+                                                  ${labelsCourseRole[
+                                                    courseRole
+                                                  ]}
+                                                </button>
+                                              </form>
+                                            `,
                                           )}
                                         </div>
                                       `},  
@@ -2769,7 +2765,7 @@ export default async (application: Application): Promise<void> => {
                                         type="text"
                                         name="expiresAt"
                                         value="${new Date(
-                                          invitation.expiresAt ?? new Date()
+                                          invitation.expiresAt ?? new Date(),
                                         ).toISOString()}"
                                         required
                                         autocomplete="off"
@@ -2843,7 +2839,7 @@ export default async (application: Application): Promise<void> => {
                                                     Used
                                                     <time
                                                       datetime="${new Date(
-                                                        invitation.usedAt!
+                                                        invitation.usedAt!,
                                                       ).toISOString()}"
                                                       javascript="${javascript`
                                                         leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
@@ -2898,7 +2894,7 @@ export default async (application: Application): Promise<void> => {
                                                         Expired
                                                         <time
                                                           datetime="${new Date(
-                                                            invitation.expiresAt!
+                                                            invitation.expiresAt!,
                                                           ).toISOString()}"
                                                           javascript="${javascript`
                                                             leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
@@ -3020,7 +3016,7 @@ export default async (application: Application): Promise<void> => {
                                                         Expires
                                                         <time
                                                           datetime="${new Date(
-                                                            invitation.expiresAt
+                                                            invitation.expiresAt,
                                                           ).toISOString()}"
                                                           javascript="${javascript`
                                                             leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
@@ -3061,9 +3057,9 @@ export default async (application: Application): Promise<void> => {
                   })}
                 `}
           `,
-        })
+        }),
       );
-    }
+    },
   );
 
   const sendInvitationEmail = ({
@@ -3122,7 +3118,7 @@ export default async (application: Application): Promise<void> => {
             `,
           })}
         )
-      `
+      `,
     );
     application.got
       .post(`http://127.0.0.1:${application.ports.workerEventsAny}/send-email`)
@@ -3130,7 +3126,7 @@ export default async (application: Application): Promise<void> => {
         response.locals.log(
           "FAILED TO EMIT ‘/send-email’ EVENT",
           String(error),
-          error?.stack
+          error?.stack,
         );
       });
   };
@@ -3158,7 +3154,7 @@ export default async (application: Application): Promise<void> => {
       if (
         typeof request.body.courseRole !== "string" ||
         !application.web.locals.helpers.courseRoles.includes(
-          request.body.courseRole
+          request.body.courseRole,
         ) ||
         (request.body.expiresAt !== undefined &&
           (typeof request.body.expiresAt !== "string" ||
@@ -3184,10 +3180,10 @@ export default async (application: Application): Promise<void> => {
                       ${cryptoRandomString({ length: 10, type: "numeric" })},
                       ${request.body.courseRole}
                     )
-                  `
+                  `,
                 ).lastInsertRowid
               }
-            `
+            `,
           )!;
 
           application.web.locals.helpers.Flash.set({
@@ -3235,7 +3231,8 @@ export default async (application: Application): Promise<void> => {
             emails.length === 0 ||
             emails.some(
               ({ email }) =>
-                email.match(application.web.locals.helpers.emailRegExp) === null
+                email.match(application.web.locals.helpers.emailRegExp) ===
+                null,
             )
           )
             return next("Validation");
@@ -3250,7 +3247,7 @@ export default async (application: Application): Promise<void> => {
                     "courseParticipants"."user" = "users"."id" AND
                     "users"."email" = ${email}
                   WHERE "courseParticipants"."course" = ${response.locals.course.id}
-                `
+                `,
               ) !== undefined
             )
               continue;
@@ -3266,7 +3263,7 @@ export default async (application: Application): Promise<void> => {
                   "course" = ${response.locals.course.id} AND
                   "email" = ${email} AND
                   "usedAt" IS NULL
-              `
+              `,
             );
             if (existingUnusedInvitation !== undefined) {
               application.database.run(
@@ -3277,7 +3274,7 @@ export default async (application: Application): Promise<void> => {
                     "name" = ${name ?? existingUnusedInvitation.name},
                     "courseRole" = ${request.body.courseRole}
                   WHERE "id" = ${existingUnusedInvitation.id}
-                `
+                `,
               );
               continue;
             }
@@ -3305,10 +3302,10 @@ export default async (application: Application): Promise<void> => {
                         ${name},
                         ${request.body.courseRole}
                       )
-                    `
+                    `,
                   ).lastInsertRowid
                 }
-              `
+              `,
             )!;
 
             sendInvitationEmail({
@@ -3332,9 +3329,9 @@ export default async (application: Application): Promise<void> => {
 
       response.redirect(
         303,
-        `https://${application.configuration.hostname}/courses/${response.locals.course.reference}/settings/invitations`
+        `https://${application.configuration.hostname}/courses/${response.locals.course.reference}/settings/invitations`,
       );
-    }
+    },
   );
 
   type ResponseLocalsInvitation =
@@ -3417,7 +3414,7 @@ export default async (application: Application): Promise<void> => {
             "invitations"."course" = "courses"."id" AND
             "courses"."reference" = ${request.params.courseReference}
           WHERE "invitations"."reference" = ${request.params.invitationReference}
-        `
+        `,
       );
       if (invitation === undefined) return next();
       response.locals.invitation = {
@@ -3443,7 +3440,7 @@ export default async (application: Application): Promise<void> => {
       };
 
       next();
-    }
+    },
   );
 
   application.web.patch<
@@ -3474,7 +3471,7 @@ export default async (application: Application): Promise<void> => {
       if (request.body.resend === "true") {
         if (
           application.web.locals.helpers.isPast(
-            response.locals.invitation.expiresAt
+            response.locals.invitation.expiresAt,
           ) ||
           response.locals.invitation.email === null
         )
@@ -3497,10 +3494,10 @@ export default async (application: Application): Promise<void> => {
       if (request.body.courseRole !== undefined) {
         if (
           application.web.locals.helpers.isPast(
-            response.locals.invitation.expiresAt
+            response.locals.invitation.expiresAt,
           ) ||
           !application.web.locals.helpers.courseRoles.includes(
-            request.body.courseRole
+            request.body.courseRole,
           )
         )
           return next("Validation");
@@ -3510,7 +3507,7 @@ export default async (application: Application): Promise<void> => {
             UPDATE "invitations"
             SET "courseRole" = ${request.body.courseRole}
             WHERE "id" = ${response.locals.invitation.id}
-          `
+          `,
         );
 
         application.web.locals.helpers.Flash.set({
@@ -3530,7 +3527,7 @@ export default async (application: Application): Promise<void> => {
           return next("Validation");
 
         application.database.run(
-          sql`UPDATE "invitations" SET "expiresAt" = ${request.body.expiresAt} WHERE "id" = ${response.locals.invitation.id}`
+          sql`UPDATE "invitations" SET "expiresAt" = ${request.body.expiresAt} WHERE "id" = ${response.locals.invitation.id}`,
         );
 
         application.web.locals.helpers.Flash.set({
@@ -3547,7 +3544,7 @@ export default async (application: Application): Promise<void> => {
             UPDATE "invitations"
             SET "expiresAt" = ${null}
             WHERE "id" = ${response.locals.invitation.id}
-          `
+          `,
         );
 
         application.web.locals.helpers.Flash.set({
@@ -3564,7 +3561,7 @@ export default async (application: Application): Promise<void> => {
             UPDATE "invitations"
             SET "expiresAt" = ${new Date().toISOString()}
             WHERE "id" = ${response.locals.invitation.id}
-          `
+          `,
         );
 
         application.web.locals.helpers.Flash.set({
@@ -3577,9 +3574,9 @@ export default async (application: Application): Promise<void> => {
 
       response.redirect(
         303,
-        `https://${application.configuration.hostname}/courses/${response.locals.course.reference}/settings/invitations`
+        `https://${application.configuration.hostname}/courses/${response.locals.course.reference}/settings/invitations`,
       );
-    }
+    },
   );
 
   application.web.get<
@@ -3606,7 +3603,7 @@ export default async (application: Application): Promise<void> => {
 
               <p>Invitation not found. Please contact your course staff.</p>
             `,
-          })
+          }),
         );
 
       if (response.locals.invitation.usedAt !== null)
@@ -3636,12 +3633,12 @@ export default async (application: Application): Promise<void> => {
                 course staff.
               </p>
             `,
-          })
+          }),
         );
 
       if (
         application.web.locals.helpers.isPast(
-          response.locals.invitation.expiresAt
+          response.locals.invitation.expiresAt,
         )
       )
         return response.send(
@@ -3669,7 +3666,7 @@ export default async (application: Application): Promise<void> => {
                 This invitation is expired. Please contact your course staff.
               </p>
             `,
-          })
+          }),
         );
 
       if (response.locals.user === undefined)
@@ -3714,7 +3711,7 @@ export default async (application: Application): Promise<void> => {
                         SELECT TRUE
                         FROM "users"
                         WHERE "email" = ${response.locals.invitation.email}
-                      `
+                      `,
                     ) !== undefined;
 
                   if (!invitationUserExists)
@@ -3731,7 +3728,7 @@ export default async (application: Application): Promise<void> => {
                                 response.locals.invitation.name ?? undefined,
                             },
                           },
-                          { addQueryPrefix: true }
+                          { addQueryPrefix: true },
                         )}"
                         class="button button--blue"
                       >
@@ -3754,7 +3751,7 @@ export default async (application: Application): Promise<void> => {
                                 response.locals.invitation.name ?? undefined,
                             },
                           },
-                          { addQueryPrefix: true }
+                          { addQueryPrefix: true },
                         )}"
                         class="button ${invitationUserExists
                           ? "button--blue"
@@ -3769,7 +3766,7 @@ export default async (application: Application): Promise<void> => {
                 })()}
               </div>
             `,
-          })
+          }),
         );
 
       if (response.locals.user.emailVerifiedAt === null) return next();
@@ -3810,14 +3807,14 @@ export default async (application: Application): Promise<void> => {
                 <code class="code">${response.locals.invitation.email}</code>.
               </p>
             `,
-          })
+          }),
         );
 
       if (response.locals.course !== undefined)
         if (typeof request.query.redirect === "string")
           return response.redirect(
             303,
-            `https://${application.configuration.hostname}/courses/${response.locals.invitation.course.reference}/${request.query.redirect}`
+            `https://${application.configuration.hostname}/courses/${response.locals.invitation.course.reference}/${request.query.redirect}`,
           );
         else {
           const link = `https://${application.configuration.hostname}/courses/${response.locals.invitation.course.reference}/invitations/${response.locals.invitation.reference}`;
@@ -3922,7 +3919,7 @@ export default async (application: Application): Promise<void> => {
                         $${(
                           await QRCode.toString(
                             `https://${application.configuration.hostname}/courses/${response.locals.invitation.course.reference}/invitations/${response.locals.invitation.reference}`,
-                            { type: "svg" }
+                            { type: "svg" },
                           )
                         )
                           .replace("#000000", "currentColor")
@@ -3941,7 +3938,7 @@ export default async (application: Application): Promise<void> => {
                   <i class="bi bi-chevron-right"></i>
                 </a>
               `,
-            })
+            }),
           );
         }
 
@@ -3972,7 +3969,7 @@ export default async (application: Application): Promise<void> => {
                 .reference}/invitations/${response.locals.invitation
                 .reference}${qs.stringify(
                 { redirect: request.query.redirect },
-                { addQueryPrefix: true }
+                { addQueryPrefix: true },
               )}"
             >
               <button
@@ -3987,9 +3984,9 @@ export default async (application: Application): Promise<void> => {
               </button>
             </form>
           `,
-        })
+        }),
       );
-    })
+    }),
   );
 
   application.web.post<
@@ -4025,7 +4022,7 @@ export default async (application: Application): Promise<void> => {
               ${response.locals.invitation.courseRole},
               ${defaultAccentColor({ request, response })}
             )
-          `
+          `,
         );
         if (response.locals.invitation.email !== null)
           application.database.run(
@@ -4033,7 +4030,7 @@ export default async (application: Application): Promise<void> => {
               UPDATE "invitations"
               SET "usedAt" = ${new Date().toISOString()}
               WHERE "id" = ${response.locals.invitation.id}
-            `
+            `,
           );
       });
 
@@ -4045,9 +4042,9 @@ export default async (application: Application): Promise<void> => {
           typeof request.query.redirect === "string"
             ? request.query.redirect
             : ""
-        }`
+        }`,
       );
-    }
+    },
   );
 
   application.web.get<
@@ -4100,7 +4097,7 @@ export default async (application: Application): Promise<void> => {
             ORDER BY
               "courseParticipants"."courseRole" ASC,
               "users"."name" ASC
-          `
+          `,
         )
         .map((courseParticipantRow) => ({
           id: courseParticipantRow.id,
@@ -4189,7 +4186,7 @@ export default async (application: Application): Promise<void> => {
                 isSelf &&
                 courseParticipants.filter(
                   (courseParticipant) =>
-                    courseParticipant.courseRole === "course-staff"
+                    courseParticipant.courseRole === "course-staff",
                 ).length === 1;
 
               return html`
@@ -4233,8 +4230,8 @@ export default async (application: Application): Promise<void> => {
                         class="strong"
                         data-filterable-phrases="${JSON.stringify(
                           application.web.locals.helpers.splitFilterablePhrases(
-                            courseParticipant.user.name
-                          )
+                            courseParticipant.user.name,
+                          ),
                         )}"
                       >
                         ${courseParticipant.user.name}
@@ -4246,8 +4243,8 @@ export default async (application: Application): Promise<void> => {
                           `}"
                           data-filterable-phrases="${JSON.stringify(
                             application.web.locals.helpers.splitFilterablePhrases(
-                              courseParticipant.user.email
-                            )
+                              courseParticipant.user.email,
+                            ),
                           )}"
                         >
                           ${courseParticipant.user.email}
@@ -4302,7 +4299,7 @@ export default async (application: Application): Promise<void> => {
                           Last seen online
                           <time
                             datetime="${new Date(
-                              courseParticipant.user.lastSeenOnlineAt
+                              courseParticipant.user.lastSeenOnlineAt,
                             ).toISOString()}"
                             javascript="${javascript`
                               leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
@@ -4350,30 +4347,29 @@ export default async (application: Application): Promise<void> => {
                                 content: ${html`
                                   <div class="dropdown--menu">
                                     $${application.web.locals.helpers.courseRoles.map(
-                                      (courseRole) =>
-                                        html`
-                                          <form
-                                            key="course-role--${courseRole}"
-                                            method="PATCH"
-                                            action="${action}"
-                                          >
-                                            <input
-                                              type="hidden"
-                                              name="courseRole"
-                                              value="${courseRole}"
-                                            />
-                                            <div>
-                                              <button
-                                                class="dropdown--menu--item button ${courseRole ===
-                                                courseParticipant.courseRole
-                                                  ? "button--blue"
-                                                  : "button--transparent"} ${textColorsCourseRole[
-                                                  courseRole
-                                                ]}"
-                                                $${isOnlyCourseStaff
-                                                  ? html`
-                                                      type="button"
-                                                      javascript="${javascript`
+                                      (courseRole) => html`
+                                        <form
+                                          key="course-role--${courseRole}"
+                                          method="PATCH"
+                                          action="${action}"
+                                        >
+                                          <input
+                                            type="hidden"
+                                            name="courseRole"
+                                            value="${courseRole}"
+                                          />
+                                          <div>
+                                            <button
+                                              class="dropdown--menu--item button ${courseRole ===
+                                              courseParticipant.courseRole
+                                                ? "button--blue"
+                                                : "button--transparent"} ${textColorsCourseRole[
+                                                courseRole
+                                              ]}"
+                                              $${isOnlyCourseStaff
+                                                ? html`
+                                                    type="button"
+                                                    javascript="${javascript`
                                                         leafac.setTippy({
                                                           event,
                                                           element: this,
@@ -4384,11 +4380,11 @@ export default async (application: Application): Promise<void> => {
                                                           },
                                                         });
                                                       `}"
-                                                    `
-                                                  : isSelf
-                                                  ? html`
-                                                      type="button"
-                                                      javascript="${javascript`
+                                                  `
+                                                : isSelf
+                                                ? html`
+                                                    type="button"
+                                                    javascript="${javascript`
                                                         leafac.setTippy({
                                                           event,
                                                           element: this,
@@ -4459,19 +4455,19 @@ export default async (application: Application): Promise<void> => {
                                                           },
                                                         });
                                                       `}"
-                                                    `
-                                                  : html``}
-                                              >
-                                                $${iconsCourseRole[courseRole][
-                                                  courseRole === "course-staff"
-                                                    ? "fill"
-                                                    : "regular"
-                                                ]}
-                                                ${labelsCourseRole[courseRole]}
-                                              </button>
-                                            </div>
-                                          </form>
-                                        `
+                                                  `
+                                                : html``}
+                                            >
+                                              $${iconsCourseRole[courseRole][
+                                                courseRole === "course-staff"
+                                                  ? "fill"
+                                                  : "regular"
+                                              ]}
+                                              ${labelsCourseRole[courseRole]}
+                                            </button>
+                                          </div>
+                                        </form>
+                                      `,
                                     )}
                                   </div>
                                 `},  
@@ -4593,9 +4589,9 @@ export default async (application: Application): Promise<void> => {
               `;
             })}
           `,
-        })
+        }),
       );
-    }
+    },
   );
 
   type ResponseLocalsManagedCourseParticipant =
@@ -4632,7 +4628,7 @@ export default async (application: Application): Promise<void> => {
           WHERE
             "course" = ${response.locals.course.id} AND
             "reference" = ${request.params.courseParticipantReference}
-        `
+        `,
       );
       if (managedCourseParticipant === undefined) return next();
       response.locals.managedCourseParticipant = {
@@ -4650,13 +4646,13 @@ export default async (application: Application): Promise<void> => {
             WHERE
               "course" = ${response.locals.course.id} AND
               "courseRole" = ${"course-staff"}
-          `
+          `,
         )!.count === 1
       )
         return next("Validation");
 
       next();
-    }
+    },
   );
 
   application.web.patch<
@@ -4675,7 +4671,7 @@ export default async (application: Application): Promise<void> => {
       if (typeof request.body.courseRole === "string") {
         if (
           !application.web.locals.helpers.courseRoles.includes(
-            request.body.courseRole
+            request.body.courseRole,
           )
         )
           return next("Validation");
@@ -4685,7 +4681,7 @@ export default async (application: Application): Promise<void> => {
             UPDATE "courseParticipants"
             SET "courseRole" = ${request.body.courseRole}
             WHERE "id" = ${response.locals.managedCourseParticipant.id}
-          `
+          `,
         );
 
         application.web.locals.helpers.Flash.set({
@@ -4700,7 +4696,7 @@ export default async (application: Application): Promise<void> => {
         303,
         response.locals.managedCourseParticipant.isSelf
           ? `https://${application.configuration.hostname}/courses/${response.locals.course.reference}`
-          : `https://${application.configuration.hostname}/courses/${response.locals.course.reference}/settings/course-participants`
+          : `https://${application.configuration.hostname}/courses/${response.locals.course.reference}/settings/course-participants`,
       );
 
       application.web.locals.helpers.liveUpdates({
@@ -4708,7 +4704,7 @@ export default async (application: Application): Promise<void> => {
         response,
         url: `/courses/${response.locals.course.reference}`,
       });
-    }
+    },
   );
 
   application.web.delete<
@@ -4726,7 +4722,7 @@ export default async (application: Application): Promise<void> => {
         sql`
           DELETE FROM "courseParticipants"
           WHERE "id" = ${response.locals.managedCourseParticipant.id}
-        `
+        `,
       );
 
       application.web.locals.helpers.Flash.set({
@@ -4744,7 +4740,7 @@ export default async (application: Application): Promise<void> => {
         303,
         response.locals.managedCourseParticipant.isSelf
           ? `https://${application.configuration.hostname}/`
-          : `https://${application.configuration.hostname}/courses/${response.locals.course.reference}/settings/course-participants`
+          : `https://${application.configuration.hostname}/courses/${response.locals.course.reference}/settings/course-participants`,
       );
 
       application.web.locals.helpers.liveUpdates({
@@ -4752,7 +4748,7 @@ export default async (application: Application): Promise<void> => {
         response,
         url: `/courses/${response.locals.course.reference}`,
       });
-    }
+    },
   );
 
   application.web.get<
@@ -4879,7 +4875,7 @@ export default async (application: Application): Promise<void> => {
                         Archived
                         <time
                           datetime="${new Date(
-                            response.locals.course.archivedAt
+                            response.locals.course.archivedAt,
                           ).toISOString()}"
                           javascript="${javascript`
                             leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
@@ -4922,9 +4918,9 @@ export default async (application: Application): Promise<void> => {
               </div>
             </form>
           `,
-        })
+        }),
       );
-    }
+    },
   );
 
   application.web.patch<
@@ -4956,7 +4952,7 @@ export default async (application: Application): Promise<void> => {
               : null
           }
           WHERE "id" = ${response.locals.course.id}
-        `
+        `,
       );
 
       application.web.locals.helpers.Flash.set({
@@ -4968,7 +4964,7 @@ export default async (application: Application): Promise<void> => {
 
       response.redirect(
         303,
-        `https://${application.configuration.hostname}/courses/${response.locals.course.reference}/settings/advanced`
+        `https://${application.configuration.hostname}/courses/${response.locals.course.reference}/settings/advanced`,
       );
 
       application.web.locals.helpers.liveUpdates({
@@ -4976,7 +4972,7 @@ export default async (application: Application): Promise<void> => {
         response,
         url: `/courses/${response.locals.course.reference}`,
       });
-    }
+    },
   );
 
   application.web.put<
@@ -5007,7 +5003,7 @@ export default async (application: Application): Promise<void> => {
             request.body.isArchived === "true" ? new Date().toISOString() : null
           }
           WHERE "id" = ${response.locals.course.id}
-        `
+        `,
       );
 
       application.web.locals.helpers.Flash.set({
@@ -5023,7 +5019,7 @@ export default async (application: Application): Promise<void> => {
 
       response.redirect(
         303,
-        `https://${application.configuration.hostname}/courses/${response.locals.course.reference}/settings/advanced`
+        `https://${application.configuration.hostname}/courses/${response.locals.course.reference}/settings/advanced`,
       );
 
       application.web.locals.helpers.liveUpdates({
@@ -5031,7 +5027,7 @@ export default async (application: Application): Promise<void> => {
         response,
         url: `/courses/${response.locals.course.reference}`,
       });
-    }
+    },
   );
 
   application.web.get<
@@ -5075,7 +5071,7 @@ export default async (application: Application): Promise<void> => {
             )
             AND "conversations"."type" = 'question'
           ORDER BY "conversations"."id" ASC
-        `
+        `,
       )) {
         const conversation = application.web.locals.helpers.getConversation({
           request,
@@ -5090,7 +5086,7 @@ export default async (application: Application): Promise<void> => {
               FROM "messages"
               WHERE "conversation" = ${conversation.id}
               ORDER BY "id" ASC
-            `
+            `,
           )
           .map(
             (messageRow) =>
@@ -5099,7 +5095,7 @@ export default async (application: Application): Promise<void> => {
                 response,
                 conversation,
                 messageReference: messageRow.reference,
-              })!
+              })!,
           );
 
         questions.push({
@@ -5111,7 +5107,7 @@ export default async (application: Application): Promise<void> => {
                 : labelsCourseRole[message.authorCourseParticipant.courseRole],
             Text: message.contentSearch.replace(
               /(?<=^|\s)@([a-z0-9-]+)(?=[^a-z0-9-]|$)/gi,
-              "@anonymous"
+              "@anonymous",
             ),
           })),
           Tags: conversation.taggings.map((tagging) => tagging.tag.name),
@@ -5123,12 +5119,12 @@ export default async (application: Application): Promise<void> => {
           "Content-Disposition",
           `attachment;filename="${response.locals.course.name.replaceAll(
             `"`,
-            `\\"`
-          )}.json"`
+            `\\"`,
+          )}.json"`,
         )
         .contentType("application/json")
         .send(JSON.stringify(questions, undefined, 2));
-    }
+    },
   );
 
   application.web.get<
@@ -5238,7 +5234,7 @@ export default async (application: Application): Promise<void> => {
                           }
                         `}"
                       />
-                    `
+                    `,
                   )}
                 </div>
               </div>
@@ -5252,9 +5248,9 @@ export default async (application: Application): Promise<void> => {
               </div>
             </form>
           `,
-        })
+        }),
       );
-    }
+    },
   );
 
   application.web.patch<
@@ -5273,7 +5269,7 @@ export default async (application: Application): Promise<void> => {
       if (
         typeof request.body.accentColor !== "string" ||
         !application.web.locals.helpers.courseParticipantAccentColors.includes(
-          request.body.accentColor
+          request.body.accentColor,
         )
       )
         return next("Validation");
@@ -5283,7 +5279,7 @@ export default async (application: Application): Promise<void> => {
           UPDATE "courseParticipants"
           SET "accentColor" = ${request.body.accentColor}
           WHERE "id" = ${response.locals.courseParticipant.id}
-        `
+        `,
       );
 
       application.web.locals.helpers.Flash.set({
@@ -5295,8 +5291,8 @@ export default async (application: Application): Promise<void> => {
 
       response.redirect(
         303,
-        `https://${application.configuration.hostname}/courses/${response.locals.course.reference}/settings/course-participant`
+        `https://${application.configuration.hostname}/courses/${response.locals.course.reference}/settings/course-participant`,
       );
-    }
+    },
   );
 };

@@ -295,10 +295,10 @@ export default async (application: Application): Promise<void> => {
                   ${samlSessionIndex},
                   ${samlNameID}
                 )
-              `
+              `,
             ).lastInsertRowid
           }
-        `
+        `,
       )!;
 
       request.cookies["__Host-Session"] = session.token;
@@ -327,7 +327,7 @@ export default async (application: Application): Promise<void> => {
             "samlNameID"
           FROM "sessions"
           WHERE "token" = ${request.cookies["__Host-Session"]}
-        `
+        `,
       );
 
       if (
@@ -365,13 +365,13 @@ export default async (application: Application): Promise<void> => {
       if (request.cookies["__Host-Session"] === undefined) return;
 
       application.database.run(
-        sql`DELETE FROM "sessions" WHERE "token" = ${request.cookies["__Host-Session"]}`
+        sql`DELETE FROM "sessions" WHERE "token" = ${request.cookies["__Host-Session"]}`,
       );
 
       delete request.cookies["__Host-Session"];
       response.clearCookie(
         "__Host-Session",
-        application.web.locals.configuration.cookies
+        application.web.locals.configuration.cookies,
       );
     },
 
@@ -384,7 +384,7 @@ export default async (application: Application): Promise<void> => {
       application.web.locals.helpers.Session.close({ request, response });
 
       application.database.run(
-        sql`DELETE FROM "sessions" WHERE "user" = ${userId}`
+        sql`DELETE FROM "sessions" WHERE "user" = ${userId}`,
       );
 
       application.web.locals.helpers.Session.open({
@@ -406,15 +406,15 @@ export default async (application: Application): Promise<void> => {
           sql`
             DELETE FROM "sessions"
             WHERE "createdAt" < ${new Date(
-              Date.now() - application.web.locals.helpers.Session.maxAge
+              Date.now() - application.web.locals.helpers.Session.maxAge,
             ).toISOString()}
-          `
+          `,
         );
         application.log("CLEAN EXPIRED ‘sessions’", "FINISHED");
         await timers.setTimeout(
           24 * 60 * 60 * 1000 + Math.random() * 5 * 60 * 1000,
           undefined,
-          { ref: false }
+          { ref: false },
         );
       }
     });
@@ -490,7 +490,7 @@ export default async (application: Application): Promise<void> => {
         LEFT JOIN "courses" AS "mostRecentlyVisitedCourse" ON
           "mostRecentlyVisitedCourseParticipant"."course" = "mostRecentlyVisitedCourse"."id"
         WHERE "users"."id" = ${response.locals.session.userId}
-      `
+      `,
     )!;
 
     response.locals.invitations = application.database
@@ -533,7 +533,7 @@ export default async (application: Application): Promise<void> => {
             ) AND
             "invitations"."email" = ${response.locals.user.email}
           ORDER BY "invitations"."id" DESC
-        `
+        `,
       )
       .map((invitation) => ({
         id: invitation.id,
@@ -606,7 +606,7 @@ export default async (application: Application): Promise<void> => {
             )
           WHERE "courseParticipants"."user" = ${response.locals.user.id}
           ORDER BY "courseParticipants"."id" DESC
-        `
+        `,
       )
       .map((courseParticipantRow) => ({
         id: courseParticipantRow.id,
@@ -639,7 +639,7 @@ export default async (application: Application): Promise<void> => {
         sql`
           SELECT "latestVersion", "userSystemRolesWhoMayCreateCourses"
           FROM "administrationOptions"
-        `
+        `,
       ) ??
       (() => {
         throw new Error("Failed to get ‘administrationOptions’.");
@@ -658,7 +658,7 @@ export default async (application: Application): Promise<void> => {
     response.locals.user.password.trim() !== "" &&
     (await argon2.verify(
       response.locals.user.password,
-      request.body.passwordConfirmation
+      request.body.passwordConfirmation,
     ));
 
   application.web.locals.helpers.mayCreateCourses = ({ request, response }) =>
@@ -692,8 +692,8 @@ export default async (application: Application): Promise<void> => {
         ? samls
         : Object.fromEntries(
             Object.entries(samls).filter(
-              ([samlIdentifier, options]) => options.public !== false
-            )
+              ([samlIdentifier, options]) => options.public !== false,
+            ),
           );
 
     response.send(
@@ -719,7 +719,7 @@ export default async (application: Application): Promise<void> => {
                 redirect: request.query.redirect,
                 invitation: request.query.invitation,
               },
-              { addQueryPrefix: true }
+              { addQueryPrefix: true },
             )}"
             novalidate
             css="${css`
@@ -780,7 +780,7 @@ export default async (application: Application): Promise<void> => {
                     redirect: request.query.redirect,
                     invitation: request.query.invitation,
                   },
-                  { addQueryPrefix: true }
+                  { addQueryPrefix: true },
                 )}"
                 class="link"
                 >Sign up</a
@@ -795,7 +795,7 @@ export default async (application: Application): Promise<void> => {
                     redirect: request.query.redirect,
                     invitation: request.query.invitation,
                   },
-                  { addQueryPrefix: true }
+                  { addQueryPrefix: true },
                 )}"
                 class="link"
                 >Reset password</a
@@ -833,7 +833,7 @@ export default async (application: Application): Promise<void> => {
                       href="https://${application.configuration
                         .hostname}/saml/${samlIdentifier}/authentication-request${qs.stringify(
                         { redirect: request.query.redirect },
-                        { addQueryPrefix: true }
+                        { addQueryPrefix: true },
                       )}"
                       class="button button--transparent"
                       javascript="${javascript`
@@ -848,7 +848,7 @@ export default async (application: Application): Promise<void> => {
                               alt="${options.name}"
                               class="light"
                               style="width: ${String(
-                                options.logo.width / 2
+                                options.logo.width / 2,
                               )}px;"
                               css="${css`
                                 max-width: 100%;
@@ -861,7 +861,7 @@ export default async (application: Application): Promise<void> => {
                               alt="${options.name}"
                               class="dark"
                               style="width: ${String(
-                                options.logo.width / 2
+                                options.logo.width / 2,
                               )}px;"
                               css="${css`
                                 max-width: 100%;
@@ -874,12 +874,12 @@ export default async (application: Application): Promise<void> => {
                             ${options.name}
                           `}
                     </a>
-                  `
+                  `,
                 )}
               `
             : html``}
         `,
-      })
+      }),
     );
   });
 
@@ -911,7 +911,7 @@ export default async (application: Application): Promise<void> => {
       }>(
         sql`
           SELECT "id", "email", "password" FROM "users" WHERE "email" = ${request.body.email}
-        `
+        `,
       );
 
       if (
@@ -932,8 +932,8 @@ export default async (application: Application): Promise<void> => {
               redirect: request.query.redirect,
               invitation: request.query.invitation,
             },
-            { addQueryPrefix: true }
-          )}`
+            { addQueryPrefix: true },
+          )}`,
         );
       }
 
@@ -975,17 +975,17 @@ export default async (application: Application): Promise<void> => {
               `,
             })}
           )
-        `
+        `,
       );
       application.got
         .post(
-          `http://127.0.0.1:${application.ports.workerEventsAny}/send-email`
+          `http://127.0.0.1:${application.ports.workerEventsAny}/send-email`,
         )
         .catch((error) => {
           response.locals.log(
             "FAILED TO EMIT ‘/send-email’ EVENT",
             String(error),
-            error?.stack
+            error?.stack,
           );
         });
 
@@ -1001,9 +1001,9 @@ export default async (application: Application): Promise<void> => {
           typeof request.query.redirect === "string"
             ? request.query.redirect
             : ""
-        }`
+        }`,
       );
-    })
+    }),
   );
 
   const PasswordReset = {
@@ -1013,7 +1013,7 @@ export default async (application: Application): Promise<void> => {
       application.database.run(
         sql`
           DELETE FROM "passwordResets" WHERE "user" = ${userId}
-        `
+        `,
       );
 
       return application.database.get<{ nonce: string }>(
@@ -1027,10 +1027,10 @@ export default async (application: Application): Promise<void> => {
                   ${userId},
                   ${cryptoRandomString({ length: 100, type: "alphanumeric" })}
                 )
-              `
+              `,
             ).lastInsertRowid
           }
-        `
+        `,
       )!.nonce;
     },
 
@@ -1044,9 +1044,9 @@ export default async (application: Application): Promise<void> => {
           WHERE
             "nonce" = ${nonce} AND
             ${new Date(
-              Date.now() - PasswordReset.maxAge
+              Date.now() - PasswordReset.maxAge,
             ).toISOString()} < "createdAt"
-        `
+        `,
       )?.user;
     },
   };
@@ -1059,15 +1059,15 @@ export default async (application: Application): Promise<void> => {
           sql`
             DELETE FROM "passwordResets"
             WHERE "createdAt" < ${new Date(
-              Date.now() - PasswordReset.maxAge
+              Date.now() - PasswordReset.maxAge,
             ).toISOString()}
-          `
+          `,
         );
         application.log("CLEAN EXPIRED ‘passwordResets’", "FINISHED");
         await timers.setTimeout(
           24 * 60 * 60 * 1000 + Math.random() * 5 * 60 * 1000,
           undefined,
-          { ref: false }
+          { ref: false },
         );
       }
     });
@@ -1105,7 +1105,7 @@ export default async (application: Application): Promise<void> => {
                 redirect: request.query.redirect,
                 invitation: request.query.invitation,
               },
-              { addQueryPrefix: true }
+              { addQueryPrefix: true },
             )}"
             novalidate
             css="${css`
@@ -1154,7 +1154,7 @@ export default async (application: Application): Promise<void> => {
                     redirect: request.query.redirect,
                     invitation: request.query.invitation,
                   },
-                  { addQueryPrefix: true }
+                  { addQueryPrefix: true },
                 )}"
                 class="link"
                 >Sign up</a
@@ -1169,7 +1169,7 @@ export default async (application: Application): Promise<void> => {
                     redirect: request.query.redirect,
                     invitation: request.query.invitation,
                   },
-                  { addQueryPrefix: true }
+                  { addQueryPrefix: true },
                 )}"
                 class="link"
                 >Sign in</a
@@ -1177,7 +1177,7 @@ export default async (application: Application): Promise<void> => {
             </p>
           </div>
         `,
-      })
+      }),
     );
   });
 
@@ -1199,7 +1199,7 @@ export default async (application: Application): Promise<void> => {
       return next("Validation");
 
     const user = application.database.get<{ id: number; email: string }>(
-      sql`SELECT "id", "email" FROM "users" WHERE "email" = ${request.body.email}`
+      sql`SELECT "id", "email" FROM "users" WHERE "email" = ${request.body.email}`,
     );
     if (user === undefined) {
       application.web.locals.helpers.Flash.set({
@@ -1217,8 +1217,8 @@ export default async (application: Application): Promise<void> => {
             redirect: request.query.redirect,
             invitation: request.query.invitation,
           },
-          { addQueryPrefix: true }
-        )}`
+          { addQueryPrefix: true },
+        )}`,
       );
     }
 
@@ -1229,7 +1229,7 @@ export default async (application: Application): Promise<void> => {
         redirect: request.query.redirect,
         invitation: request.query.invitation,
       },
-      { addQueryPrefix: true }
+      { addQueryPrefix: true },
     )}`;
     application.database.run(
       sql`
@@ -1258,7 +1258,7 @@ export default async (application: Application): Promise<void> => {
             `,
           })}
         )
-      `
+      `,
     );
     application.got
       .post(`http://127.0.0.1:${application.ports.workerEventsAny}/send-email`)
@@ -1266,7 +1266,7 @@ export default async (application: Application): Promise<void> => {
         response.locals.log(
           "FAILED TO EMIT ‘/send-email’ EVENT",
           String(error),
-          error?.stack
+          error?.stack,
         );
       });
 
@@ -1300,7 +1300,7 @@ export default async (application: Application): Promise<void> => {
                 redirect: request.query.redirect,
                 invitation: request.query.invitation,
               },
-              { addQueryPrefix: true }
+              { addQueryPrefix: true },
             )}"
           >
             <input type="hidden" name="email" value="${request.body.email}" />
@@ -1311,7 +1311,7 @@ export default async (application: Application): Promise<void> => {
             </p>
           </form>
         `,
-      })
+      }),
     );
   });
 
@@ -1339,7 +1339,7 @@ export default async (application: Application): Promise<void> => {
           typeof request.query.redirect === "string"
             ? request.query.redirect
             : ""
-        }`
+        }`,
       );
     }
 
@@ -1350,7 +1350,7 @@ export default async (application: Application): Promise<void> => {
         : application.database.get<{ email: string; name: string }>(
             sql`
               SELECT "email", "name" FROM "users" WHERE "id" = ${userId}
-            `
+            `,
           );
     if (user === undefined) {
       application.web.locals.helpers.Flash.set({
@@ -1368,8 +1368,8 @@ export default async (application: Application): Promise<void> => {
             redirect: request.query.redirect,
             invitation: request.query.invitation,
           },
-          { addQueryPrefix: true }
-        )}`
+          { addQueryPrefix: true },
+        )}`,
       );
     }
 
@@ -1397,7 +1397,7 @@ export default async (application: Application): Promise<void> => {
                 redirect: request.query.redirect,
                 invitation: request.query.invitation,
               },
-              { addQueryPrefix: true }
+              { addQueryPrefix: true },
             )}"
             novalidate
             css="${css`
@@ -1444,7 +1444,7 @@ export default async (application: Application): Promise<void> => {
             </button>
           </form>
         `,
-      })
+      }),
     );
   });
 
@@ -1474,7 +1474,7 @@ export default async (application: Application): Promise<void> => {
           : application.database.get<{ id: number; email: string }>(
               sql`
                 SELECT "id", "email" FROM "users" WHERE "id" = ${userId}
-              `
+              `,
             );
       if (user === undefined) {
         application.web.locals.helpers.Flash.set({
@@ -1494,23 +1494,23 @@ export default async (application: Application): Promise<void> => {
               redirect: request.query.redirect,
               invitation: request.query.invitation,
             },
-            { addQueryPrefix: true }
-          )}`
+            { addQueryPrefix: true },
+          )}`,
         );
       }
 
       application.database.run(
-        sql`DELETE FROM "passwordResets" WHERE "user" = ${user.id}`
+        sql`DELETE FROM "passwordResets" WHERE "user" = ${user.id}`,
       );
       application.database.run(
         sql`
           UPDATE "users"
           SET "password" = ${await argon2.hash(
             request.body.password,
-            application.web.locals.configuration.argon2
+            application.web.locals.configuration.argon2,
           )}
           WHERE "id" = ${user.id}
-        `
+        `,
       );
 
       application.database.run(
@@ -1552,17 +1552,17 @@ export default async (application: Application): Promise<void> => {
               `,
             })}
           )
-        `
+        `,
       );
       application.got
         .post(
-          `http://127.0.0.1:${application.ports.workerEventsAny}/send-email`
+          `http://127.0.0.1:${application.ports.workerEventsAny}/send-email`,
         )
         .catch((error) => {
           response.locals.log(
             "FAILED TO EMIT ‘/send-email’ EVENT",
             String(error),
-            error?.stack
+            error?.stack,
           );
         });
 
@@ -1584,9 +1584,9 @@ export default async (application: Application): Promise<void> => {
           typeof request.query.redirect === "string"
             ? request.query.redirect
             : ""
-        }`
+        }`,
       );
-    })
+    }),
   );
 
   application.web.get<
@@ -1622,7 +1622,7 @@ export default async (application: Application): Promise<void> => {
                 redirect: request.query.redirect,
                 invitation: request.query.invitation,
               },
-              { addQueryPrefix: true }
+              { addQueryPrefix: true },
             )}"
             novalidate
             css="${css`
@@ -1705,7 +1705,7 @@ export default async (application: Application): Promise<void> => {
                     redirect: request.query.redirect,
                     invitation: request.query.invitation,
                   },
-                  { addQueryPrefix: true }
+                  { addQueryPrefix: true },
                 )}"
                 class="link"
                 >Sign in</a
@@ -1720,7 +1720,7 @@ export default async (application: Application): Promise<void> => {
                     redirect: request.query.redirect,
                     invitation: request.query.invitation,
                   },
-                  { addQueryPrefix: true }
+                  { addQueryPrefix: true },
                 )}"
                 class="link"
                 >Reset password</a
@@ -1728,7 +1728,7 @@ export default async (application: Application): Promise<void> => {
             </p>
           </div>
         `,
-      })
+      }),
     );
   });
 
@@ -1760,7 +1760,7 @@ export default async (application: Application): Promise<void> => {
         application.database.get<{}>(
           sql`
             SELECT TRUE FROM "users" WHERE "email" = ${request.body.email}
-          `
+          `,
         ) !== undefined
       ) {
         application.web.locals.helpers.Flash.set({
@@ -1784,8 +1784,8 @@ export default async (application: Application): Promise<void> => {
                 email: request.body.email,
               },
             },
-            { addQueryPrefix: true }
-          )}`
+            { addQueryPrefix: true },
+          )}`,
         );
       }
 
@@ -1819,14 +1819,14 @@ export default async (application: Application): Promise<void> => {
                   ${request.body.email},
                   ${await argon2.hash(
                     request.body.password,
-                    application.web.locals.configuration.argon2
+                    application.web.locals.configuration.argon2,
                   )},
                   ${null},
                   ${request.body.name},
                   ${html`${request.body.name}`},
                   ${lodash.sample(
                     application.web.locals.helpers
-                      .userAvatarlessBackgroundColors
+                      .userAvatarlessBackgroundColors,
                   )},
                   ${
                     application.configuration.hostname !==
@@ -1834,7 +1834,7 @@ export default async (application: Application): Promise<void> => {
                     application.database.get<{ count: number }>(
                       sql`
                         SELECT COUNT(*) AS "count" FROM "users"
-                      `
+                      `,
                     )!.count === 0
                       ? "administrator"
                       : "none"
@@ -1846,10 +1846,10 @@ export default async (application: Application): Promise<void> => {
                   ${new Date().toISOString()},
                   ${application.version}
                 )
-              `
+              `,
             ).lastInsertRowid
           }
-        `
+        `,
       )!;
 
       application.web.locals.helpers.emailVerification({
@@ -1872,9 +1872,9 @@ export default async (application: Application): Promise<void> => {
           typeof request.query.redirect === "string"
             ? request.query.redirect
             : ""
-        }`
+        }`,
       );
-    })
+    }),
   );
 
   application.web.locals.helpers.emailVerification = ({
@@ -1888,7 +1888,7 @@ export default async (application: Application): Promise<void> => {
       application.database.run(
         sql`
           DELETE FROM "emailVerifications" WHERE "user" = ${userId}
-        `
+        `,
       );
       return application.database.get<{
         nonce: string;
@@ -1903,10 +1903,10 @@ export default async (application: Application): Promise<void> => {
                   ${userId},
                   ${cryptoRandomString({ length: 100, type: "alphanumeric" })}
                 )
-              `
+              `,
             ).lastInsertRowid
           }
-        `
+        `,
       )!;
     });
 
@@ -1914,7 +1914,7 @@ export default async (application: Application): Promise<void> => {
       application.configuration.hostname
     }/email-verification/${emailVerification.nonce}${qs.stringify(
       { redirect: request.query.redirect ?? request.originalUrl.slice(1) },
-      { addQueryPrefix: true }
+      { addQueryPrefix: true },
     )}`;
     application.database.run(
       sql`
@@ -1939,7 +1939,7 @@ export default async (application: Application): Promise<void> => {
             `,
           })}
         )
-      `
+      `,
     );
     application.got
       .post(`http://127.0.0.1:${application.ports.workerEventsAny}/send-email`)
@@ -1947,7 +1947,7 @@ export default async (application: Application): Promise<void> => {
         response.locals.log(
           "FAILED TO EMIT ‘/send-email’ EVENT",
           String(error),
-          error?.stack
+          error?.stack,
         );
       });
   };
@@ -1960,15 +1960,15 @@ export default async (application: Application): Promise<void> => {
           sql`
             DELETE FROM "emailVerifications"
             WHERE "createdAt" < ${new Date(
-              Date.now() - 24 * 60 * 60 * 1000
+              Date.now() - 24 * 60 * 60 * 1000,
             ).toISOString()}
-          `
+          `,
         );
         application.log("CLEAN EXPIRED ‘emailVerifications’", "FINISHED");
         await timers.setTimeout(
           24 * 60 * 60 * 1000 + Math.random() * 5 * 60 * 1000,
           undefined,
-          { ref: false }
+          { ref: false },
         );
       }
     });
@@ -2003,7 +2003,7 @@ export default async (application: Application): Promise<void> => {
       303,
       `https://${application.configuration.hostname}/${
         typeof request.query.redirect === "string" ? request.query.redirect : ""
-      }`
+      }`,
     );
   });
 
@@ -2031,14 +2031,14 @@ export default async (application: Application): Promise<void> => {
             typeof request.query.redirect === "string"
               ? request.query.redirect
               : ""
-          }`
+          }`,
         );
       }
 
       const emailVerification = application.database.get<{ user: number }>(
         sql`
           SELECT "user" FROM "emailVerifications" WHERE "nonce" = ${request.params.emailVerificationNonce}
-        `
+        `,
       );
       if (emailVerification === undefined) {
         application.web.locals.helpers.Flash.set({
@@ -2053,7 +2053,7 @@ export default async (application: Application): Promise<void> => {
             typeof request.query.redirect === "string"
               ? request.query.redirect
               : ""
-          }`
+          }`,
         );
       }
 
@@ -2072,21 +2072,21 @@ export default async (application: Application): Promise<void> => {
             typeof request.query.redirect === "string"
               ? request.query.redirect
               : ""
-          }`
+          }`,
         );
       }
 
       application.database.run(
         sql`
           DELETE FROM "emailVerifications" WHERE "nonce" = ${request.params.emailVerificationNonce}
-        `
+        `,
       );
       application.database.run(
         sql`
           UPDATE "users"
           SET "emailVerifiedAt" = ${new Date().toISOString()}
           WHERE "id" = ${response.locals.user.id}
-        `
+        `,
       );
 
       application.web.locals.helpers.Flash.set({
@@ -2101,9 +2101,9 @@ export default async (application: Application): Promise<void> => {
           typeof request.query.redirect === "string"
             ? request.query.redirect
             : ""
-        }`
+        }`,
       );
-    }
+    },
   );
 
   application.web.delete<
@@ -2120,7 +2120,7 @@ export default async (application: Application): Promise<void> => {
     response
       .header(
         "Clear-Site-Data",
-        `"*", "cache", "cookies", "storage", "executionContexts"`
+        `"*", "cache", "cookies", "storage", "executionContexts"`,
       )
       .redirect(303, `https://${application.configuration.hostname}/`);
   });
@@ -2168,10 +2168,10 @@ export default async (application: Application): Promise<void> => {
                             ${key},
                             ${value}
                           )
-                        `
+                        `,
                       ).lastInsertRowid
                     }
-                  `
+                  `,
                 )!;
 
                 return {
@@ -2188,11 +2188,11 @@ export default async (application: Application): Promise<void> => {
                       FROM "samlCache"
                       WHERE
                         ${new Date(
-                          new Date().getTime() - 60 * 60 * 1000
+                          new Date().getTime() - 60 * 60 * 1000,
                         ).toISOString()} < "createdAt" AND
                         "samlIdentifier" = ${samlIdentifier} AND
                         "key" = ${key}
-                    `
+                    `,
                   )?.value ?? null
                 );
               },
@@ -2204,7 +2204,7 @@ export default async (application: Application): Promise<void> => {
                     WHERE
                       "samlIdentifier" = ${samlIdentifier} AND
                       "key" = ${key}
-                  `
+                  `,
                 );
 
                 return key;
@@ -2212,8 +2212,8 @@ export default async (application: Application): Promise<void> => {
             },
           }),
         },
-      ]
-    )
+      ],
+    ),
   );
 
   if (application.process.number === 0)
@@ -2224,15 +2224,15 @@ export default async (application: Application): Promise<void> => {
           sql`
             DELETE FROM "samlCache"
             WHERE "createdAt" <= ${new Date(
-              Date.now() - 60 * 60 * 1000
+              Date.now() - 60 * 60 * 1000,
             ).toISOString()}
-          `
+          `,
         );
         application.log("CLEAN EXPIRED ‘samlCache’", "FINISHED");
         await timers.setTimeout(
           60 * 60 * 1000 + Math.random() * 5 * 60 * 1000,
           undefined,
-          { ref: false }
+          { ref: false },
         );
       }
     });
@@ -2267,8 +2267,8 @@ export default async (application: Application): Promise<void> => {
       .send(
         response.locals.saml.saml.generateServiceProviderMetadata(
           response.locals.saml.options.decryptionCert ?? null,
-          response.locals.saml.options.signingCert ?? null
-        )
+          response.locals.saml.options.signingCert ?? null,
+        ),
       );
   });
 
@@ -2295,10 +2295,10 @@ export default async (application: Application): Promise<void> => {
             ? request.query.redirect
             : "",
           undefined,
-          {}
-        )
+          {},
+        ),
       );
-    })
+    }),
   );
 
   application.web.post<
@@ -2323,7 +2323,7 @@ export default async (application: Application): Promise<void> => {
         response.locals.log(
           "SAML RESPONSE",
           JSON.stringify(samlResponse, undefined, 2),
-          JSON.stringify(samlResponseAttributes, undefined, 2)
+          JSON.stringify(samlResponseAttributes, undefined, 2),
         );
 
       if (
@@ -2347,7 +2347,7 @@ export default async (application: Application): Promise<void> => {
                   "samlIdentifier" = ${response.locals.session.samlIdentifier} AND
                   "samlSessionIndex" = ${response.locals.session.samlSessionIndex} AND
                   "samlNameID" = ${response.locals.session.samlNameID}
-              `
+              `,
             );
 
           application.database.run(
@@ -2357,7 +2357,7 @@ export default async (application: Application): Promise<void> => {
               WHERE
                 "id" = ${response.locals.user.id} AND
                 "emailVerifiedAt" IS NULL
-            `
+            `,
           );
         } else
           application.web.locals.helpers.Flash.set({
@@ -2379,7 +2379,7 @@ export default async (application: Application): Promise<void> => {
             typeof request.body.RelayState === "string"
               ? request.body.RelayState
               : ""
-          }`
+          }`,
         );
       }
 
@@ -2427,7 +2427,7 @@ export default async (application: Application): Promise<void> => {
                           ? request.body.RelayState
                           : undefined,
                     },
-                    { addQueryPrefix: true }
+                    { addQueryPrefix: true },
                   )}"
                   class="link"
                   javascript="${javascript`
@@ -2455,7 +2455,7 @@ export default async (application: Application): Promise<void> => {
                           ? request.body.RelayState
                           : undefined,
                     },
-                    { addQueryPrefix: true }
+                    { addQueryPrefix: true },
                   )}"
                   class="link"
                   >sign in</a
@@ -2470,7 +2470,7 @@ export default async (application: Application): Promise<void> => {
                           ? request.body.RelayState
                           : undefined,
                     },
-                    { addQueryPrefix: true }
+                    { addQueryPrefix: true },
                   )}"
                   class="link"
                   >sign up</a
@@ -2478,12 +2478,12 @@ export default async (application: Application): Promise<void> => {
                 to Courselore using email and password.
               </p>
             `,
-          })
+          }),
         );
 
       if (
         samlResponseAttributes.email.match(
-          application.web.locals.helpers.emailRegExp
+          application.web.locals.helpers.emailRegExp,
         ) === null
       )
         return response.status(422).send(
@@ -2530,7 +2530,7 @@ export default async (application: Application): Promise<void> => {
                           ? request.body.RelayState
                           : undefined,
                     },
-                    { addQueryPrefix: true }
+                    { addQueryPrefix: true },
                   )}"
                   class="link"
                   >sign in</a
@@ -2545,7 +2545,7 @@ export default async (application: Application): Promise<void> => {
                           ? request.body.RelayState
                           : undefined,
                     },
-                    { addQueryPrefix: true }
+                    { addQueryPrefix: true },
                   )}"
                   class="link"
                   >sign up</a
@@ -2553,14 +2553,14 @@ export default async (application: Application): Promise<void> => {
                 to Courselore using email and password.
               </p>
             `,
-          })
+          }),
         );
 
       if (
         !response.locals.saml.domains.some(
           (domain) =>
             samlResponseAttributes.email!.endsWith(`@${domain}`) ||
-            samlResponseAttributes.email!.endsWith(`.${domain}`)
+            samlResponseAttributes.email!.endsWith(`.${domain}`),
         )
       )
         return response.status(422).send(
@@ -2605,7 +2605,7 @@ export default async (application: Application): Promise<void> => {
                           ? request.body.RelayState
                           : undefined,
                     },
-                    { addQueryPrefix: true }
+                    { addQueryPrefix: true },
                   )}"
                   class="link"
                   >sign in</a
@@ -2620,7 +2620,7 @@ export default async (application: Application): Promise<void> => {
                           ? request.body.RelayState
                           : undefined,
                     },
-                    { addQueryPrefix: true }
+                    { addQueryPrefix: true },
                   )}"
                   class="link"
                   >sign up</a
@@ -2628,11 +2628,11 @@ export default async (application: Application): Promise<void> => {
                 to Courselore using email and password.
               </p>
             `,
-          })
+          }),
         );
 
       let user = application.database.get<{ id: number; email: string }>(
-        sql`SELECT "id", "email" FROM "users" WHERE "email" = ${samlResponseAttributes.email}`
+        sql`SELECT "id", "email" FROM "users" WHERE "email" = ${samlResponseAttributes.email}`,
       );
 
       if (user === undefined) {
@@ -2670,7 +2670,7 @@ export default async (application: Application): Promise<void> => {
                     ${html`${samlResponseAttributes.name}`},
                     ${lodash.sample(
                       application.web.locals.helpers
-                        .userAvatarlessBackgroundColors
+                        .userAvatarlessBackgroundColors,
                     )},
                     ${
                       application.configuration.hostname !==
@@ -2678,7 +2678,7 @@ export default async (application: Application): Promise<void> => {
                       application.database.get<{ count: number }>(
                         sql`
                           SELECT COUNT(*) AS "count" FROM "users"
-                        `
+                        `,
                       )!.count === 0
                         ? "administrator"
                         : "none"
@@ -2690,10 +2690,10 @@ export default async (application: Application): Promise<void> => {
                     ${new Date().toISOString()},
                     ${application.version}
                   )
-                `
+                `,
               ).lastInsertRowid
             }
-          `
+          `,
         )!;
       } else
         application.database.run(
@@ -2703,7 +2703,7 @@ export default async (application: Application): Promise<void> => {
             WHERE
               "id" = ${user.id} AND
               "emailVerifiedAt" IS NULL
-          `
+          `,
         );
 
       application.database.run(
@@ -2745,17 +2745,17 @@ export default async (application: Application): Promise<void> => {
                 `,
               })}
             )
-          `
+          `,
       );
       application.got
         .post(
-          `http://127.0.0.1:${application.ports.workerEventsAny}/send-email`
+          `http://127.0.0.1:${application.ports.workerEventsAny}/send-email`,
         )
         .catch((error) => {
           response.locals.log(
             "FAILED TO EMIT ‘/send-email’ EVENT",
             String(error),
-            error?.stack
+            error?.stack,
           );
         });
 
@@ -2774,9 +2774,9 @@ export default async (application: Application): Promise<void> => {
           typeof request.body.RelayState === "string"
             ? request.body.RelayState
             : ""
-        }`
+        }`,
       );
-    })
+    }),
   );
 
   application.web.delete<
@@ -2810,11 +2810,11 @@ export default async (application: Application): Promise<void> => {
               nameID: response.locals.session.samlNameID,
             },
             "",
-            {}
-          )
+            {},
+          ),
         )
         .end();
-    })
+    }),
   );
 
   application.web.post<
@@ -2836,7 +2836,7 @@ export default async (application: Application): Promise<void> => {
       if (response.locals.saml.public === false)
         response.locals.log(
           "SAML REQUEST",
-          JSON.stringify(samlRequest, undefined, 2)
+          JSON.stringify(samlRequest, undefined, 2),
         );
 
       if (samlRequest !== undefined) {
@@ -2856,8 +2856,8 @@ export default async (application: Application): Promise<void> => {
               samlRequest.profile,
               request.body.RelayState,
               {},
-              false
-            )
+              false,
+            ),
           );
 
         application.web.locals.helpers.Session.close({ request, response });
@@ -2865,7 +2865,7 @@ export default async (application: Application): Promise<void> => {
         return response
           .header(
             "Clear-Site-Data",
-            `"*", "cache", "cookies", "storage", "executionContexts"`
+            `"*", "cache", "cookies", "storage", "executionContexts"`,
           )
           .redirect(
             303,
@@ -2873,8 +2873,8 @@ export default async (application: Application): Promise<void> => {
               samlRequest.profile,
               request.body.RelayState,
               {},
-              true
-            )
+              true,
+            ),
           );
       }
 
@@ -2919,7 +2919,7 @@ export default async (application: Application): Promise<void> => {
                 to Courselore.
               </p>
             `,
-          })
+          }),
         );
 
       if (
@@ -2967,7 +2967,7 @@ export default async (application: Application): Promise<void> => {
                 <button class="link">sign out of Courselore</button>.
               </form>
             `,
-          })
+          }),
         );
 
       const samlResponse = await response.locals.saml.saml
@@ -2977,7 +2977,7 @@ export default async (application: Application): Promise<void> => {
       if (response.locals.saml.public === false)
         response.locals.log(
           "SAML RESPONSE",
-          JSON.stringify(samlResponse, undefined, 2)
+          JSON.stringify(samlResponse, undefined, 2),
         );
 
       if (samlResponse === undefined || samlResponse.loggedOut !== true)
@@ -3022,7 +3022,7 @@ export default async (application: Application): Promise<void> => {
                 <button class="link">sign out of Courselore</button>.
               </form>
             `,
-          })
+          }),
         );
 
       if (
@@ -3057,7 +3057,7 @@ export default async (application: Application): Promise<void> => {
                 <button class="link">Sign out of Courselore</button>.
               </form>
             `,
-          })
+          }),
         );
 
       application.web.locals.helpers.Session.close({ request, response });
@@ -3065,7 +3065,7 @@ export default async (application: Application): Promise<void> => {
       return response
         .header(
           "Clear-Site-Data",
-          `"*", "cache", "cookies", "storage", "executionContexts"`
+          `"*", "cache", "cookies", "storage", "executionContexts"`,
         )
         .redirect(
           303,
@@ -3073,8 +3073,8 @@ export default async (application: Application): Promise<void> => {
             typeof request.body.RelayState === "string"
               ? request.body.RelayState
               : ""
-          }`
+          }`,
         );
-    })
+    }),
   );
 };

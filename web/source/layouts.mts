@@ -256,166 +256,1078 @@ export default async (application: Application): Promise<void> => {
     showCourseSwitcher = true,
     extraHeaders = html``,
     body,
-  }) =>
-    html`
-      <!DOCTYPE html>
-      <html lang="en">
-        <head>
-          <meta name="version" content="${application.version}" />
+  }) => html`
+    <!doctype html>
+    <html lang="en">
+      <head>
+        <meta name="version" content="${application.version}" />
 
-          <meta
-            name="description"
-            content="Communication Platform for Education"
-          />
+        <meta
+          name="description"
+          content="Communication Platform for Education"
+        />
 
-          <meta
-            name="viewport"
-            content="width=device-width, initial-scale=1, maximum-scale=1"
-          />
-          <meta
-            key="theme-color--light"
-            name="theme-color"
-            media="(prefers-color-scheme: light)"
-            content=""
-          />
-          <meta
-            key="theme-color--dark"
-            name="theme-color"
-            media="(prefers-color-scheme: dark)"
-            content=""
-          />
-          <link
-            rel="stylesheet"
-            href="https://${application.configuration.hostname}/${application
-              .static["index.css"]}"
-          />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1, maximum-scale=1"
+        />
+        <meta
+          key="theme-color--light"
+          name="theme-color"
+          media="(prefers-color-scheme: light)"
+          content=""
+        />
+        <meta
+          key="theme-color--dark"
+          name="theme-color"
+          media="(prefers-color-scheme: dark)"
+          content=""
+        />
+        <link
+          rel="stylesheet"
+          href="https://${application.configuration.hostname}/${application
+            .static["index.css"]}"
+        />
 
-          <script
-            src="https://${application.configuration.hostname}/${application
-              .static["index.mjs"]}"
-            defer
-          ></script>
+        <script
+          src="https://${application.configuration.hostname}/${application
+            .static["index.mjs"]}"
+          defer
+        ></script>
 
-          $${head}
-        </head>
+        $${head}
+      </head>
 
-        <body
-          css="${css`
-            @at-root {
-              ::-webkit-scrollbar {
-                width: var(--space--2);
-                height: var(--space--2);
+      <body
+        css="${css`
+          @at-root {
+            ::-webkit-scrollbar {
+              width: var(--space--2);
+              height: var(--space--2);
+            }
+
+            ::-webkit-scrollbar-button {
+              display: none;
+            }
+
+            ::-webkit-scrollbar-track {
+              display: none;
+            }
+
+            ::-webkit-scrollbar-track-piece {
+              display: none;
+            }
+
+            ::-webkit-scrollbar-thumb {
+              background-color: var(--color--zinc--400);
+              @media (prefers-color-scheme: dark) {
+                background-color: var(--color--zinc--500);
               }
+              border-radius: var(--border-radius--full);
+            }
 
-              ::-webkit-scrollbar-button {
-                display: none;
+            ::-webkit-scrollbar-corner {
+              display: none;
+            }
+
+            ::-webkit-resizer {
+              display: none;
+            }
+
+            *,
+            ::before,
+            ::after {
+              scrollbar-color: var(--color--zinc--400) transparent;
+              @media (prefers-color-scheme: dark) {
+                scrollbar-color: var(--color--zinc--500) transparent;
               }
+            }
 
-              ::-webkit-scrollbar-track {
-                display: none;
+            .grabbing {
+              &,
+              &::before,
+              &::after,
+              & *,
+              & *::before,
+              & *::after {
+                cursor: grabbing !important;
+                touch-action: none !important;
+                user-select: none !important;
               }
+            }
 
-              ::-webkit-scrollbar-track-piece {
-                display: none;
-              }
+            .label {
+              display: flex;
+              flex-direction: column;
+              gap: var(--space--1);
 
-              ::-webkit-scrollbar-thumb {
-                background-color: var(--color--zinc--400);
-                @media (prefers-color-scheme: dark) {
-                  background-color: var(--color--zinc--500);
-                }
-                border-radius: var(--border-radius--full);
-              }
-
-              ::-webkit-scrollbar-corner {
-                display: none;
-              }
-
-              ::-webkit-resizer {
-                display: none;
-              }
-
-              *,
-              ::before,
-              ::after {
-                scrollbar-color: var(--color--zinc--400) transparent;
-                @media (prefers-color-scheme: dark) {
-                  scrollbar-color: var(--color--zinc--500) transparent;
-                }
-              }
-
-              .grabbing {
-                &,
-                &::before,
-                &::after,
-                & *,
-                & *::before,
-                & *::after {
-                  cursor: grabbing !important;
-                  touch-action: none !important;
-                  user-select: none !important;
-                }
-              }
-
-              .label {
+              .label--text {
+                font-size: var(--font-size--xs);
+                line-height: var(--line-height--xs);
+                font-weight: var(--font-weight--bold);
                 display: flex;
-                flex-direction: column;
-                gap: var(--space--1);
-
-                .label--text {
-                  font-size: var(--font-size--xs);
-                  line-height: var(--line-height--xs);
-                  font-weight: var(--font-weight--bold);
-                  display: flex;
-                  gap: var(--space--2);
-                }
+                gap: var(--space--2);
               }
+            }
 
-              .input--text {
-                background-color: var(--color--zinc--200);
-                --color--box-shadow: var(--color--blue--400);
+            .input--text {
+              background-color: var(--color--zinc--200);
+              --color--box-shadow: var(--color--blue--400);
+              &::placeholder {
+                color: var(--color--zinc--400);
+              }
+              &:disabled,
+              &.disabled {
+                color: var(--color--zinc--500);
+                -webkit-text-fill-color: var(--color--zinc--500);
+                background-color: var(--color--zinc--300);
+              }
+              @media (prefers-color-scheme: dark) {
+                background-color: var(--color--zinc--700);
+                --color--box-shadow: var(--color--blue--600);
                 &::placeholder {
-                  color: var(--color--zinc--400);
+                  color: var(--color--zinc--500);
                 }
                 &:disabled,
                 &.disabled {
-                  color: var(--color--zinc--500);
-                  -webkit-text-fill-color: var(--color--zinc--500);
-                  background-color: var(--color--zinc--300);
+                  color: var(--color--zinc--400);
+                  -webkit-text-fill-color: var(--color--zinc--400);
+                  background-color: var(--color--zinc--600);
                 }
-                @media (prefers-color-scheme: dark) {
-                  background-color: var(--color--zinc--700);
-                  --color--box-shadow: var(--color--blue--600);
-                  &::placeholder {
-                    color: var(--color--zinc--500);
+              }
+              width: 100%;
+              display: block;
+              padding: var(--space--2) var(--space--4);
+              border-radius: var(--border-radius--md);
+              &:focus-within {
+                box-shadow: var(--border-width--0) var(--border-width--0)
+                  var(--border-width--0) var(--border-width--2)
+                  var(--color--box-shadow);
+              }
+              transition-property: var(--transition-property--box-shadow);
+              transition-duration: var(--transition-duration--150);
+              transition-timing-function: var(
+                --transition-timing-function--in-out
+              );
+              &.input--text--textarea {
+                border-radius: var(--border-radius--lg);
+              }
+            }
+
+            .input--radio {
+              background-color: var(--color--zinc--200);
+              &:hover,
+              &:focus-within {
+                background-color: var(--color--zinc--300);
+              }
+              &:active {
+                background-color: var(--color--zinc--400);
+              }
+              &:disabled,
+              &.disabled {
+                background-color: var(--color--zinc--300);
+              }
+              &:checked {
+                background-color: var(--color--blue--600);
+                &:hover,
+                &:focus-within {
+                  background-color: var(--color--blue--500);
+                }
+                &:active {
+                  background-color: var(--color--blue--700);
+                }
+                &:disabled,
+                &.disabled {
+                  background-color: var(--color--blue--300);
+                }
+              }
+              @media (prefers-color-scheme: dark) {
+                background-color: var(--color--zinc--700);
+                &:hover,
+                &:focus-within {
+                  background-color: var(--color--zinc--600);
+                }
+                &:active {
+                  background-color: var(--color--zinc--500);
+                }
+                &:disabled,
+                &.disabled {
+                  background-color: var(--color--zinc--600);
+                }
+                &:checked {
+                  background-color: var(--color--blue--700);
+                  &:hover,
+                  &:focus-within {
+                    background-color: var(--color--blue--600);
+                  }
+                  &:active {
+                    background-color: var(--color--blue--800);
                   }
                   &:disabled,
                   &.disabled {
-                    color: var(--color--zinc--400);
-                    -webkit-text-fill-color: var(--color--zinc--400);
-                    background-color: var(--color--zinc--600);
+                    background-color: var(--color--blue--500);
                   }
                 }
-                width: 100%;
-                display: block;
-                padding: var(--space--2) var(--space--4);
-                border-radius: var(--border-radius--md);
-                &:focus-within {
-                  box-shadow: var(--border-width--0) var(--border-width--0)
-                    var(--border-width--0) var(--border-width--2)
-                    var(--color--box-shadow);
+              }
+              min-width: var(--space--3-5);
+              width: var(--space--3-5);
+              min-height: var(--space--3-5);
+              height: var(--space--3-5);
+              border-radius: var(--border-radius--circle);
+              position: relative;
+              top: var(--space---0-5);
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              cursor: pointer;
+              transition-property: var(--transition-property--colors);
+              transition-duration: var(--transition-duration--150);
+              transition-timing-function: var(
+                --transition-timing-function--in-out
+              );
+
+              &::before {
+                content: "";
+                background-color: var(--color--zinc--50);
+                @media (prefers-color-scheme: dark) {
+                  background-color: var(--color--zinc--200);
                 }
-                transition-property: var(--transition-property--box-shadow);
+                display: block;
+                width: var(--space--1-5);
+                height: var(--space--1-5);
+                border-radius: var(--border-radius--circle);
+                transition-property: var(--transition-property--transform);
                 transition-duration: var(--transition-duration--150);
                 transition-timing-function: var(
                   --transition-timing-function--in-out
                 );
-                &.input--text--textarea {
-                  border-radius: var(--border-radius--lg);
+              }
+              &:not(:checked)::before {
+                transform: scale(var(--scale--0));
+              }
+            }
+
+            .input--checkbox {
+              background-color: var(--color--zinc--200);
+              &:hover,
+              &:focus-within {
+                background-color: var(--color--zinc--300);
+              }
+              &:active {
+                background-color: var(--color--zinc--400);
+              }
+              &:disabled,
+              &.disabled {
+                background-color: var(--color--zinc--300);
+              }
+              &:checked {
+                background-color: var(--color--blue--600);
+                &:hover,
+                &:focus-within {
+                  background-color: var(--color--blue--500);
+                }
+                &:active {
+                  background-color: var(--color--blue--700);
+                }
+                &:disabled,
+                &.disabled {
+                  background-color: var(--color--blue--300);
+                }
+              }
+              @media (prefers-color-scheme: dark) {
+                background-color: var(--color--zinc--700);
+                &:hover,
+                &:focus-within {
+                  background-color: var(--color--zinc--600);
+                }
+                &:active {
+                  background-color: var(--color--zinc--500);
+                }
+                &:disabled,
+                &.disabled {
+                  background-color: var(--color--zinc--600);
+                }
+                &:checked {
+                  background-color: var(--color--blue--700);
+                  &:hover,
+                  &:focus-within {
+                    background-color: var(--color--blue--600);
+                  }
+                  &:active {
+                    background-color: var(--color--blue--800);
+                  }
+                  &:disabled,
+                  &.disabled {
+                    background-color: var(--color--blue--500);
+                  }
+                }
+              }
+              min-width: var(--space--8);
+              width: var(--space--8);
+              padding: var(--space--0-5);
+              border-radius: var(--border-radius--full);
+              position: relative;
+              top: calc(var(--space--0-5) * 1.5);
+              cursor: pointer;
+              transition-property: var(--transition-property--colors);
+              transition-duration: var(--transition-duration--150);
+              transition-timing-function: var(
+                --transition-timing-function--in-out
+              );
+
+              &::after {
+                content: "";
+                background-color: var(--color--zinc--50);
+                @media (prefers-color-scheme: dark) {
+                  background-color: var(--color--zinc--200);
+                }
+                display: block;
+                width: var(--space--3);
+                height: var(--space--3);
+                border-radius: var(--border-radius--circle);
+                transition-property: var(--transition-property--all);
+                transition-duration: var(--transition-duration--150);
+                transition-timing-function: var(
+                  --transition-timing-function--in-out
+                );
+              }
+              &:checked::after {
+                margin-left: var(--space--4);
+              }
+            }
+
+            .input--radio-or-checkbox--multilabel {
+              & ~ * {
+                display: flex;
+                gap: var(--space--2);
+              }
+              &:not(:checked) + * + *,
+              &:checked + * {
+                display: none;
+              }
+            }
+
+            .input--visible-when-enabled-and-checked {
+              &[disabled] + *,
+              &:not(:checked) + * {
+                display: none;
+              }
+            }
+
+            .button {
+              padding: var(--space--1) var(--space--4);
+              border-radius: var(--border-radius--md);
+              display: flex;
+              gap: var(--space--2);
+              justify-content: center;
+              align-items: baseline;
+              transition-property: var(--transition-property--colors);
+              transition-duration: var(--transition-duration--150);
+              transition-timing-function: var(
+                --transition-timing-function--in-out
+              );
+              cursor: pointer;
+
+              &:disabled,
+              &.disabled {
+                color: var(--color--zinc--500);
+                @media (prefers-color-scheme: dark) {
+                  color: var(--color--zinc--400);
                 }
               }
 
-              .input--radio {
+              &.button--tight {
+                padding: var(--space--0-5) var(--space--1);
+
+                &.button--tight--inline {
+                  margin: var(--space---0-5) var(--space---1);
+                }
+              }
+
+              &.button--tight-gap {
+                gap: var(--space--1);
+              }
+
+              &.button--full-width-on-small-screen {
+                @media (max-width: 400px) {
+                  width: 100%;
+                }
+              }
+
+              &.button--justify-start {
+                justify-content: flex-start;
+              }
+
+              &.button--inline {
+                display: inline-flex;
+              }
+
+              &.button--transparent {
+                &:not(:disabled):not(.disabled) {
+                  &:hover,
+                  &:focus-within,
+                  &.hover {
+                    background-color: var(--color--zinc--200);
+                  }
+                  &:active {
+                    background-color: var(--color--zinc--300);
+                  }
+                  @media (prefers-color-scheme: dark) {
+                    &:hover,
+                    &:focus-within,
+                    &.hover {
+                      background-color: var(--color--zinc--700);
+                    }
+                    &:active {
+                      background-color: var(--color--zinc--600);
+                    }
+                  }
+                }
+              }
+
+              ${["blue", "green", "rose", "amber", "emerald", "sky"].map(
+                (color) => css`
+                  &.button--${color} {
+                    color: var(--color--${color}--50);
+                    @media (prefers-color-scheme: dark) {
+                      color: var(--color--${color}--100);
+                    }
+                    &:not(:disabled):not(.disabled) {
+                      background-color: var(--color--${color}--600);
+                      &:hover,
+                      &:focus-within,
+                      &.hover {
+                        background-color: var(--color--${color}--500);
+                      }
+                      &:active {
+                        background-color: var(--color--${color}--700);
+                      }
+                      @media (prefers-color-scheme: dark) {
+                        background-color: var(--color--${color}--800);
+                        &:hover,
+                        &:focus-within,
+                        &.hover {
+                          background-color: var(--color--${color}--700);
+                        }
+                        &:active {
+                          background-color: var(--color--${color}--900);
+                        }
+                      }
+                    }
+                    &:disabled,
+                    &.disabled {
+                      background-color: var(--color--${color}--300);
+                      @media (prefers-color-scheme: dark) {
+                        background-color: var(--color--${color}--500);
+                      }
+                    }
+                    .strong {
+                      color: var(--color--${color}--50);
+                      @media (prefers-color-scheme: dark) {
+                        color: var(--color--${color}--100);
+                      }
+                    }
+                    .secondary,
+                    [class^="text--"] {
+                      color: var(--color--${color}--100);
+                      @media (prefers-color-scheme: dark) {
+                        color: var(--color--${color}--200);
+                      }
+                    }
+                  }
+                `,
+              )}
+            }
+
+            .link {
+              text-decoration: underline;
+              color: var(--color--blue--600);
+              &:hover,
+              &:focus-within {
+                color: var(--color--blue--500);
+              }
+              &:active {
+                color: var(--color--blue--700);
+              }
+              ${["rose"].map(
+                (color) => css`
+                  &.text--${color} {
+                    &:hover,
+                    &:focus-within {
+                      color: var(--color--${color}--500);
+                    }
+                    &:active {
+                      color: var(--color--${color}--700);
+                    }
+                  }
+                `,
+              )}
+              @media (prefers-color-scheme: dark) {
+                color: var(--color--blue--500);
+                &:hover,
+                &:focus-within {
+                  color: var(--color--blue--400);
+                }
+                &:active {
+                  color: var(--color--blue--600);
+                }
+                ${["rose"].map(
+                  (color) => css`
+                    &.text--${color} {
+                      &:hover,
+                      &:focus-within {
+                        color: var(--color--${color}--400);
+                      }
+                      &:active {
+                        color: var(--color--${color}--600);
+                      }
+                    }
+                  `,
+                )}
+              }
+              transition-property: var(--transition-property--colors);
+              transition-duration: var(--transition-duration--150);
+              transition-timing-function: var(
+                --transition-timing-function--in-out
+              );
+              cursor: pointer;
+
+              .bi {
+                text-decoration: none;
+              }
+            }
+
+            :disabled,
+            .disabled {
+              cursor: not-allowed;
+            }
+
+            .heading {
+              font-size: var(--font-size--2xs);
+              line-height: var(--line-height--2xs);
+              font-weight: var(--font-weight--bold);
+              text-transform: uppercase;
+              letter-spacing: var(--letter-spacing--widest);
+              color: var(--color--zinc--600);
+              @media (prefers-color-scheme: dark) {
+                color: var(--color--zinc--400);
+              }
+              display: flex;
+              gap: var(--space--1);
+            }
+
+            .heading--display {
+              font-size: var(--font-size--xl);
+              line-height: var(--line-height--xl);
+              font-weight: var(--font-weight--bold);
+              text-align: center;
+              color: var(--color--zinc--800);
+              @media (prefers-color-scheme: dark) {
+                color: var(--color--zinc--100);
+              }
+            }
+
+            .strong {
+              font-weight: var(--font-weight--bold);
+              color: var(--color--zinc--800);
+              @media (prefers-color-scheme: dark) {
+                color: var(--color--zinc--100);
+              }
+            }
+
+            .secondary {
+              color: var(--color--zinc--500);
+              @media (prefers-color-scheme: dark) {
+                color: var(--color--zinc--400);
+              }
+            }
+
+            ${[
+              "blue",
+              "green",
+              "rose",
+              "sky",
+              "amber",
+              "teal",
+              "lime",
+              "emerald",
+              "fuchsia",
+              "cyan",
+              "purple",
+              "orange",
+            ].map(
+              (color) => css`
+                .text--${color} {
+                  color: var(--color--${color}--600);
+                  @media (prefers-color-scheme: dark) {
+                    color: var(--color--${color}--500);
+                  }
+                }
+              `,
+            )}
+
+            .mark {
+              color: var(--color--amber--700);
+              background-color: var(--color--amber--200);
+              @media (prefers-color-scheme: dark) {
+                color: var(--color--amber--200);
+                background-color: var(--color--amber--700);
+              }
+              padding: var(--space--0) var(--space--0-5);
+              border-radius: var(--border-radius--base);
+            }
+
+            .code,
+            .pre > code {
+              font-family: "JetBrains Mono Variable",
+                var(--font-family--monospace);
+              font-variant-ligatures: none;
+            }
+
+            .pre > code {
+              font-size: var(--font-size--xs);
+              line-height: var(--line-height--xs);
+            }
+
+            .img {
+              background-color: var(--color--zinc--50);
+              @media (prefers-color-scheme: dark) {
+                background-color: var(--color--zinc--50);
+                filter: brightness(var(--brightness--90));
+              }
+              max-width: 100%;
+              height: auto;
+              border-radius: var(--border-radius--xl);
+            }
+
+            .details {
+              background-color: var(--color--zinc--200);
+              @media (prefers-color-scheme: dark) {
+                background-color: var(--color--zinc--700);
+              }
+              border-radius: var(--border-radius--xl);
+              summary {
+                &:hover,
+                &:focus-within {
+                  background-color: var(--color--zinc--300);
+                }
+                @media (prefers-color-scheme: dark) {
+                  &:hover,
+                  &:focus-within {
+                    background-color: var(--color--zinc--600);
+                  }
+                }
+                padding: var(--space--2) var(--space--4);
+                border-radius: var(--border-radius--xl);
+                transition-property: var(--transition-property--colors);
+                transition-duration: var(--transition-duration--150);
+                transition-timing-function: var(
+                  --transition-timing-function--in-out
+                );
+                cursor: pointer;
+                &::before {
+                  content: "\\f275";
+                  font-family: "bootstrap-icons" !important;
+                  font-size: var(--font-size--xs);
+                  line-height: var(--line-height--xs);
+                  margin-right: var(--space--2);
+                }
+              }
+              &[open] > summary::before {
+                content: "\\f273";
+              }
+              & > div:last-child {
+                padding: var(--space--4);
+              }
+            }
+
+            .decorative-icon {
+              font-size: var(--font-size--9xl);
+              line-height: var(--line-height--9xl);
+              color: var(--color--zinc--300);
+              background-color: var(--color--zinc--100);
+              @media (prefers-color-scheme: dark) {
+                color: var(--color--zinc--600);
+                background-color: var(--color--zinc--800);
+              }
+              width: var(--space--48);
+              height: var(--space--48);
+              border-radius: var(--border-radius--circle);
+              display: flex;
+              justify-content: center;
+              align-items: center;
+            }
+
+            .separator {
+              border-top: var(--border-width--1) solid var(--color--zinc--200);
+              @media (prefers-color-scheme: dark) {
+                border-color: var(--color--zinc--700);
+              }
+            }
+
+            .menu-box {
+              background-color: var(--color--zinc--100);
+              @media (prefers-color-scheme: dark) {
+                background-color: var(--color--zinc--800);
+              }
+              width: 100%;
+              max-width: var(--space--64);
+              padding: var(--space--2);
+              border-radius: var(--border-radius--lg);
+              display: flex;
+              flex-direction: column;
+              gap: var(--space--2);
+
+              .menu-box--item {
+                justify-content: flex-start;
+              }
+            }
+
+            .tippy-box {
+              font-size: var(--font-size--sm);
+              line-height: var(--line-height--sm);
+              color: var(--color--zinc--700);
+              --background-color: var(--color--zinc--100);
+              background-color: var(--background-color);
+              --border-color: var(--color--zinc--400);
+              border: var(--border-width--1) solid var(--border-color);
+              border-radius: var(--border-radius--md);
+              @media (prefers-color-scheme: dark) {
+                color: var(--color--zinc--200);
+                --background-color: var(--color--zinc--800);
+                --border-color: var(--color--zinc--400);
+              }
+              & > .tippy-svg-arrow > svg {
+                &:first-child {
+                  fill: var(--border-color);
+                }
+                &:last-child {
+                  fill: var(--background-color);
+                }
+              }
+
+              .tippy-content {
+                padding: var(--space--1) var(--space--2);
+              }
+
+              .heading {
+                padding: var(--space--1) var(--space--2);
+              }
+
+              .keyboard-shortcut {
+                font-size: var(--font-size--xs);
+                line-height: var(--line-height--xs);
+                color: var(--color--zinc--500);
+                @media (prefers-color-scheme: dark) {
+                  color: var(--color--zinc--400);
+                }
+                flex: 1;
+                text-align: right;
+
+                .keyboard-shortcut--cluster {
+                  letter-spacing: var(--letter-spacing--widest);
+                }
+              }
+
+              .dropdown--menu {
+                display: flex;
+                flex-direction: column;
+
+                .dropdown--menu--item {
+                  text-align: left;
+                  width: 100%;
+                  padding-left: var(--space--2);
+                  padding-right: var(--space--2);
+                  justify-content: flex-start;
+                }
+              }
+
+              .dropdown--separator {
+                border-top: var(--border-width--1) solid var(--color--zinc--200);
+                @media (prefers-color-scheme: dark) {
+                  border-color: var(--color--zinc--700);
+                }
+                margin: var(--space--0) var(--space--2);
+              }
+
+              ${Object.entries({
+                green: "green",
+                amber: "amber",
+                rose: "rose",
+                error: "rose",
+              }).map(
+                ([theme, color]) => css`
+                  &[data-theme~="${theme}"] {
+                    color: var(--color--${color}--700);
+                    --background-color: var(--color--${color}--100);
+                    --border-color: var(--color--${color}--200);
+                    .button.button--transparent {
+                      &:hover,
+                      &:focus-within {
+                        background-color: var(--color--${color}--200);
+                      }
+                      &:active {
+                        background-color: var(--color--${color}--300);
+                      }
+                    }
+                    .link {
+                      color: var(--color--${color}--600);
+                      &:hover,
+                      &:focus-within {
+                        color: var(--color--${color}--500);
+                      }
+                      &:active {
+                        color: var(--color--${color}--700);
+                      }
+                    }
+                    .keyboard-shortcut {
+                      color: var(--color--${color}--500);
+                    }
+                    @media (prefers-color-scheme: dark) {
+                      color: var(--color--${color}--200);
+                      --background-color: var(--color--${color}--950);
+                      --border-color: var(--color--${color}--900);
+                      .button.button--transparent {
+                        &:hover,
+                        &:focus-within {
+                          background-color: var(--color--${color}--800);
+                        }
+                        &:active {
+                          background-color: var(--color--${color}--700);
+                        }
+                      }
+                      .link {
+                        color: var(--color--${color}--100);
+                        &:hover,
+                        &:focus-within {
+                          color: var(--color--${color}--50);
+                        }
+                        &:active {
+                          color: var(--color--${color}--200);
+                        }
+                      }
+                      .keyboard-shortcut {
+                        color: var(--color--${color}--400);
+                      }
+                    }
+                  }
+                `,
+              )}
+            }
+
+            .dark {
+              display: none !important;
+            }
+            @media (prefers-color-scheme: dark) {
+              .light {
+                display: none !important;
+              }
+              .dark {
+                display: block !important;
+              }
+            }
+
+            .content {
+              h1,
+              h2,
+              h3,
+              h4,
+              h5,
+              h6 {
+                margin-top: var(--space--6);
+                margin-bottom: var(--space--2);
+              }
+
+              h1 {
+                color: var(--color--zinc--800);
+                @media (prefers-color-scheme: dark) {
+                  color: var(--color--zinc--100);
+                }
+              }
+
+              h1,
+              h2,
+              h3 {
+                font-size: var(--font-size--base);
+                line-height: var(--line-height--base);
+              }
+
+              h1,
+              h4,
+              h5,
+              h6 {
+                font-weight: var(--font-weight--bold);
+              }
+
+              h2 {
+                font-style: italic;
+              }
+
+              hr {
+                border-top: var(--border-width--1) solid var(--color--zinc--300);
+                @media (prefers-color-scheme: dark) {
+                  border-color: var(--color--zinc--600);
+                }
+                margin: var(--space--2) var(--space--0);
+              }
+
+              p + p {
+                margin-top: var(--space--2);
+              }
+
+              strong {
+                font-weight: var(--font-weight--bold);
+                color: var(--color--zinc--800);
+                @media (prefers-color-scheme: dark) {
+                  color: var(--color--zinc--100);
+                }
+              }
+
+              em {
+                font-style: italic;
+                color: var(--color--zinc--800);
+                @media (prefers-color-scheme: dark) {
+                  color: var(--color--zinc--100);
+                }
+              }
+
+              u {
+                text-decoration: underline;
+                text-decoration-color: var(--color--zinc--300);
+                @media (prefers-color-scheme: dark) {
+                  text-decoration-color: var(--color--zinc--500);
+                }
+              }
+
+              a {
+                text-decoration: underline;
+                color: var(--color--blue--600);
+                &:hover,
+                &:focus-within {
+                  color: var(--color--blue--500);
+                }
+                &:active {
+                  color: var(--color--blue--700);
+                }
+                @media (prefers-color-scheme: dark) {
+                  color: var(--color--blue--500);
+                  &:hover,
+                  &:focus-within {
+                    color: var(--color--blue--400);
+                  }
+                  &:active {
+                    color: var(--color--blue--600);
+                  }
+                }
+                transition-property: var(--transition-property--colors);
+                transition-duration: var(--transition-duration--150);
+                transition-timing-function: var(
+                  --transition-timing-function--in-out
+                );
+                cursor: pointer;
+              }
+
+              code {
+                font-family: "JetBrains Mono Variable",
+                  var(--font-family--monospace);
+                font-variant-ligatures: none;
+                background-color: var(--color--zinc--300);
+                @media (prefers-color-scheme: dark) {
+                  background-color: var(--color--zinc--600);
+                }
+                padding: var(--space--0) var(--space--0-5);
+                border-radius: var(--border-radius--base);
+              }
+
+              ins {
+                color: var(--color--green--600);
+                @media (prefers-color-scheme: dark) {
+                  color: var(--color--green--500);
+                }
+              }
+
+              del {
+                text-decoration: line-through;
+                color: var(--color--rose--600);
+                @media (prefers-color-scheme: dark) {
+                  color: var(--color--rose--500);
+                }
+              }
+
+              sup,
+              sub {
+                position: relative;
+                font-size: var(--font-size--2xs);
+                line-height: var(--space--0);
+                vertical-align: baseline;
+              }
+
+              sup {
+                top: var(--space---1);
+              }
+
+              sub {
+                bottom: var(--space---1);
+              }
+
+              video,
+              ul,
+              ol,
+              blockquote,
+              table,
+              details,
+              .math-display,
+              pre {
+                margin: var(--space--4) var(--space--0);
+              }
+
+              img,
+              video {
+                background-color: var(--color--zinc--50);
+                @media (prefers-color-scheme: dark) {
+                  background-color: var(--color--zinc--50);
+                  filter: brightness(var(--brightness--90));
+                }
+                max-width: 100%;
+                height: auto;
+                border-radius: var(--border-radius--xl);
+              }
+
+              video {
+                display: block;
+              }
+
+              ul {
+                padding-left: var(--space--8);
+                & > li {
+                  list-style: disc;
+                  &::marker {
+                    color: var(--color--zinc--500);
+                    @media (prefers-color-scheme: dark) {
+                      color: var(--color--zinc--400);
+                    }
+                  }
+                }
+              }
+
+              ol {
+                padding-left: var(--space--8);
+                & > li {
+                  list-style: decimal;
+                  &::marker {
+                    color: var(--color--zinc--500);
+                    @media (prefers-color-scheme: dark) {
+                      color: var(--color--zinc--400);
+                    }
+                  }
+                }
+              }
+
+              li + li {
+                margin-top: var(--space--2);
+              }
+
+              input[type="radio"] {
                 background-color: var(--color--zinc--200);
                 &:hover,
                 &:focus-within {
@@ -475,12 +1387,9 @@ export default async (application: Application): Promise<void> => {
                 min-height: var(--space--3-5);
                 height: var(--space--3-5);
                 border-radius: var(--border-radius--circle);
-                position: relative;
-                top: var(--space---0-5);
                 display: flex;
                 justify-content: center;
                 align-items: center;
-                cursor: pointer;
                 transition-property: var(--transition-property--colors);
                 transition-duration: var(--transition-duration--150);
                 transition-timing-function: var(
@@ -508,7 +1417,9 @@ export default async (application: Application): Promise<void> => {
                 }
               }
 
-              .input--checkbox {
+              input[type="checkbox"] {
+                font-size: var(--font-size--2xs);
+                line-height: var(--line-height--2xs);
                 background-color: var(--color--zinc--200);
                 &:hover,
                 &:focus-within {
@@ -563,363 +1474,99 @@ export default async (application: Application): Promise<void> => {
                     }
                   }
                 }
-                min-width: var(--space--8);
-                width: var(--space--8);
-                padding: var(--space--0-5);
-                border-radius: var(--border-radius--full);
-                position: relative;
-                top: calc(var(--space--0-5) * 1.5);
-                cursor: pointer;
+                width: var(--space--3-5);
+                height: var(--space--3-5);
+                border-radius: var(--border-radius--base);
+                margin-right: var(--space--1);
+                display: inline-flex;
+                justify-content: center;
+                align-items: center;
                 transition-property: var(--transition-property--colors);
                 transition-duration: var(--transition-duration--150);
                 transition-timing-function: var(
                   --transition-timing-function--in-out
                 );
 
-                &::after {
-                  content: "";
-                  background-color: var(--color--zinc--50);
+                &::before {
+                  content: "\\f633";
+                  font-family: "bootstrap-icons" !important;
+                  color: var(--color--zinc--50);
                   @media (prefers-color-scheme: dark) {
-                    background-color: var(--color--zinc--200);
+                    color: var(--color--zinc--200);
                   }
-                  display: block;
-                  width: var(--space--3);
-                  height: var(--space--3);
-                  border-radius: var(--border-radius--circle);
-                  transition-property: var(--transition-property--all);
+                  transition-property: var(--transition-property--transform);
                   transition-duration: var(--transition-duration--150);
                   transition-timing-function: var(
                     --transition-timing-function--in-out
                   );
                 }
-                &:checked::after {
-                  margin-left: var(--space--4);
+                &:not(:checked)::before {
+                  transform: scale(var(--scale--0));
                 }
               }
 
-              .input--radio-or-checkbox--multilabel {
-                & ~ * {
-                  display: flex;
-                  gap: var(--space--2);
-                }
-                &:not(:checked) + * + *,
-                &:checked + * {
-                  display: none;
-                }
+              li > input[type="checkbox"]:first-child {
+                position: absolute;
+                margin-left: var(--space---5);
+                margin-top: var(--space--1);
               }
 
-              .input--visible-when-enabled-and-checked {
-                &[disabled] + *,
-                &:not(:checked) + * {
-                  display: none;
+              blockquote {
+                padding-left: var(--space--4);
+                border-left: var(--border-width--4) solid
+                  var(--color--zinc--300);
+                @media (prefers-color-scheme: dark) {
+                  border-color: var(--color--zinc--600);
                 }
+                opacity: var(--opacity--75);
               }
 
-              .button {
-                padding: var(--space--1) var(--space--4);
-                border-radius: var(--border-radius--md);
-                display: flex;
-                gap: var(--space--2);
-                justify-content: center;
-                align-items: baseline;
-                transition-property: var(--transition-property--colors);
-                transition-duration: var(--transition-duration--150);
-                transition-timing-function: var(
-                  --transition-timing-function--in-out
-                );
-                cursor: pointer;
-
-                &:disabled,
-                &.disabled {
-                  color: var(--color--zinc--500);
+              table {
+                border-collapse: collapse;
+                display: block;
+                overflow-x: auto;
+                tbody tr {
+                  border-top: var(--border-width--1) solid
+                    var(--color--zinc--300);
                   @media (prefers-color-scheme: dark) {
-                    color: var(--color--zinc--400);
+                    border-color: var(--color--zinc--600);
                   }
                 }
-
-                &.button--tight {
-                  padding: var(--space--0-5) var(--space--1);
-
-                  &.button--tight--inline {
-                    margin: var(--space---0-5) var(--space---1);
+                th,
+                td {
+                  padding: var(--space--1) var(--space--3);
+                }
+                th {
+                  font-weight: var(--font-weight--bold);
+                  text-align: left;
+                  color: var(--color--zinc--800);
+                  @media (prefers-color-scheme: dark) {
+                    color: var(--color--zinc--100);
                   }
                 }
-
-                &.button--tight-gap {
-                  gap: var(--space--1);
-                }
-
-                &.button--full-width-on-small-screen {
-                  @media (max-width: 400px) {
-                    width: 100%;
-                  }
-                }
-
-                &.button--justify-start {
-                  justify-content: flex-start;
-                }
-
-                &.button--inline {
-                  display: inline-flex;
-                }
-
-                &.button--transparent {
-                  &:not(:disabled):not(.disabled) {
-                    &:hover,
-                    &:focus-within,
-                    &.hover {
-                      background-color: var(--color--zinc--200);
-                    }
-                    &:active {
-                      background-color: var(--color--zinc--300);
-                    }
-                    @media (prefers-color-scheme: dark) {
-                      &:hover,
-                      &:focus-within,
-                      &.hover {
-                        background-color: var(--color--zinc--700);
-                      }
-                      &:active {
-                        background-color: var(--color--zinc--600);
-                      }
-                    }
-                  }
-                }
-
-                ${["blue", "green", "rose", "amber", "emerald", "sky"].map(
-                  (color) => css`
-                    &.button--${color} {
-                      color: var(--color--${color}--50);
-                      @media (prefers-color-scheme: dark) {
-                        color: var(--color--${color}--100);
-                      }
-                      &:not(:disabled):not(.disabled) {
-                        background-color: var(--color--${color}--600);
-                        &:hover,
-                        &:focus-within,
-                        &.hover {
-                          background-color: var(--color--${color}--500);
-                        }
-                        &:active {
-                          background-color: var(--color--${color}--700);
-                        }
-                        @media (prefers-color-scheme: dark) {
-                          background-color: var(--color--${color}--800);
-                          &:hover,
-                          &:focus-within,
-                          &.hover {
-                            background-color: var(--color--${color}--700);
-                          }
-                          &:active {
-                            background-color: var(--color--${color}--900);
-                          }
-                        }
-                      }
-                      &:disabled,
-                      &.disabled {
-                        background-color: var(--color--${color}--300);
-                        @media (prefers-color-scheme: dark) {
-                          background-color: var(--color--${color}--500);
-                        }
-                      }
-                      .strong {
-                        color: var(--color--${color}--50);
-                        @media (prefers-color-scheme: dark) {
-                          color: var(--color--${color}--100);
-                        }
-                      }
-                      .secondary,
-                      [class^="text--"] {
-                        color: var(--color--${color}--100);
-                        @media (prefers-color-scheme: dark) {
-                          color: var(--color--${color}--200);
-                        }
-                      }
-                    }
-                  `
-                )}
               }
 
-              .link {
-                text-decoration: underline;
-                color: var(--color--blue--600);
-                &:hover,
-                &:focus-within {
-                  color: var(--color--blue--500);
-                }
-                &:active {
-                  color: var(--color--blue--700);
-                }
-                ${["rose"].map(
-                  (color) => css`
-                    &.text--${color} {
-                      &:hover,
-                      &:focus-within {
-                        color: var(--color--${color}--500);
-                      }
-                      &:active {
-                        color: var(--color--${color}--700);
-                      }
-                    }
-                  `
-                )}
+              details {
+                background-color: var(--color--zinc--300);
                 @media (prefers-color-scheme: dark) {
-                  color: var(--color--blue--500);
-                  &:hover,
-                  &:focus-within {
-                    color: var(--color--blue--400);
-                  }
-                  &:active {
-                    color: var(--color--blue--600);
-                  }
-                  ${["rose"].map(
-                    (color) => css`
-                      &.text--${color} {
-                        &:hover,
-                        &:focus-within {
-                          color: var(--color--${color}--400);
-                        }
-                        &:active {
-                          color: var(--color--${color}--600);
-                        }
-                      }
-                    `
-                  )}
-                }
-                transition-property: var(--transition-property--colors);
-                transition-duration: var(--transition-duration--150);
-                transition-timing-function: var(
-                  --transition-timing-function--in-out
-                );
-                cursor: pointer;
-
-                .bi {
-                  text-decoration: none;
-                }
-              }
-
-              :disabled,
-              .disabled {
-                cursor: not-allowed;
-              }
-
-              .heading {
-                font-size: var(--font-size--2xs);
-                line-height: var(--line-height--2xs);
-                font-weight: var(--font-weight--bold);
-                text-transform: uppercase;
-                letter-spacing: var(--letter-spacing--widest);
-                color: var(--color--zinc--600);
-                @media (prefers-color-scheme: dark) {
-                  color: var(--color--zinc--400);
-                }
-                display: flex;
-                gap: var(--space--1);
-              }
-
-              .heading--display {
-                font-size: var(--font-size--xl);
-                line-height: var(--line-height--xl);
-                font-weight: var(--font-weight--bold);
-                text-align: center;
-                color: var(--color--zinc--800);
-                @media (prefers-color-scheme: dark) {
-                  color: var(--color--zinc--100);
-                }
-              }
-
-              .strong {
-                font-weight: var(--font-weight--bold);
-                color: var(--color--zinc--800);
-                @media (prefers-color-scheme: dark) {
-                  color: var(--color--zinc--100);
-                }
-              }
-
-              .secondary {
-                color: var(--color--zinc--500);
-                @media (prefers-color-scheme: dark) {
-                  color: var(--color--zinc--400);
-                }
-              }
-
-              ${[
-                "blue",
-                "green",
-                "rose",
-                "sky",
-                "amber",
-                "teal",
-                "lime",
-                "emerald",
-                "fuchsia",
-                "cyan",
-                "purple",
-                "orange",
-              ].map(
-                (color) => css`
-                  .text--${color} {
-                    color: var(--color--${color}--600);
-                    @media (prefers-color-scheme: dark) {
-                      color: var(--color--${color}--500);
-                    }
-                  }
-                `
-              )}
-
-              .mark {
-                color: var(--color--amber--700);
-                background-color: var(--color--amber--200);
-                @media (prefers-color-scheme: dark) {
-                  color: var(--color--amber--200);
-                  background-color: var(--color--amber--700);
-                }
-                padding: var(--space--0) var(--space--0-5);
-                border-radius: var(--border-radius--base);
-              }
-
-              .code,
-              .pre > code {
-                font-family: "JetBrains Mono Variable",
-                  var(--font-family--monospace);
-                font-variant-ligatures: none;
-              }
-
-              .pre > code {
-                font-size: var(--font-size--xs);
-                line-height: var(--line-height--xs);
-              }
-
-              .img {
-                background-color: var(--color--zinc--50);
-                @media (prefers-color-scheme: dark) {
-                  background-color: var(--color--zinc--50);
-                  filter: brightness(var(--brightness--90));
-                }
-                max-width: 100%;
-                height: auto;
-                border-radius: var(--border-radius--xl);
-              }
-
-              .details {
-                background-color: var(--color--zinc--200);
-                @media (prefers-color-scheme: dark) {
-                  background-color: var(--color--zinc--700);
+                  background-color: var(--color--zinc--600);
                 }
                 border-radius: var(--border-radius--xl);
-                summary {
+                padding: var(--space--0) var(--space--4);
+                & > summary {
                   &:hover,
                   &:focus-within {
-                    background-color: var(--color--zinc--300);
+                    background-color: var(--color--zinc--400);
                   }
                   @media (prefers-color-scheme: dark) {
                     &:hover,
                     &:focus-within {
-                      background-color: var(--color--zinc--600);
+                      background-color: var(--color--zinc--500);
                     }
                   }
                   padding: var(--space--2) var(--space--4);
                   border-radius: var(--border-radius--xl);
+                  margin: var(--space--0) var(--space---4);
                   transition-property: var(--transition-property--colors);
                   transition-duration: var(--transition-duration--150);
                   transition-timing-function: var(
@@ -934,707 +1581,57 @@ export default async (application: Application): Promise<void> => {
                     margin-right: var(--space--2);
                   }
                 }
-                &[open] > summary::before {
-                  content: "\\f273";
-                }
-                & > div:last-child {
-                  padding: var(--space--4);
-                }
-              }
-
-              .decorative-icon {
-                font-size: var(--font-size--9xl);
-                line-height: var(--line-height--9xl);
-                color: var(--color--zinc--300);
-                background-color: var(--color--zinc--100);
-                @media (prefers-color-scheme: dark) {
-                  color: var(--color--zinc--600);
-                  background-color: var(--color--zinc--800);
-                }
-                width: var(--space--48);
-                height: var(--space--48);
-                border-radius: var(--border-radius--circle);
-                display: flex;
-                justify-content: center;
-                align-items: center;
-              }
-
-              .separator {
-                border-top: var(--border-width--1) solid var(--color--zinc--200);
-                @media (prefers-color-scheme: dark) {
-                  border-color: var(--color--zinc--700);
-                }
-              }
-
-              .menu-box {
-                background-color: var(--color--zinc--100);
-                @media (prefers-color-scheme: dark) {
-                  background-color: var(--color--zinc--800);
-                }
-                width: 100%;
-                max-width: var(--space--64);
-                padding: var(--space--2);
-                border-radius: var(--border-radius--lg);
-                display: flex;
-                flex-direction: column;
-                gap: var(--space--2);
-
-                .menu-box--item {
-                  justify-content: flex-start;
-                }
-              }
-
-              .tippy-box {
-                font-size: var(--font-size--sm);
-                line-height: var(--line-height--sm);
-                color: var(--color--zinc--700);
-                --background-color: var(--color--zinc--100);
-                background-color: var(--background-color);
-                --border-color: var(--color--zinc--400);
-                border: var(--border-width--1) solid var(--border-color);
-                border-radius: var(--border-radius--md);
-                @media (prefers-color-scheme: dark) {
-                  color: var(--color--zinc--200);
-                  --background-color: var(--color--zinc--800);
-                  --border-color: var(--color--zinc--400);
-                }
-                & > .tippy-svg-arrow > svg {
-                  &:first-child {
-                    fill: var(--border-color);
-                  }
-                  &:last-child {
-                    fill: var(--background-color);
+                &[open] {
+                  padding-bottom: var(--space--4);
+                  & > summary {
+                    margin-bottom: var(--space--4);
+                    &::before {
+                      content: "\\f273";
+                    }
                   }
                 }
+              }
 
-                .tippy-content {
-                  padding: var(--space--1) var(--space--2);
+              .katex {
+                overflow-x: auto;
+              }
+
+              pre {
+                background-color: #ffffff;
+                @media (prefers-color-scheme: dark) {
+                  background-color: #1e1e1e;
                 }
-
-                .heading {
-                  padding: var(--space--1) var(--space--2);
-                }
-
-                .keyboard-shortcut {
+                padding: var(--space--4);
+                border-radius: var(--border-radius--xl);
+                overflow-x: auto;
+                & > code {
                   font-size: var(--font-size--xs);
                   line-height: var(--line-height--xs);
-                  color: var(--color--zinc--500);
-                  @media (prefers-color-scheme: dark) {
-                    color: var(--color--zinc--400);
-                  }
-                  flex: 1;
-                  text-align: right;
-
-                  .keyboard-shortcut--cluster {
-                    letter-spacing: var(--letter-spacing--widest);
-                  }
-                }
-
-                .dropdown--menu {
-                  display: flex;
-                  flex-direction: column;
-
-                  .dropdown--menu--item {
-                    text-align: left;
-                    width: 100%;
-                    padding-left: var(--space--2);
-                    padding-right: var(--space--2);
-                    justify-content: flex-start;
-                  }
-                }
-
-                .dropdown--separator {
-                  border-top: var(--border-width--1) solid
-                    var(--color--zinc--200);
-                  @media (prefers-color-scheme: dark) {
-                    border-color: var(--color--zinc--700);
-                  }
-                  margin: var(--space--0) var(--space--2);
-                }
-
-                ${Object.entries({
-                  green: "green",
-                  amber: "amber",
-                  rose: "rose",
-                  error: "rose",
-                }).map(
-                  ([theme, color]) => css`
-                    &[data-theme~="${theme}"] {
-                      color: var(--color--${color}--700);
-                      --background-color: var(--color--${color}--100);
-                      --border-color: var(--color--${color}--200);
-                      .button.button--transparent {
-                        &:hover,
-                        &:focus-within {
-                          background-color: var(--color--${color}--200);
-                        }
-                        &:active {
-                          background-color: var(--color--${color}--300);
-                        }
-                      }
-                      .link {
-                        color: var(--color--${color}--600);
-                        &:hover,
-                        &:focus-within {
-                          color: var(--color--${color}--500);
-                        }
-                        &:active {
-                          color: var(--color--${color}--700);
-                        }
-                      }
-                      .keyboard-shortcut {
-                        color: var(--color--${color}--500);
-                      }
-                      @media (prefers-color-scheme: dark) {
-                        color: var(--color--${color}--200);
-                        --background-color: var(--color--${color}--950);
-                        --border-color: var(--color--${color}--900);
-                        .button.button--transparent {
-                          &:hover,
-                          &:focus-within {
-                            background-color: var(--color--${color}--800);
-                          }
-                          &:active {
-                            background-color: var(--color--${color}--700);
-                          }
-                        }
-                        .link {
-                          color: var(--color--${color}--100);
-                          &:hover,
-                          &:focus-within {
-                            color: var(--color--${color}--50);
-                          }
-                          &:active {
-                            color: var(--color--${color}--200);
-                          }
-                        }
-                        .keyboard-shortcut {
-                          color: var(--color--${color}--400);
-                        }
-                      }
-                    }
-                  `
-                )}
-              }
-
-              .dark {
-                display: none !important;
-              }
-              @media (prefers-color-scheme: dark) {
-                .light {
-                  display: none !important;
-                }
-                .dark {
-                  display: block !important;
-                }
-              }
-
-              .content {
-                h1,
-                h2,
-                h3,
-                h4,
-                h5,
-                h6 {
-                  margin-top: var(--space--6);
-                  margin-bottom: var(--space--2);
-                }
-
-                h1 {
-                  color: var(--color--zinc--800);
-                  @media (prefers-color-scheme: dark) {
-                    color: var(--color--zinc--100);
-                  }
-                }
-
-                h1,
-                h2,
-                h3 {
-                  font-size: var(--font-size--base);
-                  line-height: var(--line-height--base);
-                }
-
-                h1,
-                h4,
-                h5,
-                h6 {
-                  font-weight: var(--font-weight--bold);
-                }
-
-                h2 {
-                  font-style: italic;
-                }
-
-                hr {
-                  border-top: var(--border-width--1) solid
-                    var(--color--zinc--300);
-                  @media (prefers-color-scheme: dark) {
-                    border-color: var(--color--zinc--600);
-                  }
-                  margin: var(--space--2) var(--space--0);
-                }
-
-                p + p {
-                  margin-top: var(--space--2);
-                }
-
-                strong {
-                  font-weight: var(--font-weight--bold);
-                  color: var(--color--zinc--800);
-                  @media (prefers-color-scheme: dark) {
-                    color: var(--color--zinc--100);
-                  }
-                }
-
-                em {
-                  font-style: italic;
-                  color: var(--color--zinc--800);
-                  @media (prefers-color-scheme: dark) {
-                    color: var(--color--zinc--100);
-                  }
-                }
-
-                u {
-                  text-decoration: underline;
-                  text-decoration-color: var(--color--zinc--300);
-                  @media (prefers-color-scheme: dark) {
-                    text-decoration-color: var(--color--zinc--500);
-                  }
-                }
-
-                a {
-                  text-decoration: underline;
-                  color: var(--color--blue--600);
-                  &:hover,
-                  &:focus-within {
-                    color: var(--color--blue--500);
-                  }
-                  &:active {
-                    color: var(--color--blue--700);
-                  }
-                  @media (prefers-color-scheme: dark) {
-                    color: var(--color--blue--500);
-                    &:hover,
-                    &:focus-within {
-                      color: var(--color--blue--400);
-                    }
-                    &:active {
-                      color: var(--color--blue--600);
-                    }
-                  }
-                  transition-property: var(--transition-property--colors);
-                  transition-duration: var(--transition-duration--150);
-                  transition-timing-function: var(
-                    --transition-timing-function--in-out
-                  );
-                  cursor: pointer;
-                }
-
-                code {
-                  font-family: "JetBrains Mono Variable",
-                    var(--font-family--monospace);
-                  font-variant-ligatures: none;
-                  background-color: var(--color--zinc--300);
-                  @media (prefers-color-scheme: dark) {
-                    background-color: var(--color--zinc--600);
-                  }
-                  padding: var(--space--0) var(--space--0-5);
-                  border-radius: var(--border-radius--base);
-                }
-
-                ins {
-                  color: var(--color--green--600);
-                  @media (prefers-color-scheme: dark) {
-                    color: var(--color--green--500);
-                  }
-                }
-
-                del {
-                  text-decoration: line-through;
-                  color: var(--color--rose--600);
-                  @media (prefers-color-scheme: dark) {
-                    color: var(--color--rose--500);
-                  }
-                }
-
-                sup,
-                sub {
-                  position: relative;
-                  font-size: var(--font-size--2xs);
-                  line-height: var(--space--0);
-                  vertical-align: baseline;
-                }
-
-                sup {
-                  top: var(--space---1);
-                }
-
-                sub {
-                  bottom: var(--space---1);
-                }
-
-                video,
-                ul,
-                ol,
-                blockquote,
-                table,
-                details,
-                .math-display,
-                pre {
-                  margin: var(--space--4) var(--space--0);
-                }
-
-                img,
-                video {
-                  background-color: var(--color--zinc--50);
-                  @media (prefers-color-scheme: dark) {
-                    background-color: var(--color--zinc--50);
-                    filter: brightness(var(--brightness--90));
-                  }
-                  max-width: 100%;
-                  height: auto;
-                  border-radius: var(--border-radius--xl);
-                }
-
-                video {
-                  display: block;
-                }
-
-                ul {
-                  padding-left: var(--space--8);
-                  & > li {
-                    list-style: disc;
-                    &::marker {
-                      color: var(--color--zinc--500);
-                      @media (prefers-color-scheme: dark) {
-                        color: var(--color--zinc--400);
-                      }
-                    }
-                  }
-                }
-
-                ol {
-                  padding-left: var(--space--8);
-                  & > li {
-                    list-style: decimal;
-                    &::marker {
-                      color: var(--color--zinc--500);
-                      @media (prefers-color-scheme: dark) {
-                        color: var(--color--zinc--400);
-                      }
-                    }
-                  }
-                }
-
-                li + li {
-                  margin-top: var(--space--2);
-                }
-
-                input[type="radio"] {
-                  background-color: var(--color--zinc--200);
-                  &:hover,
-                  &:focus-within {
-                    background-color: var(--color--zinc--300);
-                  }
-                  &:active {
-                    background-color: var(--color--zinc--400);
-                  }
-                  &:disabled,
-                  &.disabled {
-                    background-color: var(--color--zinc--300);
-                  }
-                  &:checked {
-                    background-color: var(--color--blue--600);
-                    &:hover,
-                    &:focus-within {
-                      background-color: var(--color--blue--500);
-                    }
-                    &:active {
-                      background-color: var(--color--blue--700);
-                    }
-                    &:disabled,
-                    &.disabled {
-                      background-color: var(--color--blue--300);
-                    }
-                  }
-                  @media (prefers-color-scheme: dark) {
-                    background-color: var(--color--zinc--700);
-                    &:hover,
-                    &:focus-within {
-                      background-color: var(--color--zinc--600);
-                    }
-                    &:active {
-                      background-color: var(--color--zinc--500);
-                    }
-                    &:disabled,
-                    &.disabled {
-                      background-color: var(--color--zinc--600);
-                    }
-                    &:checked {
-                      background-color: var(--color--blue--700);
-                      &:hover,
-                      &:focus-within {
-                        background-color: var(--color--blue--600);
-                      }
-                      &:active {
-                        background-color: var(--color--blue--800);
-                      }
-                      &:disabled,
-                      &.disabled {
-                        background-color: var(--color--blue--500);
-                      }
-                    }
-                  }
-                  min-width: var(--space--3-5);
-                  width: var(--space--3-5);
-                  min-height: var(--space--3-5);
-                  height: var(--space--3-5);
-                  border-radius: var(--border-radius--circle);
-                  display: flex;
-                  justify-content: center;
-                  align-items: center;
-                  transition-property: var(--transition-property--colors);
-                  transition-duration: var(--transition-duration--150);
-                  transition-timing-function: var(
-                    --transition-timing-function--in-out
-                  );
-
-                  &::before {
-                    content: "";
-                    background-color: var(--color--zinc--50);
-                    @media (prefers-color-scheme: dark) {
-                      background-color: var(--color--zinc--200);
-                    }
-                    display: block;
-                    width: var(--space--1-5);
-                    height: var(--space--1-5);
-                    border-radius: var(--border-radius--circle);
-                    transition-property: var(--transition-property--transform);
-                    transition-duration: var(--transition-duration--150);
-                    transition-timing-function: var(
-                      --transition-timing-function--in-out
-                    );
-                  }
-                  &:not(:checked)::before {
-                    transform: scale(var(--scale--0));
-                  }
-                }
-
-                input[type="checkbox"] {
-                  font-size: var(--font-size--2xs);
-                  line-height: var(--line-height--2xs);
-                  background-color: var(--color--zinc--200);
-                  &:hover,
-                  &:focus-within {
-                    background-color: var(--color--zinc--300);
-                  }
-                  &:active {
-                    background-color: var(--color--zinc--400);
-                  }
-                  &:disabled,
-                  &.disabled {
-                    background-color: var(--color--zinc--300);
-                  }
-                  &:checked {
-                    background-color: var(--color--blue--600);
-                    &:hover,
-                    &:focus-within {
-                      background-color: var(--color--blue--500);
-                    }
-                    &:active {
-                      background-color: var(--color--blue--700);
-                    }
-                    &:disabled,
-                    &.disabled {
-                      background-color: var(--color--blue--300);
-                    }
-                  }
-                  @media (prefers-color-scheme: dark) {
-                    background-color: var(--color--zinc--700);
-                    &:hover,
-                    &:focus-within {
-                      background-color: var(--color--zinc--600);
-                    }
-                    &:active {
-                      background-color: var(--color--zinc--500);
-                    }
-                    &:disabled,
-                    &.disabled {
-                      background-color: var(--color--zinc--600);
-                    }
-                    &:checked {
-                      background-color: var(--color--blue--700);
-                      &:hover,
-                      &:focus-within {
-                        background-color: var(--color--blue--600);
-                      }
-                      &:active {
-                        background-color: var(--color--blue--800);
-                      }
-                      &:disabled,
-                      &.disabled {
-                        background-color: var(--color--blue--500);
-                      }
-                    }
-                  }
-                  width: var(--space--3-5);
-                  height: var(--space--3-5);
-                  border-radius: var(--border-radius--base);
-                  margin-right: var(--space--1);
-                  display: inline-flex;
-                  justify-content: center;
-                  align-items: center;
-                  transition-property: var(--transition-property--colors);
-                  transition-duration: var(--transition-duration--150);
-                  transition-timing-function: var(
-                    --transition-timing-function--in-out
-                  );
-
-                  &::before {
-                    content: "\\f633";
-                    font-family: "bootstrap-icons" !important;
-                    color: var(--color--zinc--50);
-                    @media (prefers-color-scheme: dark) {
-                      color: var(--color--zinc--200);
-                    }
-                    transition-property: var(--transition-property--transform);
-                    transition-duration: var(--transition-duration--150);
-                    transition-timing-function: var(
-                      --transition-timing-function--in-out
-                    );
-                  }
-                  &:not(:checked)::before {
-                    transform: scale(var(--scale--0));
-                  }
-                }
-
-                li > input[type="checkbox"]:first-child {
-                  position: absolute;
-                  margin-left: var(--space---5);
-                  margin-top: var(--space--1);
-                }
-
-                blockquote {
-                  padding-left: var(--space--4);
-                  border-left: var(--border-width--4) solid
-                    var(--color--zinc--300);
-                  @media (prefers-color-scheme: dark) {
-                    border-color: var(--color--zinc--600);
-                  }
-                  opacity: var(--opacity--75);
-                }
-
-                table {
-                  border-collapse: collapse;
-                  display: block;
-                  overflow-x: auto;
-                  tbody tr {
-                    border-top: var(--border-width--1) solid
-                      var(--color--zinc--300);
-                    @media (prefers-color-scheme: dark) {
-                      border-color: var(--color--zinc--600);
-                    }
-                  }
-                  th,
-                  td {
-                    padding: var(--space--1) var(--space--3);
-                  }
-                  th {
-                    font-weight: var(--font-weight--bold);
-                    text-align: left;
-                    color: var(--color--zinc--800);
-                    @media (prefers-color-scheme: dark) {
-                      color: var(--color--zinc--100);
-                    }
-                  }
-                }
-
-                details {
-                  background-color: var(--color--zinc--300);
-                  @media (prefers-color-scheme: dark) {
-                    background-color: var(--color--zinc--600);
-                  }
-                  border-radius: var(--border-radius--xl);
-                  padding: var(--space--0) var(--space--4);
-                  & > summary {
-                    &:hover,
-                    &:focus-within {
-                      background-color: var(--color--zinc--400);
-                    }
-                    @media (prefers-color-scheme: dark) {
-                      &:hover,
-                      &:focus-within {
-                        background-color: var(--color--zinc--500);
-                      }
-                    }
-                    padding: var(--space--2) var(--space--4);
-                    border-radius: var(--border-radius--xl);
-                    margin: var(--space--0) var(--space---4);
-                    transition-property: var(--transition-property--colors);
-                    transition-duration: var(--transition-duration--150);
-                    transition-timing-function: var(
-                      --transition-timing-function--in-out
-                    );
-                    cursor: pointer;
-                    &::before {
-                      content: "\\f275";
-                      font-family: "bootstrap-icons" !important;
-                      font-size: var(--font-size--xs);
-                      line-height: var(--line-height--xs);
-                      margin-right: var(--space--2);
-                    }
-                  }
-                  &[open] {
-                    padding-bottom: var(--space--4);
-                    & > summary {
-                      margin-bottom: var(--space--4);
-                      &::before {
-                        content: "\\f273";
-                      }
-                    }
-                  }
-                }
-
-                .katex {
-                  overflow-x: auto;
-                }
-
-                pre {
-                  background-color: #ffffff;
-                  @media (prefers-color-scheme: dark) {
-                    background-color: #1e1e1e;
-                  }
-                  padding: var(--space--4);
-                  border-radius: var(--border-radius--xl);
-                  overflow-x: auto;
-                  & > code {
-                    font-size: var(--font-size--xs);
-                    line-height: var(--line-height--xs);
-                    background-color: transparent;
-                    padding: var(--space--0);
-                    overflow-wrap: normal;
-                  }
+                  background-color: transparent;
+                  padding: var(--space--0);
+                  overflow-wrap: normal;
                 }
               }
             }
+          }
 
-            font-family: "Public Sans Variable", var(--font-family--sans-serif);
-            font-size: var(--font-size--sm);
-            line-height: var(--line-height--sm);
-            color: var(--color--zinc--700);
-            background-color: var(--color--zinc--50);
-            @media (prefers-color-scheme: dark) {
-              color: var(--color--zinc--200);
-              background-color: var(--color--zinc--900);
-            }
-          `}"
-          javascript="${(() => {
-            const flash = application.web.locals.helpers.Flash.get({
-              request,
-              response,
-            });
+          font-family: "Public Sans Variable", var(--font-family--sans-serif);
+          font-size: var(--font-size--sm);
+          line-height: var(--line-height--sm);
+          color: var(--color--zinc--700);
+          background-color: var(--color--zinc--50);
+          @media (prefers-color-scheme: dark) {
+            color: var(--color--zinc--200);
+            background-color: var(--color--zinc--900);
+          }
+        `}"
+        javascript="${(() => {
+          const flash = application.web.locals.helpers.Flash.get({
+            request,
+            response,
+          });
 
-            return javascript`
+          return javascript`
               if (${flash !== undefined}) {
                 leafac.setTippy({
                   event,
@@ -1701,53 +1698,53 @@ export default async (application: Application): Promise<void> => {
                   environment: ${application.configuration.environment},
                 });
             `;
-          })()}"
-        >
-          <div
-            key="viewport"
-            css="${css`
-              position: absolute;
-              top: 0;
-              right: 0;
-              bottom: 0;
-              left: 0;
-              display: flex;
-              flex-direction: column;
-              overflow: hidden;
-            `}"
-            javascript="${javascript`
+        })()}"
+      >
+        <div
+          key="viewport"
+          css="${css`
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+          `}"
+          javascript="${javascript`
               this.onscroll = () => {
                 this.scroll(0, 0);
               };
             `}"
-          >
-            $${response.locals.courseParticipant === undefined
-              ? html``
-              : html`
-                  <div
-                    key="header--accent-color"
-                    css="${css`
-                      height: var(--border-width--8);
-                      display: flex;
-                    `}"
-                  >
-                    <button
-                      class="button"
-                      style="
+        >
+          $${response.locals.courseParticipant === undefined
+            ? html``
+            : html`
+                <div
+                  key="header--accent-color"
+                  css="${css`
+                    height: var(--border-width--8);
+                    display: flex;
+                  `}"
+                >
+                  <button
+                    class="button"
+                    style="
                         --color--accent-color--500: var(--color--${response
-                        .locals.courseParticipant.accentColor}--500);
+                      .locals.courseParticipant.accentColor}--500);
                         --color--accent-color--600: var(--color--${response
-                        .locals.courseParticipant.accentColor}--600);
+                      .locals.courseParticipant.accentColor}--600);
                       "
-                      css="${css`
-                        background-color: var(--color--accent-color--500);
-                        @media (prefers-color-scheme: dark) {
-                          background-color: var(--color--accent-color--600);
-                        }
-                        border-radius: var(--border-radius--none);
-                        flex: 1;
-                      `}"
-                      javascript="${javascript`
+                    css="${css`
+                      background-color: var(--color--accent-color--500);
+                      @media (prefers-color-scheme: dark) {
+                        background-color: var(--color--accent-color--600);
+                      }
+                      border-radius: var(--border-radius--none);
+                      flex: 1;
+                    `}"
+                    javascript="${javascript`
                         this.style.setProperty("--color--accent-color--500", ${`var(--color--${response.locals.courseParticipant.accentColor}--500)`});
                         this.style.setProperty("--color--accent-color--600", ${`var(--color--${response.locals.courseParticipant.accentColor}--600)`});
 
@@ -1798,20 +1795,20 @@ export default async (application: Application): Promise<void> => {
                           },
                         });
                       `}"
-                    ></button>
-                  </div>
-                `}
-            $${(() => {
-              let header = html``;
+                  ></button>
+                </div>
+              `}
+          $${(() => {
+            let header = html``;
 
-              let headerMeta = html``;
+            let headerMeta = html``;
 
-              if (application.configuration.demonstration)
-                headerMeta += html`
-                  <div>
-                    <button
-                      class="button button--transparent"
-                      javascript="${javascript`
+            if (application.configuration.demonstration)
+              headerMeta += html`
+                <div>
+                  <button
+                    class="button button--transparent"
+                    javascript="${javascript`
                         leafac.setTippy({
                           event,
                           element: this,
@@ -1858,19 +1855,19 @@ export default async (application: Application): Promise<void> => {
                           },
                         });
                       `}"
-                    >
-                      <i class="bi bi-easel"></i>
-                      Demonstration Mode
-                    </button>
-                  </div>
-                `;
+                  >
+                    <i class="bi bi-easel"></i>
+                    Demonstration Mode
+                  </button>
+                </div>
+              `;
 
-              if (application.configuration.environment === "development")
-                headerMeta += html`
-                  <div>
-                    <button
-                      class="button button--transparent"
-                      javascript="${javascript`
+            if (application.configuration.environment === "development")
+              headerMeta += html`
+                <div>
+                  <button
+                    class="button button--transparent"
+                    javascript="${javascript`
                         leafac.setTippy({
                           event,
                           element: this,
@@ -1967,69 +1964,69 @@ export default async (application: Application): Promise<void> => {
                           },
                         });
                       `}"
-                    >
-                      <i class="bi bi-tools"></i>
-                      Development Utilities
-                    </button>
-                  </div>
-                `;
-
-              if (application.configuration.environment !== "production")
-                headerMeta += html`
-                  <form
-                    method="DELETE"
-                    action="https://${application.configuration
-                      .hostname}/turn-off"
                   >
-                    <button class="button button--transparent">
-                      <i class="bi bi-power"></i>
-                      Turn off
-                    </button>
-                  </form>
-                `;
+                    <i class="bi bi-tools"></i>
+                    Development Utilities
+                  </button>
+                </div>
+              `;
 
-              if (headerMeta !== html``)
-                header += html`
-                  <div
-                    key="header--meta"
-                    css="${css`
-                      justify-content: center;
-                      flex-wrap: wrap;
-                    `}"
-                  >
-                    $${headerMeta}
-                  </div>
-                `;
+            if (application.configuration.environment !== "production")
+              headerMeta += html`
+                <form
+                  method="DELETE"
+                  action="https://${application.configuration
+                    .hostname}/turn-off"
+                >
+                  <button class="button button--transparent">
+                    <i class="bi bi-power"></i>
+                    Turn off
+                  </button>
+                </form>
+              `;
 
-              if (response.locals.user !== undefined) {
-                const requestSignedIn = request as express.Request<
-                  {},
-                  any,
-                  {},
-                  {},
-                  Application["web"]["locals"]["ResponseLocals"]["SignedIn"]
-                >;
-                const responseSignedIn = response as express.Response<
-                  any,
-                  Application["web"]["locals"]["ResponseLocals"]["SignedIn"]
-                >;
+            if (headerMeta !== html``)
+              header += html`
+                <div
+                  key="header--meta"
+                  css="${css`
+                    justify-content: center;
+                    flex-wrap: wrap;
+                  `}"
+                >
+                  $${headerMeta}
+                </div>
+              `;
 
-                header += html`
-                  <div
-                    key="header--menu--primary"
-                    css="${css`
-                      && {
-                        padding-top: var(--space--1);
-                        padding-bottom: var(--space--1);
-                        gap: var(--space--4);
-                        align-items: center;
-                      }
-                    `}"
-                  >
-                    <a
-                      href="https://${application.configuration.hostname}/"
-                      class="button button--tight button--tight--inline button--transparent"
-                      javascript="${javascript`
+            if (response.locals.user !== undefined) {
+              const requestSignedIn = request as express.Request<
+                {},
+                any,
+                {},
+                {},
+                Application["web"]["locals"]["ResponseLocals"]["SignedIn"]
+              >;
+              const responseSignedIn = response as express.Response<
+                any,
+                Application["web"]["locals"]["ResponseLocals"]["SignedIn"]
+              >;
+
+              header += html`
+                <div
+                  key="header--menu--primary"
+                  css="${css`
+                    && {
+                      padding-top: var(--space--1);
+                      padding-bottom: var(--space--1);
+                      gap: var(--space--4);
+                      align-items: center;
+                    }
+                  `}"
+                >
+                  <a
+                    href="https://${application.configuration.hostname}/"
+                    class="button button--tight button--tight--inline button--transparent"
+                    javascript="${javascript`
                         leafac.setTippy({
                           event,
                           element: this,
@@ -2039,37 +2036,37 @@ export default async (application: Application): Promise<void> => {
                           },
                         });
                       `}"
-                    >
-                      $${application.web.locals.partials.logo()}
-                    </a>
+                  >
+                    $${application.web.locals.partials.logo()}
+                  </a>
 
-                    <div
-                      css="${css`
-                        font-size: var(--font-size--sm);
-                        line-height: var(--line-height--sm);
-                        flex: 1;
-                        min-width: var(--width--0);
-                      `}"
-                    >
-                      $${(() => {
-                        const courseSwitcher = html`
-                          <div class="dropdown--menu">
-                            $${application.web.locals.partials.courses({
-                              request: requestSignedIn,
-                              response: responseSignedIn,
-                              tight: true,
-                            })}
-                          </div>
-                        `;
+                  <div
+                    css="${css`
+                      font-size: var(--font-size--sm);
+                      line-height: var(--line-height--sm);
+                      flex: 1;
+                      min-width: var(--width--0);
+                    `}"
+                  >
+                    $${(() => {
+                      const courseSwitcher = html`
+                        <div class="dropdown--menu">
+                          $${application.web.locals.partials.courses({
+                            request: requestSignedIn,
+                            response: responseSignedIn,
+                            tight: true,
+                          })}
+                        </div>
+                      `;
 
-                        return response.locals.course !== undefined
-                          ? html`
-                              <button
-                                class="button button--tight button--tight--inline button--transparent strong"
-                                css="${css`
-                                  max-width: 100%;
-                                `}"
-                                javascript="${javascript`
+                      return response.locals.course !== undefined
+                        ? html`
+                            <button
+                              class="button button--tight button--tight--inline button--transparent strong"
+                              css="${css`
+                                max-width: 100%;
+                              `}"
+                              javascript="${javascript`
                                   leafac.setTippy({
                                     event,
                                     element: this,
@@ -2109,7 +2106,7 @@ export default async (application: Application): Promise<void> => {
                                                       {
                                                         request,
                                                         response,
-                                                      }
+                                                      },
                                                     )}
                                                   </div>
                                                 `
@@ -2121,14 +2118,14 @@ export default async (application: Application): Promise<void> => {
                                                   .hostname}/courses/${response
                                                   .locals.course.reference}"
                                                 class="dropdown--menu--item button ${request.path.includes(
-                                                  "/settings/"
+                                                  "/settings/",
                                                 )
                                                   ? "button--transparent"
                                                   : "button--blue"}"
                                               >
                                                 <i
                                                   class="bi ${request.path.includes(
-                                                    "/settings/"
+                                                    "/settings/",
                                                   )
                                                     ? "bi-chat-text"
                                                     : "bi-chat-text-fill"}"
@@ -2142,7 +2139,7 @@ export default async (application: Application): Promise<void> => {
                                                   .locals.course
                                                   .reference}/settings"
                                                 class="dropdown--menu--item button ${request.path.includes(
-                                                  "/settings/"
+                                                  "/settings/",
                                                 )
                                                   ? "button--blue"
                                                   : "button--transparent"}"
@@ -2171,40 +2168,39 @@ export default async (application: Application): Promise<void> => {
                                     },
                                   });
                                 `}"
-                              >
-                                <i class="bi bi-journal-text"></i>
-                                <span
-                                  css="${css`
-                                    white-space: nowrap;
-                                    overflow: hidden;
-                                    text-overflow: ellipsis;
-                                  `}"
-                                >
-                                  ${response.locals.course.name}
-                                </span>
-                                $${response.locals.course.archivedAt !== null
-                                  ? html`
-                                      $${application.web.locals.partials.courseArchived(
-                                        {
-                                          request,
-                                          response,
-                                        }
-                                      )}
-                                    `
-                                  : html``}
-                                <i class="bi bi-chevron-down"></i>
-                              </button>
-                            `
-                          : showCourseSwitcher &&
-                            responseSignedIn.locals.courseParticipants.length >
-                              0
-                          ? html`
-                              <button
-                                class="button button--tight button--tight--inline button--transparent"
+                            >
+                              <i class="bi bi-journal-text"></i>
+                              <span
                                 css="${css`
-                                  max-width: 100%;
+                                  white-space: nowrap;
+                                  overflow: hidden;
+                                  text-overflow: ellipsis;
                                 `}"
-                                javascript="${javascript`
+                              >
+                                ${response.locals.course.name}
+                              </span>
+                              $${response.locals.course.archivedAt !== null
+                                ? html`
+                                    $${application.web.locals.partials.courseArchived(
+                                      {
+                                        request,
+                                        response,
+                                      },
+                                    )}
+                                  `
+                                : html``}
+                              <i class="bi bi-chevron-down"></i>
+                            </button>
+                          `
+                        : showCourseSwitcher &&
+                          responseSignedIn.locals.courseParticipants.length > 0
+                        ? html`
+                            <button
+                              class="button button--tight button--tight--inline button--transparent"
+                              css="${css`
+                                max-width: 100%;
+                              `}"
+                              javascript="${javascript`
                                   leafac.setTippy({
                                     event,
                                     element: this,
@@ -2225,21 +2221,21 @@ export default async (application: Application): Promise<void> => {
                                     },
                                   });
                                 `}"
-                              >
-                                Go to Your Courses
-                                <i class="bi bi-chevron-down"></i>
-                              </button>
-                            `
-                          : html``;
-                      })()}
-                    </div>
+                            >
+                              Go to Your Courses
+                              <i class="bi bi-chevron-down"></i>
+                            </button>
+                          `
+                        : html``;
+                    })()}
+                  </div>
 
-                    $${typeof response.locals.user.emailVerifiedAt === "string"
-                      ? html`
-                          <div>
-                            <button
-                              class="button button--tight button--tight--inline button--transparent"
-                              javascript="${javascript`
+                  $${typeof response.locals.user.emailVerifiedAt === "string"
+                    ? html`
+                        <div>
+                          <button
+                            class="button button--tight button--tight--inline button--transparent"
+                            javascript="${javascript`
                                 leafac.setTippy({
                                   event,
                                   element: this,
@@ -2305,10 +2301,10 @@ export default async (application: Application): Promise<void> => {
                                                             course:
                                                               invitation.course,
                                                             tight: true,
-                                                          }
+                                                          },
                                                         )}
                                                       </a>
-                                                    `
+                                                    `,
                                                   )}
                                                 </div>
                                               </div>
@@ -2337,7 +2333,7 @@ export default async (application: Application): Promise<void> => {
                                             {
                                               request: requestSignedIn,
                                               response: responseSignedIn,
-                                            }
+                                            },
                                           )
                                             ? html`
                                                 <a
@@ -2359,65 +2355,65 @@ export default async (application: Application): Promise<void> => {
                                   },
                                 });
                               `}"
+                          >
+                            <div
+                              css="${css`
+                                display: grid;
+                                & > * {
+                                  grid-area: 1 / 1;
+                                }
+                              `}"
                             >
                               <div
                                 css="${css`
-                                  display: grid;
-                                  & > * {
-                                    grid-area: 1 / 1;
-                                  }
+                                  font-size: var(--font-size--xl);
+                                  line-height: var(--line-height--xl);
+                                  font-weight: var(--font-weight--bold);
+                                  padding: var(--space--0) var(--space--1);
+                                  display: flex;
+                                  justify-content: center;
+                                  align-items: center;
                                 `}"
                               >
-                                <div
-                                  css="${css`
-                                    font-size: var(--font-size--xl);
-                                    line-height: var(--line-height--xl);
-                                    font-weight: var(--font-weight--bold);
-                                    padding: var(--space--0) var(--space--1);
-                                    display: flex;
-                                    justify-content: center;
-                                    align-items: center;
-                                  `}"
-                                >
-                                  +
-                                </div>
-                                $${response.locals.invitations!.length === 0
-                                  ? html``
-                                  : html`
-                                      <div
-                                        css="${css`
-                                          background-color: var(
-                                            --color--rose--500
-                                          );
-                                          @media (prefers-color-scheme: dark) {
-                                            background-color: var(
-                                              --color--rose--600
-                                            );
-                                          }
-                                          width: var(--space--1-5);
-                                          height: var(--space--1-5);
-                                          border-radius: var(
-                                            --border-radius--circle
-                                          );
-                                          justify-self: end;
-                                          transform: translateY(50%);
-                                        `}"
-                                      ></div>
-                                    `}
+                                +
                               </div>
-                            </button>
-                          </div>
-                        `
-                      : html``}
+                              $${response.locals.invitations!.length === 0
+                                ? html``
+                                : html`
+                                    <div
+                                      css="${css`
+                                        background-color: var(
+                                          --color--rose--500
+                                        );
+                                        @media (prefers-color-scheme: dark) {
+                                          background-color: var(
+                                            --color--rose--600
+                                          );
+                                        }
+                                        width: var(--space--1-5);
+                                        height: var(--space--1-5);
+                                        border-radius: var(
+                                          --border-radius--circle
+                                        );
+                                        justify-self: end;
+                                        transform: translateY(50%);
+                                      `}"
+                                    ></div>
+                                  `}
+                            </div>
+                          </button>
+                        </div>
+                      `
+                    : html``}
 
-                    <div>
-                      <button
-                        class="button button--tight button--tight--inline button--transparent"
-                        css="${css`
-                          padding: var(--space--1);
-                          border-radius: var(--border-radius--circle);
-                        `}"
-                        javascript="${javascript`
+                  <div>
+                    <button
+                      class="button button--tight button--tight--inline button--transparent"
+                      css="${css`
+                        padding: var(--space--1);
+                        border-radius: var(--border-radius--circle);
+                      `}"
+                      javascript="${javascript`
                           leafac.setTippy({
                             event,
                             element: this,
@@ -2517,59 +2513,59 @@ export default async (application: Application): Promise<void> => {
                             },
                           });
                         `}"
-                      >
-                        $${application.web.locals.partials.user({
-                          request,
-                          response,
-                          user: response.locals.user,
-                          decorate: false,
-                          name: false,
-                        })}
-                      </button>
-                    </div>
+                    >
+                      $${application.web.locals.partials.user({
+                        request,
+                        response,
+                        user: response.locals.user,
+                        decorate: false,
+                        name: false,
+                      })}
+                    </button>
                   </div>
-                `;
-              }
+                </div>
+              `;
+            }
 
-              header += extraHeaders;
+            header += extraHeaders;
 
-              return header !== html``
-                ? html`
-                    <div
-                      key="header"
-                      css="${css`
-                        font-size: var(--font-size--xs);
-                        line-height: var(--line-height--xs);
-                        background-color: var(--color--zinc--100);
+            return header !== html``
+              ? html`
+                  <div
+                    key="header"
+                    css="${css`
+                      font-size: var(--font-size--xs);
+                      line-height: var(--line-height--xs);
+                      background-color: var(--color--zinc--100);
+                      @media (prefers-color-scheme: dark) {
+                        background-color: var(--color--zinc--800);
+                      }
+                      display: flex;
+                      flex-direction: column;
+                      & > * {
+                        padding: var(--space--0) var(--space--4);
+                        border-bottom: var(--border-width--1) solid
+                          var(--color--zinc--200);
                         @media (prefers-color-scheme: dark) {
-                          background-color: var(--color--zinc--800);
+                          border-color: var(--color--zinc--700);
                         }
                         display: flex;
-                        flex-direction: column;
-                        & > * {
-                          padding: var(--space--0) var(--space--4);
-                          border-bottom: var(--border-width--1) solid
-                            var(--color--zinc--200);
-                          @media (prefers-color-scheme: dark) {
-                            border-color: var(--color--zinc--700);
-                          }
-                          display: flex;
-                        }
-                      `}"
-                    >
-                      $${header}
-                    </div>
-                  `
-                : html``;
-            })()}
+                      }
+                    `}"
+                  >
+                    $${header}
+                  </div>
+                `
+              : html``;
+          })()}
 
-            <div
-              key="main"
-              css="${css`
-                flex: 1;
-                overflow: auto;
-              `}"
-              javascript="${javascript`
+          <div
+            key="main"
+            css="${css`
+              flex: 1;
+              overflow: auto;
+            `}"
+            javascript="${javascript`
                 if (
                   event?.detail?.previousLocation?.origin !== window.location.origin ||
                   event?.detail?.previousLocation?.pathname !== window.location.pathname ||
@@ -2577,36 +2573,36 @@ export default async (application: Application): Promise<void> => {
                 )
                   this.scroll(0, 0);
               `}"
-            >
-              $${body}
-            </div>
+          >
+            $${body}
+          </div>
 
-            <div
-              key="footer"
-              css="${css`
-                font-size: var(--font-size--xs);
-                line-height: var(--line-height--xs);
-                background-color: var(--color--zinc--100);
-                @media (prefers-color-scheme: dark) {
-                  background-color: var(--color--zinc--800);
-                }
-                padding: var(--space--0) var(--space--4);
-                border-top: var(--border-width--1) solid var(--color--zinc--200);
-                @media (prefers-color-scheme: dark) {
-                  border-color: var(--color--zinc--700);
-                }
-                display: flex;
-                justify-content: center;
-                flex-wrap: wrap;
-              `}"
-            >
-              <div>
-                <button
-                  class="button button--transparent"
-                  css="${css`
-                    align-items: center;
-                  `}"
-                  javascript="${javascript`
+          <div
+            key="footer"
+            css="${css`
+              font-size: var(--font-size--xs);
+              line-height: var(--line-height--xs);
+              background-color: var(--color--zinc--100);
+              @media (prefers-color-scheme: dark) {
+                background-color: var(--color--zinc--800);
+              }
+              padding: var(--space--0) var(--space--4);
+              border-top: var(--border-width--1) solid var(--color--zinc--200);
+              @media (prefers-color-scheme: dark) {
+                border-color: var(--color--zinc--700);
+              }
+              display: flex;
+              justify-content: center;
+              flex-wrap: wrap;
+            `}"
+          >
+            <div>
+              <button
+                class="button button--transparent"
+                css="${css`
+                  align-items: center;
+                `}"
+                javascript="${javascript`
                     leafac.setTippy({
                       event,
                       element: this,
@@ -2656,18 +2652,18 @@ export default async (application: Application): Promise<void> => {
                       },
                     });
                   `}"
-                >
-                  $${application.web.locals.partials.logo({
-                    size: 16 /* var(--space--4) */,
-                  })}
-                  Courselore
-                </button>
-              </div>
+              >
+                $${application.web.locals.partials.logo({
+                  size: 16 /* var(--space--4) */,
+                })}
+                Courselore
+              </button>
+            </div>
 
-              <div>
-                <button
-                  class="button button--transparent"
-                  javascript="${javascript`
+            <div>
+              <button
+                class="button button--transparent"
+                javascript="${javascript`
                     leafac.setTippy({
                       event,
                       element: this,
@@ -2712,10 +2708,10 @@ export default async (application: Application): Promise<void> => {
                                         tagsReferences: ["9676584193"],
                                       },
                                     },
-                                    { addQueryPrefix: true }
+                                    { addQueryPrefix: true },
                                   )}`,
                                 },
-                                { addQueryPrefix: true }
+                                { addQueryPrefix: true },
                               )}"
                               target="_blank"
                               class="dropdown--menu--item button button--transparent"
@@ -2762,7 +2758,7 @@ export default async (application: Application): Promise<void> => {
                                     - Courselore Version: ${application.version}
                                   `,
                                 },
-                                { addQueryPrefix: true }
+                                { addQueryPrefix: true },
                               )}"
                               target="_blank"
                               class="dropdown--menu--item button button--transparent"
@@ -2775,22 +2771,22 @@ export default async (application: Application): Promise<void> => {
                       },
                     });
                   `}"
-                >
-                  <i class="bi bi-bug"></i>
-                  Report an Issue
-                </button>
-              </div>
+              >
+                <i class="bi bi-bug"></i>
+                Report an Issue
+              </button>
+            </div>
 
-              $${response.locals.user?.systemRole === "administrator" &&
-              semver.gt(
-                response.locals.administrationOptions!.latestVersion,
-                application.version
-              )
-                ? html`
-                    <div>
-                      <button
-                        class="button button--transparent strong text--green"
-                        javascript="${javascript`
+            $${response.locals.user?.systemRole === "administrator" &&
+            semver.gt(
+              response.locals.administrationOptions!.latestVersion,
+              application.version,
+            )
+              ? html`
+                  <div>
+                    <button
+                      class="button button--transparent strong text--green"
+                      javascript="${javascript`
                           leafac.setTippy({
                             event,
                             element: this,
@@ -2868,30 +2864,30 @@ export default async (application: Application): Promise<void> => {
                             },
                           });
                         `}"
+                    >
+                      <span
+                        css="${css`
+                          display: flex;
+                          gap: var(--space--2);
+                          animation: bounce 1s 3;
+                        `}"
                       >
-                        <span
-                          css="${css`
-                            display: flex;
-                            gap: var(--space--2);
-                            animation: bounce 1s 3;
-                          `}"
-                        >
-                          <i class="bi bi-arrow-up-circle-fill"></i>
-                          Update Courselore
-                        </span>
-                      </button>
-                    </div>
-                  `
-                : html``}
+                        <i class="bi bi-arrow-up-circle-fill"></i>
+                        Update Courselore
+                      </span>
+                    </button>
+                  </div>
+                `
+              : html``}
 
-              <div>
-                <button
-                  class="button button--transparent ${response.locals.user !==
-                    undefined &&
-                  semver.lt(response.locals.user.latestNewsVersion, "6.1.1")
-                    ? "strong text--green"
-                    : ""}"
-                  javascript="${javascript`
+            <div>
+              <button
+                class="button button--transparent ${response.locals.user !==
+                  undefined &&
+                semver.lt(response.locals.user.latestNewsVersion, "6.1.1")
+                  ? "strong text--green"
+                  : ""}"
+                javascript="${javascript`
                     leafac.setTippy({
                       event,
                       element: this,
@@ -2988,24 +2984,24 @@ export default async (application: Application): Promise<void> => {
                         });
                       };
                   `}"
-                >
-                  <i class="bi bi-newspaper"></i>
-                  News
-                </button>
-              </div>
+              >
+                <i class="bi bi-newspaper"></i>
+                News
+              </button>
             </div>
           </div>
+        </div>
 
-          <div
-            key="progress-bar"
-            hidden
-            css="${css`
-              position: fixed;
-              top: 0;
-              right: 0;
-              left: 0;
-            `}"
-            javascript="${javascript`
+        <div
+          key="progress-bar"
+          hidden
+          css="${css`
+            position: fixed;
+            top: 0;
+            right: 0;
+            left: 0;
+          `}"
+          javascript="${javascript`
               leafac.setTippy({
                 event,
                 element: this,
@@ -3033,31 +3029,31 @@ export default async (application: Application): Promise<void> => {
                 this.hidden = true;
               };
             `}"
-          >
-            <div
-              css="${css`
-                height: var(--border-width--4);
-                background-color: var(--color--blue--500);
-                @media (prefers-color-scheme: dark) {
-                  background-color: var(--color--blue--600);
-                }
-                border: var(--border-width--1) solid var(--color--blue--600);
-                border-top-width: var(--border-width--0);
-                border-left-width: var(--border-width--0);
-                @media (prefers-color-scheme: dark) {
-                  border-color: var(--color--blue--700);
-                }
-                transition-property: width;
-                transition-duration: var(--transition-duration--500);
-                transition-timing-function: var(
-                  --transition-timing-function--in-out
-                );
-              `}"
-            ></div>
-          </div>
-        </body>
-      </html>
-    `;
+        >
+          <div
+            css="${css`
+              height: var(--border-width--4);
+              background-color: var(--color--blue--500);
+              @media (prefers-color-scheme: dark) {
+                background-color: var(--color--blue--600);
+              }
+              border: var(--border-width--1) solid var(--color--blue--600);
+              border-top-width: var(--border-width--0);
+              border-left-width: var(--border-width--0);
+              @media (prefers-color-scheme: dark) {
+                border-color: var(--color--blue--700);
+              }
+              transition-property: width;
+              transition-duration: var(--transition-duration--500);
+              transition-timing-function: var(
+                --transition-timing-function--in-out
+              );
+            `}"
+          ></div>
+        </div>
+      </body>
+    </html>
+  `;
 
   if (application.configuration.environment !== "production")
     application.web.delete<
@@ -3094,7 +3090,7 @@ export default async (application: Application): Promise<void> => {
               >.
             </p>
           `,
-        })
+        }),
       );
       process.kill(process.ppid);
     });
@@ -3532,7 +3528,7 @@ export default async (application: Application): Promise<void> => {
           Courselore Version: ${application.version}
         `,
     },
-    { addQueryPrefix: true }
+    { addQueryPrefix: true },
   )}`;
 
   application.web.locals.helpers.Flash = {
@@ -3551,10 +3547,10 @@ export default async (application: Application): Promise<void> => {
                   ${theme},
                   ${content}
                 )
-              `
+              `,
             ).lastInsertRowid
           }
-        `
+        `,
       )!;
       request.cookies["__Host-Flash"] = flash.nonce;
       response.cookie("__Host-Flash", flash.nonce, {
@@ -3570,18 +3566,18 @@ export default async (application: Application): Promise<void> => {
         theme: string;
         content: HTML;
       }>(
-        sql`SELECT "id", "theme", "content" FROM "flashes" WHERE "nonce" = ${request.cookies["__Host-Flash"]}`
+        sql`SELECT "id", "theme", "content" FROM "flashes" WHERE "nonce" = ${request.cookies["__Host-Flash"]}`,
       );
       delete request.cookies["__Host-Flash"];
       response.clearCookie(
         "__Host-Flash",
-        application.web.locals.configuration.cookies
+        application.web.locals.configuration.cookies,
       );
       if (flash === undefined) return undefined;
       application.database.run(
         sql`
           DELETE FROM "flashes" WHERE "id" = ${flash.id}
-        `
+        `,
       );
       return flash;
     },
@@ -3595,15 +3591,15 @@ export default async (application: Application): Promise<void> => {
           sql`
             DELETE FROM "flashes"
             WHERE "createdAt" < ${new Date(
-              Date.now() - application.web.locals.helpers.Flash.maxAge
+              Date.now() - application.web.locals.helpers.Flash.maxAge,
             ).toISOString()}
-          `
+          `,
         );
         application.log("CLEAN EXPIRED ‘flashes’", "FINISHED");
         await timers.setTimeout(
           24 * 60 * 60 * 1000 + Math.random() * 5 * 60 * 1000,
           undefined,
-          { ref: false }
+          { ref: false },
         );
       }
     });

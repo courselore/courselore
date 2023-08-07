@@ -14,8 +14,8 @@ export default async (application: Application): Promise<void> => {
         JSON.stringify(
           { name: application.name, version: application.version },
           undefined,
-          2
-        )
+          2,
+        ),
       );
   });
 

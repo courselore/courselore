@@ -24,7 +24,7 @@ export default async (application: Application): Promise<void> => {
       asyncHandler(async (request, response, next) => {
         await timers.setTimeout(5 * 1000, undefined, { ref: false });
         next();
-      })
+      }),
     );
 
   application.web.use<
@@ -51,11 +51,11 @@ export default async (application: Application): Promise<void> => {
   >(express.urlencoded({ extended: true }));
 
   application.webEvents.use<{}, any, {}, {}, {}>(
-    express.urlencoded({ extended: true })
+    express.urlencoded({ extended: true }),
   );
 
   application.workerEvents.use<{}, any, {}, {}, {}>(
-    express.urlencoded({ extended: true })
+    express.urlencoded({ extended: true }),
   );
 
   application.web.use<
@@ -68,7 +68,7 @@ export default async (application: Application): Promise<void> => {
     expressFileUpload({
       createParentPath: true,
       limits: { fileSize: 10 * 1024 * 1024 },
-    })
+    }),
   );
 
   application.web.use<

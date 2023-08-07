@@ -53,7 +53,7 @@ const baseIdentifier = baseX("abcdefghijklmnopqrstuvwxyz");
 for (const input of await globby("./source/**/*.mts")) {
   const output = path.join(
     "./build",
-    `${input.slice("./source/".length, -path.extname(input).length)}.mjs`
+    `${input.slice("./source/".length, -path.extname(input).length)}.mjs`,
   );
 
   const code = await fs.readFile(input, "utf-8");
@@ -93,17 +93,17 @@ for (const input of await globby("./source/**/*.mts")) {
                   const css_ = prettier.format(
                     new Function(
                       "css",
-                      `return (${babelGenerator.default(path.node).code});`
+                      `return (${babelGenerator.default(path.node).code});`,
                     )(css),
-                    { parser: "css" }
+                    { parser: "css" },
                   );
                   const identifier = baseIdentifier.encode(
-                    xxhash.XXHash3.hash(Buffer.from(css_))
+                    xxhash.XXHash3.hash(Buffer.from(css_)),
                   );
                   if (!staticCSSIdentifiers.has(identifier)) {
                     staticCSSIdentifiers.add(identifier);
                     staticCSS += css`/********************************************************************************/\n\n${`[css~="${identifier}"]`.repeat(
-                      6
+                      6,
                     )} {\n${css_}}\n\n`;
                   }
                   path.replaceWith(babel.types.stringLiteral(identifier));
@@ -120,14 +120,14 @@ for (const input of await globby("./source/**/*.mts")) {
                     parser: "babel",
                   });
                   const identifier = baseIdentifier.encode(
-                    xxhash.XXHash3.hash(Buffer.from(javascript_))
+                    xxhash.XXHash3.hash(Buffer.from(javascript_)),
                   );
                   if (!staticJavaScriptIdentifiers.has(identifier)) {
                     staticJavaScriptIdentifiers.add(identifier);
                     staticJavaScript += javascript`/********************************************************************************/\n\nleafac.execute.functions.set("${identifier}", function (${[
                       "event",
                       ...path.node.quasi.expressions.map(
-                        (value, index) => `$$${index}`
+                        (value, index) => `$$${index}`,
                       ),
                     ].join(", ")}) {\n${javascript_}});\n\n`;
                   }
@@ -136,10 +136,10 @@ for (const input of await globby("./source/**/*.mts")) {
                       JSON.stringify({
                         function: ${babel.types.stringLiteral(identifier)},
                         arguments: ${babel.types.arrayExpression(
-                          path.node.quasi.expressions
+                          path.node.quasi.expressions,
                         )},
                       })
-                    `
+                    `,
                   );
                   break;
                 }
@@ -148,13 +148,13 @@ for (const input of await globby("./source/**/*.mts")) {
           },
         },
       ],
-    }
+    },
   );
 
   await fs.mkdir(path.dirname(output), { recursive: true });
   await fs.writeFile(
     output,
-    `${babelResult.code}\n//# sourceMappingURL=${path.basename(output)}.map`
+    `${babelResult.code}\n//# sourceMappingURL=${path.basename(output)}.map`,
   );
   await fs.writeFile(`${output}.map`, JSON.stringify(babelResult.map));
 }
@@ -195,7 +195,7 @@ await fs.rm("./static/index.mjs");
 const paths = {};
 
 for (const [javascriptBundle, { entryPoint, cssBundle }] of Object.entries(
-  esbuildResult.metafile.outputs
+  esbuildResult.metafile.outputs,
 ))
   if (entryPoint === "index.mjs" && typeof cssBundle === "string") {
     paths["index.css"] = cssBundle.slice("../build/static/".length);
@@ -209,11 +209,11 @@ for (const source of await globby(["./static/about/", "./static/news/"])) {
   const destination = path.join(
     "./build",
     `${source.slice(0, -extension.length)}--${baseFileHash.encode(
-      xxhash.XXHash3.hash(await fs.readFile(source))
-    )}${extension}`
+      xxhash.XXHash3.hash(await fs.readFile(source)),
+    )}${extension}`,
   );
   paths[source.slice("static/".length)] = destination.slice(
-    "build/static/".length
+    "build/static/".length,
   );
   await fs.mkdir(path.dirname(destination), { recursive: true });
   await fs.cp(source, destination, { recursive: true });
@@ -221,7 +221,7 @@ for (const source of await globby(["./static/about/", "./static/news/"])) {
 
 await fs.writeFile(
   new URL("./build/static/paths.json", import.meta.url),
-  JSON.stringify(paths, undefined, 2)
+  JSON.stringify(paths, undefined, 2),
 );
 
 for (const source of [
@@ -233,7 +233,7 @@ for (const source of [
   const destination = path.join(
     "./build",
     ...(source.startsWith("./static/") ? [] : ["./static/"]),
-    source
+    source,
   );
   await fs.mkdir(path.dirname(destination), { recursive: true });
   await fs.cp(source, destination, { recursive: true });

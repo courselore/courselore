@@ -30,7 +30,10 @@ export type ApplicationDatabase = {
 export default async (application: Application): Promise<void> => {
   await fs.mkdir(application.configuration.dataDirectory, { recursive: true });
   application.database = new Database(
-    path.join(application.configuration.dataDirectory, `${application.name}.db`)
+    path.join(
+      application.configuration.dataDirectory,
+      `${application.name}.db`,
+    ),
   );
 
   process.once("exit", () => {
@@ -369,11 +372,11 @@ export default async (application: Application): Promise<void> => {
           text.replace(
             new RegExp(
               `(?<=https://${escapeStringRegexp(
-                application.configuration.hostname
+                application.configuration.hostname,
               )}/courses/\\d+/conversations/\\d+)#message--(?=\\d+)`,
-              "gi"
+              "gi",
             ),
-            "?messageReference="
+            "?messageReference=",
           );
       for (const user of application.database.all<{
         id: number;
@@ -384,7 +387,7 @@ export default async (application: Application): Promise<void> => {
           SELECT "id", "biographySource", "biographyPreprocessed"
           FROM "users"
           ORDER BY "id"
-        `
+        `,
       ))
         if (
           user.biographySource !== null &&
@@ -395,13 +398,13 @@ export default async (application: Application): Promise<void> => {
               UPDATE "users"
               SET
                 "biographySource" = ${makeMessageReferenceInMessagePermanentLinkVisibleToServerForPaginationToWork(
-                  user.biographySource
+                  user.biographySource,
                 )},
                 "biographyPreprocessed" = ${makeMessageReferenceInMessagePermanentLinkVisibleToServerForPaginationToWork(
-                  user.biographyPreprocessed
+                  user.biographyPreprocessed,
                 )}
               WHERE "id" = ${user.id}
-            `
+            `,
           );
       for (const message of application.database.all<{
         id: number;
@@ -413,23 +416,23 @@ export default async (application: Application): Promise<void> => {
           SELECT "id", "contentSource", "contentPreprocessed", "contentSearch"
           FROM "messages"
           ORDER BY "id"
-        `
+        `,
       ))
         application.database.run(
           sql`
             UPDATE "messages"
             SET
               "contentSource" = ${makeMessageReferenceInMessagePermanentLinkVisibleToServerForPaginationToWork(
-                message.contentSource
+                message.contentSource,
               )},
               "contentPreprocessed" = ${makeMessageReferenceInMessagePermanentLinkVisibleToServerForPaginationToWork(
-                message.contentPreprocessed
+                message.contentPreprocessed,
               )},
               "contentSearch" = ${makeMessageReferenceInMessagePermanentLinkVisibleToServerForPaginationToWork(
-                message.contentSearch
+                message.contentSearch,
               )}
             WHERE "id" = ${message.id}
-          `
+          `,
         );
     },
 
@@ -488,16 +491,16 @@ export default async (application: Application): Promise<void> => {
 
     () => {
       const changeMessageReferencePermanentLinkQueryParameter = (
-        text: string
+        text: string,
       ): string =>
         text.replace(
           new RegExp(
             `(?<=https://${escapeStringRegexp(
-              application.configuration.hostname
+              application.configuration.hostname,
             )}/courses/\\d+/conversations/\\d+)\\?messageReference=(?=\\d+)`,
-            "gi"
+            "gi",
           ),
-          "?messages%5BmessageReference%5D="
+          "?messages%5BmessageReference%5D=",
         );
       for (const user of application.database.all<{
         id: number;
@@ -508,7 +511,7 @@ export default async (application: Application): Promise<void> => {
           SELECT "id", "biographySource", "biographyPreprocessed"
           FROM "users"
           ORDER BY "id"
-        `
+        `,
       ))
         if (
           user.biographySource !== null &&
@@ -519,13 +522,13 @@ export default async (application: Application): Promise<void> => {
               UPDATE "users"
               SET
                 "biographySource" = ${changeMessageReferencePermanentLinkQueryParameter(
-                  user.biographySource
+                  user.biographySource,
                 )},
                 "biographyPreprocessed" = ${changeMessageReferencePermanentLinkQueryParameter(
-                  user.biographyPreprocessed
+                  user.biographyPreprocessed,
                 )}
               WHERE "id" = ${user.id}
-            `
+            `,
           );
       for (const message of application.database.all<{
         id: number;
@@ -537,23 +540,23 @@ export default async (application: Application): Promise<void> => {
           SELECT "id", "contentSource", "contentPreprocessed", "contentSearch"
           FROM "messages"
           ORDER BY "id"
-        `
+        `,
       ))
         application.database.run(
           sql`
             UPDATE "messages"
             SET
               "contentSource" = ${changeMessageReferencePermanentLinkQueryParameter(
-                message.contentSource
+                message.contentSource,
               )},
               "contentPreprocessed" = ${changeMessageReferencePermanentLinkQueryParameter(
-                message.contentPreprocessed
+                message.contentPreprocessed,
               )},
               "contentSearch" = ${changeMessageReferencePermanentLinkQueryParameter(
-                message.contentSearch
+                message.contentSearch,
               )}
             WHERE "id" = ${message.id}
-          `
+          `,
         );
     },
 
@@ -597,7 +600,7 @@ export default async (application: Application): Promise<void> => {
             "biographyPreprocessed" TEXT NULL,
             "emailNotifications" TEXT NOT NULL
           );
-        `
+        `,
       );
       for (const user of application.database.all<{
         id: number;
@@ -630,7 +633,7 @@ export default async (application: Application): Promise<void> => {
             "biographyPreprocessed",
             "emailNotifications"
           FROM "users"
-        `
+        `,
       ))
         application.database.run(
           sql`
@@ -666,7 +669,7 @@ export default async (application: Application): Promise<void> => {
               ${user.biographyPreprocessed},
               ${user.emailNotifications}
             )
-          `
+          `,
         );
       application.database.execute(
         sql`
@@ -682,7 +685,7 @@ export default async (application: Application): Promise<void> => {
           CREATE TRIGGER "usersNameSearchIndexDelete" AFTER DELETE ON "users" BEGIN
             INSERT INTO "usersNameSearchIndex" ("usersNameSearchIndex", "rowid", "nameSearch") VALUES ('delete', "old"."id", "old"."nameSearch");
           END;
-        `
+        `,
       );
     },
 
@@ -709,7 +712,7 @@ export default async (application: Application): Promise<void> => {
             "emailNotificationsForMessagesInConversationsYouStartedAt" TEXT NULL,
             "emailNotificationsDigestsFrequency" TEXT NULL
           );
-        `
+        `,
       );
       for (const user of application.database.all<{
         id: number;
@@ -744,7 +747,7 @@ export default async (application: Application): Promise<void> => {
             "biographyPreprocessed",
             "emailNotifications"
           FROM "users"
-        `
+        `,
       ))
         application.database.run(
           sql`
@@ -804,7 +807,7 @@ export default async (application: Application): Promise<void> => {
               },
               ${user.emailNotifications === "mentions" ? "daily" : null}
             )
-          `
+          `,
         );
       application.database.execute(
         sql`
@@ -820,7 +823,7 @@ export default async (application: Application): Promise<void> => {
           CREATE TRIGGER "usersNameSearchIndexDelete" AFTER DELETE ON "users" BEGIN
             INSERT INTO "usersNameSearchIndex" ("usersNameSearchIndex", "rowid", "nameSearch") VALUES ('delete', "old"."id", "old"."nameSearch");
           END;
-        `
+        `,
       );
     },
 
@@ -862,7 +865,7 @@ export default async (application: Application): Promise<void> => {
             "emailNotificationsForMessagesInConversationsYouStartedAt" TEXT NULL,
             "emailNotificationsDigestsFrequency" TEXT NULL
           );
-        `
+        `,
       );
       for (const user of application.database.all<{
         id: number;
@@ -907,7 +910,7 @@ export default async (application: Application): Promise<void> => {
             "emailNotificationsForMessagesInConversationsYouStartedAt",
             "emailNotificationsDigestsFrequency"
           FROM "users"
-        `
+        `,
       ))
         application.database.run(
           sql`
@@ -955,7 +958,7 @@ export default async (application: Application): Promise<void> => {
               ${user.emailNotificationsForMessagesInConversationsYouStartedAt},
               ${user.emailNotificationsDigestsFrequency}
             )
-          `
+          `,
         );
       application.database.execute(
         sql`
@@ -971,7 +974,7 @@ export default async (application: Application): Promise<void> => {
           CREATE TRIGGER "usersNameSearchIndexDelete" AFTER DELETE ON "users" BEGIN
             INSERT INTO "usersNameSearchIndex" ("usersNameSearchIndex", "rowid", "nameSearch") VALUES ('delete', "old"."id", "old"."nameSearch");
           END;
-        `
+        `,
       );
     },
 
@@ -983,7 +986,7 @@ export default async (application: Application): Promise<void> => {
       }>(
         sql`
           SELECT "id", "email", "name" FROM "users" ORDER BY "id" ASC
-        `
+        `,
       );
       if (users.length === 0) return;
       while (true) {
@@ -1013,7 +1016,7 @@ export default async (application: Application): Promise<void> => {
         application.database.run(
           sql`
             UPDATE "users" SET "systemRole" = 'administrator' WHERE "id" = ${user.id}
-          `
+          `,
         );
         await prompts({
           type: "text",
@@ -1048,7 +1051,7 @@ export default async (application: Application): Promise<void> => {
             "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt" TEXT NULL,
             "emailNotificationsForMessagesInConversationsYouStartedAt" TEXT NULL
           );
-        `
+        `,
       );
       const hour = new Date();
       hour.setUTCMinutes(0, 0, 0);
@@ -1099,7 +1102,7 @@ export default async (application: Application): Promise<void> => {
             "emailNotificationsForMessagesInConversationsYouStartedAt",
             "emailNotificationsDigestsFrequency"
           FROM "users"
-        `
+        `,
       ))
         application.database.run(
           sql`
@@ -1167,7 +1170,7 @@ export default async (application: Application): Promise<void> => {
               },
               ${user.emailNotificationsForMessagesInConversationsYouStartedAt}
             )
-          `
+          `,
         );
       application.database.execute(
         sql`
@@ -1183,7 +1186,7 @@ export default async (application: Application): Promise<void> => {
           CREATE TRIGGER "usersNameSearchIndexDelete" AFTER DELETE ON "users" BEGIN
             INSERT INTO "usersNameSearchIndex" ("usersNameSearchIndex", "rowid", "nameSearch") VALUES ('delete', "old"."id", "old"."nameSearch");
           END;
-        `
+        `,
       );
     },
 
@@ -1250,7 +1253,7 @@ export default async (application: Application): Promise<void> => {
           
           CREATE INDEX "conversationSelectedParticipantsConversationIndex" ON "conversationSelectedParticipants" ("conversation");
           CREATE INDEX "conversationSelectedParticipantsEnrollmentIndex" ON "conversationSelectedParticipants" ("enrollment");
-        `
+        `,
       );
 
       for (const conversation of application.database.all<{
@@ -1286,7 +1289,7 @@ export default async (application: Application): Promise<void> => {
             "nextMessageReference",
             "resolvedAt"
           FROM "conversations"
-        `
+        `,
       )) {
         application.database.run(
           sql`
@@ -1321,7 +1324,7 @@ export default async (application: Application): Promise<void> => {
               ${conversation.titleSearch},
               ${conversation.nextMessageReference}
             )
-          `
+          `,
         );
         if (conversation.staffOnlyAt !== null)
           for (const enrollment of application.database.all<{
@@ -1342,7 +1345,7 @@ export default async (application: Application): Promise<void> => {
                   "messages"."id" IS NOT NULL
                 )
               GROUP BY "enrollments"."id"
-            `
+            `,
           ))
             application.database.run(
               sql`
@@ -1356,7 +1359,7 @@ export default async (application: Application): Promise<void> => {
                   ${conversation.id},
                   ${enrollment.id}
                 )
-              `
+              `,
             );
       }
 
@@ -1389,7 +1392,7 @@ export default async (application: Application): Promise<void> => {
           CREATE TRIGGER "conversationsTitleSearchIndexDelete" AFTER DELETE ON "conversations" BEGIN
             INSERT INTO "conversationsTitleSearchIndex" ("conversationsTitleSearchIndex", "rowid", "titleSearch") VALUES ('delete', "old"."id", "old"."titleSearch");
           END;
-        `
+        `,
       );
     },
 
@@ -1409,14 +1412,14 @@ export default async (application: Application): Promise<void> => {
             "userSystemRolesWhoMayCreateCourses" TEXT NOT NULL,
             "latestVersion" TEXT NOT NULL
           );
-        `
+        `,
       );
       const administrationOptions = application.database.get<{
         userSystemRolesWhoMayCreateCourses: string;
       }>(
         sql`
           SELECT "userSystemRolesWhoMayCreateCourses" FROM "administrationOptions"
-        `
+        `,
       );
       if (administrationOptions === undefined)
         throw new Error("Failed to find ‘administrationOptions’");
@@ -1430,13 +1433,13 @@ export default async (application: Application): Promise<void> => {
             ${administrationOptions.userSystemRolesWhoMayCreateCourses},
             ${application.version}
         )
-      `
+      `,
       );
       application.database.execute(
         sql`
           DROP TABLE "administrationOptions";
           ALTER TABLE "new_administrationOptions" RENAME TO "administrationOptions";
-        `
+        `,
       );
     },
 
@@ -1470,18 +1473,18 @@ export default async (application: Application): Promise<void> => {
           SELECT "id", "avatar"
           FROM "users"
           WHERE "avatar" IS NOT NULL
-        `
+        `,
       )) {
         if (
           !user.avatar.startsWith(
-            `https://${application.configuration.hostname}/files/`
+            `https://${application.configuration.hostname}/files/`,
           ) ||
           !user.avatar.endsWith(`--avatar${path.extname(user.avatar)}`)
         )
           continue;
 
         const fileURL = user.avatar.slice(
-          `https://${application.configuration.hostname}/files/`.length
+          `https://${application.configuration.hostname}/files/`.length,
         );
         const directory = path.dirname(fileURL);
         const nameOldAvatar = decodeURIComponent(path.basename(fileURL));
@@ -1494,7 +1497,7 @@ export default async (application: Application): Promise<void> => {
           application.configuration.dataDirectory,
           "files",
           directory,
-          name
+          name,
         );
 
         try {
@@ -1510,14 +1513,14 @@ export default async (application: Application): Promise<void> => {
                 application.configuration.dataDirectory,
                 "files",
                 directory,
-                nameAvatar
-              )
+                nameAvatar,
+              ),
             );
         } catch (error: any) {
           application.log(
             "DATABASE MIGRATION ERROR: FAILED TO CONVERT AVATAR TO WEBP",
             String(error),
-            error?.stack
+            error?.stack,
           );
           continue;
         }
@@ -1529,7 +1532,7 @@ export default async (application: Application): Promise<void> => {
               application.configuration.hostname
             }/files/${directory}/${encodeURIComponent(nameAvatar)}`}
             WHERE "id" = ${user.id}
-          `
+          `,
         );
       }
     },
@@ -1563,7 +1566,7 @@ export default async (application: Application): Promise<void> => {
             "staffOnlyAt" TEXT NULL,
             UNIQUE ("course", "reference")
           );
-        `
+        `,
       );
 
       let previousCourse = -1;
@@ -1588,7 +1591,7 @@ export default async (application: Application): Promise<void> => {
           ORDER BY
             "course" ASC,
             "id" ASC
-        `
+        `,
       )) {
         if (previousCourse !== tag.course) order = 0;
         application.database.run(
@@ -1611,7 +1614,7 @@ export default async (application: Application): Promise<void> => {
               ${tag.name},
               ${tag.staffOnlyAt}
             )
-          `
+          `,
         );
         previousCourse = tag.course;
         order++;
@@ -1622,7 +1625,7 @@ export default async (application: Application): Promise<void> => {
           DROP TABLE "tags";
           ALTER TABLE "new_tags" RENAME TO "tags";
           CREATE INDEX "tagsCourseIndex" ON "tags" ("course");
-        `
+        `,
       );
     },
 
@@ -1691,7 +1694,7 @@ export default async (application: Application): Promise<void> => {
             "preferAnonymousAt" TEXT NULL,
             "latestNewsVersion" TEXT NOT NULL
           );
-        `
+        `,
       );
       for (const user of application.database.all<{
         id: number;
@@ -1748,7 +1751,7 @@ export default async (application: Application): Promise<void> => {
             "preferContentEditorToolbarInCompactAt",
             "preferAnonymousAt"
           FROM "users"
-        `
+        `,
       ))
         application.database.run(
           sql`
@@ -1804,7 +1807,7 @@ export default async (application: Application): Promise<void> => {
               ${user.preferAnonymousAt},
               ${"6.0.10"}
             )
-          `
+          `,
         );
       application.database.execute(
         sql`
@@ -1820,7 +1823,7 @@ export default async (application: Application): Promise<void> => {
           CREATE TRIGGER "usersNameSearchIndexDelete" AFTER DELETE ON "users" BEGIN
             INSERT INTO "usersNameSearchIndex" ("usersNameSearchIndex", "rowid", "nameSearch") VALUES ('delete', "old"."id", "old"."nameSearch");
           END;
-        `
+        `,
       );
     },
 
@@ -1869,7 +1872,7 @@ export default async (application: Application): Promise<void> => {
             "preferAnonymousAt" TEXT NULL,
             "latestNewsVersion" TEXT NOT NULL
           );
-        `
+        `,
       );
       for (const user of application.database.all<{
         id: number;
@@ -1928,7 +1931,7 @@ export default async (application: Application): Promise<void> => {
             "preferAnonymousAt",
             "latestNewsVersion"
           FROM "users"
-        `
+        `,
       ))
         application.database.run(
           sql`
@@ -1982,7 +1985,7 @@ export default async (application: Application): Promise<void> => {
               ${user.preferAnonymousAt},
               ${user.latestNewsVersion}
             )
-          `
+          `,
         );
       application.database.execute(
         sql`
@@ -1998,7 +2001,7 @@ export default async (application: Application): Promise<void> => {
           CREATE TRIGGER "usersNameSearchIndexDelete" AFTER DELETE ON "users" BEGIN
             INSERT INTO "usersNameSearchIndex" ("usersNameSearchIndex", "rowid", "nameSearch") VALUES ('delete', "old"."id", "old"."nameSearch");
           END;
-        `
+        `,
       );
     },
 
@@ -2023,7 +2026,7 @@ export default async (application: Application): Promise<void> => {
             "contentSearch" TEXT NOT NULL,
             UNIQUE ("conversation", "reference")
           );
-        `
+        `,
       );
 
       for (const message of application.database.all<{
@@ -2053,7 +2056,7 @@ export default async (application: Application): Promise<void> => {
             "contentPreprocessed",
             "contentSearch"
           FROM "messages"
-        `
+        `,
       ))
         application.database.run(
           sql`
@@ -2083,7 +2086,7 @@ export default async (application: Application): Promise<void> => {
               ${message.contentPreprocessed},
               ${message.contentSearch}
             )
-          `
+          `,
         );
 
       application.database.execute(
@@ -2116,7 +2119,7 @@ export default async (application: Application): Promise<void> => {
           CREATE TRIGGER "messagesContentSearchIndexDelete" AFTER DELETE ON "messages" BEGIN
             INSERT INTO "messagesContentSearchIndex" ("messagesContentSearchIndex", "rowid", "contentSearch") VALUES ('delete', "old"."id", "old"."contentSearch");
           END;
-        `
+        `,
       );
     },
 
@@ -2158,7 +2161,7 @@ export default async (application: Application): Promise<void> => {
           ALTER TABLE "messages" RENAME COLUMN "authorEnrollment" TO "authorCourseParticipant";
 
           UPDATE "conversations" SET "participants" = 'selected-participants' WHERE "participants" = 'selected-people';
-        `
+        `,
       );
 
       const contentPreprocessed = await (async () => {
@@ -2270,7 +2273,7 @@ export default async (application: Application): Promise<void> => {
                     typeof node.children[0].properties.className[0] !==
                       "string" ||
                     !node.children[0].properties.className[0].startsWith(
-                      "language-"
+                      "language-",
                     ) ||
                     index === null ||
                     parent === null
@@ -2280,36 +2283,34 @@ export default async (application: Application): Promise<void> => {
                   const code = hastUtilToString(node).slice(0, -1);
                   const language =
                     node.children[0].properties.className[0].slice(
-                      "language-".length
+                      "language-".length,
                     );
 
                   const highlightedCode = (() => {
                     try {
                       return rehypeParseProcessor
-                        .parse(
-                          html`
-                            <div>
-                              <div class="light">
-                                $${shikiHighlighter.codeToHtml(code, {
-                                  lang: language,
-                                  theme: "light-plus",
-                                })}
-                              </div>
-                              <div class="dark">
-                                $${shikiHighlighter.codeToHtml(code, {
-                                  lang: language,
-                                  theme: "dark-plus",
-                                })}
-                              </div>
+                        .parse(html`
+                          <div>
+                            <div class="light">
+                              $${shikiHighlighter.codeToHtml(code, {
+                                lang: language,
+                                theme: "light-plus",
+                              })}
                             </div>
-                          `
-                        )
+                            <div class="dark">
+                              $${shikiHighlighter.codeToHtml(code, {
+                                lang: language,
+                                theme: "dark-plus",
+                              })}
+                            </div>
+                          </div>
+                        `)
                         .children.find((child) => child.type === "element");
                     } catch (error: any) {
                       application.log(
                         "ERROR IN SYNTAX HIGHLIGHTER",
                         String(error),
-                        error?.stack
+                        error?.stack,
                       );
                     }
                   })();
@@ -2318,7 +2319,7 @@ export default async (application: Application): Promise<void> => {
                   parent.children[index] = highlightedCode;
                 });
               };
-            })()
+            })(),
           )
           .use(() => (tree: any) => {
             unistUtilVisit(tree, (node) => {
@@ -2357,11 +2358,11 @@ export default async (application: Application): Promise<void> => {
       }>(
         sql`
           SELECT "id", "contentSource" FROM "messages"
-        `
+        `,
       )) {
         const messageContentSource = message.contentSource.replace(
           /(?<=^|\s)@staff(?=[^a-z0-9-]|$)/gi,
-          "@course-staff"
+          "@course-staff",
         );
         const messageContentPreprocessed =
           contentPreprocessed(messageContentSource);
@@ -2373,7 +2374,7 @@ export default async (application: Application): Promise<void> => {
               "contentPreprocessed" = ${messageContentPreprocessed.contentPreprocessed},
               "contentSearch" = ${messageContentPreprocessed.contentSearch}
             WHERE "id" = ${message.id}
-          `
+          `,
         );
       }
     },
@@ -2381,13 +2382,13 @@ export default async (application: Application): Promise<void> => {
     sql`
       ALTER TABLE "sessions" ADD COLUMN "samlNameID" TEXT NULL;
       DELETE FROM "sessions" WHERE "samlIdentifier" IS NOT NULL;
-    `
+    `,
   );
 
   application.database.run(
     sql`
       DELETE FROM "liveConnectionsMetadata"
-    `
+    `,
   );
 
   application.log("DATABASE MIGRATION", "FINISHED");

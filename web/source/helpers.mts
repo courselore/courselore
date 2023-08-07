@@ -11,12 +11,12 @@ export type ApplicationHelpers = {
         isPast: (expiresAt: string | null) => boolean;
         sanitizeSearch: (
           search: string,
-          options?: { prefix?: boolean }
+          options?: { prefix?: boolean },
         ) => string;
         highlightSearchResult: (
           searchResult: string,
           searchPhrases: string | string[] | undefined,
-          options?: { prefix?: boolean }
+          options?: { prefix?: boolean },
         ) => HTML;
         splitFilterablePhrases: (filterable: string) => string[];
       };
@@ -37,7 +37,7 @@ export default async (application: Application): Promise<void> => {
 
   application.web.locals.helpers.sanitizeSearch = (
     search,
-    { prefix = false } = {}
+    { prefix = false } = {},
   ) =>
     splitSearchPhrases(search)
       .map((phrase) => `"${phrase.replaceAll('"', '""')}"${prefix ? "*" : ""}`)
@@ -46,7 +46,7 @@ export default async (application: Application): Promise<void> => {
   application.web.locals.helpers.highlightSearchResult = (
     searchResult,
     searchPhrases,
-    { prefix = false } = {}
+    { prefix = false } = {},
   ) => {
     if (searchPhrases === undefined) return searchResult;
     if (typeof searchPhrases === "string")
@@ -57,9 +57,9 @@ export default async (application: Application): Promise<void> => {
         `(?<!\\w)(?:${searchPhrases
           .map((searchPhrase) => escapeStringRegexp(searchPhrase))
           .join("|")})${prefix ? "" : "(?!\\w)"}`,
-        "gi"
+        "gi",
       ),
-      (searchPhrase) => html`<mark class="mark">$${searchPhrase}</mark>`
+      (searchPhrase) => html`<mark class="mark">$${searchPhrase}</mark>`,
     );
   };
 

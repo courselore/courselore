@@ -15,7 +15,7 @@ export type ApplicationAdministration = {
         userSystemRolesWhoMayCreateCourseses: [
           "all",
           "staff-and-administrators",
-          "administrators"
+          "administrators",
         ];
 
         systemRoles: ["none", "staff", "administrator"];
@@ -46,17 +46,17 @@ export default async (application: Application): Promise<void> => {
             (
               (await application
                 .got(
-                  "https://api.github.com/repos/courselore/courselore/releases/latest"
+                  "https://api.github.com/repos/courselore/courselore/releases/latest",
                 )
                 .json()) as { tag_name: string }
-            ).tag_name
+            ).tag_name,
           );
           if (typeof latestVersion !== "string")
             throw new Error(`latestVersion = ‘${latestVersion}’`);
           application.database.run(
             sql`
               UPDATE "administrationOptions" SET "latestVersion" = ${latestVersion}
-            `
+            `,
           );
           application.log(
             "CHECK FOR UPDATES",
@@ -64,21 +64,21 @@ export default async (application: Application): Promise<void> => {
               ? [
                   `NEW VERSION AVAILABLE: ${application.version} → ${latestVersion}`,
                 ]
-              : [`CURRENT VERSION ${application.version} IS THE LATEST`])
+              : [`CURRENT VERSION ${application.version} IS THE LATEST`]),
           );
         } catch (error: any) {
           application.log(
             "CHECK FOR UPDATES",
             "ERROR",
             String(error),
-            error?.stack
+            error?.stack,
           );
         }
 
         await timers.setTimeout(
           10 * 60 * 1000 + Math.random() * 60 * 1000,
           undefined,
-          { ref: false }
+          { ref: false },
         );
       }
     });
@@ -99,7 +99,7 @@ export default async (application: Application): Promise<void> => {
 
     response.redirect(
       303,
-      `https://${application.configuration.hostname}/administration/system-settings`
+      `https://${application.configuration.hostname}/administration/system-settings`,
     );
   });
 
@@ -136,7 +136,7 @@ export default async (application: Application): Promise<void> => {
           href="https://${application.configuration
             .hostname}/administration/system-settings"
           class="dropdown--menu--item menu-box--item button ${request.path.match(
-            /\/administration\/system-settings\/?$/i
+            /\/administration\/system-settings\/?$/i,
           )
             ? "button--blue"
             : "button--transparent"}"
@@ -148,7 +148,7 @@ export default async (application: Application): Promise<void> => {
           href="https://${application.configuration
             .hostname}/administration/users"
           class="dropdown--menu--item menu-box--item button ${request.path.match(
-            /\/administration\/users\/?$/i
+            /\/administration\/users\/?$/i,
           )
             ? "button--blue"
             : "button--transparent"}"
@@ -164,7 +164,7 @@ export default async (application: Application): Promise<void> => {
           href="https://${application.configuration
             .hostname}/administration/courses"
           class="dropdown--menu--item menu-box--item button ${request.path.match(
-            /\/administration\/courses\/?$/i
+            /\/administration\/courses\/?$/i,
           )
             ? "button--blue"
             : "button--transparent"}"
@@ -291,7 +291,7 @@ export default async (application: Application): Promise<void> => {
             </div>
           </form>
         `,
-      })
+      }),
     );
   });
 
@@ -314,7 +314,7 @@ export default async (application: Application): Promise<void> => {
     if (
       typeof request.body.userSystemRolesWhoMayCreateCourses !== "string" ||
       !application.web.locals.helpers.userSystemRolesWhoMayCreateCourseses.includes(
-        request.body.userSystemRolesWhoMayCreateCourses
+        request.body.userSystemRolesWhoMayCreateCourses,
       )
     )
       return next("Validation");
@@ -323,7 +323,7 @@ export default async (application: Application): Promise<void> => {
       sql`
         UPDATE "administrationOptions"
         SET "userSystemRolesWhoMayCreateCourses" = ${request.body.userSystemRolesWhoMayCreateCourses}
-      `
+      `,
     )!;
 
     application.web.locals.helpers.Flash.set({
@@ -335,7 +335,7 @@ export default async (application: Application): Promise<void> => {
 
     response.redirect(
       303,
-      `https://${application.configuration.hostname}/administration/system-settings`
+      `https://${application.configuration.hostname}/administration/system-settings`,
     );
   });
 
@@ -383,7 +383,7 @@ export default async (application: Application): Promise<void> => {
           "systemRole" = 'staff' DESC,
           "systemRole" = 'none' DESC,
           "users"."name" ASC
-      `
+      `,
     );
 
     response.send(
@@ -489,8 +489,8 @@ export default async (application: Application): Promise<void> => {
                     <div
                       data-filterable-phrases="${JSON.stringify(
                         application.web.locals.helpers.splitFilterablePhrases(
-                          user.name
-                        )
+                          user.name,
+                        ),
                       )}"
                       class="strong"
                     >
@@ -500,8 +500,8 @@ export default async (application: Application): Promise<void> => {
                       <span
                         data-filterable-phrases="${JSON.stringify(
                           application.web.locals.helpers.splitFilterablePhrases(
-                            user.email
-                          )
+                            user.email,
+                          ),
                         )}"
                         css="${css`
                           margin-right: var(--space--2);
@@ -558,7 +558,7 @@ export default async (application: Application): Promise<void> => {
                         Last seen online
                         <time
                           datetime="${new Date(
-                            user.lastSeenOnlineAt
+                            user.lastSeenOnlineAt,
                           ).toISOString()}"
                           javascript="${javascript`
                             leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
@@ -606,30 +606,29 @@ export default async (application: Application): Promise<void> => {
                               content: ${html`
                                 <div class="dropdown--menu">
                                   $${application.web.locals.helpers.systemRoles.map(
-                                    (systemRole) =>
-                                      html`
-                                        <form
-                                          key="role--${systemRole}"
-                                          method="PATCH"
-                                          action="${action}"
-                                        >
-                                          <input
-                                            type="hidden"
-                                            name="role"
-                                            value="${systemRole}"
-                                          />
-                                          <div>
-                                            <button
-                                              class="dropdown--menu--item button ${systemRole ===
-                                              user.systemRole
-                                                ? "button--blue"
-                                                : "button--transparent"} ${textColorsSystemRole[
-                                                systemRole
-                                              ]}"
-                                              $${isOnlyAdministrator
-                                                ? html`
-                                                    type="button"
-                                                    javascript="${javascript`
+                                    (systemRole) => html`
+                                      <form
+                                        key="role--${systemRole}"
+                                        method="PATCH"
+                                        action="${action}"
+                                      >
+                                        <input
+                                          type="hidden"
+                                          name="role"
+                                          value="${systemRole}"
+                                        />
+                                        <div>
+                                          <button
+                                            class="dropdown--menu--item button ${systemRole ===
+                                            user.systemRole
+                                              ? "button--blue"
+                                              : "button--transparent"} ${textColorsSystemRole[
+                                              systemRole
+                                            ]}"
+                                            $${isOnlyAdministrator
+                                              ? html`
+                                                  type="button"
+                                                  javascript="${javascript`
                                                       leafac.setTippy({
                                                         event,
                                                         element: this,
@@ -640,11 +639,11 @@ export default async (application: Application): Promise<void> => {
                                                         },
                                                       });
                                                     `}"
-                                                  `
-                                                : isSelf
-                                                ? html`
-                                                    type="button"
-                                                    javascript="${javascript`
+                                                `
+                                              : isSelf
+                                              ? html`
+                                                  type="button"
+                                                  javascript="${javascript`
                                                       leafac.setTippy({
                                                         event,
                                                         element: this,
@@ -711,15 +710,15 @@ export default async (application: Application): Promise<void> => {
                                                         },
                                                       });
                                                     `}"
-                                                  `
-                                                : html``}
-                                            >
-                                              $${iconsSystemRole[systemRole]}
-                                              ${labelsSystemRole[systemRole]}
-                                            </button>
-                                          </div>
-                                        </form>
-                                      `
+                                                `
+                                              : html``}
+                                          >
+                                            $${iconsSystemRole[systemRole]}
+                                            ${labelsSystemRole[systemRole]}
+                                          </button>
+                                        </div>
+                                      </form>
+                                    `,
                                   )}
                                 </div>
                               `},  
@@ -751,7 +750,7 @@ export default async (application: Application): Promise<void> => {
             `;
           })}
         `,
-      })
+      }),
     );
   });
 
@@ -802,7 +801,7 @@ export default async (application: Application): Promise<void> => {
         SELECT "id"
         FROM "users"
         WHERE "reference" = ${request.params.userReference}
-      `
+      `,
     );
     if (managedUser === undefined) return next();
 
@@ -814,7 +813,7 @@ export default async (application: Application): Promise<void> => {
           SELECT COUNT(*) AS "count"
           FROM "users"
           WHERE "systemRole" = 'administrator'
-        `
+        `,
       )!.count === 1
     )
       return next("Validation");
@@ -830,7 +829,7 @@ export default async (application: Application): Promise<void> => {
           UPDATE "users"
           SET "systemRole" = ${request.body.role}
           WHERE "id" = ${managedUser.id}
-        `
+        `,
       );
     }
 
@@ -844,7 +843,7 @@ export default async (application: Application): Promise<void> => {
       303,
       isSelf
         ? `https://${application.configuration.hostname}`
-        : `https://${application.configuration.hostname}/administration/users`
+        : `https://${application.configuration.hostname}/administration/users`,
     );
   });
 
@@ -911,7 +910,7 @@ export default async (application: Application): Promise<void> => {
         ORDER BY
           "updatedAt" DESC,
           "name" ASC
-      `
+      `,
     );
 
     response.send(
@@ -1000,7 +999,7 @@ export default async (application: Application): Promise<void> => {
                           Created
                           <time
                             datetime="${new Date(
-                              course.createdAt
+                              course.createdAt,
                             ).toISOString()}"
                             javascript="${javascript`
                               leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
@@ -1014,7 +1013,7 @@ export default async (application: Application): Promise<void> => {
                           Updated
                           <time
                             datetime="${new Date(
-                              course.updatedAt
+                              course.updatedAt,
                             ).toISOString()}"
                             javascript="${javascript`
                               leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
@@ -1031,11 +1030,11 @@ export default async (application: Application): Promise<void> => {
                                 {
                                   request,
                                   response,
-                                }
+                                },
                               )}
                               <time
                                 datetime="${new Date(
-                                  course.archivedAt
+                                  course.archivedAt,
                                 ).toISOString()}"
                                 css="${css`
                                   font-size: var(--font-size--2xs);
@@ -1052,10 +1051,10 @@ export default async (application: Application): Promise<void> => {
                   </div>
                 </div>
               </div>
-            `
+            `,
           )}
         `,
-      })
+      }),
     );
   });
 };

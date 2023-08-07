@@ -24,7 +24,7 @@ export default async (application: Application): Promise<void> => {
     )
       return response.redirect(
         303,
-        `https://${application.addresses.canonicalHostname}/about`
+        `https://${application.addresses.canonicalHostname}/about`,
       );
 
     response.send(
@@ -964,7 +964,7 @@ export default async (application: Application): Promise<void> => {
             </a>
           </div>
         `,
-      })
+      }),
     );
   });
 };

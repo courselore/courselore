@@ -47,37 +47,37 @@ export default {
         cert: await fs.readFile(
           new URL(
             "./development--saml--identity-provider--signing.crt",
-            import.meta.url
+            import.meta.url,
           ),
-          "utf-8"
+          "utf-8",
         ),
         privateKey: await fs.readFile(
           new URL(
             "./development--saml--service-provider--signing.key",
-            import.meta.url
+            import.meta.url,
           ),
-          "utf-8"
+          "utf-8",
         ),
         signingCert: await fs.readFile(
           new URL(
             "./development--saml--service-provider--signing.crt",
-            import.meta.url
+            import.meta.url,
           ),
-          "utf-8"
+          "utf-8",
         ),
         decryptionPvk: await fs.readFile(
           new URL(
             "./development--saml--service-provider--encryption.key",
-            import.meta.url
+            import.meta.url,
           ),
-          "utf-8"
+          "utf-8",
         ),
         decryptionCert: await fs.readFile(
           new URL(
             "./development--saml--service-provider--encryption.crt",
-            import.meta.url
+            import.meta.url,
           ),
-          "utf-8"
+          "utf-8",
         ),
       },
     },

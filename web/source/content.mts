@@ -231,7 +231,7 @@ export default async (application: Application): Promise<void> => {
                 node.children[0].properties.className.length !== 1 ||
                 typeof node.children[0].properties.className[0] !== "string" ||
                 !node.children[0].properties.className[0].startsWith(
-                  "language-"
+                  "language-",
                 ) ||
                 index === null ||
                 parent === null
@@ -240,36 +240,34 @@ export default async (application: Application): Promise<void> => {
 
               const code = hastUtilToString(node).slice(0, -1);
               const language = node.children[0].properties.className[0].slice(
-                "language-".length
+                "language-".length,
               );
 
               const highlightedCode = (() => {
                 try {
                   return rehypeParseProcessor
-                    .parse(
-                      html`
-                        <div>
-                          <div class="light">
-                            $${shikiHighlighter.codeToHtml(code, {
-                              lang: language,
-                              theme: "light-plus",
-                            })}
-                          </div>
-                          <div class="dark">
-                            $${shikiHighlighter.codeToHtml(code, {
-                              lang: language,
-                              theme: "dark-plus",
-                            })}
-                          </div>
+                    .parse(html`
+                      <div>
+                        <div class="light">
+                          $${shikiHighlighter.codeToHtml(code, {
+                            lang: language,
+                            theme: "light-plus",
+                          })}
                         </div>
-                      `
-                    )
+                        <div class="dark">
+                          $${shikiHighlighter.codeToHtml(code, {
+                            lang: language,
+                            theme: "dark-plus",
+                          })}
+                        </div>
+                      </div>
+                    `)
                     .children.find((child) => child.type === "element");
                 } catch (error: any) {
                   application.log(
                     "ERROR IN SYNTAX HIGHLIGHTER",
                     String(error),
-                    error?.stack
+                    error?.stack,
                   );
                 }
               })();
@@ -278,7 +276,7 @@ export default async (application: Application): Promise<void> => {
               parent.children[index] = highlightedCode;
             });
           };
-        })()
+        })(),
       )
       .use(() => (tree) => {
         unistUtilVisit(tree, (node) => {
@@ -367,7 +365,7 @@ export default async (application: Application): Promise<void> => {
                 },  
               },
             });
-          `
+          `,
         );
     }
 
@@ -384,8 +382,8 @@ export default async (application: Application): Promise<void> => {
             application.configuration.hostname
           }/content/proxy${qs.stringify(
             { url: element.getAttribute("src") },
-            { addQueryPrefix: true }
-          )}`
+            { addQueryPrefix: true },
+          )}`,
         );
     }
 
@@ -410,8 +408,8 @@ export default async (application: Application): Promise<void> => {
             application.configuration.hostname
           }/content/proxy${qs.stringify(
             { url: element.getAttribute("src") },
-            { addQueryPrefix: true }
-          )}`
+            { addQueryPrefix: true },
+          )}`,
         );
     }
 
@@ -419,7 +417,7 @@ export default async (application: Application): Promise<void> => {
       if (!element.children[0].matches("summary"))
         element.insertAdjacentHTML(
           "afterbegin",
-          html`<summary>See More</summary>`
+          html`<summary>See More</summary>`,
         );
 
     if (
@@ -449,9 +447,9 @@ export default async (application: Application): Promise<void> => {
         const match = href.match(
           new RegExp(
             `^https://${escapeStringRegexp(
-              application.configuration.hostname
-            )}/courses/(?<courseReference>\\d+)/conversations/(?<conversationReference>\\d+)(?:\\?messages%5BmessageReference%5D=(?<messageReference>\\d+))?$`
-          )
+              application.configuration.hostname,
+            )}/courses/(?<courseReference>\\d+)/conversations/(?<conversationReference>\\d+)(?:\\?messages%5BmessageReference%5D=(?<messageReference>\\d+))?$`,
+          ),
         );
         if (match?.groups === undefined) continue;
         const { courseReference, conversationReference, messageReference } =
@@ -469,7 +467,7 @@ export default async (application: Application): Promise<void> => {
             ...Object.fromEntries(url.searchParams),
             conversations: request.query.conversations,
           },
-          { addQueryPrefix: true }
+          { addQueryPrefix: true },
         );
         if (messageReference === undefined) {
           element.setAttribute("href", url.href);
@@ -497,7 +495,7 @@ export default async (application: Application): Promise<void> => {
             node.textContent === null ||
             parentElement === null ||
             parentElement.closest(
-              `a, code, [key="mention"], [key="reference"]`
+              `a, code, [key="mention"], [key="reference"]`,
             ) !== null
           )
             return;
@@ -582,7 +580,7 @@ export default async (application: Application): Promise<void> => {
                           response.locals.course!.id
                         } AND
                         "courseParticipants"."reference" = ${courseParticipantReference}
-                    `
+                    `,
                   );
                   if (courseParticipantRow === undefined) return match;
                   const courseParticipant = {
@@ -618,7 +616,7 @@ export default async (application: Application): Promise<void> => {
                   break;
               }
               return html`<strong key="mention">$${mentionHTML}</strong>`;
-            }
+            },
           );
 
           newNodeHTML = newNodeHTML.replace(
@@ -638,7 +636,7 @@ export default async (application: Application): Promise<void> => {
                     .hostname}/courses/${response.locals.course!
                     .reference}/conversations/${conversation.reference}${qs.stringify(
                     { conversations: request.query.conversations },
-                    { addQueryPrefix: true }
+                    { addQueryPrefix: true },
                   )}"
                   >${match}</a
                 >`;
@@ -658,11 +656,11 @@ export default async (application: Application): Promise<void> => {
                     conversations: request.query.conversations,
                     messages: { messageReference: message.reference },
                   },
-                  { addQueryPrefix: true }
+                  { addQueryPrefix: true },
                 )}"
                 >${match}</a
               >`;
-            }
+            },
           );
 
           parentElement.replaceChild(JSDOM.fragment(newNodeHTML), node);
@@ -675,9 +673,9 @@ export default async (application: Application): Promise<void> => {
         const hrefMatch = href.match(
           new RegExp(
             `^https://${escapeStringRegexp(
-              application.configuration.hostname
-            )}/courses/(?<hrefCourseReference>\\d+)/conversations/(?<hrefConversationReference>\\d+)(?:\\?messages%5BmessageReference%5D=(?<hrefMessageReference>\\d+))?$`
-          )
+              application.configuration.hostname,
+            )}/courses/(?<hrefCourseReference>\\d+)/conversations/(?<hrefConversationReference>\\d+)(?:\\?messages%5BmessageReference%5D=(?<hrefMessageReference>\\d+))?$`,
+          ),
         );
         if (hrefMatch?.groups === undefined) continue;
         const {
@@ -729,7 +727,7 @@ export default async (application: Application): Promise<void> => {
                   `},  
                 },
               });
-            `
+            `,
           );
           continue;
         }
@@ -769,12 +767,12 @@ export default async (application: Application): Promise<void> => {
                 `},  
               },
             });
-          `
+          `,
         );
       }
 
       for (const element of contentElement.querySelectorAll(
-        "courselore-poll"
+        "courselore-poll",
       )) {
         const pollReference = element.getAttribute("reference");
         if (pollReference === null) {
@@ -805,7 +803,7 @@ export default async (application: Application): Promise<void> => {
               "messagePolls"."course" = ${responseCourseParticipant.locals.course.id} AND
               "messagePolls"."reference" = ${pollReference}
             GROUP BY "messagePolls"."id"
-          `
+          `,
         );
         if (pollRow === undefined) {
           element.outerHTML = html`<div>POLL REFERENCE NOT FOUND</div>`;
@@ -845,11 +843,11 @@ export default async (application: Application): Promise<void> => {
             WHERE "messagePollOptions"."messagePoll" = ${poll.id}
             GROUP BY "messagePollOptions"."id"
             ORDER BY "messagePollOptions"."order" ASC
-          `
+          `,
         );
 
         const voted = options.some(
-          (option) => option.courseParticipantVote !== null
+          (option) => option.courseParticipantVote !== null,
         );
         const mayEdit = mayEditPoll({
           request: requestCourseParticipant,
@@ -1094,7 +1092,7 @@ export default async (application: Application): Promise<void> => {
                               .locals.course
                               .reference}/polls/${poll.reference}/votes${qs.stringify(
                               { redirect: request.originalUrl.slice(1) },
-                              { addQueryPrefix: true }
+                              { addQueryPrefix: true },
                             )}"
                             class="button button--rose"
                             javascript="${javascript`
@@ -1271,7 +1269,7 @@ export default async (application: Application): Promise<void> => {
                               response.locals.course.reference
                             }/polls/${poll.reference}/edit${qs.stringify(
                               { redirect: request.originalUrl.slice(1) },
-                              { addQueryPrefix: true }
+                              { addQueryPrefix: true },
                             )}`}, { cache: "no-store" })).text());
                             loading.hidden = true;
                             leafac.execute({ element: edit });
@@ -1300,7 +1298,7 @@ export default async (application: Application): Promise<void> => {
                           .course
                           .reference}/polls/${poll.reference}${qs.stringify(
                           { redirect: request.originalUrl.slice(1) },
-                          { addQueryPrefix: true }
+                          { addQueryPrefix: true },
                         )}"
                         name="close"
                         value="${closed ? "false" : "true"}"
@@ -1345,7 +1343,7 @@ export default async (application: Application): Promise<void> => {
         pollHTML = html`
           <div
             key="poll/${poll.reference}/${String(poll.closesAt)}/${String(
-              voted
+              voted,
             )}"
             css="${css`
               margin: var(--space--4) var(--space--0);
@@ -1379,7 +1377,7 @@ export default async (application: Application): Promise<void> => {
                       .course
                       .reference}/polls/${poll.reference}/votes${qs.stringify(
                       { redirect: request.originalUrl.slice(1) },
-                      { addQueryPrefix: true }
+                      { addQueryPrefix: true },
                     )}"
                     novalidate
                     css="${css`
@@ -1398,7 +1396,7 @@ export default async (application: Application): Promise<void> => {
                       .hostname}/courses/${responseCourseParticipant.locals
                       .course.reference}/polls/${poll.reference}${qs.stringify(
                       { redirect: request.originalUrl.slice(1) },
-                      { addQueryPrefix: true }
+                      { addQueryPrefix: true },
                     )}"
                     novalidate
                     hidden
@@ -1423,10 +1421,10 @@ export default async (application: Application): Promise<void> => {
             JSDOM.fragment(
               application.web.locals.helpers.highlightSearchResult(
                 html`${node.textContent}`,
-                search
-              )
+                search,
+              ),
             ),
-            node
+            node,
           );
         }
       })(contentElement);
@@ -1446,7 +1444,7 @@ export default async (application: Application): Promise<void> => {
       if (
         typeof request.query.url !== "string" ||
         !["http://", "https://"].some((urlPrefix) =>
-          request.query.url!.toLowerCase().startsWith(urlPrefix)
+          request.query.url!.toLowerCase().startsWith(urlPrefix),
         ) ||
         request.query.url
           .toLowerCase()
@@ -1472,9 +1470,9 @@ export default async (application: Application): Promise<void> => {
               return response.status(422).end();
             proxiedResponse.headers["content-type"] = contentType;
           }),
-        response
+        response,
       );
-    })
+    }),
   );
 
   application.web.locals.partials.contentEditor = ({
@@ -2434,7 +2432,7 @@ export default async (application: Application): Promise<void> => {
                                               any,
                                               Application["web"]["locals"]["ResponseLocals"]["CourseParticipant"]
                                             >,
-                                        }
+                                        },
                                       )}).querySelector('[key="poll-editor"]');
                                       write.insertAdjacentElement("afterbegin", poll);
                                       leafac.execute({ element: poll });
@@ -3358,12 +3356,12 @@ export default async (application: Application): Promise<void> => {
                                             const loading = this.querySelector('[key="loading"]');
                                             loading.hidden = false;
                                             const response = await fetch(${`https://${application.configuration.hostname}/courses/${response.locals.course?.reference}/polls/`} + window.locals.editPollReference + ${`/edit${qs.stringify(
-                                          {
-                                            redirect:
-                                              request.originalUrl.slice(1),
-                                          },
-                                          { addQueryPrefix: true }
-                                        )}`}, { cache: "no-store" });
+                                              {
+                                                redirect:
+                                                  request.originalUrl.slice(1),
+                                              },
+                                              { addQueryPrefix: true },
+                                            )}`}, { cache: "no-store" });
                                             loading.hidden = true;
                                             if (!response.ok) {
                                               leafac.setTippy({
@@ -3393,7 +3391,7 @@ export default async (application: Application): Promise<void> => {
                                               request,
                                               response,
                                               size: 10,
-                                            }
+                                            },
                                           )}
                                         </div>
                                       </button>
@@ -3972,7 +3970,7 @@ ${contentSource}</textarea
                 >
                   $${poll !== undefined
                     ? poll.options.map((option, order) =>
-                        partialOption({ option, order })
+                        partialOption({ option, order }),
                       )
                     : html``}
                 </div>
@@ -4115,7 +4113,7 @@ ${contentSource}</textarea
                             request.query.redirect ??
                             request.originalUrl.slice(1),
                         },
-                        { addQueryPrefix: true }
+                        { addQueryPrefix: true },
                       )}"
                       name="close"
                       value="true"
@@ -4258,7 +4256,7 @@ ${contentSource}</textarea
                         "users"."id" = "usersNameSearchIndex"."rowid" AND
                         "usersNameSearchIndex" MATCH ${application.web.locals.helpers.sanitizeSearch(
                           request.query.search,
-                          { prefix: true }
+                          { prefix: true },
                         )}
                     `
                   : sql``
@@ -4319,7 +4317,7 @@ ${contentSource}</textarea
               }
               "users"."name" ASC
             LIMIT 5
-          `
+          `,
         )
         .map((courseParticipantRow) => ({
           id: courseParticipantRow.id,
@@ -4379,9 +4377,9 @@ ${contentSource}</textarea
                 `
               : result}
           `,
-        })
+        }),
       );
-    }
+    },
   );
 
   application.web.get<
@@ -4419,14 +4417,14 @@ ${contentSource}</textarea
               WHERE "course" = ${response.locals.course.id}
               ORDER BY "id" DESC
               LIMIT 5
-            `
+            `,
           )) {
             const conversation = application.web.locals.helpers.getConversation(
               {
                 request,
                 response,
                 conversationReference: conversationRow.reference,
-              }
+              },
             );
             if (conversation === undefined) continue;
             results += html`
@@ -4455,15 +4453,15 @@ ${contentSource}</textarea
               SELECT "reference"
               FROM "messages"
               WHERE "conversation" = ${response.locals.conversation.id} $${
-              response.locals.courseParticipant.courseRole !== "course-staff"
-                ? sql`
+                response.locals.courseParticipant.courseRole !== "course-staff"
+                  ? sql`
                     AND "type" != 'course-staff-whisper'
                   `
-                : sql``
-            }
+                  : sql``
+              }
               ORDER BY "id" DESC
               LIMIT 5
-            `
+            `,
           )) {
             const message = application.web.locals.helpers.getMessage({
               request,
@@ -4517,19 +4515,19 @@ ${contentSource}</textarea
                 "conversations"."id" = "conversationsReferenceIndex"."rowid" AND
                 "conversationsReferenceIndex" MATCH ${application.web.locals.helpers.sanitizeSearch(
                   request.query.search,
-                  { prefix: true }
+                  { prefix: true },
                 )}
               WHERE "conversations"."course" = ${response.locals.course.id}
               ORDER BY "conversations"."id" ASC
               LIMIT 5
-            `
+            `,
           )) {
             const conversation = application.web.locals.helpers.getConversation(
               {
                 request,
                 response,
                 conversationReference: conversationRow.reference,
-              }
+              },
             );
             if (conversation === undefined) continue;
             results += html`
@@ -4548,7 +4546,7 @@ ${contentSource}</textarea
                     $${application.web.locals.helpers.highlightSearchResult(
                       `#${conversation.reference}`,
                       `#${request.query.search}`,
-                      { prefix: true }
+                      { prefix: true },
                     )}
                   </span>
                   <span class="strong">${conversation.title}</span>
@@ -4582,21 +4580,22 @@ ${contentSource}</textarea
                           "messages"."id" = "messagesReferenceIndex"."rowid" AND
                           "messagesReferenceIndex" MATCH ${application.web.locals.helpers.sanitizeSearch(
                             messageReferenceSearch,
-                            { prefix: true }
+                            { prefix: true },
                           )}
                       `
                 }
                 WHERE
                   "messages"."conversation" = ${conversation.id} $${
-                response.locals.courseParticipant.courseRole !== "course-staff"
-                  ? sql`
+                    response.locals.courseParticipant.courseRole !==
+                    "course-staff"
+                      ? sql`
                       AND "messages"."type" != 'course-staff-whisper'
                     `
-                  : sql``
-              }
+                      : sql``
+                  }
                 ORDER BY "messages"."id" ASC
                 LIMIT 5
-              `
+              `,
             )) {
               const message = application.web.locals.helpers.getMessage({
                 request,
@@ -4622,7 +4621,7 @@ ${contentSource}</textarea
                         $${application.web.locals.helpers.highlightSearchResult(
                           `#${conversation.reference}/${message.reference}`,
                           `#${request.query.search}`,
-                          { prefix: true }
+                          { prefix: true },
                         )}
                       </span>
                       <span class="strong">${conversation.title}</span>
@@ -4651,7 +4650,7 @@ ${contentSource}</textarea
                   <span class="secondary">
                     $${application.web.locals.helpers.highlightSearchResult(
                       `#${conversation.reference}`,
-                      `#${conversationReference}`
+                      `#${conversationReference}`,
                     )}
                   </span>
                   <span class="strong">${conversation.title}</span>
@@ -4674,14 +4673,14 @@ ${contentSource}</textarea
               "conversations"."id" = "conversationsTitleSearchIndex"."rowid" AND
               "conversationsTitleSearchIndex" MATCH ${application.web.locals.helpers.sanitizeSearch(
                 request.query.search,
-                { prefix: true }
+                { prefix: true },
               )}
             WHERE "conversations"."course" = ${response.locals.course.id}
             ORDER BY
               "conversationsTitleSearchIndex"."rank" ASC,
               "conversations"."id" DESC
             LIMIT 5
-          `
+          `,
         )) {
           const conversation = application.web.locals.helpers.getConversation({
             request,
@@ -4726,7 +4725,7 @@ ${contentSource}</textarea
               "courseParticipants"."user" = "usersNameSearchIndex"."rowid" AND
               "usersNameSearchIndex" MATCH ${application.web.locals.helpers.sanitizeSearch(
                 request.query.search,
-                { prefix: true }
+                { prefix: true },
               )}
             JOIN "conversations" ON
               "messages"."conversation" = "conversations"."id" AND
@@ -4747,7 +4746,7 @@ ${contentSource}</textarea
               "usersNameSearchIndex"."rank" ASC,
               "messages"."id" DESC
             LIMIT 5
-          `
+          `,
         )) {
           const conversation = application.web.locals.helpers.getConversation({
             request,
@@ -4817,7 +4816,7 @@ ${contentSource}</textarea
               "messages"."id" = "messagesContentSearchIndex"."rowid" AND
               "messagesContentSearchIndex" MATCH ${application.web.locals.helpers.sanitizeSearch(
                 request.query.search,
-                { prefix: true }
+                { prefix: true },
               )}
             JOIN "conversations" ON
               "messages"."conversation" = "conversations"."id" AND
@@ -4833,7 +4832,7 @@ ${contentSource}</textarea
               "messagesContentSearchIndex"."rank" ASC,
               "messages"."id" DESC
             LIMIT 5
-          `
+          `,
         )) {
           const conversation = application.web.locals.helpers.getConversation({
             request,
@@ -4888,9 +4887,9 @@ ${contentSource}</textarea
                 `
               : results}
           `,
-        })
+        }),
       );
-    }
+    },
   );
 
   application.web.post<
@@ -4920,7 +4919,7 @@ ${contentSource}</textarea
           return response
             .status(413)
             .send(
-              `\n\n<!-- Failed to upload: Attachments must be smaller than 10MB. -->\n\n`
+              `\n\n<!-- Failed to upload: Attachments must be smaller than 10MB. -->\n\n`,
             );
         attachment.name = filenamify(attachment.name, { replacement: "-" });
         if (attachment.name.trim() === "") return next("Validation");
@@ -4936,7 +4935,7 @@ ${contentSource}</textarea
           application.configuration.dataDirectory,
           "files",
           directory,
-          attachment.name
+          attachment.name,
         );
         const href = `https://${
           application.configuration.hostname
@@ -4957,20 +4956,20 @@ ${contentSource}</textarea
               typeof metadata.pages === "number" && metadata.pages > 1;
             const nameThumbnail = `${attachment.name.slice(
               0,
-              -path.extname(attachment.name).length
+              -path.extname(attachment.name).length,
             )}--thumbnail.${animated ? "mp4" : "webp"}`;
             const fileThumbnail = path.join(
               application.configuration.dataDirectory,
               "files",
               directory,
-              nameThumbnail
+              nameThumbnail,
             );
             const src = `https://${
               application.configuration.hostname
             }/files/${directory}/${encodeURIComponent(nameThumbnail)}`;
             const width = Math.min(
               metadata.width,
-              1152 /* var(--width--6xl) */
+              1152 /* var(--width--6xl) */,
             );
 
             if (animated)
@@ -5009,7 +5008,7 @@ ${contentSource}</textarea
             response.locals.log(
               "ERROR IN CREATING THUMBNAIL",
               String(error),
-              error?.stack
+              error?.stack,
             );
           }
         else if (attachment.mimetype.startsWith("video/")) {
@@ -5021,7 +5020,7 @@ ${contentSource}</textarea
       }
 
       response.send(`\n\n${attachmentsContentSources}`);
-    })
+    }),
   );
 
   application.web.post<
@@ -5057,7 +5056,7 @@ ${contentSource}</textarea
       request.body.options.length <= 1 ||
       request.body.options.some(
         (option) =>
-          typeof option.content !== "string" || option.content.trim() === ""
+          typeof option.content !== "string" || option.content.trim() === "",
       )
     )
       return next("Validation");
@@ -5090,10 +5089,10 @@ ${contentSource}</textarea
                 },
                 ${request.body.closesAt}
               )
-            `
+            `,
           ).lastInsertRowid
         }
-      `
+      `,
     )!;
 
     for (const [order, option] of request.body.options.entries())
@@ -5115,15 +5114,15 @@ ${contentSource}</textarea
             ${option.content!},
             ${
               application.web.locals.partials.contentPreprocessed(
-                option.content!
+                option.content!,
               ).contentPreprocessed
             }
           )
-        `
+        `,
       );
 
     response.send(
-      `<courselore-poll reference="${poll.reference}"></courselore-poll>`
+      `<courselore-poll reference="${poll.reference}"></courselore-poll>`,
     );
   });
 
@@ -5229,7 +5228,7 @@ ${contentSource}</textarea
           WHERE
             "messagePolls"."course" = ${response.locals.course.id} AND
             "messagePolls"."reference" = ${request.params.pollReference}
-        `
+        `,
       );
       if (pollRow === undefined) return next();
       const poll = {
@@ -5286,7 +5285,7 @@ ${contentSource}</textarea
           FROM "messagePollOptions"
           WHERE "messagePoll" = ${poll.id}
           ORDER BY "order" ASC
-        `
+        `,
       );
 
       response.locals.poll = {
@@ -5295,7 +5294,7 @@ ${contentSource}</textarea
       };
 
       next();
-    }
+    },
   );
 
   application.web.get<
@@ -5322,9 +5321,9 @@ ${contentSource}</textarea
             response,
             poll: response.locals.poll,
           }),
-        })
+        }),
       );
-    }
+    },
   );
 
   application.web.put<
@@ -5369,7 +5368,7 @@ ${contentSource}</textarea
                   .map((option) => option.reference)
                   .includes(option.reference))) ||
             typeof option.content !== "string" ||
-            option.content.trim() === ""
+            option.content.trim() === "",
         )
       )
         return next("Validation");
@@ -5386,7 +5385,7 @@ ${contentSource}</textarea
               },
               "closesAt" = ${request.body.closesAt}
             WHERE "id" = ${response.locals.poll.id}
-          `
+          `,
         );
 
         for (const [order, option] of request.body.options!.entries())
@@ -5409,11 +5408,11 @@ ${contentSource}</textarea
                   ${option.content!},
                   ${
                     application.web.locals.partials.contentPreprocessed(
-                      option.content!
+                      option.content!,
                     ).contentPreprocessed
                   }
                 )
-              `
+              `,
             );
           else
             application.database.run(
@@ -5424,20 +5423,20 @@ ${contentSource}</textarea
                   "contentSource" = ${option.content!},
                   "contentPreprocessed" = ${
                     application.web.locals.partials.contentPreprocessed(
-                      option.content!
+                      option.content!,
                     ).contentPreprocessed
                   }
                 WHERE
                   "messagePoll" = ${response.locals.poll.id} AND
                   "reference" = ${option.reference}
-              `
+              `,
             );
 
         for (const option of response.locals.poll.options.filter(
           (option) =>
             !request.body
               .options!.map((option) => option.reference)
-              .includes(option.reference)
+              .includes(option.reference),
         ))
           application.database.run(
             sql`
@@ -5445,14 +5444,14 @@ ${contentSource}</textarea
               WHERE
                 "messagePoll" = ${response.locals.poll.id} AND
                 "reference" = ${option.reference}
-            `
+            `,
           );
       });
 
       if (typeof request.query.redirect === "string")
         response.redirect(
           303,
-          `https://${application.configuration.hostname}/${request.query.redirect}`
+          `https://${application.configuration.hostname}/${request.query.redirect}`,
         );
       else response.end();
 
@@ -5461,7 +5460,7 @@ ${contentSource}</textarea
         response,
         url: `/courses/${response.locals.course.reference}`,
       });
-    }
+    },
   );
 
   application.web.patch<
@@ -5494,12 +5493,12 @@ ${contentSource}</textarea
                   : null
               }
               WHERE "id" = ${response.locals.poll.id}
-            `
+            `,
           );
 
       response.redirect(
         303,
-        `https://${application.configuration.hostname}/${request.query.redirect}`
+        `https://${application.configuration.hostname}/${request.query.redirect}`,
       );
 
       application.web.locals.helpers.liveUpdates({
@@ -5507,7 +5506,7 @@ ${contentSource}</textarea
         response,
         url: `/courses/${response.locals.course.reference}`,
       });
-    }
+    },
   );
 
   application.web.post<
@@ -5534,7 +5533,7 @@ ${contentSource}</textarea
           (option) =>
             !response.locals.poll.options
               .map((option) => option.reference)
-              .includes(option)
+              .includes(option),
         ) ||
         application.database.get<{}>(
           sql`
@@ -5542,10 +5541,10 @@ ${contentSource}</textarea
             FROM "messagePollVotes"
             WHERE
               "messagePollOption" IN ${response.locals.poll.options.map(
-                (option) => option.id
+                (option) => option.id,
               )} AND
               "courseParticipant" = ${response.locals.courseParticipant.id}
-          `
+          `,
         ) !== undefined
       )
         return next("Validation");
@@ -5562,12 +5561,12 @@ ${contentSource}</textarea
               ${new Date().toISOString()},
               ${
                 response.locals.poll.options.find(
-                  (option) => option.reference === optionReference
+                  (option) => option.reference === optionReference,
                 )!.id
               },
               ${response.locals.courseParticipant.id}
             )
-          `
+          `,
         );
 
       response.redirect(
@@ -5576,7 +5575,7 @@ ${contentSource}</textarea
           typeof request.query.redirect === "string"
             ? request.query.redirect
             : ""
-        }`
+        }`,
       );
 
       application.web.locals.helpers.liveUpdates({
@@ -5584,7 +5583,7 @@ ${contentSource}</textarea
         response,
         url: `/courses/${response.locals.course.reference}`,
       });
-    }
+    },
   );
 
   application.web.delete<
@@ -5606,10 +5605,10 @@ ${contentSource}</textarea
           DELETE FROM "messagePollVotes"
           WHERE
             "messagePollOption" IN ${response.locals.poll.options.map(
-              (option) => option.id
+              (option) => option.id,
             )} AND
             "courseParticipant" = ${response.locals.courseParticipant.id}
-        `
+        `,
       );
 
       response.redirect(
@@ -5618,7 +5617,7 @@ ${contentSource}</textarea
           typeof request.query.redirect === "string"
             ? request.query.redirect
             : ""
-        }`
+        }`,
       );
 
       application.web.locals.helpers.liveUpdates({
@@ -5626,7 +5625,7 @@ ${contentSource}</textarea
         response,
         url: `/courses/${response.locals.course.reference}`,
       });
-    }
+    },
   );
 
   application.web.get<
@@ -5690,7 +5689,7 @@ ${contentSource}</textarea
                         LEFT JOIN "users" ON "courseParticipants"."user" = "users"."id"
                         WHERE "messagePollVotes"."messagePollOption" = ${option.id}
                         ORDER BY "messagePollVotes"."createdAt" ASC
-                      `
+                      `,
                     )
                     .map((voteRow) => ({
                       courseParticipant:
@@ -5731,15 +5730,15 @@ ${contentSource}</textarea
                           courseParticipant: vote.courseParticipant,
                           size: "xs",
                         })}
-                      `
+                      `,
                     )}
                 </div>
-              `
+              `,
             )}
           `,
-        })
+        }),
       );
-    }
+    },
   );
 
   application.web.get<
@@ -5845,7 +5844,7 @@ ${contentSource}</textarea
                   <details>
 
                   ${shiki.BUNDLED_LANGUAGES.map(
-                    (language) => markdown`- \`${language.id}\`\n`
+                    (language) => markdown`- \`${language.id}\`\n`,
                   ).join("")}
 
                   </details>
@@ -5853,7 +5852,7 @@ ${contentSource}</textarea
                   ## Try
                       
                   The content editor includes a toolbar that helps you discover all the options. Try it out:
-                `
+                `,
               ).contentPreprocessed,
           }).contentProcessed}
           $${application.web.locals.partials.contentEditor({
@@ -5862,7 +5861,7 @@ ${contentSource}</textarea
             modifiable: false,
           })}
         `,
-      })
+      }),
     );
   });
 
@@ -5903,12 +5902,12 @@ ${contentSource}</textarea
             response,
             contentPreprocessed:
               application.web.locals.partials.contentPreprocessed(
-                request.body.content
+                request.body.content,
               ).contentPreprocessed,
             context: "preview",
           }).contentProcessed,
-        })
+        }),
       );
-    }
+    },
   );
 };

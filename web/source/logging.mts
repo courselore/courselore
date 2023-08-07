@@ -24,7 +24,7 @@ export default async (application: Application): Promise<void> => {
         application.process.number,
         application.process.id,
         ...messageParts,
-      ].join(" \t")
+      ].join(" \t"),
     );
   };
 
@@ -36,7 +36,7 @@ export default async (application: Application): Promise<void> => {
           application.version,
           `https://${application.configuration.hostname}`,
         ]
-      : [])
+      : []),
   );
 
   process.once("exit", () => {
@@ -63,7 +63,7 @@ export default async (application: Application): Promise<void> => {
         request.ip,
         request.method,
         request.originalUrl,
-        ...messageParts
+        ...messageParts,
       );
     };
     const log = response.locals.log.bind(response);
@@ -77,7 +77,7 @@ export default async (application: Application): Promise<void> => {
         String(response.statusCode),
         ...(typeof contentLength === "string"
           ? [`${Math.ceil(Number(contentLength) / 1000)}kB`]
-          : [])
+          : []),
       );
     });
 

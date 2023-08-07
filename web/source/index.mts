@@ -122,7 +122,7 @@ export type Application = {
 
 if (await node.isExecuted(import.meta.url)) {
   const version = JSON.parse(
-    await fs.readFile(new URL("../package.json", import.meta.url), "utf8")
+    await fs.readFile(new URL("../package.json", import.meta.url), "utf8"),
   ).version;
   await commander.program
     .name("courselore")
@@ -130,17 +130,17 @@ if (await node.isExecuted(import.meta.url)) {
     .addOption(
       new commander.Option("--process-type <process-type>")
         .default("main")
-        .hideHelp()
+        .hideHelp(),
     )
     .addOption(
-      new commander.Option("--process-number <process-number>").hideHelp()
+      new commander.Option("--process-number <process-number>").hideHelp(),
     )
     .argument(
       "[configuration]",
       "Path to configuration file. If you don’t provide a configuration file, the application runs in demonstration mode.",
       url.fileURLToPath(
-        new URL("../configuration/default.mjs", import.meta.url)
-      )
+        new URL("../configuration/default.mjs", import.meta.url),
+      ),
     )
     .version(version)
     .addHelpText(
@@ -149,7 +149,7 @@ if (await node.isExecuted(import.meta.url)) {
         dedent`
           Configuration:
             See ‘https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md’ for instructions, and ‘https://github.com/courselore/courselore/blob/main/web/configuration/example.mjs’ for an example.
-        `
+        `,
     )
     .allowExcessArguments(false)
     .showHelpAfterError()
@@ -162,7 +162,7 @@ if (await node.isExecuted(import.meta.url)) {
         }: {
           processType: "main" | "web" | "worker";
           processNumber: string;
-        }
+        },
       ) => {
         const eventLoopActive = node.eventLoopActive();
 
@@ -182,25 +182,25 @@ if (await node.isExecuted(import.meta.url)) {
           static: JSON.parse(
             await fs.readFile(
               new URL("./static/paths.json", import.meta.url),
-              "utf8"
-            )
+              "utf8",
+            ),
           ),
           ports: {
             web: lodash.times(
               // FIXME: https://github.com/DefinitelyTyped/DefinitelyTyped/pull/63824
               (os as any).availableParallelism(),
-              (processNumber) => 6000 + processNumber
+              (processNumber) => 6000 + processNumber,
             ),
             webEvents: lodash.times(
               // FIXME: https://github.com/DefinitelyTyped/DefinitelyTyped/pull/63824
               (os as any).availableParallelism(),
-              (processNumber) => 7000 + processNumber
+              (processNumber) => 7000 + processNumber,
             ),
             webEventsAny: 7999,
             workerEvents: lodash.times(
               // FIXME: https://github.com/DefinitelyTyped/DefinitelyTyped/pull/63824
               (os as any).availableParallelism(),
-              (processNumber) => 8000 + processNumber
+              (processNumber) => 8000 + processNumber,
             ),
             workerEventsAny: 8999,
           },
@@ -286,13 +286,13 @@ if (await node.isExecuted(import.meta.url)) {
                       preferLocal: true,
                       stdio: "inherit",
                       ...(["production", "profile"].includes(
-                        application.configuration.environment
+                        application.configuration.environment,
                       )
                         ? { env: { NODE_ENV: "production" } }
                         : {}),
                     },
-                  })
-                )
+                  }),
+                ),
               ),
               {
                 file: "caddy",
@@ -348,7 +348,7 @@ if (await node.isExecuted(import.meta.url)) {
                               import common
                             }
                           }
-                        `
+                        `,
                       )
                       .join("\n\n")}
 
@@ -362,18 +362,18 @@ if (await node.isExecuted(import.meta.url)) {
                               import common
                             }
                           }
-                        `
+                        `,
                       )
                       .join("\n\n")}
 
                     http${application.configuration.tunnel ? `` : `s`}://${
-                    application.configuration.hostname
-                  } {
+                      application.configuration.hostname
+                    } {
                       route {
                         import common
                         ${[
                           url.fileURLToPath(
-                            new URL("./static/", import.meta.url)
+                            new URL("./static/", import.meta.url),
                           ),
                           ...application.configuration.staticPaths,
                         ]
@@ -381,7 +381,7 @@ if (await node.isExecuted(import.meta.url)) {
                             (staticPath) => caddyfile`
                             route {
                                 root * ${JSON.stringify(
-                                  path.resolve(staticPath)
+                                  path.resolve(staticPath),
                                 )}
                               @file_exists file
                               route @file_exists {
@@ -389,14 +389,14 @@ if (await node.isExecuted(import.meta.url)) {
                                 file_server
                               }
                             }
-                          `
+                          `,
                           )
                           .join("\n\n")}
                         route /files/* {
                           root * ${JSON.stringify(
                             path.resolve(
-                              application.configuration.dataDirectory
-                            )
+                              application.configuration.dataDirectory,
+                            ),
                           )}
                           @file_exists file
                           route @file_exists {
@@ -463,36 +463,36 @@ if (await node.isExecuted(import.meta.url)) {
                         url.fileURLToPath(
                           new URL(
                             "../configuration/development--saml--identity-provider--saml-idp.cjs",
-                            import.meta.url
-                          )
+                            import.meta.url,
+                          ),
                         ),
                         "--key",
                         url.fileURLToPath(
                           new URL(
                             "../configuration/development--saml--identity-provider--signing.key",
-                            import.meta.url
-                          )
+                            import.meta.url,
+                          ),
                         ),
                         "--cert",
                         url.fileURLToPath(
                           new URL(
                             "../configuration/development--saml--identity-provider--signing.crt",
-                            import.meta.url
-                          )
+                            import.meta.url,
+                          ),
                         ),
                         "--encryptionCert",
                         url.fileURLToPath(
                           new URL(
                             "../configuration/development--saml--service-provider--encryption.crt",
-                            import.meta.url
-                          )
+                            import.meta.url,
+                          ),
                         ),
                         "--encryptionPublicKey",
                         url.fileURLToPath(
                           new URL(
                             "../configuration/development--saml--service-provider--encryption.pub",
-                            import.meta.url
-                          )
+                            import.meta.url,
+                          ),
                         ),
                       ],
                       options: {
@@ -513,13 +513,13 @@ if (await node.isExecuted(import.meta.url)) {
                       ...execaArguments.options,
                       reject: false,
                       cleanup: false,
-                    } as any
+                    } as any,
                   );
                   childProcesses.add(childProcess);
                   const childProcessResult = await childProcess;
                   application.log(
                     "CHILD PROCESS RESULT",
-                    JSON.stringify(childProcessResult, undefined, 2)
+                    JSON.stringify(childProcessResult, undefined, 2),
                   );
                   childProcesses.delete(childProcess);
                 }
@@ -540,11 +540,11 @@ if (await node.isExecuted(import.meta.url)) {
             eventsApplication.emit("start");
             const server = webApplication.listen(
               application.ports.web[application.process.number],
-              "127.0.0.1"
+              "127.0.0.1",
             );
             const events = eventsApplication.listen(
               application.ports.webEvents[application.process.number],
-              "127.0.0.1"
+              "127.0.0.1",
             );
             await eventLoopActive;
             server.close();
@@ -559,7 +559,7 @@ if (await node.isExecuted(import.meta.url)) {
             eventsApplication.emit("start");
             const events = eventsApplication.listen(
               application.ports.workerEvents[application.process.number],
-              "127.0.0.1"
+              "127.0.0.1",
             );
             await eventLoopActive;
             events.close();
@@ -570,7 +570,7 @@ if (await node.isExecuted(import.meta.url)) {
 
         await timers.setTimeout(10 * 1000, undefined, { ref: false });
         process.exit(1);
-      }
+      },
     )
     .parseAsync();
 }

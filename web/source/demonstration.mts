@@ -23,7 +23,7 @@ export default async (application: Application): Promise<void> => {
     asyncHandler(async (request, response) => {
       const password = await argon2.hash(
         "courselore",
-        application.web.locals.configuration.argon2
+        application.web.locals.configuration.argon2,
       );
       const avatarIndices = lodash.shuffle(lodash.range(250));
       const users = lodash.times(151, (userIndex) => {
@@ -44,7 +44,7 @@ export default async (application: Application): Promise<void> => {
           Math.random() < 0.3
             ? lodash.sample(
                 application.web.locals.helpers
-                  .userEmailNotificationsForAllMessageses
+                  .userEmailNotificationsForAllMessageses,
               )!
             : "none";
         const hour = new Date();
@@ -90,7 +90,7 @@ export default async (application: Application): Promise<void> => {
                       Date.now() -
                         (Math.random() < 0.5
                           ? 0
-                          : lodash.random(0, 5 * 60 * 60 * 1000))
+                          : lodash.random(0, 5 * 60 * 60 * 1000)),
                     ).toISOString()},
                     ${cryptoRandomString({ length: 20, type: "numeric" })},
                     ${`${slugify(name)}--${cryptoRandomString({
@@ -110,12 +110,12 @@ export default async (application: Application): Promise<void> => {
                     },
                     ${lodash.sample(
                       application.web.locals.helpers
-                        .userAvatarlessBackgroundColors
+                        .userAvatarlessBackgroundColors,
                     )!},
                     ${biographySource},
                     ${
                       application.web.locals.partials.contentPreprocessed(
-                        biographySource
+                        biographySource,
                       ).contentPreprocessed
                     },
                     ${
@@ -158,10 +158,10 @@ export default async (application: Application): Promise<void> => {
                     ${Math.random() < 0.5 ? new Date().toISOString() : null},
                     ${application.version}
                   )
-                `
+                `,
               ).lastInsertRowid
             }
-          `
+          `,
         )!;
       });
       const demonstrationUser = response.locals.user ?? users.shift()!;
@@ -237,10 +237,10 @@ export default async (application: Application): Promise<void> => {
                     ${lodash.random(30, 50)},
                     ${Math.random() < 0.5 ? new Date().toISOString() : null}
                   )
-                `
+                `,
               ).lastInsertRowid
             }
-          `
+          `,
         )!;
 
         const courseParticipant = application.database.get<{
@@ -261,10 +261,10 @@ export default async (application: Application): Promise<void> => {
                     ${courseRole},
                     ${accentColor}
                   )
-                `
+                `,
               ).lastInsertRowid
             }
-          `
+          `,
         )!;
 
         for (const _ of lodash.times(20)) {
@@ -275,9 +275,9 @@ export default async (application: Application): Promise<void> => {
                     Date.now() +
                       lodash.random(
                         -30 * 24 * 60 * 60 * 1000,
-                        30 * 24 * 60 * 60 * 1000
-                      )
-                  ).setUTCSeconds(0, 0)
+                        30 * 24 * 60 * 60 * 1000,
+                      ),
+                  ).setUTCSeconds(0, 0),
                 ).toISOString()
               : null;
           const user = Math.random() < 0.5 ? lodash.sample(users)! : null;
@@ -323,8 +323,8 @@ export default async (application: Application): Promise<void> => {
                           ? Date.now()
                           : Math.min(
                               Date.now(),
-                              new Date(expiresAt).getTime()
-                            )) - lodash.random(20 * 24 * 60 * 60 * 1000)
+                              new Date(expiresAt).getTime(),
+                            )) - lodash.random(20 * 24 * 60 * 60 * 1000),
                       ).toISOString()
                 },
                 ${course.id},
@@ -337,7 +337,7 @@ export default async (application: Application): Promise<void> => {
                   ]
                 }
               )
-            `
+            `,
           );
         }
 
@@ -370,21 +370,22 @@ export default async (application: Application): Promise<void> => {
                           },
                           ${lodash.sample(
                             application.web.locals.helpers
-                              .courseParticipantAccentColors
+                              .courseParticipantAccentColors,
                           )!}
                         )
-                      `
+                      `,
                     ).lastInsertRowid
                   }
-                `
-              )!
+                `,
+              )!,
           ),
         ];
         const courseStaff = courseParticipants.filter(
-          (courseParticipant) => courseParticipant.courseRole === "course-staff"
+          (courseParticipant) =>
+            courseParticipant.courseRole === "course-staff",
         );
         const students = courseParticipants.filter(
-          (courseParticipant) => courseParticipant.courseRole === "student"
+          (courseParticipant) => courseParticipant.courseRole === "student",
         );
 
         const tags: { id: number }[] = [
@@ -422,11 +423,11 @@ export default async (application: Application): Promise<void> => {
                         ${name},
                         ${courseStaffOnlyAt}
                       )
-                    `
+                    `,
                   ).lastInsertRowid
                 }
-              `
-            )!
+              `,
+            )!,
         );
 
         const conversationCreatedAts = [
@@ -440,8 +441,8 @@ export default async (application: Application): Promise<void> => {
           conversationCreatedAts.unshift(
             new Date(
               new Date(conversationCreatedAts[0]).getTime() -
-                lodash.random(6 * 60 * 60 * 1000, 2 * 24 * 60 * 60 * 1000)
-            ).toISOString()
+                lodash.random(6 * 60 * 60 * 1000, 2 * 24 * 60 * 60 * 1000),
+            ).toISOString(),
           );
 
         const pollSingleChoice = application.database.get<{
@@ -468,10 +469,10 @@ export default async (application: Application): Promise<void> => {
                     ${null},
                     ${null}
                   )
-                `
+                `,
               ).lastInsertRowid
             }
-          `
+          `,
         )!;
 
         const pollSingleChoiceOptions: { id: number }[] = [];
@@ -499,15 +500,15 @@ export default async (application: Application): Promise<void> => {
                         ${contentSource},
                         ${
                           application.web.locals.partials.contentPreprocessed(
-                            contentSource
+                            contentSource,
                           ).contentPreprocessed
                         }
                       )
-                    `
+                    `,
                   ).lastInsertRowid
                 }
-              `
-            )!
+              `,
+            )!,
           );
         }
 
@@ -515,10 +516,10 @@ export default async (application: Application): Promise<void> => {
           [
             ...courseParticipants,
             ...new Array(Math.floor(courseParticipants.length * 0.2)).fill(
-              null
+              null,
             ),
           ],
-          lodash.random(0, 50)
+          lodash.random(0, 50),
         ))
           application.database.run(
             sql`
@@ -530,12 +531,12 @@ export default async (application: Application): Promise<void> => {
               VALUES (
                 ${new Date(
                   new Date(conversationCreatedAts[0]).getTime() +
-                    lodash.random(60 * 1000, 12 * 60 * 60 * 1000)
+                    lodash.random(60 * 1000, 12 * 60 * 60 * 1000),
                 ).toISOString()},
                 ${lodash.sample(pollSingleChoiceOptions)!.id},
                 ${courseParticipant?.id}
               )
-            `
+            `,
           );
 
         const pollMultipleChoice = application.database.get<{
@@ -565,15 +566,15 @@ export default async (application: Application): Promise<void> => {
                         Date.now() +
                           lodash.random(
                             -24 * 60 * 60 * 1000,
-                            24 * 60 * 60 * 1000
-                          )
-                      ).setUTCSeconds(0, 0)
+                            24 * 60 * 60 * 1000,
+                          ),
+                      ).setUTCSeconds(0, 0),
                     ).toISOString()}
                   )
-                `
+                `,
               ).lastInsertRowid
             }
-          `
+          `,
         )!;
 
         const pollMultipleChoiceOptions: { id: number }[] = [];
@@ -601,15 +602,15 @@ export default async (application: Application): Promise<void> => {
                         ${contentSource},
                         ${
                           application.web.locals.partials.contentPreprocessed(
-                            contentSource
+                            contentSource,
                           ).contentPreprocessed
                         }
                       )
-                    `
+                    `,
                   ).lastInsertRowid
                 }
-              `
-            )!
+              `,
+            )!,
           );
         }
 
@@ -617,14 +618,14 @@ export default async (application: Application): Promise<void> => {
           [
             ...courseParticipants,
             ...new Array(Math.floor(courseParticipants.length * 0.2)).fill(
-              null
+              null,
             ),
           ],
-          lodash.random(0, 50)
+          lodash.random(0, 50),
         ))
           for (const option of lodash.sampleSize(
             pollMultipleChoiceOptions,
-            lodash.random(1, pollMultipleChoiceOptions.length)
+            lodash.random(1, pollMultipleChoiceOptions.length),
           ))
             application.database.run(
               sql`
@@ -636,12 +637,12 @@ export default async (application: Application): Promise<void> => {
                 VALUES (
                   ${new Date(
                     new Date(conversationCreatedAts[0]).getTime() +
-                      lodash.random(60 * 1000, 12 * 60 * 60 * 1000)
+                      lodash.random(60 * 1000, 12 * 60 * 60 * 1000),
                   ).toISOString()},
                   ${option.id},
                   ${courseParticipant?.id}
                 )
-              `
+              `,
             );
 
         const exampleOfAllFeaturesInRichTextMessages = `
@@ -748,7 +749,7 @@ ${lodash
     () =>
       `- ${lodash
         .times(lodash.random(1, 6), () => casual.sentences(lodash.random(1, 6)))
-        .join("\n\n  ")}`
+        .join("\n\n  ")}`,
   )
   .join("\n\n")}
 
@@ -766,7 +767,7 @@ ${lodash
     (index) =>
       `${index + 1}. ${lodash
         .times(lodash.random(1, 6), () => casual.sentences(lodash.random(1, 6)))
-        .join("\n\n   ")}`
+        .join("\n\n   ")}`,
   )
   .join("\n\n")}
 
@@ -777,8 +778,8 @@ ${lodash
     lodash.random(4, 8),
     () =>
       `- [${Math.random() < 0.5 ? " " : "x"}] ${casual.sentences(
-        lodash.random(1, 6)
-      )}`
+        lodash.random(1, 6),
+      )}`,
   )
   .join("\n")}
 
@@ -790,7 +791,7 @@ ${lodash
     () =>
       `> ${lodash
         .times(lodash.random(1, 6), () => casual.sentences(lodash.random(1, 6)))
-        .join("\n> ")}`
+        .join("\n> ")}`,
   )
   .join("\n>\n")}
 
@@ -975,7 +976,7 @@ Message non-existent permanent link turned reference: <https://${
             : Math.random() < 0.5
             ? "everyone"
             : lodash.sample(
-                application.web.locals.helpers.conversationParticipantses
+                application.web.locals.helpers.conversationParticipantses,
               )!;
           const selectedParticipantCourseParticipants = lodash.uniq(
             participants === "everyone"
@@ -994,10 +995,10 @@ Message non-existent permanent link turned reference: <https://${
                   ...(Math.random() < 0.5 ? [courseParticipant] : []),
                   ...lodash.sampleSize(
                     courseParticipants,
-                    lodash.random(2, 10)
+                    lodash.random(2, 10),
                   ),
                 ]
-              : []
+              : [],
           );
           const participantCourseParticipants = lodash.uniq([
             ...(participants === "everyone"
@@ -1039,9 +1040,9 @@ Message non-existent permanent link turned reference: <https://${
                 Math.min(
                   Date.now(),
                   new Date(messageCreatedAts.at(-1)!).getTime() +
-                    lodash.random(12 * 60 * 60 * 1000)
-                )
-              ).toISOString()
+                    lodash.random(12 * 60 * 60 * 1000),
+                ),
+              ).toISOString(),
             );
           const conversation = application.database.get<{
             id: number;
@@ -1109,10 +1110,10 @@ Message non-existent permanent link turned reference: <https://${
                       ${html`${title}`},
                       ${nextMessageReference}
                     )
-                  `
+                  `,
                 ).lastInsertRowid
               }
-            `
+            `,
           )!;
 
           for (const courseParticipant of selectedParticipantCourseParticipants)
@@ -1124,7 +1125,7 @@ Message non-existent permanent link turned reference: <https://${
                   ${conversation.id},
                   ${courseParticipant.id}
                 )
-              `
+              `,
             );
 
           application.database.run(
@@ -1135,7 +1136,7 @@ Message non-existent permanent link turned reference: <https://${
                 ${conversation.id},
                 ${lodash.sample(tags)!.id}
               )
-            `
+            `,
           );
 
           for (
@@ -1156,12 +1157,12 @@ Message non-existent permanent link turned reference: <https://${
               ? casual.sentences(lodash.random(1, 2))
               : lodash
                   .times(lodash.random(1, 6), () =>
-                    casual.sentences(lodash.random(1, 6))
+                    casual.sentences(lodash.random(1, 6)),
                   )
                   .join("\n\n");
             const contentPreprocessed =
               application.web.locals.partials.contentPreprocessed(
-                contentSource
+                contentSource,
               );
             const message = application.database.get<{ id: number }>(
               sql`
@@ -1191,9 +1192,9 @@ Message non-existent permanent link turned reference: <https://${
                                   new Date(messageCreatedAt).getTime() +
                                     lodash.random(
                                       5 * 60 * 60 * 1000,
-                                      18 * 60 * 60 * 1000
-                                    )
-                                )
+                                      18 * 60 * 60 * 1000,
+                                    ),
+                                ),
                               ).toISOString()
                         },
                         ${conversation.id},
@@ -1227,23 +1228,23 @@ Message non-existent permanent link turned reference: <https://${
                         ${contentPreprocessed.contentPreprocessed},
                         ${contentPreprocessed.contentSearch}
                       )
-                    `
+                    `,
                   ).lastInsertRowid
                 }
-              `
+              `,
             )!;
 
             let readingCreatedAt = messageCreatedAt;
             for (const courseParticipant of lodash.sampleSize(
               participantCourseParticipants,
-              lodash.random(1, participantCourseParticipants.length)
+              lodash.random(1, participantCourseParticipants.length),
             )) {
               readingCreatedAt = new Date(
                 Math.min(
                   Date.now(),
                   new Date(readingCreatedAt).getTime() +
-                    lodash.random(12 * 60 * 60 * 1000)
-                )
+                    lodash.random(12 * 60 * 60 * 1000),
+                ),
               ).toISOString();
               application.database.run(
                 sql`
@@ -1253,13 +1254,13 @@ Message non-existent permanent link turned reference: <https://${
                     ${message.id},
                     ${courseParticipant.id}
                   )
-                `
+                `,
               );
             }
 
             for (const courseParticipant of lodash.sampleSize(
               lodash.intersection(courseStaff, participantCourseParticipants),
-              Math.random() < 0.8 ? 0 : lodash.random(2)
+              Math.random() < 0.8 ? 0 : lodash.random(2),
             ))
               application.database.run(
                 sql`
@@ -1269,14 +1270,14 @@ Message non-existent permanent link turned reference: <https://${
                     ${message.id},
                     ${courseParticipant.id}
                   )
-                `
+                `,
               );
 
             for (const courseParticipant of lodash.sampleSize(
               participantCourseParticipants,
               Math.random() < (conversation.type === "chat" ? 0.9 : 0.5)
                 ? 0
-                : lodash.random(5)
+                : lodash.random(5),
             ))
               application.database.run(
                 sql`
@@ -1286,7 +1287,7 @@ Message non-existent permanent link turned reference: <https://${
                     ${message.id},
                     ${courseParticipant.id}
                   )
-                `
+                `,
               );
           }
         }
@@ -1312,6 +1313,6 @@ Message non-existent permanent link turned reference: <https://${
         `,
       });
       response.redirect(303, `https://${application.configuration.hostname}`);
-    })
+    }),
   );
 };

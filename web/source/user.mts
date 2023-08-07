@@ -93,14 +93,14 @@ export type ApplicationUser = {
           "purple",
           "fuchsia",
           "pink",
-          "rose"
+          "rose",
         ];
 
         userEmailNotificationsForAllMessageses: [
           "none",
           "instant",
           "hourly-digests",
-          "daily-digests"
+          "daily-digests",
         ];
       };
     };
@@ -169,7 +169,7 @@ export default async (application: Application): Promise<void> => {
               UPDATE "users"
               SET "lastSeenOnlineAt" = ${new Date().toISOString()}
               WHERE "id" = ${session.userId}
-            `
+            `,
           );
 
           try {
@@ -179,7 +179,7 @@ export default async (application: Application): Promise<void> => {
               {
                 ref: false,
                 signal: abortController.signal,
-              }
+              },
             );
           } catch {
             break;
@@ -190,7 +190,7 @@ export default async (application: Application): Promise<void> => {
       response.once("close", () => {
         abortController.abort();
       });
-    }
+    },
   );
 
   application.web.get<
@@ -208,7 +208,7 @@ export default async (application: Application): Promise<void> => {
 
     response.redirect(
       303,
-      `https://${application.configuration.hostname}/settings/profile`
+      `https://${application.configuration.hostname}/settings/profile`,
     );
   });
 
@@ -244,7 +244,7 @@ export default async (application: Application): Promise<void> => {
         <a
           href="https://${application.configuration.hostname}/settings/profile"
           class="dropdown--menu--item menu-box--item button ${request.path.match(
-            /\/settings\/profile\/?$/i
+            /\/settings\/profile\/?$/i,
           )
             ? "button--blue"
             : "button--transparent"}"
@@ -256,14 +256,14 @@ export default async (application: Application): Promise<void> => {
           href="https://${application.configuration
             .hostname}/settings/email-and-password"
           class="dropdown--menu--item menu-box--item button ${request.path.match(
-            /\/settings\/email-and-password\/?$/i
+            /\/settings\/email-and-password\/?$/i,
           )
             ? "button--blue"
             : "button--transparent"}"
         >
           <i
             class="bi ${request.path.match(
-              /\/settings\/email-and-password\/?$/i
+              /\/settings\/email-and-password\/?$/i,
             )
               ? "bi-key-fill"
               : "bi-key"}"
@@ -274,7 +274,7 @@ export default async (application: Application): Promise<void> => {
           href="https://${application.configuration
             .hostname}/settings/notifications"
           class="dropdown--menu--item menu-box--item button ${request.path.match(
-            /\/settings\/notifications\/?$/i
+            /\/settings\/notifications\/?$/i,
           )
             ? "button--blue"
             : "button--transparent"}"
@@ -289,7 +289,7 @@ export default async (application: Application): Promise<void> => {
         <a
           href="https://${application.configuration.hostname}/settings/account"
           class="dropdown--menu--item menu-box--item button ${request.path.match(
-            /\/settings\/account\/?$/i
+            /\/settings\/account\/?$/i,
           )
             ? "button--blue"
             : "button--transparent"}"
@@ -522,8 +522,8 @@ export default async (application: Application): Promise<void> => {
               ? html`
                   data-filterable-phrases="${JSON.stringify(
                     application.web.locals.helpers.splitFilterablePhrases(
-                      user.name
-                    )
+                      user.name,
+                    ),
                   )}"
                 `
               : html``}
@@ -689,7 +689,7 @@ export default async (application: Application): Promise<void> => {
                                   Last seen online
                                   <time
                                     datetime="${new Date(
-                                      user!.lastSeenOnlineAt
+                                      user!.lastSeenOnlineAt,
                                     ).toISOString()}"
                                     javascript="${javascript`
                                       leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
@@ -1182,7 +1182,7 @@ export default async (application: Application): Promise<void> => {
             </div>
           </form>
         `,
-      })
+      }),
     );
   });
 
@@ -1208,7 +1208,7 @@ export default async (application: Application): Promise<void> => {
         return response
           .status(422)
           .send(
-            `Something went wrong in uploading your avatar. Please report to the system administrator at ${application.configuration.administratorEmail}.`
+            `Something went wrong in uploading your avatar. Please report to the system administrator at ${application.configuration.administratorEmail}.`,
           );
 
       const name = filenamify(request.files.avatar.name, { replacement: "-" });
@@ -1216,7 +1216,7 @@ export default async (application: Application): Promise<void> => {
         return response
           .status(422)
           .send(
-            `Something went wrong in uploading your avatar. Please report to the system administrator at ${application.configuration.administratorEmail}.`
+            `Something went wrong in uploading your avatar. Please report to the system administrator at ${application.configuration.administratorEmail}.`,
           );
 
       if (!request.files.avatar.mimetype.startsWith("image/"))
@@ -1235,13 +1235,13 @@ export default async (application: Application): Promise<void> => {
           application.configuration.dataDirectory,
           "files",
           directory,
-          name
-        )
+          name,
+        ),
       );
 
       const nameAvatar = `${name.slice(
         0,
-        -path.extname(name).length
+        -path.extname(name).length,
       )}--avatar.webp`;
       try {
         await sharp(request.files.avatar.data)
@@ -1256,23 +1256,23 @@ export default async (application: Application): Promise<void> => {
               application.configuration.dataDirectory,
               "files",
               directory,
-              nameAvatar
-            )
+              nameAvatar,
+            ),
           );
       } catch {
         return response
           .status(422)
           .send(
-            `Something went wrong in uploading your avatar. Please report to the system administrator at ${application.configuration.administratorEmail}.`
+            `Something went wrong in uploading your avatar. Please report to the system administrator at ${application.configuration.administratorEmail}.`,
           );
       }
 
       response.send(
         `https://${
           application.configuration.hostname
-        }/files/${directory}/${encodeURIComponent(nameAvatar)}`
+        }/files/${directory}/${encodeURIComponent(nameAvatar)}`,
       );
-    })
+    }),
   );
 
   application.web.patch<
@@ -1295,12 +1295,12 @@ export default async (application: Application): Promise<void> => {
       (request.body.avatar.trim() !== "" &&
         !(
           (request.body.avatar.startsWith(
-            `https://${application.configuration.hostname}/files/`
+            `https://${application.configuration.hostname}/files/`,
           ) &&
             request.body.avatar.endsWith(`--avatar.webp`)) ||
           (application.configuration.demonstration &&
             request.body.avatar.startsWith(
-              `https://${application.configuration.hostname}/node_modules/fake-avatars/avatars/webp/`
+              `https://${application.configuration.hostname}/node_modules/fake-avatars/avatars/webp/`,
             ))
         )) ||
       typeof request.body.biography !== "string"
@@ -1323,11 +1323,11 @@ export default async (application: Application): Promise<void> => {
             request.body.biography.trim() === ""
               ? null
               : application.web.locals.partials.contentPreprocessed(
-                  request.body.biography
+                  request.body.biography,
                 ).contentPreprocessed
           }
         WHERE "id" = ${response.locals.user.id}
-      `
+      `,
     );
 
     application.web.locals.helpers.Flash.set({
@@ -1338,7 +1338,7 @@ export default async (application: Application): Promise<void> => {
     });
     response.redirect(
       303,
-      `https://${application.configuration.hostname}/settings/profile`
+      `https://${application.configuration.hostname}/settings/profile`,
     );
   });
 
@@ -1533,7 +1533,7 @@ export default async (application: Application): Promise<void> => {
                 </form>
               `}
         `,
-      })
+      }),
     );
   });
 
@@ -1570,14 +1570,14 @@ export default async (application: Application): Promise<void> => {
             typeof request.query.redirect === "string"
               ? request.query.redirect
               : "settings/email-and-password"
-          }`
+          }`,
         );
       }
 
       if (typeof request.body.email === "string") {
         if (
           request.body.email.match(
-            application.web.locals.helpers.emailRegExp
+            application.web.locals.helpers.emailRegExp,
           ) === null
         )
           return next("Validation");
@@ -1586,7 +1586,7 @@ export default async (application: Application): Promise<void> => {
           application.database.get<{}>(
             sql`
               SELECT TRUE FROM "users" WHERE "email" = ${request.body.email}
-            `
+            `,
           ) !== undefined
         ) {
           application.web.locals.helpers.Flash.set({
@@ -1603,7 +1603,7 @@ export default async (application: Application): Promise<void> => {
               typeof request.query.redirect === "string"
                 ? request.query.redirect
                 : "settings/email-and-password"
-            }`
+            }`,
           );
         }
 
@@ -1614,7 +1614,7 @@ export default async (application: Application): Promise<void> => {
               "email" = ${request.body.email},
               "emailVerifiedAt" = ${null}
             WHERE "id" = ${response.locals.user.id}
-          `
+          `,
         );
 
         if (response.locals.user.emailVerifiedAt !== null)
@@ -1659,7 +1659,7 @@ export default async (application: Application): Promise<void> => {
                   `,
                 })}
               )
-            `
+            `,
           );
         application.web.locals.helpers.emailVerification({
           request,
@@ -1688,10 +1688,10 @@ export default async (application: Application): Promise<void> => {
             UPDATE "users"
             SET "password" =  ${await argon2.hash(
               request.body.newPassword,
-              application.web.locals.configuration.argon2
+              application.web.locals.configuration.argon2,
             )}
             WHERE "id" = ${response.locals.user.id}
-          `
+          `,
         );
 
         application.database.run(
@@ -1733,17 +1733,17 @@ export default async (application: Application): Promise<void> => {
                 `,
               })}
             )
-          `
+          `,
         );
         application.got
           .post(
-            `http://127.0.0.1:${application.ports.workerEventsAny}/send-email`
+            `http://127.0.0.1:${application.ports.workerEventsAny}/send-email`,
           )
           .catch((error) => {
             response.locals.log(
               "FAILED TO EMIT ‘/send-email’ EVENT",
               String(error),
-              error?.stack
+              error?.stack,
             );
           });
 
@@ -1767,9 +1767,9 @@ export default async (application: Application): Promise<void> => {
           typeof request.query.redirect === "string"
             ? request.query.redirect
             : "settings/email-and-password"
-        }`
+        }`,
       );
-    })
+    }),
   );
 
   application.web.get<
@@ -1918,7 +1918,7 @@ export default async (application: Application): Promise<void> => {
                       ? html`disabled`
                       : html``}
                     $${["none", "daily-digests"].includes(
-                      response.locals.user.emailNotificationsForAllMessages
+                      response.locals.user.emailNotificationsForAllMessages,
                     )
                       ? html`checked`
                       : html``}
@@ -2054,7 +2054,7 @@ export default async (application: Application): Promise<void> => {
             </div>
           </form>
         `,
-      })
+      }),
     );
   });
 
@@ -2082,24 +2082,24 @@ export default async (application: Application): Promise<void> => {
 
     if (
       ![undefined, "on"].includes(
-        request.body.isEmailNotificationsForAllMessages
+        request.body.isEmailNotificationsForAllMessages,
       ) ||
       (request.body.isEmailNotificationsForAllMessages === undefined &&
         request.body.emailNotificationsForAllMessages !== undefined) ||
       (request.body.isEmailNotificationsForAllMessages === "on" &&
         (typeof request.body.emailNotificationsForAllMessages !== "string" ||
           !["instant", "hourly-digests", "daily-digests"].includes(
-            request.body.emailNotificationsForAllMessages
+            request.body.emailNotificationsForAllMessages,
           ))) ||
       ![undefined, "on"].includes(
-        request.body.isEmailNotificationsForMentions
+        request.body.isEmailNotificationsForMentions,
       ) ||
       ![undefined, "on"].includes(
         request.body
-          .isEmailNotificationsForMessagesInConversationsInWhichYouParticipated
+          .isEmailNotificationsForMessagesInConversationsInWhichYouParticipated,
       ) ||
       ![undefined, "on"].includes(
-        request.body.isEmailNotificationsForMessagesInConversationsYouStarted
+        request.body.isEmailNotificationsForMessagesInConversationsYouStarted,
       ) ||
       (request.body.isEmailNotificationsForAllMessages === "on" &&
         (request.body.isEmailNotificationsForMentions !== "on" ||
@@ -2145,7 +2145,7 @@ export default async (application: Application): Promise<void> => {
               : null
           }
         WHERE "id" = ${response.locals.user.id}
-      `
+      `,
     );
 
     application.web.locals.helpers.Flash.set({
@@ -2157,7 +2157,7 @@ export default async (application: Application): Promise<void> => {
 
     response.redirect(
       303,
-      `https://${application.configuration.hostname}/settings/notifications`
+      `https://${application.configuration.hostname}/settings/notifications`,
     );
   });
 
@@ -2335,7 +2335,7 @@ export default async (application: Application): Promise<void> => {
                 </form>
               `}
         `,
-      })
+      }),
     );
   });
 
@@ -2370,7 +2370,7 @@ export default async (application: Application): Promise<void> => {
         });
         return response.redirect(
           303,
-          `https://${application.configuration.hostname}/settings/account`
+          `https://${application.configuration.hostname}/settings/account`,
         );
       }
 
@@ -2378,7 +2378,7 @@ export default async (application: Application): Promise<void> => {
         sql`
           DELETE FROM "users"
           WHERE "id" = ${response.locals.user.id}
-       `
+       `,
       );
 
       application.web.locals.helpers.Flash.set({
@@ -2403,10 +2403,10 @@ export default async (application: Application): Promise<void> => {
                       isPinned: "false",
                     },
                   },
-                  { addQueryPrefix: true }
+                  { addQueryPrefix: true },
                 )}`,
               },
-              { addQueryPrefix: true }
+              { addQueryPrefix: true },
             )}"
             target="_blank"
             class="link"
@@ -2416,7 +2416,7 @@ export default async (application: Application): Promise<void> => {
             href="mailto:${application.configuration
               .administratorEmail}${qs.stringify(
               { subject: "Feedback after having removed account" },
-              { addQueryPrefix: true }
+              { addQueryPrefix: true },
             )}"
             target="_blank"
             class="link"
@@ -2425,7 +2425,7 @@ export default async (application: Application): Promise<void> => {
           <a
             href="https://github.com/courselore/courselore/issues/new${qs.stringify(
               { title: "Feedback after having removed account" },
-              { addQueryPrefix: true }
+              { addQueryPrefix: true },
             )}"
             target="_blank"
             class="link"
@@ -2438,10 +2438,10 @@ export default async (application: Application): Promise<void> => {
       response
         .header(
           "Clear-Site-Data",
-          `"*", "cache", "cookies", "storage", "executionContexts"`
+          `"*", "cache", "cookies", "storage", "executionContexts"`,
         )
         .redirect(303, `https://${application.configuration.hostname}/`);
-    })
+    }),
   );
 
   application.web.patch<
@@ -2463,10 +2463,10 @@ export default async (application: Application): Promise<void> => {
 
     if (
       ![undefined, "true", "false"].includes(
-        request.body.preferContentEditorProgrammerMode
+        request.body.preferContentEditorProgrammerMode,
       ) ||
       ![undefined, "true", "false"].includes(
-        request.body.preferContentEditorToolbarInCompact
+        request.body.preferContentEditorToolbarInCompact,
       ) ||
       ![undefined, "true", "false"].includes(request.body.preferAnonymous)
     )
@@ -2483,7 +2483,7 @@ export default async (application: Application): Promise<void> => {
                 : null
             }
           WHERE "id" = ${response.locals.user.id}
-        `
+        `,
       );
 
     if (typeof request.body.preferContentEditorToolbarInCompact === "string")
@@ -2497,7 +2497,7 @@ export default async (application: Application): Promise<void> => {
                 : null
             }
           WHERE "id" = ${response.locals.user.id}
-        `
+        `,
       );
 
     if (typeof request.body.preferAnonymous === "string")
@@ -2511,7 +2511,7 @@ export default async (application: Application): Promise<void> => {
                 : null
             }
           WHERE "id" = ${response.locals.user.id}
-        `
+        `,
       );
 
     response.end();
@@ -2531,7 +2531,7 @@ export default async (application: Application): Promise<void> => {
         UPDATE "users"
         SET "latestNewsVersion" = ${application.version}
         WHERE "id" = ${response.locals.user.id}
-      `
+      `,
     );
 
     response.end();

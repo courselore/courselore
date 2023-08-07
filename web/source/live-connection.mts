@@ -42,7 +42,7 @@ export default async (application: Application): Promise<void> => {
     application.database.run(
       sql`
         DELETE FROM "liveConnectionsMetadata" WHERE "processNumber" = ${application.process.number}
-      `
+      `,
     );
 
   const liveConnections = new Map<
@@ -68,7 +68,7 @@ export default async (application: Application): Promise<void> => {
         application.log(
           "LIVE-CONNECTIONS",
           "CLEAN EXPIRED ‘liveConnections’",
-          "STARTING..."
+          "STARTING...",
         );
 
         for (const liveConnectionMetadata of application.database.all<{
@@ -78,30 +78,30 @@ export default async (application: Application): Promise<void> => {
             SELECT "nonce", "processNumber"
             FROM "liveConnectionsMetadata"
             WHERE "expiresAt" < ${new Date().toISOString()}
-          `
+          `,
         )) {
           application.database.run(
             sql`
               DELETE FROM "liveConnectionsMetadata" WHERE "nonce" = ${liveConnectionMetadata.nonce}
-            `
+            `,
           );
           application.log(
             "LIVE-CONNECTION",
             liveConnectionMetadata.nonce,
-            "EXPIRED"
+            "EXPIRED",
           );
         }
 
         application.log(
           "LIVE-CONNECTIONS",
           "CLEAN EXPIRED ‘liveConnections’",
-          "FINISHED"
+          "FINISHED",
         );
 
         await timers.setTimeout(
           60 * 1000 + Math.random() * 10 * 1000,
           undefined,
-          { ref: false }
+          { ref: false },
         );
       }
     });
@@ -111,7 +111,7 @@ export default async (application: Application): Promise<void> => {
       await timers.setTimeout(
         10 * 60 * 1000 + Math.random() * 60 * 1000,
         undefined,
-        { ref: false }
+        { ref: false },
       );
 
       application.log("LIVE-CONNECTIONS", "CLEAN ZOMBIES", "STARTING...");
@@ -125,18 +125,18 @@ export default async (application: Application): Promise<void> => {
           WHERE
             "processNumber" = ${application.process.number} AND
             "nonce" NOT IN ${[...liveConnections.keys()]}
-        `
+        `,
       )) {
         application.database.run(
           sql`
             DELETE FROM "liveConnectionsMetadata"
             WHERE "nonce" = ${liveConnectionMetadata.nonce}
-          `
+          `,
         );
         application.log(
           "LIVE-CONNECTION",
           liveConnectionMetadata.nonce,
-          "CLEANED ZOMBIE CONNECTION IN DATABASE"
+          "CLEANED ZOMBIE CONNECTION IN DATABASE",
         );
       }
 
@@ -145,7 +145,7 @@ export default async (application: Application): Promise<void> => {
           application.database.get<{}>(
             sql`
               SELECT TRUE FROM "liveConnectionsMetadata" WHERE "nonce" = ${nonce}
-            `
+            `,
           ) === undefined
         ) {
           liveConnection.response.end();
@@ -186,7 +186,7 @@ export default async (application: Application): Promise<void> => {
           SELECT "expiresAt", "url", "processNumber", "liveUpdateAt"
           FROM "liveConnectionsMetadata"
           WHERE "nonce" = ${nonce}
-        `
+        `,
       );
 
       if (
@@ -211,7 +211,7 @@ export default async (application: Application): Promise<void> => {
               {
                 ref: false,
                 signal: heartbeatAbortController.signal,
-              }
+              },
             );
           } catch {
             break;
@@ -227,7 +227,7 @@ export default async (application: Application): Promise<void> => {
               {
                 ref: false,
                 signal: heartbeatAbortController.signal,
-              }
+              },
             );
           } catch {
             break;
@@ -237,20 +237,20 @@ export default async (application: Application): Promise<void> => {
               UPDATE "liveConnectionsMetadata"
               SET "liveUpdateAt" = ${new Date().toISOString()}
               WHERE "nonce" = ${nonce}
-            `
+            `,
           );
           application.got
             .post(
               `http://127.0.0.1:${
                 application.ports.webEvents[application.process.number]
-              }/live-updates`
+              }/live-updates`,
             )
             .catch((error) => {
               response.locals.log(
                 "LIVE-UPDATES",
                 "FAILED TO EMIT POST ‘/live-updates’ EVENT",
                 String(error),
-                error?.stack
+                error?.stack,
               );
             });
         }
@@ -263,7 +263,7 @@ export default async (application: Application): Promise<void> => {
         response.locals.log(
           "LIVE-UPDATE FINISHED",
           String(response.statusCode),
-          `${Math.ceil(Buffer.byteLength(body) / 1000)}kB`
+          `${Math.ceil(Buffer.byteLength(body) / 1000)}kB`,
         );
         return response;
       };
@@ -273,7 +273,7 @@ export default async (application: Application): Promise<void> => {
         application.database.run(
           sql`
             DELETE FROM "liveConnectionsMetadata" WHERE "nonce" = ${nonce}
-          `
+          `,
         );
         liveConnections.delete(nonce);
       });
@@ -292,7 +292,7 @@ export default async (application: Application): Promise<void> => {
               "expiresAt" = NULL,
               "processNumber" = ${application.process.number}
             WHERE "nonce" = ${nonce}
-          `
+          `,
         );
         response.locals.log("CONNECTION OPENED");
       } else {
@@ -310,7 +310,7 @@ export default async (application: Application): Promise<void> => {
               ${application.process.number},
               ${new Date().toISOString()}
             )
-          `
+          `,
         );
         response.locals.log("CREATED & CONNECTION OPENED");
       }
@@ -323,14 +323,14 @@ export default async (application: Application): Promise<void> => {
           .post(
             `http://127.0.0.1:${
               application.ports.webEvents[application.process.number]
-            }/live-updates`
+            }/live-updates`,
           )
           .catch((error) => {
             response.locals.log(
               "LIVE-UPDATES",
               "FAILED TO EMIT POST ‘/live-updates’ EVENT",
               String(error),
-              error?.stack
+              error?.stack,
             );
           });
 
@@ -360,12 +360,12 @@ export default async (application: Application): Promise<void> => {
                 ${response.locals.liveConnectionNonce},
                 ${request.originalUrl}
               )
-            `
+            `,
           );
           response.locals.log(
             "LIVE-CONNECTION",
             response.locals.liveConnectionNonce,
-            "CREATED"
+            "CREATED",
           );
         }
 
@@ -387,7 +387,7 @@ export default async (application: Application): Promise<void> => {
         UPDATE "liveConnectionsMetadata"
         SET "liveUpdateAt" = ${new Date().toISOString()}
         WHERE "url" LIKE ${`${url}%`}
-      `
+      `,
     );
 
     await timers.setTimeout(3 * 1000 + Math.random() * 2 * 1000, undefined, {
@@ -402,7 +402,7 @@ export default async (application: Application): Promise<void> => {
             "LIVE-UPDATES",
             "FAILED TO EMIT POST ‘/live-updates’ EVENT",
             String(error),
-            error?.stack
+            error?.stack,
           );
         });
   };
@@ -414,7 +414,7 @@ export default async (application: Application): Promise<void> => {
     (request, response) => {
       liveUpdates();
       response.end();
-    }
+    },
   );
 
   application.webEvents.once("start", async () => {
@@ -434,29 +434,29 @@ export default async (application: Application): Promise<void> => {
               "processNumber" = ${application.process.number} AND
               "liveUpdateAt" IS NOT NULL
             LIMIT 1
-          `
+          `,
         );
         if (liveConnectionMetadata === undefined) break;
 
         const liveConnection = liveConnections.get(
-          liveConnectionMetadata.nonce
+          liveConnectionMetadata.nonce,
         );
         if (liveConnection === undefined) {
           application.database.run(
             sql`
               DELETE FROM "liveConnectionsMetadata" WHERE "nonce" = ${liveConnectionMetadata.nonce}
-            `
+            `,
           );
           application.log(
             "LIVE-UPDATES",
             liveConnectionMetadata.nonce,
-            "CLEANED ZOMBIE LIVE-CONNECTION WHEN TRYING TO SEND LIVE-UPDATE"
+            "CLEANED ZOMBIE LIVE-CONNECTION WHEN TRYING TO SEND LIVE-UPDATE",
           );
           continue;
         }
 
         const responseLocalsLog = liveConnection.response.locals.log.bind(
-          liveConnection.response
+          liveConnection.response,
         );
         const id = Math.random().toString(36).slice(2);
         const start = process.hrtime.bigint();
@@ -464,7 +464,7 @@ export default async (application: Application): Promise<void> => {
           responseLocalsLog(
             id,
             `${node.elapsedTime(start)}ms`,
-            ...messageParts
+            ...messageParts,
           );
         };
 
@@ -483,7 +483,7 @@ export default async (application: Application): Promise<void> => {
             UPDATE "liveConnectionsMetadata"
             SET "liveUpdateAt" = NULL
             WHERE "nonce" = ${liveConnectionMetadata.nonce}
-          `
+          `,
         );
 
         liveConnection.response.locals.log = responseLocalsLog;
@@ -507,7 +507,7 @@ export default async (application: Application): Promise<void> => {
         sql`
           UPDATE "liveConnectionsMetadata"
           SET "liveUpdateAt" = ${new Date().toISOString()}
-        `
+        `,
       );
 
       for (const port of application.ports.webEvents)
@@ -518,7 +518,7 @@ export default async (application: Application): Promise<void> => {
               "LIVE-UPDATES",
               "FAILED TO EMIT POST ‘/live-updates’ EVENT",
               String(error),
-              error?.stack
+              error?.stack,
             );
           });
 

@@ -138,7 +138,7 @@ export type ApplicationConversation = {
         conversationParticipantses: [
           "everyone",
           "course-staff",
-          "selected-participants"
+          "selected-participants",
         ];
 
         conversationTypes: ["question", "note", "chat"];
@@ -245,7 +245,7 @@ export default async (application: Application): Promise<void> => {
           WHERE
             "conversation" = ${response.locals.conversation.id} AND
             "authorCourseParticipant" = ${response.locals.courseParticipant.id}
-        `
+        `,
       );
 
       response.locals.courseParticipantsTyping =
@@ -287,7 +287,7 @@ export default async (application: Application): Promise<void> => {
                       response.locals.conversation.id
                     } AND
                     ${new Date(
-                      Date.now() - 5 * 60 * 1000
+                      Date.now() - 5 * 60 * 1000,
                     ).toISOString()} < "messageDrafts"."createdAt"
                   WHERE
                     "courseParticipants"."id" != ${
@@ -296,7 +296,7 @@ export default async (application: Application): Promise<void> => {
                   ORDER BY
                     "courseParticipants"."courseRole" = 'course-staff' DESC,
                     "users"."name" ASC
-                `
+                `,
               )
               .map((selectedParticipant) => ({
                 id: selectedParticipant.courseParticipantId,
@@ -324,11 +324,11 @@ export default async (application: Application): Promise<void> => {
             UPDATE "courseParticipants"
             SET "mostRecentlyVisitedConversation" = ${response.locals.conversation.id}
             WHERE "id" = ${response.locals.courseParticipant.id}
-          `
+          `,
         );
 
       next();
-    }
+    },
   );
 
   application.web.locals.helpers.getConversation = ({
@@ -414,7 +414,7 @@ export default async (application: Application): Promise<void> => {
                 }
             )
           )
-      `
+      `,
     );
     if (conversationRow === undefined) return undefined;
     const conversation = {
@@ -503,7 +503,7 @@ export default async (application: Application): Promise<void> => {
                 ORDER BY
                   "courseParticipants"."courseRole" = 'course-staff' DESC,
                   "users"."name" ASC
-              `
+              `,
             )
             .map((selectedParticipant) => ({
               id: selectedParticipant.courseParticipantId,
@@ -548,7 +548,7 @@ export default async (application: Application): Promise<void> => {
           }
           WHERE "taggings"."conversation" = ${conversation.id}
           ORDER BY "tags"."order" ASC
-        `
+        `,
       )
       .map((tagging) => ({
         id: tagging.id,
@@ -568,13 +568,13 @@ export default async (application: Application): Promise<void> => {
         FROM "messages"
         WHERE
           "messages"."conversation" = ${conversation.id} $${
-        response.locals.courseParticipant.courseRole !== "course-staff"
-          ? sql`
+            response.locals.courseParticipant.courseRole !== "course-staff"
+              ? sql`
               AND "messages"."type" != 'course-staff-whisper'
             `
-          : sql``
-      }
-      `
+              : sql``
+          }
+      `,
     )!.messagesCount;
 
     const readingsCount = application.database.get<{ readingsCount: number }>(
@@ -588,13 +588,13 @@ export default async (application: Application): Promise<void> => {
           "readings"."courseParticipant" = ${
             response.locals.courseParticipant.id
           } $${
-        response.locals.courseParticipant.courseRole !== "course-staff"
-          ? sql`
+            response.locals.courseParticipant.courseRole !== "course-staff"
+              ? sql`
               AND "messages"."type" != 'course-staff-whisper'
             `
-          : sql``
-      }
-      `
+              : sql``
+          }
+      `,
     )!.readingsCount;
 
     const endorsements =
@@ -641,7 +641,7 @@ export default async (application: Application): Promise<void> => {
                   "endorsements"."message" = "messages"."id" AND
                   "messages"."conversation" = ${conversation.id}
                 ORDER BY "endorsements"."id" ASC
-              `
+              `,
             )
             .map((endorsementRow) => ({
               id: endorsementRow.id,
@@ -699,7 +699,7 @@ export default async (application: Application): Promise<void> => {
       typeof request.query.conversations?.search === "string" &&
       request.query.conversations.search.trim() !== ""
         ? application.web.locals.helpers.sanitizeSearch(
-            request.query.conversations.search
+            request.query.conversations.search,
           )
         : undefined;
 
@@ -726,8 +726,8 @@ export default async (application: Application): Promise<void> => {
         const types = [
           ...new Set(
             request.query.conversations.filters.types.filter((type) =>
-              application.web.locals.helpers.conversationTypes.includes(type)
-            )
+              application.web.locals.helpers.conversationTypes.includes(type),
+            ),
           ),
         ];
         if (types.length > 0) filters.types = types;
@@ -736,7 +736,7 @@ export default async (application: Application): Promise<void> => {
         filters.types?.includes("question") &&
         typeof request.query.conversations.filters.isResolved === "string" &&
         ["true", "false"].includes(
-          request.query.conversations.filters.isResolved
+          request.query.conversations.filters.isResolved,
         )
       )
         filters.isResolved = request.query.conversations.filters.isResolved;
@@ -745,7 +745,7 @@ export default async (application: Application): Promise<void> => {
         typeof request.query.conversations.filters.isAnnouncement ===
           "string" &&
         ["true", "false"].includes(
-          request.query.conversations.filters.isAnnouncement
+          request.query.conversations.filters.isAnnouncement,
         )
       )
         filters.isAnnouncement =
@@ -756,9 +756,9 @@ export default async (application: Application): Promise<void> => {
             request.query.conversations.filters.participantses.filter(
               (conversationParticipants) =>
                 application.web.locals.helpers.conversationParticipantses.includes(
-                  conversationParticipants
-                )
-            )
+                  conversationParticipants,
+                ),
+            ),
           ),
         ];
         if (participantses.length > 0) filters.participantses = participantses;
@@ -774,9 +774,9 @@ export default async (application: Application): Promise<void> => {
             request.query.conversations.filters.tagsReferences.filter(
               (tagReference) =>
                 response.locals.tags.find(
-                  (tag) => tagReference === tag.reference
-                ) !== undefined
-            )
+                  (tag) => tagReference === tag.reference,
+                ) !== undefined,
+            ),
           ),
         ];
         if (tagsReferences.length > 0) filters.tagsReferences = tagsReferences;
@@ -1013,9 +1013,9 @@ export default async (application: Application): Promise<void> => {
             }
             coalesce("conversations"."updatedAt", "conversations"."createdAt") DESC
           LIMIT ${conversationsPageSize + 1} OFFSET ${
-          (conversationsPage - 1) * conversationsPageSize
-        }
-        `
+            (conversationsPage - 1) * conversationsPageSize
+          }
+        `,
       )
       .map((conversationWithSearchResult) => {
         const conversation = application.web.locals.helpers.getConversation({
@@ -1194,7 +1194,7 @@ export default async (application: Application): Promise<void> => {
                       .hostname}/courses/${response.locals.course
                       .reference}${qs.stringify(
                       { sidebarOnSmallScreen: true },
-                      { addQueryPrefix: true }
+                      { addQueryPrefix: true },
                     )}"
                     class="button button--tight button--tight--inline button--transparent"
                   >
@@ -1303,7 +1303,7 @@ export default async (application: Application): Promise<void> => {
                               .hostname}/courses/${response.locals.course
                               .reference}/conversations/new/note${qs.stringify(
                               { conversations: request.query.conversations },
-                              { addQueryPrefix: true }
+                              { addQueryPrefix: true },
                             )}"
                             class="button button--blue"
                           >
@@ -1314,7 +1314,7 @@ export default async (application: Application): Promise<void> => {
                               .hostname}/courses/${response.locals.course
                               .reference}/conversations/new/question${qs.stringify(
                               { conversations: request.query.conversations },
-                              { addQueryPrefix: true }
+                              { addQueryPrefix: true },
                             )}"
                             class="button button--transparent"
                           >
@@ -1325,7 +1325,7 @@ export default async (application: Application): Promise<void> => {
                               .hostname}/courses/${response.locals.course
                               .reference}/conversations/new/chat${qs.stringify(
                               { conversations: request.query.conversations },
-                              { addQueryPrefix: true }
+                              { addQueryPrefix: true },
                             )}"
                             class="button button--transparent"
                           >
@@ -1338,7 +1338,7 @@ export default async (application: Application): Promise<void> => {
                               .hostname}/courses/${response.locals.course
                               .reference}/conversations/new/question${qs.stringify(
                               { conversations: request.query.conversations },
-                              { addQueryPrefix: true }
+                              { addQueryPrefix: true },
                             )}"
                             class="button button--blue"
                           >
@@ -1349,7 +1349,7 @@ export default async (application: Application): Promise<void> => {
                               .hostname}/courses/${response.locals.course
                               .reference}/conversations/new/note${qs.stringify(
                               { conversations: request.query.conversations },
-                              { addQueryPrefix: true }
+                              { addQueryPrefix: true },
                             )}"
                             class="button button--transparent"
                           >
@@ -1360,7 +1360,7 @@ export default async (application: Application): Promise<void> => {
                               .hostname}/courses/${response.locals.course
                               .reference}/conversations/new/chat${qs.stringify(
                               { conversations: request.query.conversations },
-                              { addQueryPrefix: true }
+                              { addQueryPrefix: true },
                             )}"
                             class="button button--transparent"
                           >
@@ -1400,7 +1400,7 @@ export default async (application: Application): Promise<void> => {
                               isQuick: "true",
                               types: ["question"],
                               isResolved: "false",
-                            }
+                            },
                           )
                             ? html`
                                 <a
@@ -1418,7 +1418,7 @@ export default async (application: Application): Promise<void> => {
                                       newConversation:
                                         request.query.newConversation,
                                     },
-                                    { addQueryPrefix: true }
+                                    { addQueryPrefix: true },
                                   )}"
                                   class="button button--tight button--tight--inline button--transparent"
                                 >
@@ -1435,7 +1435,7 @@ export default async (application: Application): Promise<void> => {
                                       newConversation:
                                         request.query.newConversation,
                                     },
-                                    { addQueryPrefix: true }
+                                    { addQueryPrefix: true },
                                   )}"
                                   class="button button--tight button--tight--inline button--transparent text--rose"
                                 >
@@ -1451,7 +1451,7 @@ export default async (application: Application): Promise<void> => {
                         isQuick: "true",
                         types: ["note"],
                         isAnnouncement: "true",
-                      }
+                      },
                     )
                       ? html`
                           <a
@@ -1468,7 +1468,7 @@ export default async (application: Application): Promise<void> => {
                                 messages: request.query.messages,
                                 newConversation: request.query.newConversation,
                               },
-                              { addQueryPrefix: true }
+                              { addQueryPrefix: true },
                             )}"
                             class="button button--tight button--tight--inline button--transparent"
                           >
@@ -1484,7 +1484,7 @@ export default async (application: Application): Promise<void> => {
                                 messages: request.query.messages,
                                 newConversation: request.query.newConversation,
                               },
-                              { addQueryPrefix: true }
+                              { addQueryPrefix: true },
                             )}"
                             class="button button--tight button--tight--inline button--transparent text--orange"
                           >
@@ -1500,7 +1500,7 @@ export default async (application: Application): Promise<void> => {
                             {
                               isQuick: "true",
                               types: ["question"],
-                            }
+                            },
                           )
                             ? html`
                                 <a
@@ -1517,7 +1517,7 @@ export default async (application: Application): Promise<void> => {
                                       newConversation:
                                         request.query.newConversation,
                                     },
-                                    { addQueryPrefix: true }
+                                    { addQueryPrefix: true },
                                   )}"
                                   class="button button--tight button--tight--inline button--transparent"
                                 >
@@ -1534,7 +1534,7 @@ export default async (application: Application): Promise<void> => {
                                       newConversation:
                                         request.query.newConversation,
                                     },
-                                    { addQueryPrefix: true }
+                                    { addQueryPrefix: true },
                                   )}"
                                   class="button button--tight button--tight--inline button--transparent text--rose"
                                 >
@@ -1549,7 +1549,7 @@ export default async (application: Application): Promise<void> => {
                       {
                         isQuick: "true",
                         types: ["chat"],
-                      }
+                      },
                     )
                       ? html`
                           <a
@@ -1565,7 +1565,7 @@ export default async (application: Application): Promise<void> => {
                                 messages: request.query.messages,
                                 newConversation: request.query.newConversation,
                               },
-                              { addQueryPrefix: true }
+                              { addQueryPrefix: true },
                             )}"
                             class="button button--tight button--tight--inline button--transparent"
                           >
@@ -1581,7 +1581,7 @@ export default async (application: Application): Promise<void> => {
                                 messages: request.query.messages,
                                 newConversation: request.query.newConversation,
                               },
-                              { addQueryPrefix: true }
+                              { addQueryPrefix: true },
                             )}"
                             class="button button--tight button--tight--inline button--transparent text--cyan"
                           >
@@ -1594,7 +1594,7 @@ export default async (application: Application): Promise<void> => {
                       {
                         isQuick: "true",
                         isUnread: "true",
-                      }
+                      },
                     )
                       ? html`
                           <a
@@ -1610,7 +1610,7 @@ export default async (application: Application): Promise<void> => {
                                 messages: request.query.messages,
                                 newConversation: request.query.newConversation,
                               },
-                              { addQueryPrefix: true }
+                              { addQueryPrefix: true },
                             )}"
                             class="button button--tight button--tight--inline button--transparent"
                           >
@@ -1626,7 +1626,7 @@ export default async (application: Application): Promise<void> => {
                                 messages: request.query.messages,
                                 newConversation: request.query.newConversation,
                               },
-                              { addQueryPrefix: true }
+                              { addQueryPrefix: true },
                             )}"
                             class="button button--tight button--tight--inline button--transparent text--blue"
                           >
@@ -1730,7 +1730,7 @@ export default async (application: Application): Promise<void> => {
                       conversationsWithSearchResults.some(
                         ({ conversation }) =>
                           conversation.readingsCount <
-                          conversation.messagesCount
+                          conversation.messagesCount,
                       )
                         ? html`
                             <form
@@ -1739,7 +1739,7 @@ export default async (application: Application): Promise<void> => {
                                 .hostname}/courses/${response.locals.course
                                 .reference}/conversations/mark-all-conversations-as-read${qs.stringify(
                                 { redirect: request.originalUrl.slice(1) },
-                                { addQueryPrefix: true }
+                                { addQueryPrefix: true },
                               )}"
                             >
                               <button
@@ -1762,7 +1762,7 @@ export default async (application: Application): Promise<void> => {
                           messages: request.query.messages,
                           newConversation: request.query.newConversation,
                         },
-                        { addQueryPrefix: true }
+                        { addQueryPrefix: true },
                       )}"
                       novalidate
                       $${search !== undefined ||
@@ -1827,7 +1827,7 @@ export default async (application: Application): Promise<void> => {
                                     newConversation:
                                       request.query.newConversation,
                                   },
-                                  { addQueryPrefix: true }
+                                  { addQueryPrefix: true },
                                 )}"
                                 class="button button--tight button--tight--inline button--transparent"
                                 javascript="${javascript`
@@ -1954,7 +1954,7 @@ export default async (application: Application): Promise<void> => {
                                     name="conversations[filters][types][]"
                                     value="${conversationType}"
                                     $${request.query.conversations?.filters?.types?.includes(
-                                      conversationType
+                                      conversationType,
                                     )
                                       ? html`checked`
                                       : html``}
@@ -1996,7 +1996,7 @@ export default async (application: Application): Promise<void> => {
                                     $${labelsConversationType[conversationType]}
                                   </span>
                                 </label>
-                              `
+                              `,
                             )}
                           </div>
                         </div>
@@ -2183,7 +2183,7 @@ export default async (application: Application): Promise<void> => {
                                     name="conversations[filters][participantses][]"
                                     value="${conversationParticipants}"
                                     $${request.query.conversations?.filters?.participantses?.includes(
-                                      conversationParticipants
+                                      conversationParticipants,
                                     )
                                       ? html`checked`
                                       : html``}
@@ -2214,7 +2214,7 @@ export default async (application: Application): Promise<void> => {
                                     ]}
                                   </span>
                                 </label>
-                              `
+                              `,
                             )}
                           </div>
                         </div>
@@ -2360,7 +2360,7 @@ export default async (application: Application): Promise<void> => {
                                             name="conversations[filters][tagsReferences][]"
                                             value="${tag.reference}"
                                             $${request.query.conversations?.filters?.tagsReferences?.includes(
-                                              tag.reference
+                                              tag.reference,
                                             )
                                               ? html`checked`
                                               : html``}
@@ -2401,7 +2401,7 @@ export default async (application: Application): Promise<void> => {
                                             `
                                           : html``}
                                       </div>
-                                    `
+                                    `,
                                   )}
                                 </div>
                               </div>
@@ -2433,7 +2433,7 @@ export default async (application: Application): Promise<void> => {
                                       newConversation:
                                         request.query.newConversation,
                                     },
-                                    { addQueryPrefix: true }
+                                    { addQueryPrefix: true },
                                   )}"
                                   class="button button--tight button--tight--inline button--transparent"
                                 >
@@ -2513,7 +2513,7 @@ export default async (application: Application): Promise<void> => {
                                       newConversation:
                                         request.query.newConversation,
                                     },
-                                    { addQueryPrefix: true }
+                                    { addQueryPrefix: true },
                                   )}"
                                   class="button button--transparent"
                                 >
@@ -2539,8 +2539,8 @@ export default async (application: Application): Promise<void> => {
                               });
                           `}"
                         >
-                          $${conversationsWithSearchResults.map(
-                            ({ conversation, searchResult }) => {
+                          $${conversationsWithSearchResults
+                            .map(({ conversation, searchResult }) => {
                               const isSelected =
                                 conversation.id ===
                                 response.locals.conversation?.id;
@@ -2558,7 +2558,7 @@ export default async (application: Application): Promise<void> => {
                                           searchResult?.message?.reference,
                                       },
                                     },
-                                    { addQueryPrefix: true }
+                                    { addQueryPrefix: true },
                                   )}"
                                   class="button button--transparent"
                                   css="${css`
@@ -2654,7 +2654,7 @@ export default async (application: Application): Promise<void> => {
                                         response,
                                         conversation,
                                         searchResult,
-                                      }
+                                      },
                                     )}
                                   </div>
                                   <div
@@ -2708,15 +2708,15 @@ export default async (application: Application): Promise<void> => {
                                   </div>
                                 </a>
                               `;
-                            }
-                          ).join(html`
-                            <hr
-                              class="separator"
-                              css="${css`
-                                margin: var(--space---px) var(--space--0);
-                              `}"
-                            />
-                          `)}
+                            })
+                            .join(html`
+                              <hr
+                                class="separator"
+                                css="${css`
+                                  margin: var(--space---px) var(--space--0);
+                                `}"
+                              />
+                            `)}
                         </div>
                         $${moreConversationsExist
                           ? html`
@@ -2740,7 +2740,7 @@ export default async (application: Application): Promise<void> => {
                                       newConversation:
                                         request.query.newConversation,
                                     },
-                                    { addQueryPrefix: true }
+                                    { addQueryPrefix: true },
                                   )}"
                                   class="button button--transparent"
                                 >
@@ -3105,7 +3105,7 @@ export default async (application: Application): Promise<void> => {
                         `
                       : html``}
                   </div>
-                `
+                `,
               )}
             </div>
           `}
@@ -3301,13 +3301,13 @@ export default async (application: Application): Promise<void> => {
                       bold: false,
                     })}
                   </div>
-                `
+                `,
               )}
             </div>
           `,
-        })
+        }),
       );
-    }
+    },
   );
 
   application.web.post<
@@ -3359,7 +3359,7 @@ export default async (application: Application): Promise<void> => {
               : sql``
           }
           ORDER BY "messages"."id" ASC
-        `
+        `,
       );
       for (const message of messages)
         application.database.run(
@@ -3370,7 +3370,7 @@ export default async (application: Application): Promise<void> => {
               ${message.id},
               ${response.locals.courseParticipant.id}
             )
-          `
+          `,
         );
 
       response.redirect(
@@ -3379,9 +3379,9 @@ export default async (application: Application): Promise<void> => {
           typeof request.query.redirect === "string"
             ? request.query.redirect
             : ""
-        }`
+        }`,
       );
-    }
+    },
   );
 
   application.web.get<
@@ -3408,7 +3408,7 @@ export default async (application: Application): Promise<void> => {
     Application["web"]["locals"]["ResponseLocals"]["CourseParticipant"]
   >(
     `/courses/:courseReference/conversations/new(/:type(${application.web.locals.helpers.conversationTypes.join(
-      "|"
+      "|",
     )}))?`,
     (request, response, next) => {
       if (
@@ -3543,7 +3543,7 @@ export default async (application: Application): Promise<void> => {
                 .hostname}/courses/${response.locals.course
                 .reference}/conversations${qs.stringify(
                 { conversations: request.query.conversations },
-                { addQueryPrefix: true }
+                { addQueryPrefix: true },
               )}"
               novalidate
               css="${css`
@@ -3624,7 +3624,7 @@ export default async (application: Application): Promise<void> => {
                           $${labelsConversationType[conversationType]}
                         </span>
                       </label>
-                    `
+                    `,
                   )}
                 </div>
               </div>
@@ -3667,7 +3667,7 @@ export default async (application: Application): Promise<void> => {
                   (request.params.type === undefined &&
                     ((typeof request.query.newConversation?.type === "string" &&
                       ["question", "note"].includes(
-                        request.query.newConversation.type
+                        request.query.newConversation.type,
                       )) ||
                       request.query.newConversation?.type === undefined)),
               })}
@@ -3761,15 +3761,15 @@ export default async (application: Application): Promise<void> => {
                                       $${(typeof conversationDraft?.tagsReferences ===
                                         "string" &&
                                         JSON.parse(
-                                          conversationDraft.tagsReferences
+                                          conversationDraft.tagsReferences,
                                         ).includes(tag.reference)) ||
                                       (conversationDraft === undefined &&
                                         Array.isArray(
                                           request.query.newConversation
-                                            ?.tagsReferences
+                                            ?.tagsReferences,
                                         ) &&
                                         request.query.newConversation!.tagsReferences.includes(
-                                          tag.reference
+                                          tag.reference,
                                         ))
                                         ? html`checked`
                                         : html``}
@@ -3778,13 +3778,14 @@ export default async (application: Application): Promise<void> => {
                                         (typeof request.params.type ===
                                           "string" &&
                                           ["question", "note"].includes(
-                                            request.params.type
+                                            request.params.type,
                                           )) ||
                                         (request.params.type === undefined &&
                                           ((typeof request.query.newConversation
                                             ?.type === "string" &&
                                             ["question", "note"].includes(
-                                              request.query.newConversation.type
+                                              request.query.newConversation
+                                                .type,
                                             )) ||
                                             request.query.newConversation
                                               ?.type === undefined))
@@ -3822,7 +3823,7 @@ export default async (application: Application): Promise<void> => {
                                       `
                                     : html``}
                                 </div>
-                              `
+                              `,
                             )}
                       </div>
                     </div>
@@ -3865,7 +3866,7 @@ export default async (application: Application): Promise<void> => {
                       ORDER BY
                         "courseParticipants"."courseRole" = 'course-staff' DESC,
                         "users"."name" ASC
-                    `
+                    `,
                   )
                   .map((courseParticipantRow) => ({
                     id: courseParticipantRow.id,
@@ -4019,7 +4020,7 @@ export default async (application: Application): Promise<void> => {
                                             ]}
                                           </span>
                                         </label>
-                                      `
+                                      `,
                                     )}
                                   </div>
 
@@ -4032,7 +4033,7 @@ export default async (application: Application): Promise<void> => {
                                         "selected-participants",
                                       ].includes(
                                         request.query.newConversation
-                                          .participants
+                                          .participants,
                                       )) ||
                                     (request.query.newConversation
                                       ?.participants === undefined &&
@@ -4174,7 +4175,7 @@ export default async (application: Application): Promise<void> => {
                                                     name="participants--dropdown--selected-participants[]"
                                                     value="${courseParticipant.reference}"
                                                     $${request.query.newConversation?.selectedParticipants?.includes(
-                                                      courseParticipant.reference
+                                                      courseParticipant.reference,
                                                     )
                                                       ? html`checked`
                                                       : html``}
@@ -4199,7 +4200,7 @@ export default async (application: Application): Promise<void> => {
                                                         tooltip: false,
                                                         size: "xs",
                                                         bold: false,
-                                                      }
+                                                      },
                                                     )}
                                                   </span>
                                                   <span
@@ -4214,11 +4215,11 @@ export default async (application: Application): Promise<void> => {
                                                         tooltip: false,
                                                         size: "xs",
                                                         bold: false,
-                                                      }
+                                                      },
                                                     )}
                                                   </span>
                                                 </label>
-                                              `
+                                              `,
                                             )}
                                           </div>
                                         `}
@@ -4264,7 +4265,7 @@ export default async (application: Application): Promise<void> => {
                               ]}
                               <i class="bi bi-chevron-down"></i>
                             </button>
-                          `
+                          `,
                         )}
                       </div>
 
@@ -4276,7 +4277,7 @@ export default async (application: Application): Promise<void> => {
                             name="selectedParticipantsReferences[]"
                             value="${courseParticipant.reference}"
                             $${request.query.newConversation?.selectedParticipants?.includes(
-                              courseParticipant.reference
+                              courseParticipant.reference,
                             )
                               ? html`checked`
                               : html``}
@@ -4326,7 +4327,7 @@ export default async (application: Application): Promise<void> => {
                               bold: false,
                             })}
                           </button>
-                        `
+                        `,
                       )}
                     </div>
                   </div>
@@ -4492,7 +4493,7 @@ export default async (application: Application): Promise<void> => {
                                   (request.query.newConversation?.isPinned ===
                                     undefined &&
                                     [undefined, "note"].includes(
-                                      request.params.type
+                                      request.params.type,
                                     ))))
                                 ? html`checked`
                                 : html``}
@@ -4778,7 +4779,7 @@ export default async (application: Application): Promise<void> => {
                           .hostname}/courses/${response.locals.course
                           .reference}/conversations/new${qs.stringify(
                           { conversations: request.query.conversations },
-                          { addQueryPrefix: true }
+                          { addQueryPrefix: true },
                         )}"
                         javascript="${javascript`
                           this.onclick = () => {
@@ -4794,7 +4795,7 @@ export default async (application: Application): Promise<void> => {
                         <time
                           datetime="${new Date(
                             new Date(conversationDraft.createdAt).getTime() -
-                              100 * 24 * 60 * 60 * 1000
+                              100 * 24 * 60 * 60 * 1000,
                           ).toISOString()}"
                           javascript="${javascript`
                             leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
@@ -4807,7 +4808,7 @@ export default async (application: Application): Promise<void> => {
                               Updated
                               <time
                                 datetime="${new Date(
-                                  conversationDraft.updatedAt
+                                  conversationDraft.updatedAt,
                                 ).toISOString()}"
                                 javascript="${javascript`
                                   leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
@@ -4821,9 +4822,9 @@ export default async (application: Application): Promise<void> => {
               </div>
             </form>
           `,
-        })
+        }),
       );
-    }
+    },
   );
 
   application.web.post<
@@ -4971,8 +4972,8 @@ export default async (application: Application): Promise<void> => {
               // conversationDraftReference: conversationDraft.reference,
             },
           },
-          { addQueryPrefix: true }
-        )}`
+          { addQueryPrefix: true },
+        )}`,
       );
     }
 
@@ -4981,7 +4982,7 @@ export default async (application: Application): Promise<void> => {
     if (
       typeof request.body.type !== "string" ||
       !application.web.locals.helpers.conversationTypes.includes(
-        request.body.type
+        request.body.type,
       ) ||
       typeof request.body.title !== "string" ||
       request.body.title.trim() === "" ||
@@ -4998,25 +4999,25 @@ export default async (application: Application): Promise<void> => {
         ((request.body.type !== "chat" &&
           request.body.tagsReferences.length === 0) ||
           request.body.tagsReferences.some(
-            (tagReference) => typeof tagReference !== "string"
+            (tagReference) => typeof tagReference !== "string",
           ) ||
           request.body.tagsReferences.length !==
             new Set(request.body.tagsReferences).size ||
           request.body.tagsReferences.length !==
             lodash.intersection(
               request.body.tagsReferences,
-              response.locals.tags.map((tag) => tag.reference)
+              response.locals.tags.map((tag) => tag.reference),
             ).length)) ||
       typeof request.body.participants !== "string" ||
       !application.web.locals.helpers.conversationParticipantses.includes(
-        request.body.participants
+        request.body.participants,
       ) ||
       !Array.isArray(request.body.selectedParticipantsReferences) ||
       (request.body.participants === "everyone" &&
         request.body.selectedParticipantsReferences.length > 0) ||
       request.body.selectedParticipantsReferences.some(
         (selectedParticipantReference) =>
-          typeof selectedParticipantReference !== "string"
+          typeof selectedParticipantReference !== "string",
       ) ||
       request.body.selectedParticipantsReferences.length !==
         new Set(request.body.selectedParticipantsReferences).size
@@ -5029,7 +5030,7 @@ export default async (application: Application): Promise<void> => {
       request.body.participants === "selected-participants"
     )
       request.body.selectedParticipantsReferences.push(
-        response.locals.courseParticipant.reference
+        response.locals.courseParticipant.reference,
       );
     const selectedParticipants =
       request.body.selectedParticipantsReferences.length === 0
@@ -5044,7 +5045,7 @@ export default async (application: Application): Promise<void> => {
               WHERE
                 "courseParticipants"."course" = ${response.locals.course.id} AND
                 "reference" IN ${request.body.selectedParticipantsReferences}
-            `
+            `,
           );
 
     if (
@@ -5053,7 +5054,7 @@ export default async (application: Application): Promise<void> => {
       (request.body.participants === "course-staff" &&
         selectedParticipants.some(
           (selectedParticipant) =>
-            selectedParticipant.courseRole === "course-staff"
+            selectedParticipant.courseRole === "course-staff",
         )) ||
       ![undefined, "on"].includes(request.body.isAnnouncement) ||
       (request.body.isAnnouncement === "on" &&
@@ -5080,7 +5081,7 @@ export default async (application: Application): Promise<void> => {
             response.locals.course.nextConversationReference + 1
           }
           WHERE "id" = ${response.locals.course.id}
-        `
+        `,
       );
 
       const conversation = application.database.get<{
@@ -5134,10 +5135,10 @@ export default async (application: Application): Promise<void> => {
                   ${html`${request.body.title!}`},
                   ${hasMessage ? 2 : 1}
                 )
-              `
+              `,
             ).lastInsertRowid
           }
-        `
+        `,
       )!;
 
       for (const selectedParticipant of selectedParticipants)
@@ -5149,7 +5150,7 @@ export default async (application: Application): Promise<void> => {
               ${conversation.id},
               ${selectedParticipant.id}
             )
-          `
+          `,
         );
 
       for (const tagReference of request.body.tagsReferences!)
@@ -5161,17 +5162,17 @@ export default async (application: Application): Promise<void> => {
               ${conversation.id},
               ${
                 response.locals.tags.find(
-                  (existingTag) => existingTag.reference === tagReference
+                  (existingTag) => existingTag.reference === tagReference,
                 )!.id
               }
             )
-          `
+          `,
         );
 
       if (hasMessage) {
         const contentPreprocessed =
           application.web.locals.partials.contentPreprocessed(
-            request.body.content!
+            request.body.content!,
           );
         const message = application.database.get<{
           id: number;
@@ -5207,10 +5208,10 @@ export default async (application: Application): Promise<void> => {
                     ${contentPreprocessed.contentPreprocessed},
                     ${contentPreprocessed.contentSearch}
                   )
-                `
+                `,
               ).lastInsertRowid
             }
-          `
+          `,
         )!;
         application.database.run(
           sql`
@@ -5220,7 +5221,7 @@ export default async (application: Application): Promise<void> => {
               ${message.id},
               ${response.locals.courseParticipant.id}
             )
-          `
+          `,
         );
         application.web.locals.helpers.emailNotifications({
           request,
@@ -5262,8 +5263,8 @@ export default async (application: Application): Promise<void> => {
         response.locals.course.reference
       }/conversations/${conversation.reference}${qs.stringify(
         { conversations: request.query.conversations },
-        { addQueryPrefix: true }
-      )}`
+        { addQueryPrefix: true },
+      )}`,
     );
 
     application.web.locals.helpers.liveUpdates({
@@ -5380,14 +5381,15 @@ export default async (application: Application): Promise<void> => {
                   "reference" = ${
                     request.query.messages.messagesPage.beforeMessageReference
                   } $${
-                response.locals.courseParticipant.courseRole !== "course-staff"
-                  ? sql`
+                    response.locals.courseParticipant.courseRole !==
+                    "course-staff"
+                      ? sql`
                       AND "messages"."type" != 'course-staff-whisper'
                     `
-                  : sql``
-              }
+                      : sql``
+                  }
                 LIMIT 1
-              `
+              `,
             )
           : undefined;
       const afterMessage =
@@ -5404,14 +5406,15 @@ export default async (application: Application): Promise<void> => {
                   "reference" = ${
                     request.query.messages.messagesPage.afterMessageReference
                   } $${
-                response.locals.courseParticipant.courseRole !== "course-staff"
-                  ? sql`
+                    response.locals.courseParticipant.courseRole !==
+                    "course-staff"
+                      ? sql`
                       AND "messages"."type" != 'course-staff-whisper'
                     `
-                  : sql``
-              }
+                      : sql``
+                  }
                 LIMIT 1
-              `
+              `,
             )
           : undefined;
       const messagesReverse =
@@ -5450,7 +5453,7 @@ export default async (application: Application): Promise<void> => {
             }
           ORDER BY "id" $${messagesReverse ? sql`DESC` : sql`ASC`}
           LIMIT ${messagesPageSize + 1}
-        `
+        `,
       );
       const moreMessagesExist = messagesRows.length === messagesPageSize + 1;
       if (moreMessagesExist) messagesRows.pop();
@@ -5462,7 +5465,7 @@ export default async (application: Application): Promise<void> => {
             response,
             conversation: response.locals.conversation,
             messageReference: messageRow.reference,
-          })!
+          })!,
       );
 
       for (const message of messages)
@@ -5474,7 +5477,7 @@ export default async (application: Application): Promise<void> => {
               ${message.id},
               ${response.locals.courseParticipant.id}
             )
-          `
+          `,
         );
 
       response.send(
@@ -5566,7 +5569,7 @@ export default async (application: Application): Promise<void> => {
                                 "string" &&
                                 request.query.conversations.search.trim() !== ""
                                 ? request.query.conversations.search
-                                : undefined
+                                : undefined,
                             )}
                           </span>
                           <i class="bi bi-chevron-bar-expand"></i>
@@ -5657,7 +5660,7 @@ export default async (application: Application): Promise<void> => {
                                                       messages:
                                                         request.query.messages,
                                                     },
-                                                    { addQueryPrefix: true }
+                                                    { addQueryPrefix: true },
                                                   )}"
                                                 >
                                                   <input
@@ -5682,7 +5685,7 @@ export default async (application: Application): Promise<void> => {
                                                     ]}
                                                   </button>
                                                 </form>
-                                              `
+                                              `,
                                             )}
                                           </div>
                                         `},  
@@ -5736,7 +5739,7 @@ export default async (application: Application): Promise<void> => {
                                             request.query.conversations,
                                           messages: request.query.messages,
                                         },
-                                        { addQueryPrefix: true }
+                                        { addQueryPrefix: true },
                                       )}"
                                     >
                                       $${response.locals.conversation
@@ -5844,7 +5847,7 @@ export default async (application: Application): Promise<void> => {
                                             request.query.conversations,
                                           messages: request.query.messages,
                                         },
-                                        { addQueryPrefix: true }
+                                        { addQueryPrefix: true },
                                       )}"
                                     >
                                       $${response.locals.conversation
@@ -5925,7 +5928,7 @@ export default async (application: Application): Promise<void> => {
                                     conversations: request.query.conversations,
                                     messages: request.query.messages,
                                   },
-                                  { addQueryPrefix: true }
+                                  { addQueryPrefix: true },
                                 )}"
                               >
                                 $${response.locals.conversation.pinnedAt ===
@@ -6085,7 +6088,7 @@ export default async (application: Application): Promise<void> => {
                                                 messages:
                                                   request.query.messages,
                                               },
-                                              { addQueryPrefix: true }
+                                              { addQueryPrefix: true },
                                             )}"
                                             class="dropdown--menu"
                                           >
@@ -6114,7 +6117,7 @@ export default async (application: Application): Promise<void> => {
                                                           response,
                                                           name: false,
                                                           size: "xs",
-                                                        }
+                                                        },
                                                       )}
                                                     </span>
                                                     Set as Anonymous to Other
@@ -6149,7 +6152,7 @@ export default async (application: Application): Promise<void> => {
                                                           decorate: false,
                                                           name: false,
                                                           size: "xs",
-                                                        }
+                                                        },
                                                       )}
                                                     </span>
                                                     Set as Signed by
@@ -6200,7 +6203,7 @@ export default async (application: Application): Promise<void> => {
                                                         {
                                                           request,
                                                           response,
-                                                        }
+                                                        },
                                                       )}
                                                       Loading…
                                                     </div>
@@ -6274,7 +6277,7 @@ export default async (application: Application): Promise<void> => {
                                                           {
                                                             addQueryPrefix:
                                                               true,
-                                                          }
+                                                          },
                                                         )}"
                                                         css="${css`
                                                           padding: var(
@@ -6347,7 +6350,7 @@ export default async (application: Application): Promise<void> => {
                           "string" &&
                           request.query.conversations.search.trim() !== ""
                           ? request.query.conversations.search
-                          : undefined
+                          : undefined,
                       )}
                     </h2>
 
@@ -6364,7 +6367,7 @@ export default async (application: Application): Promise<void> => {
                                 conversations: request.query.conversations,
                                 messages: request.query.messages,
                               },
-                              { addQueryPrefix: true }
+                              { addQueryPrefix: true },
                             )}"
                             novalidate
                             hidden
@@ -6439,7 +6442,7 @@ export default async (application: Application): Promise<void> => {
                                   <i class="bi bi-tag-fill"></i>
                                   ${tagging.tag.name}
                                 </div>
-                              `
+                              `,
                             )}
                           `;
                         else if (
@@ -6510,7 +6513,7 @@ export default async (application: Application): Promise<void> => {
                                   conversations: request.query.conversations,
                                   messages: request.query.messages,
                                 },
-                                { addQueryPrefix: true }
+                                { addQueryPrefix: true },
                               )}"
                               css="${css`
                                 display: flex;
@@ -6626,7 +6629,7 @@ export default async (application: Application): Promise<void> => {
                                           $${response.locals.tags.map((tag) =>
                                             !response.locals.conversation.taggings.some(
                                               (tagging) =>
-                                                tagging.tag.id === tag.id
+                                                tagging.tag.id === tag.id,
                                             )
                                               ? html`
                                                   <form
@@ -6647,7 +6650,7 @@ export default async (application: Application): Promise<void> => {
                                                           request.query
                                                             .messages,
                                                       },
-                                                      { addQueryPrefix: true }
+                                                      { addQueryPrefix: true },
                                                     )}"
                                                   >
                                                     <input
@@ -6753,7 +6756,7 @@ export default async (application: Application): Promise<void> => {
                                                           request.query
                                                             .messages,
                                                       },
-                                                      { addQueryPrefix: true }
+                                                      { addQueryPrefix: true },
                                                     )}"
                                                   >
                                                     <input
@@ -6792,7 +6795,7 @@ export default async (application: Application): Promise<void> => {
                                                         : html``}
                                                     </button>
                                                   </form>
-                                                `
+                                                `,
                                           )}
                                         </div>
                                       </div>
@@ -6868,7 +6871,7 @@ export default async (application: Application): Promise<void> => {
                                 ORDER BY
                                   "courseParticipants"."courseRole" = 'course-staff' DESC,
                                   "users"."name" ASC
-                              `
+                              `,
                             )
                             .map((courseParticipantRow) => ({
                               id: courseParticipantRow.id,
@@ -6902,7 +6905,7 @@ export default async (application: Application): Promise<void> => {
                                   conversations: request.query.conversations,
                                   messages: request.query.messages,
                                 },
-                                { addQueryPrefix: true }
+                                { addQueryPrefix: true },
                               )}"
                               css="${css`
                                 font-size: var(--font-size--xs);
@@ -6954,7 +6957,7 @@ export default async (application: Application): Promise<void> => {
                                             <div class="dropdown--menu">
                                               $${application.web.locals.helpers.conversationParticipantses.map(
                                                 (
-                                                  conversationParticipants
+                                                  conversationParticipants,
                                                 ) => html`
                                                   <label>
                                                     <input
@@ -7040,7 +7043,7 @@ export default async (application: Application): Promise<void> => {
                                                       ]}
                                                     </span>
                                                   </label>
-                                                `
+                                                `,
                                               )}
                                             </div>
 
@@ -7051,7 +7054,7 @@ export default async (application: Application): Promise<void> => {
                                                 "selected-participants",
                                               ].includes(
                                                 response.locals.conversation
-                                                  .participants
+                                                  .participants,
                                               )
                                                 ? html``
                                                 : html`hidden`}
@@ -7192,7 +7195,7 @@ export default async (application: Application): Promise<void> => {
                                                     >
                                                       $${courseParticipants.map(
                                                         (
-                                                          courseParticipant
+                                                          courseParticipant,
                                                         ) => html`
                                                           <label
                                                             key="participants--dropdown--selected-participant--course-participant-reference--${courseParticipant.reference}"
@@ -7212,10 +7215,10 @@ export default async (application: Application): Promise<void> => {
                                                               value="${courseParticipant.reference}"
                                                               $${response.locals.conversation.selectedParticipants.find(
                                                                 (
-                                                                  selectedParticipant
+                                                                  selectedParticipant,
                                                                 ) =>
                                                                   selectedParticipant.id ===
-                                                                  courseParticipant.id
+                                                                  courseParticipant.id,
                                                               ) !== undefined ||
                                                               // TODO: Pagination
                                                               (response.locals
@@ -7229,7 +7232,7 @@ export default async (application: Application): Promise<void> => {
                                                                     message
                                                                       .authorCourseParticipant
                                                                       .id ===
-                                                                      courseParticipant.id
+                                                                      courseParticipant.id,
                                                                 )) ||
                                                               (response.locals
                                                                 .conversation
@@ -7244,7 +7247,7 @@ export default async (application: Application): Promise<void> => {
                                                                     message
                                                                       .authorCourseParticipant
                                                                       .id ===
-                                                                      courseParticipant.id
+                                                                      courseParticipant.id,
                                                                 ))
                                                                 ? html`checked`
                                                                 : html``}
@@ -7270,7 +7273,7 @@ export default async (application: Application): Promise<void> => {
                                                                     false,
                                                                   size: "xs",
                                                                   bold: false,
-                                                                }
+                                                                },
                                                               )}
                                                             </span>
                                                             <span
@@ -7286,11 +7289,11 @@ export default async (application: Application): Promise<void> => {
                                                                     false,
                                                                   size: "xs",
                                                                   bold: false,
-                                                                }
+                                                                },
                                                               )}
                                                             </span>
                                                           </label>
-                                                        `
+                                                        `,
                                                       )}
                                                     </div>
                                                   `}
@@ -7330,7 +7333,7 @@ export default async (application: Application): Promise<void> => {
                                         ]}
                                         <i class="bi bi-chevron-down"></i>
                                       </button>
-                                    `
+                                    `,
                                   )}
                                 </div>
 
@@ -7344,7 +7347,7 @@ export default async (application: Application): Promise<void> => {
                                       $${response.locals.conversation.selectedParticipants.find(
                                         (selectedParticipant) =>
                                           selectedParticipant.id ===
-                                          courseParticipant.id
+                                          courseParticipant.id,
                                       ) !== undefined ||
                                       // TODO: Pagination
                                       (response.locals.conversation
@@ -7354,7 +7357,7 @@ export default async (application: Application): Promise<void> => {
                                             message.authorCourseParticipant !==
                                               "no-longer-participating" &&
                                             message.authorCourseParticipant
-                                              .id === courseParticipant.id
+                                              .id === courseParticipant.id,
                                         )) ||
                                       (response.locals.conversation
                                         .participants === "course-staff" &&
@@ -7365,7 +7368,7 @@ export default async (application: Application): Promise<void> => {
                                             message.authorCourseParticipant !==
                                               "no-longer-participating" &&
                                             message.authorCourseParticipant
-                                              .id === courseParticipant.id
+                                              .id === courseParticipant.id,
                                         ))
                                         ? html`checked`
                                         : html``}
@@ -7415,7 +7418,7 @@ export default async (application: Application): Promise<void> => {
                                         bold: false,
                                       })}
                                     </button>
-                                  `
+                                  `,
                                 )}
                               </div>
 
@@ -7481,7 +7484,7 @@ export default async (application: Application): Promise<void> => {
                               "course-staff",
                               "selected-participants",
                             ].includes(
-                              response.locals.conversation.participants
+                              response.locals.conversation.participants,
                             )
                               ? html`
                                   $${response.locals.conversation.selectedParticipants.map(
@@ -7496,10 +7499,10 @@ export default async (application: Application): Promise<void> => {
                                             user: selectedParticipant.user,
                                             size: "xs",
                                             bold: false,
-                                          }
+                                          },
                                         )}
                                       </div>
-                                    `
+                                    `,
                                   )}
                                 `
                               : html``}
@@ -7526,7 +7529,7 @@ export default async (application: Application): Promise<void> => {
 
               $${(() => {
                 const firstUnreadMessage = messages.find(
-                  (message) => message.reading === null
+                  (message) => message.reading === null,
                 );
 
                 return html`
@@ -7670,7 +7673,7 @@ export default async (application: Application): Promise<void> => {
                                               },
                                             },
                                           },
-                                          { addQueryPrefix: true }
+                                          { addQueryPrefix: true },
                                         )}"
                                         class="button button--transparent"
                                       >
@@ -7681,46 +7684,43 @@ export default async (application: Application): Promise<void> => {
                                   `
                                 : html``}
                               $${messages.map(
-                                (message) =>
-                                  html`
-                                    <div
-                                      key="message/${message.reference}"
-                                      css="${response.locals.conversation
-                                        .type === "chat"
-                                        ? css``
-                                        : css`
-                                            border-bottom: var(
-                                                --border-width--4
-                                              )
-                                              solid var(--color--zinc--200);
-                                            @media (prefers-color-scheme: dark) {
-                                              border-color: var(
-                                                --color--zinc--700
+                                (message) => html`
+                                  <div
+                                    key="message/${message.reference}"
+                                    css="${response.locals.conversation.type ===
+                                    "chat"
+                                      ? css``
+                                      : css`
+                                          border-bottom: var(--border-width--4)
+                                            solid var(--color--zinc--200);
+                                          @media (prefers-color-scheme: dark) {
+                                            border-color: var(
+                                              --color--zinc--700
+                                            );
+                                          }
+                                        `}"
+                                    data-content-source="${message.contentSource}"
+                                  >
+                                    $${message === firstUnreadMessage &&
+                                    message !== messages[0]
+                                      ? html`
+                                          <button
+                                            key="message--new-separator"
+                                            class="button button--transparent"
+                                            css="${css`
+                                              width: calc(
+                                                var(--space--2) + 100% +
+                                                  var(--space--2)
                                               );
-                                            }
-                                          `}"
-                                      data-content-source="${message.contentSource}"
-                                    >
-                                      $${message === firstUnreadMessage &&
-                                      message !== messages[0]
-                                        ? html`
-                                            <button
-                                              key="message--new-separator"
-                                              class="button button--transparent"
-                                              css="${css`
-                                                width: calc(
-                                                  var(--space--2) + 100% +
-                                                    var(--space--2)
-                                                );
-                                                padding: var(--space--1-5)
-                                                  var(--space--2);
-                                                margin: var(--space--0)
-                                                  var(--space---2);
-                                                display: flex;
-                                                gap: var(--space--4);
-                                                align-items: center;
-                                              `}"
-                                              javascript="${javascript`
+                                              padding: var(--space--1-5)
+                                                var(--space--2);
+                                              margin: var(--space--0)
+                                                var(--space---2);
+                                              display: flex;
+                                              gap: var(--space--4);
+                                              align-items: center;
+                                            `}"
+                                            javascript="${javascript`
                                                 if (this !== document.querySelector('[key="message--new-separator"]')) {
                                                   this.remove();
                                                   return;
@@ -7741,77 +7741,77 @@ export default async (application: Application): Promise<void> => {
 
                                                 this.onbeforeremove = () => false;
                                               `}"
-                                            >
-                                              <hr
-                                                class="separator"
-                                                css="${css`
-                                                  flex: 1;
-                                                  border-color: var(
-                                                    --color--rose--600
-                                                  );
-                                                  @media (prefers-color-scheme: dark) {
-                                                    border-color: var(
-                                                      --color--rose--500
-                                                    );
-                                                  }
-                                                `}"
-                                              />
-                                              <span class="heading text--rose">
-                                                <i class="bi bi-fire"></i>
-                                                ${String(
-                                                  response.locals.conversation
-                                                    .messagesCount -
-                                                    response.locals.conversation
-                                                      .readingsCount
-                                                )}
-                                                New
-                                              </span>
-                                              <hr
-                                                class="separator"
-                                                css="${css`
-                                                  flex: 1;
-                                                  border-color: var(
-                                                    --color--rose--600
-                                                  );
-                                                  @media (prefers-color-scheme: dark) {
-                                                    border-color: var(
-                                                      --color--rose--500
-                                                    );
-                                                  }
-                                                `}"
-                                              />
-                                            </button>
-                                          `
-                                        : html``}
-                                      $${response.locals.conversation.type ===
-                                      "chat"
-                                        ? html`
-                                            <div
-                                              hidden
-                                              key="message--date-separator"
+                                          >
+                                            <hr
+                                              class="separator"
                                               css="${css`
-                                                margin: var(--space--2)
-                                                  var(--space--0);
-                                                display: flex;
-                                                gap: var(--space--4);
-                                                align-items: center;
+                                                flex: 1;
+                                                border-color: var(
+                                                  --color--rose--600
+                                                );
+                                                @media (prefers-color-scheme: dark) {
+                                                  border-color: var(
+                                                    --color--rose--500
+                                                  );
+                                                }
                                               `}"
-                                            >
-                                              <hr
-                                                class="separator"
-                                                css="${css`
-                                                  flex: 1;
-                                                `}"
-                                              />
-                                              <span class="heading secondary">
-                                                <i
-                                                  class="bi bi-calendar-week-fill"
-                                                ></i>
-                                                <time
-                                                  datetime="${new Date(
-                                                    message.createdAt
-                                                  ).toISOString()}"
-                                                  javascript="${javascript`
+                                            />
+                                            <span class="heading text--rose">
+                                              <i class="bi bi-fire"></i>
+                                              ${String(
+                                                response.locals.conversation
+                                                  .messagesCount -
+                                                  response.locals.conversation
+                                                    .readingsCount,
+                                              )}
+                                              New
+                                            </span>
+                                            <hr
+                                              class="separator"
+                                              css="${css`
+                                                flex: 1;
+                                                border-color: var(
+                                                  --color--rose--600
+                                                );
+                                                @media (prefers-color-scheme: dark) {
+                                                  border-color: var(
+                                                    --color--rose--500
+                                                  );
+                                                }
+                                              `}"
+                                            />
+                                          </button>
+                                        `
+                                      : html``}
+                                    $${response.locals.conversation.type ===
+                                    "chat"
+                                      ? html`
+                                          <div
+                                            hidden
+                                            key="message--date-separator"
+                                            css="${css`
+                                              margin: var(--space--2)
+                                                var(--space--0);
+                                              display: flex;
+                                              gap: var(--space--4);
+                                              align-items: center;
+                                            `}"
+                                          >
+                                            <hr
+                                              class="separator"
+                                              css="${css`
+                                                flex: 1;
+                                              `}"
+                                            />
+                                            <span class="heading secondary">
+                                              <i
+                                                class="bi bi-calendar-week-fill"
+                                              ></i>
+                                              <time
+                                                datetime="${new Date(
+                                                  message.createdAt,
+                                                ).toISOString()}"
+                                                javascript="${javascript`
                                                     const element = this;
                                                     leafac.relativizeDateElement(element);
 
@@ -7826,231 +7826,222 @@ export default async (application: Application): Promise<void> => {
                                                       element.updateTimeout = window.setTimeout(update, 60 * 1000 + Math.random() * 10 * 1000);
                                                     })();
                                                   `}"
-                                                ></time>
-                                              </span>
-                                              <hr
-                                                class="separator"
-                                                css="${css`
-                                                  flex: 1;
-                                                `}"
-                                              />
-                                            </div>
-                                          `
-                                        : html``}
+                                              ></time>
+                                            </span>
+                                            <hr
+                                              class="separator"
+                                              css="${css`
+                                                flex: 1;
+                                              `}"
+                                            />
+                                          </div>
+                                        `
+                                      : html``}
 
-                                      <div
-                                        key="message--highlight"
-                                        css="${css`
-                                          padding: var(--space--2);
-                                          border-radius: var(
-                                            --border-radius--lg
-                                          );
-                                          margin: var(--space--0)
-                                            var(--space---2);
-                                          display: flex;
-                                          gap: var(--space--4);
+                                    <div
+                                      key="message--highlight"
+                                      css="${css`
+                                        padding: var(--space--2);
+                                        border-radius: var(--border-radius--lg);
+                                        margin: var(--space--0) var(--space---2);
+                                        display: flex;
+                                        gap: var(--space--4);
+                                        --message--highlight--background-color: var(
+                                          --color--amber--200
+                                        );
+                                        @media (prefers-color-scheme: dark) {
                                           --message--highlight--background-color: var(
-                                            --color--amber--200
+                                            --color--amber--900
                                           );
-                                          @media (prefers-color-scheme: dark) {
-                                            --message--highlight--background-color: var(
-                                              --color--amber--900
+                                        }
+                                        @keyframes message--highlight {
+                                          from {
+                                            background-color: var(
+                                              --message--highlight--background-color
                                             );
                                           }
-                                          @keyframes message--highlight {
-                                            from {
-                                              background-color: var(
-                                                --message--highlight--background-color
-                                              );
-                                            }
-                                            to {
-                                              background-color: transparent;
-                                            }
+                                          to {
+                                            background-color: transparent;
                                           }
-                                        `} ${response.locals.conversation
-                                          .type === "chat"
-                                          ? css`
-                                              transition-property: var(
-                                                --transition-property--colors
+                                        }
+                                      `} ${response.locals.conversation.type ===
+                                      "chat"
+                                        ? css`
+                                            transition-property: var(
+                                              --transition-property--colors
+                                            );
+                                            transition-duration: var(
+                                              --transition-duration--150
+                                            );
+                                            transition-timing-function: var(
+                                              --transition-timing-function--in-out
+                                            );
+                                            &:hover,
+                                            &:focus-within {
+                                              background-color: var(
+                                                --color--zinc--100
                                               );
-                                              transition-duration: var(
-                                                --transition-duration--150
-                                              );
-                                              transition-timing-function: var(
-                                                --transition-timing-function--in-out
-                                              );
-                                              &:hover,
-                                              &:focus-within {
+                                              @media (prefers-color-scheme: dark) {
                                                 background-color: var(
-                                                  --color--zinc--100
+                                                  --color--zinc--800
+                                                );
+                                              }
+                                            }
+                                          `
+                                        : css`
+                                            padding-bottom: var(--space--4);
+                                          `}"
+                                    >
+                                      $${message.reference === "1" &&
+                                      response.locals.conversation.type ===
+                                        "question"
+                                        ? html`
+                                            <div
+                                              class="heading"
+                                              css="${css`
+                                                color: var(--color--rose--700);
+                                                background-color: var(
+                                                  --color--rose--100
                                                 );
                                                 @media (prefers-color-scheme: dark) {
+                                                  color: var(
+                                                    --color--rose--200
+                                                  );
                                                   background-color: var(
-                                                    --color--zinc--800
+                                                    --color--rose--950
                                                   );
                                                 }
-                                              }
-                                            `
-                                          : css`
-                                              padding-bottom: var(--space--4);
-                                            `}"
-                                      >
-                                        $${message.reference === "1" &&
-                                        response.locals.conversation.type ===
-                                          "question"
-                                          ? html`
-                                              <div
-                                                class="heading"
-                                                css="${css`
+                                                padding: var(--space--2)
+                                                  var(--space--0);
+                                                border-radius: var(
+                                                  --border-radius--base
+                                                );
+                                                writing-mode: vertical-lr;
+                                                transform: rotate(180deg);
+                                                justify-content: flex-end;
+                                                .bi {
+                                                  transform: rotate(90deg);
+                                                }
+                                              `}"
+                                            >
+                                              <i
+                                                class="bi bi-patch-question-fill"
+                                              ></i>
+                                              Question
+                                            </div>
+                                          `
+                                        : message.type === "answer" &&
+                                          message.reference !== "1" &&
+                                          response.locals.conversation.type ===
+                                            "question"
+                                        ? html`
+                                            <div
+                                              class="heading"
+                                              css="${css`
+                                                color: var(
+                                                  --color--emerald--700
+                                                );
+                                                background-color: var(
+                                                  --color--emerald--100
+                                                );
+                                                @media (prefers-color-scheme: dark) {
                                                   color: var(
-                                                    --color--rose--700
+                                                    --color--emerald--200
                                                   );
                                                   background-color: var(
-                                                    --color--rose--100
+                                                    --color--emerald--950
                                                   );
-                                                  @media (prefers-color-scheme: dark) {
-                                                    color: var(
-                                                      --color--rose--200
-                                                    );
-                                                    background-color: var(
-                                                      --color--rose--950
-                                                    );
-                                                  }
-                                                  padding: var(--space--2)
-                                                    var(--space--0);
-                                                  border-radius: var(
-                                                    --border-radius--base
-                                                  );
-                                                  writing-mode: vertical-lr;
-                                                  transform: rotate(180deg);
-                                                  justify-content: flex-end;
-                                                  .bi {
-                                                    transform: rotate(90deg);
-                                                  }
-                                                `}"
-                                              >
-                                                <i
-                                                  class="bi bi-patch-question-fill"
-                                                ></i>
-                                                Question
-                                              </div>
-                                            `
-                                          : message.type === "answer" &&
-                                            message.reference !== "1" &&
-                                            response.locals.conversation
-                                              .type === "question"
-                                          ? html`
-                                              <div
-                                                class="heading"
-                                                css="${css`
+                                                }
+                                                padding: var(--space--2)
+                                                  var(--space--0);
+                                                border-radius: var(
+                                                  --border-radius--base
+                                                );
+                                                writing-mode: vertical-lr;
+                                                transform: rotate(180deg);
+                                                justify-content: flex-end;
+                                                .bi {
+                                                  transform: rotate(90deg);
+                                                }
+                                              `}"
+                                            >
+                                              <i
+                                                class="bi bi-patch-check-fill"
+                                              ></i>
+                                              Answer
+                                            </div>
+                                          `
+                                        : message.type ===
+                                            "follow-up-question" &&
+                                          message.reference !== "1" &&
+                                          response.locals.conversation.type ===
+                                            "question"
+                                        ? html`
+                                            <div
+                                              class="heading"
+                                              css="${css`
+                                                color: var(--color--rose--700);
+                                                background-color: var(
+                                                  --color--rose--100
+                                                );
+                                                @media (prefers-color-scheme: dark) {
                                                   color: var(
-                                                    --color--emerald--700
+                                                    --color--rose--200
                                                   );
                                                   background-color: var(
-                                                    --color--emerald--100
+                                                    --color--rose--950
                                                   );
-                                                  @media (prefers-color-scheme: dark) {
-                                                    color: var(
-                                                      --color--emerald--200
-                                                    );
-                                                    background-color: var(
-                                                      --color--emerald--950
-                                                    );
-                                                  }
-                                                  padding: var(--space--2)
-                                                    var(--space--0);
-                                                  border-radius: var(
-                                                    --border-radius--base
-                                                  );
-                                                  writing-mode: vertical-lr;
-                                                  transform: rotate(180deg);
-                                                  justify-content: flex-end;
-                                                  .bi {
-                                                    transform: rotate(90deg);
-                                                  }
-                                                `}"
-                                              >
-                                                <i
-                                                  class="bi bi-patch-check-fill"
-                                                ></i>
-                                                Answer
-                                              </div>
-                                            `
-                                          : message.type ===
-                                              "follow-up-question" &&
-                                            message.reference !== "1" &&
-                                            response.locals.conversation
-                                              .type === "question"
-                                          ? html`
-                                              <div
-                                                class="heading"
-                                                css="${css`
-                                                  color: var(
-                                                    --color--rose--700
-                                                  );
+                                                }
+                                                padding: var(--space--2)
+                                                  var(--space--0);
+                                                border-radius: var(
+                                                  --border-radius--base
+                                                );
+                                                writing-mode: vertical-lr;
+                                                transform: rotate(180deg);
+                                                justify-content: flex-end;
+                                                .bi {
+                                                  transform: rotate(90deg);
+                                                }
+                                              `}"
+                                            >
+                                              <i
+                                                class="bi bi-patch-question-fill"
+                                              ></i>
+                                              Follow-Up Question
+                                            </div>
+                                          `
+                                        : message.type ===
+                                            "course-staff-whisper" &&
+                                          response.locals.conversation.type !==
+                                            "chat"
+                                        ? html`
+                                            <div
+                                              class="heading"
+                                              css="${css`
+                                                color: var(--color--sky--700);
+                                                background-color: var(
+                                                  --color--sky--100
+                                                );
+                                                @media (prefers-color-scheme: dark) {
+                                                  color: var(--color--sky--200);
                                                   background-color: var(
-                                                    --color--rose--100
+                                                    --color--sky--950
                                                   );
-                                                  @media (prefers-color-scheme: dark) {
-                                                    color: var(
-                                                      --color--rose--200
-                                                    );
-                                                    background-color: var(
-                                                      --color--rose--950
-                                                    );
-                                                  }
-                                                  padding: var(--space--2)
-                                                    var(--space--0);
-                                                  border-radius: var(
-                                                    --border-radius--base
-                                                  );
-                                                  writing-mode: vertical-lr;
-                                                  transform: rotate(180deg);
-                                                  justify-content: flex-end;
-                                                  .bi {
-                                                    transform: rotate(90deg);
-                                                  }
-                                                `}"
-                                              >
-                                                <i
-                                                  class="bi bi-patch-question-fill"
-                                                ></i>
-                                                Follow-Up Question
-                                              </div>
-                                            `
-                                          : message.type ===
-                                              "course-staff-whisper" &&
-                                            response.locals.conversation
-                                              .type !== "chat"
-                                          ? html`
-                                              <div
-                                                class="heading"
-                                                css="${css`
-                                                  color: var(--color--sky--700);
-                                                  background-color: var(
-                                                    --color--sky--100
-                                                  );
-                                                  @media (prefers-color-scheme: dark) {
-                                                    color: var(
-                                                      --color--sky--200
-                                                    );
-                                                    background-color: var(
-                                                      --color--sky--950
-                                                    );
-                                                  }
-                                                  padding: var(--space--2)
-                                                    var(--space--0);
-                                                  border-radius: var(
-                                                    --border-radius--base
-                                                  );
-                                                  writing-mode: vertical-lr;
-                                                  transform: rotate(180deg);
-                                                  justify-content: flex-end;
-                                                  .bi {
-                                                    transform: rotate(90deg);
-                                                  }
-                                                `}"
-                                                javascript="${javascript`
+                                                }
+                                                padding: var(--space--2)
+                                                  var(--space--0);
+                                                border-radius: var(
+                                                  --border-radius--base
+                                                );
+                                                writing-mode: vertical-lr;
+                                                transform: rotate(180deg);
+                                                justify-content: flex-end;
+                                                .bi {
+                                                  transform: rotate(90deg);
+                                                }
+                                              `}"
+                                              javascript="${javascript`
                                                   leafac.setTippy({
                                                     event,
                                                     element: this,
@@ -8060,67 +8051,66 @@ export default async (application: Application): Promise<void> => {
                                                     },
                                                   });
                                                 `}"
-                                              >
-                                                <i
-                                                  class="bi bi-mortarboard-fill"
-                                                ></i>
-                                                Staff Whisper
-                                              </div>
-                                            `
-                                          : html``}
+                                            >
+                                              <i
+                                                class="bi bi-mortarboard-fill"
+                                              ></i>
+                                              Staff Whisper
+                                            </div>
+                                          `
+                                        : html``}
 
-                                        <div
-                                          css="${css`
-                                            flex: 1;
-                                            max-width: 100%;
-                                            display: flex;
-                                            flex-direction: column;
-                                          `} ${response.locals.conversation
-                                            .type === "chat"
-                                            ? css`
-                                                gap: var(--space--1);
-                                              `
-                                            : css`
-                                                gap: var(--space--2);
-                                              `}"
-                                        >
-                                          $${(() => {
-                                            const actions = html`
-                                              <div key="message--actions">
-                                                <button
-                                                  class="button button--tight button--tight--inline button--transparent secondary"
-                                                  css="${css`
-                                                    font-size: var(
-                                                      --font-size--xs
-                                                    );
-                                                    line-height: var(
-                                                      --line-height--xs
-                                                    );
-                                                  `} ${response.locals
-                                                    .conversation.type ===
-                                                  "chat"
-                                                    ? css`
-                                                        transition-property: var(
-                                                          --transition-property--opacity
+                                      <div
+                                        css="${css`
+                                          flex: 1;
+                                          max-width: 100%;
+                                          display: flex;
+                                          flex-direction: column;
+                                        `} ${response.locals.conversation
+                                          .type === "chat"
+                                          ? css`
+                                              gap: var(--space--1);
+                                            `
+                                          : css`
+                                              gap: var(--space--2);
+                                            `}"
+                                      >
+                                        $${(() => {
+                                          const actions = html`
+                                            <div key="message--actions">
+                                              <button
+                                                class="button button--tight button--tight--inline button--transparent secondary"
+                                                css="${css`
+                                                  font-size: var(
+                                                    --font-size--xs
+                                                  );
+                                                  line-height: var(
+                                                    --line-height--xs
+                                                  );
+                                                `} ${response.locals
+                                                  .conversation.type === "chat"
+                                                  ? css`
+                                                      transition-property: var(
+                                                        --transition-property--opacity
+                                                      );
+                                                      transition-duration: var(
+                                                        --transition-duration--150
+                                                      );
+                                                      transition-timing-function: var(
+                                                        --transition-timing-function--in-out
+                                                      );
+                                                      [key^="message/"]:not(
+                                                          :hover,
+                                                          :focus-within
+                                                        )
+                                                        & {
+                                                        opacity: var(
+                                                          --opacity--0
                                                         );
-                                                        transition-duration: var(
-                                                          --transition-duration--150
-                                                        );
-                                                        transition-timing-function: var(
-                                                          --transition-timing-function--in-out
-                                                        );
-                                                        [key^="message/"]:not(
-                                                            :hover,
-                                                            :focus-within
-                                                          )
-                                                          & {
-                                                          opacity: var(
-                                                            --opacity--0
-                                                          );
-                                                        }
-                                                      `
-                                                    : css``}"
-                                                  javascript="${javascript`
+                                                      }
+                                                    `
+                                                  : css``}"
+                                                javascript="${javascript`
                                                     leafac.setTippy({
                                                       event,
                                                       element: this,
@@ -8153,7 +8143,7 @@ export default async (application: Application): Promise<void> => {
                                                               {
                                                                 request,
                                                                 response,
-                                                              }
+                                                              },
                                                             )}
                                                             Loading…
                                                           </div>
@@ -8194,7 +8184,9 @@ export default async (application: Application): Promise<void> => {
                                                             request.query
                                                               .messages,
                                                         },
-                                                        { addQueryPrefix: true }
+                                                        {
+                                                          addQueryPrefix: true,
+                                                        },
                                                       )}`}, { cache: "no-store" })).text());
                                                       this.dropdown.props.content.querySelector('[key="loading"]').hidden = true;
                                                       this.dropdown.props.content.querySelector('[key="content"]').hidden = false;
@@ -8211,41 +8203,41 @@ export default async (application: Application): Promise<void> => {
                                                       }, 60 * 1000);
                                                     };
                                                   `}"
-                                                >
-                                                  <i
-                                                    class="bi bi-three-dots-vertical"
-                                                  ></i>
-                                                </button>
-                                              </div>
-                                            `;
+                                              >
+                                                <i
+                                                  class="bi bi-three-dots-vertical"
+                                                ></i>
+                                              </button>
+                                            </div>
+                                          `;
 
-                                            let header = html``;
+                                          let header = html``;
 
-                                            if (
-                                              application.web.locals.helpers.mayEditMessage(
-                                                {
-                                                  request,
-                                                  response,
-                                                  message,
-                                                }
-                                              ) &&
-                                              message.reference !== "1" &&
-                                              response.locals.conversation
-                                                .type === "question" &&
-                                              message.type !==
-                                                "course-staff-whisper"
-                                            )
-                                              header += html`
-                                                <div>
-                                                  <button
-                                                    class="button button--tight button--tight--inline button--tight-gap button--transparent ${message.type ===
-                                                    "answer"
-                                                      ? "text--emerald"
-                                                      : message.type ===
-                                                        "follow-up-question"
-                                                      ? "text--rose"
-                                                      : ""}"
-                                                    javascript="${javascript`
+                                          if (
+                                            application.web.locals.helpers.mayEditMessage(
+                                              {
+                                                request,
+                                                response,
+                                                message,
+                                              },
+                                            ) &&
+                                            message.reference !== "1" &&
+                                            response.locals.conversation
+                                              .type === "question" &&
+                                            message.type !==
+                                              "course-staff-whisper"
+                                          )
+                                            header += html`
+                                              <div>
+                                                <button
+                                                  class="button button--tight button--tight--inline button--tight-gap button--transparent ${message.type ===
+                                                  "answer"
+                                                    ? "text--emerald"
+                                                    : message.type ===
+                                                      "follow-up-question"
+                                                    ? "text--rose"
+                                                    : ""}"
+                                                  javascript="${javascript`
                                                       leafac.setTippy({
                                                         event,
                                                         element: this,
@@ -8289,7 +8281,7 @@ export default async (application: Application): Promise<void> => {
                                                                   {
                                                                     addQueryPrefix:
                                                                       true,
-                                                                  }
+                                                                  },
                                                                 )}"
                                                               >
                                                                 <input
@@ -8342,7 +8334,7 @@ export default async (application: Application): Promise<void> => {
                                                                   {
                                                                     addQueryPrefix:
                                                                       true,
-                                                                  }
+                                                                  },
                                                                 )}"
                                                               >
                                                                 <input
@@ -8386,7 +8378,7 @@ export default async (application: Application): Promise<void> => {
                                                                   {
                                                                     addQueryPrefix:
                                                                       true,
-                                                                  }
+                                                                  },
                                                                 )}"
                                                               >
                                                                 <input
@@ -8412,83 +8404,81 @@ export default async (application: Application): Promise<void> => {
                                                         },
                                                       });
                                                     `}"
-                                                  >
-                                                    $${message.type ===
-                                                    "message"
-                                                      ? html`
-                                                          <i
-                                                            class="bi bi-chat"
-                                                          ></i>
-                                                          Message
-                                                        `
-                                                      : message.type ===
-                                                        "answer"
-                                                      ? html`
-                                                          <i
-                                                            class="bi bi-patch-check-fill"
-                                                          ></i>
-                                                          Answer
-                                                        `
-                                                      : message.type ===
-                                                        "follow-up-question"
-                                                      ? html`
-                                                          <i
-                                                            class="bi bi-patch-question-fill"
-                                                          ></i>
-                                                          Follow-Up Question
-                                                        `
-                                                      : html``}
-                                                  </button>
-                                                </div>
-                                              `;
-
-                                            if (
-                                              application.web.locals.helpers.mayEndorseMessage(
-                                                {
-                                                  request,
-                                                  response,
-                                                  message,
-                                                }
-                                              )
-                                            ) {
-                                              const isEndorsed =
-                                                message.endorsements.some(
-                                                  (endorsement) =>
-                                                    endorsement.courseParticipant !==
-                                                      "no-longer-participating" &&
-                                                    endorsement
-                                                      .courseParticipant.id ===
-                                                      response.locals
-                                                        .courseParticipant.id
-                                                );
-
-                                              header += html`
-                                                <form
-                                                  method="${isEndorsed
-                                                    ? "DELETE"
-                                                    : "POST"}"
-                                                  action="https://${application
-                                                    .configuration
-                                                    .hostname}/courses/${response
-                                                    .locals.course
-                                                    .reference}/conversations/${response
-                                                    .locals.conversation
-                                                    .reference}/messages/${message.reference}/endorsements${qs.stringify(
-                                                    {
-                                                      conversations:
-                                                        request.query
-                                                          .conversations,
-                                                      messages:
-                                                        request.query.messages,
-                                                    },
-                                                    { addQueryPrefix: true }
-                                                  )}"
                                                 >
-                                                  $${isEndorsed
+                                                  $${message.type === "message"
                                                     ? html`
-                                                        <button
-                                                          class="button button--tight button--tight--inline button--tight-gap button--transparent text--blue"
-                                                          javascript="${javascript`
+                                                        <i
+                                                          class="bi bi-chat"
+                                                        ></i>
+                                                        Message
+                                                      `
+                                                    : message.type === "answer"
+                                                    ? html`
+                                                        <i
+                                                          class="bi bi-patch-check-fill"
+                                                        ></i>
+                                                        Answer
+                                                      `
+                                                    : message.type ===
+                                                      "follow-up-question"
+                                                    ? html`
+                                                        <i
+                                                          class="bi bi-patch-question-fill"
+                                                        ></i>
+                                                        Follow-Up Question
+                                                      `
+                                                    : html``}
+                                                </button>
+                                              </div>
+                                            `;
+
+                                          if (
+                                            application.web.locals.helpers.mayEndorseMessage(
+                                              {
+                                                request,
+                                                response,
+                                                message,
+                                              },
+                                            )
+                                          ) {
+                                            const isEndorsed =
+                                              message.endorsements.some(
+                                                (endorsement) =>
+                                                  endorsement.courseParticipant !==
+                                                    "no-longer-participating" &&
+                                                  endorsement.courseParticipant
+                                                    .id ===
+                                                    response.locals
+                                                      .courseParticipant.id,
+                                              );
+
+                                            header += html`
+                                              <form
+                                                method="${isEndorsed
+                                                  ? "DELETE"
+                                                  : "POST"}"
+                                                action="https://${application
+                                                  .configuration
+                                                  .hostname}/courses/${response
+                                                  .locals.course
+                                                  .reference}/conversations/${response
+                                                  .locals.conversation
+                                                  .reference}/messages/${message.reference}/endorsements${qs.stringify(
+                                                  {
+                                                    conversations:
+                                                      request.query
+                                                        .conversations,
+                                                    messages:
+                                                      request.query.messages,
+                                                  },
+                                                  { addQueryPrefix: true },
+                                                )}"
+                                              >
+                                                $${isEndorsed
+                                                  ? html`
+                                                      <button
+                                                        class="button button--tight button--tight--inline button--tight-gap button--transparent text--blue"
+                                                        javascript="${javascript`
                                                             leafac.setTippy({
                                                               event,
                                                               element: this,
@@ -8497,7 +8487,7 @@ export default async (application: Application): Promise<void> => {
                                                                 content: ${`Remove Endorsement${
                                                                   message.endorsements.filter(
                                                                     (
-                                                                      endorsement
+                                                                      endorsement,
                                                                     ) =>
                                                                       endorsement.courseParticipant !==
                                                                         "no-longer-participating" &&
@@ -8507,17 +8497,17 @@ export default async (application: Application): Promise<void> => {
                                                                         response
                                                                           .locals
                                                                           .courseParticipant
-                                                                          .id
+                                                                          .id,
                                                                   ).length > 0
                                                                     ? ` (Also endorsed by ${
                                                                         /* FIXME: https://github.com/microsoft/TypeScript/issues/29129 */ new (
                                                                           Intl as any
                                                                         ).ListFormat(
-                                                                          "en"
+                                                                          "en",
                                                                         ).format(
                                                                           message.endorsements.flatMap(
                                                                             (
-                                                                              endorsement
+                                                                              endorsement,
                                                                             ) =>
                                                                               endorsement.courseParticipant !==
                                                                                 "no-longer-participating" &&
@@ -8534,8 +8524,8 @@ export default async (application: Application): Promise<void> => {
                                                                                       .user
                                                                                       .name,
                                                                                   ]
-                                                                                : []
-                                                                          )
+                                                                                : [],
+                                                                          ),
                                                                         )
                                                                       })`
                                                                     : ``
@@ -8543,30 +8533,30 @@ export default async (application: Application): Promise<void> => {
                                                               },
                                                             });
                                                           `}"
-                                                        >
-                                                          <i
-                                                            class="bi bi-award-fill"
-                                                          ></i>
-                                                          ${message.endorsements.length.toString()}
-                                                          Course Staff
-                                                          Endorsement${message
-                                                            .endorsements
-                                                            .length === 1
-                                                            ? ""
-                                                            : "s"}
-                                                        </button>
-                                                      `
-                                                    : html`
-                                                        <button
-                                                          class="button button--tight button--tight--inline button--tight-gap button--transparent text--lime"
-                                                          $${message.endorsements.filter(
-                                                            (endorsement) =>
-                                                              endorsement.courseParticipant !==
-                                                              "no-longer-participating"
-                                                          ).length === 0
-                                                            ? html``
-                                                            : html`
-                                                                javascript="${javascript`
+                                                      >
+                                                        <i
+                                                          class="bi bi-award-fill"
+                                                        ></i>
+                                                        ${message.endorsements.length.toString()}
+                                                        Course Staff
+                                                        Endorsement${message
+                                                          .endorsements
+                                                          .length === 1
+                                                          ? ""
+                                                          : "s"}
+                                                      </button>
+                                                    `
+                                                  : html`
+                                                      <button
+                                                        class="button button--tight button--tight--inline button--tight-gap button--transparent text--lime"
+                                                        $${message.endorsements.filter(
+                                                          (endorsement) =>
+                                                            endorsement.courseParticipant !==
+                                                            "no-longer-participating",
+                                                        ).length === 0
+                                                          ? html``
+                                                          : html`
+                                                              javascript="${javascript`
                                                                   leafac.setTippy({
                                                                     event,
                                                                     element: this,
@@ -8576,11 +8566,11 @@ export default async (application: Application): Promise<void> => {
                                                                         /* FIXME: https://github.com/microsoft/TypeScript/issues/29129 */ new (
                                                                           Intl as any
                                                                         ).ListFormat(
-                                                                          "en"
+                                                                          "en",
                                                                         ).format(
                                                                           message.endorsements.flatMap(
                                                                             (
-                                                                              endorsement
+                                                                              endorsement,
                                                                             ) =>
                                                                               endorsement.courseParticipant ===
                                                                               "no-longer-participating"
@@ -8590,26 +8580,26 @@ export default async (application: Application): Promise<void> => {
                                                                                       .courseParticipant
                                                                                       .user
                                                                                       .name,
-                                                                                  ]
-                                                                          )
+                                                                                  ],
+                                                                          ),
                                                                         )
                                                                       })`},  
                                                                     },
                                                                   });
                                                                 `}"
-                                                              `}
-                                                        >
-                                                          <i
-                                                            class="bi bi-award"
-                                                          ></i>
-                                                          ${message.endorsements
-                                                            .length === 0
-                                                            ? `Endorse`
-                                                            : `${
-                                                                message
-                                                                  .endorsements
-                                                                  .length
-                                                              }
+                                                            `}
+                                                      >
+                                                        <i
+                                                          class="bi bi-award"
+                                                        ></i>
+                                                        ${message.endorsements
+                                                          .length === 0
+                                                          ? `Endorse`
+                                                          : `${
+                                                              message
+                                                                .endorsements
+                                                                .length
+                                                            }
                                                               Course Staff Endorsement${
                                                                 message
                                                                   .endorsements
@@ -8617,29 +8607,29 @@ export default async (application: Application): Promise<void> => {
                                                                   ? ""
                                                                   : "s"
                                                               }`}
-                                                        </button>
-                                                      `}
-                                                </form>
-                                              `;
-                                            } else if (
-                                              response.locals.conversation
-                                                .type === "question" &&
-                                              (message.authorCourseParticipant ===
-                                                "no-longer-participating" ||
-                                                message.authorCourseParticipant
-                                                  .courseRole !==
-                                                  "course-staff") &&
-                                              message.endorsements.length > 0
-                                            )
-                                              header += html`
-                                                <div
-                                                  class="text--lime"
-                                                  javascript="${javascript`
+                                                      </button>
+                                                    `}
+                                              </form>
+                                            `;
+                                          } else if (
+                                            response.locals.conversation
+                                              .type === "question" &&
+                                            (message.authorCourseParticipant ===
+                                              "no-longer-participating" ||
+                                              message.authorCourseParticipant
+                                                .courseRole !==
+                                                "course-staff") &&
+                                            message.endorsements.length > 0
+                                          )
+                                            header += html`
+                                              <div
+                                                class="text--lime"
+                                                javascript="${javascript`
                                                     if (${
                                                       message.endorsements.filter(
                                                         (endorsement) =>
                                                           endorsement.courseParticipant !==
-                                                          "no-longer-participating"
+                                                          "no-longer-participating",
                                                       ).length > 0
                                                     })
                                                       leafac.setTippy({
@@ -8650,10 +8640,12 @@ export default async (application: Application): Promise<void> => {
                                                             /* FIXME: https://github.com/microsoft/TypeScript/issues/29129 */ new (
                                                               Intl as any
                                                             ).ListFormat(
-                                                              "en"
+                                                              "en",
                                                             ).format(
                                                               message.endorsements.flatMap(
-                                                                (endorsement) =>
+                                                                (
+                                                                  endorsement,
+                                                                ) =>
                                                                   endorsement.courseParticipant ===
                                                                   "no-longer-participating"
                                                                     ? []
@@ -8662,210 +8654,204 @@ export default async (application: Application): Promise<void> => {
                                                                           .courseParticipant
                                                                           .user
                                                                           .name,
-                                                                      ]
-                                                              )
+                                                                      ],
+                                                              ),
                                                             )
                                                           }`},  
                                                         },
                                                       });
                                                   `}"
-                                                >
-                                                  <i class="bi bi-award"></i>
-                                                  ${message.endorsements.length.toString()}
-                                                  Course Staff
-                                                  Endorsement${message
-                                                    .endorsements.length === 1
-                                                    ? ""
-                                                    : "s"}
-                                                </div>
-                                              `;
-
-                                            return html`
-                                              $${header !== html``
-                                                ? html`
-                                                    <div
-                                                      key="message--header"
-                                                      css="${css`
-                                                        font-size: var(
-                                                          --font-size--xs
-                                                        );
-                                                        line-height: var(
-                                                          --line-height--xs
-                                                        );
-                                                        display: flex;
-                                                        gap: var(--space--4);
-                                                      `}"
-                                                    >
-                                                      <div
-                                                        css="${css`
-                                                          flex: 1;
-                                                          display: flex;
-                                                          flex-wrap: wrap;
-                                                          column-gap: var(
-                                                            --space--8
-                                                          );
-                                                          row-gap: var(
-                                                            --space--1
-                                                          );
-                                                          & > * {
-                                                            display: flex;
-                                                            gap: var(
-                                                              --space--1
-                                                            );
-                                                          }
-                                                        `}"
-                                                      >
-                                                        $${header}
-                                                      </div>
-                                                      $${actions}
-                                                    </div>
-                                                  `
-                                                : html``}
-
-                                              <div
-                                                css="${css`
-                                                  display: flex;
-                                                  gap: var(--space--2);
-                                                `}"
                                               >
-                                                <div
-                                                  class="secondary"
-                                                  css="${css`
-                                                    font-size: var(
-                                                      --font-size--xs
-                                                    );
-                                                    line-height: var(
-                                                      --line-height--xs
-                                                    );
-                                                    flex: 1;
-                                                    display: flex;
-                                                    flex-wrap: wrap;
-                                                    align-items: baseline;
-                                                    column-gap: var(--space--4);
-                                                    row-gap: var(--space--2);
-                                                  `}"
-                                                >
-                                                  <div
-                                                    class="strong"
-                                                    css="${css`
-                                                      font-size: var(
-                                                        --font-size--sm
-                                                      );
-                                                      line-height: var(
-                                                        --line-height--sm
-                                                      );
-                                                    `}"
-                                                  >
-                                                    $${application.web.locals.partials.user(
-                                                      {
-                                                        request,
-                                                        response,
-                                                        courseParticipant:
-                                                          message.authorCourseParticipant,
-                                                        anonymous:
-                                                          message.anonymousAt ===
-                                                          null
-                                                            ? false
-                                                            : response.locals
-                                                                .courseParticipant
-                                                                .courseRole ===
-                                                                "course-staff" ||
-                                                              (message.authorCourseParticipant !==
-                                                                "no-longer-participating" &&
-                                                                message
-                                                                  .authorCourseParticipant
-                                                                  .id ===
-                                                                  response
-                                                                    .locals
-                                                                    .courseParticipant
-                                                                    .id)
-                                                            ? "reveal"
-                                                            : true,
-                                                        name:
-                                                          message.authorCourseParticipant ===
-                                                          "no-longer-participating"
-                                                            ? undefined
-                                                            : application.web.locals.helpers.highlightSearchResult(
-                                                                html`${message
-                                                                  .authorCourseParticipant
-                                                                  .user.name}`,
-                                                                typeof request
-                                                                  .query
-                                                                  .conversations
-                                                                  ?.search ===
-                                                                  "string" &&
-                                                                  request.query.conversations.search.trim() !==
-                                                                    ""
-                                                                  ? request
-                                                                      .query
-                                                                      .conversations
-                                                                      .search
-                                                                  : undefined
-                                                              ),
-                                                      }
-                                                    )}
-                                                  </div>
-
-                                                  <time
-                                                    datetime="${new Date(
-                                                      message.createdAt
-                                                    ).toISOString()}"
-                                                    javascript="${javascript`
-                                                      leafac.relativizeDateTimeElement(this, { capitalize: true });
-                                                    `}"
-                                                  ></time>
-
-                                                  $${message.updatedAt !== null
-                                                    ? html`
-                                                        <div>
-                                                          Updated
-                                                          <time
-                                                            datetime="${new Date(
-                                                              message.updatedAt
-                                                            ).toISOString()}"
-                                                            javascript="${javascript`
-                                                              leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
-                                                            `}"
-                                                          ></time>
-                                                        </div>
-                                                      `
-                                                    : html``}
-                                                </div>
-
-                                                $${header === html``
-                                                  ? actions
-                                                  : html``}
+                                                <i class="bi bi-award"></i>
+                                                ${message.endorsements.length.toString()}
+                                                Course Staff
+                                                Endorsement${message
+                                                  .endorsements.length === 1
+                                                  ? ""
+                                                  : "s"}
                                               </div>
                                             `;
-                                          })()}
 
-                                          <div
-                                            key="message--show"
-                                            css="${css`
-                                              display: flex;
-                                              flex-direction: column;
-                                              gap: var(--space--2);
-                                            `}"
-                                          >
+                                          return html`
+                                            $${header !== html``
+                                              ? html`
+                                                  <div
+                                                    key="message--header"
+                                                    css="${css`
+                                                      font-size: var(
+                                                        --font-size--xs
+                                                      );
+                                                      line-height: var(
+                                                        --line-height--xs
+                                                      );
+                                                      display: flex;
+                                                      gap: var(--space--4);
+                                                    `}"
+                                                  >
+                                                    <div
+                                                      css="${css`
+                                                        flex: 1;
+                                                        display: flex;
+                                                        flex-wrap: wrap;
+                                                        column-gap: var(
+                                                          --space--8
+                                                        );
+                                                        row-gap: var(
+                                                          --space--1
+                                                        );
+                                                        & > * {
+                                                          display: flex;
+                                                          gap: var(--space--1);
+                                                        }
+                                                      `}"
+                                                    >
+                                                      $${header}
+                                                    </div>
+                                                    $${actions}
+                                                  </div>
+                                                `
+                                              : html``}
+
                                             <div
-                                              key="message--show--content-area"
                                               css="${css`
-                                                position: relative;
+                                                display: flex;
+                                                gap: var(--space--2);
                                               `}"
                                             >
                                               <div
-                                                key="message--show--content-area--dropdown-menu-target"
+                                                class="secondary"
                                                 css="${css`
-                                                  width: var(--space--0);
-                                                  height: var(
-                                                    --line-height--sm
+                                                  font-size: var(
+                                                    --font-size--xs
                                                   );
-                                                  position: absolute;
+                                                  line-height: var(
+                                                    --line-height--xs
+                                                  );
+                                                  flex: 1;
+                                                  display: flex;
+                                                  flex-wrap: wrap;
+                                                  align-items: baseline;
+                                                  column-gap: var(--space--4);
+                                                  row-gap: var(--space--2);
                                                 `}"
-                                              ></div>
-                                              <div
-                                                key="message--show--content-area--content"
-                                                javascript="${javascript`
+                                              >
+                                                <div
+                                                  class="strong"
+                                                  css="${css`
+                                                    font-size: var(
+                                                      --font-size--sm
+                                                    );
+                                                    line-height: var(
+                                                      --line-height--sm
+                                                    );
+                                                  `}"
+                                                >
+                                                  $${application.web.locals.partials.user(
+                                                    {
+                                                      request,
+                                                      response,
+                                                      courseParticipant:
+                                                        message.authorCourseParticipant,
+                                                      anonymous:
+                                                        message.anonymousAt ===
+                                                        null
+                                                          ? false
+                                                          : response.locals
+                                                              .courseParticipant
+                                                              .courseRole ===
+                                                              "course-staff" ||
+                                                            (message.authorCourseParticipant !==
+                                                              "no-longer-participating" &&
+                                                              message
+                                                                .authorCourseParticipant
+                                                                .id ===
+                                                                response.locals
+                                                                  .courseParticipant
+                                                                  .id)
+                                                          ? "reveal"
+                                                          : true,
+                                                      name:
+                                                        message.authorCourseParticipant ===
+                                                        "no-longer-participating"
+                                                          ? undefined
+                                                          : application.web.locals.helpers.highlightSearchResult(
+                                                              html`${message
+                                                                .authorCourseParticipant
+                                                                .user.name}`,
+                                                              typeof request
+                                                                .query
+                                                                .conversations
+                                                                ?.search ===
+                                                                "string" &&
+                                                                request.query.conversations.search.trim() !==
+                                                                  ""
+                                                                ? request.query
+                                                                    .conversations
+                                                                    .search
+                                                                : undefined,
+                                                            ),
+                                                    },
+                                                  )}
+                                                </div>
+
+                                                <time
+                                                  datetime="${new Date(
+                                                    message.createdAt,
+                                                  ).toISOString()}"
+                                                  javascript="${javascript`
+                                                      leafac.relativizeDateTimeElement(this, { capitalize: true });
+                                                    `}"
+                                                ></time>
+
+                                                $${message.updatedAt !== null
+                                                  ? html`
+                                                      <div>
+                                                        Updated
+                                                        <time
+                                                          datetime="${new Date(
+                                                            message.updatedAt,
+                                                          ).toISOString()}"
+                                                          javascript="${javascript`
+                                                              leafac.relativizeDateTimeElement(this, { preposition: "on", target: this.parentElement });
+                                                            `}"
+                                                        ></time>
+                                                      </div>
+                                                    `
+                                                  : html``}
+                                              </div>
+
+                                              $${header === html``
+                                                ? actions
+                                                : html``}
+                                            </div>
+                                          `;
+                                        })()}
+
+                                        <div
+                                          key="message--show"
+                                          css="${css`
+                                            display: flex;
+                                            flex-direction: column;
+                                            gap: var(--space--2);
+                                          `}"
+                                        >
+                                          <div
+                                            key="message--show--content-area"
+                                            css="${css`
+                                              position: relative;
+                                            `}"
+                                          >
+                                            <div
+                                              key="message--show--content-area--dropdown-menu-target"
+                                              css="${css`
+                                                width: var(--space--0);
+                                                height: var(--line-height--sm);
+                                                position: absolute;
+                                              `}"
+                                            ></div>
+                                            <div
+                                              key="message--show--content-area--content"
+                                              javascript="${javascript`
                                                   const dropdownMenuTarget = this.closest('[key="message--show--content-area"]').querySelector('[key="message--show--content-area--dropdown-menu-target"]');
                                                   leafac.setTippy({
                                                     event,
@@ -8919,17 +8905,18 @@ export default async (application: Application): Promise<void> => {
                                                                                 message
                                                                                   .authorCourseParticipant
                                                                                   .user
-                                                                                  .name
+                                                                                  .name,
                                                                               )}`
                                                                             : `anonymous`
                                                                         } · `
                                                                   } + "#" + ${
-                                                              response.locals
-                                                                .conversation
-                                                                .reference
-                                                            } + "/" + ${
-                                                              message.reference
-                                                            } + "\\n>\\n> " + content.slice(start, end).replaceAll("\\n", "\\n> ") + "\\n\\n",
+                                                                    response
+                                                                      .locals
+                                                                      .conversation
+                                                                      .reference
+                                                                  } + "/" + ${
+                                                                    message.reference
+                                                                  } + "\\n>\\n> " + content.slice(start, end).replaceAll("\\n", "\\n> ") + "\\n\\n",
                                                                   ""
                                                                 );
                                                                 element.focus();
@@ -8966,86 +8953,83 @@ export default async (application: Application): Promise<void> => {
                                                     });
                                                   };
                                                 `}"
-                                              >
-                                                $${application.web.locals.partials.content(
-                                                  {
-                                                    request,
-                                                    response,
-                                                    id: `message--${message.reference}`,
-                                                    contentPreprocessed:
-                                                      message.contentPreprocessed,
-                                                    search:
-                                                      typeof request.query
-                                                        .conversations
-                                                        ?.search === "string" &&
-                                                      request.query.conversations.search.trim() !==
-                                                        ""
-                                                        ? request.query
-                                                            .conversations
-                                                            .search
-                                                        : undefined,
-                                                  }
-                                                ).contentProcessed}
-                                              </div>
+                                            >
+                                              $${application.web.locals.partials.content(
+                                                {
+                                                  request,
+                                                  response,
+                                                  id: `message--${message.reference}`,
+                                                  contentPreprocessed:
+                                                    message.contentPreprocessed,
+                                                  search:
+                                                    typeof request.query
+                                                      .conversations?.search ===
+                                                      "string" &&
+                                                    request.query.conversations.search.trim() !==
+                                                      ""
+                                                      ? request.query
+                                                          .conversations.search
+                                                      : undefined,
+                                                },
+                                              ).contentProcessed}
                                             </div>
+                                          </div>
 
-                                            $${(() => {
-                                              let messageShowFooter = html``;
+                                          $${(() => {
+                                            let messageShowFooter = html``;
 
-                                              const isLiked =
-                                                message.likes.some(
-                                                  (like) =>
-                                                    like.courseParticipant !==
-                                                      "no-longer-participating" &&
-                                                    like.courseParticipant
-                                                      .id ===
-                                                      response.locals
-                                                        .courseParticipant.id
-                                                );
-                                              const likesCount =
-                                                message.likes.length;
-                                              if (
-                                                response.locals.conversation
-                                                  .type !== "chat" ||
-                                                likesCount > 0
-                                              )
-                                                messageShowFooter += html`
-                                                  <div
-                                                    css="${css`
-                                                      display: flex;
-                                                      gap: var(--space--1);
-                                                    `}"
+                                            const isLiked = message.likes.some(
+                                              (like) =>
+                                                like.courseParticipant !==
+                                                  "no-longer-participating" &&
+                                                like.courseParticipant.id ===
+                                                  response.locals
+                                                    .courseParticipant.id,
+                                            );
+                                            const likesCount =
+                                              message.likes.length;
+                                            if (
+                                              response.locals.conversation
+                                                .type !== "chat" ||
+                                              likesCount > 0
+                                            )
+                                              messageShowFooter += html`
+                                                <div
+                                                  css="${css`
+                                                    display: flex;
+                                                    gap: var(--space--1);
+                                                  `}"
+                                                >
+                                                  <form
+                                                    method="${isLiked
+                                                      ? "DELETE"
+                                                      : "POST"}"
+                                                    action="https://${application
+                                                      .configuration
+                                                      .hostname}/courses/${response
+                                                      .locals.course
+                                                      .reference}/conversations/${response
+                                                      .locals.conversation
+                                                      .reference}/messages/${message.reference}/likes${qs.stringify(
+                                                      {
+                                                        conversations:
+                                                          request.query
+                                                            .conversations,
+                                                        messages:
+                                                          request.query
+                                                            .messages,
+                                                      },
+                                                      { addQueryPrefix: true },
+                                                    )}"
                                                   >
-                                                    <form
-                                                      method="${isLiked
-                                                        ? "DELETE"
-                                                        : "POST"}"
-                                                      action="https://${application
-                                                        .configuration
-                                                        .hostname}/courses/${response
-                                                        .locals.course
-                                                        .reference}/conversations/${response
-                                                        .locals.conversation
-                                                        .reference}/messages/${message.reference}/likes${qs.stringify(
-                                                        {
-                                                          conversations:
-                                                            request.query
-                                                              .conversations,
-                                                          messages:
-                                                            request.query
-                                                              .messages,
-                                                        },
-                                                        { addQueryPrefix: true }
-                                                      )}"
-                                                    >
-                                                      <button
-                                                        class="button button--tight button--tight--inline button--tight-gap button--transparent ${isLiked
-                                                          ? "text--blue"
-                                                          : ""}"
-                                                        $${likesCount === 0
-                                                          ? html``
-                                                          : html`
-                                                              javascript="${javascript`
+                                                    <button
+                                                      class="button button--tight button--tight--inline button--tight-gap button--transparent ${isLiked
+                                                        ? "text--blue"
+                                                        : ""}"
+                                                      $${likesCount === 0
+                                                        ? html``
+                                                        : html`
+                                                            javascript="${javascript`
                                                                 leafac.setTippy({
                                                                   event,
                                                                   element: this,
@@ -9059,31 +9043,31 @@ export default async (application: Application): Promise<void> => {
                                                                   },
                                                                 });
                                                               `}"
-                                                            `}
-                                                      >
-                                                        $${isLiked
-                                                          ? html`
-                                                              <i
-                                                                class="bi bi-hand-thumbs-up-fill"
-                                                              ></i>
-                                                            `
-                                                          : html`<i
-                                                              class="bi bi-hand-thumbs-up"
-                                                            ></i>`}
-                                                        $${likesCount === 0
-                                                          ? html`Like`
-                                                          : html``}
-                                                      </button>
-                                                    </form>
+                                                          `}
+                                                    >
+                                                      $${isLiked
+                                                        ? html`
+                                                            <i
+                                                              class="bi bi-hand-thumbs-up-fill"
+                                                            ></i>
+                                                          `
+                                                        : html`<i
+                                                            class="bi bi-hand-thumbs-up"
+                                                          ></i>`}
+                                                      $${likesCount === 0
+                                                        ? html`Like`
+                                                        : html``}
+                                                    </button>
+                                                  </form>
 
-                                                    $${likesCount === 0
-                                                      ? html``
-                                                      : html`
-                                                          <button
-                                                            class="button button--tight button--tight--inline button--tight-gap button--transparent ${isLiked
-                                                              ? "text--blue"
-                                                              : ""}"
-                                                            javascript="${javascript`
+                                                  $${likesCount === 0
+                                                    ? html``
+                                                    : html`
+                                                        <button
+                                                          class="button button--tight button--tight--inline button--tight-gap button--transparent ${isLiked
+                                                            ? "text--blue"
+                                                            : ""}"
+                                                          javascript="${javascript`
                                                               leafac.setTippy({
                                                                 event,
                                                                 element: this,
@@ -9116,7 +9100,7 @@ export default async (application: Application): Promise<void> => {
                                                                         {
                                                                           request,
                                                                           response,
-                                                                        }
+                                                                        },
                                                                       )}
                                                                       Loading…
                                                                     </div>
@@ -9151,29 +9135,27 @@ export default async (application: Application): Promise<void> => {
                                                                 }, 60 * 1000);
                                                               };
                                                             `}"
-                                                          >
-                                                            ${likesCount.toString()}
-                                                            Like${likesCount ===
-                                                            1
-                                                              ? ""
-                                                              : "s"}
-                                                          </button>
-                                                        `}
-                                                  </div>
-                                                `;
+                                                        >
+                                                          ${likesCount.toString()}
+                                                          Like${likesCount === 1
+                                                            ? ""
+                                                            : "s"}
+                                                        </button>
+                                                      `}
+                                                </div>
+                                              `;
 
-                                              if (
-                                                response.locals
-                                                  .courseParticipant
-                                                  .courseRole ===
-                                                  "course-staff" &&
-                                                response.locals.conversation
-                                                  .type !== "chat"
-                                              )
-                                                messageShowFooter += html`
-                                                  <button
-                                                    class="button button--tight button--tight--inline button--tight-gap button--transparent"
-                                                    javascript="${javascript`
+                                            if (
+                                              response.locals.courseParticipant
+                                                .courseRole ===
+                                                "course-staff" &&
+                                              response.locals.conversation
+                                                .type !== "chat"
+                                            )
+                                              messageShowFooter += html`
+                                                <button
+                                                  class="button button--tight button--tight--inline button--tight-gap button--transparent"
+                                                  javascript="${javascript`
                                                       leafac.setTippy({
                                                         event,
                                                         element: this,
@@ -9196,7 +9178,7 @@ export default async (application: Application): Promise<void> => {
                                                                 {
                                                                   request,
                                                                   response,
-                                                                }
+                                                                },
                                                               )}
                                                               Loading…
                                                             </div>
@@ -9231,74 +9213,71 @@ export default async (application: Application): Promise<void> => {
                                                         }, 60 * 1000);
                                                       };
                                                     `}"
+                                                >
+                                                  <i class="bi bi-eye"></i>
+                                                  ${message.readings.length.toString()}
+                                                  Views
+                                                </button>
+                                              `;
+
+                                            return messageShowFooter !== html``
+                                              ? html`
+                                                  <div
+                                                    key="message--show--footer"
+                                                    css="${css`
+                                                      font-size: var(
+                                                        --font-size--xs
+                                                      );
+                                                      line-height: var(
+                                                        --line-height--xs
+                                                      );
+                                                      display: flex;
+                                                      flex-wrap: wrap;
+                                                      column-gap: var(
+                                                        --space--8
+                                                      );
+                                                      row-gap: var(--space--1);
+                                                    `}"
                                                   >
-                                                    <i class="bi bi-eye"></i>
-                                                    ${message.readings.length.toString()}
-                                                    Views
-                                                  </button>
-                                                `;
+                                                    $${messageShowFooter}
+                                                  </div>
+                                                `
+                                              : html``;
+                                          })()}
+                                        </div>
 
-                                              return messageShowFooter !==
-                                                html``
-                                                ? html`
-                                                    <div
-                                                      key="message--show--footer"
-                                                      css="${css`
-                                                        font-size: var(
-                                                          --font-size--xs
-                                                        );
-                                                        line-height: var(
-                                                          --line-height--xs
-                                                        );
-                                                        display: flex;
-                                                        flex-wrap: wrap;
-                                                        column-gap: var(
-                                                          --space--8
-                                                        );
-                                                        row-gap: var(
-                                                          --space--1
-                                                        );
-                                                      `}"
-                                                    >
-                                                      $${messageShowFooter}
-                                                    </div>
-                                                  `
-                                                : html``;
-                                            })()}
+                                        <div key="message--edit" hidden>
+                                          <div
+                                            key="loading"
+                                            class="strong"
+                                            css="${css`
+                                              display: flex;
+                                              gap: var(--space--2);
+                                              justify-content: center;
+                                            `}"
+                                          >
+                                            $${application.web.locals.partials.spinner(
+                                              {
+                                                request,
+                                                response,
+                                              },
+                                            )}
+                                            Loading…
                                           </div>
-
-                                          <div key="message--edit" hidden>
-                                            <div
-                                              key="loading"
-                                              class="strong"
-                                              css="${css`
-                                                display: flex;
-                                                gap: var(--space--2);
-                                                justify-content: center;
-                                              `}"
-                                            >
-                                              $${application.web.locals.partials.spinner(
-                                                {
-                                                  request,
-                                                  response,
-                                                }
-                                              )}
-                                              Loading…
-                                            </div>
-                                            <div
-                                              key="form"
-                                              hidden
-                                              javascript="${javascript`
+                                          <div
+                                            key="form"
+                                            hidden
+                                            javascript="${javascript`
                                                 if (event?.detail?.liveUpdate && !this.closest('[key="message--edit"]').hidden) return;
                                                 this.partialParentElement = false;
                                                 this.skipLoading = false;
                                               `}"
-                                            ></div>
-                                          </div>
+                                          ></div>
                                         </div>
                                       </div>
                                     </div>
-                                  `
+                                  </div>
+                                `,
                               )}
                               $${beforeMessage !== undefined ||
                               (moreMessagesExist && !messagesReverse)
@@ -9328,7 +9307,7 @@ export default async (application: Application): Promise<void> => {
                                               },
                                             },
                                           },
-                                          { addQueryPrefix: true }
+                                          { addQueryPrefix: true },
                                         )}"
                                         class="button button--transparent"
                                       >
@@ -9427,7 +9406,7 @@ export default async (application: Application): Promise<void> => {
                                                 .courseParticipant,
                                               user: response.locals.user,
                                             },
-                                          }
+                                          },
                                         )}
                                       </div>
                                       $${response.locals.courseParticipant
@@ -9454,7 +9433,7 @@ export default async (application: Application): Promise<void> => {
                                                     user: response.locals.user,
                                                   },
                                                   anonymous: "reveal",
-                                                }
+                                                },
                                               )}
                                             </div>
                                           `}
@@ -9464,7 +9443,7 @@ export default async (application: Application): Promise<void> => {
                                           request,
                                           response,
                                           size: 10,
-                                        }
+                                        },
                                       )}
                                     </div>
                                   </div>
@@ -9493,7 +9472,7 @@ export default async (application: Application): Promise<void> => {
                     conversations: request.query.conversations,
                     messages: request.query.messages,
                   },
-                  { addQueryPrefix: true }
+                  { addQueryPrefix: true },
                 )}"
                 novalidate
                 css="${response.locals.conversation.type === "chat"
@@ -9677,7 +9656,7 @@ export default async (application: Application): Promise<void> => {
                                   courseParticipant,
                                   size: "xs",
                                   bold: false,
-                                })
+                                }),
                               )
                               .join(", ")}
                           </div>
@@ -9960,9 +9939,9 @@ export default async (application: Application): Promise<void> => {
               </form>
             </div>
           `,
-        })
+        }),
       );
-    }
+    },
   );
 
   application.web.patch<
@@ -9997,14 +9976,14 @@ export default async (application: Application): Promise<void> => {
           request.body.selectedParticipantsReferences ??= [];
           if (
             !application.web.locals.helpers.conversationParticipantses.includes(
-              request.body.participants!
+              request.body.participants!,
             ) ||
             !Array.isArray(request.body.selectedParticipantsReferences) ||
             (request.body.participants === "everyone" &&
               request.body.selectedParticipantsReferences.length > 0) ||
             request.body.selectedParticipantsReferences.some(
               (selectedParticipantReference) =>
-                typeof selectedParticipantReference !== "string"
+                typeof selectedParticipantReference !== "string",
             ) ||
             request.body.selectedParticipantsReferences.length !==
               new Set(request.body.selectedParticipantsReferences).size
@@ -10018,7 +9997,7 @@ export default async (application: Application): Promise<void> => {
             request.body.participants === "selected-participants"
           )
             request.body.selectedParticipantsReferences.push(
-              response.locals.courseParticipant.reference
+              response.locals.courseParticipant.reference,
             );
           const selectedParticipants =
             request.body.selectedParticipantsReferences.length === 0
@@ -10033,7 +10012,7 @@ export default async (application: Application): Promise<void> => {
                     WHERE
                       "courseParticipants"."course" = ${response.locals.course.id} AND
                       "reference" IN ${request.body.selectedParticipantsReferences}
-                  `
+                  `,
                 );
 
           if (
@@ -10042,7 +10021,7 @@ export default async (application: Application): Promise<void> => {
             (request.body.participants === "course-staff" &&
               selectedParticipants.some(
                 (selectedParticipant) =>
-                  selectedParticipant.courseRole === "course-staff"
+                  selectedParticipant.courseRole === "course-staff",
               ))
           )
             return next("Validation");
@@ -10052,7 +10031,7 @@ export default async (application: Application): Promise<void> => {
               UPDATE "conversations"
               SET "participants" = ${request.body.participants}
               WHERE "id" = ${response.locals.conversation.id}
-            `
+            `,
           );
           application.database.run(
             sql`
@@ -10060,9 +10039,9 @@ export default async (application: Application): Promise<void> => {
               WHERE
                 "conversation" = ${response.locals.conversation.id} AND
                 "courseParticipant" NOT IN ${selectedParticipants.map(
-                  (selectedParticipant) => selectedParticipant.id
+                  (selectedParticipant) => selectedParticipant.id,
                 )}
-            `
+            `,
           );
           for (const selectedParticipant of selectedParticipants)
             application.database.run(
@@ -10073,7 +10052,7 @@ export default async (application: Application): Promise<void> => {
                   ${response.locals.conversation.id},
                   ${selectedParticipant.id}
                 )
-              `
+              `,
             );
         });
 
@@ -10101,7 +10080,7 @@ export default async (application: Application): Promise<void> => {
                     : null
                 }
                 WHERE "id" = ${response.locals.conversation.id}
-              `
+              `,
             );
             application.database.run(
               sql`
@@ -10122,14 +10101,14 @@ export default async (application: Application): Promise<void> => {
                         })()
                       : response.locals.conversation.authorCourseParticipant.id
                   }
-              `
+              `,
             );
           });
 
       if (typeof request.body.type === "string")
         if (
           !application.web.locals.helpers.conversationTypes.includes(
-            request.body.type
+            request.body.type,
           )
         )
           return next("Validation");
@@ -10139,7 +10118,7 @@ export default async (application: Application): Promise<void> => {
               UPDATE "conversations"
               SET "type" = ${request.body.type}
               WHERE "id" = ${response.locals.conversation.id}
-            `
+            `,
           );
 
       if (typeof request.body.isAnnouncement === "string")
@@ -10169,7 +10148,7 @@ export default async (application: Application): Promise<void> => {
                     : null
                 }
               WHERE "id" = ${response.locals.conversation.id}
-            `
+            `,
           );
           if (request.body.isAnnouncement === "true") {
             const message = application.web.locals.helpers.getMessage({
@@ -10213,7 +10192,7 @@ export default async (application: Application): Promise<void> => {
                     : null
                 }
               WHERE "id" = ${response.locals.conversation.id}
-            `
+            `,
           );
 
       if (typeof request.body.isResolved === "string")
@@ -10237,7 +10216,7 @@ export default async (application: Application): Promise<void> => {
                   : null
               }
               WHERE "id" = ${response.locals.conversation.id}
-            `
+            `,
           );
 
       if (typeof request.body.title === "string")
@@ -10251,7 +10230,7 @@ export default async (application: Application): Promise<void> => {
                 "title" = ${request.body.title},
                 "titleSearch" = ${html`${request.body.title}`}
               WHERE "id" = ${response.locals.conversation.id}
-            `
+            `,
           );
 
       response.redirect(
@@ -10263,8 +10242,8 @@ export default async (application: Application): Promise<void> => {
             conversations: request.query.conversations,
             messages: request.query.messages,
           },
-          { addQueryPrefix: true }
-        )}`
+          { addQueryPrefix: true },
+        )}`,
       );
 
       application.web.locals.helpers.liveUpdates({
@@ -10272,7 +10251,7 @@ export default async (application: Application): Promise<void> => {
         response,
         url: `/courses/${response.locals.course.reference}`,
       });
-    }
+    },
   );
 
   application.web.delete<
@@ -10294,7 +10273,7 @@ export default async (application: Application): Promise<void> => {
         return next();
 
       application.database.run(
-        sql`DELETE FROM "conversations" WHERE "id" = ${response.locals.conversation.id}`
+        sql`DELETE FROM "conversations" WHERE "id" = ${response.locals.conversation.id}`,
       );
 
       application.web.locals.helpers.Flash.set({
@@ -10312,8 +10291,8 @@ export default async (application: Application): Promise<void> => {
             conversations: request.query.conversations,
             messages: request.query.messages,
           },
-          { addQueryPrefix: true }
-        )}`
+          { addQueryPrefix: true },
+        )}`,
       );
 
       application.web.locals.helpers.liveUpdates({
@@ -10321,7 +10300,7 @@ export default async (application: Application): Promise<void> => {
         response,
         url: `/courses/${response.locals.course.reference}`,
       });
-    }
+    },
   );
 
   application.web.post<
@@ -10348,10 +10327,10 @@ export default async (application: Application): Promise<void> => {
       if (
         typeof request.body.reference !== "string" ||
         !response.locals.tags.some(
-          (tag) => request.body.reference === tag.reference
+          (tag) => request.body.reference === tag.reference,
         ) ||
         response.locals.conversation.taggings.some(
-          (tagging) => request.body.reference === tagging.tag.reference
+          (tagging) => request.body.reference === tagging.tag.reference,
         )
       )
         return next("Validation");
@@ -10364,11 +10343,11 @@ export default async (application: Application): Promise<void> => {
             ${response.locals.conversation.id},
             ${
               response.locals.tags.find(
-                (tag) => request.body.reference === tag.reference
+                (tag) => request.body.reference === tag.reference,
               )!.id
             }
           )
-        `
+        `,
       );
 
       response.redirect(
@@ -10380,8 +10359,8 @@ export default async (application: Application): Promise<void> => {
             conversations: request.query.conversations,
             messages: request.query.messages,
           },
-          { addQueryPrefix: true }
-        )}`
+          { addQueryPrefix: true },
+        )}`,
       );
 
       application.web.locals.helpers.liveUpdates({
@@ -10389,7 +10368,7 @@ export default async (application: Application): Promise<void> => {
         response,
         url: `/courses/${response.locals.course.reference}/conversations/${response.locals.conversation.reference}`,
       });
-    }
+    },
   );
 
   application.web.delete<
@@ -10418,7 +10397,7 @@ export default async (application: Application): Promise<void> => {
           response.locals.conversation.type !== "chat") ||
         typeof request.body.reference !== "string" ||
         !response.locals.conversation.taggings.some(
-          (tagging) => request.body.reference === tagging.tag.reference
+          (tagging) => request.body.reference === tagging.tag.reference,
         )
       )
         return next("Validation");
@@ -10430,10 +10409,10 @@ export default async (application: Application): Promise<void> => {
             "conversation" = ${response.locals.conversation.id} AND
             "tag" = ${
               response.locals.tags.find(
-                (tag) => request.body.reference === tag.reference
+                (tag) => request.body.reference === tag.reference,
               )!.id
             }
-        `
+        `,
       );
 
       response.redirect(
@@ -10445,8 +10424,8 @@ export default async (application: Application): Promise<void> => {
             conversations: request.query.conversations,
             messages: request.query.messages,
           },
-          { addQueryPrefix: true }
-        )}`
+          { addQueryPrefix: true },
+        )}`,
       );
 
       application.web.locals.helpers.liveUpdates({
@@ -10454,6 +10433,6 @@ export default async (application: Application): Promise<void> => {
         response,
         url: `/courses/${response.locals.course.reference}/conversations/${response.locals.conversation.reference}`,
       });
-    }
+    },
   );
 };
