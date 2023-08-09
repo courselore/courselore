@@ -12,8 +12,14 @@
 
 ## Unreleased
 
+## 6.2.1
+
+**2023-08-09 · [Download](https://github.com/courselore/courselore/releases/tag/v6.2.1) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
+
 - Fixed an issue in which trying to see invitations for existing courses would cause a server error.
 - Allow people to create a chat with only themselves: https://courselore.org/courses/8537410611/conversations/80
+- Fixed some labels on course settings, for example, “Courses Participants” → “Course Participants”.
+- Added Johns Hopkins as a SAML Identity Provider for courselore.org.
 
 ## 6.2.0
 

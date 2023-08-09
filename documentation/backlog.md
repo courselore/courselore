@@ -2,10 +2,6 @@
 
 ## Work in Progress
 
-- Deploy
-
----
-
 - `host.docker.internal`
 - `docker run --rm -it ubuntu bash`
 - `docker run --rm -it alpine sh`
