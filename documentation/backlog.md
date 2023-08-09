@@ -2,6 +2,12 @@
 
 ## Work in Progress
 
+- Invitations causing server error
+- “Courses Participants”
+- “Course Participant”
+
+---
+
 - `host.docker.internal`
 - `docker run --rm -it ubuntu bash`
 - `docker run --rm -it alpine sh`
@@ -1282,6 +1288,8 @@ const { app, BrowserWindow } = require("electron");
 
 ## Infrastructure
 
+- Add support for source maps in production
+  - The difficulty is that we have subprocesses, so we can’t simply pass `--enable-source-maps` as an argument to invoking the application through caxa. Instead, we must set the `NODE_OPTIONS=--enable-source-maps` environment variable as we do in development.
 - When extracting inline CSS/JavaScript with the Babel plugin normalize the snippets
   - It leads to a 10% improvement in CSS and a small improvement in JavaScript
   - Prettier: Starting with Prettier 3.0 `prettier.format()` is asynchronous, but Babel visitors have to be synchronous
