@@ -2,10 +2,6 @@
 
 ## Work in Progress
 
-- Schedule meeting
-
-- Use node instead of nvm
-  - Update documentation
 - Prettier 
   - `--parser=css` `postcss-scss` `postcss-less`
   - `prettier.format()`
