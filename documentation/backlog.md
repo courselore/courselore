@@ -2,7 +2,6 @@
 
 ## Work in Progress
 
-- Invitations causing server error
 - “Courses Participants”
 - “Course Participant”
 
