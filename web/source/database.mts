@@ -2275,8 +2275,8 @@ export default async (application: Application): Promise<void> => {
                     !node.children[0].properties.className[0].startsWith(
                       "language-",
                     ) ||
-                    index === null ||
-                    parent === null
+                    index === undefined ||
+                    parent === undefined
                   )
                     return;
 
@@ -2321,7 +2321,7 @@ export default async (application: Application): Promise<void> => {
               };
             })(),
           )
-          .use(() => (tree: any) => {
+          .use(() => (tree) => {
             unistUtilVisit(tree, (node) => {
               if (
                 node.type === "element" &&
