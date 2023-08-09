@@ -12,6 +12,7 @@
 
 ## Unreleased
 
+- Fixed an issue in which trying to see invitations for existing courses would cause a server error.
 - Allow people to create a chat with only themselves: https://courselore.org/courses/8537410611/conversations/80
 
 ## 6.2.0
