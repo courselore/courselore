@@ -2383,6 +2383,10 @@ export default async (application: Application): Promise<void> => {
       ALTER TABLE "sessions" ADD COLUMN "samlNameID" TEXT NULL;
       DELETE FROM "sessions" WHERE "samlIdentifier" IS NOT NULL;
     `,
+
+    sql`
+      UPDATE "invitations" SET "courseRole" = 'course-staff' WHERE "courseRole" = 'staff';
+    `,
   );
 
   application.database.run(
