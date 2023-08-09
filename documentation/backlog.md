@@ -2,68 +2,6 @@
 
 ## Work in Progress
 
-- Prettier 
-  - `prettier.format()`
-    - How important is it to canonicalize? NOT A LOT: 10% DIFFERENCE IN CSS AND ALMOST NO DIFFERENCE IN JAVASCRIPT
-    - Use something other than Prettier to canonicalize the snippets of CSS & JavaScript
-      - Babel / PostCSS
-        - Synchronous APIs? Babel: Yes / PostCSS: Yes
-        - Canonicale? Babel: ? / PostCSS: https://www.npmjs.com/package/postcss-normalize-whitespace
-      - esbuild
-        - Fix spurious `{}` at the end of CSS snippets
-        - Test that differences in whitespace have been canonicalized
-        - Review options starting at https://esbuild.github.io/api/#output-contents
-        - BAD: Doesn’t understand nested selectors like PostCSS (and Prettier, for that matter)
-    - https://github.com/prettier/prettier-synchronized
-    - https://www.npmjs.com/package/synckit
-    - Some hack to let a Babel visitor run async code
-    - Rework the code to do a traversal only collecting the code, and a separate pass computing the canonical versions and so forth
-    - Old version of Prettier
-
-
-```javascript
-import esbuild from "esbuild";
-
-// console.log(esbuild.transformSync(`const a = 2;`, {loader: "js"}).code);
-// console.log(esbuild.transformSync(`const    =    2;`, {loader: "js"}).code);
-// console.log(esbuild.transformSync(`.a { background-color: blue; }`, {loader: "css"}).code);
-// console.log(esbuild.transformSync(`.a {       background-color: blue;         }`, {loader: "css"}).code);
-
-// console.log(esbuild.transformSync(`const a =    await    fn(   );`, {loader: "js"}).code);
-
-console.log(esbuild.transformSync(`&{padding: var(--space--2);
-display: flex;
-flex-direction: column;
-gap: var(--space--2);
-
-video {
-  max-width: 100%;
-  height: auto;
-  border-radius: var(--border-radius--xl);
-  display: block;
-}}`, {loader: "css"}).code);
-
-
-
-import postcss from "postcss";
-
-console.log(postcss().process(`
-padding:       var(--space--2);
-display: flex;
-flex-direction: column;
-gap: var(--space--2);
-
-video {
-  max-width: 100%;
-  height: auto;
-  border-radius: var(--border-radius--xl);
-  display: block;
-}
-`).sync().css);
-
-```
-
-
 - Type errors
 
 - `host.docker.internal`
@@ -1346,6 +1284,19 @@ const { app, BrowserWindow } = require("electron");
 
 ## Infrastructure
 
+- When extracting inline CSS/JavaScript with the Babel plugin normalize the snippets
+  - It leads to a 10% improvement in CSS and a small improvement in JavaScript
+  - Prettier: Starting with Prettier 3.0 `prettier.format()` is asynchronous, but Babel visitors have to be synchronous
+    - https://github.com/prettier/prettier-synchronized : It’s under the Prettier organization, so there’s a chance that it’ll actually stick around, but it relies on running subprocesses, which seems hackish and potentially slow
+    - https://www.npmjs.com/package/synckit : Again, running subprocesses
+    - Some hack to let a Babel visitor run async code: There’s another library in the Babel ecosystem that implements the above hack with subprocesses
+    - Rework the code to do a traversal only collecting the code, and a separate pass computing the canonical versions and so forth
+    - Old version of Prettier: This is **very bad**
+  - esbuild
+    - Doesn’t recognize nested CSS syntax like we use it (it recognizes the new web standard, which arguably we should convert into, but in really the standard is still changing as of August 2023—they’re relaxing the requirement of the `&`)
+  - Babel / PostCSS
+    - PostCSS’s synchronous API is meant only for debugging/testing
+    - https://www.npmjs.com/package/postcss-normalize-whitespace is necessary, otherwise PostCSS preserves whitespace
 - If you created a course using Demonstration Data, perhaps sometimes inject new messages/conversations/likes, and so forth, to pretend that there are other people using the course. The demonstration in Moodle does something like that.
 - A tab left open in Firefox for a long time seems to slow down the computer
   - https://courselore.org/courses/8537410611/conversations/75
