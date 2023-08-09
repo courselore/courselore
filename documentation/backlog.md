@@ -4,6 +4,7 @@
 
 - “Courses Participants”
 - “Course Participant”
+- Deploy
 
 ---
 
