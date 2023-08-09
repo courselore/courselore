@@ -3,7 +3,6 @@ import fs from "node:fs/promises";
 import { globby } from "globby";
 import babel from "@babel/core";
 import babelGenerator from "@babel/generator";
-import prettier from "prettier";
 import postcss from "postcss";
 import postcssNested from "postcss-nested";
 import autoprefixer from "autoprefixer";
@@ -90,13 +89,10 @@ for (const input of await globby("./source/**/*.mts")) {
             TaggedTemplateExpression(path) {
               switch (path.node.tag.name) {
                 case "css": {
-                  const css_ = prettier.format(
-                    new Function(
-                      "css",
-                      `return (${babelGenerator.default(path.node).code});`,
-                    )(css),
-                    { parser: "css" },
-                  );
+                  const css_ = new Function(
+                    "css",
+                    `return (${babelGenerator.default(path.node).code});`,
+                  )(css);
                   const identifier = baseIdentifier.encode(
                     xxhash.XXHash3.hash(Buffer.from(css_)),
                   );
@@ -116,9 +112,6 @@ for (const input of await globby("./source/**/*.mts")) {
                     javascript_ +=
                       (index === 0 ? `` : `$$${index - 1}`) +
                       quasi.value.cooked;
-                  javascript_ = prettier.format(javascript_, {
-                    parser: "babel",
-                  });
                   const identifier = baseIdentifier.encode(
                     xxhash.XXHash3.hash(Buffer.from(javascript_)),
                   );
