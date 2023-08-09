@@ -2,8 +2,6 @@
 
 ## Work in Progress
 
-- “Courses Participants”
-- “Course Participant”
 - Deploy
 
 ---

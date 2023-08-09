@@ -1011,7 +1011,7 @@ export default async (application: Application): Promise<void> => {
       }/settings/${
         response.locals.courseParticipant.courseRole === "course-staff"
           ? "course-information"
-          : "course-participant"
+          : "course-participation"
       }`,
     );
   });
@@ -1111,7 +1111,7 @@ export default async (application: Application): Promise<void> => {
                     ? "bi-people-fill"
                     : "bi-people"}"
                 ></i>
-                Courses Participants
+                Course Participants
               </a>
               <a
                 href="https://${application.configuration
@@ -1129,21 +1129,21 @@ export default async (application: Application): Promise<void> => {
               <a
                 href="https://${application.configuration
                   .hostname}/courses/${response.locals.course
-                  .reference}/settings/course-participant"
+                  .reference}/settings/course-participation"
                 class="dropdown--menu--item menu-box--item button ${request.path.match(
-                  /\/settings\/course-participant\/?$/i,
+                  /\/settings\/course-participation\/?$/i,
                 )
                   ? "button--blue"
                   : "button--transparent"}"
               >
                 <i
                   class="bi ${request.path.match(
-                    /\/settings\/course-participant\/?$/i,
+                    /\/settings\/course-participation\/?$/i,
                   )
                     ? "bi-person-fill"
                     : "bi-person"}"
                 ></i>
-                Course Participant
+                Course Participation
               </a>
             `
           : html``,
@@ -5134,7 +5134,7 @@ export default async (application: Application): Promise<void> => {
     {},
     Application["web"]["locals"]["ResponseLocals"]["CourseParticipant"]
   >(
-    "/courses/:courseReference/settings/course-participant",
+    "/courses/:courseReference/settings/course-participation",
     (request, response, next) => {
       if (response.locals.course === undefined) return next();
 
@@ -5144,7 +5144,7 @@ export default async (application: Application): Promise<void> => {
           response,
           head: html`
             <title>
-              Course Participant · Course Settings ·
+              Course Participation · Course Settings ·
               ${response.locals.course.name} · Courselore
             </title>
           `,
@@ -5153,14 +5153,14 @@ export default async (application: Application): Promise<void> => {
               <i class="bi bi-sliders"></i>
               Course Settings ·
               <i class="bi bi-person-fill"></i>
-              Course Participant
+              Course Participation
             </h2>
 
             <form
               method="PATCH"
               action="https://${application.configuration
                 .hostname}/courses/${response.locals.course
-                .reference}/settings/course-participant"
+                .reference}/settings/course-participation"
               novalidate
               css="${css`
                 display: flex;
@@ -5243,7 +5243,7 @@ export default async (application: Application): Promise<void> => {
                   class="button button--full-width-on-small-screen button--blue"
                 >
                   <i class="bi bi-pencil-fill"></i>
-                  Update Course Participant
+                  Update Course Participation
                 </button>
               </div>
             </form>
@@ -5262,7 +5262,7 @@ export default async (application: Application): Promise<void> => {
     {},
     Application["web"]["locals"]["ResponseLocals"]["CourseParticipant"]
   >(
-    "/courses/:courseReference/settings/course-participant",
+    "/courses/:courseReference/settings/course-participation",
     (request, response, next) => {
       if (response.locals.course === undefined) return next();
 
@@ -5286,12 +5286,12 @@ export default async (application: Application): Promise<void> => {
         request,
         response,
         theme: "green",
-        content: html`Course participant updated successfully.`,
+        content: html`Course participation updated successfully.`,
       });
 
       response.redirect(
         303,
-        `https://${application.configuration.hostname}/courses/${response.locals.course.reference}/settings/course-participant`,
+        `https://${application.configuration.hostname}/courses/${response.locals.course.reference}/settings/course-participation`,
       );
     },
   );

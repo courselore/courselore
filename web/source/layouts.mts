@@ -1781,7 +1781,7 @@ export default async (application: Application): Promise<void> => {
                                 <a
                                   href="https://${application.configuration
                                     .hostname}/courses/${response.locals.course!
-                                    .reference}/settings/course-participant"
+                                    .reference}/settings/course-participation"
                                   class="button button--blue"
                                   css="${css`
                                     width: 100%;
