@@ -3,7 +3,6 @@
 ## Work in Progress
 
 - Prettier 
-  - Add `"prettier": {}` to every project
   - `--parser=css` `postcss-scss` `postcss-less`
   - `prettier.format()`
     - How important is it to canonicalize? NOT A LOT: 10% DIFFERENCE IN CSS AND ALMOST NO DIFFERENCE IN JAVASCRIPT
