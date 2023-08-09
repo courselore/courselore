@@ -126,5 +126,6 @@
     "tippy.js": "^6.3.7",
     "typescript": "^5.1.6",
     "xxhash-addon": "^2.0.1"
-  }
+  },
+  "prettier": {}
 }

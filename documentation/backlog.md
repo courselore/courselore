@@ -3,6 +3,7 @@
 ## Work in Progress
 
 - Prettier 
+  - Add `"prettier": {}` to every project
   - `--parser=css` `postcss-scss` `postcss-less`
   - `prettier.format()`
     - How important is it to canonicalize? NOT A LOT: 10% DIFFERENCE IN CSS AND ALMOST NO DIFFERENCE IN JAVASCRIPT
@@ -20,7 +21,6 @@
     - Some hack to let a Babel visitor run async code
     - Rework the code to do a traversal only collecting the code, and a separate pass computing the canonical versions and so forth
     - Old version of Prettier
-  - Get Visual Studio Code extension working with the latest version
 
 
 ```javascript
