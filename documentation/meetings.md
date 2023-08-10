@@ -1,6 +1,15 @@
 # Meetings
 
 <details>
+<summary>2023-08-10</summary>
+
+- Deployed a new version with SAML, a fix to the server error on the invitations page, and so forth.
+- Creating a SQLite backend for Ltijs.
+- Experimental support for AI using the project led by Ali.
+
+</details>
+
+<details>
 <summary>2023-07-15</summary>
 
 - Figuring out LTI.

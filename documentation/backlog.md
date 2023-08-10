@@ -2,6 +2,24 @@
 
 ## Work in Progress
 
+- “My Participation” “My Customization”
+- Accent color is for me only
+
+- LTI Three weeks from today
+
+- Hit API for AI service
+  - Make it distinguished
+    - Sidebar like “Follow-up Question”
+  - AI generated, might be wrong
+  - Send question / receive answer
+- Train database
+- Just for Ali’s course
+- How to authenticate with API?
+- If there’s an image in message, don’t hit API??
+- Feedback system
+  - The AI-generated answer “resolved” the question
+  - Have a button to “resolve”
+
 - `host.docker.internal`
 - `docker run --rm -it ubuntu bash`
 - `docker run --rm -it alpine sh`
