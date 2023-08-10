@@ -14,9 +14,9 @@
 - How to authenticate with API?
 - If there’s an image in message, don’t hit API??
 - Feedback system
-
   - The AI-generated answer “resolved” the question
   - Have a button to “resolve”
+  - Later, the API will provide a “thumbs-up/thumbs-down” endpoint as well
 
 **Learning Tools Interoperability (LTI)**
 
