@@ -2,7 +2,6 @@
 
 ## Work in Progress
 
-- “My Participation” “My Customization”
 - Accent color is for me only
 
 - LTI Three weeks from today

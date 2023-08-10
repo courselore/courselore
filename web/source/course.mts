@@ -1011,7 +1011,7 @@ export default async (application: Application): Promise<void> => {
       }/settings/${
         response.locals.courseParticipant.courseRole === "course-staff"
           ? "course-information"
-          : "course-participation"
+          : "my-course-participation"
       }`,
     );
   });
@@ -1129,21 +1129,21 @@ export default async (application: Application): Promise<void> => {
               <a
                 href="https://${application.configuration
                   .hostname}/courses/${response.locals.course
-                  .reference}/settings/course-participation"
+                  .reference}/settings/my-course-participation"
                 class="dropdown--menu--item menu-box--item button ${request.path.match(
-                  /\/settings\/course-participation\/?$/i,
+                  /\/settings\/my-course-participation\/?$/i,
                 )
                   ? "button--blue"
                   : "button--transparent"}"
               >
                 <i
                   class="bi ${request.path.match(
-                    /\/settings\/course-participation\/?$/i,
+                    /\/settings\/my-course-participation\/?$/i,
                   )
                     ? "bi-person-fill"
                     : "bi-person"}"
                 ></i>
-                Course Participation
+                My Course Participation
               </a>
             `
           : html``,
@@ -5134,7 +5134,7 @@ export default async (application: Application): Promise<void> => {
     {},
     Application["web"]["locals"]["ResponseLocals"]["CourseParticipant"]
   >(
-    "/courses/:courseReference/settings/course-participation",
+    "/courses/:courseReference/settings/my-course-participation",
     (request, response, next) => {
       if (response.locals.course === undefined) return next();
 
@@ -5144,7 +5144,7 @@ export default async (application: Application): Promise<void> => {
           response,
           head: html`
             <title>
-              Course Participation · Course Settings ·
+              My Course Participation · Course Settings ·
               ${response.locals.course.name} · Courselore
             </title>
           `,
@@ -5153,14 +5153,14 @@ export default async (application: Application): Promise<void> => {
               <i class="bi bi-sliders"></i>
               Course Settings ·
               <i class="bi bi-person-fill"></i>
-              Course Participation
+              My Course Participation
             </h2>
 
             <form
               method="PATCH"
               action="https://${application.configuration
                 .hostname}/courses/${response.locals.course
-                .reference}/settings/course-participation"
+                .reference}/settings/my-course-participation"
               novalidate
               css="${css`
                 display: flex;
@@ -5243,7 +5243,7 @@ export default async (application: Application): Promise<void> => {
                   class="button button--full-width-on-small-screen button--blue"
                 >
                   <i class="bi bi-pencil-fill"></i>
-                  Update Course Participation
+                  Update My Course Participation
                 </button>
               </div>
             </form>
@@ -5262,7 +5262,7 @@ export default async (application: Application): Promise<void> => {
     {},
     Application["web"]["locals"]["ResponseLocals"]["CourseParticipant"]
   >(
-    "/courses/:courseReference/settings/course-participation",
+    "/courses/:courseReference/settings/my-course-participation",
     (request, response, next) => {
       if (response.locals.course === undefined) return next();
 
@@ -5291,7 +5291,7 @@ export default async (application: Application): Promise<void> => {
 
       response.redirect(
         303,
-        `https://${application.configuration.hostname}/courses/${response.locals.course.reference}/settings/course-participation`,
+        `https://${application.configuration.hostname}/courses/${response.locals.course.reference}/settings/my-course-participation`,
       );
     },
   );
