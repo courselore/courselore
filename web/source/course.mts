@@ -5156,6 +5156,17 @@ export default async (application: Application): Promise<void> => {
               My Course Participation
             </h2>
 
+            <div
+              class="secondary"
+              css="${css`
+                font-size: var(--font-size--xs);
+                line-height: var(--line-height--xs);
+              `}"
+            >
+              The settings on this page apply to your participation in the
+              course only and don’t affect other course participants.
+            </div>
+
             <form
               method="PATCH"
               action="https://${application.configuration

@@ -2,8 +2,6 @@
 
 ## Work in Progress
 
-- Accent color is for me only
-
 - LTI Three weeks from today
 
 - Hit API for AI service
