@@ -22,11 +22,140 @@
 
 **Deadline:** 2023-08-25
 
-- `host.docker.internal`
-- `docker run --rm -it ubuntu bash`
-- `docker run --rm -it alpine sh`
+- Decide once and for all:
+  - Which version of LTI to use: 1.1 or 1.3
+    - 1.3 is officially supported, while 1.1 is deprecated
+    - 1.3 is the only one supported by newer tools like Gradescope
+    - 1.3 has Ltijs
+    - **1.1 doesn’t require intervention from LMS administrators?**
+    - **1.1 seems simpler to implement?**
+    - **1.3 allows you to get the whole roster at once while 1.1 depends on people entering Courselore at least once?**
+  - Use Ltijs (reimplement the database layer) or do it by hand (reimplement a lot of OAuth, OpenID, etc.)
+- OAuth
+  - Include `state` on authorization request:
+    - Redirect URL for when we’re back from authorization flow (deep link)
+    - CSRF: Random value stored in session and checked on callback
+  - Include PKCE
+- SAML
+  - Include random value in `RelayState` to prevent CSRF?
+- SAML vs OAuth for authentication
+  - It is possible that they give you different identifiers for the same person 🤦‍♂️
+  - Introduce the notion of multiple emails per account
+  - Introduce a way to merge accounts
+  - Splash screen prompting to merge accounts
+- How the synchronization of course participants behaves:
+  - If someone appears in the LMS, sign them up in Courselore and add them as course participant. Mark their participation as having come from the LMS.
+  - In general, mark everyone who appears in the LMS.
+  - If someone disappears from the LMS, and they have been marked as appearing in LMS in the first place, then it’s okay to remove them.
+- Deep linking for people to put an LMS entry with a link to a specific conversation?
+- Perhaps replace our own authentication with OAuth?
+  - And what about our future API?
+- Document how to use in different LMSs
+- References
+  - Specifications
+    - https://www.imsglobal.org/spec/lti/v1p3/
+    - https://www.imsglobal.org/spec/lti/v1p3/impl/
+    - https://www.imsglobal.org/spec/lti-nrps/v2p0/
+    - https://www.imsglobal.org/oneroster-v11-final-specification
+  - Information
+    - https://en.wikipedia.org/wiki/Learning_Tools_Interoperability
+    - https://www.imsglobal.org/activity/learning-tools-interoperability
+    - https://www.imsglobal.org/lti-advantage-overview
+    - https://www.imsglobal.org/lti-adoption-roadmap
+    - https://www.imsglobal.org/1edtech-security-framework
+    - https://www.imsglobal.org/spec/lti/v1p3/
+    - https://elearningindustry.com/learning-tool-interoperability-part-elearning-application
+    - http://www.dr-chuck.com/csev-blog/2012/03/connecting-ims-learning-tools-interoperability-and-saml/
+    - https://www.edu-apps.org/code.html
+    - https://canvas.instructure.com/courses/785215/pages/introduction-to-lti-apps?module_item_id=4761747
+    - https://oauth.net
+    - https://fusionauth.io/articles/oauth/modern-guide-to-oauth
+    - https://drops.dagstuhl.de/opus/volltexte/2022/16616/pdf/OASIcs-ICPEC-2022-12.pdf
+    - https://auth0.com/docs/secure/tokens/json-web-tokens
+    - https://workos.com/blog/the-developers-guide-to-sso
+    - https://workos.com/blog/fun-with-saml-sso-vulnerabilities-and-footguns
+    - https://developer.okta.com/blog/2019/10/21/illustrated-guide-to-oauth-and-oidc
+    - https://www.azureblue.io/oauth2-openid-connect-in-a-nutshell-part-1/
+    - https://www.youtube.com/watch?v=996OiexHze0
+    - https://auth0.com/blog/refresh-tokens-what-are-they-and-when-to-use-them/
+    - https://oauth.net/2/
+    - https://www.oauth.com
+    - https://www.passportjs.org/concepts/oauth2/
+    - https://www.youtube.com/watch?v=Llk-t8sN3zo
+      - https://community.canvaslms.com/t5/Canvas-Developers-Group/Any-recommendations-for-Java-based-LTI-1-3-libraries/td-p/419568
+    - https://medium.com/voxy-engineering/introduction-to-lti-1-3-270f17505d75
+    - https://docs.anthology.com/docs/LTI/Tutorials/lti-lti_impl_guide
+    - https://github.com/1EdTech/ltibootcamp
+    - https://github.com/blackboard/BBDN-LTI-Tool-Provider-Node/tree/master
+    - https://learn.microsoft.com/en-us/linkedin/learning/sso-auth/sso-docs/lti-13-implementation
+    - https://moodle.org/mod/forum/discuss.php?d=430016
+  - OneRoster
+    - https://www.imsglobal.org/oneroster-11-introduction
+    - https://www.imsglobal.org/activity/onerosterlis
+  - Implementations
+    - LTI
+      - https://cvmcosta.me/ltijs/
+        - https://github.com/Cvmcosta/ltijs-demo-server
+        - https://github.com/Cvmcosta/ltijs-demo-client
+      - https://github.com/blackboard/BBDN-LTI-Tool-Provider-Node
+      - https://github.com/SanDiegoCodeSchool/lti-node-example
+      - https://github.com/oat-sa/devkit-lti1p3
+      - https://github.com/UOC/java-lti-1.3-provider-example
+    - OAuth2
+      - Lists
+        - https://oauth.net/code/nodejs/
+      - Testing server
+        - https://github.com/axa-group/oauth2-mock-server
+        - https://github.com/dexidp/dex (Go)
+        - https://github.com/navikt/mock-oauth2-server (Java)
+      - Client
+        - https://npmtrends.com/@badgateway/oauth2-client-vs-oauth-vs-oauth4webapi-vs-openid-client
+        - https://github.com/panva/node-openid-client
+        - https://github.com/ciaranj/node-oauth
+        - https://github.com/panva/oauth4webapi (a version of https://github.com/panva/node-openid-client that works in JavaScript environments other than Node.js)
+        - https://github.com/badgateway/oauth2-client
+        - https://github.com/authts/oidc-client-ts (for the browser only)
+      - Server
+        - https://npmtrends.com/@node-oauth/oauth2-server-vs-oidc-provider
+        - https://github.com/panva/node-oidc-provider
+        - https://github.com/node-oauth/express-oauth-server
+          - https://github.com/node-oauth/node-oauth2-server
+    - JWT
+      - https://github.com/auth0/node-jsonwebtoken
+      - https://github.com/panva/jose
+  - Tools
+    - https://www.oauth.com/oauth2-servers/tools-and-libraries/
+  - Service Consumers (LMSs) to test with
+    - https://demo.moodle.net
+    - https://lti-ri.imsglobal.org
+    - https://github.com/instructure/canvas-lms
+    - https://github.com/moodle/moodle
+    - https://github.com/sakaiproject/sakai
+  - Example of connecting Moodle & Piazza
+    - https://support.piazza.com/support/solutions/articles/48001065448-configure-piazza-within-moodle
+    - https://demo.moodle.net
+  - Existing services
+    - https://help.gradescope.com/category/kiu9t7kmdt-administrator
+    - https://support.piazza.com/support/solutions/folders/48000669350
+      - https://piazza.com/product/lti
+    - https://github.com/microsoftarchive/Learn-LTI/blob/main/docs/CONFIGURATION_GUIDE.md
+    - https://docs.moodle.org/402/en/LTI_and_Moodle
+    - https://mlm.pearson.com/global/educators/support/lms-integration-services/index.html
+    - https://kb.wisc.edu/luwmad/page.php?id=123560
+  - https://courselore.org/courses/8537410611/conversations/79
+- Later
+  - Perhaps integrate at the application level and create courses automatically
+  - Allow staff members to control the process of synchronizing course participants in more detail, for example, have some options to quarantine instead of removing. (Some people may not trust the registrar 100%)
+  - Certification:
+    - https://www.imsglobal.org/lti-advantage-certification-suite
+    - https://site.imsglobal.org/certifications
+    - https://www.1edtech.org/certification/get-certified
+  - Promote: https://www.eduappcenter.com
+- Implementation snippets
 
-- Implement example
+  - `host.docker.internal`
+  - `docker run --rm -it ubuntu bash`
+  - `docker run --rm -it alpine sh`
 
   - GitHub client
 
@@ -216,132 +345,6 @@
       authConfig: { method: 'JWK_SET', key: 'http://canvas.docker/api/lti/security/jwks' }
     })
     ```
-
-- Implementation strategy
-  - Use Ltijs
-    - Reimplement the database layer
-  - Do it by hand
-    - Reimplement a lot of OAuth, OpenID, etc.
-- OAuth
-  - Include `state` on authorization request:
-    - Redirect URL for when we’re back from authorization flow (deep link)
-    - CSRF: Random value stored in session and checked on callback
-  - Include PKCE
-- SAML
-  - Include random value in `RelayState` to prevent CSRF?
-- SAML vs OAuth for authentication
-  - It is possible that they give you different identifiers for the same person 🤦‍♂️
-  - Introduce the notion of multiple emails per account
-  - Introduce a way to merge accounts
-  - Splash screen prompting to merge accounts
-- How the synchronization of course participants behaves:
-  - If someone appears in the LMS, sign them up in Courselore and add them as course participant. Mark their participation as having come from the LMS.
-  - In general, mark everyone who appears in the LMS.
-  - If someone disappears from the LMS, and they have been marked as appearing in LMS in the first place, then it’s okay to remove them.
-- Deep linking for people to put an LMS entry with a link to a specific conversation?
-- Perhaps replace our own authentication with OAuth?
-  - And what about our future API?
-- Document how to use in different LMSs
-- References
-  - Specifications
-    - https://www.imsglobal.org/spec/lti/v1p3/
-    - https://www.imsglobal.org/spec/lti/v1p3/impl/
-    - https://www.imsglobal.org/spec/lti-nrps/v2p0/
-    - https://www.imsglobal.org/oneroster-v11-final-specification
-  - Information
-    - https://en.wikipedia.org/wiki/Learning_Tools_Interoperability
-    - https://www.imsglobal.org/activity/learning-tools-interoperability
-    - https://www.imsglobal.org/lti-advantage-overview
-    - https://www.imsglobal.org/lti-adoption-roadmap
-    - https://www.imsglobal.org/1edtech-security-framework
-    - https://www.imsglobal.org/spec/lti/v1p3/
-    - https://elearningindustry.com/learning-tool-interoperability-part-elearning-application
-    - http://www.dr-chuck.com/csev-blog/2012/03/connecting-ims-learning-tools-interoperability-and-saml/
-    - https://www.edu-apps.org/code.html
-    - https://canvas.instructure.com/courses/785215/pages/introduction-to-lti-apps?module_item_id=4761747
-    - https://oauth.net
-    - https://fusionauth.io/articles/oauth/modern-guide-to-oauth
-    - https://drops.dagstuhl.de/opus/volltexte/2022/16616/pdf/OASIcs-ICPEC-2022-12.pdf
-    - https://auth0.com/docs/secure/tokens/json-web-tokens
-    - https://workos.com/blog/the-developers-guide-to-sso
-    - https://workos.com/blog/fun-with-saml-sso-vulnerabilities-and-footguns
-    - https://developer.okta.com/blog/2019/10/21/illustrated-guide-to-oauth-and-oidc
-    - https://www.azureblue.io/oauth2-openid-connect-in-a-nutshell-part-1/
-    - https://www.youtube.com/watch?v=996OiexHze0
-    - https://auth0.com/blog/refresh-tokens-what-are-they-and-when-to-use-them/
-    - https://oauth.net/2/
-    - https://www.oauth.com
-    - https://www.passportjs.org/concepts/oauth2/
-    - https://www.youtube.com/watch?v=Llk-t8sN3zo
-      - https://community.canvaslms.com/t5/Canvas-Developers-Group/Any-recommendations-for-Java-based-LTI-1-3-libraries/td-p/419568
-    - https://medium.com/voxy-engineering/introduction-to-lti-1-3-270f17505d75
-    - https://docs.anthology.com/docs/LTI/Tutorials/lti-lti_impl_guide
-    - https://github.com/1EdTech/ltibootcamp
-    - https://github.com/blackboard/BBDN-LTI-Tool-Provider-Node/tree/master
-    - https://learn.microsoft.com/en-us/linkedin/learning/sso-auth/sso-docs/lti-13-implementation
-    - https://moodle.org/mod/forum/discuss.php?d=430016
-  - OneRoster
-    - https://www.imsglobal.org/oneroster-11-introduction
-    - https://www.imsglobal.org/activity/onerosterlis
-  - Implementations
-    - LTI
-      - https://cvmcosta.me/ltijs/
-        - https://github.com/Cvmcosta/ltijs-demo-server
-        - https://github.com/Cvmcosta/ltijs-demo-client
-      - https://github.com/blackboard/BBDN-LTI-Tool-Provider-Node
-      - https://github.com/SanDiegoCodeSchool/lti-node-example
-      - https://github.com/oat-sa/devkit-lti1p3
-      - https://github.com/UOC/java-lti-1.3-provider-example
-    - OAuth2
-      - Lists
-        - https://oauth.net/code/nodejs/
-      - Testing server
-        - https://github.com/axa-group/oauth2-mock-server
-        - https://github.com/dexidp/dex (Go)
-        - https://github.com/navikt/mock-oauth2-server (Java)
-      - Client
-        - https://npmtrends.com/@badgateway/oauth2-client-vs-oauth-vs-oauth4webapi-vs-openid-client
-        - https://github.com/panva/node-openid-client
-        - https://github.com/ciaranj/node-oauth
-        - https://github.com/panva/oauth4webapi (a version of https://github.com/panva/node-openid-client that works in JavaScript environments other than Node.js)
-        - https://github.com/badgateway/oauth2-client
-        - https://github.com/authts/oidc-client-ts (for the browser only)
-      - Server
-        - https://npmtrends.com/@node-oauth/oauth2-server-vs-oidc-provider
-        - https://github.com/panva/node-oidc-provider
-        - https://github.com/node-oauth/express-oauth-server
-          - https://github.com/node-oauth/node-oauth2-server
-    - JWT
-      - https://github.com/auth0/node-jsonwebtoken
-      - https://github.com/panva/jose
-  - Tools
-    - https://www.oauth.com/oauth2-servers/tools-and-libraries/
-  - Service Consumers (LMSs) to test with
-    - https://demo.moodle.net
-    - https://lti-ri.imsglobal.org
-    - https://github.com/instructure/canvas-lms
-    - https://github.com/moodle/moodle
-    - https://github.com/sakaiproject/sakai
-  - Example of connecting Moodle & Piazza
-    - https://support.piazza.com/support/solutions/articles/48001065448-configure-piazza-within-moodle
-    - https://demo.moodle.net
-  - Existing services
-    - https://help.gradescope.com/category/kiu9t7kmdt-administrator
-    - https://support.piazza.com/support/solutions/folders/48000669350
-      - https://piazza.com/product/lti
-    - https://github.com/microsoftarchive/Learn-LTI/blob/main/docs/CONFIGURATION_GUIDE.md
-    - https://docs.moodle.org/402/en/LTI_and_Moodle
-    - https://mlm.pearson.com/global/educators/support/lms-integration-services/index.html
-    - https://kb.wisc.edu/luwmad/page.php?id=123560
-  - https://courselore.org/courses/8537410611/conversations/79
-- Later
-  - Perhaps integrate at the application level and create courses automatically
-  - Allow staff members to control the process of synchronizing course participants in more detail, for example, have some options to quarantine instead of removing. (Some people may not trust the registrar 100%)
-  - Certification:
-    - https://www.imsglobal.org/lti-advantage-certification-suite
-    - https://site.imsglobal.org/certifications
-    - https://www.1edtech.org/certification/get-certified
-  - Promote: https://www.eduappcenter.com
 
 **Other**
 
