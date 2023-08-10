@@ -2,7 +2,7 @@
 
 ## Work in Progress
 
-- LTI Three weeks from today
+**AI**
 
 - Hit API for AI service
   - Make it distinguished
@@ -14,14 +14,17 @@
 - How to authenticate with API?
 - If there’s an image in message, don’t hit API??
 - Feedback system
+
   - The AI-generated answer “resolved” the question
   - Have a button to “resolve”
+
+**Learning Tools Interoperability (LTI)**
+
+**Deadline:** 2023-08-25
 
 - `host.docker.internal`
 - `docker run --rm -it ubuntu bash`
 - `docker run --rm -it alpine sh`
-
-**Learning Tools Interoperability (LTI)**
 
 - Implement example
 
