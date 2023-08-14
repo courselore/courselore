@@ -22,15 +22,50 @@
 
 **Deadline:** 2023-08-25
 
-- Uninstall
+- Reinstall
+
   - Canvas
   - Moodle
   - Discourse
 
-- Reinstall
-  - Canvas
-  - Moodle
-  - Discourse
+- Play with Canvas
+
+  - https://canvas.instructure.com/doc/api/index.html
+  - Create users
+  - Create course
+  - Create keys
+  - API
+
+    ```
+    yaFC0ioOnwa0mVDDxtSNqxI5oi1nDRnojoY7tO1TlgsLK5lR3rSmGeaWJwdvOSit
+
+    curl -H "Authorization: Bearer yaFC0ioOnwa0mVDDxtSNqxI5oi1nDRnojoY7tO1TlgsLK5lR3rSmGeaWJwdvOSit" "http://canvas.docker/api/v1/courses"
+
+    curl http://canvas.docker/api/graphql \
+    -H 'Authorization: Bearer yaFC0ioOnwa0mVDDxtSNqxI5oi1nDRnojoY7tO1TlgsLK5lR3rSmGeaWJwdvOSit' \
+    -d query='query courseInfo($courseId: ID!) {
+        course(id: $courseId) {
+          id
+          _id
+          name
+        }
+      }' \
+    -d variables[courseId]=1
+
+    curl 'http://canvas.docker/api/v1/users/self/activity_stream?as_user_id=sis_user_id:brian' \
+     -H "Authorization: Bearer yaFC0ioOnwa0mVDDxtSNqxI5oi1nDRnojoY7tO1TlgsLK5lR3rSmGeaWJwdvOSit"
+
+
+    API KEY
+    10000000000002
+    C0TNw2wywTIkPkzZUMCqM8B5ubRdJyWxcMjuJweS1CIjhPxJ6DWdRTSEPNBqEj5o
+
+    http://canvas.docker/login/oauth2/auth?client_id=10000000000002&response_type=code&state=example-of-state&redirect_uri=http://127.0.0.1:3000/redirect-uri
+    http://127.0.0.1:3000/redirect-uri?code=23e2515bf8a07346a830db5f5cc55206a7a9bb9908a10cf82715c4b93a7846b91dc8e4b86ef8ec0542bbdfbce0c9708f479531f9812442806e15d2767a9dabac&state=example-of-state
+    curl -X POST -d "grant_type=authorization_code&client_id=10000000000002&client_secret=C0TNw2wywTIkPkzZUMCqM8B5ubRdJyWxcMjuJweS1CIjhPxJ6DWdRTSEPNBqEj5o&redirect_uri=http://127.0.0.1:3000/redirect-uri&code=23e2515bf8a07346a830db5f5cc55206a7a9bb9908a10cf82715c4b93a7846b91dc8e4b86ef8ec0542bbdfbce0c9708f479531f9812442806e15d2767a9dabac" http://canvas.docker/login/oauth2/token
+    {"access_token":"lXldRcsdjhYKYoKuhlQ5SgrSSEnXazQxG80JPBelQbzqhmfsJhLg4o3f2XR3rbE4","token_type":"Bearer","user":{"id":1,"name":"administrator@courselore.org","global_id":"10000000000001","effective_locale":"en"},"canvas_region":"unknown","refresh_token":"tCbFW0MrSDU95aX9gwKMHMRkiTNKSB5sVsavXljIvrvIiRTGCoUYgNlnpeuGl7bG","expires_in":3600}
+    curl -H "Authorization: Bearer lXldRcsdjhYKYoKuhlQ5SgrSSEnXazQxG80JPBelQbzqhmfsJhLg4o3f2XR3rbE4" "https://canvas.instructure.com/api/v1/courses"
+    ```
 
 - Decide once and for all:
   - Which version of LTI to use: 1.1 or 1.3
@@ -1534,7 +1569,7 @@ const { app, BrowserWindow } = require("electron");
 - Main
   - <https://canvaslms.com>
     - https://github.com/instructure/canvas-lms/blob/master/doc/docker/developing_with_docker.md
-    - `dory up && docker-compose up -d && open http://canvas.docker/`
+    - `dory up && docker-compose up -d && open http://canvas.docker/ && open http://mail.canvas.docker/`
     - `administrator@courselore.org / 1234567890`
   - <https://moodle.org>
     - https://github.com/moodlehq/moodle-docker/
