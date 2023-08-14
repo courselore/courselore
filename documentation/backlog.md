@@ -22,6 +22,16 @@
 
 **Deadline:** 2023-08-25
 
+- Uninstall
+  - Canvas
+  - Moodle
+  - Discourse
+
+- Reinstall
+  - Canvas
+  - Moodle
+  - Discourse
+
 - Decide once and for all:
   - Which version of LTI to use: 1.1 or 1.3
     - 1.3 is officially supported, while 1.1 is deprecated
@@ -1525,6 +1535,7 @@ const { app, BrowserWindow } = require("electron");
   - <https://canvaslms.com>
     - https://github.com/instructure/canvas-lms/blob/master/doc/docker/developing_with_docker.md
     - `dory up && docker-compose up -d && open http://canvas.docker/`
+    - `administrator@courselore.org / 1234567890`
   - <https://moodle.org>
     - https://github.com/moodlehq/moodle-docker/
       - `export MOODLE_DOCKER_WWWROOT=/Users/leafac/Downloads/COURSELORE-REFERENCES/moodle && export MOODLE_DOCKER_DB=pgsql && bin/moodle-docker-compose up -d && open http://localhost:8000/`
