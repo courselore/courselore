@@ -22,11 +22,42 @@
 
 **Deadline:** 2023-08-25
 
-- Reinstall
+- Reverse engineer LTI 1.3
 
-  - Canvas
-  - Moodle
-  - Discourse
+  ```
+  POST
+  /initiate-login-url
+  {
+    host: 'leafac.courselore.org',
+    'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36',
+    'content-length': '228',
+    accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+    'accept-encoding': 'gzip, deflate, br',
+    'accept-language': 'en-US,en;q=0.9',
+    'cache-control': 'max-age=0',
+    'content-type': 'application/x-www-form-urlencoded',
+    origin: 'http://localhost:8000',
+    referer: 'http://localhost:8000/',
+    'sec-ch-ua': '"Not/A)Brand";v="99", "Google Chrome";v="115", "Chromium";v="115"',
+    'sec-ch-ua-mobile': '?0',
+    'sec-ch-ua-platform': '"macOS"',
+    'sec-fetch-dest': 'document',
+    'sec-fetch-mode': 'navigate',
+    'sec-fetch-site': 'cross-site',
+    'upgrade-insecure-requests': '1',
+    'x-forwarded-for': '89.181.211.102',
+    'x-forwarded-host': 'leafac.courselore.org',
+    'x-forwarded-proto': 'https'
+  }
+  {
+    iss: 'http://localhost:8000',
+    target_link_uri: 'https://leafac.courselore.org',
+    login_hint: '3',
+    lti_message_hint: '{"cmid":2,"launchid":"ltilaunch1_304052161"}',
+    client_id: '9PndDasRRt1Q8oa',
+    lti_deployment_id: '2'
+  }
+  ```
 
 - Play with Canvas
 
@@ -96,10 +127,12 @@
 - Perhaps replace our own authentication with OAuth?
   - And what about our future API?
 - Document how to use in different LMSs
+- Document how developers should install Canvas & Moodle for testing LTI
 - References
   - Specifications
     - https://www.imsglobal.org/spec/lti/v1p3/
     - https://www.imsglobal.org/spec/lti/v1p3/impl/
+    - https://www.imsglobal.org/spec/security/v1p0/
     - https://www.imsglobal.org/spec/lti-nrps/v2p0/
     - https://www.imsglobal.org/oneroster-v11-final-specification
   - Information
@@ -170,6 +203,7 @@
       - https://github.com/panva/jose
   - Tools
     - https://www.oauth.com/oauth2-servers/tools-and-libraries/
+    - https://lti.tools/saltire/
   - Service Consumers (LMSs) to test with
     - https://demo.moodle.net
     - https://lti-ri.imsglobal.org
@@ -1569,11 +1603,18 @@ const { app, BrowserWindow } = require("electron");
 - Main
   - <https://canvaslms.com>
     - https://github.com/instructure/canvas-lms/blob/master/doc/docker/developing_with_docker.md
+      - Install Dory
+      - Enable MailCatcher
     - `dory up && docker-compose up -d && open http://canvas.docker/ && open http://mail.canvas.docker/`
     - `administrator@courselore.org / 1234567890`
+    - `teacher@courselore.org / 1234567890`
+    - `student@courselore.org / 1234567890`
   - <https://moodle.org>
     - https://github.com/moodlehq/moodle-docker/
-      - `export MOODLE_DOCKER_WWWROOT=/Users/leafac/Downloads/COURSELORE-REFERENCES/moodle && export MOODLE_DOCKER_DB=pgsql && bin/moodle-docker-compose up -d && open http://localhost:8000/`
+      - `export MOODLE_DOCKER_WWWROOT=/Users/leafac/Code/courselore/REFERENCES/moodle && export MOODLE_DOCKER_DB=pgsql && bin/moodle-docker-compose up -d && open http://localhost:8000/`
+      - `admin / administrator@courselore.org / 1234567890`
+      - `teacher / teacher@courselore.org / 1234567890`
+      - `student / student@courselore.org / 1234567890`
     - https://hub.docker.com/r/bitnami/moodle
     - https://download.moodle.org/releases/latest/
   - <https://discourse.org>
