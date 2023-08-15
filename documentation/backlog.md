@@ -25,6 +25,7 @@
 - Reverse engineer LTI 1.3
 
   ```
+  MOODLE
   POST
   /initiate-login-url
   {
@@ -56,6 +57,44 @@
     lti_message_hint: '{"cmid":2,"launchid":"ltilaunch1_304052161"}',
     client_id: '9PndDasRRt1Q8oa',
     lti_deployment_id: '2'
+  }
+
+
+  CANVAS
+  POST
+  /openid-connect-initiation-url
+  {
+    host: 'leafac.courselore.org',
+    'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36',
+    'content-length': '819',
+    accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+    'accept-encoding': 'gzip, deflate, br',
+    'accept-language': 'en-US,en;q=0.9',
+    'cache-control': 'max-age=0',
+    'content-type': 'application/x-www-form-urlencoded',
+    origin: 'http://canvas.docker',
+    referer: 'http://canvas.docker/courses/1/external_tools/1',
+    'sec-ch-ua': '"Not/A)Brand";v="99", "Google Chrome";v="115", "Chromium";v="115"',
+    'sec-ch-ua-mobile': '?0',
+    'sec-ch-ua-platform': '"macOS"',
+    'sec-fetch-dest': 'iframe',
+    'sec-fetch-mode': 'navigate',
+    'sec-fetch-site': 'cross-site',
+    'upgrade-insecure-requests': '1',
+    'x-forwarded-for': '89.181.211.102',
+    'x-forwarded-host': 'leafac.courselore.org',
+    'x-forwarded-proto': 'https'
+  }
+  {
+    iss: 'https://canvas.instructure.com',
+    login_hint: 'f326d6a8a55f30f47b2480586f97991ab9e602bb',
+    client_id: '10000000000001',
+    deployment_id: '1:4dde05e8ca1973bcca9bffc13e1548820eee93a3',
+    target_link_uri: 'https://leafac.courselore.org/target-link-uri',
+    lti_message_hint: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ2ZXJpZmllciI6IjQ3N2U2YmQ0ZTY2YmViZDg1YzhiMDZiYTg0NDM2YTI5YjhhNmMyYTE2MGEyNTc2NzkyYTcxODE1Y2EyNjQ0NjU1MjkxYTI1MTY3NDYyMGYwN2FiMGMwM2EzYWE5M2QyNjRjNjFhYjE0NDQ1N2E1NTZmMDM2YmUwYjE4MDNkMmUzIiwiY2FudmFzX2RvbWFpbiI6ImNhbnZhcy5kb2NrZXIiLCJjb250ZXh0X3R5cGUiOiJDb3Vyc2UiLCJjb250ZXh0X2lkIjoxMDAwMDAwMDAwMDAwMSwiY2FudmFzX2xvY2FsZSI6ImVuIiwiaW5jbHVkZV9zdG9yYWdlX3RhcmdldCI6dHJ1ZSwiZXhwIjoxNjkyMTIzMjU5fQ.skf6bGjno0TG5os4z-nxqbu_CAbygu7Z5xBiXKwSvHI',
+    canvas_environment: 'prod',
+    canvas_region: 'not_configured',
+    lti_storage_target: '_parent'
   }
   ```
 
