@@ -47,79 +47,206 @@
   application.listen(9000);
 
 
+  * * *
 
 
-  MOODLE
-  POST
-  /initiate-login-url
+  LAUNCH
+
+
+  provider:main Receiving request at path: /login +17s
+  provider:main Receiving a login request from: http://localhost:8000, clientId: uyUgH2duj9DjluF +1ms
+  provider:main Redirecting to platform authentication endpoint +18ms
+  provider:main Target Link URI:  https://leafac.courselore.org/ +1ms
+  provider:main Login request:  +2ms
+  provider:main {
+  provider:main   response_type: 'id_token',
+  provider:main   response_mode: 'form_post',
+  provider:main   id_token_signed_response_alg: 'RS256',
+  provider:main   scope: 'openid',
+  provider:main   client_id: 'uyUgH2duj9DjluF',
+  provider:main   redirect_uri: 'https://leafac.courselore.org/',
+  provider:main   login_hint: '3',
+  provider:main   nonce: 'ywgxyputrj85ue7gikwjpef0g',
+  provider:main   prompt: 'none',
+  provider:main   state: 'f9981ff2ffbf5a608cec15223059c39e705a61d846ddf81f2b',
+  provider:main   lti_message_hint: '{"cmid":3,"launchid":"ltilaunch2_659633542"}',
+  provider:main   lti_deployment_id: '3'
+  provider:main } +0ms
+  provider:main Receiving request at path: / +1s
+  provider:main Path does not match reserved endpoints +0ms
+  provider:main Cookies received:  +0ms
+  provider:main [Object: null prototype] {
+  provider:main   statef9981ff2ffbf5a608cec15223059c39e705a61d846ddf81f2b: 'http://localhost:8000'
+  provider:main } +0ms
+  provider:main Received idtoken for validation +0ms
+  provider:auth Response state: f9981ff2ffbf5a608cec15223059c39e705a61d846ddf81f2b +0ms
+  provider:auth Attempting to validate iss claim +0ms
+  provider:auth Request Iss claim: http://localhost:8000 +0ms
+  provider:auth Response Iss claim: http://localhost:8000 +0ms
+  provider:auth Attempting to retrieve registered platform +0ms
+  provider:auth Retrieving key from jwk_set +12ms
+  provider:auth Converting JWK key to PEM key +638ms
+  provider:auth Attempting to verify JWT with the given key +2ms
+  provider:auth Token signature verified +5ms
+  provider:auth Initiating OIDC aditional validation steps +0ms
+  provider:auth Validating if aud (Audience) claim matches the value of the tool's clientId given by the platform +0ms
+  provider:auth Aud claim: uyUgH2duj9DjluF +0ms
+  provider:auth Checking alg claim. Alg: RS256 +0ms
+  provider:auth Max age parameter:  10 +0ms
+  provider:auth Checking iat claim to prevent old tokens from being passed. +0ms
+  provider:auth Iat claim: 1692283991 +0ms
+  provider:auth Exp claim: 1692284051 +0ms
+  provider:auth Current_time: 1692283992.047 +1ms
+  provider:auth Time passed: 1.0469999313354492 +0ms
+  provider:auth Validating nonce +0ms
+  provider:auth Nonce: ywgxyputrj85ue7gikwjpef0g +0ms
+  provider:auth Tool's clientId: uyUgH2duj9DjluF +0ms
+  provider:auth Storing nonce +3ms
+  provider:auth Initiating LTI 1.3 core claims validation +8ms
+  provider:auth Checking Message type claim +0ms
+  provider:auth Checking Target Link Uri claim +0ms
+  provider:auth Checking Resource Link Id claim +0ms
+  provider:auth Checking LTI Version claim +0ms
+  provider:auth Checking Deployment Id claim +0ms
+  provider:auth Checking Sub claim +0ms
+  provider:auth Checking Roles claim +0ms
+  provider:auth Successfully validated token! +673ms
+  provider:main Generating ltik +680ms
+  provider:main Redirecting to endpoint with ltik +1ms
+  provider:main Receiving request at path: / +243ms
+  provider:main Path does not match reserved endpoints +0ms
+  provider:main Cookies received:  +0ms
+  provider:main [Object: null prototype] {
+  provider:main   'ltiaHR0cDovL2xvY2FsaG9zdDo4MDAwdXlVZ0gyZHVqOURqbHVGMw%3D%3D': '3'
+  provider:main } +0ms
+  provider:main Ltik found +1ms
+  provider:main Ltik successfully verified +1ms
+  provider:main Attempting to retrieve matching session cookie +0ms
+  provider:auth Valid session found +253ms
+  provider:main Passing request to next handler +19ms
+  provider:main Receiving request at path: /info +6s
+  provider:main Path does not match reserved endpoints +0ms
+  provider:main Cookies received:  +0ms
+  provider:main [Object: null prototype] {
+  provider:main   'ltiaHR0cDovL2xvY2FsaG9zdDo4MDAwdXlVZ0gyZHVqOURqbHVGMw%3D%3D': '3'
+  provider:main } +0ms
+  provider:main Ltik found +1ms
+  provider:main Ltik successfully verified +1ms
+  provider:main Attempting to retrieve matching session cookie +0ms
+  provider:auth Valid session found +6s
+  provider:main Passing request to next handler +14ms
+
+  GET
+  /info
   {
     host: 'leafac.courselore.org',
     'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36',
-    'content-length': '228',
+    accept: 'application/json',
+    'accept-encoding': 'gzip, deflate, br',
+    'accept-language': 'en-US,en;q=0.9,pt;q=0.8',
+    authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwbGF0Zm9ybVVybCI6Imh0dHA6Ly9sb2NhbGhvc3Q6ODAwMCIsImNsaWVudElkIjoidXlVZ0gyZHVqOURqbHVGIiwiZGVwbG95bWVudElkIjoiMyIsInBsYXRmb3JtQ29kZSI6Imx0aWFIUjBjRG92TDJ4dlkyRnNhRzl6ZERvNE1EQXdkWGxWWjBneVpIVnFPVVJxYkhWR013JTNEJTNEIiwiY29udGV4dElkIjoiaHR0cCUzQSUyRiUyRmxvY2FsaG9zdCUzQTgwMDB1eVVnSDJkdWo5RGpsdUYzMl8yIiwidXNlciI6IjMiLCJzIjoiZjk5ODFmZjJmZmJmNWE2MDhjZWMxNTIyMzA1OWMzOWU3MDVhNjFkODQ2ZGRmODFmMmIiLCJpYXQiOjE2OTIyODM5OTJ9.ysTjOoqXBxOXG371O4pI9MrNfXP9wmWkDoYmmCOzRn8',
+    cookie: 'ltiaHR0cDovL2xvY2FsaG9zdDo4MDAwdXlVZ0gyZHVqOURqbHVGMw%3D%3D=s%3A3.F6GcX%2F9D1%2BCkavbRXVD5pHt6RWRLMwpQjqyO9WqaGiE',
+    'sec-ch-ua': '"Not/A)Brand";v="99", "Google Chrome";v="115", "Chromium";v="115"',
+    'sec-ch-ua-mobile': '?0',
+    'sec-ch-ua-platform': '"macOS"',
+    'sec-fetch-dest': 'empty',
+    'sec-fetch-mode': 'cors',
+    'sec-fetch-site': 'same-origin',
+    'x-forwarded-for': '89.181.211.102',
+    'x-forwarded-host': 'leafac.courselore.org',
+    'x-forwarded-proto': 'https'
+  }
+  {}
+
+
+
+  * * *
+
+
+  MEMBERS
+
+  provider:main Receiving request at path: /namesandroles +40s
+  provider:main Path does not match reserved endpoints +0ms
+  provider:main Cookies received:  +0ms
+  provider:main [Object: null prototype] {
+  provider:main   'ltiaHR0cDovL2xvY2FsaG9zdDo4MDAwdXlVZ0gyZHVqOURqbHVGMw%3D%3D': '3'
+  provider:main } +0ms
+  provider:main Ltik found +3ms
+  provider:main Ltik successfully verified +8ms
+  provider:main Attempting to retrieve matching session cookie +0ms
+  provider:auth Valid session found +0ms
+  provider:main Passing request to next handler +13ms
+
+  GET
+  /namesandroles?ltik=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwbGF0Zm9ybVVybCI6Imh0dHA6Ly9sb2NhbGhvc3Q6ODAwMCIsImNsaWVudElkIjoidXlVZ0gyZHVqOURqbHVGIiwiZGVwbG95bWVudElkIjoiMyIsInBsYXRmb3JtQ29kZSI6Imx0aWFIUjBjRG92TDJ4dlkyRnNhRzl6ZERvNE1EQXdkWGxWWjBneVpIVnFPVVJxYkhWR013JTNEJTNEIiwiY29udGV4dElkIjoiaHR0cCUzQSUyRiUyRmxvY2FsaG9zdCUzQTgwMDB1eVVnSDJkdWo5RGpsdUYzMl8yIiwidXNlciI6IjMiLCJzIjoiZjk5ODFmZjJmZmJmNWE2MDhjZWMxNTIyMzA1OWMzOWU3MDVhNjFkODQ2ZGRmODFmMmIiLCJpYXQiOjE2OTIyODM5OTJ9.ysTjOoqXBxOXG371O4pI9MrNfXP9wmWkDoYmmCOzRn8
+  {
+    host: 'leafac.courselore.org',
+    'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36',
     accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
     'accept-encoding': 'gzip, deflate, br',
-    'accept-language': 'en-US,en;q=0.9',
-    'cache-control': 'max-age=0',
-    'content-type': 'application/x-www-form-urlencoded',
-    origin: 'http://localhost:8000',
-    referer: 'http://localhost:8000/',
+    'accept-language': 'en-US,en;q=0.9,pt;q=0.8',
+    cookie: 'ltiaHR0cDovL2xvY2FsaG9zdDo4MDAwdXlVZ0gyZHVqOURqbHVGMw%3D%3D=s%3A3.F6GcX%2F9D1%2BCkavbRXVD5pHt6RWRLMwpQjqyO9WqaGiE',
     'sec-ch-ua': '"Not/A)Brand";v="99", "Google Chrome";v="115", "Chromium";v="115"',
     'sec-ch-ua-mobile': '?0',
     'sec-ch-ua-platform': '"macOS"',
     'sec-fetch-dest': 'document',
     'sec-fetch-mode': 'navigate',
-    'sec-fetch-site': 'cross-site',
+    'sec-fetch-site': 'none',
+    'sec-fetch-user': '?1',
     'upgrade-insecure-requests': '1',
     'x-forwarded-for': '89.181.211.102',
     'x-forwarded-host': 'leafac.courselore.org',
     'x-forwarded-proto': 'https'
   }
-  {
-    iss: 'http://localhost:8000',
-    target_link_uri: 'https://leafac.courselore.org',
-    login_hint: '3',
-    lti_message_hint: '{"cmid":2,"launchid":"ltilaunch1_304052161"}',
-    client_id: '9PndDasRRt1Q8oa',
-    lti_deployment_id: '2'
-  }
+  {}
 
+  provider:main Receiving request at path: /members +3s
+  provider:main Path does not match reserved endpoints +0ms
+  provider:main Cookies received:  +0ms
+  provider:main [Object: null prototype] {
+  provider:main   'ltiaHR0cDovL2xvY2FsaG9zdDo4MDAwdXlVZ0gyZHVqOURqbHVGMw%3D%3D': '3'
+  provider:main } +0ms
+  provider:main Ltik found +0ms
+  provider:main Ltik successfully verified +1ms
+  provider:main Attempting to retrieve matching session cookie +0ms
+  provider:auth Valid session found +3s
+  provider:main Passing request to next handler +10ms
 
-  CANVAS
-  POST
-  /openid-connect-initiation-url
+  GET
+  /members
   {
     host: 'leafac.courselore.org',
     'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36',
-    'content-length': '819',
-    accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+    accept: 'application/json',
     'accept-encoding': 'gzip, deflate, br',
-    'accept-language': 'en-US,en;q=0.9',
-    'cache-control': 'max-age=0',
-    'content-type': 'application/x-www-form-urlencoded',
-    origin: 'http://canvas.docker',
-    referer: 'http://canvas.docker/courses/1/external_tools/1',
+    'accept-language': 'en-US,en;q=0.9,pt;q=0.8',
+    authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwbGF0Zm9ybVVybCI6Imh0dHA6Ly9sb2NhbGhvc3Q6ODAwMCIsImNsaWVudElkIjoidXlVZ0gyZHVqOURqbHVGIiwiZGVwbG95bWVudElkIjoiMyIsInBsYXRmb3JtQ29kZSI6Imx0aWFIUjBjRG92TDJ4dlkyRnNhRzl6ZERvNE1EQXdkWGxWWjBneVpIVnFPVVJxYkhWR013JTNEJTNEIiwiY29udGV4dElkIjoiaHR0cCUzQSUyRiUyRmxvY2FsaG9zdCUzQTgwMDB1eVVnSDJkdWo5RGpsdUYzMl8yIiwidXNlciI6IjMiLCJzIjoiZjk5ODFmZjJmZmJmNWE2MDhjZWMxNTIyMzA1OWMzOWU3MDVhNjFkODQ2ZGRmODFmMmIiLCJpYXQiOjE2OTIyODM5OTJ9.ysTjOoqXBxOXG371O4pI9MrNfXP9wmWkDoYmmCOzRn8',
+    cookie: 'ltiaHR0cDovL2xvY2FsaG9zdDo4MDAwdXlVZ0gyZHVqOURqbHVGMw%3D%3D=s%3A3.F6GcX%2F9D1%2BCkavbRXVD5pHt6RWRLMwpQjqyO9WqaGiE',
+    'if-none-match': 'W/"a4-uPmO4u5EBiWrD1C15NWrVb4i05U"',
     'sec-ch-ua': '"Not/A)Brand";v="99", "Google Chrome";v="115", "Chromium";v="115"',
     'sec-ch-ua-mobile': '?0',
     'sec-ch-ua-platform': '"macOS"',
-    'sec-fetch-dest': 'iframe',
-    'sec-fetch-mode': 'navigate',
-    'sec-fetch-site': 'cross-site',
-    'upgrade-insecure-requests': '1',
+    'sec-fetch-dest': 'empty',
+    'sec-fetch-mode': 'cors',
+    'sec-fetch-site': 'same-origin',
     'x-forwarded-for': '89.181.211.102',
     'x-forwarded-host': 'leafac.courselore.org',
     'x-forwarded-proto': 'https'
   }
-  {
-    iss: 'https://canvas.instructure.com',
-    login_hint: 'f326d6a8a55f30f47b2480586f97991ab9e602bb',
-    client_id: '10000000000001',
-    deployment_id: '1:4dde05e8ca1973bcca9bffc13e1548820eee93a3',
-    target_link_uri: 'https://leafac.courselore.org/target-link-uri',
-    lti_message_hint: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ2ZXJpZmllciI6IjQ3N2U2YmQ0ZTY2YmViZDg1YzhiMDZiYTg0NDM2YTI5YjhhNmMyYTE2MGEyNTc2NzkyYTcxODE1Y2EyNjQ0NjU1MjkxYTI1MTY3NDYyMGYwN2FiMGMwM2EzYWE5M2QyNjRjNjFhYjE0NDQ1N2E1NTZmMDM2YmUwYjE4MDNkMmUzIiwiY2FudmFzX2RvbWFpbiI6ImNhbnZhcy5kb2NrZXIiLCJjb250ZXh0X3R5cGUiOiJDb3Vyc2UiLCJjb250ZXh0X2lkIjoxMDAwMDAwMDAwMDAwMSwiY2FudmFzX2xvY2FsZSI6ImVuIiwiaW5jbHVkZV9zdG9yYWdlX3RhcmdldCI6dHJ1ZSwiZXhwIjoxNjkyMTIzMjU5fQ.skf6bGjno0TG5os4z-nxqbu_CAbygu7Z5xBiXKwSvHI',
-    canvas_environment: 'prod',
-    canvas_region: 'not_configured',
-    lti_storage_target: '_parent'
-  }
+  {}
+
+  provider:namesAndRolesService Attempting to retrieve memberships +0ms
+  provider:namesAndRolesService Target platform: http://localhost:8000 +0ms
+  provider:namesAndRolesService Attempting to retrieve platform access_token for [http://localhost:8000] +7ms
+  provider:platform Valid access_token for http://localhost:8000 not found +0ms
+  provider:platform Attempting to generate new access_token for http://localhost:8000 +0ms
+  provider:platform With scopes: https://purl.imsglobal.org/spec/lti-nrps/scope/contextmembership.readonly +0ms
+  provider:auth Awaiting return from the platform +0ms
+  provider:auth Successfully generated new access_token +3s
+  provider:namesAndRolesService Access_token retrieved for [http://localhost:8000] +3s
+  provider:namesAndRolesService Member pages found:  1 +0ms
+  provider:namesAndRolesService Current member page:  http://localhost:8000/mod/lti/services.php/CourseSection/2/bindings/3/memberships +0ms
+  provider:namesAndRolesService Memberships retrieved +637ms
   ```
 
 - Play with Canvas
