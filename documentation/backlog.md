@@ -1662,6 +1662,18 @@ const { app, BrowserWindow } = require("electron");
 ## References
 
 - Main
+  - <https://moodle.org>
+    - https://github.com/moodlehq/moodle-docker/
+      - `export MOODLE_DOCKER_WWWROOT=/Users/leafac/Code/courselore/REFERENCES/moodle && export MOODLE_DOCKER_DB=pgsql && bin/moodle-docker-compose up -d && open http://localhost:8000/ && http://localhost:8000/_/mail/`
+      - Site administration > General > Security > HTTP Security: cURL blocked hosts list & cURL allowed ports list
+      - In **Site administration**, add users.
+      - Site Administration >  Users > Assign system roles, and assign teacher the **Course creator** role.
+      - Add course from teacher’s perspective
+      - `admin / administrator@courselore.org / 1234567890`
+      - `teacher / teacher@courselore.org / 1234567890`
+      - `student / student@courselore.org / 1234567890`
+    - https://hub.docker.com/r/bitnami/moodle
+    - https://download.moodle.org/releases/latest/
   - <https://canvaslms.com>
     - https://github.com/instructure/canvas-lms/blob/master/doc/docker/developing_with_docker.md
       - Install Dory
@@ -1670,14 +1682,6 @@ const { app, BrowserWindow } = require("electron");
     - `administrator@courselore.org / 1234567890`
     - `teacher@courselore.org / 1234567890`
     - `student@courselore.org / 1234567890`
-  - <https://moodle.org>
-    - https://github.com/moodlehq/moodle-docker/
-      - `export MOODLE_DOCKER_WWWROOT=/Users/leafac/Code/courselore/REFERENCES/moodle && export MOODLE_DOCKER_DB=pgsql && bin/moodle-docker-compose up -d && open http://localhost:8000/ && http://localhost:8000/_/mail/`
-      - `admin / administrator@courselore.org / 1234567890`
-      - `teacher / teacher@courselore.org / 1234567890`
-      - `student / student@courselore.org / 1234567890`
-    - https://hub.docker.com/r/bitnami/moodle
-    - https://download.moodle.org/releases/latest/
   - <https://discourse.org>
     - https://meta.discourse.org/t/install-discourse-for-development-using-docker/102009
     - `d/rails s`
