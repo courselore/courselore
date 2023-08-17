@@ -320,9 +320,9 @@
 - Document how developers should install Canvas & Moodle for testing LTI
 - References
   - Specifications
+    - https://www.imsglobal.org/spec/security/v1p0/
     - https://www.imsglobal.org/spec/lti/v1p3/
     - https://www.imsglobal.org/spec/lti/v1p3/impl/
-    - https://www.imsglobal.org/spec/security/v1p0/
     - https://www.imsglobal.org/spec/lti-nrps/v2p0/
     - https://www.imsglobal.org/oneroster-v11-final-specification
   - Information
