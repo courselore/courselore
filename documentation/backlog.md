@@ -23,8 +23,32 @@
 **Deadline:** 2023-08-25
 
 - Reverse engineer LTI 1.3
+  - Setup Ltijs and intercept the whole launch, both in client and server side
 
   ```
+  import express from "express";
+  import cookieParser from "cookie-parser";
+
+  const application = express();
+
+  application.use(cookieParser());
+  application.use(express.urlencoded({ extended: true }));
+
+  application.use((request, response) => {
+    console.log();
+    console.log(request.method);
+    console.log(request.originalUrl);
+    console.log(request.headers);
+    console.log(request.body);
+    console.log();
+    response.end();
+  });
+
+  application.listen(9000);
+
+
+
+
   MOODLE
   POST
   /initiate-login-url
@@ -430,8 +454,6 @@
   - LTI
 
     ```
-    "start:localtunnel": "lt --port 3000"
-
 
     // https://loose-dolls-beg.loca.lt/register
     dynReg: {
@@ -1650,7 +1672,7 @@ const { app, BrowserWindow } = require("electron");
     - `student@courselore.org / 1234567890`
   - <https://moodle.org>
     - https://github.com/moodlehq/moodle-docker/
-      - `export MOODLE_DOCKER_WWWROOT=/Users/leafac/Code/courselore/REFERENCES/moodle && export MOODLE_DOCKER_DB=pgsql && bin/moodle-docker-compose up -d && open http://localhost:8000/`
+      - `export MOODLE_DOCKER_WWWROOT=/Users/leafac/Code/courselore/REFERENCES/moodle && export MOODLE_DOCKER_DB=pgsql && bin/moodle-docker-compose up -d && open http://localhost:8000/ && http://localhost:8000/_/mail/`
       - `admin / administrator@courselore.org / 1234567890`
       - `teacher / teacher@courselore.org / 1234567890`
       - `student / student@courselore.org / 1234567890`
