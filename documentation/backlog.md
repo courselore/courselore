@@ -23,33 +23,11 @@
 **Deadline:** 2023-08-25
 
 - Reverse engineer LTI 1.3
-  - Setup Ltijs and intercept the whole launch, both in client and server side
+  - Review Canvas documentation
+  - Review Ltijs
+  - Review specifications
 
   ```
-  import express from "express";
-  import cookieParser from "cookie-parser";
-
-  const application = express();
-
-  application.use(cookieParser());
-  application.use(express.urlencoded({ extended: true }));
-
-  application.use((request, response) => {
-    console.log();
-    console.log(request.method);
-    console.log(request.originalUrl);
-    console.log(request.headers);
-    console.log(request.body);
-    console.log();
-    response.end();
-  });
-
-  application.listen(9000);
-
-
-  * * *
-
-
   LAUNCH
 
 
