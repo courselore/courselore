@@ -1,6 +1,17 @@
 # Meetings
 
 <details>
+<summary>2023-08-19</summary>
+
+- AI API sketch is done.
+- LTI
+  - We can connect to LMSs and get data from them. Now we need to implement adding/removing students on our side.
+  - We need to request Hopkins for authorization to integrate with their Canvas installation.
+  - Have a way for students to remove themselves from a course.
+
+</details>
+
+<details>
 <summary>2023-08-10</summary>
 
 - Deployed a new version with SAML, a fix to the server error on the invitations page, and so forth.

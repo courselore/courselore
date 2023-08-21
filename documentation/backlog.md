@@ -22,6 +22,19 @@
 
 **Deadline:** 2023-08-25
 
+- Have a way for students to remove themselves from a course.
+- Ask Hopkins permission.
+- JWT libraries
+  - Features
+    - Create & verify tokens
+    - Create keys
+    - Manage keysets
+    - Decode tokens without verification (for convenience)
+  - Candidates
+    - https://github.com/panva/jose
+    - https://github.com/auth0/node-jsonwebtoken & https://github.com/auth0/node-jwks-rsa
+      - Most popular
+      - Doesn’t create keys
 - Reverse engineer LTI 1.3
   - Review Canvas documentation
   - Review Ltijs
@@ -1548,8 +1561,12 @@ const { app, BrowserWindow } = require("electron");
 
 ## Infrastructure
 
+- Have a way for people to enable/disable advanced features, for example whispers, similar to Amazing Marvin.
+- Switch from `got` to `fetch`?
+  - Streaming on image/video proxy
 - Add support for source maps in production
   - The difficulty is that we have subprocesses, so we can’t simply pass `--enable-source-maps` as an argument to invoking the application through caxa. Instead, we must set the `NODE_OPTIONS=--enable-source-maps` environment variable as we do in development.
+    - Maybe just set this environment variable when calling the subprocesses (and let the main process not use source maps—but it isn’t supposed to crash anyway…)?
 - When extracting inline CSS/JavaScript with the Babel plugin normalize the snippets
   - It leads to a 10% improvement in CSS and a small improvement in JavaScript
   - Prettier: Starting with Prettier 3.0 `prettier.format()` is asynchronous, but Babel visitors have to be synchronous
