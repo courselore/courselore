@@ -18,6 +18,7 @@ export type ApplicationLayouts = {
           request,
           response,
           head,
+          showLogoWhenSignedOut,
           showCourseSwitcher,
           extraHeaders,
           body,
@@ -46,6 +47,7 @@ export type ApplicationLayouts = {
               >
           >;
           head: HTML;
+          showLogoWhenSignedOut?: boolean;
           showCourseSwitcher?: boolean;
           extraHeaders?: HTML;
           body: HTML;
@@ -253,6 +255,7 @@ export default async (application: Application): Promise<void> => {
     request,
     response,
     head,
+    showLogoWhenSignedOut = true,
     showCourseSwitcher = true,
     extraHeaders = html``,
     body,
@@ -2525,7 +2528,32 @@ export default async (application: Application): Promise<void> => {
                   </div>
                 </div>
               `;
-            }
+            } else if (showLogoWhenSignedOut)
+              header += html`
+                <div
+                  key="header--menu--primary"
+                  css="${css`
+                    && {
+                      padding-top: var(--space--1);
+                      padding-bottom: var(--space--1);
+                      gap: var(--space--4);
+                      align-items: center;
+                    }
+                  `}"
+                >
+                  <a
+                    href="https://${application.configuration.hostname}/"
+                    class="strong button button--tight button--tight--inline button--transparent"
+                    css="${css`
+                      font-size: var(--font-size--base);
+                      line-height: var(--line-height--base);
+                      align-items: center;
+                    `}"
+                  >
+                    $${application.web.locals.partials.logo()} Courselore
+                  </a>
+                </div>
+              `;
 
             header += extraHeaders;
 
@@ -3100,6 +3128,7 @@ export default async (application: Application): Promise<void> => {
       request,
       response,
       head,
+      showLogoWhenSignedOut: false,
       body: html`
         <div
           key="layout--box"
