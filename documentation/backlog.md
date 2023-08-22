@@ -2,8 +2,6 @@
 
 ## Work in Progress
 
-- `/help/styling-content` doesn’t show the header for signed out user.
-
 **AI**
 
 - Hit API for AI service
