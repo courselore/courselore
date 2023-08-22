@@ -13,8 +13,7 @@
   - Send question / receive answer
 - Train database
 - Just for Ali’s course
-- How to authenticate with API?
-- If there’s an image in message, don’t hit API??
+- If there’s an image or a poll in message, don’t hit API.
 - Feedback system
   - The AI-generated answer “resolved” the question
   - Have a button to “resolve”
