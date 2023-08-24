@@ -2,21 +2,6 @@
 
 ## Work in Progress
 
-**AI**
-
-- Hit API for AI service
-  - Make it distinguished
-    - Sidebar like “Follow-up Question”
-  - AI generated, might be wrong
-  - Send question / receive answer
-- Train database
-- Just for Ali’s course
-- If there’s an image or a poll in message, don’t hit API.
-- Feedback system
-  - The AI-generated answer “resolved” the question
-  - Have a button to “resolve”
-  - Later, the API will provide a “thumbs-up/thumbs-down” endpoint as well
-
 **Learning Tools Interoperability (LTI)**
 
 **Deadline:** 2023-08-25
@@ -35,6 +20,7 @@
       - Most popular
       - Doesn’t create keys
 - Reverse engineer LTI 1.3
+
   - Review Canvas documentation
   - Review Ltijs
   - Review specifications
@@ -602,6 +588,21 @@
       authConfig: { method: 'JWK_SET', key: 'http://canvas.docker/api/lti/security/jwks' }
     })
     ```
+
+**AI**
+
+- Hit API for AI service
+  - Make it distinguished
+    - Sidebar like “Follow-up Question”
+  - AI generated, might be wrong
+  - Send question / receive answer
+- Train database
+- Just for Ali’s course
+- If there’s an image or a poll in message, don’t hit API.
+- Feedback system
+  - The AI-generated answer “resolved” the question
+  - Have a button to “resolve”
+  - Later, the API will provide a “thumbs-up/thumbs-down” endpoint as well
 
 **Other**
 
@@ -1788,7 +1789,7 @@ const { app, BrowserWindow } = require("electron");
       - `export MOODLE_DOCKER_WWWROOT=/Users/leafac/Code/courselore/REFERENCES/moodle && export MOODLE_DOCKER_DB=pgsql && bin/moodle-docker-compose up -d && open http://localhost:8000/ && http://localhost:8000/_/mail/`
       - Site administration > General > Security > HTTP Security: cURL blocked hosts list & cURL allowed ports list
       - In **Site administration**, add users.
-      - Site Administration >  Users > Assign system roles, and assign teacher the **Course creator** role.
+      - Site Administration > Users > Assign system roles, and assign teacher the **Course creator** role.
       - Add course from teacher’s perspective
       - `admin / administrator@courselore.org / 1234567890`
       - `teacher / teacher@courselore.org / 1234567890`
