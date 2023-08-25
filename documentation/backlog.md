@@ -6,6 +6,14 @@
 
 - Use Keycloak for mocking SAML & OpenID Connect
   - https://www.keycloak.org/getting-started/getting-started-docker
+  - Test
+    - SP-initiated SSO
+    - SP-initiated SLO
+    - IdP-initiated SSO
+    - IdP-initiated SLO
+  - Remove saml-idp support
+  - Document for developers
+- Use https://github.com/axllent/mailpit instead of our own little hacky thing?
 - Key management:
   - SAML one service provider keyset for all identity providers?
     - But metadata is different, because we use the URL to communicate the Identity Provider `samlIdentifier`.
