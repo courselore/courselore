@@ -7,6 +7,7 @@
 - Ask Hopkins permission.
 - Reverse engineer LTI 1.3
 
+  - Make Members request work
   - Review Canvas documentation
   - Review Ltijs
   - Review specifications
