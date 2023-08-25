@@ -4,7 +4,6 @@
 
 **Learning Tools Interoperability (LTI)**
 
-- Ask Hopkins permission.
 - Use Keycloak for mocking SAML & OpenID Connect
   - https://www.keycloak.org/getting-started/getting-started-docker
 - Key management:
@@ -224,6 +223,7 @@
   provider:namesAndRolesService Memberships retrieved +637ms
   ```
 
+- Ask Hopkins permission.
 - Play with Canvas
 
   - https://canvas.instructure.com/doc/api/index.html
