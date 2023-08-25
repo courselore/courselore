@@ -6,6 +6,8 @@
 
 - Use Keycloak for mocking SAML & OpenID Connect
   - https://www.keycloak.org/getting-started/getting-started-docker
+  - Embed keys in configuration file
+    - And in `secrets.json` for `courselore.org`
   - Test
     - SP-initiated SSO
     - SP-initiated SLO
