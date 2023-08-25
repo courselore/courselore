@@ -5326,7 +5326,7 @@ export default async (application: Application): Promise<void> => {
                     javascript="${javascript`
                       this.onvalidate = () => {
                         if (this.value !== ${response.locals.course.name})
-                          return "Please confirm the course name: " + ${response.locals.course.name};
+                          return "Please confirm the course name: “" + ${response.locals.course.name} + "”";
                       };
                     `}"
                   />
@@ -5514,7 +5514,7 @@ export default async (application: Application): Promise<void> => {
         request,
         response,
         theme: "green",
-        content: html`You removed yourself from ${response.locals.course.name}
+        content: html`You removed yourself from “${response.locals.course.name}”
         successfully.`,
       });
 

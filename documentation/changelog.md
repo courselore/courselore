@@ -12,6 +12,9 @@
 
 ## Unreleased
 
+- Added a way for users to remove themselves from a course.
+- Fixed a missing header on `/help/styling-content` when you’re signed out.
+
 ## 6.2.1
 
 **2023-08-09 · [Download](https://github.com/courselore/courselore/releases/tag/v6.2.1) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
