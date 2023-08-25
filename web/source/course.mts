@@ -4841,7 +4841,9 @@ export default async (application: Application): Promise<void> => {
                 ? html`
                     <input type="hidden" name="isArchived" value="true" />
                     <div>
-                      <button class="button button--rose">
+                      <button
+                        class="button button--full-width-on-small-screen button--rose"
+                      >
                         <i class="bi bi-archive-fill"></i>
                         Archive Course
                       </button>
@@ -4859,7 +4861,9 @@ export default async (application: Application): Promise<void> => {
                 : html`
                     <input type="hidden" name="isArchived" value="false" />
                     <div>
-                      <button class="button button--rose">
+                      <button
+                        class="button button--full-width-on-small-screen button--rose"
+                      >
                         <i class="bi bi-archive-fill"></i>
                         Unarchive Course
                       </button>
@@ -4901,7 +4905,9 @@ export default async (application: Application): Promise<void> => {
               `}"
             >
               <div>
-                <button class="button button--green">
+                <button
+                  class="button button--full-width-on-small-screen button--green"
+                >
                   <i class="bi bi-journal-arrow-down"></i>
                   Download All Anonymized Questions as JSON
                 </button>
@@ -5258,6 +5264,161 @@ export default async (application: Application): Promise<void> => {
                 </button>
               </div>
             </form>
+
+            <hr class="separator" />
+
+            <form
+              method="DELETE"
+              action="https://${application.configuration
+                .hostname}/courses/${response.locals.course
+                .reference}/settings/my-course-participation"
+              novalidate
+              css="${css`
+                display: flex;
+                flex-direction: column;
+                gap: var(--space--4);
+              `}"
+            >
+              <div
+                css="${css`
+                  display: flex;
+
+                  @media (max-width: 399px) {
+                    flex-direction: column;
+                    gap: var(--space--4);
+                  }
+
+                  @media (min-width: 400px) {
+                    gap: var(--space--2);
+                    & > * {
+                      flex: 1;
+                    }
+                  }
+                `}"
+              >
+                <div class="label">
+                  <p class="label--text">
+                    Course Name Confirmation
+                    <button
+                      type="button"
+                      class="button button--tight button--tight--inline button--transparent"
+                      javascript="${javascript`
+                        leafac.setTippy({
+                          event,
+                          element: this,
+                          tippyProps: {
+                            trigger: "click",
+                            content: "You must confirm the course name to avoid removing yourself from the wrong course by accident.",
+                          },
+                        });
+                      `}"
+                    >
+                      <i class="bi bi-info-circle"></i>
+                    </button>
+                  </p>
+                  <input
+                    type="text"
+                    name="courseNameConfirmation"
+                    placeholder="${response.locals.course.name}"
+                    required
+                    autocomplete="off"
+                    class="input--text"
+                    javascript="${javascript`
+                      this.onvalidate = () => {
+                        if (this.value !== ${response.locals.course.name})
+                          return "Please confirm the course name: " + ${response.locals.course.name};
+                      };
+                    `}"
+                  />
+                  <p
+                    class="secondary"
+                    css="${css`
+                      font-size: var(--font-size--xs);
+                      line-height: var(--line-height--xs);
+                    `}"
+                  >
+                    ${response.locals.course.name}
+                  </p>
+                </div>
+                <div class="label">
+                  <p class="label--text">
+                    Password Confirmation
+                    <button
+                      type="button"
+                      class="button button--tight button--tight--inline button--transparent"
+                      javascript="${javascript`
+                        leafac.setTippy({
+                          event,
+                          element: this,
+                          tippyProps: {
+                            trigger: "click",
+                            content: "You must confirm your password because this is an important operation that affects your account and may not be undone.",
+                          },
+                        });
+                      `}"
+                    >
+                      <i class="bi bi-info-circle"></i>
+                    </button>
+                  </p>
+                  <input
+                    type="password"
+                    name="passwordConfirmation"
+                    required
+                    class="input--text"
+                  />
+                </div>
+              </div>
+              <div>
+                <button
+                  type="button"
+                  class="button button--full-width-on-small-screen button--rose"
+                  javascript="${javascript`
+                    leafac.setTippy({
+                      event,
+                      element: this,
+                      elementProperty: "dropdown",
+                      tippyProps: {
+                        theme: "rose",
+                        trigger: "click",
+                        interactive: true,
+                        onShow: () => leafac.validate(this.closest("form")),
+                        content: ${html`
+                          <div
+                            css="${css`
+                              padding: var(--space--2);
+                              display: flex;
+                              flex-direction: column;
+                              gap: var(--space--4);
+                            `}"
+                          >
+                            <p>
+                              Are you sure you want to remove yourself from the
+                              course?
+                            </p>
+                            <p>
+                              <strong
+                                css="${css`
+                                  font-weight: var(--font-weight--bold);
+                                `}"
+                              >
+                                You may not undo this action!
+                              </strong>
+                            </p>
+                            <button class="button button--rose">
+                              <i class="bi bi-person-dash-fill"></i>
+                              Remove Myself from the Course
+                            </button>
+                          </div>
+                        `},  
+                      },
+                    });
+                  `}"
+                >
+                  <i class="bi bi-person-dash-fill"></i>
+                  Remove Myself from the Course
+                </button>
+              </div>
+            </form>
           `,
         }),
       );
@@ -5305,5 +5466,59 @@ export default async (application: Application): Promise<void> => {
         `https://${application.configuration.hostname}/courses/${response.locals.course.reference}/settings/my-course-participation`,
       );
     },
+  );
+
+  application.web.delete<
+    { courseReference: string },
+    HTML,
+    {
+      courseNameConfirmation?: string;
+      passwordConfirmation?: string;
+    },
+    {},
+    Application["web"]["locals"]["ResponseLocals"]["CourseParticipant"]
+  >(
+    "/courses/:courseReference/settings/my-course-participation",
+    asyncHandler(async (request, response, next) => {
+      if (response.locals.course === undefined) return next();
+
+      if (request.body.courseNameConfirmation !== response.locals.course.name)
+        return next("Validation");
+
+      if (
+        !(await application.web.locals.helpers.passwordConfirmation({
+          request,
+          response,
+        }))
+      ) {
+        application.web.locals.helpers.Flash.set({
+          request,
+          response,
+          theme: "rose",
+          content: html`Incorrect password confirmation.`,
+        });
+        return response.redirect(
+          303,
+          `https://${application.configuration.hostname}/courses/${response.locals.course.reference}/settings/my-course-participation`,
+        );
+      }
+
+      application.database.run(
+        sql`
+          DELETE FROM "courseParticipants"
+          WHERE "id" = ${response.locals.courseParticipant.id}
+        `,
+      );
+
+      application.web.locals.helpers.Flash.set({
+        request,
+        response,
+        theme: "green",
+        content: html`You removed yourself from ${response.locals.course.name}
+        successfully.`,
+      });
+
+      response.redirect(303, `https://${application.configuration.hostname}/`);
+    }),
   );
 };

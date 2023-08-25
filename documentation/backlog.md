@@ -6,7 +6,6 @@
 
 **Deadline:** 2023-08-25
 
-- Have a way for students to remove themselves from a course.
 - Ask Hopkins permission.
 - JWT libraries
   - Features
