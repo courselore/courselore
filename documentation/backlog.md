@@ -5,17 +5,6 @@
 **Learning Tools Interoperability (LTI)**
 
 - Ask Hopkins permission.
-- JWT libraries
-  - Features
-    - Create & verify tokens
-    - Create keys
-    - Manage keysets
-    - Decode tokens without verification (for convenience)
-  - Candidates
-    - https://github.com/panva/jose
-    - https://github.com/auth0/node-jsonwebtoken & https://github.com/auth0/node-jwks-rsa
-      - Most popular
-      - Doesn’t create keys
 - Reverse engineer LTI 1.3
 
   - Review Canvas documentation
@@ -394,6 +383,23 @@
     - https://site.imsglobal.org/certifications
     - https://www.1edtech.org/certification/get-certified
   - Promote: https://www.eduappcenter.com
+- Notes
+  - JWT libraries
+    - Features
+      - Create & verify tokens
+      - Create keys
+      - Manage keysets
+      - Decode tokens without verification (for convenience)
+    - Candidates (https://jwt.io/libraries)
+      - https://github.com/panva/jose
+        - Doesn’t have a utility to create JWKS endpoints
+          - https://github.com/panva/jose/discussions/486#discussioncomment-4376721
+          - https://github.com/panva/jose/discussions/135#discussioncomment-243837
+      - https://github.com/auth0/node-jsonwebtoken & https://github.com/auth0/node-jwks-rsa
+        - Most popular
+        - Doesn’t create keys
+        - A bit more convenient interface
+        - Relies on `@types/`
 - Implementation snippets
 
   - `host.docker.internal`
