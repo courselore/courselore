@@ -4,8 +4,6 @@
 
 **Learning Tools Interoperability (LTI)**
 
-**Deadline:** 2023-08-25
-
 - Ask Hopkins permission.
 - JWT libraries
   - Features
