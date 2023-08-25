@@ -288,6 +288,7 @@
   - If someone appears in the LMS, sign them up in Courselore and add them as course participant. Mark their participation as having come from the LMS.
   - In general, mark everyone who appears in the LMS.
   - If someone disappears from the LMS, and they have been marked as appearing in LMS in the first place, then it’s okay to remove them.
+  - What if the user removes themselves?
 - Deep linking for people to put an LMS entry with a link to a specific conversation?
 - Perhaps replace our own authentication with OAuth?
   - And what about our future API?

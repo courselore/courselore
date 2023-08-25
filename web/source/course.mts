@@ -5279,94 +5279,49 @@ export default async (application: Application): Promise<void> => {
                 gap: var(--space--4);
               `}"
             >
-              <div
-                css="${css`
-                  display: flex;
-
-                  @media (max-width: 399px) {
-                    flex-direction: column;
-                    gap: var(--space--4);
-                  }
-
-                  @media (min-width: 400px) {
-                    gap: var(--space--2);
-                    & > * {
-                      flex: 1;
-                    }
-                  }
-                `}"
-              >
-                <div class="label">
-                  <p class="label--text">
-                    Course Name Confirmation
-                    <button
-                      type="button"
-                      class="button button--tight button--tight--inline button--transparent"
-                      javascript="${javascript`
-                        leafac.setTippy({
-                          event,
-                          element: this,
-                          tippyProps: {
-                            trigger: "click",
-                            content: "You must confirm the course name to avoid removing yourself from the wrong course by accident.",
-                          },
-                        });
-                      `}"
-                    >
-                      <i class="bi bi-info-circle"></i>
-                    </button>
-                  </p>
-                  <input
-                    type="text"
-                    name="courseNameConfirmation"
-                    placeholder="${response.locals.course.name}"
-                    required
-                    autocomplete="off"
-                    class="input--text"
+              <div class="label">
+                <p class="label--text">
+                  Course Name Confirmation
+                  <button
+                    type="button"
+                    class="button button--tight button--tight--inline button--transparent"
                     javascript="${javascript`
-                      this.onvalidate = () => {
-                        if (this.value !== ${response.locals.course.name})
-                          return "Please confirm the course name: “" + ${response.locals.course.name} + "”";
-                      };
-                    `}"
-                  />
-                  <p
-                    class="secondary"
-                    css="${css`
-                      font-size: var(--font-size--xs);
-                      line-height: var(--line-height--xs);
+                      leafac.setTippy({
+                        event,
+                        element: this,
+                        tippyProps: {
+                          trigger: "click",
+                          content: "You must confirm the course name to avoid removing yourself from the wrong course by accident.",
+                        },
+                      });
                     `}"
                   >
-                    ${response.locals.course.name}
-                  </p>
-                </div>
-                <div class="label">
-                  <p class="label--text">
-                    Password Confirmation
-                    <button
-                      type="button"
-                      class="button button--tight button--tight--inline button--transparent"
-                      javascript="${javascript`
-                        leafac.setTippy({
-                          event,
-                          element: this,
-                          tippyProps: {
-                            trigger: "click",
-                            content: "You must confirm your password because this is an important operation that affects your account and may not be undone.",
-                          },
-                        });
-                      `}"
-                    >
-                      <i class="bi bi-info-circle"></i>
-                    </button>
-                  </p>
-                  <input
-                    type="password"
-                    name="passwordConfirmation"
-                    required
-                    class="input--text"
-                  />
-                </div>
+                    <i class="bi bi-info-circle"></i>
+                  </button>
+                </p>
+                <input
+                  type="text"
+                  name="courseNameConfirmation"
+                  placeholder="${response.locals.course.name}"
+                  required
+                  autocomplete="off"
+                  class="input--text"
+                  javascript="${javascript`
+                    this.onvalidate = () => {
+                      if (this.value !== ${response.locals.course.name})
+                        return "Please confirm the course name: “" + ${response.locals.course.name} + "”";
+                    };
+                  `}"
+                />
+                <p
+                  class="secondary"
+                  css="${css`
+                    font-size: var(--font-size--xs);
+                    line-height: var(--line-height--xs);
+                  `}"
+                >
+                  ${response.locals.course.name}
+                </p>
               </div>
               <div>
                 <button
@@ -5471,37 +5426,16 @@ export default async (application: Application): Promise<void> => {
   application.web.delete<
     { courseReference: string },
     HTML,
-    {
-      courseNameConfirmation?: string;
-      passwordConfirmation?: string;
-    },
+    { courseNameConfirmation?: string },
     {},
     Application["web"]["locals"]["ResponseLocals"]["CourseParticipant"]
   >(
     "/courses/:courseReference/settings/my-course-participation",
-    asyncHandler(async (request, response, next) => {
+    (request, response, next) => {
       if (response.locals.course === undefined) return next();
 
       if (request.body.courseNameConfirmation !== response.locals.course.name)
         return next("Validation");
-
-      if (
-        !(await application.web.locals.helpers.passwordConfirmation({
-          request,
-          response,
-        }))
-      ) {
-        application.web.locals.helpers.Flash.set({
-          request,
-          response,
-          theme: "rose",
-          content: html`Incorrect password confirmation.`,
-        });
-        return response.redirect(
-          303,
-          `https://${application.configuration.hostname}/courses/${response.locals.course.reference}/settings/my-course-participation`,
-        );
-      }
 
       application.database.run(
         sql`
@@ -5519,6 +5453,6 @@ export default async (application: Application): Promise<void> => {
       });
 
       response.redirect(303, `https://${application.configuration.hostname}/`);
-    }),
+    },
   );
 };
