@@ -5,6 +5,18 @@
 **Learning Tools Interoperability (LTI)**
 
 - Ask Hopkins permission.
+- Use Keycloak for mocking SAML & OpenID Connect
+  - https://www.keycloak.org/getting-started/getting-started-docker
+- Key management:
+  - SAML one service provider keyset for all identity providers?
+    - But metadata is different, because we use the URL to communicate the Identity Provider `samlIdentifier`.
+    - Pros of separate keys:
+      - Probably a bit more secure, given that an issue with a key doesn’t contaminate everything.
+      - It’s what we already have.
+    - Pros of same key:
+      - Easier to manage (think of initial configuration, rotation, and so forth).
+      - It’s what other services seem to do (Moodle, Canvas, Piazza, NOT GRADESCOPE).
+  - Use the same key for SAML & LTI?
 - Reverse engineer LTI 1.3
 
   - Make Members request work
