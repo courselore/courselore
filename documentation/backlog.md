@@ -7,9 +7,11 @@
 - Introduce https://github.com/maildev/maildev
   - Manage ports
     - Introduce new port strategy
-      - Dynamically allocated numbers
+      - In main process
+        - Check availability of 80 & 443
+          - Offer to kill other process?
+        - Allocate random and guaranteed-to-be-free ports for the rest
       - Remove the notion of `processNumber`?
-      - Check port availability on main process
       - Test application & background jobs
       - SSH tunnel
     - Log subprocesses ports
