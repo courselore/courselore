@@ -166,6 +166,8 @@ if (await node.isExecuted(import.meta.url)) {
       ) => {
         const eventLoopActive = node.eventLoopActive();
 
+        let port = 6000;
+
         const application = {
           name: "courselore",
           version,
@@ -186,20 +188,11 @@ if (await node.isExecuted(import.meta.url)) {
             ),
           ),
           ports: {
-            web: lodash.times(
-              os.availableParallelism(),
-              (processNumber) => 6000 + processNumber,
-            ),
-            webEventsAny: 7999,
-            webEvents: lodash.times(
-              os.availableParallelism(),
-              (processNumber) => 7000 + processNumber,
-            ),
-            workerEventsAny: 8999,
-            workerEvents: lodash.times(
-              os.availableParallelism(),
-              (processNumber) => 8000 + processNumber,
-            ),
+            web: lodash.times(os.availableParallelism(), () => port++),
+            webEventsAny: port++,
+            webEvents: lodash.times(os.availableParallelism(), () => port++),
+            workerEventsAny: port++,
+            workerEvents: lodash.times(os.availableParallelism(), () => port++),
           },
           addresses: {
             canonicalHostname: "courselore.org",
@@ -253,42 +246,41 @@ if (await node.isExecuted(import.meta.url)) {
             let restartChildProcesses = true;
             for (const execaArguments of [
               ...["web", "worker"].flatMap((processType) =>
-                lodash.times(
-                  (application.ports as any)[processType + "Events"].length,
-                  (processNumber) => ({
-                    file:
-                      application.configuration.environment === "profile"
-                        ? "0x"
-                        : process.argv[0],
-                    arguments: [
-                      ...(application.configuration.environment === "profile"
-                        ? [
-                            "--name",
-                            `${processType}--${processNumber}`,
-                            "--output-dir",
-                            "data/measurements/profiles/{name}",
-                            "--collect-delay",
-                            "2000",
-                          ]
-                        : []),
-                      process.argv[1],
-                      "--process-type",
-                      processType,
-                      "--process-number",
-                      processNumber,
-                      configuration,
-                    ],
-                    options: {
-                      preferLocal: true,
-                      stdio: "inherit",
-                      ...(["production", "profile"].includes(
-                        application.configuration.environment,
-                      )
-                        ? { env: { NODE_ENV: "production" } }
-                        : {}),
-                    },
-                  }),
-                ),
+                [
+                  ...(application.ports as any)[processType + "Events"].keys(),
+                ].map((processNumber) => ({
+                  file:
+                    application.configuration.environment === "profile"
+                      ? "0x"
+                      : process.argv[0],
+                  arguments: [
+                    ...(application.configuration.environment === "profile"
+                      ? [
+                          "--name",
+                          `${processType}--${processNumber}`,
+                          "--output-dir",
+                          "data/measurements/profiles/{name}",
+                          "--collect-delay",
+                          "2000",
+                        ]
+                      : []),
+                    process.argv[1],
+                    "--process-type",
+                    processType,
+                    "--process-number",
+                    processNumber,
+                    configuration,
+                  ],
+                  options: {
+                    preferLocal: true,
+                    stdio: "inherit",
+                    ...(["production", "profile"].includes(
+                      application.configuration.environment,
+                    )
+                      ? { env: { NODE_ENV: "production" } }
+                      : {}),
+                  },
+                })),
               ),
               {
                 file: "caddy",

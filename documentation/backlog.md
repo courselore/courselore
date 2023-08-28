@@ -8,6 +8,7 @@
   - Manage ports
     - Introduce new port strategy
       - Dynamically allocated numbers
+      - Remove the notion of `processNumber`?
       - Check port availability on main process
       - Test application & background jobs
       - SSH tunnel
