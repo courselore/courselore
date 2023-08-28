@@ -6,12 +6,12 @@
 
 - Introduce https://github.com/maildev/maildev
   - Manage ports
-    - Log subprocesses ports
     - Introduce new port strategy
       - Dynamically allocated numbers
       - Check port availability on main process
       - Test application & background jobs
       - SSH tunnel
+    - Log subprocesses ports
     - Documentation
       - `self-hosting.md`
       - `setting-up-for-development.md`
