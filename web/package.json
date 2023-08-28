@@ -57,6 +57,7 @@
     "filenamify": "^6.0.0",
     "got": "^13.0.0",
     "hast-util-to-string": "^2.0.0",
+    "jose": "^4.14.4",
     "jsdom": "^22.1.0",
     "lodash": "^4.17.21",
     "nodemailer": "^6.9.4",

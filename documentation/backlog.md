@@ -17,6 +17,7 @@
   - Document for developers
 - Use https://github.com/axllent/mailpit instead of our own little hacky thing?
 - Key management:
+  - https://www.stackallocated.com/blog/2020/saml-idp-no-shared-keys/
   - SAML one service provider keyset for all identity providers?
     - But metadata is different, because we use the URL to communicate the Identity Provider `samlIdentifier`.
     - Pros of separate keys:
@@ -26,6 +27,8 @@
       - Easier to manage (think of initial configuration, rotation, and so forth).
       - It’s what other services seem to do (Moodle, Canvas, Piazza, NOT GRADESCOPE).
   - Use the same key for SAML & LTI?
+  - One key per course may lead to problems with bureaucracy
+  - One key per course may not hold up well when we extend the LTI support to sync with the LMS at the installation level (as opposed to the course level as we’re doing now) and create courses in Courselore automatically
 - Reverse engineer LTI 1.3
 
   - Make Members request work
@@ -304,6 +307,7 @@
   - And what about our future API?
 - Document how to use in different LMSs
 - Document how developers should install Canvas & Moodle for testing LTI
+- Add support for sign-in/sign-up with OAuth?
 - References
   - Specifications
     - https://www.imsglobal.org/spec/security/v1p0/
@@ -1776,6 +1780,12 @@ const { app, BrowserWindow } = require("electron");
 - Start charging by 2024, start turning a profit by 2026.
   - But only start charging when we have a thousand users.
 - Homepage:
+  - Remove more generic stuff like dark mode
+  - Add new features:
+    - Polls
+    - Whispers
+    - SAML
+    - LTI
   - Better printscreens without `lorem ipsum`.
   - Example of designs that we like:
     - https://capacitorjs.com
