@@ -410,7 +410,7 @@ if (await node.isExecuted(import.meta.url)) {
                         (hostname) => caddyfile`
                           http://${hostname} {
                             import common
-                            redir https://{host}{uri} 308
+                            redir https://${hostname}{uri} 308
                             handle_errors {
                               import common
                             }
