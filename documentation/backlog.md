@@ -6,7 +6,8 @@
 
 - Manage ports
   - Introduce new port strategy
-    - Remove the notion of `processNumber`?
+    - Replace the notion of `processNumber` with `port`?
+      - But children processes need to know each other’s ports to communicate…
     - In main process
       - Check availability of 80 & 443
         - https://github.com/node-modules/detect-port
