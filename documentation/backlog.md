@@ -14,9 +14,12 @@
         - **No** because the port allocation must be deterministic because we don’t communicate port to children processes explicitly
     - Test application & background jobs
     - SSH tunnel
-    - Replace the notion of `processNumber` with `port`? **No**
-      - But children processes need to know each other’s ports to communicate…
-      - And `web` processes have two different ports
+    - Replace the notion of `processNumber` with `port`?
+      - **No**
+      - Children processes need to know each other’s ports to communicate…
+      - `web` processes have two different ports
+      - We need to check ports 80 & 443 anyway, might as well not have different special cases
+      - It’s true that the deterministic allocation is a bit hacky, but the rest of the application already relies on this pattern
   - Log subprocesses ports
   - Documentation
     - `self-hosting.md`
