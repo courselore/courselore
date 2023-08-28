@@ -253,39 +253,42 @@ if (await node.isExecuted(import.meta.url)) {
             let restartChildProcesses = true;
             for (const execaArguments of [
               ...["web", "worker"].flatMap((processType) =>
-                lodash.times(os.availableParallelism(), (processNumber) => ({
-                  file:
-                    application.configuration.environment === "profile"
-                      ? "0x"
-                      : process.argv[0],
-                  arguments: [
-                    ...(application.configuration.environment === "profile"
-                      ? [
-                          "--name",
-                          `${processType}--${processNumber}`,
-                          "--output-dir",
-                          "data/measurements/profiles/{name}",
-                          "--collect-delay",
-                          "2000",
-                        ]
-                      : []),
-                    process.argv[1],
-                    "--process-type",
-                    processType,
-                    "--process-number",
-                    processNumber,
-                    configuration,
-                  ],
-                  options: {
-                    preferLocal: true,
-                    stdio: "inherit",
-                    ...(["production", "profile"].includes(
-                      application.configuration.environment,
-                    )
-                      ? { env: { NODE_ENV: "production" } }
-                      : {}),
-                  },
-                })),
+                lodash.times(
+                  (application.ports as any)[processType + "Events"].length,
+                  (processNumber) => ({
+                    file:
+                      application.configuration.environment === "profile"
+                        ? "0x"
+                        : process.argv[0],
+                    arguments: [
+                      ...(application.configuration.environment === "profile"
+                        ? [
+                            "--name",
+                            `${processType}--${processNumber}`,
+                            "--output-dir",
+                            "data/measurements/profiles/{name}",
+                            "--collect-delay",
+                            "2000",
+                          ]
+                        : []),
+                      process.argv[1],
+                      "--process-type",
+                      processType,
+                      "--process-number",
+                      processNumber,
+                      configuration,
+                    ],
+                    options: {
+                      preferLocal: true,
+                      stdio: "inherit",
+                      ...(["production", "profile"].includes(
+                        application.configuration.environment,
+                      )
+                        ? { env: { NODE_ENV: "production" } }
+                        : {}),
+                    },
+                  }),
+                ),
               ),
               {
                 file: "caddy",
