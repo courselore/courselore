@@ -15,7 +15,7 @@
     - IdP-initiated SLO
   - Remove saml-idp support
   - Document for developers
-- Use https://github.com/axllent/mailpit instead of our own little hacky thing?
+- Introduce https://github.com/maildev/maildev
 - Key management:
   - https://www.stackallocated.com/blog/2020/saml-idp-no-shared-keys/
   - SAML one service provider keyset for all identity providers?
