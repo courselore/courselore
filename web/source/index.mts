@@ -187,19 +187,16 @@ if (await node.isExecuted(import.meta.url)) {
           ),
           ports: {
             web: lodash.times(
-              // FIXME: https://github.com/DefinitelyTyped/DefinitelyTyped/pull/63824
-              (os as any).availableParallelism(),
+              os.availableParallelism(),
               (processNumber) => 6000 + processNumber,
             ),
             webEvents: lodash.times(
-              // FIXME: https://github.com/DefinitelyTyped/DefinitelyTyped/pull/63824
-              (os as any).availableParallelism(),
+              os.availableParallelism(),
               (processNumber) => 7000 + processNumber,
             ),
             webEventsAny: 7999,
             workerEvents: lodash.times(
-              // FIXME: https://github.com/DefinitelyTyped/DefinitelyTyped/pull/63824
-              (os as any).availableParallelism(),
+              os.availableParallelism(),
               (processNumber) => 8000 + processNumber,
             ),
             workerEventsAny: 8999,
