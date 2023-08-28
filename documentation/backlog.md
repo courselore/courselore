@@ -5,6 +5,30 @@
 **Learning Tools Interoperability (LTI)**
 
 - Introduce https://github.com/maildev/maildev
+  - Manage ports
+    - Review Caddy configuration
+    - Log subprocesses ports
+    - Introduce new port strategy
+      - Dynamically allocated numbers
+      - Check port availability on main process
+      - Test application & background jobs
+      - SSH tunnel
+    - Documentation
+      - `self-hosting.md`
+      - `setting-up-for-development.md`
+  - Enable maildev
+  - Remove old hack for handling emails
+    - Configuration
+      - `development.mjs`
+      - `default.mjs`
+      - `profile.mjs`
+      - `try.courselore.org.mjs`
+    - `email.mts`
+    - `index.mts` (types and whatnot)
+- Merge `profile.mjs` into `development.mjs`?
+
+---
+
 - Use Keycloak for mocking SAML & OpenID Connect
   - https://www.keycloak.org/getting-started/getting-started-docker
   - Embed keys in configuration file

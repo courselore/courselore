@@ -190,16 +190,16 @@ if (await node.isExecuted(import.meta.url)) {
               os.availableParallelism(),
               (processNumber) => 6000 + processNumber,
             ),
+            webEventsAny: 7999,
             webEvents: lodash.times(
               os.availableParallelism(),
               (processNumber) => 7000 + processNumber,
             ),
-            webEventsAny: 7999,
+            workerEventsAny: 8999,
             workerEvents: lodash.times(
               os.availableParallelism(),
               (processNumber) => 8000 + processNumber,
             ),
-            workerEventsAny: 8999,
           },
           addresses: {
             canonicalHostname: "courselore.org",
@@ -531,36 +531,33 @@ if (await node.isExecuted(import.meta.url)) {
           }
 
           case "web": {
-            const webApplication = application.web;
-            const eventsApplication = application.webEvents;
-            webApplication.emit("start");
-            eventsApplication.emit("start");
-            const server = webApplication.listen(
+            application.web.emit("start");
+            application.webEvents.emit("start");
+            const webServer = application.web.listen(
               application.ports.web[application.process.number],
               "127.0.0.1",
             );
-            const events = eventsApplication.listen(
+            const webEventsServer = application.webEvents.listen(
               application.ports.webEvents[application.process.number],
               "127.0.0.1",
             );
             await eventLoopActive;
-            server.close();
-            events.close();
-            webApplication.emit("stop");
-            eventsApplication.emit("stop");
+            webServer.close();
+            webEventsServer.close();
+            application.web.emit("stop");
+            application.webEvents.emit("stop");
             break;
           }
 
           case "worker": {
-            const eventsApplication = application.workerEvents;
-            eventsApplication.emit("start");
-            const events = eventsApplication.listen(
+            application.workerEvents.emit("start");
+            const workerEventsServer = application.workerEvents.listen(
               application.ports.workerEvents[application.process.number],
               "127.0.0.1",
             );
             await eventLoopActive;
-            events.close();
-            eventsApplication.emit("stop");
+            workerEventsServer.close();
+            application.workerEvents.emit("stop");
             break;
           }
         }
