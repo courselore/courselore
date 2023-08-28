@@ -329,39 +329,6 @@ if (await node.isExecuted(import.meta.url)) {
                       encode zstd gzip
                     }
 
-                    ${[
-                      ...(application.configuration.tunnel
-                        ? []
-                        : [application.configuration.hostname]),
-                      ...application.configuration.alternativeHostnames,
-                    ]
-                      .map(
-                        (hostname) => caddyfile`
-                          http://${hostname} {
-                            import common
-                            redir https://{host}{uri} 308
-                            handle_errors {
-                              import common
-                            }
-                          }
-                        `,
-                      )
-                      .join("\n\n")}
-
-                    ${application.configuration.alternativeHostnames
-                      .map(
-                        (hostname) => caddyfile`
-                          https://${hostname} {
-                            import common
-                            redir https://${application.configuration.hostname}{uri} 307
-                            handle_errors {
-                              import common
-                            }
-                          }
-                        `,
-                      )
-                      .join("\n\n")}
-
                     http${application.configuration.tunnel ? `` : `s`}://${
                       application.configuration.hostname
                     } {
@@ -432,6 +399,39 @@ if (await node.isExecuted(import.meta.url)) {
                           lb_retries 1
                         }
                     }
+
+                    ${[
+                      ...(application.configuration.tunnel
+                        ? []
+                        : [application.configuration.hostname]),
+                      ...application.configuration.alternativeHostnames,
+                    ]
+                      .map(
+                        (hostname) => caddyfile`
+                          http://${hostname} {
+                            import common
+                            redir https://{host}{uri} 308
+                            handle_errors {
+                              import common
+                            }
+                          }
+                        `,
+                      )
+                      .join("\n\n")}
+
+                    ${application.configuration.alternativeHostnames
+                      .map(
+                        (hostname) => caddyfile`
+                          https://${hostname} {
+                            import common
+                            redir https://${application.configuration.hostname}{uri} 307
+                            handle_errors {
+                              import common
+                            }
+                          }
+                        `,
+                      )
+                      .join("\n\n")}
 
                     ${application.configuration.caddy}
                   `,
