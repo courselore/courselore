@@ -6,7 +6,6 @@
 
 - Introduce https://github.com/maildev/maildev
   - Manage ports
-    - Review Caddy configuration
     - Log subprocesses ports
     - Introduce new port strategy
       - Dynamically allocated numbers
