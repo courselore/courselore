@@ -7,11 +7,16 @@
 - Introduce https://github.com/maildev/maildev
   - Manage ports
     - Introduce new port strategy
+      - Remove the notion of `processNumber`?
       - In main process
         - Check availability of 80 & 443
+          - https://github.com/node-modules/detect-port
           - Offer to kill other process?
+            - https://github.com/tiaanduplessis/kill-port
         - Allocate random and guaranteed-to-be-free ports for the rest
-      - Remove the notion of `processNumber`?
+          - https://github.com/sindresorhus/get-port
+          - https://github.com/http-party/node-portfinder
+          - **No** because the port allocation must be deterministic because we don’t communicate port to children processes explicitly
       - Test application & background jobs
       - SSH tunnel
     - Log subprocesses ports
