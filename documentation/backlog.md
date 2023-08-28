@@ -4,6 +4,7 @@
 
 **Learning Tools Interoperability (LTI)**
 
+- Introduce https://github.com/maildev/maildev
 - Use Keycloak for mocking SAML & OpenID Connect
   - https://www.keycloak.org/getting-started/getting-started-docker
   - Embed keys in configuration file
@@ -15,7 +16,6 @@
     - IdP-initiated SLO
   - Remove saml-idp support
   - Document for developers
-- Introduce https://github.com/maildev/maildev
 - Key management:
   - https://www.stackallocated.com/blog/2020/saml-idp-no-shared-keys/
   - SAML one service provider keyset for all identity providers?
