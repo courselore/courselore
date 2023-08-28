@@ -1,6 +1,14 @@
 # Meetings
 
 <details>
+<summary>2023-08-26</summary>
+
+- Added a way for users to remove themselves from a course.
+- Managing keys for SAML & LTI.
+
+</details>
+
+<details>
 <summary>2023-08-19</summary>
 
 - AI API sketch is done.
