@@ -166,7 +166,8 @@ if (await node.isExecuted(import.meta.url)) {
       ) => {
         const eventLoopActive = node.eventLoopActive();
 
-        let port = 6000;
+        const portStart = 6000;
+        let port = portStart;
 
         const application = {
           name: "courselore",
@@ -242,6 +243,28 @@ if (await node.isExecuted(import.meta.url)) {
 
         switch (application.process.type) {
           case "main": {
+            const unavailablePorts = [];
+            for (const configuration of [
+              { port: 80, hostname: undefined },
+              { port: 443, hostname: undefined },
+              ...lodash
+                .range(portStart, port)
+                .map((port) => ({ port, hostname: "127.0.0.1" })),
+            ])
+              if (
+                !(await node.portAvailable(
+                  configuration.port,
+                  configuration.hostname,
+                ))
+              )
+                unavailablePorts.push(configuration.port);
+            if (unavailablePorts.length > 0) {
+              application.log(
+                "UNAVAILABLE PORTS",
+                JSON.stringify(unavailablePorts),
+              );
+              process.exit(1);
+            }
             const childProcesses = new Set<ExecaChildProcess>();
             let restartChildProcesses = true;
             for (const execaArguments of [
