@@ -991,7 +991,7 @@ export default async (application: Application): Promise<void> => {
       if (users.length === 0) return;
       if (!process.stdin.isTTY)
         throw new Error(
-          "This update requires that you answer some prompts, so please run Courselore interactively (for example, ‘./courselore’ on the command line) as opposed to through a service manager (for example, systemd).",
+          "This update requires that you answer some prompts. Please run Courselore interactively (for example, ‘./courselore’ on the command line) as opposed to through a service manager (for example, systemd).",
         );
       while (true) {
         const user = (
