@@ -13,6 +13,8 @@ import { execa, ExecaChildProcess } from "execa";
 import { got } from "got";
 import * as Got from "got";
 import * as node from "@leafac/node";
+import prompts from "prompts";
+import killPort from "kill-port";
 import caddyfile from "dedent";
 import dedent from "dedent";
 import * as saml from "@node-saml/node-saml";
@@ -243,22 +245,39 @@ if (await node.isExecuted(import.meta.url)) {
 
         switch (application.process.type) {
           case "main": {
-            const unavailablePorts = [];
-            for (const configuration of [
-              { port: 80, hostname: undefined },
-              { port: 443, hostname: undefined },
-              ...lodash
-                .range(portStart, port)
-                .map((port) => ({ port, hostname: "127.0.0.1" })),
-            ])
+            while (true) {
+              const unavailablePorts = [];
+              for (const configuration of [
+                { port: 80, hostname: undefined },
+                { port: 443, hostname: undefined },
+                ...lodash
+                  .range(portStart, port)
+                  .map((port) => ({ port, hostname: "127.0.0.1" })),
+              ])
+                if (
+                  !(await node.portAvailable(
+                    configuration.port,
+                    configuration.hostname,
+                  ))
+                )
+                  unavailablePorts.push(configuration.port);
+              if (unavailablePorts.length === 0) break;
               if (
-                !(await node.portAvailable(
-                  configuration.port,
-                  configuration.hostname,
-                ))
-              )
-                unavailablePorts.push(configuration.port);
-            if (unavailablePorts.length > 0) {
+                process.stdin.isTTY &&
+                (
+                  await prompts({
+                    type: "confirm",
+                    name: "output",
+                    message: `The following ports are unavailable, do you want to kill the respective processes and retry? ${JSON.stringify(
+                      unavailablePorts,
+                    )}`,
+                    initial: true,
+                  })
+                ).output
+              ) {
+                for (const port of unavailablePorts) await killPort(port);
+                continue;
+              }
               application.log(
                 "UNAVAILABLE PORTS",
                 JSON.stringify(unavailablePorts),
