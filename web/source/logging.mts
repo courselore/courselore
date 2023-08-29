@@ -35,6 +35,8 @@ export default async (application: Application): Promise<void> => {
           application.name,
           application.version,
           `https://${application.configuration.hostname}`,
+          "PORTS",
+          JSON.stringify(application.ports),
         ]
       : []),
   );

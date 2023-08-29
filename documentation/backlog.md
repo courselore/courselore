@@ -6,12 +6,6 @@
 
 - Manage ports
   - Introduce new port strategy
-    - In main process
-      - Check availability of 80 & 443
-        - https://github.com/node-modules/detect-port
-        - Offer to kill other process?
-          - https://github.com/tiaanduplessis/kill-port
-        - **No** because the port allocation must be deterministic because we don’t communicate port to children processes explicitly
     - Test application & background jobs
     - SSH tunnel
     - Replace the notion of `processNumber` with `port`?
@@ -20,7 +14,6 @@
       - `web` processes have two different ports
       - We need to check ports 80 & 443 anyway, might as well not have different special cases
       - It’s true that the deterministic allocation is a bit hacky, but the rest of the application already relies on this pattern
-  - Log subprocesses ports
   - Documentation
     - `self-hosting.md`
     - `setting-up-for-development.md`
