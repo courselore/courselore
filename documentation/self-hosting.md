@@ -16,8 +16,6 @@ You may use Courselore at [`courselore.org`](https://courselore.org), but you ma
 
   > **Note:** We recommend that Courselore is the only application running in the machine. Or, if you must, use containers to separate applications and give Courselore its own container.
 
-  > **Note:** Courselore uses the following network ports: 80, 443, and 6000–9000. Stop other applications you may have running on those ports. In Linux and macOS, for example, you may find which application is running on a network port by using `lsof -i:80`. Or you may prefer to use [`npx kill-port 80 443 ...`](https://github.com/tiaanduplessis/kill-port) if you have Node.js installed.
-
   > **Note:** The server may run Linux, Windows, or macOS. We recommend Linux ([Ubuntu](https://ubuntu.com)).
 
   > **Note:** Courselore is lightweight. A $5/month DigitalOcean server is enough for a couple hundred users.

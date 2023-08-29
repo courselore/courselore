@@ -4,10 +4,6 @@
 
 **Learning Tools Interoperability (LTI)**
 
-- Manage ports
-  - Documentation
-    - `self-hosting.md`
-    - `setting-up-for-development.md`
 - Introduce https://github.com/maildev/maildev
   - Enable maildev
   - Remove old hack for handling emails
