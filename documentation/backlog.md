@@ -5,9 +5,6 @@
 **Learning Tools Interoperability (LTI)**
 
 - Manage ports
-  - Introduce new port strategy
-    - Test application & background jobs
-    - SSH tunnel
   - Documentation
     - `self-hosting.md`
     - `setting-up-for-development.md`
