@@ -1,39 +1,16 @@
-import path from "node:path";
-import fs from "node:fs/promises";
 import timers from "node:timers/promises";
 import nodemailer from "nodemailer";
 import sql from "@leafac/sqlite";
-import filenamify from "filenamify";
 import { Application } from "./index.mjs";
 
 export default async (application: Application): Promise<void> => {
   let timerAbortController: AbortController;
 
   application.workerEvents.once("start", async () => {
-    const sendMailTransport = nodemailer.createTransport(
+    const nodemailerTransport = nodemailer.createTransport(
       application.configuration.email.options,
       application.configuration.email.defaults,
     );
-    const sendMail =
-      application.configuration.email.options.streamTransport &&
-      application.configuration.email.options.buffer
-        ? async (mailOptions: nodemailer.SendMailOptions) => {
-            const sentMessageInfo = await sendMailTransport.sendMail(
-              mailOptions,
-            );
-            const emailFile = path.join(
-              application.configuration.dataDirectory,
-              "emails",
-              filenamify(`${new Date().toISOString()}--${mailOptions.to}.eml`, {
-                replacement: "-",
-              }),
-            );
-            await fs.mkdir(path.dirname(emailFile), { recursive: true });
-            await fs.writeFile(emailFile, (sentMessageInfo as any).message);
-            return sentMessageInfo;
-          }
-        : async (mailOptions: nodemailer.SendMailOptions) =>
-            await sendMailTransport.sendMail(mailOptions);
 
     while (true) {
       application.log("sendEmailJobs", "STARTING...");
@@ -120,7 +97,8 @@ export default async (application: Application): Promise<void> => {
 
         const mailOptions = JSON.parse(job.mailOptions);
         try {
-          const sentMessageInfo = await sendMail(mailOptions);
+          const sentMessageInfo =
+            await nodemailerTransport.sendMail(mailOptions);
           application.database.run(
             sql`
               DELETE FROM "sendEmailJobs" WHERE "id" = ${job.id}
