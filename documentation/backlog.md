@@ -18,8 +18,8 @@
     - Logging
     - Messages in application
     - `setting-up-for-development.md`
-- Application: 8000s
-- Other: 9000s
+- Application: 18000s
+- Other: 8000s
 - Tunnel: 3000s
 - Merge `profile.mjs` into `development.mjs`?
 

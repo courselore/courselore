@@ -168,7 +168,7 @@ if (await node.isExecuted(import.meta.url)) {
       ) => {
         const eventLoopActive = node.eventLoopActive();
 
-        const portStart = 8000;
+        const portStart = 18000;
         let port = portStart;
 
         const application = {
@@ -255,9 +255,9 @@ if (await node.isExecuted(import.meta.url)) {
                   .map((port) => ({ port, hostname: "127.0.0.1" })),
                 ...(application.configuration.environment === "development"
                   ? [
-                      { port: 9000, hostname: undefined },
-                      { port: 9001, hostname: "127.0.0.1" },
-                      { port: 9002, hostname: "127.0.0.1" },
+                      { port: 8000, hostname: undefined },
+                      { port: 8001, hostname: "127.0.0.1" },
+                      { port: 8002, hostname: "127.0.0.1" },
                     ]
                   : []),
               ])
@@ -450,8 +450,8 @@ if (await node.isExecuted(import.meta.url)) {
                     ${
                       application.configuration.environment === "development"
                         ? caddyfile`
-                            https://${application.configuration.hostname}:9000 {
-                              reverse_proxy http://127.0.0.1:9001 {
+                            https://${application.configuration.hostname}:8000 {
+                              reverse_proxy http://127.0.0.1:8001 {
                                 lb_retries 1
                               }
                             }
@@ -502,9 +502,9 @@ if (await node.isExecuted(import.meta.url)) {
                       file: "maildev",
                       arguments: [
                         "--web",
-                        "9001",
+                        "8001",
                         "--smtp",
-                        "9002",
+                        "8002",
                         "--mail-directory",
                         emailsDirectory,
                         "--ip",
