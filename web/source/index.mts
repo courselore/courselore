@@ -168,7 +168,7 @@ if (await node.isExecuted(import.meta.url)) {
       ) => {
         const eventLoopActive = node.eventLoopActive();
 
-        const portStart = 6000;
+        const portStart = 8000;
         let port = portStart;
 
         const application = {
@@ -253,6 +253,12 @@ if (await node.isExecuted(import.meta.url)) {
                 ...lodash
                   .range(portStart, port)
                   .map((port) => ({ port, hostname: "127.0.0.1" })),
+                ...(application.configuration.environment === "development"
+                  ? [
+                      { port: 9000, hostname: "127.0.0.1" },
+                      { port: 9001, hostname: "127.0.0.1" },
+                    ]
+                  : []),
               ])
                 if (
                   !(await node.portAvailable(
@@ -284,6 +290,12 @@ if (await node.isExecuted(import.meta.url)) {
               );
               process.exit(1);
             }
+            const emailsDirectory = path.join(
+              application.configuration.dataDirectory,
+              "emails",
+            );
+            if (application.configuration.environment === "development")
+              await fs.mkdir(emailsDirectory, { recursive: true });
             const childProcesses = new Set<ExecaChildProcess>();
             let restartChildProcesses = true;
             for (const execaArguments of [
@@ -473,6 +485,24 @@ if (await node.isExecuted(import.meta.url)) {
               },
               ...(application.configuration.environment === "development"
                 ? [
+                    {
+                      file: "maildev",
+                      arguments: [
+                        "--web",
+                        "9000",
+                        "--smtp",
+                        "9001",
+                        "--mail-directory",
+                        emailsDirectory,
+                        "--ip",
+                        "127.0.0.1",
+                      ],
+                      options: {
+                        preferLocal: true,
+                        stdout: "ignore",
+                        stderr: "ignore",
+                      },
+                    },
                     {
                       file: "saml-idp",
                       arguments: [

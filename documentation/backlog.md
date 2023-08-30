@@ -5,15 +5,21 @@
 **Learning Tools Interoperability (LTI)**
 
 - Introduce https://github.com/maildev/maildev
-  - Enable maildev
   - Remove old hack for handling emails
-    - Configuration
-      - `development.mjs`
-      - `default.mjs`
-      - `profile.mjs`
-      - `try.courselore.org.mjs`
     - `email.mts`
     - `index.mts` (types and whatnot)
+  - Configuration
+    - `development.mjs`
+    - `default.mjs`
+    - `profile.mjs`
+    - `try.courselore.org.mjs`
+  - Documentation
+    - Logging
+    - Messages in application
+    - `setting-up-for-development.md`
+- Application: 8000s
+- Other: 9000s
+- Tunnel: 3000s
 - Merge `profile.mjs` into `development.mjs`?
 
 ---

@@ -232,7 +232,7 @@ Disadvantages: Slower. Requires an internet connection.
 
    ```console
    # Custom Courselore Tunnel Address
-   $ ssh -NR 9000:127.0.0.1:80 root@leafac.courselore.org
+   $ ssh -NR 3000:127.0.0.1:80 root@leafac.courselore.org
 
    # Localtunnel
    $ npx localtunnel --port 80
