@@ -255,8 +255,9 @@ if (await node.isExecuted(import.meta.url)) {
                   .map((port) => ({ port, hostname: "127.0.0.1" })),
                 ...(application.configuration.environment === "development"
                   ? [
-                      { port: 9000, hostname: "127.0.0.1" },
+                      { port: 9000, hostname: undefined },
                       { port: 9001, hostname: "127.0.0.1" },
+                      { port: 9002, hostname: "127.0.0.1" },
                     ]
                   : []),
               ])
@@ -420,8 +421,8 @@ if (await node.isExecuted(import.meta.url)) {
                         reverse_proxy ${application.ports.web
                           .map((port) => `http://127.0.0.1:${port}`)
                           .join(" ")} {
-                            lb_retries 1
-                          }
+                          lb_retries 1
+                        }
                       }
                       handle_errors {
                         import common
@@ -433,8 +434,8 @@ if (await node.isExecuted(import.meta.url)) {
                       reverse_proxy ${application.ports.webEvents
                         .map((port) => `http://127.0.0.1:${port}`)
                         .join(" ")} {
-                          lb_retries 1
-                        }
+                        lb_retries 1
+                      }
                     }
 
                     http://127.0.0.1:${application.ports.workerEventsAny} {
@@ -442,8 +443,20 @@ if (await node.isExecuted(import.meta.url)) {
                       reverse_proxy ${application.ports.workerEvents
                         .map((port) => `http://127.0.0.1:${port}`)
                         .join(" ")} {
-                          lb_retries 1
-                        }
+                        lb_retries 1
+                      }
+                    }
+
+                    ${
+                      application.configuration.environment === "development"
+                        ? caddyfile`
+                            https://${application.configuration.hostname}:9000 {
+                              reverse_proxy http://127.0.0.1:9001 {
+                                lb_retries 1
+                              }
+                            }
+                          `
+                        : caddyfile``
                     }
 
                     ${[
@@ -489,9 +502,9 @@ if (await node.isExecuted(import.meta.url)) {
                       file: "maildev",
                       arguments: [
                         "--web",
-                        "9000",
-                        "--smtp",
                         "9001",
+                        "--smtp",
+                        "9002",
                         "--mail-directory",
                         emailsDirectory,
                         "--ip",
