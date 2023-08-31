@@ -516,64 +516,64 @@ if (await node.isExecuted(import.meta.url)) {
                         stderr: "ignore",
                       },
                     },
-                    {
-                      file: "saml-idp",
-                      arguments: [
-                        "--port",
-                        "9000",
-                        "--issuer",
-                        `http://localhost:9000/metadata`,
-                        "--serviceProviderId",
-                        `https://${application.configuration.hostname}/saml/development/metadata`,
-                        "--audience",
-                        `https://${application.configuration.hostname}/saml/development/metadata`,
-                        "--acs",
-                        `https://${application.configuration.hostname}/saml/development/assertion-consumer-service`,
-                        "--slo",
-                        `https://${application.configuration.hostname}/saml/development/single-logout-service`,
-                        "--encryptAssertion",
-                        "--configFile",
-                        url.fileURLToPath(
-                          new URL(
-                            "../configuration/development--saml--identity-provider--saml-idp.cjs",
-                            import.meta.url,
-                          ),
-                        ),
-                        "--key",
-                        url.fileURLToPath(
-                          new URL(
-                            "../configuration/development--saml--identity-provider--signing.key",
-                            import.meta.url,
-                          ),
-                        ),
-                        "--cert",
-                        url.fileURLToPath(
-                          new URL(
-                            "../configuration/development--saml--identity-provider--signing.crt",
-                            import.meta.url,
-                          ),
-                        ),
-                        "--encryptionCert",
-                        url.fileURLToPath(
-                          new URL(
-                            "../configuration/development--saml--service-provider--encryption.crt",
-                            import.meta.url,
-                          ),
-                        ),
-                        "--encryptionPublicKey",
-                        url.fileURLToPath(
-                          new URL(
-                            "../configuration/development--saml--service-provider--encryption.pub",
-                            import.meta.url,
-                          ),
-                        ),
-                      ],
-                      options: {
-                        preferLocal: true,
-                        stdout: "ignore",
-                        stderr: "ignore",
-                      },
-                    },
+                    // {
+                    //   file: "saml-idp",
+                    //   arguments: [
+                    //     "--port",
+                    //     "9000",
+                    //     "--issuer",
+                    //     `http://localhost:9000/metadata`,
+                    //     "--serviceProviderId",
+                    //     `https://${application.configuration.hostname}/saml/development/metadata`,
+                    //     "--audience",
+                    //     `https://${application.configuration.hostname}/saml/development/metadata`,
+                    //     "--acs",
+                    //     `https://${application.configuration.hostname}/saml/development/assertion-consumer-service`,
+                    //     "--slo",
+                    //     `https://${application.configuration.hostname}/saml/development/single-logout-service`,
+                    //     "--encryptAssertion",
+                    //     "--configFile",
+                    //     url.fileURLToPath(
+                    //       new URL(
+                    //         "../configuration/development--saml--identity-provider--saml-idp.cjs",
+                    //         import.meta.url,
+                    //       ),
+                    //     ),
+                    //     "--key",
+                    //     url.fileURLToPath(
+                    //       new URL(
+                    //         "../configuration/development--saml--identity-provider--signing.key",
+                    //         import.meta.url,
+                    //       ),
+                    //     ),
+                    //     "--cert",
+                    //     url.fileURLToPath(
+                    //       new URL(
+                    //         "../configuration/development--saml--identity-provider--signing.crt",
+                    //         import.meta.url,
+                    //       ),
+                    //     ),
+                    //     "--encryptionCert",
+                    //     url.fileURLToPath(
+                    //       new URL(
+                    //         "../configuration/development--saml--service-provider--encryption.crt",
+                    //         import.meta.url,
+                    //       ),
+                    //     ),
+                    //     "--encryptionPublicKey",
+                    //     url.fileURLToPath(
+                    //       new URL(
+                    //         "../configuration/development--saml--service-provider--encryption.pub",
+                    //         import.meta.url,
+                    //       ),
+                    //     ),
+                    //   ],
+                    //   options: {
+                    //     preferLocal: true,
+                    //     stdout: "ignore",
+                    //     stderr: "ignore",
+                    //   },
+                    // },
                   ]
                 : []),
             ])
