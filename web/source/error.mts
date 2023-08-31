@@ -151,51 +151,25 @@ export default async (application: Application): Promise<void> => {
             </form>
 
             $${application.configuration.demonstration
-              ? (() => {
-                  let emailVerification = application.database.get<{
-                    nonce: string;
-                  }>(
-                    sql`
-                      SELECT "nonce" FROM "emailVerifications" WHERE "user" = ${response.locals.user.id}
-                    `,
-                  );
-                  if (emailVerification === undefined) {
-                    application.web.locals.helpers.emailVerification({
-                      request,
-                      response,
-                      userId: response.locals.user.id,
-                      userEmail: response.locals.user.email,
-                    });
-                    emailVerification = application.database.get<{
-                      nonce: string;
-                    }>(
-                      sql`
-                        SELECT "nonce" FROM "emailVerifications" WHERE "user" = ${response.locals.user.id}
-                      `,
-                    )!;
-                  }
-                  return html`
-                    <hr class="separator" />
+              ? html`
+                  <hr class="separator" />
 
-                    <p
-                      css="${css`
-                        font-weight: var(--font-weight--bold);
-                      `}"
+                  <p
+                    css="${css`
+                      font-weight: var(--font-weight--bold);
+                    `}"
+                  >
+                    This Courselore installation is running in Demonstration
+                    Mode.
+                    <a
+                      href="https://${application.configuration.hostname}:8000"
+                      target="_blank"
+                      class="link"
                     >
-                      This Courselore installation is running in demonstration
-                      mode and doesn’t send emails.
-                      <a
-                        href="https://${application.configuration
-                          .hostname}/email-verification/${emailVerification.nonce}${qs.stringify(
-                          { redirect: request.originalUrl.slice(1) },
-                          { addQueryPrefix: true },
-                        )}"
-                        class="link"
-                        >Verify email</a
-                      >.
-                    </p>
-                  `;
-                })()
+                      Open Demonstration Inbox</a
+                    >.
+                  </p>
+                `
               : html``}
           `,
         }),

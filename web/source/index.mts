@@ -139,7 +139,7 @@ if (await node.isExecuted(import.meta.url)) {
     )
     .argument(
       "[configuration]",
-      "Path to configuration file. If you don’t provide a configuration file, the application runs in demonstration mode.",
+      "Path to configuration file. If you don’t provide a configuration file, the application runs in Demonstration Mode.",
       url.fileURLToPath(
         new URL("../configuration/default.mjs", import.meta.url),
       ),

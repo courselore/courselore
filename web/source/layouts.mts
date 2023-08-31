@@ -966,6 +966,17 @@ export default async (application: Application): Promise<void> => {
               @media (prefers-color-scheme: dark) {
                 border-color: var(--color--zinc--700);
               }
+
+              ${["amber"].map(
+                (color) => css`
+                  &.separator--${color} {
+                    border-color: var(--color--${color}--200);
+                    @media (prefers-color-scheme: dark) {
+                      border-color: var(--color--${color}--700);
+                    }
+                  }
+                `,
+              )}
             }
 
             .menu-box {
@@ -1830,13 +1841,18 @@ export default async (application: Application): Promise<void> => {
                               >
                                 <p>
                                   This Courselore installation is running in
-                                  demonstration mode and must not be used for
-                                  real courses. Any data may be lost, including
-                                  users, courses, invitations, conversations,
-                                  messages, and so forth. Emails aren’t
-                                  delivered. You may create demonstration data
-                                  to give you a better idea of what Courselore
-                                  looks like in use.
+                                  Demonstration Mode and must not be used for
+                                  real courses.
+                                </p>
+                                <p>
+                                  Any data may be lost, including users,
+                                  courses, invitations, conversations, messages,
+                                  and so forth.
+                                </p>
+                                <hr class="separator" />
+                                <p>
+                                  Create demonstration data to see what
+                                  Courselore looks like in use:
                                 </p>
                                 <form
                                   method="POST"
@@ -1853,6 +1869,23 @@ export default async (application: Application): Promise<void> => {
                                     Create Demonstration Data
                                   </button>
                                 </form>
+                                <hr class="separator" />
+                                <p>
+                                  Emails are delivered to the Demonstration
+                                  Inbox:
+                                </p>
+                                <a
+                                  href="https://${application.configuration
+                                    .hostname}:8000"
+                                  target="_blank"
+                                  class="button button--blue"
+                                  css="${css`
+                                    width: 100%;
+                                  `}"
+                                >
+                                  <i class="bi bi-envelope-fill"></i>
+                                  Open Demonstration Inbox
+                                </a>
                               </div>
                             `},  
                           },
@@ -3184,66 +3217,7 @@ export default async (application: Application): Promise<void> => {
               $${body}
             </div>
 
-            $${application.configuration.hostname ===
-            application.addresses.tryHostname
-              ? html`
-                  <div
-                    key="main--try"
-                    css="${css`
-                      color: var(--color--amber--700);
-                      background-color: var(--color--amber--100);
-                      @media (prefers-color-scheme: dark) {
-                        color: var(--color--amber--200);
-                        background-color: var(--color--amber--950);
-                      }
-                      padding: var(--space--4);
-                      border-radius: var(--border-radius--lg);
-                      display: flex;
-                      gap: var(--space--4);
-                    `}"
-                  >
-                    <div
-                      css="${css`
-                        font-size: var(--font-size--4xl);
-                        line-height: var(--line-height--4xl);
-                      `}"
-                    >
-                      <i class="bi bi-exclamation-triangle-fill"></i>
-                    </div>
-                    <div
-                      css="${css`
-                        display: flex;
-                        flex-direction: column;
-                        gap: var(--space--4);
-                      `}"
-                    >
-                      <p>
-                        This is a demonstration installation of Courselore and
-                        must not be used for real courses. Any data may be lost,
-                        including users, courses, invitations, conversations,
-                        messages, and so forth. Emails aren’t delivered. You may
-                        create demonstration data to give you a better idea of
-                        what Courselore looks like in use.
-                      </p>
-                      <form
-                        method="POST"
-                        action="https://${application.configuration
-                          .hostname}/demonstration-data"
-                      >
-                        <button
-                          class="button button--amber"
-                          css="${css`
-                            width: 100%;
-                          `}"
-                        >
-                          <i class="bi bi-easel-fill"></i>
-                          Create Demonstration Data
-                        </button>
-                      </form>
-                    </div>
-                  </div>
-                `
-              : application.configuration.demonstration
+            $${application.configuration.demonstration
               ? html`
                   <div
                     key="main--demonstration"
@@ -3276,12 +3250,17 @@ export default async (application: Application): Promise<void> => {
                       `}"
                     >
                       <p>
-                        This Courselore installation is running in demonstration
-                        mode and must not be used for real courses. Any data may
-                        be lost, including users, courses, invitations,
-                        conversations, messages, and so forth. Emails aren’t
-                        delivered. You may create demonstration data to give you
-                        a better idea of what Courselore looks like in use.
+                        This Courselore installation is running in Demonstration
+                        Mode and must not be used for real courses.
+                      </p>
+                      <p>
+                        Any data may be lost, including users, courses,
+                        invitations, conversations, messages, and so forth.
+                      </p>
+                      <hr class="separator separator--amber" />
+                      <p>
+                        Create demonstration data to see what Courselore looks
+                        like in use:
                       </p>
                       <form
                         method="POST"
@@ -3298,6 +3277,20 @@ export default async (application: Application): Promise<void> => {
                           Create Demonstration Data
                         </button>
                       </form>
+                      <hr class="separator separator--amber" />
+                      <p>Emails are delivered to the Demonstration Inbox:</p>
+                      <a
+                        href="https://${application.configuration
+                          .hostname}:8000"
+                        target="_blank"
+                        class="button button--amber"
+                        css="${css`
+                          width: 100%;
+                        `}"
+                      >
+                        <i class="bi bi-envelope-fill"></i>
+                        Open Demonstration Inbox
+                      </a>
                     </div>
                   </div>
                 `

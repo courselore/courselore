@@ -6,9 +6,6 @@
 
 - Introduce https://github.com/maildev/maildev
   - Documentation
-    - Messages in application
-      - `Create Demonstration Data` (x3)
-      - `doesn’t send emails`
     - `setting-up-for-development.md`
   - Test maildev on `try.courselore.org:8000`
     - Test that you **can’t** get to `try.courselore.org:8001` (maildev backend) or `try.courselore.org:18000` (courselore backend)

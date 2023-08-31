@@ -1305,11 +1305,11 @@ Message non-existent permanent link turned reference: <https://${
         response,
         theme: "green",
         content: html`
-          Demonstration data including users, courses, conversations, and so
+          Demonstration data, including users, courses, conversations, and so
           forth, have been created and you’ve been signed in as a demonstration
-          user to give you a better idea of what Courselore looks like in use.
-          If you wish to sign in as another one of the demonstration users,
-          their password is “courselore”.
+          user to see what Courselore looks like in use. If you wish to sign in
+          as another one of the demonstration users, their password is
+          “courselore”.
         `,
       });
       response.redirect(303, `https://${application.configuration.hostname}`);
