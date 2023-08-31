@@ -140,9 +140,6 @@ if (await node.isExecuted(import.meta.url)) {
     .argument(
       "[configuration]",
       "Path to configuration file. If you don’t provide a configuration file, the application runs in Demonstration Mode.",
-      url.fileURLToPath(
-        new URL("../configuration/default.mjs", import.meta.url),
-      ),
     )
     .version(version)
     .addHelpText(
@@ -157,13 +154,13 @@ if (await node.isExecuted(import.meta.url)) {
     .showHelpAfterError()
     .action(
       async (
-        configuration: string,
+        configuration: string | undefined,
         {
           processType,
           processNumber,
         }: {
           processType: "main" | "web" | "worker";
-          processNumber: string;
+          processNumber: string | undefined;
         },
       ) => {
         const eventLoopActive = node.eventLoopActive();
@@ -182,8 +179,10 @@ if (await node.isExecuted(import.meta.url)) {
                 ? Number(processNumber)
                 : undefined,
           },
-          configuration: (await import(url.pathToFileURL(configuration).href))
-            .default,
+          configuration:
+            typeof configuration === "string"
+              ? (await import(url.pathToFileURL(configuration).href)).default
+              : {},
           static: JSON.parse(
             await fs.readFile(
               new URL("./static/paths.json", import.meta.url),
@@ -217,12 +216,12 @@ if (await node.isExecuted(import.meta.url)) {
         application.configuration.hstsPreload ??= false;
         application.configuration.caddy ??= caddyfile``;
 
-        application.got = got.extend({ timeout: { request: 5 * 1000 } });
-
         application.web.locals.configuration = {} as any;
         application.web.locals.layouts = {} as any;
         application.web.locals.partials = {} as any;
         application.web.locals.helpers = {} as any;
+
+        application.got = got.extend({ timeout: { request: 5 * 1000 } });
 
         await logging(application);
         await database(application);
