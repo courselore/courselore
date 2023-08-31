@@ -5,8 +5,8 @@ export default {
   dataDirectory: path.join(process.cwd(), "data"),
   email: {
     options: {
-      streamTransport: true,
-      buffer: true,
+      host: "127.0.0.1",
+      port: 8002,
     },
     defaults: {
       from: {

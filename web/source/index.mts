@@ -253,7 +253,7 @@ if (await node.isExecuted(import.meta.url)) {
                 ...lodash
                   .range(portStart, port)
                   .map((port) => ({ port, hostname: "127.0.0.1" })),
-                ...(application.configuration.environment === "development"
+                ...(application.configuration.demonstration
                   ? [
                       { port: 8000, hostname: undefined },
                       { port: 8001, hostname: "127.0.0.1" },
@@ -295,7 +295,7 @@ if (await node.isExecuted(import.meta.url)) {
               application.configuration.dataDirectory,
               "emails",
             );
-            if (application.configuration.environment === "development")
+            if (application.configuration.demonstration)
               await fs.mkdir(emailsDirectory, { recursive: true });
             const childProcesses = new Set<ExecaChildProcess>();
             let restartChildProcesses = true;
@@ -448,7 +448,7 @@ if (await node.isExecuted(import.meta.url)) {
                     }
 
                     ${
-                      application.configuration.environment === "development"
+                      application.configuration.demonstration
                         ? caddyfile`
                             https://${application.configuration.hostname}:8000 {
                               reverse_proxy http://127.0.0.1:8001 {
@@ -496,7 +496,7 @@ if (await node.isExecuted(import.meta.url)) {
                   `,
                 },
               },
-              ...(application.configuration.environment === "development"
+              ...(application.configuration.demonstration
                 ? [
                     {
                       file: "maildev",

@@ -9,11 +9,11 @@
     - `default.mjs`
     - `profile.mjs`
     - `try.courselore.org.mjs`
-  - Confirmation email after sign up includes `redirect=sign-up`, which causes a 404
   - Documentation
     - Logging
     - Messages in application
     - `setting-up-for-development.md`
+  - Confirmation email after sign up includes `redirect=sign-up`, which causes a 404
 - Application: 18000s
 - Other: 8000s
 - Tunnel: 3000s
