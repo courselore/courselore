@@ -5,10 +5,6 @@
 **Learning Tools Interoperability (LTI)**
 
 - Introduce https://github.com/maildev/maildev
-  - Configuration
-    - `default.mjs`
-    - `profile.mjs`
-    - `try.courselore.org.mjs`
   - Documentation
     - Logging
     - Messages in application

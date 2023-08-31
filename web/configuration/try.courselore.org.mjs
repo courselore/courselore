@@ -5,8 +5,8 @@ export default {
   dataDirectory: url.fileURLToPath(new URL("./data/", import.meta.url)),
   email: {
     options: {
-      streamTransport: true,
-      buffer: true,
+      host: "127.0.0.1",
+      port: 8002,
     },
     defaults: {
       from: {
