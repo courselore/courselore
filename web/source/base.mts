@@ -82,7 +82,10 @@ export default async (application: Application): Promise<void> => {
       application.configuration.environment === "development" &&
       !["GET", "HEAD", "OPTIONS", "TRACE"].includes(request.method)
     )
-      response.locals.log(JSON.stringify(request.body, undefined, 2));
+      response.locals.log(
+        "REQUEST-BODY",
+        JSON.stringify(request.body, undefined, 2),
+      );
 
     if (
       !(
