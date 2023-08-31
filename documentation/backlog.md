@@ -4,13 +4,6 @@
 
 **Learning Tools Interoperability (LTI)**
 
-- Introduce https://github.com/maildev/maildev
-  - Test maildev on `try.courselore.org:8000`
-    - Test that you **can’t** get to `try.courselore.org:8001` (maildev backend) or `try.courselore.org:18000` (courselore backend)
-    - Test SSH tunnel
-      - Application: 18000s
-      - Other: 8000s
-      - Tunnel: 3000s
 - Merge `default.mjs` into application?
   - Rewrite part of `self-hosting.md` that touches on `default.mjs`
 - Confirmation email after sign up includes `redirect=sign-up`, which causes a 404
