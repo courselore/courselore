@@ -7,13 +7,19 @@
 - Introduce https://github.com/maildev/maildev
   - Documentation
     - Messages in application
+      - `Create Demonstration Data` (x3)
+      - `doesn’t send emails`
     - `setting-up-for-development.md`
-  - Try on `try.courselore.org:8000`
-  - Confirmation email after sign up includes `redirect=sign-up`, which causes a 404
-- Application: 18000s
-- Other: 8000s
-- Tunnel: 3000s
-- Merge `profile.mjs` into `development.mjs`?
+  - Test maildev on `try.courselore.org:8000`
+    - Test that you **can’t** get to `try.courselore.org:8001` (maildev backend) or `try.courselore.org:18000` (courselore backend)
+- Test SSH tunnel
+  - Application: 18000s
+  - Other: 8000s
+  - Tunnel: 3000s
+- Merge configuration:
+  - `profile.mjs` into `development.mjs`?
+  - `development.mjs` into `default.mjs`?
+- Confirmation email after sign up includes `redirect=sign-up`, which causes a 404
 
 ---
 
