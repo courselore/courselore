@@ -5,7 +5,6 @@
 **Learning Tools Interoperability (LTI)**
 
 - Merge configuration:
-  - `profile.mjs` into `development.mjs`?
   - `development.mjs` into `default.mjs`?
 - Introduce https://github.com/maildev/maildev
   - Test maildev on `try.courselore.org:8000`
