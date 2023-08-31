@@ -82,7 +82,7 @@ export type Application = {
         };
       };
     };
-    environment: "production" | "development" | "profile" | "other";
+    environment: "production" | "development" | "profile" | "default";
     demonstration: boolean;
     tunnel: boolean;
     alternativeHostnames: string[];

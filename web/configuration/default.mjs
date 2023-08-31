@@ -85,6 +85,6 @@ export default {
       },
     },
   },
-  environment: process.env.ENVIRONMENT ?? "other",
+  environment: process.env.ENVIRONMENT ?? "default",
   tunnel: typeof process.env.TUNNEL === "string",
 };
