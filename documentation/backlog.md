@@ -5,8 +5,6 @@
 **Learning Tools Interoperability (LTI)**
 
 - Introduce https://github.com/maildev/maildev
-  - Remove old hack for handling emails
-    - `index.mts` (types and whatnot)
   - Configuration
     - `development.mjs`
     - `default.mjs`
