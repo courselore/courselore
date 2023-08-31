@@ -6,9 +6,9 @@
 
 - Introduce https://github.com/maildev/maildev
   - Documentation
-    - Logging
     - Messages in application
     - `setting-up-for-development.md`
+  - Try on `try.courselore.org:8000`
   - Confirmation email after sign up includes `redirect=sign-up`, which causes a 404
 - Application: 18000s
 - Other: 8000s

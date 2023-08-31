@@ -83,7 +83,7 @@ export default async (application: Application): Promise<void> => {
       !["GET", "HEAD", "OPTIONS", "TRACE"].includes(request.method)
     )
       response.locals.log(
-        "REQUEST-BODY",
+        "REQUEST BODY",
         JSON.stringify(request.body, undefined, 2),
       );
 

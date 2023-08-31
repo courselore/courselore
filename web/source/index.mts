@@ -597,6 +597,11 @@ if (await node.isExecuted(import.meta.url)) {
                   childProcesses.delete(childProcess);
                 }
               })();
+            if (application.configuration.demonstration)
+              application.log(
+                "STARTED MAILDEV",
+                `https://${application.configuration.hostname}:8000`,
+              );
             await eventLoopActive;
             restartChildProcesses = false;
             for (const childProcess of childProcesses)
