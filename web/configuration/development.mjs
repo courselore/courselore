@@ -82,6 +82,6 @@ export default {
       },
     },
   },
-  environment: "development",
+  environment: process.env.PROFILE === "true" ? "profile" : "development",
   tunnel: typeof process.env.TUNNEL === "string",
 };
