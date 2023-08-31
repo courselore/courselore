@@ -5,9 +5,7 @@
 **Learning Tools Interoperability (LTI)**
 
 - Introduce https://github.com/maildev/maildev
-  - `tsconfig.json:6:15 - error TS5110: Option 'module' must be set to 'NodeNext' when option 'moduleResolution' is set to 'NodeNext'.`
   - Remove old hack for handling emails
-    - `email.mts`
     - `index.mts` (types and whatnot)
   - Configuration
     - `development.mjs`
