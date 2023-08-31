@@ -6,10 +6,10 @@
 
 - Introduce https://github.com/maildev/maildev
   - Configuration
-    - `development.mjs`
     - `default.mjs`
     - `profile.mjs`
     - `try.courselore.org.mjs`
+  - Confirmation email after sign up includes `redirect=sign-up`, which causes a 404
   - Documentation
     - Logging
     - Messages in application
