@@ -4,6 +4,8 @@
 
 **Learning Tools Interoperability (LTI)**
 
+- Merge `default.mjs` into application?
+  - Rewrite part of `self-hosting.md` that touches on `default.mjs`
 - Introduce https://github.com/maildev/maildev
   - Test maildev on `try.courselore.org:8000`
     - Test that you **can’t** get to `try.courselore.org:8001` (maildev backend) or `try.courselore.org:18000` (courselore backend)
