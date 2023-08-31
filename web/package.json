@@ -119,7 +119,7 @@
     "postcss": "^8.4.29",
     "postcss-nested": "^6.0.1",
     "prettier": "^3.0.3",
-    "rehype-remark": "^9.1.2",
+    "rehype-remark": "^10.0.0",
     "remark-stringify": "^10.0.3",
     "saml-idp": "^1.2.1",
     "scroll-into-view-if-needed": "^3.0.10",
