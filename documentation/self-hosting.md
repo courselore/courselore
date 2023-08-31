@@ -54,9 +54,9 @@ Create an `A` Record pointing at your server’s IP address and `ALIAS` or `CNAM
 
    > **Note for Advanced Users:** The Courselore configuration is a JavaScript module. You may use JavaScript for more advanced configuration options, for example:
    >
-   > - In the configuration for development (see [`web/configuration/development.mjs`](/web/configuration/development.mjs)), we read the `hostname` from the `HOSTNAME` environment variable.
+   > - Read environment variables. For example, see how [`web/configuration/default.mjs`](/web/configuration/default.mjs) reads the `HOSTNAME` environment variable with `process.env.HOSTNAME`.
    >
-   > - In the configuration for [`courselore.org`](https://courselore.org) (see [`web/configuration/courselore.org.mjs`](/web/configuration/courselore.org.mjs)), we load secrets from a different file instead of hard-coding them.
+   > - Load secrets from a different file instead of hard-coding them. For example, see how [`web/configuration/courselore.org.mjs`](/web/configuration/courselore.org.mjs) loads secrets from a file called `secrets.json`.
 
 3. Configure your operating system’s service manager to start Courselore on boot and restart it in case it crashes. For example, you may use Ubuntu’s service manager [systemd](https://systemd.io) with the configuration we use for [`courselore.org`](https://courselore.org) at [`web/configuration/courselore.service`](/web/configuration/courselore.service):
 

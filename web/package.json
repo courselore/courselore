@@ -18,8 +18,8 @@
   "bin": "./build/index.mjs",
   "scripts": {
     "prepare": "node ./prepare.mjs",
-    "start": "nodemon --watch \"./{package.json,prepare.mjs}\" --watch \"./source/**/*.mts\" --watch \"./static/{leafac--javascript.mjs,**/*.{webp,png,ico}}\" --watch \"./configuration/**/*.{mjs,cjs,crt,key,pub,webp}\" --ext \"*\" --exec \"npm run prepare && cross-env NODE_OPTIONS=--enable-source-maps node ./build/index.mjs ./configuration/development.mjs\"",
-    "start:profile": "shx rm -rf ./data/measurements/ && npm run prepare && cross-env PROFILE=true node ./build/index.mjs ./configuration/development.mjs",
+    "start": "nodemon --watch \"./{package.json,prepare.mjs}\" --watch \"./source/**/*.mts\" --watch \"./static/{leafac--javascript.mjs,**/*.{webp,png,ico}}\" --watch \"./configuration/**/*.{mjs,cjs,crt,key,pub,webp}\" --ext \"*\" --exec \"npm run prepare && cross-env NODE_OPTIONS=--enable-source-maps ENVIRONMENT=development node ./build/index.mjs\"",
+    "start:profile": "shx rm -rf ./data/measurements/ && npm run prepare && cross-env ENVIRONMENT=profile node ./build/index.mjs",
     "start:clean:data": "npm run clean:data && npm run start",
     "test": "prettier --check \"./package.json\" --check \"./prepare.mjs\" --check \"./source/**/*.mts\" --check \"./configuration/**/*.mjs\" --end-of-line auto && tsc --noEmit",
     "test:license": "license-checker --summary",
