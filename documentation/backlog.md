@@ -5,7 +5,6 @@
 **Learning Tools Interoperability (LTI)**
 
 - Merge `default.mjs` into application?
-  - Review `package.json`
   - Rewrite part of `self-hosting.md` that touches on `default.mjs`
   - Turn `SLOW` into a configuration
 - Confirmation email after sign up includes `redirect=sign-up`, which causes a 404
