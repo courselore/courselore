@@ -4,10 +4,6 @@
 
 **Learning Tools Interoperability (LTI)**
 
-- Confirmation email after sign up includes `redirect=sign-up`, which causes a 404
-
----
-
 - Use Keycloak for mocking SAML & OpenID Connect
   - https://www.keycloak.org/getting-started/getting-started-docker
   - Embed keys in configuration file

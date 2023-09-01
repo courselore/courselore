@@ -1619,7 +1619,7 @@ export default async (application: Application): Promise<void> => {
             action="https://${application.configuration
               .hostname}/sign-up${qs.stringify(
               {
-                redirect: request.query.redirect,
+                redirect: request.query.redirect ?? "",
                 invitation: request.query.invitation,
               },
               { addQueryPrefix: true },
