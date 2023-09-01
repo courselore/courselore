@@ -54,7 +54,7 @@ Create an `A` Record pointing at your server’s IP address and `ALIAS` or `CNAM
 
    > **Note for Advanced Users:** The Courselore configuration is a JavaScript module. You may use JavaScript for more advanced configuration options, for example:
    >
-   > - Read environment variables. For example, see how [`web/configuration/default.mjs`](/web/configuration/default.mjs) reads the `HOSTNAME` environment variable with `process.env.HOSTNAME`.
+   > - Read environment variables with `process.env.ENVIRONMENT_VARIABLE`.
    >
    > - Load secrets from a different file instead of hard-coding them. For example, see how [`web/configuration/courselore.org.mjs`](/web/configuration/courselore.org.mjs) loads secrets from a file called `secrets.json`.
 
