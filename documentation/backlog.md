@@ -8,12 +8,13 @@
   - https://www.keycloak.org/getting-started/getting-started-docker
   - Embed keys in configuration file
     - And in `secrets.json` for `courselore.org`
+    - Remove files in `configuration/` folder
+    - `TODO: SAML`
   - Test
     - SP-initiated SSO
     - SP-initiated SLO
     - IdP-initiated SSO
     - IdP-initiated SLO
-  - Remove saml-idp support
   - Document for developers
 - Key management:
   - https://www.stackallocated.com/blog/2020/saml-idp-no-shared-keys/
