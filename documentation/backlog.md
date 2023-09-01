@@ -4,8 +4,6 @@
 
 **Learning Tools Interoperability (LTI)**
 
-- Merge `default.mjs` into application?
-  - Turn `SLOW` into a configuration
 - Confirmation email after sign up includes `redirect=sign-up`, which causes a 404
 
 ---

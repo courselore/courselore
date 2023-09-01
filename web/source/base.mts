@@ -17,8 +17,8 @@ export type ApplicationBase = {
 
 export default async (application: Application): Promise<void> => {
   if (
-    process.env.SLOW === "true" &&
-    application.configuration.environment === "development"
+    application.configuration.environment === "development" &&
+    application.configuration.slow
   )
     application.web.use<{}, any, {}, {}, {}>(
       asyncHandler(async (request, response, next) => {

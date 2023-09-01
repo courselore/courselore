@@ -84,6 +84,7 @@ export type Application = {
     };
     environment: "production" | "development" | "profile" | "default";
     demonstration: boolean;
+    slow: boolean;
     tunnel: boolean;
     alternativeHostnames: string[];
     hstsPreload: boolean;
@@ -273,6 +274,7 @@ if (await node.isExecuted(import.meta.url)) {
                   //   },
                   // },
                   environment: process.env.ENVIRONMENT ?? "default",
+                  slow: process.env.SLOW === "true",
                   tunnel: typeof process.env.TUNNEL === "string",
                 },
           static: JSON.parse(
@@ -303,6 +305,7 @@ if (await node.isExecuted(import.meta.url)) {
         application.configuration.environment ??= "production";
         application.configuration.demonstration ??=
           application.configuration.environment !== "production";
+        application.configuration.slow ??= false;
         application.configuration.tunnel ??= false;
         application.configuration.alternativeHostnames ??= [];
         application.configuration.hstsPreload ??= false;
