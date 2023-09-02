@@ -696,7 +696,7 @@ if (await node.isExecuted(import.meta.url)) {
               })();
             if (application.configuration.demonstration)
               application.log(
-                "STARTED MAILDEV",
+                "STARTED DEMONSTRATION INBOX",
                 `https://${application.configuration.hostname}:8000`,
               );
             await eventLoopActive;
