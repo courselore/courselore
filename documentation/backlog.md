@@ -8,7 +8,6 @@
   - https://www.keycloak.org/getting-started/getting-started-docker
   - Embed keys in configuration file
     - And in `secrets.json` for `courselore.org`
-    - Remove files in `configuration/` folder
     - `TODO: SAML`
   - Test
     - SP-initiated SSO
