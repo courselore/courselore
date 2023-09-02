@@ -210,69 +210,66 @@ if (await node.isExecuted(import.meta.url)) {
                   //     new URL("./development--static/", import.meta.url),
                   //   ),
                   // ],
-                  // saml: {
-                  //   development: {
-                  //     name: "Courselore University",
-                  //     ...(process.env.SAML_LOGO === "true"
-                  //       ? {
-                  //           logo: {
-                  //             light:
-                  //               "johns-hopkins-university--light--2023-03-28.webp",
-                  //             dark: "johns-hopkins-university--dark--2023-03-28.webp",
-                  //             width: 300,
-                  //           },
-                  //         }
-                  //       : {}),
-                  //     domains: ["courselore.org"],
-                  //     attributes: (samlResponse) => ({
-                  //       email: samlResponse?.profile?.nameID,
-                  //       name: samlResponse?.profile?.attributes?.name,
-                  //     }),
-                  //     options: {
-                  //       idpIssuer: "http://localhost:9000/metadata",
-                  //       entryPoint: "http://localhost:9000/saml/sso",
-                  //       logoutUrl: "http://localhost:9000/saml/slo",
-                  //       signatureAlgorithm: "sha256",
-                  //       digestAlgorithm: "sha256",
-                  //       signMetadata: true,
-                  //       cert: await fs.readFile(
-                  //         new URL(
-                  //           "./development--saml--identity-provider--signing.crt",
-                  //           import.meta.url,
-                  //         ),
-                  //         "utf-8",
-                  //       ),
-                  //       privateKey: await fs.readFile(
-                  //         new URL(
-                  //           "./development--saml--service-provider--signing.key",
-                  //           import.meta.url,
-                  //         ),
-                  //         "utf-8",
-                  //       ),
-                  //       signingCert: await fs.readFile(
-                  //         new URL(
-                  //           "./development--saml--service-provider--signing.crt",
-                  //           import.meta.url,
-                  //         ),
-                  //         "utf-8",
-                  //       ),
-                  //       decryptionPvk: await fs.readFile(
-                  //         new URL(
-                  //           "./development--saml--service-provider--encryption.key",
-                  //           import.meta.url,
-                  //         ),
-                  //         "utf-8",
-                  //       ),
-                  //       decryptionCert: await fs.readFile(
-                  //         new URL(
-                  //           "./development--saml--service-provider--encryption.crt",
-                  //           import.meta.url,
-                  //         ),
-                  //         "utf-8",
-                  //       ),
-                  //     },
-                  //   },
-                  // },
+                  saml: {
+                    "courselore-university": {
+                      name: "Courselore University",
+                      ...(process.env.SAML_LOGO === "true"
+                        ? {
+                            logo: {
+                              light:
+                                "johns-hopkins-university--light--2023-03-28.webp",
+                              dark: "johns-hopkins-university--dark--2023-03-28.webp",
+                              width: 300,
+                            },
+                          }
+                        : {}),
+                      domains: ["courselore.org"],
+                      attributes: (samlResponse: any) => ({
+                        email: samlResponse?.profile?.nameID,
+                        name: samlResponse?.profile?.attributes?.name,
+                      }),
+                      options: {
+                        idpIssuer:
+                          "http://127.0.0.1:8080/realms/myrealm/protocol/saml/descriptor",
+                        entryPoint:
+                          "http://127.0.0.1:8080/realms/myrealm/protocol/saml",
+                        logoutUrl:
+                          "http://127.0.0.1:8080/realms/myrealm/protocol/saml",
+                        signatureAlgorithm: "sha256",
+                        digestAlgorithm: "sha256",
+                        signMetadata: true,
+                        cert: "MIICnTCCAYUCBgGKLpsSUDANBgkqhkiG9w0BAQsFADASMRAwDgYDVQQDDAdteXJlYWxtMB4XDTIzMDgyNTIxMjg0OVoXDTMzMDgyNTIxMzAyOVowEjEQMA4GA1UEAwwHbXlyZWFsbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAN7NX6V97+Q2uPBYwi3rAcNAzSHOazvDsiGVnx+74JHfGsZqN1WpnIrZw42UBxRy6dX4ITFClztk9t6Ba0R8GPayLJ4+dueHsQyPiFUiuKNr98dq190S2P9i4s8FcLPh46QK7ZRwOP6QnKS4/SJk3RSsq74hSUrxfCFI4b/DJM82JMvbA7WEiIqFapvyxMIRUAaFlHTAnF/bJdZLyD7vcAWCkAHM4IfXqk89LbMD62fHTKWku0UWdeNJYLT0KA6VDKqJaYmReJBtw2fwPoK4TkWVu64dZuByFsrynoV20M+U5Dw8hHVC6NBU2Ol6BwWy3VRp6sC/QK7bG8fmbWhU/wcCAwEAATANBgkqhkiG9w0BAQsFAAOCAQEA3T+bDBxbfBZjv2O4c+6H7w4vzhiJ4FAlRwYY4d/YdSA7+E0ABB1ceE/y62FzS7Cb5iTH7dEa47S8ifFUhfSVp1rb3EnJQISPcPSdHqJogI2tmpMIco8iG/jH+lASWTLN34kes20Co6EFgceFaOC5h3hHUcMe/uqpa+WrgDmwxclGGaYll8lUCMtqJ5fXgA0whuJFejxyoYz3x2+x+mILW0LfRhgr9LyqLSnQMnwkepIzH/TBrSEj30wuNNMuw5R6SI4Suvqfaii7IprKB1NsgE4KBdveigDgytsaknjAK7tsZsaBCYmZRpQRfEWFH8i4A9xRlDrMoUe1UFyKm/SEaw==",
+                        // privateKey: await fs.readFile(
+                        //   new URL(
+                        //     "./development--saml--service-provider--signing.key",
+                        //     import.meta.url,
+                        //   ),
+                        //   "utf-8",
+                        // ),
+                        // signingCert: await fs.readFile(
+                        //   new URL(
+                        //     "./development--saml--service-provider--signing.crt",
+                        //     import.meta.url,
+                        //   ),
+                        //   "utf-8",
+                        // ),
+                        // decryptionPvk: await fs.readFile(
+                        //   new URL(
+                        //     "./development--saml--service-provider--encryption.key",
+                        //     import.meta.url,
+                        //   ),
+                        //   "utf-8",
+                        // ),
+                        // decryptionCert: await fs.readFile(
+                        //   new URL(
+                        //     "./development--saml--service-provider--encryption.crt",
+                        //     import.meta.url,
+                        //   ),
+                        //   "utf-8",
+                        // ),
+                      },
+                    },
+                  },
                   environment: process.env.ENVIRONMENT ?? "default",
                   slow: process.env.SLOW === "true",
                   tunnel: typeof process.env.TUNNEL === "string",
