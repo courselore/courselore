@@ -385,12 +385,6 @@ if (await node.isExecuted(import.meta.url)) {
               );
               process.exit(1);
             }
-            const emailsDirectory = path.join(
-              application.configuration.dataDirectory,
-              "emails",
-            );
-            if (application.configuration.demonstration)
-              await fs.mkdir(emailsDirectory, { recursive: true });
             const childProcesses = new Set<ExecaChildProcess>();
             let restartChildProcesses = true;
             for (const execaArguments of [
@@ -593,26 +587,37 @@ if (await node.isExecuted(import.meta.url)) {
                 },
               },
               ...(application.configuration.demonstration
-                ? [
-                    {
-                      file: "maildev",
-                      arguments: [
-                        "--web",
-                        "8001",
-                        "--smtp",
-                        "8002",
-                        "--mail-directory",
-                        emailsDirectory,
-                        "--ip",
-                        "127.0.0.1",
-                      ],
-                      options: {
-                        preferLocal: true,
-                        stdout: "ignore",
-                        stderr: "ignore",
+                ? await (async () => {
+                    application.log(
+                      "DEMONSTRATION INBOX",
+                      `https://${application.configuration.hostname}:8000`,
+                    );
+                    const emailsDirectory = path.join(
+                      application.configuration.dataDirectory,
+                      "emails",
+                    );
+                    await fs.mkdir(emailsDirectory, { recursive: true });
+                    return [
+                      {
+                        file: "maildev",
+                        arguments: [
+                          "--web",
+                          "8001",
+                          "--smtp",
+                          "8002",
+                          "--mail-directory",
+                          emailsDirectory,
+                          "--ip",
+                          "127.0.0.1",
+                        ],
+                        options: {
+                          preferLocal: true,
+                          stdout: "ignore",
+                          stderr: "ignore",
+                        },
                       },
-                    },
-                  ]
+                    ];
+                  })()
                 : []),
             ])
               (async () => {
@@ -635,11 +640,6 @@ if (await node.isExecuted(import.meta.url)) {
                   childProcesses.delete(childProcess);
                 }
               })();
-            if (application.configuration.demonstration)
-              application.log(
-                "STARTED DEMONSTRATION INBOX",
-                `https://${application.configuration.hostname}:8000`,
-              );
             await eventLoopActive;
             restartChildProcesses = false;
             for (const childProcess of childProcesses)
