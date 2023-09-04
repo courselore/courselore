@@ -212,6 +212,7 @@ if (await node.isExecuted(import.meta.url)) {
                   // ],
                   saml: {
                     "courselore-university": {
+                      public: false, // TODO: SAML
                       name: "Courselore University",
                       ...(process.env.SAML_LOGO === "true"
                         ? {
@@ -229,8 +230,7 @@ if (await node.isExecuted(import.meta.url)) {
                         name: samlResponse?.profile?.attributes?.name,
                       }),
                       options: {
-                        idpIssuer:
-                          "http://127.0.0.1:8080/realms/myrealm/protocol/saml/descriptor",
+                        idpIssuer: "http://127.0.0.1:8080/realms/myrealm",
                         entryPoint:
                           "http://127.0.0.1:8080/realms/myrealm/protocol/saml",
                         logoutUrl:
@@ -238,7 +238,7 @@ if (await node.isExecuted(import.meta.url)) {
                         signatureAlgorithm: "sha256",
                         digestAlgorithm: "sha256",
                         signMetadata: true,
-                        cert: "MIICnTCCAYUCBgGKLpsSUDANBgkqhkiG9w0BAQsFADASMRAwDgYDVQQDDAdteXJlYWxtMB4XDTIzMDgyNTIxMjg0OVoXDTMzMDgyNTIxMzAyOVowEjEQMA4GA1UEAwwHbXlyZWFsbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAN7NX6V97+Q2uPBYwi3rAcNAzSHOazvDsiGVnx+74JHfGsZqN1WpnIrZw42UBxRy6dX4ITFClztk9t6Ba0R8GPayLJ4+dueHsQyPiFUiuKNr98dq190S2P9i4s8FcLPh46QK7ZRwOP6QnKS4/SJk3RSsq74hSUrxfCFI4b/DJM82JMvbA7WEiIqFapvyxMIRUAaFlHTAnF/bJdZLyD7vcAWCkAHM4IfXqk89LbMD62fHTKWku0UWdeNJYLT0KA6VDKqJaYmReJBtw2fwPoK4TkWVu64dZuByFsrynoV20M+U5Dw8hHVC6NBU2Ol6BwWy3VRp6sC/QK7bG8fmbWhU/wcCAwEAATANBgkqhkiG9w0BAQsFAAOCAQEA3T+bDBxbfBZjv2O4c+6H7w4vzhiJ4FAlRwYY4d/YdSA7+E0ABB1ceE/y62FzS7Cb5iTH7dEa47S8ifFUhfSVp1rb3EnJQISPcPSdHqJogI2tmpMIco8iG/jH+lASWTLN34kes20Co6EFgceFaOC5h3hHUcMe/uqpa+WrgDmwxclGGaYll8lUCMtqJ5fXgA0whuJFejxyoYz3x2+x+mILW0LfRhgr9LyqLSnQMnwkepIzH/TBrSEj30wuNNMuw5R6SI4Suvqfaii7IprKB1NsgE4KBdveigDgytsaknjAK7tsZsaBCYmZRpQRfEWFH8i4A9xRlDrMoUe1UFyKm/SEaw==",
+                        cert: "MIICnTCCAYUCBgGKUbmlBjANBgkqhkiG9w0BAQsFADASMRAwDgYDVQQDDAdteXJlYWxtMB4XDTIzMDkwMTE3MDg1NVoXDTMzMDkwMTE3MTAzNVowEjEQMA4GA1UEAwwHbXlyZWFsbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKg2l+O+Qa29gAWxk3CwqlSyjEkwZl+Eg5IHj1R51EjiNU0TH9GJ7za9U9bbGB3ilCwH0s6IhxekJWLm5wCie9FZzhZMMB0ypjMBmeu6aTenZDkYH04WPrZmeM8LGMZxF+1CDG58I6hoDhSXQJAHaS6lGl+nE/wI7Ca0ZAd74AFNB12HiOUZQyIzpN9lXPDu76pHpkqgL2qHZiC+/IWLroBCJWsQ2pvL+F4YKIcA9UGwkiZYt2nrrXVfI9NHnnEB8eCrktrUL8luQeQDlnXZDX6zimcEs63PSGPwR694WW4vXJGlJSHRxRPxxKVIfuNJanJZdr7x5ZE/SsOhfkGHCIMCAwEAATANBgkqhkiG9w0BAQsFAAOCAQEACmjLEgGoTS5aNw8wP8hCjbcF41LBybYX4T2HfNCP5XI3hnVS4YFNkOC9vm8DDQV76s5q9O/fAD8B+R9LzWS0DPmb85eL2nW1gWIWTs5mAkyeYAqPifz8pht1Hc6aSWlcW7pZaR9AdmjlYCohhKJeeTh/zRNPLpsxqhtbFddfQMjfQSTrw7RnZlAgNALB4uzymD+lYjwX8ZhvifPhOowFg+yKIAET2AbtUTa2hZ95PGwmmoe3TyrZR9cRp5RLICc6R/riAhMfYlEMBNob4VGS1R9PYrj/x0gxnRkWqzqoj2uEVHJiHMx6nKIJl3X+SWjLwzvxpbUZoxkyqGGVNE6riQ==",
                         // privateKey: await fs.readFile(
                         //   new URL(
                         //     "./development--saml--service-provider--signing.key",
