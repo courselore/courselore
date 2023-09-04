@@ -1,6 +1,15 @@
 # Meetings
 
 <details>
+<summary>2023-09-02</summary>
+
+- Still struggling with key management.
+- Staff whispers are being used and should be promoted on the marketing page.
+- No need to present the staff whispers button if the conversation involves only staff members.
+
+</details>
+
+<details>
 <summary>2023-08-26</summary>
 
 - Added a way for users to remove themselves from a course.
