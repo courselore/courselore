@@ -17,6 +17,10 @@
     - IdP-initiated SLO
   - Document for developers
     - https://www.keycloak.org/getting-started/getting-started-docker
+      - In Keycloak:
+        - Client type: SAML
+        - Client ID: https://leafac--macbook.local/saml/courselore-university/metadata
+        - Valid redirect URIs: https://leafac--macbook.local/saml/courselore-university/assertion-consumer-service
       - http://127.0.0.1:8080/realms/myrealm/protocol/saml/descriptor
     - https://samltool.io/
 - Key management:
