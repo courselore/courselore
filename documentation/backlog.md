@@ -2,10 +2,11 @@
 
 ## Work in Progress
 
+- Don’t present the staff whispers button if the conversation involves only staff members.
+
 **Learning Tools Interoperability (LTI)**
 
 - Use Keycloak for mocking SAML & OpenID Connect
-  - https://www.keycloak.org/getting-started/getting-started-docker
   - Embed keys in configuration file
     - And in `secrets.json` for `courselore.org`
     - `TODO: SAML`
@@ -15,6 +16,9 @@
     - IdP-initiated SSO
     - IdP-initiated SLO
   - Document for developers
+    - https://www.keycloak.org/getting-started/getting-started-docker
+      - http://127.0.0.1:8080/realms/myrealm/protocol/saml/descriptor
+    - https://samltool.io/
 - Key management:
   - https://www.stackallocated.com/blog/2020/saml-idp-no-shared-keys/
   - SAML one service provider keyset for all identity providers?

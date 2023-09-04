@@ -1,6 +1,13 @@
 # Meetings
 
 <details>
+<summary>2023-09-09</summary>
+
+- 74 sign ins with SAML 🙌
+
+</details>
+
+<details>
 <summary>2023-09-02</summary>
 
 - Still struggling with key management.
