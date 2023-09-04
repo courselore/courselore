@@ -237,7 +237,7 @@ if (await node.isExecuted(import.meta.url)) {
                           "http://127.0.0.1:8080/realms/myrealm/protocol/saml",
                         signatureAlgorithm: "sha256",
                         digestAlgorithm: "sha256",
-                        signMetadata: true,
+                        // signMetadata: true,
                         cert: "MIICnTCCAYUCBgGKYAfm3zANBgkqhkiG9w0BAQsFADASMRAwDgYDVQQDDAdteXJlYWxtMB4XDTIzMDkwNDExNDkwNVoXDTMzMDkwNDExNTA0NVowEjEQMA4GA1UEAwwHbXlyZWFsbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKwu+FHQKoMFUSZpQJnPqIdtk8jB5SPmzdWTWxwihCm/CZ/VsmmzH2AYPE+/aBJsYyHXkDFIYamiNaD6XY0aRjwoIjilkdS6rjJLInRm+ZSEui1IcZJkEXMEf088Cm/IidEKIZKHhfQ/5l50EhmH5PQ1Yr8Mm/2DKd02VyLGGJmfctWp6gB502NPt7HZN2GsPqOhOV+WCVByacxr+v/w5vZIq4UrUnKF85Fsf/+yuYDZjZveoYoQD2VgAJtxN0Qz3RpHyXNZbkm7sWkvL5fNtIUgJCApNxy9PaJCC2Bnf0//PprpL3dwLcPkuUmKyARm/+iorMseKDDiNru2Z1RtQJcCAwEAATANBgkqhkiG9w0BAQsFAAOCAQEAUVIgXw1221hSXLwc7PTrqnpHK9uINRiTY1DiGYyKtIfMTJiPacxS/4OBAgXFIt9CMg8deKODjWggw9oYGekjAZ6A8s2ok1WeNKzti77ODkqsma+6q+bietqx1+kQ/gzPQGOlFkOXhHcv1gsgFZmIfiyq4Yt1W4J3zJBB8lpDQbGTy9wbKa2YRfExFdcQaKEnbQb5d8W7yBVFlOGlXpxq+JUdg1YHmghfb8lodJDg2XHlxaFIJAb5E2wFLDzAzFpPLyyZogc2aZkP3HkNwmWLurt1T9bIJtNSax6USe1b14qvu8iTn47S0Kjtzl7KyAnyS2dEQf6A0V5rB9BhD2nppQ==",
                         // privateKey: await fs.readFile(
                         //   new URL(

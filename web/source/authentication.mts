@@ -2315,7 +2315,10 @@ export default async (application: Application): Promise<void> => {
 
       const samlResponse = await response.locals.saml.saml
         .validatePostResponseAsync(request.body)
-        .catch(() => undefined);
+        .catch((error) => {
+          response.locals.log("SAML RESPONSE ERROR", error);
+          return undefined;
+        });
       const samlResponseAttributes =
         response.locals.saml.attributes(samlResponse);
 
