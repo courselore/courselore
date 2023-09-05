@@ -23,6 +23,7 @@
         - Valid redirect URIs: https://leafac--macbook.local/saml/courselore-university/assertion-consumer-service
       - http://127.0.0.1:8080/realms/myrealm/protocol/saml/descriptor
     - https://samltool.io/
+    - https://www.samltool.com/online_tools.php
 - Key management:
   - https://www.stackallocated.com/blog/2020/saml-idp-no-shared-keys/
   - SAML one service provider keyset for all identity providers?
