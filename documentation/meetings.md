@@ -3,7 +3,7 @@
 <details>
 <summary>2023-09-09</summary>
 
-- 74 sign ins with SAML 🙌
+- 74 sessions with SAML 🙌
 
 </details>
 
