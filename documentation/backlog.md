@@ -6,6 +6,9 @@
 
 **Learning Tools Interoperability (LTI)**
 
+- Use a single key for all Identity Providers!
+  - Use a single key for signing and encrypting?
+  - Use a single key for SAML & LTI?
 - Use Keycloak for mocking SAML & OpenID Connect
   - Embed keys in configuration file
     - And in `secrets.json` for `courselore.org`
