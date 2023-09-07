@@ -6,13 +6,14 @@
 
 **Learning Tools Interoperability (LTI)**
 
-- Use a single key for all Identity Providers!
-  - Reasons:
-    - We use the key to sign single sign-on requests, logout requests, and logout responses, and it probably wouldn’t be the end of the world if the wrong identity provider accepted these requests. In general, as service providers our assertions are less valuable than the identity provider’s.
-    - That’s what most other services do: Keep things simple.
-  - Use a single key for signing and encrypting?
-    - Don’t even provide a key for encryption?
-  - Use a single key for SAML & LTI?
+- Internalize the management of RSA keys:
+  - Courselore generates the key
+  - One key
+    - All Identity Providers
+    - All purposes: signing & encrypting
+    - All services: SAML & LTI (OAuth)
+  - Migration from current key management strategy
+  - Have a way to set keys externally?
 - Use Keycloak for mocking SAML & OpenID Connect
   - Embed keys in configuration file
     - And in `secrets.json` for `courselore.org`
