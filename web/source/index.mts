@@ -227,7 +227,7 @@ if (await node.isExecuted(import.meta.url)) {
                       domains: ["courselore.org"],
                       attributes: (samlResponse: any) => ({
                         email: samlResponse?.profile?.nameID,
-                        name: samlResponse?.profile?.attributes?.name,
+                        name: samlResponse?.profile?.attributes?.name ?? "Leandro",
                       }),
                       options: {
                         idpIssuer: "http://127.0.0.1:8080/realms/myrealm",
@@ -237,8 +237,9 @@ if (await node.isExecuted(import.meta.url)) {
                           "http://127.0.0.1:8080/realms/myrealm/protocol/saml",
                         signatureAlgorithm: "sha256",
                         digestAlgorithm: "sha256",
+                        wantAssertionsSigned: false,
                         // signMetadata: true,
-                        cert: "MIICnTCCAYUCBgGKYpUUFDANBgkqhkiG9w0BAQsFADASMRAwDgYDVQQDDAdteXJlYWxtMB4XDTIzMDkwNDIzNDIzMVoXDTMzMDkwNDIzNDQxMVowEjEQMA4GA1UEAwwHbXlyZWFsbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAK31uch+aEnZwv+GwwHrC6t1BKfhvmmunEaLqTcBXQo5IeUxlzx8n2dR/zZC8FroysueNXVdVUi0E4FtCeqO2pcwuAF3AclNzP8obNu+5OtUcTnURKreXyGvQGE/FB0D6sONRSAkDG1RHXMva2ogsvNGnPARZTSGgLc3Y5/MrQs/7JJXB67+V3Pp9Wd1excOcWaoZf26+2k/cEadeF3dTmkxKa5aC3Z7x8IXVCx9JECsFkgDVF25PBWQwQGGuTzNJmxwa5JfIoofNhyk3fX8UfPxWgvn+CBUIV22PFZekpKdy9ixG9pY55UA7QdtXLhqrK8pfDgDDBldo5DVyC74bU8CAwEAATANBgkqhkiG9w0BAQsFAAOCAQEACYJSi4lnwG4ZCFg8BWs8rhFpxYyuCDm42jtGbi+bavjeNnuE+P9BcoT5qt2heZpezjW6WlUy8Nc5X+eNPN7dZQqqTWNdq6fpDC2di8kGqNNhoN4sm24zE4UEoKJVUf+2wA3Eu3I13ydUjP5TFa+jVmWUx8sYLNLgQJgToCtSPdnXy+Ksarr0QgCgGihWS1aUj4Uq+Zd4kEW+leYPlsipYyd6bAWZjXrSbvfG1Rs75npW2r1UoQ3ClrkpjM9+0WjalVS/OQEWqxx12A90hx5WW7C3zraMnRxT2Yg6f67t6eO7gdqb3mvLeua3eONsBf26jLkF03pSLZ/MBihKI6yq8w==",
+                        cert: "MIICnTCCAYUCBgGKdZgosTANBgkqhkiG9w0BAQsFADASMRAwDgYDVQQDDAdteXJlYWxtMB4XDTIzMDkwODE2MTg0MFoXDTMzMDkwODE2MjAyMFowEjEQMA4GA1UEAwwHbXlyZWFsbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAIpvKUcxzunHq95qMyy+568JstadkQzlee9RJEiS2/qlXViKL9na67vFxmvR2BfCoFgtPJZFFz6zwTPVGAkxgKJwDjIGbCx5K9t8Yn+B3pn0KHvlvgC4Kiw1glRlStIjVMVKRvWcRLWlCqUeP4bs65zxApsXZbZ1ylvhH2K9tyeD/gSc1x9l50ib1TBPwWm4i9oogPkahN0O2ejMf5TRJ8AwbLllhiTbmDefdEB0/QEYuS0B3G0vHP87MzOgFK57wNKZZX/Q3ImQ17GkvWz2IXtkP7eX5JUcIyge8xDmYvEahPNfldxFdfU3t3rBsYWVeA4ejtQFtAtL6y4zOj2KlZECAwEAATANBgkqhkiG9w0BAQsFAAOCAQEABVsbQfqEyPjjcGyqbVY+G4ZXqd2pPymLB3lAOHYf84UqqJEsyeZcyuA/pUHPaP6hhnMR5AiW9Bi+2MPdgsFTE90H30H1VrZk138+iQL3Mn0Pq6eJz+tuXK8k3v7CDBXCfIqvvJ9io0RKTcf57aefDTl/DdN2hIYJqRBcxYNq3WkusjsUuCeVKDCISeEGxl29iz1PYkwbgSsSWsLCmYi4w7r3L2IxPsP2+4Cz5sN4Z1diLzgNkOPHKl0IDXv7TLK56HDiZgETHJ8JIW5NPS0ohKmKbCETyIuJ83g69mfF9n6eFQ8rTfKZaOgpCdCcTYddY0hEX/QXMuJ+OubHJwfeJQ==",
                         // privateKey: await fs.readFile(
                         //   new URL(
                         //     "./development--saml--service-provider--signing.key",
