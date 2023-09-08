@@ -8,6 +8,22 @@
 
 - Internalize the management of RSA keys:
   - Courselore generates the key
+    - Generate key
+      - Products
+        - Private key
+        - Public key
+        - Certificate
+          - With metadata
+          - In different formats
+      - Libraries
+        - Node.js’s crypto
+        - Web Crypto
+        - https://www.npmjs.com/package/rasha
+        - https://www.npmjs.com/package/jose
+    - Store it somewhere (for example, the database)
+    - Review current SAML implementation
+    - Revise `example.mjs`
+    - Revise `package.json`
   - One key
     - All Identity Providers
     - All purposes: signing & encrypting
@@ -15,6 +31,10 @@
   - Migration from current key management strategy
   - Have a way to set keys externally?
 - Use Keycloak for mocking SAML & OpenID Connect
+  - https://github.com/keycloak/keycloak/issues/22962
+    - Compare a valid answer from saml-idp with an invalid one from Keycloak
+    - Find how samltool.io validates signatures
+    - Find how node-saml validates signatures
   - Embed keys in configuration file
     - And in `secrets.json` for `courselore.org`
     - `TODO: SAML`
