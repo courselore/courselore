@@ -16,10 +16,17 @@
           - With metadata
           - In different formats
       - Libraries
-        - Node.js’s crypto
-        - Web Crypto
-        - https://www.npmjs.com/package/rasha
+        - https://github.com/digitalbazaar/forge
+          - https://github.com/jfromaniello/selfsigned
         - https://www.npmjs.com/package/jose
+          - Use to import certificates and export in JWK format (but can’t generate the certificate to begin with—can only generate keys)
+        - Web Crypto API
+          - No: Doesn’t support working with certificates
+        - Node.js’s crypto
+          - No: Doesn’t support generating certificates
+        - https://www.npmjs.com/package/rasha
+          - No: Doesn’t support working with certificates
+        - https://npmtrends.com/crypt-vs-crypto-js-vs-jose-vs-keypair-vs-node-forge-vs-rasha
     - Store it somewhere (for example, the database)
     - Review current SAML implementation
     - Revise `example.mjs`
