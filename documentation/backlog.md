@@ -7,9 +7,8 @@
 - Current approach
 
   ```
-  openssl req -x509 -newkey rsa:2048 -nodes -days 365000 -subj "/C=US/ST=Maryland/L=Baltimore/O=Courselore/CN=courselore.org" -keyout educational-institution--saml--service-provider--signing.key -out educational-institution--saml--service-provider--signing.crt
-
-  openssl x509 -pubkey -noout -in configuration/development--saml--service-provider--encryption.crt > configuration/development--saml--service-provider--encryption.pub
+  openssl req -x509 -newkey rsa:2048 -nodes -days 365000 -subj "/C=US/ST=Maryland/L=Baltimore/O=Courselore/CN=courselore.org" -keyout example.key -out example.crt
+  openssl x509 -pubkey -noout -in example.crt > example.pub
   ```
 
 - Generate key
