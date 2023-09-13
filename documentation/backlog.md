@@ -9,6 +9,10 @@
   ```
   openssl req -x509 -newkey rsa:2048 -nodes -days 365000 -subj "/C=US/ST=Maryland/L=Baltimore/O=Courselore/CN=courselore.org" -keyout example.key -out example.crt
   openssl x509 -pubkey -noout -in example.crt > example.pub
+
+  openssl rsa -in example.key -text -noout > example.key.txt
+  openssl rsa -inform PEM -pubin -in example.pub -text -noout > example.pub.txt
+  openssl x509 -in example.crt -text -noout > example.crt.txt
   ```
 
 - Generate key
