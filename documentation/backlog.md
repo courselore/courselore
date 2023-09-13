@@ -24,11 +24,43 @@
 
 - Generate keys and certificates in the application itself
 
-  ```
-  openssl req -x509 -newkey rsa:2048 -nodes -days 365000 -subj "/C=US/ST=Maryland/L=Baltimore/O=Courselore/CN=courselore.org" -keyout educational-institution--saml--service-provider--signing.key -out educational-institution--saml--service-provider--signing.crt
+  - Current approach
 
-  openssl x509 -pubkey -noout -in configuration/development--saml--service-provider--encryption.crt > configuration/development--saml--service-provider--encryption.pub
-  ```
+    ```
+    openssl req -x509 -newkey rsa:2048 -nodes -days 365000 -subj "/C=US/ST=Maryland/L=Baltimore/O=Courselore/CN=courselore.org" -keyout educational-institution--saml--service-provider--signing.key -out educational-institution--saml--service-provider--signing.crt
+
+    openssl x509 -pubkey -noout -in configuration/development--saml--service-provider--encryption.crt > configuration/development--saml--service-provider--encryption.pub
+    ```
+
+  - Generate key
+    - Products
+      - Private key
+      - Public key
+      - Certificate
+        - With metadata
+        - In different formats
+    - Libraries
+      - https://github.com/digitalbazaar/forge
+        - https://github.com/jfromaniello/selfsigned
+      - https://www.npmjs.com/package/jose
+        - Use to import certificates and export in JWK format (but can’t generate the certificate to begin with—can only generate keys)
+      - Web Crypto API
+        - No: Doesn’t support working with certificates
+      - Node.js’s crypto
+        - No: Doesn’t support generating certificates
+      - https://www.npmjs.com/package/rasha
+        - No: Doesn’t support working with certificates
+      - https://npmtrends.com/crypt-vs-crypto-js-vs-jose-vs-keypair-vs-node-forge-vs-rasha
+  - Store it somewhere (for example, the database)
+  - Review current SAML implementation
+  - Revise `example.mjs`
+
+- One key
+  - All Identity Providers
+  - All purposes: signing & encrypting
+  - All services: SAML & LTI (OAuth)
+- Migration from current key management strategy
+- Have a way to set keys externally?
 
 - Specify signature expectations in SAML configuration:
 
@@ -43,37 +75,6 @@
 
 **Learning Tools Interoperability (LTI)**
 
-- Internalize the management of RSA keys:
-  - Courselore generates the key
-    - Generate key
-      - Products
-        - Private key
-        - Public key
-        - Certificate
-          - With metadata
-          - In different formats
-      - Libraries
-        - https://github.com/digitalbazaar/forge
-          - https://github.com/jfromaniello/selfsigned
-        - https://www.npmjs.com/package/jose
-          - Use to import certificates and export in JWK format (but can’t generate the certificate to begin with—can only generate keys)
-        - Web Crypto API
-          - No: Doesn’t support working with certificates
-        - Node.js’s crypto
-          - No: Doesn’t support generating certificates
-        - https://www.npmjs.com/package/rasha
-          - No: Doesn’t support working with certificates
-        - https://npmtrends.com/crypt-vs-crypto-js-vs-jose-vs-keypair-vs-node-forge-vs-rasha
-    - Store it somewhere (for example, the database)
-    - Review current SAML implementation
-    - Revise `example.mjs`
-    - Revise `package.json`
-  - One key
-    - All Identity Providers
-    - All purposes: signing & encrypting
-    - All services: SAML & LTI (OAuth)
-  - Migration from current key management strategy
-  - Have a way to set keys externally?
 - Use Keycloak for mocking SAML & OpenID Connect
   - https://github.com/keycloak/keycloak/issues/22962
     - Compare a valid answer from saml-idp with an invalid one from Keycloak
