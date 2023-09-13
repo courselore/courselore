@@ -2,25 +2,39 @@
 
 ## Work in Progress
 
+**Minor Changes**
+
+- Finish getting back into a working state, but don’t finish the new key management situation.
+- https://courselore.org/courses/8537410611/conversations/83
+  - Select part of image and Cmd+V
+  - Preserve indentation
+  - Perhaps the default should be plain-text pasting, and the keyboard modifier would be for rich-text pasting
+  - Investigate OCR
+- https://courselore.org/courses/8537410611/conversations/84
+  - Add to the `…` menu under a message the option to switch message type, which just activates the existing dropdown
 - Don’t present the staff whispers button if the conversation involves only staff members.
 
+**Key Management**
+
+- Generate keys and certificates in the application itself
+  ```
+  openssl req -x509 -newkey rsa:2048 -nodes -days 365000 -subj "/C=US/ST=Maryland/L=Baltimore/O=Courselore/CN=courselore.org" -keyout educational-institution--saml--service-provider--signing.key -out educational-institution--saml--service-provider--signing.crt
+
+  openssl x509 -pubkey -noout -in configuration/development--saml--service-provider--encryption.crt > configuration/development--saml--service-provider--encryption.pub
+  ```
+
+- Specify signature expectations in SAML configuration:
+
+  ```
+  wantAuthnResponseSigned: false,
+  wantAssertionsSigned: true,
+  ```
+
+  - `courselore.org.mjs`
+  - `try.courselore.org.mjs`
+  - `example.mjs`
+
 **Learning Tools Interoperability (LTI)**
-
-```
-openssl req -x509 -newkey rsa:2048 -nodes -days 365000 -subj "/C=US/ST=Maryland/L=Baltimore/O=Courselore/CN=courselore.org" -keyout educational-institution--saml--service-provider--signing.key -out educational-institution--saml--service-provider--signing.crt
-
-openssl x509 -pubkey -noout -in configuration/development--saml--service-provider--encryption.crt > configuration/development--saml--service-provider--encryption.pub
-```
-
-- https://courselore.org/courses/8537410611/conversations/83
-- https://courselore.org/courses/8537410611/conversations/84
-  - Investigate OCR
-  - Preserve indentation
-  - Select part of image and Cmd+V
-  - Perhaps the default should be plain-text pasting, and the keyboard modifier would be for rich-text pasting
-- Pamphlet about Courselore from Hopkins: Mike Reese, after LTI
-
----
 
 - Internalize the management of RSA keys:
   - Courselore generates the key
@@ -468,7 +482,9 @@ openssl x509 -pubkey -noout -in configuration/development--saml--service-provide
     - https://www.imsglobal.org/lti-advantage-certification-suite
     - https://site.imsglobal.org/certifications
     - https://www.1edtech.org/certification/get-certified
-  - Promote: https://www.eduappcenter.com
+  - Promote:
+    - Pamphlet about Courselore at Hopkins: Mike Reese
+    - https://www.eduappcenter.com
 - Notes
   - JWT libraries
     - Features
