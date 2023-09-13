@@ -6,6 +6,22 @@
 
 **Learning Tools Interoperability (LTI)**
 
+```
+openssl req -x509 -newkey rsa:2048 -nodes -days 365000 -subj "/C=US/ST=Maryland/L=Baltimore/O=Courselore/CN=courselore.org" -keyout educational-institution--saml--service-provider--signing.key -out educational-institution--saml--service-provider--signing.crt
+
+openssl x509 -pubkey -noout -in configuration/development--saml--service-provider--encryption.crt > configuration/development--saml--service-provider--encryption.pub
+```
+
+- https://courselore.org/courses/8537410611/conversations/83
+- https://courselore.org/courses/8537410611/conversations/84
+  - Investigate OCR
+  - Preserve indentation
+  - Select part of image and Cmd+V
+  - Perhaps the default should be plain-text pasting, and the keyboard modifier would be for rich-text pasting
+- Pamphlet about Courselore from Hopkins: Mike Reese, after LTI
+
+---
+
 - Internalize the management of RSA keys:
   - Courselore generates the key
     - Generate key

@@ -4,6 +4,14 @@
 <summary>2023-09-09</summary>
 
 - 74 sessions with SAML 🙌
+- Keycloak mystery
+- https://courselore.org/courses/8537410611/conversations/83
+- https://courselore.org/courses/8537410611/conversations/84
+  - Investigate OCR
+  - Preserve indentation
+  - Select part of image and Cmd+V
+  - Perhaps the default should be plain-text pasting, and the keyboard modifier would be for rich-text pasting
+- Pamphlet about Courselore from Hopkins: Mike Reese, after LTI
 
 </details>
 
