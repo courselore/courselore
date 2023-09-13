@@ -2,9 +2,86 @@
 
 ## Work in Progress
 
+**Key Management**
+
+- Current approach
+
+  ```
+  openssl req -x509 -newkey rsa:2048 -nodes -days 365000 -subj "/C=US/ST=Maryland/L=Baltimore/O=Courselore/CN=courselore.org" -keyout educational-institution--saml--service-provider--signing.key -out educational-institution--saml--service-provider--signing.crt
+
+  openssl x509 -pubkey -noout -in configuration/development--saml--service-provider--encryption.crt > configuration/development--saml--service-provider--encryption.pub
+  ```
+
+- Generate key
+  - Products
+    - Private key
+    - Public key
+    - Certificate
+      - With metadata
+      - In different formats
+  - Libraries
+    - https://github.com/digitalbazaar/forge
+      - https://github.com/jfromaniello/selfsigned
+    - https://www.npmjs.com/package/jose
+      - Use to import certificates and export in JWK format (but can’t generate the certificate to begin with—can only generate keys)
+    - Web Crypto API
+      - No: Doesn’t support working with certificates
+    - Node.js’s crypto
+      - No: Doesn’t support generating certificates
+    - https://www.npmjs.com/package/rasha
+      - No: Doesn’t support working with certificates
+    - https://npmtrends.com/crypt-vs-crypto-js-vs-jose-vs-keypair-vs-node-forge-vs-rasha
+- Store keys and certificate in the database
+- Review current SAML implementation
+- Migration reusing current keys to not have to ask Hopkins people to setup things again
+- Have a way to set keys externally via configuration file
+- Specify signature expectations in SAML configuration:
+
+  ```
+  wantAuthnResponseSigned: false,
+  wantAssertionsSigned: true,
+  ```
+
+  - `courselore.org.mjs`
+  - `try.courselore.org.mjs`
+  - `example.mjs`
+
+- Clean keys on `courselore.org` server
+- Introduce Keycloak in development for mocking SAML
+  - Embed certificates in configuration file
+    - `TODO: SAML`
+  - Test
+    - SP-initiated SSO
+    - SP-initiated SLO
+    - IdP-initiated SSO
+    - IdP-initiated SLO
+  - Document for developers
+    - https://www.keycloak.org/getting-started/getting-started-docker
+      - In Keycloak:
+        - Client type: SAML
+        - Client ID: https://leafac--macbook.local/saml/courselore-university/metadata
+        - Valid redirect URIs: https://leafac--macbook.local/saml/courselore-university/assertion-consumer-service
+      - http://127.0.0.1:8080/realms/myrealm/protocol/saml/descriptor
+    - https://www.samltool.com/online_tools.php
+    - https://samltool.io/ is probably bad (https://github.com/keycloak/keycloak/issues/22962)
+- Notes:
+  - One key
+    - All Identity Providers
+    - All purposes: signing & encrypting
+    - All services: SAML & LTI (OAuth)
+    - https://www.stackallocated.com/blog/2020/saml-idp-no-shared-keys/
+    - But metadata is different, because we use the URL to communicate the Identity Provider `samlIdentifier`.
+    - Pros of separate keys:
+      - Probably a bit more secure, given that an issue with a key doesn’t contaminate everything.
+      - It’s what we already have.
+    - Pros of same key:
+      - Easier to manage (think of initial configuration, rotation, and so forth).
+      - It’s what other services seem to do (Moodle, Canvas, Piazza, NOT GRADESCOPE).
+      - Setup only once with Identity Provider (think of LTI and its multiple courses with the same institution)
+      - Holds up well when we extend the LTI support to sync with the LMS at the installation level (as opposed to the course level as we’re doing now) and create courses in Courselore automatically
+
 **Minor Changes**
 
-- Finish getting back into a working state, but don’t finish the new key management situation.
 - https://courselore.org/courses/8537410611/conversations/83
   - Select part of image and Cmd+V
   - Preserve indentation
@@ -20,96 +97,9 @@
   - Add to the `…` menu under a message the option to switch message type, which just activates the existing dropdown
 - Don’t present the staff whispers button if the conversation involves only staff members.
 
-**Key Management**
-
-- Generate keys and certificates in the application itself
-
-  - Current approach
-
-    ```
-    openssl req -x509 -newkey rsa:2048 -nodes -days 365000 -subj "/C=US/ST=Maryland/L=Baltimore/O=Courselore/CN=courselore.org" -keyout educational-institution--saml--service-provider--signing.key -out educational-institution--saml--service-provider--signing.crt
-
-    openssl x509 -pubkey -noout -in configuration/development--saml--service-provider--encryption.crt > configuration/development--saml--service-provider--encryption.pub
-    ```
-
-  - Generate key
-    - Products
-      - Private key
-      - Public key
-      - Certificate
-        - With metadata
-        - In different formats
-    - Libraries
-      - https://github.com/digitalbazaar/forge
-        - https://github.com/jfromaniello/selfsigned
-      - https://www.npmjs.com/package/jose
-        - Use to import certificates and export in JWK format (but can’t generate the certificate to begin with—can only generate keys)
-      - Web Crypto API
-        - No: Doesn’t support working with certificates
-      - Node.js’s crypto
-        - No: Doesn’t support generating certificates
-      - https://www.npmjs.com/package/rasha
-        - No: Doesn’t support working with certificates
-      - https://npmtrends.com/crypt-vs-crypto-js-vs-jose-vs-keypair-vs-node-forge-vs-rasha
-  - Store it somewhere (for example, the database)
-  - Review current SAML implementation
-  - Revise `example.mjs`
-
-- One key
-  - All Identity Providers
-  - All purposes: signing & encrypting
-  - All services: SAML & LTI (OAuth)
-- Migration from current key management strategy
-- Have a way to set keys externally?
-
-- Specify signature expectations in SAML configuration:
-
-  ```
-  wantAuthnResponseSigned: false,
-  wantAssertionsSigned: true,
-  ```
-
-  - `courselore.org.mjs`
-  - `try.courselore.org.mjs`
-  - `example.mjs`
-
 **Learning Tools Interoperability (LTI)**
 
-- Use Keycloak for mocking SAML & OpenID Connect
-  - https://github.com/keycloak/keycloak/issues/22962
-    - Compare a valid answer from saml-idp with an invalid one from Keycloak
-    - Find how samltool.io validates signatures
-    - Find how node-saml validates signatures
-  - Embed keys in configuration file
-    - And in `secrets.json` for `courselore.org`
-    - `TODO: SAML`
-  - Test
-    - SP-initiated SSO
-    - SP-initiated SLO
-    - IdP-initiated SSO
-    - IdP-initiated SLO
-  - Document for developers
-    - https://www.keycloak.org/getting-started/getting-started-docker
-      - In Keycloak:
-        - Client type: SAML
-        - Client ID: https://leafac--macbook.local/saml/courselore-university/metadata
-        - Valid redirect URIs: https://leafac--macbook.local/saml/courselore-university/assertion-consumer-service
-      - http://127.0.0.1:8080/realms/myrealm/protocol/saml/descriptor
-    - https://samltool.io/
-    - https://www.samltool.com/online_tools.php
-- Key management:
-  - https://www.stackallocated.com/blog/2020/saml-idp-no-shared-keys/
-  - SAML one service provider keyset for all identity providers?
-    - But metadata is different, because we use the URL to communicate the Identity Provider `samlIdentifier`.
-    - Pros of separate keys:
-      - Probably a bit more secure, given that an issue with a key doesn’t contaminate everything.
-      - It’s what we already have.
-    - Pros of same key:
-      - Easier to manage (think of initial configuration, rotation, and so forth).
-      - It’s what other services seem to do (Moodle, Canvas, Piazza, NOT GRADESCOPE).
-  - Use the same key for SAML & LTI?
-  - One key per course may lead to problems with bureaucracy
-  - One key per course may not hold up well when we extend the LTI support to sync with the LMS at the installation level (as opposed to the course level as we’re doing now) and create courses in Courselore automatically
+- Prototype OpenID Connect with Keycloak
 - Reverse engineer LTI 1.3
 
   - Make Members request work
