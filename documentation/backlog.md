@@ -23,6 +23,7 @@
 **Key Management**
 
 - Generate keys and certificates in the application itself
+
   ```
   openssl req -x509 -newkey rsa:2048 -nodes -days 365000 -subj "/C=US/ST=Maryland/L=Baltimore/O=Courselore/CN=courselore.org" -keyout educational-institution--saml--service-provider--signing.key -out educational-institution--saml--service-provider--signing.crt
 
