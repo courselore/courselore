@@ -10,6 +10,12 @@
   - Preserve indentation
   - Perhaps the default should be plain-text pasting, and the keyboard modifier would be for rich-text pasting
   - Investigate OCR
+    - https://www.npmjs.com/package/tesseract.js
+    - https://www.npmjs.com/package/node-tesseract-ocr
+    - https://www.codefromscreenshot.com/
+    - https://code.pieces.app/blog/how-we-made-our-optical-character-recognition-ocr-code-more-accurate
+    - https://code.pieces.app/blog/top-ocr-tools
+    - https://www.runtime.dev/
 - https://courselore.org/courses/8537410611/conversations/84
   - Add to the `…` menu under a message the option to switch message type, which just activates the existing dropdown
 - Don’t present the staff whispers button if the conversation involves only staff members.
