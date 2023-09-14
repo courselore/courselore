@@ -4,15 +4,6 @@
 
 **Key Management**
 
-- Current approach
-
-- Generate key
-  - Products
-    - Private key
-    - Public key
-    - Certificate
-      - With metadata
-      - In different formats
 - Store keys and certificate in the database
 - Review current SAML implementation
 - Migration reusing current keys to not have to ask Hopkins people to setup things again
