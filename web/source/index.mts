@@ -227,7 +227,8 @@ if (await node.isExecuted(import.meta.url)) {
                       domains: ["courselore.org"],
                       attributes: (samlResponse: any) => ({
                         email: samlResponse?.profile?.nameID,
-                        name: samlResponse?.profile?.attributes?.name ?? "Leandro",
+                        name:
+                          samlResponse?.profile?.attributes?.name ?? "Leandro",
                       }),
                       options: {
                         idpIssuer: "http://127.0.0.1:8080/realms/myrealm",

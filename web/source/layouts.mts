@@ -2839,10 +2839,7 @@ export default async (application: Application): Promise<void> => {
             </div>
 
             $${response.locals.user?.systemRole === "administrator" &&
-            semver.gt(
-              response.locals.administrationOptions!.latestVersion,
-              application.version,
-            )
+            semver.gt(application.system.latestVersion, application.version)
               ? html`
                   <div>
                     <button
@@ -2887,8 +2884,7 @@ export default async (application: Application): Promise<void> => {
                                         });
                                       `}"
                                     >
-                                      ${response.locals.administrationOptions!
-                                        .latestVersion}
+                                      ${application.system.latestVersion}
                                     </span>
                                   </span>
                                 </h3>
@@ -2911,9 +2907,8 @@ export default async (application: Application): Promise<void> => {
                                     Update Instructions
                                   </a>
                                   <a
-                                    href="https://github.com/courselore/courselore/releases/tag/v${response
-                                      .locals.administrationOptions!
-                                      .latestVersion}"
+                                    href="https://github.com/courselore/courselore/releases/tag/v${application
+                                      .system.latestVersion}"
                                     target="_blank"
                                     class="dropdown--menu--item button button--green"
                                   >

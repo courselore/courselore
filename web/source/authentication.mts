@@ -92,7 +92,6 @@ export type ApplicationAuthentication = {
           }[];
 
           administrationOptions: {
-            latestVersion: string;
             userSystemRolesWhoMayCreateCourses: Application["web"]["locals"]["helpers"]["userSystemRolesWhoMayCreateCourseses"][number];
           };
         };
@@ -633,11 +632,10 @@ export default async (application: Application): Promise<void> => {
 
     response.locals.administrationOptions =
       application.database.get<{
-        latestVersion: string;
         userSystemRolesWhoMayCreateCourses: Application["web"]["locals"]["helpers"]["userSystemRolesWhoMayCreateCourseses"][number];
       }>(
         sql`
-          SELECT "latestVersion", "userSystemRolesWhoMayCreateCourses"
+          SELECT "userSystemRolesWhoMayCreateCourses"
           FROM "administrationOptions"
         `,
       ) ??

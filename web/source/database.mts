@@ -26,6 +26,12 @@ import { Application } from "./index.mjs";
 
 export type ApplicationDatabase = {
   database: Database;
+  system: {
+    latestVersion: string;
+    privateKey: string;
+    publicKey: string;
+    certificate: string;
+  };
 };
 
 export default async (application: Application): Promise<void> => {
@@ -2410,7 +2416,7 @@ export default async (application: Application): Promise<void> => {
         (() => {
           throw new Error("Failed to get ‘administrationOptions’.");
         })();
-        
+
       const keypair = forge.pki.rsa.generateKeyPair();
       const cert = forge.pki.createCertificate();
       cert.publicKey = keypair.publicKey;
@@ -2467,6 +2473,26 @@ export default async (application: Application): Promise<void> => {
       DELETE FROM "liveConnectionsMetadata"
     `,
   );
+
+  application.system =
+    application.database.get<{
+      latestVersion: string;
+      privateKey: string;
+      publicKey: string;
+      certificate: string;
+    }>(
+      sql`
+        SELECT
+          "latestVersion",
+          "privateKey",
+          "publicKey",
+          "certificate"
+        FROM "system"
+      `,
+    ) ??
+    (() => {
+      throw new Error("Failed to get ‘system’.");
+    })();
 
   application.log("DATABASE MIGRATION", "FINISHED");
 };

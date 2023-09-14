@@ -54,7 +54,7 @@ export default async (application: Application): Promise<void> => {
             throw new Error(`latestVersion = ‘${latestVersion}’`);
           application.database.run(
             sql`
-              UPDATE "administrationOptions" SET "latestVersion" = ${latestVersion}
+              UPDATE "system" SET "latestVersion" = ${latestVersion}
             `,
           );
           application.log(
