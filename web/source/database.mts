@@ -21,6 +21,7 @@ import rehypeStringify from "rehype-stringify";
 import { JSDOM } from "jsdom";
 import prompts from "prompts";
 import sharp from "sharp";
+import forge from "node-forge";
 import { Application } from "./index.mjs";
 
 export type ApplicationDatabase = {
@@ -2396,6 +2397,55 @@ export default async (application: Application): Promise<void> => {
     sql`
       UPDATE "invitations" SET "courseRole" = 'course-staff' WHERE "courseRole" = 'staff';
     `,
+
+    () => {
+      const keypair = forge.pki.rsa.generateKeyPair();
+      const cert = forge.pki.createCertificate();
+      cert.publicKey = keypair.publicKey;
+      cert.serialNumber = "00" + Math.random().toString().slice(2, 12);
+      cert.validity.notAfter = new Date(
+        Date.now() + 1000 * 365 * 24 * 60 * 60 * 1000,
+      );
+      const attrs = [
+        { name: "commonName", value: application.configuration.hostname },
+        { name: "countryName", value: "US" },
+        { name: "stateOrProvinceName", value: "Maryland" },
+        { name: "localityName", value: "Baltimore" },
+        { name: "organizationName", value: "Courselore" },
+      ];
+      cert.setIssuer(attrs);
+      cert.setSubject(attrs);
+      cert.sign(keypair.privateKey, forge.md.sha256.create());
+
+      application.database.execute(
+        sql`
+          CREATE TABLE "system" (
+            "id" INTEGER PRIMARY KEY AUTOINCREMENT CHECK ("id" = 1),
+            "latestVersion" TEXT NOT NULL,
+            "privateKey" TEXT NOT NULL,
+            "publicKey" TEXT NOT NULL,
+            "certificate" TEXT NOT NULL
+          );
+        `,
+      );
+
+      application.database.run(
+        sql`
+          INSERT INTO "system" (
+            "latestVersion",
+            "privateKey",
+            "publicKey",
+            "certificate"
+          )
+          VALUES (
+            ${application.version},
+            ${forge.pki.privateKeyToPem(keypair.privateKey)},
+            ${forge.pki.publicKeyToPem(keypair.publicKey)},
+            ${forge.pki.certificateToPem(cert)}
+          )
+        `,
+      );
+    },
   );
 
   application.database.run(
