@@ -6,15 +6,6 @@
 
 - Current approach
 
-  ```
-  openssl req -x509 -newkey rsa:2048 -nodes -days 365000 -subj "/C=US/ST=Maryland/L=Baltimore/O=Courselore/CN=courselore.org" -keyout example.key -out example.crt
-  openssl x509 -pubkey -noout -in example.crt > example.pub
-
-  openssl rsa -in example.key -text -noout > example.key.txt
-  openssl rsa -inform PEM -pubin -in example.pub -text -noout > example.pub.txt
-  openssl x509 -in example.crt -text -noout > example.crt.txt
-  ```
-
 - Generate key
   - Products
     - Private key
@@ -22,18 +13,6 @@
     - Certificate
       - With metadata
       - In different formats
-  - Libraries
-    - https://github.com/digitalbazaar/forge
-      - https://github.com/jfromaniello/selfsigned
-    - https://www.npmjs.com/package/jose
-      - Use to import certificates and export in JWK format (but can’t generate the certificate to begin with—can only generate keys)
-    - Web Crypto API
-      - No: Doesn’t support working with certificates
-    - Node.js’s crypto
-      - No: Doesn’t support generating certificates
-    - https://www.npmjs.com/package/rasha
-      - No: Doesn’t support working with certificates
-    - https://npmtrends.com/crypt-vs-crypto-js-vs-jose-vs-keypair-vs-node-forge-vs-rasha
 - Store keys and certificate in the database
 - Review current SAML implementation
 - Migration reusing current keys to not have to ask Hopkins people to setup things again
@@ -68,6 +47,7 @@
     - https://www.samltool.com/online_tools.php
     - https://samltool.io/ is probably bad (https://github.com/keycloak/keycloak/issues/22962)
 - Notes:
+
   - One key
     - All Identity Providers
     - All purposes: signing & encrypting
@@ -82,6 +62,29 @@
       - It’s what other services seem to do (Moodle, Canvas, Piazza, NOT GRADESCOPE).
       - Setup only once with Identity Provider (think of LTI and its multiple courses with the same institution)
       - Holds up well when we extend the LTI support to sync with the LMS at the installation level (as opposed to the course level as we’re doing now) and create courses in Courselore automatically
+  - Create keys with OpenSSL
+
+    ```
+    openssl req -x509 -newkey rsa:2048 -nodes -days 365000 -subj "/C=US/ST=Maryland/L=Baltimore/O=Courselore/CN=courselore.org" -keyout example.key -out example.crt
+    openssl x509 -pubkey -noout -in example.crt > example.pub
+
+    openssl rsa -in example.key -text -noout > example.key.txt
+    openssl rsa -inform PEM -pubin -in example.pub -text -noout > example.pub.txt
+    openssl x509 -in example.crt -text -noout > example.crt.txt
+    ```
+
+  - Libraries
+    - https://github.com/digitalbazaar/forge
+      - https://github.com/jfromaniello/selfsigned
+    - https://www.npmjs.com/package/jose
+      - Use to import certificates and export in JWK format (but can’t generate the certificate to begin with—can only generate keys)
+    - Web Crypto API
+      - No: Doesn’t support working with certificates
+    - Node.js’s crypto
+      - No: Doesn’t support generating certificates
+    - https://www.npmjs.com/package/rasha
+      - No: Doesn’t support working with certificates
+    - https://npmtrends.com/crypt-vs-crypto-js-vs-jose-vs-keypair-vs-node-forge-vs-rasha
 
 **Minor Changes**
 
