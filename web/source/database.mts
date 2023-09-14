@@ -2474,25 +2474,5 @@ export default async (application: Application): Promise<void> => {
     `,
   );
 
-  application.system =
-    application.database.get<{
-      latestVersion: string;
-      privateKey: string;
-      publicKey: string;
-      certificate: string;
-    }>(
-      sql`
-        SELECT
-          "latestVersion",
-          "privateKey",
-          "publicKey",
-          "certificate"
-        FROM "system"
-      `,
-    ) ??
-    (() => {
-      throw new Error("Failed to get ‘system’.");
-    })();
-
   application.log("DATABASE MIGRATION", "FINISHED");
 };
