@@ -2399,6 +2399,18 @@ export default async (application: Application): Promise<void> => {
     `,
 
     () => {
+      const administrationOptions =
+        application.database.get<{
+          latestVersion: string;
+        }>(
+          sql`
+            SELECT "latestVersion" FROM "administrationOptions"
+          `,
+        ) ??
+        (() => {
+          throw new Error("Failed to get ‘administrationOptions’.");
+        })();
+        
       const keypair = forge.pki.rsa.generateKeyPair();
       const cert = forge.pki.createCertificate();
       cert.publicKey = keypair.publicKey;
@@ -2440,7 +2452,7 @@ export default async (application: Application): Promise<void> => {
             "certificate"
           )
           VALUES (
-            ${application.version},
+            ${administrationOptions.latestVersion},
             ${forge.pki.privateKeyToPem(keypair.privateKey)},
             ${forge.pki.publicKeyToPem(keypair.publicKey)},
             ${forge.pki.certificateToPem(cert)}
