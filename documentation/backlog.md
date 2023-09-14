@@ -4,7 +4,6 @@
 
 **Key Management**
 
-- Test `latestVersion`
 - Review current SAML implementation
 - Migration reusing current keys to not have to ask Hopkins people to setup things again
 - Have a way to set keys externally via configuration file
