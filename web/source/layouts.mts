@@ -1646,72 +1646,72 @@ export default async (application: Application): Promise<void> => {
           });
 
           return javascript`
-              if (${flash !== undefined}) {
-                leafac.setTippy({
-                  event,
-                  element: this,
-                  elementProperty: "flash",
-                  tippyProps: {
-                    appendTo: this,
-                    trigger: "manual",
-                    hideOnClick: false,
-                    theme: ${flash?.theme ?? ""},
-                    arrow: false,
-                    interactive: true,
-                    content: ${html`
-                      <div
-                        css="${css`
-                          padding: var(--space--1) var(--space--2);
-                          display: flex;
-                          gap: var(--space--2);
-                          align-items: flex-start;
+            if (${flash !== undefined}) {
+              leafac.setTippy({
+                event,
+                element: this,
+                elementProperty: "flash",
+                tippyProps: {
+                  appendTo: this,
+                  trigger: "manual",
+                  hideOnClick: false,
+                  theme: ${flash?.theme ?? ""},
+                  arrow: false,
+                  interactive: true,
+                  content: ${html`
+                    <div
+                      css="${css`
+                        padding: var(--space--1) var(--space--2);
+                        display: flex;
+                        gap: var(--space--2);
+                        align-items: flex-start;
+                      `}"
+                    >
+                      <div>$${flash?.content ?? html``}</div>
+                      <button
+                        class="button button--tight button--tight--inline button--transparent"
+                        javascript="${javascript`
+                          leafac.setTippy({
+                            event,
+                            element: this,
+                            tippyProps: {
+                              theme: ${flash?.theme ?? "green"},
+                              touch: false,
+                              content: "Close",
+                            },
+                          });
+
+                          this.onclick = () => {
+                            this.closest("[data-tippy-root]")._tippy.hide();
+                          };
                         `}"
                       >
-                        <div>$${flash?.content ?? html``}</div>
-                        <button
-                          class="button button--tight button--tight--inline button--transparent"
-                          javascript="${javascript`
-                            leafac.setTippy({
-                              event,
-                              element: this,
-                              tippyProps: {
-                                theme: ${flash?.theme ?? "green"},
-                                touch: false,
-                                content: "Close",
-                              },
-                            });
+                        <i class="bi bi-x-circle"></i>
+                      </button>
+                    </div>
+                  `},  
+                },
+              });
+              this.flash.show();
+            }
 
-                            this.onclick = () => {
-                              this.closest("[data-tippy-root]")._tippy.hide();
-                            };
-                          `}"
-                        >
-                          <i class="bi bi-x-circle"></i>
-                        </button>
-                      </div>
-                    `},  
-                  },
-                });
-                this.flash.show();
-              }
+            document.querySelector('[key="theme-color--light"]').setAttribute("content", getComputedStyle(document.documentElement).getPropertyValue(${`--color--${
+              response.locals.courseParticipant?.accentColor ?? ""
+            }--500`}));
+            document.querySelector('[key="theme-color--dark"]').setAttribute("content", getComputedStyle(document.documentElement).getPropertyValue(${`--color--${
+              response.locals.courseParticipant?.accentColor ?? ""
+            }--600`}));
 
-              document.querySelector('[key="theme-color--light"]').setAttribute("content", getComputedStyle(document.documentElement).getPropertyValue(${`--color--${
-                response.locals.courseParticipant?.accentColor ?? ""
-              }--500`}));
-              document.querySelector('[key="theme-color--dark"]').setAttribute("content", getComputedStyle(document.documentElement).getPropertyValue(${`--color--${
-                response.locals.courseParticipant?.accentColor ?? ""
-              }--600`}));
-
-              if (${
-                typeof response.locals.liveConnectionNonce === "string"
-              } && event?.detail?.liveUpdate !== true)
-                leafac.liveConnection({
-                  nonce: ${response.locals.liveConnectionNonce},
-                  newServerVersionMessage: "Courselore has been updated. Please reload the page.",
-                  offlineMessage: "Failed to connect to Courselore. Please check your internet connection and try reloading the page.",
-                  environment: ${application.configuration.environment},
-                });
-            `;
+            if (${
+              typeof response.locals.liveConnectionNonce === "string"
+            } && event?.detail?.liveUpdate !== true)
+              leafac.liveConnection({
+                nonce: ${response.locals.liveConnectionNonce},
+                newServerVersionMessage: "Courselore has been updated. Please reload the page.",
+                offlineMessage: "Failed to connect to Courselore. Please check your internet connection and try reloading the page.",
+                environment: ${application.configuration.environment},
+              });
+          `;
         })()}"
       >
         <div
@@ -1727,10 +1727,10 @@ export default async (application: Application): Promise<void> => {
             overflow: hidden;
           `}"
           javascript="${javascript`
-              this.onscroll = () => {
-                this.scroll(0, 0);
-              };
-            `}"
+            this.onscroll = () => {
+              this.scroll(0, 0);
+            };
+          `}"
         >
           $${response.locals.courseParticipant === undefined
             ? html``
@@ -1745,11 +1745,11 @@ export default async (application: Application): Promise<void> => {
                   <button
                     class="button"
                     style="
-                        --color--accent-color--500: var(--color--${response
-                      .locals.courseParticipant.accentColor}--500);
-                        --color--accent-color--600: var(--color--${response
-                      .locals.courseParticipant.accentColor}--600);
-                      "
+                      --color--accent-color--500: var(--color--${response.locals
+                      .courseParticipant.accentColor}--500);
+                      --color--accent-color--600: var(--color--${response.locals
+                      .courseParticipant.accentColor}--600);
+                    "
                     css="${css`
                       background-color: var(--color--accent-color--500);
                       @media (prefers-color-scheme: dark) {
@@ -1759,56 +1759,56 @@ export default async (application: Application): Promise<void> => {
                       flex: 1;
                     `}"
                     javascript="${javascript`
-                        this.style.setProperty("--color--accent-color--500", ${`var(--color--${response.locals.courseParticipant.accentColor}--500)`});
-                        this.style.setProperty("--color--accent-color--600", ${`var(--color--${response.locals.courseParticipant.accentColor}--600)`});
+                      this.style.setProperty("--color--accent-color--500", ${`var(--color--${response.locals.courseParticipant.accentColor}--500)`});
+                      this.style.setProperty("--color--accent-color--600", ${`var(--color--${response.locals.courseParticipant.accentColor}--600)`});
 
-                        leafac.setTippy({
-                          event,
-                          element: this,
-                          tippyProps: {
-                            touch: false,
-                            content: "What’s This?",
-                          },
-                        });
+                      leafac.setTippy({
+                        event,
+                        element: this,
+                        tippyProps: {
+                          touch: false,
+                          content: "What’s This?",
+                        },
+                      });
 
-                        leafac.setTippy({
-                          event,
-                          element: this,
-                          elementProperty: "dropdown",
-                          tippyProps: {
-                            trigger: "click",
-                            interactive: true,
-                            content: ${html`
-                              <div
+                      leafac.setTippy({
+                        event,
+                        element: this,
+                        elementProperty: "dropdown",
+                        tippyProps: {
+                          trigger: "click",
+                          interactive: true,
+                          content: ${html`
+                            <div
+                              css="${css`
+                                padding: var(--space--2);
+                                display: flex;
+                                flex-direction: column;
+                                gap: var(--space--4);
+                              `}"
+                            >
+                              <p>
+                                This bar with an accent color appears at the top
+                                of pages related to this course to help you
+                                differentiate between courses.
+                              </p>
+                              <a
+                                href="https://${application.configuration
+                                  .hostname}/courses/${response.locals.course!
+                                  .reference}/settings/my-course-participation"
+                                class="button button--blue"
                                 css="${css`
-                                  padding: var(--space--2);
-                                  display: flex;
-                                  flex-direction: column;
-                                  gap: var(--space--4);
+                                  width: 100%;
                                 `}"
                               >
-                                <p>
-                                  This bar with an accent color appears at the
-                                  top of pages related to this course to help
-                                  you differentiate between courses.
-                                </p>
-                                <a
-                                  href="https://${application.configuration
-                                    .hostname}/courses/${response.locals.course!
-                                    .reference}/settings/my-course-participation"
-                                  class="button button--blue"
-                                  css="${css`
-                                    width: 100%;
-                                  `}"
-                                >
-                                  <i class="bi bi-palette-fill"></i>
-                                  Update Accent Color
-                                </a>
-                              </div>
-                            `},  
-                          },
-                        });
-                      `}"
+                                <i class="bi bi-palette-fill"></i>
+                                Update Accent Color
+                              </a>
+                            </div>
+                          `},  
+                        },
+                      });
+                    `}"
                   ></button>
                 </div>
               `}
@@ -1823,74 +1823,73 @@ export default async (application: Application): Promise<void> => {
                   <button
                     class="button button--transparent"
                     javascript="${javascript`
-                        leafac.setTippy({
-                          event,
-                          element: this,
-                          elementProperty: "dropdown",
-                          tippyProps: {
-                            trigger: "click",
-                            interactive: true,
-                            content: ${html`
-                              <div
-                                css="${css`
-                                  padding: var(--space--2);
-                                  display: flex;
-                                  flex-direction: column;
-                                  gap: var(--space--4);
-                                `}"
+                      leafac.setTippy({
+                        event,
+                        element: this,
+                        elementProperty: "dropdown",
+                        tippyProps: {
+                          trigger: "click",
+                          interactive: true,
+                          content: ${html`
+                            <div
+                              css="${css`
+                                padding: var(--space--2);
+                                display: flex;
+                                flex-direction: column;
+                                gap: var(--space--4);
+                              `}"
+                            >
+                              <p>
+                                This Courselore installation is running in
+                                Demonstration Mode and must not be used for real
+                                courses.
+                              </p>
+                              <p>
+                                Any data may be lost, including users, courses,
+                                invitations, conversations, messages, and so
+                                forth.
+                              </p>
+                              <hr class="separator" />
+                              <p>
+                                Create demonstration data to see what Courselore
+                                looks like in use:
+                              </p>
+                              <form
+                                method="POST"
+                                action="https://${application.configuration
+                                  .hostname}/demonstration-data"
                               >
-                                <p>
-                                  This Courselore installation is running in
-                                  Demonstration Mode and must not be used for
-                                  real courses.
-                                </p>
-                                <p>
-                                  Any data may be lost, including users,
-                                  courses, invitations, conversations, messages,
-                                  and so forth.
-                                </p>
-                                <hr class="separator" />
-                                <p>
-                                  Create demonstration data to see what
-                                  Courselore looks like in use:
-                                </p>
-                                <form
-                                  method="POST"
-                                  action="https://${application.configuration
-                                    .hostname}/demonstration-data"
-                                >
-                                  <button
-                                    class="button button--blue"
-                                    css="${css`
-                                      width: 100%;
-                                    `}"
-                                  >
-                                    <i class="bi bi-easel-fill"></i>
-                                    Create Demonstration Data
-                                  </button>
-                                </form>
-                                <hr class="separator" />
-                                <p>
-                                  Emails are delivered to the Demonstration
-                                  Inbox:
-                                </p>
-                                <a
-                                  href="https://${application.configuration
-                                    .hostname}:8000"
-                                  target="_blank"
+                                <button
                                   class="button button--blue"
                                   css="${css`
                                     width: 100%;
                                   `}"
                                 >
-                                  <i class="bi bi-envelope-fill"></i>
-                                  Open Demonstration Inbox
-                                </a>
-                              </div>
-                            `},  
-                          },
-                        });
-                      `}"
+                                  <i class="bi bi-easel-fill"></i>
+                                  Create Demonstration Data
+                                </button>
+                              </form>
+                              <hr class="separator" />
+                              <p>
+                                Emails are delivered to the Demonstration Inbox:
+                              </p>
+                              <a
+                                href="https://${application.configuration
+                                  .hostname}:8000"
+                                target="_blank"
+                                class="button button--blue"
+                                css="${css`
+                                  width: 100%;
+                                `}"
+                              >
+                                <i class="bi bi-envelope-fill"></i>
+                                Open Demonstration Inbox
+                              </a>
+                            </div>
+                          `},  
+                        },
+                      });
+                    `}"
                   >
                     <i class="bi bi-easel"></i>
                     Demonstration Mode
@@ -1904,102 +1903,102 @@ export default async (application: Application): Promise<void> => {
                   <button
                     class="button button--transparent"
                     javascript="${javascript`
-                        leafac.setTippy({
-                          event,
-                          element: this,
-                          elementProperty: "dropdown",
-                          tippyProps: {
-                            trigger: "click",
-                            interactive: true,
-                            content: ${html`
-                              <div
-                                css="${css`
-                                  display: flex;
-                                  flex-direction: column;
-                                  gap: var(--space--2);
-                                `}"
-                              >
-                                <div class="dropdown--menu">
-                                  <button
-                                    class="dropdown--menu--item button button--transparent"
-                                    javascript="${javascript`
-                                      this.onclick = async () => {
-                                        this.classList.add("button--amber");
-                                        await new Promise((resolve) => { window.setTimeout(resolve, 3 * 1000); });
-                                        await fetch(${`https://${application.configuration.hostname}/live-updates`}, { cache: "no-store" });
-                                        this.classList.remove("button--amber");
-                                        this.classList.add("button--green");
-                                      };
-                                    `}"
-                                  >
-                                    <i class="bi bi-arrow-clockwise"></i>
-                                    Live-Updates
-                                  </button>
-                                </div>
-
-                                <hr class="dropdown--separator" />
-
-                                <div class="dropdown--menu">
-                                  <a
-                                    href="https://${application.configuration
-                                      .hostname}/health"
-                                    target="_blank"
-                                    class="dropdown--menu--item button button--transparent"
-                                  >
-                                    <i class="bi bi-heart-pulse"></i>
-                                    Health Check
-                                  </a>
-                                </div>
-
-                                <hr class="dropdown--separator" />
-
-                                <div class="dropdown--menu">
-                                  <a
-                                    href="https://${application.configuration
-                                      .hostname}/errors/not-found"
-                                    class="dropdown--menu--item button button--transparent"
-                                  >
-                                    <i class="bi bi-question-diamond"></i>
-                                    404 Not Found
-                                  </a>
-                                  <a
-                                    href="https://${application.configuration
-                                      .hostname}/errors/validation"
-                                    class="dropdown--menu--item button button--transparent"
-                                  >
-                                    <i class="bi bi-bug"></i>
-                                    Validation Error
-                                  </a>
-                                  <a
-                                    href="https://${application.configuration
-                                      .hostname}/errors/cross-site-request-forgery"
-                                    class="dropdown--menu--item button button--transparent"
-                                  >
-                                    <i class="bi bi-bug"></i>
-                                    Cross-Site Request Forgery Error
-                                  </a>
-                                  <a
-                                    href="https://${application.configuration
-                                      .hostname}/errors/exception"
-                                    class="dropdown--menu--item button button--transparent"
-                                  >
-                                    <i class="bi bi-bug"></i>
-                                    Server Error
-                                  </a>
-                                  <a
-                                    href="https://${application.configuration
-                                      .hostname}/errors/crash"
-                                    class="dropdown--menu--item button button--transparent"
-                                  >
-                                    <i class="bi bi-fire"></i>
-                                    Crash
-                                  </a>
-                                </div>
+                      leafac.setTippy({
+                        event,
+                        element: this,
+                        elementProperty: "dropdown",
+                        tippyProps: {
+                          trigger: "click",
+                          interactive: true,
+                          content: ${html`
+                            <div
+                              css="${css`
+                                display: flex;
+                                flex-direction: column;
+                                gap: var(--space--2);
+                              `}"
+                            >
+                              <div class="dropdown--menu">
+                                <button
+                                  class="dropdown--menu--item button button--transparent"
+                                  javascript="${javascript`
+                                    this.onclick = async () => {
+                                      this.classList.add("button--amber");
+                                      await new Promise((resolve) => { window.setTimeout(resolve, 3 * 1000); });
+                                      await fetch(${`https://${application.configuration.hostname}/live-updates`}, { cache: "no-store" });
+                                      this.classList.remove("button--amber");
+                                      this.classList.add("button--green");
+                                    };
+                                  `}"
+                                >
+                                  <i class="bi bi-arrow-clockwise"></i>
+                                  Live-Updates
+                                </button>
                               </div>
-                            `},  
-                          },
-                        });
-                      `}"
+
+                              <hr class="dropdown--separator" />
+
+                              <div class="dropdown--menu">
+                                <a
+                                  href="https://${application.configuration
+                                    .hostname}/health"
+                                  target="_blank"
+                                  class="dropdown--menu--item button button--transparent"
+                                >
+                                  <i class="bi bi-heart-pulse"></i>
+                                  Health Check
+                                </a>
+                              </div>
+
+                              <hr class="dropdown--separator" />
+
+                              <div class="dropdown--menu">
+                                <a
+                                  href="https://${application.configuration
+                                    .hostname}/errors/not-found"
+                                  class="dropdown--menu--item button button--transparent"
+                                >
+                                  <i class="bi bi-question-diamond"></i>
+                                  404 Not Found
+                                </a>
+                                <a
+                                  href="https://${application.configuration
+                                    .hostname}/errors/validation"
+                                  class="dropdown--menu--item button button--transparent"
+                                >
+                                  <i class="bi bi-bug"></i>
+                                  Validation Error
+                                </a>
+                                <a
+                                  href="https://${application.configuration
+                                    .hostname}/errors/cross-site-request-forgery"
+                                  class="dropdown--menu--item button button--transparent"
+                                >
+                                  <i class="bi bi-bug"></i>
+                                  Cross-Site Request Forgery Error
+                                </a>
+                                <a
+                                  href="https://${application.configuration
+                                    .hostname}/errors/exception"
+                                  class="dropdown--menu--item button button--transparent"
+                                >
+                                  <i class="bi bi-bug"></i>
+                                  Server Error
+                                </a>
+                                <a
+                                  href="https://${application.configuration
+                                    .hostname}/errors/crash"
+                                  class="dropdown--menu--item button button--transparent"
+                                >
+                                  <i class="bi bi-fire"></i>
+                                  Crash
+                                </a>
+                              </div>
+                            </div>
+                          `},  
+                        },
+                      });
+                    `}"
                   >
                     <i class="bi bi-tools"></i>
                     Development Utilities
@@ -2063,15 +2062,15 @@ export default async (application: Application): Promise<void> => {
                     href="https://${application.configuration.hostname}/"
                     class="button button--tight button--tight--inline button--transparent"
                     javascript="${javascript`
-                        leafac.setTippy({
-                          event,
-                          element: this,
-                          tippyProps: {
-                            touch: false,
-                            content: "Courselore",
-                          },
-                        });
-                      `}"
+                      leafac.setTippy({
+                        event,
+                        element: this,
+                        tippyProps: {
+                          touch: false,
+                          content: "Courselore",
+                        },
+                      });
+                    `}"
                   >
                     $${application.web.locals.partials.logo()}
                   </a>
@@ -2103,107 +2102,107 @@ export default async (application: Application): Promise<void> => {
                                 max-width: 100%;
                               `}"
                               javascript="${javascript`
-                                  leafac.setTippy({
-                                    event,
-                                    element: this,
-                                    elementProperty: "dropdown",
-                                    tippyProps: {
-                                      trigger: "click",
-                                      interactive: true,
-                                      content: ${html`
-                                        <div
-                                          css="${css`
-                                            max-height: var(--space--80);
-                                            overflow: auto;
-                                            display: flex;
-                                            flex-direction: column;
-                                            gap: var(--space--2);
-                                          `}"
-                                        >
-                                          <div>
-                                            <h3 class="heading">
-                                              <i class="bi bi-journal-text"></i>
-                                              ${response.locals.course.name}
-                                            </h3>
-                                            $${response.locals.course
-                                              .archivedAt !== null
-                                              ? html`
-                                                  <div
-                                                    css="${css`
-                                                      padding: var(--space--0)
-                                                        var(--space--2)
-                                                        var(--space--1);
-                                                      margin-top: var(
-                                                        --space---2
-                                                      );
-                                                    `}"
-                                                  >
-                                                    $${application.web.locals.partials.courseArchived(
-                                                      {
-                                                        request,
-                                                        response,
-                                                      },
-                                                    )}
-                                                  </div>
-                                                `
-                                              : html``}
-                                            <div class="dropdown--menu">
-                                              <a
-                                                href="https://${application
-                                                  .configuration
-                                                  .hostname}/courses/${response
-                                                  .locals.course.reference}"
-                                                class="dropdown--menu--item button ${request.path.includes(
-                                                  "/settings/",
-                                                )
-                                                  ? "button--transparent"
-                                                  : "button--blue"}"
-                                              >
-                                                <i
-                                                  class="bi ${request.path.includes(
-                                                    "/settings/",
-                                                  )
-                                                    ? "bi-chat-text"
-                                                    : "bi-chat-text-fill"}"
-                                                ></i>
-                                                Conversations
-                                              </a>
-                                              <a
-                                                href="https://${application
-                                                  .configuration
-                                                  .hostname}/courses/${response
-                                                  .locals.course
-                                                  .reference}/settings"
-                                                class="dropdown--menu--item button ${request.path.includes(
-                                                  "/settings/",
-                                                )
-                                                  ? "button--blue"
-                                                  : "button--transparent"}"
-                                              >
-                                                <i class="bi bi-sliders"></i>
-                                                Course Settings
-                                              </a>
-                                            </div>
-                                          </div>
-                                          $${responseSignedIn.locals
-                                            .courseParticipants.length > 1
+                                leafac.setTippy({
+                                  event,
+                                  element: this,
+                                  elementProperty: "dropdown",
+                                  tippyProps: {
+                                    trigger: "click",
+                                    interactive: true,
+                                    content: ${html`
+                                      <div
+                                        css="${css`
+                                          max-height: var(--space--80);
+                                          overflow: auto;
+                                          display: flex;
+                                          flex-direction: column;
+                                          gap: var(--space--2);
+                                        `}"
+                                      >
+                                        <div>
+                                          <h3 class="heading">
+                                            <i class="bi bi-journal-text"></i>
+                                            ${response.locals.course.name}
+                                          </h3>
+                                          $${response.locals.course
+                                            .archivedAt !== null
                                             ? html`
-                                                <div>
-                                                  <h3 class="heading">
-                                                    <i
-                                                      class="bi bi-arrow-left-right"
-                                                    ></i>
-                                                    Switch to Another Course
-                                                  </h3>
-                                                  $${courseSwitcher}
+                                                <div
+                                                  css="${css`
+                                                    padding: var(--space--0)
+                                                      var(--space--2)
+                                                      var(--space--1);
+                                                    margin-top: var(
+                                                      --space---2
+                                                    );
+                                                  `}"
+                                                >
+                                                  $${application.web.locals.partials.courseArchived(
+                                                    {
+                                                      request,
+                                                      response,
+                                                    },
+                                                  )}
                                                 </div>
                                               `
                                             : html``}
+                                          <div class="dropdown--menu">
+                                            <a
+                                              href="https://${application
+                                                .configuration
+                                                .hostname}/courses/${response
+                                                .locals.course.reference}"
+                                              class="dropdown--menu--item button ${request.path.includes(
+                                                "/settings/",
+                                              )
+                                                ? "button--transparent"
+                                                : "button--blue"}"
+                                            >
+                                              <i
+                                                class="bi ${request.path.includes(
+                                                  "/settings/",
+                                                )
+                                                  ? "bi-chat-text"
+                                                  : "bi-chat-text-fill"}"
+                                              ></i>
+                                              Conversations
+                                            </a>
+                                            <a
+                                              href="https://${application
+                                                .configuration
+                                                .hostname}/courses/${response
+                                                .locals.course
+                                                .reference}/settings"
+                                              class="dropdown--menu--item button ${request.path.includes(
+                                                "/settings/",
+                                              )
+                                                ? "button--blue"
+                                                : "button--transparent"}"
+                                            >
+                                              <i class="bi bi-sliders"></i>
+                                              Course Settings
+                                            </a>
+                                          </div>
                                         </div>
-                                      `},  
-                                    },
-                                  });
-                                `}"
+                                        $${responseSignedIn.locals
+                                          .courseParticipants.length > 1
+                                          ? html`
+                                              <div>
+                                                <h3 class="heading">
+                                                  <i
+                                                    class="bi bi-arrow-left-right"
+                                                  ></i>
+                                                  Switch to Another Course
+                                                </h3>
+                                                $${courseSwitcher}
+                                              </div>
+                                            `
+                                          : html``}
+                                      </div>
+                                    `},  
+                                  },
+                                });
+                              `}"
                             >
                               <i class="bi bi-journal-text"></i>
                               <span
@@ -2237,26 +2236,26 @@ export default async (application: Application): Promise<void> => {
                                 max-width: 100%;
                               `}"
                               javascript="${javascript`
-                                  leafac.setTippy({
-                                    event,
-                                    element: this,
-                                    elementProperty: "dropdown",
-                                    tippyProps: {
-                                      trigger: "click",
-                                      interactive: true,
-                                      content: ${html`
-                                        <div
-                                          css="${css`
-                                            max-height: var(--space--80);
-                                            overflow: auto;
-                                          `}"
-                                        >
-                                          $${courseSwitcher}
-                                        </div>
-                                      `},  
-                                    },
-                                  });
-                                `}"
+                                leafac.setTippy({
+                                  event,
+                                  element: this,
+                                  elementProperty: "dropdown",
+                                  tippyProps: {
+                                    trigger: "click",
+                                    interactive: true,
+                                    content: ${html`
+                                      <div
+                                        css="${css`
+                                          max-height: var(--space--80);
+                                          overflow: auto;
+                                        `}"
+                                      >
+                                        $${courseSwitcher}
+                                      </div>
+                                    `},  
+                                  },
+                                });
+                              `}"
                             >
                               Go to Your Courses
                               <i class="bi bi-chevron-down"></i>
@@ -2272,125 +2271,125 @@ export default async (application: Application): Promise<void> => {
                           <button
                             class="button button--tight button--tight--inline button--transparent"
                             javascript="${javascript`
-                                leafac.setTippy({
-                                  event,
-                                  element: this,
-                                  tippyProps: {
-                                    touch: false,
-                                    content: ${
-                                      response.locals.invitations!.length === 0
-                                        ? "Add"
-                                        : `${
-                                            response.locals.invitations!.length
-                                          } pending invitation${
-                                            response.locals.invitations!
-                                              .length === 1
-                                              ? ""
-                                              : "s"
-                                          }`
-                                    },  
-                                  },
-                                });
+                              leafac.setTippy({
+                                event,
+                                element: this,
+                                tippyProps: {
+                                  touch: false,
+                                  content: ${
+                                    response.locals.invitations!.length === 0
+                                      ? "Add"
+                                      : `${
+                                          response.locals.invitations!.length
+                                        } pending invitation${
+                                          response.locals.invitations!
+                                            .length === 1
+                                            ? ""
+                                            : "s"
+                                        }`
+                                  },  
+                                },
+                              });
 
-                                leafac.setTippy({
-                                  event,
-                                  element: this,
-                                  elementProperty: "dropdown",
-                                  tippyProps: {
-                                    trigger: "click",
-                                    interactive: true,
-                                    content: ${html`
-                                      <div
-                                        css="${css`
-                                          display: flex;
-                                          flex-direction: column;
-                                          gap: var(--space--2);
-                                        `}"
-                                      >
-                                        $${response.locals.invitations!
-                                          .length === 0
-                                          ? html``
-                                          : html`
-                                              <div>
-                                                <h3 class="heading">
-                                                  <i
-                                                    class="bi bi-journal-arrow-down"
-                                                  ></i>
-                                                  Invitations
-                                                </h3>
-                                                <div class="dropdown--menu">
-                                                  $${response.locals.invitations!.map(
-                                                    (invitation) => html`
-                                                      <a
-                                                        key="invitation--${invitation.reference}"
-                                                        href="https://${application
-                                                          .configuration
-                                                          .hostname}/courses/${invitation
-                                                          .course
-                                                          .reference}/invitations/${invitation.reference}"
-                                                        class="dropdown--menu--item button button--transparent"
-                                                      >
-                                                        $${application.web.locals.partials.course(
-                                                          {
-                                                            request,
-                                                            response,
-                                                            course:
-                                                              invitation.course,
-                                                            tight: true,
-                                                          },
-                                                        )}
-                                                      </a>
-                                                    `,
-                                                  )}
-                                                </div>
+                              leafac.setTippy({
+                                event,
+                                element: this,
+                                elementProperty: "dropdown",
+                                tippyProps: {
+                                  trigger: "click",
+                                  interactive: true,
+                                  content: ${html`
+                                    <div
+                                      css="${css`
+                                        display: flex;
+                                        flex-direction: column;
+                                        gap: var(--space--2);
+                                      `}"
+                                    >
+                                      $${response.locals.invitations!.length ===
+                                      0
+                                        ? html``
+                                        : html`
+                                            <div>
+                                              <h3 class="heading">
+                                                <i
+                                                  class="bi bi-journal-arrow-down"
+                                                ></i>
+                                                Invitations
+                                              </h3>
+                                              <div class="dropdown--menu">
+                                                $${response.locals.invitations!.map(
+                                                  (invitation) => html`
+                                                    <a
+                                                      key="invitation--${invitation.reference}"
+                                                      href="https://${application
+                                                        .configuration
+                                                        .hostname}/courses/${invitation
+                                                        .course
+                                                        .reference}/invitations/${invitation.reference}"
+                                                      class="dropdown--menu--item button button--transparent"
+                                                    >
+                                                      $${application.web.locals.partials.course(
+                                                        {
+                                                          request,
+                                                          response,
+                                                          course:
+                                                            invitation.course,
+                                                          tight: true,
+                                                        },
+                                                      )}
+                                                    </a>
+                                                  `,
+                                                )}
                                               </div>
-                                              <hr class="dropdown--separator" />
-                                            `}
-                                        <div class="dropdown--menu">
-                                          <button
-                                            class="dropdown--menu--item button button--transparent"
-                                            javascript="${javascript`
-                                              leafac.setTippy({
-                                                event,
-                                                element: this,
-                                                tippyProps: {
-                                                  trigger: "click",
-                                                  content: "To join an existing course you either have to follow an invitation link or be invited via email. Contact your course staff for more information.",
-                                                },
-                                              });
-                                            `}"
-                                          >
-                                            <i
-                                              class="bi bi-journal-arrow-down"
-                                            ></i>
-                                            Join an Existing Course
-                                          </button>
-                                          $${application.web.locals.helpers.mayCreateCourses(
-                                            {
-                                              request: requestSignedIn,
-                                              response: responseSignedIn,
-                                            },
-                                          )
-                                            ? html`
-                                                <a
-                                                  href="https://${application
-                                                    .configuration
-                                                    .hostname}/courses/new"
-                                                  class="dropdown--menu--item button button--transparent"
-                                                >
-                                                  <i
-                                                    class="bi bi-journal-plus"
-                                                  ></i>
-                                                  Create a New Course
-                                                </a>
-                                              `
-                                            : html``}
-                                        </div>
+                                            </div>
+                                            <hr class="dropdown--separator" />
+                                          `}
+                                      <div class="dropdown--menu">
+                                        <button
+                                          class="dropdown--menu--item button button--transparent"
+                                          javascript="${javascript`
+                                            leafac.setTippy({
+                                              event,
+                                              element: this,
+                                              tippyProps: {
+                                                trigger: "click",
+                                                content: "To join an existing course you either have to follow an invitation link or be invited via email. Contact your course staff for more information.",
+                                              },
+                                            });
+                                          `}"
+                                        >
+                                          <i
+                                            class="bi bi-journal-arrow-down"
+                                          ></i>
+                                          Join an Existing Course
+                                        </button>
+                                        $${application.web.locals.helpers.mayCreateCourses(
+                                          {
+                                            request: requestSignedIn,
+                                            response: responseSignedIn,
+                                          },
+                                        )
+                                          ? html`
+                                              <a
+                                                href="https://${application
+                                                  .configuration
+                                                  .hostname}/courses/new"
+                                                class="dropdown--menu--item button button--transparent"
+                                              >
+                                                <i
+                                                  class="bi bi-journal-plus"
+                                                ></i>
+                                                Create a New Course
+                                              </a>
+                                            `
+                                          : html``}
                                       </div>
-                                    `},  
-                                  },
-                                });
-                              `}"
+                                    </div>
+                                  `},  
+                                },
+                              });
+                            `}"
                           >
                             <div
                               css="${css`
@@ -2450,105 +2449,104 @@ export default async (application: Application): Promise<void> => {
                         border-radius: var(--border-radius--circle);
                       `}"
                       javascript="${javascript`
-                          leafac.setTippy({
-                            event,
-                            element: this,
-                            tippyProps: {
-                              touch: false,
-                              content: ${response.locals.user.name},
-                            },
-                          });
+                        leafac.setTippy({
+                          event,
+                          element: this,
+                          tippyProps: {
+                            touch: false,
+                            content: ${response.locals.user.name},
+                          },
+                        });
 
-                          leafac.setTippy({
-                            event,
-                            element: this,
-                            elementProperty: "dropdown",
-                            tippyProps: {
-                              trigger: "click",
-                              interactive: true,
-                              content: ${html`
+                        leafac.setTippy({
+                          event,
+                          element: this,
+                          elementProperty: "dropdown",
+                          tippyProps: {
+                            trigger: "click",
+                            interactive: true,
+                            content: ${html`
+                              <div
+                                css="${css`
+                                  display: flex;
+                                  flex-direction: column;
+                                  gap: var(--space--2);
+                                `}"
+                              >
                                 <div
                                   css="${css`
-                                    display: flex;
-                                    flex-direction: column;
-                                    gap: var(--space--2);
+                                    padding: var(--space--0) var(--space--2);
                                   `}"
                                 >
-                                  <div
-                                    css="${css`
-                                      padding: var(--space--0) var(--space--2);
-                                    `}"
-                                  >
-                                    <p class="strong">
-                                      ${response.locals.user.name}
-                                    </p>
-                                    <p class="secondary">
-                                      ${response.locals.user.email}
-                                    </p>
-                                  </div>
+                                  <p class="strong">
+                                    ${response.locals.user.name}
+                                  </p>
+                                  <p class="secondary">
+                                    ${response.locals.user.email}
+                                  </p>
+                                </div>
 
-                                  <hr class="dropdown--separator" />
+                                <hr class="dropdown--separator" />
 
+                                $${typeof response.locals.user
+                                  .emailVerifiedAt === "string" &&
+                                response.locals.user.systemRole ===
+                                  "administrator"
+                                  ? html`
+                                      <div class="dropdown--menu">
+                                        <a
+                                          class="dropdown--menu--item button button--transparent"
+                                          href="https://${application
+                                            .configuration
+                                            .hostname}/administration"
+                                        >
+                                          <i
+                                            class="bi bi-pc-display-horizontal"
+                                          ></i>
+                                          Administration
+                                        </a>
+                                      </div>
+
+                                      <hr class="dropdown--separator" />
+                                    `
+                                  : html``}
+
+                                <div class="dropdown--menu">
                                   $${typeof response.locals.user
-                                    .emailVerifiedAt === "string" &&
-                                  response.locals.user.systemRole ===
-                                    "administrator"
+                                    .emailVerifiedAt === "string"
                                     ? html`
-                                        <div class="dropdown--menu">
-                                          <a
-                                            class="dropdown--menu--item button button--transparent"
-                                            href="https://${application
-                                              .configuration
-                                              .hostname}/administration"
-                                          >
-                                            <i
-                                              class="bi bi-pc-display-horizontal"
-                                            ></i>
-                                            Administration
-                                          </a>
-                                        </div>
-
-                                        <hr class="dropdown--separator" />
+                                        <a
+                                          class="dropdown--menu--item button button--transparent"
+                                          href="https://${application
+                                            .configuration.hostname}/settings"
+                                        >
+                                          <i class="bi bi-sliders"></i>
+                                          User Settings
+                                        </a>
                                       `
                                     : html``}
 
-                                  <div class="dropdown--menu">
-                                    $${typeof response.locals.user
-                                      .emailVerifiedAt === "string"
-                                      ? html`
-                                          <a
-                                            class="dropdown--menu--item button button--transparent"
-                                            href="https://${application
-                                              .configuration.hostname}/settings"
-                                          >
-                                            <i class="bi bi-sliders"></i>
-                                            User Settings
-                                          </a>
-                                        `
-                                      : html``}
-
-                                    <form
-                                      method="DELETE"
-                                      action="https://${application
-                                        .configuration
-                                        .hostname}/${typeof response.locals
-                                        .session?.samlIdentifier === "string"
-                                        ? `saml/${response.locals.session.samlIdentifier}/logout-request`
-                                        : "sign-out"}"
+                                  <form
+                                    method="DELETE"
+                                    action="https://${application.configuration
+                                      .hostname}/${typeof response.locals
+                                      .session?.samlIdentifier === "string"
+                                      ? `saml/${response.locals.session.samlIdentifier}/logout-request`
+                                      : "sign-out"}"
+                                  >
+                                    <button
+                                      class="dropdown--menu--item button button--transparent"
                                     >
-                                      <button
-                                        class="dropdown--menu--item button button--transparent"
-                                      >
-                                        <i class="bi bi-box-arrow-right"></i>
-                                        Sign Out
-                                      </button>
-                                    </form>
-                                  </div>
+                                      <i class="bi bi-box-arrow-right"></i>
+                                      Sign Out
+                                    </button>
+                                  </form>
                                 </div>
-                              `},  
-                            },
-                          });
-                        `}"
+                              </div>
+                            `},  
+                          },
+                        });
+                      `}"
                     >
                       $${application.web.locals.partials.user({
                         request,
@@ -2627,13 +2625,13 @@ export default async (application: Application): Promise<void> => {
               overflow: auto;
             `}"
             javascript="${javascript`
-                if (
-                  event?.detail?.previousLocation?.origin !== window.location.origin ||
-                  event?.detail?.previousLocation?.pathname !== window.location.pathname ||
-                  event?.detail?.previousLocation?.search !== window.location.search
-                )
-                  this.scroll(0, 0);
-              `}"
+              if (
+                event?.detail?.previousLocation?.origin !== window.location.origin ||
+                event?.detail?.previousLocation?.pathname !== window.location.pathname ||
+                event?.detail?.previousLocation?.search !== window.location.search
+              )
+                this.scroll(0, 0);
+            `}"
           >
             $${body}
           </div>
@@ -2664,55 +2662,55 @@ export default async (application: Application): Promise<void> => {
                   align-items: center;
                 `}"
                 javascript="${javascript`
-                    leafac.setTippy({
-                      event,
-                      element: this,
-                      elementProperty: "dropdown",
-                      tippyProps: {
-                        trigger: "click",
-                        interactive: true,
-                        content: ${html`
-                          <h3 class="heading">
-                            $${application.web.locals.partials.logo({
-                              size: 12 /* var(--space--3) */,
-                            })}
-                            <span>
-                              Courselore <br />
-                              Communication Platform for Education <br />
-                              <small
-                                class="secondary"
-                                css="${css`
-                                  font-size: var(--font-size--2xs);
-                                  line-height: var(--line-height--2xs);
-                                `}"
-                              >
-                                Version ${application.version}
-                              </small>
-                            </span>
-                          </h3>
-                          <div class="dropdown--menu">
-                            <a
-                              href="https://${application.configuration
-                                .hostname}/about"
-                              target="_blank"
-                              class="dropdown--menu--item button button--transparent"
+                  leafac.setTippy({
+                    event,
+                    element: this,
+                    elementProperty: "dropdown",
+                    tippyProps: {
+                      trigger: "click",
+                      interactive: true,
+                      content: ${html`
+                        <h3 class="heading">
+                          $${application.web.locals.partials.logo({
+                            size: 12 /* var(--space--3) */,
+                          })}
+                          <span>
+                            Courselore <br />
+                            Communication Platform for Education <br />
+                            <small
+                              class="secondary"
+                              css="${css`
+                                font-size: var(--font-size--2xs);
+                                line-height: var(--line-height--2xs);
+                              `}"
                             >
-                              <i class="bi bi-info-circle"></i>
-                              About
-                            </a>
-                            <a
-                              href="https://github.com/courselore/courselore"
-                              target="_blank"
-                              class="dropdown--menu--item button button--transparent"
-                            >
-                              <i class="bi bi-file-earmark-code"></i>
-                              Source Code
-                            </a>
-                          </div>
-                        `},  
-                      },
-                    });
-                  `}"
+                              Version ${application.version}
+                            </small>
+                          </span>
+                        </h3>
+                        <div class="dropdown--menu">
+                          <a
+                            href="https://${application.configuration
+                              .hostname}/about"
+                            target="_blank"
+                            class="dropdown--menu--item button button--transparent"
+                          >
+                            <i class="bi bi-info-circle"></i>
+                            About
+                          </a>
+                          <a
+                            href="https://github.com/courselore/courselore"
+                            target="_blank"
+                            class="dropdown--menu--item button button--transparent"
+                          >
+                            <i class="bi bi-file-earmark-code"></i>
+                            Source Code
+                          </a>
+                        </div>
+                      `},  
+                    },
+                  });
+                `}"
               >
                 $${application.web.locals.partials.logo({
                   size: 16 /* var(--space--4) */,
@@ -2725,116 +2723,224 @@ export default async (application: Application): Promise<void> => {
               <button
                 class="button button--transparent"
                 javascript="${javascript`
-                    leafac.setTippy({
-                      event,
-                      element: this,
-                      elementProperty: "dropdown",
-                      tippyProps: {
-                        trigger: "click",
-                        interactive: true,
-                        content: ${html`
-                          <h3 class="heading">
-                            <i class="bi bi-bug"></i>
-                            Report an Issue
-                          </h3>
-                          <div class="dropdown--menu">
-                            <a
-                              href="${application.addresses
-                                .metaCourseloreInvitation}${qs.stringify(
-                                {
-                                  redirect: `conversations/new/question${qs.stringify(
-                                    {
-                                      newConversation: {
-                                        content: dedent`
-                                          **What did you try to do?**
-    
-    
-    
-                                          **What did you expect to happen?**
-    
-    
-    
-                                          **What really happened?**
-    
-    
-    
-                                          **What error messages (if any) did you run into?**
-    
-    
-    
-                                          **Please provide as much relevant context as possible (operating system, browser, and so forth):**
-    
-                                          - Courselore Version: ${application.version}
-                                        `,
-                                        tagsReferences: ["9676584193"],
-                                      },
+                  leafac.setTippy({
+                    event,
+                    element: this,
+                    elementProperty: "dropdown",
+                    tippyProps: {
+                      trigger: "click",
+                      interactive: true,
+                      content: ${html`
+                        <h3 class="heading">
+                          <i class="bi bi-bug"></i>
+                          Report an Issue
+                        </h3>
+                        <div class="dropdown--menu">
+                          <a
+                            href="${application.addresses
+                              .metaCourseloreInvitation}${qs.stringify(
+                              {
+                                redirect: `conversations/new/question${qs.stringify(
+                                  {
+                                    newConversation: {
+                                      content: dedent`
+                                        **What did you try to do?**
+  
+  
+  
+                                        **What did you expect to happen?**
+  
+  
+  
+                                        **What really happened?**
+  
+  
+  
+                                        **What error messages (if any) did you run into?**
+  
+  
+  
+                                        **Please provide as much relevant context as possible (operating system, browser, and so forth):**
+  
+                                        - Courselore Version: ${application.version}
+                                      `,
+                                      tagsReferences: ["9676584193"],
                                     },
-                                    { addQueryPrefix: true },
-                                  )}`,
-                                },
-                                { addQueryPrefix: true },
-                              )}"
-                              target="_blank"
-                              class="dropdown--menu--item button button--transparent"
-                              css="${css`
-                                align-items: center;
-                              `}"
-                            >
-                              $${application.web.locals.partials.logo({
-                                size: 14 /* var(--space--3-5) */,
-                              })}
-                              Meta Courselore
-                            </a>
-                            <a
-                              href="${application.web.locals.partials
-                                .reportIssueHref}"
-                              target="_blank"
-                              class="dropdown--menu--item button button--transparent"
-                            >
-                              <i class="bi bi-envelope"></i>
-                              ${application.configuration.administratorEmail}
-                            </a>
-                            <a
-                              href="https://github.com/courselore/courselore/issues/new${qs.stringify(
-                                {
-                                  body: dedent`
-                                    **What did you try to do?**
-    
-    
-    
-                                    **What did you expect to happen?**
-    
-    
-    
-                                    **What really happened?**
-    
-    
-    
-                                    **What error messages (if any) did you run into?**
-    
-    
-    
-                                    **Please provide as much relevant context as possible (operating system, browser, and so forth):**
-    
-                                    - Courselore Version: ${application.version}
-                                  `,
-                                },
-                                { addQueryPrefix: true },
-                              )}"
-                              target="_blank"
-                              class="dropdown--menu--item button button--transparent"
-                            >
-                              <i class="bi bi-github"></i>
-                              GitHub Issues
-                            </a>
-                          </div>
-                        `},  
-                      },
-                    });
-                  `}"
+                                  },
+                                  { addQueryPrefix: true },
+                                )}`,
+                              },
+                              { addQueryPrefix: true },
+                            )}"
+                            target="_blank"
+                            class="dropdown--menu--item button button--transparent"
+                            css="${css`
+                              align-items: center;
+                            `}"
+                          >
+                            $${application.web.locals.partials.logo({
+                              size: 14 /* var(--space--3-5) */,
+                            })}
+                            Meta Courselore
+                          </a>
+                          <a
+                            href="${application.web.locals.partials
+                              .reportIssueHref}"
+                            target="_blank"
+                            class="dropdown--menu--item button button--transparent"
+                          >
+                            <i class="bi bi-envelope"></i>
+                            ${application.configuration.administratorEmail}
+                          </a>
+                          <a
+                            href="https://github.com/courselore/courselore/issues/new${qs.stringify(
+                              {
+                                body: dedent`
+                                  **What did you try to do?**
+  
+  
+  
+                                  **What did you expect to happen?**
+  
+  
+  
+                                  **What really happened?**
+  
+  
+  
+                                  **What error messages (if any) did you run into?**
+  
+  
+  
+                                  **Please provide as much relevant context as possible (operating system, browser, and so forth):**
+  
+                                  - Courselore Version: ${application.version}
+                                `,
+                              },
+                              { addQueryPrefix: true },
+                            )}"
+                            target="_blank"
+                            class="dropdown--menu--item button button--transparent"
+                          >
+                            <i class="bi bi-github"></i>
+                            GitHub Issues
+                          </a>
+                        </div>
+                      `},  
+                    },
+                  });
+                `}"
               >
                 <i class="bi bi-bug"></i>
                 Report an Issue
+              </button>
+            </div>
+
+            <div>
+              <button
+                class="button button--transparent ${response.locals.user !==
+                  undefined &&
+                semver.lt(response.locals.user.latestNewsVersion, "6.1.1")
+                  ? "strong text--green"
+                  : ""}"
+                javascript="${javascript`
+                  leafac.setTippy({
+                    event,
+                    element: this,
+                    elementProperty: "dropdown",
+                    tippyProps: {
+                      trigger: "click",
+                      interactive: true,
+                      content: ${html`
+                        <div
+                          css="${css`
+                            max-height: var(--space--80);
+                            overflow: auto;
+                          `}"
+                        >
+                          <h3 class="heading">
+                            <i class="bi bi-newspaper"></i>
+                            News
+                          </h3>
+
+                          <div
+                            css="${css`
+                              padding: var(--space--2);
+                              display: flex;
+                              flex-direction: column;
+                              gap: var(--space--2);
+
+                              video {
+                                max-width: 100%;
+                                height: auto;
+                                border-radius: var(--border-radius--xl);
+                                display: block;
+                              }
+                            `}"
+                          >
+                            <h4 class="strong">6.1.1 · 2023-05-19</h4>
+
+                            <p>
+                              <strong class="strong">
+                                Rich-Text Pasting:
+                              </strong>
+                              Paste formatted text, spreadsheets, and so forth,
+                              directly into the content editor and preserve the
+                              formatting.
+                            </p>
+
+                            <p>
+                              <strong class="strong"> Staff Whispers: </strong>
+                              Messages visible by staff only for private
+                              discussions answering a student.
+                            </p>
+
+                            <p>
+                              <strong class="strong">
+                                Follow-Up Questions:
+                              </strong>
+                              A new type of message in Questions to help keep
+                              things organized.
+                            </p>
+
+                            <h4 class="strong">6.0.11 · 2023-03-16</h4>
+
+                            <p>
+                              <strong class="strong">Polls</strong>
+                            </p>
+
+                            <div>
+                              <video
+                                src="https://${application.configuration
+                                  .hostname}/${application.static[
+                                  "news/2023-03-16--polls.mp4"
+                                ]}"
+                                autoplay
+                                loop
+                                muted
+                                playsinline
+                              ></video>
+                            </div>
+                          </div>
+                        </div>
+                      `},
+                    },
+                  });
+
+                  if (${response.locals.user !== undefined})
+                    this.onclick = async () => {
+                      this.classList.remove("strong");
+                      this.classList.remove("text--green");
+                      await fetch(${`https://${application.configuration.hostname}/latest-news-version`}, {
+                        method: "PATCH",
+                        headers: { "CSRF-Protection": "true", },
+                        cache: "no-store",
+                      });
+                    };
+                `}"
+              >
+                <i class="bi bi-newspaper"></i>
+                News
               </button>
             </div>
 
@@ -2845,81 +2951,81 @@ export default async (application: Application): Promise<void> => {
                     <button
                       class="button button--transparent strong text--green"
                       javascript="${javascript`
-                          leafac.setTippy({
-                            event,
-                            element: this,
-                            elementProperty: "dropdown",
-                            tippyProps: {
-                              trigger: "click",
-                              interactive: true,
-                              content: ${html`
-                                <h3 class="heading">
-                                  <i class="bi bi-arrow-up-circle-fill"></i>
-                                  <span>
-                                    Courselore
-                                    <span
-                                      javascript="${javascript`
-                                        leafac.setTippy({
-                                          event,
-                                          element: this,
-                                          tippyProps: {
-                                            touch: false,
-                                            content: "Current Courselore version",
-                                          },
-                                        });
-                                      `}"
-                                    >
-                                      ${application.version}
-                                    </span>
-                                    →
-                                    <span
-                                      javascript="${javascript`
-                                        leafac.setTippy({
-                                          event,
-                                          element: this,
-                                          tippyProps: {
-                                            touch: false,
-                                            content: "Latest Courselore version",
-                                          },
-                                        });
-                                      `}"
-                                    >
-                                      ${application.system.latestVersion}
-                                    </span>
+                        leafac.setTippy({
+                          event,
+                          element: this,
+                          elementProperty: "dropdown",
+                          tippyProps: {
+                            trigger: "click",
+                            interactive: true,
+                            content: ${html`
+                              <h3 class="heading">
+                                <i class="bi bi-arrow-up-circle-fill"></i>
+                                <span>
+                                  Courselore
+                                  <span
+                                    javascript="${javascript`
+                                      leafac.setTippy({
+                                        event,
+                                        element: this,
+                                        tippyProps: {
+                                          touch: false,
+                                          content: "Current Courselore version",
+                                        },
+                                      });
+                                    `}"
+                                  >
+                                    ${application.version}
                                   </span>
-                                </h3>
+                                  →
+                                  <span
+                                    javascript="${javascript`
+                                      leafac.setTippy({
+                                        event,
+                                        element: this,
+                                        tippyProps: {
+                                          touch: false,
+                                          content: "Latest Courselore version",
+                                        },
+                                      });
+                                    `}"
+                                  >
+                                    ${application.system.latestVersion}
+                                  </span>
+                                </span>
+                              </h3>
 
-                                <div class="dropdown--menu">
-                                  <a
-                                    href="https://github.com/courselore/courselore/blob/main/documentation/changelog.md"
-                                    target="_blank"
-                                    class="dropdown--menu--item button button--transparent"
-                                  >
-                                    <i class="bi bi-fire"></i>
-                                    Changelog
-                                  </a>
-                                  <a
-                                    href="https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#update"
-                                    target="_blank"
-                                    class="dropdown--menu--item button button--transparent"
-                                  >
-                                    <i class="bi bi-book"></i>
-                                    Update Instructions
-                                  </a>
-                                  <a
-                                    href="https://github.com/courselore/courselore/releases/tag/v${application
-                                      .system.latestVersion}"
-                                    target="_blank"
-                                    class="dropdown--menu--item button button--green"
-                                  >
-                                    <i class="bi bi-download"></i>
-                                    Download
-                                  </a>
-                                </div>
-                              `},
-                            },
-                          });
-                        `}"
+                              <div class="dropdown--menu">
+                                <a
+                                  href="https://github.com/courselore/courselore/blob/main/documentation/changelog.md"
+                                  target="_blank"
+                                  class="dropdown--menu--item button button--transparent"
+                                >
+                                  <i class="bi bi-fire"></i>
+                                  Changelog
+                                </a>
+                                <a
+                                  href="https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#update"
+                                  target="_blank"
+                                  class="dropdown--menu--item button button--transparent"
+                                >
+                                  <i class="bi bi-book"></i>
+                                  Update Instructions
+                                </a>
+                                <a
+                                  href="https://github.com/courselore/courselore/releases/tag/v${application
+                                    .system.latestVersion}"
+                                  target="_blank"
+                                  class="dropdown--menu--item button button--green"
+                                >
+                                  <i class="bi bi-download"></i>
+                                  Download
+                                </a>
+                              </div>
+                            `},
+                          },
+                        });
+                      `}"
                     >
                       <span
                         css="${css`
@@ -2935,116 +3041,6 @@ export default async (application: Application): Promise<void> => {
                   </div>
                 `
               : html``}
-
-            <div>
-              <button
-                class="button button--transparent ${response.locals.user !==
-                  undefined &&
-                semver.lt(response.locals.user.latestNewsVersion, "6.1.1")
-                  ? "strong text--green"
-                  : ""}"
-                javascript="${javascript`
-                    leafac.setTippy({
-                      event,
-                      element: this,
-                      elementProperty: "dropdown",
-                      tippyProps: {
-                        trigger: "click",
-                        interactive: true,
-                        content: ${html`
-                          <div
-                            css="${css`
-                              max-height: var(--space--80);
-                              overflow: auto;
-                            `}"
-                          >
-                            <h3 class="heading">
-                              <i class="bi bi-newspaper"></i>
-                              News
-                            </h3>
-
-                            <div
-                              css="${css`
-                                padding: var(--space--2);
-                                display: flex;
-                                flex-direction: column;
-                                gap: var(--space--2);
-
-                                video {
-                                  max-width: 100%;
-                                  height: auto;
-                                  border-radius: var(--border-radius--xl);
-                                  display: block;
-                                }
-                              `}"
-                            >
-                              <h4 class="strong">6.1.1 · 2023-05-19</h4>
-
-                              <p>
-                                <strong class="strong">
-                                  Rich-Text Pasting:
-                                </strong>
-                                Paste formatted text, spreadsheets, and so
-                                forth, directly into the content editor and
-                                preserve the formatting.
-                              </p>
-
-                              <p>
-                                <strong class="strong">
-                                  Staff Whispers:
-                                </strong>
-                                Messages visible by staff only for private
-                                discussions answering a student.
-                              </p>
-
-                              <p>
-                                <strong class="strong">
-                                  Follow-Up Questions:
-                                </strong>
-                                A new type of message in Questions to help keep
-                                things organized.
-                              </p>
-
-                              <h4 class="strong">6.0.11 · 2023-03-16</h4>
-
-                              <p>
-                                <strong class="strong">Polls</strong>
-                              </p>
-
-                              <div>
-                                <video
-                                  src="https://${application.configuration
-                                    .hostname}/${application.static[
-                                    "news/2023-03-16--polls.mp4"
-                                  ]}"
-                                  autoplay
-                                  loop
-                                  muted
-                                  playsinline
-                                ></video>
-                              </div>
-                            </div>
-                          </div>
-                        `},
-                      },
-                    });
-
-                    if (${response.locals.user !== undefined})
-                      this.onclick = async () => {
-                        this.classList.remove("strong");
-                        this.classList.remove("text--green");
-                        await fetch(${`https://${application.configuration.hostname}/latest-news-version`}, {
-                          method: "PATCH",
-                          headers: { "CSRF-Protection": "true", },
-                          cache: "no-store",
-                        });
-                      };
-                  `}"
-              >
-                <i class="bi bi-newspaper"></i>
-                News
-              </button>
-            </div>
           </div>
         </div>
 
@@ -3058,33 +3054,33 @@ export default async (application: Application): Promise<void> => {
             left: 0;
           `}"
           javascript="${javascript`
-              leafac.setTippy({
-                event,
-                element: this,
-                tippyProps: {
-                  touch: false,
-                  content: "Loading…",
-                },
-              });
+            leafac.setTippy({
+              event,
+              element: this,
+              tippyProps: {
+                touch: false,
+                content: "Loading…",
+              },
+            });
 
-              window.onlivenavigate = () => {
-                const parentElement = this;
-                parentElement.hidden = false;
-                const element = parentElement.querySelector("div");
-                let width = 5;
-                window.clearTimeout(element.updateTimeout);
-                (function update() {
-                  if (parentElement.hidden || !leafac.isConnected(element)) return;
-                  element.style.width = width.toString() + "%";
-                  width += (95 - width) / (20 + Math.random() * 15);
-                  element.updateTimeout = window.setTimeout(update, 200 + Math.random() * 300);
-                })();
-              };
+            window.onlivenavigate = () => {
+              const parentElement = this;
+              parentElement.hidden = false;
+              const element = parentElement.querySelector("div");
+              let width = 5;
+              window.clearTimeout(element.updateTimeout);
+              (function update() {
+                if (parentElement.hidden || !leafac.isConnected(element)) return;
+                element.style.width = width.toString() + "%";
+                width += (95 - width) / (20 + Math.random() * 15);
+                element.updateTimeout = window.setTimeout(update, 200 + Math.random() * 300);
+              })();
+            };
 
-              window.onlivenavigateerror = () => {
-                this.hidden = true;
-              };
-            `}"
+            window.onlivenavigateerror = () => {
+              this.hidden = true;
+            };
+          `}"
         >
           <div
             css="${css`
