@@ -2419,6 +2419,8 @@ export default async (application: Application): Promise<void> => {
 
       application.database.execute(
         sql`
+          ALTER TABLE "administrationOptions" DROP COLUMN "latestVersion";
+
           CREATE TABLE "system" (
             "id" INTEGER PRIMARY KEY AUTOINCREMENT CHECK ("id" = 1),
             "latestVersion" TEXT NOT NULL,
