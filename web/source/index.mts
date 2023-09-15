@@ -223,11 +223,11 @@ if (await node.isExecuted(import.meta.url)) {
                               name: samlResponse?.profile?.attributes?.name,
                             }),
                             options: {
-                              idpIssuer: "http://127.0.0.1:8080/realms/myrealm",
+                              idpIssuer: "http://127.0.0.1:8003/realms/myrealm",
                               entryPoint:
-                                "http://127.0.0.1:8080/realms/myrealm/protocol/saml",
+                                "http://127.0.0.1:8003/realms/myrealm/protocol/saml",
                               logoutUrl:
-                                "http://127.0.0.1:8080/realms/myrealm/protocol/saml",
+                                "http://127.0.0.1:8003/realms/myrealm/protocol/saml",
                               wantAuthnResponseSigned: true,
                               wantAssertionsSigned: false,
                               signatureAlgorithm: "sha256",

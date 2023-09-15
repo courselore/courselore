@@ -4,6 +4,7 @@
 
 **Key Management**
 
+- What happens with `latestVersion` & multiple processes (but it’s loaded only once at startup)
 - Introduce Keycloak in development for mocking SAML
   - Test
     - SP-initiated SSO
