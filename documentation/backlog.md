@@ -4,9 +4,6 @@
 
 **Key Management**
 
-- Clean keys on `courselore.org` server
-- Clean keys on `private/`
-  - Remove from `actions.yml`
 - Introduce Keycloak in development for mocking SAML
   - Test
     - SP-initiated SSO
@@ -23,6 +20,7 @@
     - `SAML_CERTIFICATE`
     - https://www.samltool.com/online_tools.php
     - https://samltool.io/ is probably bad (https://github.com/keycloak/keycloak/issues/22962)
+- Clean keys on `courselore.org` server
 - Future:
   - Let the system administrators rotate keys?
     - Create a user interface to let them create keys using Courselore (show private key only once)
