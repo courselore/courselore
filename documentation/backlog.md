@@ -4,7 +4,8 @@
 
 **Key Management**
 
-- What happens with `latestVersion` & multiple processes (but it’s loaded only once at startup)
+- Merge `system` back into `administrationOptions`
+  - Create SAML objects on-demand
 - Introduce Keycloak in development for mocking SAML
   - Test
     - SP-initiated SSO
@@ -23,6 +24,7 @@
     - https://samltool.io/ is probably bad (https://github.com/keycloak/keycloak/issues/22962)
 - Clean keys on `courselore.org` server
 - Future:
+  - A user interface for setting up SAML dynamically instead of using the configuration file
   - Let the system administrators rotate keys?
     - Create a user interface to let them create keys using Courselore (show private key only once)
     - Create a user interface to let them inform Courselore of keys created elsewhere
