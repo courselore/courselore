@@ -18,7 +18,7 @@ You may use Courselore at [`courselore.org`](https://courselore.org), but you ma
 
   > **Note:** The server may run Linux, Windows, or macOS. We recommend Linux ([Ubuntu](https://ubuntu.com)).
 
-  > **Note:** Courselore is lightweight. A $5/month DigitalOcean server is enough for a couple hundred users.
+  > **Note:** Courselore is lightweight. A $12/month DigitalOcean server is enough for a couple hundred users.
 
 - **Email Delivery Service.** This is the service that will deliver emails on behalf of your server. You may use a service such as [Amazon SES](https://aws.amazon.com/ses/) (this is what we use for [`courselore.org`](https://courselore.org)), [SendGrid](https://sendgrid.com), and so forth. You may also use an email delivery service provided by your educational institution.
 
@@ -58,7 +58,15 @@ Create an `A` Record pointing at your server’s IP address and `ALIAS` or `CNAM
    >
    > - Load secrets from a different file instead of hard-coding them. For example, see how [`web/configuration/courselore.org.mjs`](/web/configuration/courselore.org.mjs) loads secrets from a file called `secrets.json`.
 
-3. Configure your operating system’s service manager to start Courselore on boot and restart it in case it crashes. For example, you may use Ubuntu’s service manager [systemd](https://systemd.io) with the configuration we use for [`courselore.org`](https://courselore.org) at [`web/configuration/courselore.service`](/web/configuration/courselore.service):
+3. Test the configuration by running Courselore:
+
+   ```console
+   $ ./courselore configuration.mjs
+   ```
+
+   > **Note:** Stop Courselore with `Ctrl+C`.
+
+4. Configure your operating system’s service manager to start Courselore on boot and restart it in case it crashes. For example, you may use Ubuntu’s service manager [systemd](https://systemd.io) with the configuration we use for [`courselore.org`](https://courselore.org) at [`web/configuration/courselore.service`](/web/configuration/courselore.service):
 
    ```console
    # wget -O /etc/systemd/system/courselore.service https://github.com/courselore/courselore/raw/main/web/configuration/courselore.service
