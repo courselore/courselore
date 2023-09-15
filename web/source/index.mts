@@ -125,7 +125,7 @@ export type Application = {
 
 if (await node.isExecuted(import.meta.url)) {
   const version = JSON.parse(
-    await fs.readFile(new URL("../package.json", import.meta.url), "utf8"),
+    await fs.readFile(new URL("../package.json", import.meta.url), "utf-8"),
   ).version;
   await commander.program
     .name("courselore")
@@ -279,7 +279,7 @@ if (await node.isExecuted(import.meta.url)) {
           static: JSON.parse(
             await fs.readFile(
               new URL("./static/paths.json", import.meta.url),
-              "utf8",
+              "utf-8",
             ),
           ),
           ports: {

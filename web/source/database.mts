@@ -2421,7 +2421,7 @@ export default async (application: Application): Promise<void> => {
             type: "select",
             name: "output",
             message:
-              "This update of Courselore introduces a new system for handing the private key and certificate for SAML and the upcoming LTI support",
+              "This update of Courselore introduces a new system for handling the private key and certificate for SAML and the upcoming LTI support",
             choices: [
               {
                 title:
@@ -2451,15 +2451,18 @@ export default async (application: Application): Promise<void> => {
         `);
 
         while (true) {
-          privateKey = (
-            await prompts({
-              type: "text",
-              name: "output",
-              message:
-                "Private key (starts with ‘-----BEGIN PRIVATE KEY-----’)",
-            })
-          ).output;
           try {
+            privateKey = await fs.readFile(
+              (
+                await prompts({
+                  type: "text",
+                  name: "output",
+                  message:
+                    "Path to file containing private key (starts with ‘-----BEGIN PRIVATE KEY-----’)",
+                })
+              ).output,
+              "utf-8",
+            );
             forge.pki.privateKeyFromPem(privateKey);
             break;
           } catch (error) {
@@ -2468,15 +2471,18 @@ export default async (application: Application): Promise<void> => {
         }
 
         while (true) {
-          certificate = (
-            await prompts({
-              type: "text",
-              name: "output",
-              message:
-                "Certificate (starts with ‘-----BEGIN CERTIFICATE-----’)",
-            })
-          ).output;
           try {
+            certificate = await fs.readFile(
+              (
+                await prompts({
+                  type: "text",
+                  name: "output",
+                  message:
+                    "Path to file containing certificate (starts with ‘-----BEGIN CERTIFICATE-----’)",
+                })
+              ).output,
+              "utf-8",
+            );
             forge.pki.certificateFromPem(certificate);
             break;
           } catch (error) {

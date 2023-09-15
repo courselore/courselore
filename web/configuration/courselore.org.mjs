@@ -2,7 +2,7 @@ import url from "node:url";
 import fs from "node:fs/promises";
 
 const secrets = JSON.parse(
-  await fs.readFile(new URL("./secrets.json", import.meta.url), "utf8"),
+  await fs.readFile(new URL("./secrets.json", import.meta.url), "utf-8"),
 );
 
 export default {
