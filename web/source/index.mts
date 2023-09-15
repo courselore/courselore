@@ -201,74 +201,45 @@ if (await node.isExecuted(import.meta.url)) {
                     },
                   },
                   administratorEmail: "feedback@courselore.org",
-                  // TODO: SAML
-                  // staticPaths: [
-                  //   url.fileURLToPath(
-                  //     new URL("./development--static/", import.meta.url),
-                  //   ),
-                  // ],
-                  saml: {
-                    "courselore-university": {
-                      public: false, // TODO: SAML
-                      name: "Courselore University",
-                      ...(process.env.SAML_LOGO === "true"
-                        ? {
-                            logo: {
-                              light:
-                                "johns-hopkins-university--light--2023-03-28.webp",
-                              dark: "johns-hopkins-university--dark--2023-03-28.webp",
-                              width: 300,
+                  ...(typeof process.env.SAML_CERTIFICATE === "string"
+                    ? {
+                        saml: {
+                          "courselore-university": {
+                            public: false,
+                            name: "Courselore University",
+                            ...(process.env.SAML_LOGO !== "false"
+                              ? {
+                                  logo: {
+                                    light:
+                                      "courselore-university/courselore-university--light--2023-09-15.webp",
+                                    dark: "courselore-university/courselore-university--dark--2023-09-15.webp",
+                                    width: 234,
+                                  },
+                                }
+                              : {}),
+                            domains: ["courselore.org"],
+                            attributes: (samlResponse: any) => ({
+                              email: samlResponse?.profile?.nameID,
+                              name:
+                                samlResponse?.profile?.attributes?.name ??
+                                "Leandro",
+                            }),
+                            options: {
+                              idpIssuer: "http://127.0.0.1:8080/realms/myrealm",
+                              entryPoint:
+                                "http://127.0.0.1:8080/realms/myrealm/protocol/saml",
+                              logoutUrl:
+                                "http://127.0.0.1:8080/realms/myrealm/protocol/saml",
+                              wantAuthnResponseSigned: true,
+                              wantAssertionsSigned: false,
+                              signatureAlgorithm: "sha256",
+                              digestAlgorithm: "sha256",
+                              cert: process.env.SAML_CERTIFICATE,
                             },
-                          }
-                        : {}),
-                      domains: ["courselore.org"],
-                      attributes: (samlResponse: any) => ({
-                        email: samlResponse?.profile?.nameID,
-                        name:
-                          samlResponse?.profile?.attributes?.name ?? "Leandro",
-                      }),
-                      options: {
-                        idpIssuer: "http://127.0.0.1:8080/realms/myrealm",
-                        entryPoint:
-                          "http://127.0.0.1:8080/realms/myrealm/protocol/saml",
-                        logoutUrl:
-                          "http://127.0.0.1:8080/realms/myrealm/protocol/saml",
-                        signatureAlgorithm: "sha256",
-                        digestAlgorithm: "sha256",
-                        wantAssertionsSigned: false,
-                        // signMetadata: true,
-                        cert: "MIICnTCCAYUCBgGKdZgosTANBgkqhkiG9w0BAQsFADASMRAwDgYDVQQDDAdteXJlYWxtMB4XDTIzMDkwODE2MTg0MFoXDTMzMDkwODE2MjAyMFowEjEQMA4GA1UEAwwHbXlyZWFsbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAIpvKUcxzunHq95qMyy+568JstadkQzlee9RJEiS2/qlXViKL9na67vFxmvR2BfCoFgtPJZFFz6zwTPVGAkxgKJwDjIGbCx5K9t8Yn+B3pn0KHvlvgC4Kiw1glRlStIjVMVKRvWcRLWlCqUeP4bs65zxApsXZbZ1ylvhH2K9tyeD/gSc1x9l50ib1TBPwWm4i9oogPkahN0O2ejMf5TRJ8AwbLllhiTbmDefdEB0/QEYuS0B3G0vHP87MzOgFK57wNKZZX/Q3ImQ17GkvWz2IXtkP7eX5JUcIyge8xDmYvEahPNfldxFdfU3t3rBsYWVeA4ejtQFtAtL6y4zOj2KlZECAwEAATANBgkqhkiG9w0BAQsFAAOCAQEABVsbQfqEyPjjcGyqbVY+G4ZXqd2pPymLB3lAOHYf84UqqJEsyeZcyuA/pUHPaP6hhnMR5AiW9Bi+2MPdgsFTE90H30H1VrZk138+iQL3Mn0Pq6eJz+tuXK8k3v7CDBXCfIqvvJ9io0RKTcf57aefDTl/DdN2hIYJqRBcxYNq3WkusjsUuCeVKDCISeEGxl29iz1PYkwbgSsSWsLCmYi4w7r3L2IxPsP2+4Cz5sN4Z1diLzgNkOPHKl0IDXv7TLK56HDiZgETHJ8JIW5NPS0ohKmKbCETyIuJ83g69mfF9n6eFQ8rTfKZaOgpCdCcTYddY0hEX/QXMuJ+OubHJwfeJQ==",
-                        // privateKey: await fs.readFile(
-                        //   new URL(
-                        //     "./development--saml--service-provider--signing.key",
-                        //     import.meta.url,
-                        //   ),
-                        //   "utf-8",
-                        // ),
-                        // signingCert: await fs.readFile(
-                        //   new URL(
-                        //     "./development--saml--service-provider--signing.crt",
-                        //     import.meta.url,
-                        //   ),
-                        //   "utf-8",
-                        // ),
-                        // decryptionPvk: await fs.readFile(
-                        //   new URL(
-                        //     "./development--saml--service-provider--encryption.key",
-                        //     import.meta.url,
-                        //   ),
-                        //   "utf-8",
-                        // ),
-                        // decryptionCert: await fs.readFile(
-                        //   new URL(
-                        //     "./development--saml--service-provider--encryption.crt",
-                        //     import.meta.url,
-                        //   ),
-                        //   "utf-8",
-                        // ),
-                      },
-                    },
-                  },
+                          },
+                        },
+                      }
+                    : {}),
                   environment: process.env.ENVIRONMENT ?? "default",
                   slow: process.env.SLOW === "true",
                   tunnel: typeof process.env.TUNNEL === "string",

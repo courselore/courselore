@@ -52,7 +52,7 @@ export default {
   //   // - https://your-domain.edu/saml/educational-institution/single-logout-service
   //   "educational-institution": {
   //     // [OPTIONAL] Set ‘public’ to ‘false’ to hide this educational institution from the main sign in page.
-  //     // It will be available from ‘/sign-in/saml’ and may be used for testing and setting up with the Identity Provider.
+  //     // It will be available from ‘https://your-domain.edu/sign-in/saml’ and may be used for testing and setting up with the Identity Provider.
   //     // It also enables special logging including, for example, the SAML response from the Identity Provider.
   //     // public: false,
 
