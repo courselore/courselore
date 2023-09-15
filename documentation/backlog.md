@@ -36,6 +36,12 @@
       - http://127.0.0.1:8080/realms/myrealm/protocol/saml/descriptor
     - https://www.samltool.com/online_tools.php
     - https://samltool.io/ is probably bad (https://github.com/keycloak/keycloak/issues/22962)
+- Future:
+  - Let the system administrators rotate keys.
+    - Create a user interface to let them create keys using Courselore (show private key only once)
+    - Create a user interface to let them inform Courselore of keys created elsewhere
+    - Serve both keys during the transition period
+    - The complication is to reload all the SAML stuff
 - Notes:
 
   - One key
