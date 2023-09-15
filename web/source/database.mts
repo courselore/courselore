@@ -2458,7 +2458,7 @@ export default async (application: Application): Promise<void> => {
                   type: "text",
                   name: "output",
                   message:
-                    "Path to file containing private key (starts with ‘-----BEGIN PRIVATE KEY-----’)",
+                    "Path to the file containing the private key (starts with ‘-----BEGIN PRIVATE KEY-----’)",
                 })
               ).output,
               "utf-8",
@@ -2478,7 +2478,7 @@ export default async (application: Application): Promise<void> => {
                   type: "text",
                   name: "output",
                   message:
-                    "Path to file containing certificate (starts with ‘-----BEGIN CERTIFICATE-----’)",
+                    "Path to the file containing the certificate (starts with ‘-----BEGIN CERTIFICATE-----’)",
                 })
               ).output,
               "utf-8",
