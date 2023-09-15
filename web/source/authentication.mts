@@ -2139,21 +2139,8 @@ export default async (application: Application): Promise<void> => {
             validateInResponseTo: saml.ValidateInResponseTo.ifPresent,
             requestIdExpirationPeriodMs: 60 * 60 * 1000,
             maxAssertionAgeMs: 60 * 60 * 1000,
-            // TODO: SAML
-            // privateKey: await fs.readFile(
-            //   new URL(
-            //     "./keys/johns-hopkins-university--saml--service-provider--signing.key",
-            //     import.meta.url,
-            //   ),
-            //   "utf-8",
-            // ),
-            // decryptionPvk: await fs.readFile(
-            //   new URL(
-            //     "./keys/johns-hopkins-university--saml--service-provider--encryption.key",
-            //     import.meta.url,
-            //   ),
-            //   "utf-8",
-            // ),
+            privateKey: application.system.privateKey,
+            decryptionPvk: application.system.privateKey,
             cacheProvider: {
               saveAsync: async (key, value) => {
                 if (
@@ -2277,27 +2264,14 @@ export default async (application: Application): Promise<void> => {
   >("/saml/:samlIdentifier/metadata", (request, response, next) => {
     if (response.locals.saml === undefined) return next();
 
-    response.contentType("application/xml").send(
-      response.locals.saml.saml.generateServiceProviderMetadata(
-        // TODO: SAML
-        // signingCert: await fs.readFile(
-        //   new URL(
-        //     "./keys/johns-hopkins-university--saml--service-provider--signing.crt",
-        //     import.meta.url,
-        //   ),
-        //   "utf-8",
-        // ),
-        // decryptionCert: await fs.readFile(
-        //   new URL(
-        //     "./keys/johns-hopkins-university--saml--service-provider--encryption.crt",
-        //     import.meta.url,
-        //   ),
-        //   "utf-8",
-        // ),
-        response.locals.saml.options.decryptionCert ?? null,
-        response.locals.saml.options.signingCert ?? null,
-      ),
-    );
+    response
+      .contentType("application/xml")
+      .send(
+        response.locals.saml.saml.generateServiceProviderMetadata(
+          application.system.certificate,
+          application.system.certificate,
+        ),
+      );
   });
 
   application.web.get<
