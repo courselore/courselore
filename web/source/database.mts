@@ -2405,11 +2405,13 @@ export default async (application: Application): Promise<void> => {
     `,
 
     () => {
-      const keypair = forge.pki.rsa.generateKeyPair();
-      const certificate = forge.pki.createCertificate();
-      certificate.publicKey = keypair.publicKey;
-      certificate.serialNumber = "00" + Math.random().toString().slice(2, 12);
-      certificate.validity.notAfter = new Date(
+      const { publicKey: publicKeyObject, privateKey: privateKeyObject } =
+        forge.pki.rsa.generateKeyPair();
+      const certificateObject = forge.pki.createCertificate();
+      certificateObject.publicKey = publicKeyObject;
+      certificateObject.serialNumber =
+        "00" + Math.random().toString().slice(2, 12);
+      certificateObject.validity.notAfter = new Date(
         Date.now() + 1000 * 365 * 24 * 60 * 60 * 1000,
       );
       const certificateSubject = [
@@ -2419,9 +2421,9 @@ export default async (application: Application): Promise<void> => {
         { name: "localityName", value: "Baltimore" },
         { name: "organizationName", value: "Courselore" },
       ];
-      certificate.setIssuer(certificateSubject);
-      certificate.setSubject(certificateSubject);
-      certificate.sign(keypair.privateKey, forge.md.sha256.create());
+      certificateObject.setIssuer(certificateSubject);
+      certificateObject.setSubject(certificateSubject);
+      certificateObject.sign(privateKeyObject, forge.md.sha256.create());
 
       const administrationOptions =
         application.database.get<{
@@ -2459,9 +2461,9 @@ export default async (application: Application): Promise<void> => {
           )
           VALUES (
             ${administrationOptions.latestVersion},
-            ${forge.pki.privateKeyToPem(keypair.privateKey)},
-            ${forge.pki.publicKeyToPem(keypair.publicKey)},
-            ${forge.pki.certificateToPem(certificate)}
+            ${forge.pki.privateKeyToPem(privateKeyObject)},
+            ${forge.pki.publicKeyToPem(publicKeyObject)},
+            ${forge.pki.certificateToPem(certificateObject)}
           )
         `,
       );
