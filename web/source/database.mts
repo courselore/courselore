@@ -2405,6 +2405,24 @@ export default async (application: Application): Promise<void> => {
     `,
 
     () => {
+      const keypair = forge.pki.rsa.generateKeyPair();
+      const certificate = forge.pki.createCertificate();
+      certificate.publicKey = keypair.publicKey;
+      certificate.serialNumber = "00" + Math.random().toString().slice(2, 12);
+      certificate.validity.notAfter = new Date(
+        Date.now() + 1000 * 365 * 24 * 60 * 60 * 1000,
+      );
+      const certificateSubject = [
+        { name: "commonName", value: application.configuration.hostname },
+        { name: "countryName", value: "US" },
+        { name: "stateOrProvinceName", value: "Maryland" },
+        { name: "localityName", value: "Baltimore" },
+        { name: "organizationName", value: "Courselore" },
+      ];
+      certificate.setIssuer(certificateSubject);
+      certificate.setSubject(certificateSubject);
+      certificate.sign(keypair.privateKey, forge.md.sha256.create());
+
       const administrationOptions =
         application.database.get<{
           latestVersion: string;
@@ -2416,24 +2434,6 @@ export default async (application: Application): Promise<void> => {
         (() => {
           throw new Error("Failed to get ‘administrationOptions’.");
         })();
-
-      const keypair = forge.pki.rsa.generateKeyPair();
-      const cert = forge.pki.createCertificate();
-      cert.publicKey = keypair.publicKey;
-      cert.serialNumber = "00" + Math.random().toString().slice(2, 12);
-      cert.validity.notAfter = new Date(
-        Date.now() + 1000 * 365 * 24 * 60 * 60 * 1000,
-      );
-      const attrs = [
-        { name: "commonName", value: application.configuration.hostname },
-        { name: "countryName", value: "US" },
-        { name: "stateOrProvinceName", value: "Maryland" },
-        { name: "localityName", value: "Baltimore" },
-        { name: "organizationName", value: "Courselore" },
-      ];
-      cert.setIssuer(attrs);
-      cert.setSubject(attrs);
-      cert.sign(keypair.privateKey, forge.md.sha256.create());
 
       application.database.execute(
         sql`
@@ -2461,7 +2461,7 @@ export default async (application: Application): Promise<void> => {
             ${administrationOptions.latestVersion},
             ${forge.pki.privateKeyToPem(keypair.privateKey)},
             ${forge.pki.publicKeyToPem(keypair.publicKey)},
-            ${forge.pki.certificateToPem(cert)}
+            ${forge.pki.certificateToPem(certificate)}
           )
         `,
       );

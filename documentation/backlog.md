@@ -4,8 +4,8 @@
 
 **Key Management**
 
-- Review current SAML implementation
 - Migration reusing current keys to not have to ask Hopkins people to setup things again
+- Review current SAML implementation
 - Have a way to set keys externally via configuration file
 - Specify signature expectations in SAML configuration:
 
