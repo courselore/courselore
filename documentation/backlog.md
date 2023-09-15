@@ -31,7 +31,10 @@
     - Serve both keys during the transition period
     - The complication is to reload all the SAML stuff
   - Let people set different keys for different Identity Providers?
-  - Internalize other parts of the configuration file and turn them into `administrationOptions`, for example, `administratorEmail`
+  - Internalize other parts of the configuration file and turn them into `administrationOptions`, for example, `email`
+  - Have some sort of wizard for when you start Courselore for the first time to set things up:
+    - Create administrator account
+    - Setup these `administrationOptions`
 - Notes:
 
   - One key
