@@ -14,6 +14,11 @@ export type ApplicationBase = {
       };
     };
   };
+  system: {
+    latestVersion: string;
+    privateKey: string;
+    certificate: string;
+  };
 };
 
 export default async (application: Application): Promise<void> => {
@@ -21,14 +26,12 @@ export default async (application: Application): Promise<void> => {
     application.database.get<{
       latestVersion: string;
       privateKey: string;
-      publicKey: string;
       certificate: string;
     }>(
       sql`
         SELECT
           "latestVersion",
           "privateKey",
-          "publicKey",
           "certificate"
         FROM "system"
       `,

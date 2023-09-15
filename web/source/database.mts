@@ -27,12 +27,6 @@ import { Application } from "./index.mjs";
 
 export type ApplicationDatabase = {
   database: Database;
-  system: {
-    latestVersion: string;
-    privateKey: string;
-    publicKey: string;
-    certificate: string;
-  };
 };
 
 export default async (application: Application): Promise<void> => {
