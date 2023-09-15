@@ -31,6 +31,7 @@
     - Serve both keys during the transition period
     - The complication is to reload all the SAML stuff
   - Let people set different keys for different Identity Providers?
+  - Internalize other parts of the configuration file and turn them into `administrationOptions`, for example, `administratorEmail`
 - Notes:
 
   - One key
