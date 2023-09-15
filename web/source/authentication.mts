@@ -2128,7 +2128,6 @@ export default async (application: Application): Promise<void> => {
       ([samlIdentifier, options]) => [
         samlIdentifier,
         {
-          // TODO: SAML: Holding on to the options like this may no longer be necessary because we aren’t relying on the certificates being passed in
           ...options,
           samlIdentifier,
           saml: new saml.SAML({
