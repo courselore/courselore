@@ -999,7 +999,7 @@ export default async (application: Application): Promise<void> => {
       if (users.length === 0) return;
       if (!process.stdin.isTTY)
         throw new Error(
-          "This update requires that you answer some prompts. Please run Courselore interactively (for example, ‘./courselore configuration.mjs’ on the command line) as opposed to through a service manager (for example, systemd).",
+          "This update requires that you answer some prompts. Please run Courselore interactively (for example, ‘./courselore configuration.mjs’ on the command line) instead of through a service manager (for example, systemd).",
         );
       while (true) {
         const user = (
@@ -2415,11 +2415,10 @@ export default async (application: Application): Promise<void> => {
 
       if (shouldPrompt && !process.stdin.isTTY)
         throw new Error(
-          "This update requires that you answer some prompts. Please run Courselore interactively (for example, ‘./courselore configuration.mjs’ on the command line) as opposed to through a service manager (for example, systemd).",
+          "This update requires that you answer some prompts. Please run Courselore interactively (for example, ‘./courselore configuration.mjs’ on the command line) instead of through a service manager (for example, systemd).",
         );
 
       let privateKey: string;
-      let publicKey: string;
       let certificate: string;
       if (
         shouldPrompt &&
@@ -2428,15 +2427,15 @@ export default async (application: Application): Promise<void> => {
             type: "select",
             name: "output",
             message:
-              "This update of Courselore introduces a new system for handing keys and certificate for SAML and the upcoming LTI support",
+              "This update of Courselore introduces a new system for handing the private key and certificate for SAML and the upcoming LTI support",
             choices: [
               {
                 title:
-                  "Let Courselore generate new keys and certificate (recommended if you have not configured SAML yet)",
+                  "Let Courselore generate a new private key and certificate (recommended if you haven’t configured SAML yet)",
               },
               {
                 title:
-                  "Use existing keys and certificate (use existing SAML keys and certificate to not have to rotate keys with Identity Providers)",
+                  "Use an existing private key and certificate (recommended if you already configured SAML and don’t want to rotate the certificate with the Identity Provider)",
               },
             ],
           })
@@ -2445,23 +2444,16 @@ export default async (application: Application): Promise<void> => {
         console.log(dedent`
           Requirements:
 
-          • The keys must be RSA.
-          • The keys must be at least 2048 bits long.
+          • The private key must be RSA.
+          • The private key must be at least 2048 bits long.
           • The certificate must have a *really* long expiration date.
           • The certificate must include ‘Subject’.
           • The certificate must be signed with SHA-256.
-          • The keys and the certificate must be provided in PEM format.
+          • The private key and the certificate must be provided in PEM format.
 
-          For example, you may use the following commands to create such keys:
+          For example, you may use the following command:
 
-          $ openssl req -x509 -newkey rsa:2048 -nodes -days 365000 -subj "/CN=courselore.org/C=US/ST=Maryland/L=Baltimore/O=Courselore" -keyout example.key -out example.crt
-          $ openssl x509 -pubkey -noout -in example.crt > example.pub
-
-          Which produce the following files:
-
-          • ‘example.key’: Private key.
-          • ‘example.pub’: Public key.
-          • ‘example.crt’: Certificate.
+          $ openssl req -x509 -newkey rsa:2048 -nodes -days 365000 -subj "/CN=courselore.org/C=US/ST=Maryland/L=Baltimore/O=Courselore" -keyout private-key.pem -out certificate.pem
         `);
 
         while (true) {
@@ -2475,22 +2467,6 @@ export default async (application: Application): Promise<void> => {
           ).output;
           try {
             forge.pki.privateKeyFromPem(privateKey);
-            break;
-          } catch (error) {
-            console.log(error);
-          }
-        }
-
-        while (true) {
-          publicKey = (
-            await prompts({
-              type: "text",
-              name: "output",
-              message: "Public key (starts with ‘-----BEGIN PUBLIC KEY-----’)",
-            })
-          ).output;
-          try {
-            forge.pki.publicKeyFromPem(publicKey);
             break;
           } catch (error) {
             console.log(error);
@@ -2514,13 +2490,12 @@ export default async (application: Application): Promise<void> => {
           }
         }
       } else {
-        const { publicKey: publicKeyObject, privateKey: privateKeyObject } =
-          forge.pki.rsa.generateKeyPair();
-        const certificateObject = forge.pki.createCertificate();
-        certificateObject.publicKey = publicKeyObject;
-        certificateObject.serialNumber =
+        const forgeKeyPair = forge.pki.rsa.generateKeyPair();
+        const forgeCertificate = forge.pki.createCertificate();
+        forgeCertificate.publicKey = forgeKeyPair.publicKey;
+        forgeCertificate.serialNumber =
           "00" + Math.random().toString().slice(2, 12);
-        certificateObject.validity.notAfter = new Date(
+        forgeCertificate.validity.notAfter = new Date(
           Date.now() + 1000 * 365 * 24 * 60 * 60 * 1000,
         );
         const certificateSubject = [
@@ -2530,12 +2505,14 @@ export default async (application: Application): Promise<void> => {
           { name: "localityName", value: "Baltimore" },
           { name: "organizationName", value: "Courselore" },
         ];
-        certificateObject.setIssuer(certificateSubject);
-        certificateObject.setSubject(certificateSubject);
-        certificateObject.sign(privateKeyObject, forge.md.sha256.create());
-        privateKey = forge.pki.privateKeyToPem(privateKeyObject);
-        publicKey = forge.pki.publicKeyToPem(publicKeyObject);
-        certificate = forge.pki.certificateToPem(certificateObject);
+        forgeCertificate.setIssuer(certificateSubject);
+        forgeCertificate.setSubject(certificateSubject);
+        forgeCertificate.sign(
+          forgeKeyPair.privateKey,
+          forge.md.sha256.create(),
+        );
+        privateKey = forge.pki.privateKeyToPem(forgeKeyPair.privateKey);
+        certificate = forge.pki.certificateToPem(forgeCertificate);
       }
 
       const administrationOptions =
@@ -2558,7 +2535,6 @@ export default async (application: Application): Promise<void> => {
             "id" INTEGER PRIMARY KEY AUTOINCREMENT CHECK ("id" = 1),
             "latestVersion" TEXT NOT NULL,
             "privateKey" TEXT NOT NULL,
-            "publicKey" TEXT NOT NULL,
             "certificate" TEXT NOT NULL
           );
         `,
@@ -2569,13 +2545,11 @@ export default async (application: Application): Promise<void> => {
           INSERT INTO "system" (
             "latestVersion",
             "privateKey",
-            "publicKey",
             "certificate"
           )
           VALUES (
             ${administrationOptions.latestVersion},
             ${privateKey},
-            ${publicKey},
             ${certificate}
           )
         `,
