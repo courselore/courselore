@@ -213,7 +213,7 @@ if (await node.isExecuted(import.meta.url)) {
                                     light:
                                       "courselore-university/courselore-university--light--2023-09-15.webp",
                                     dark: "courselore-university/courselore-university--dark--2023-09-15.webp",
-                                    width: 234,
+                                    width: 468,
                                   },
                                 }
                               : {}),
