@@ -4,25 +4,10 @@
 
 **Key Management**
 
-- Review current SAML implementation
-- Have a way to set keys externally via configuration file
-- Specify signature expectations in SAML configuration:
-
-  ```
-  wantAuthnResponseSigned: false,
-  wantAssertionsSigned: true,
-  ```
-
-  - `courselore.org.mjs`
-  - `try.courselore.org.mjs`
-  - `example.mjs`
-
 - Clean keys on `courselore.org` server
 - Clean keys on `private/`
   - Remove from `actions.yml`
 - Introduce Keycloak in development for mocking SAML
-  - Embed certificates in configuration file
-    - `TODO: SAML`
   - Test
     - SP-initiated SSO
     - SP-initiated SLO
@@ -39,11 +24,12 @@
     - https://www.samltool.com/online_tools.php
     - https://samltool.io/ is probably bad (https://github.com/keycloak/keycloak/issues/22962)
 - Future:
-  - Let the system administrators rotate keys.
+  - Let the system administrators rotate keys?
     - Create a user interface to let them create keys using Courselore (show private key only once)
     - Create a user interface to let them inform Courselore of keys created elsewhere
     - Serve both keys during the transition period
     - The complication is to reload all the SAML stuff
+  - Let people set different keys for different Identity Providers?
 - Notes:
 
   - One key
