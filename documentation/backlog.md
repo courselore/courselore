@@ -35,6 +35,7 @@
         - Client ID: https://leafac--macbook.local/saml/courselore-university/metadata
         - Valid redirect URIs: https://leafac--macbook.local/saml/courselore-university/assertion-consumer-service
       - http://127.0.0.1:8080/realms/myrealm/protocol/saml/descriptor
+    - `SAML_CERTIFICATE`
     - https://www.samltool.com/online_tools.php
     - https://samltool.io/ is probably bad (https://github.com/keycloak/keycloak/issues/22962)
 - Future:
