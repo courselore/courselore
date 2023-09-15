@@ -19,12 +19,12 @@ export default {
   demonstration: true,
   alternativeHostnames: ["try.courselore.com"],
   caddy: `
-    http://leafac.courselore.org {
-      redir https://{host}{uri} 308
-    }
-
     https://leafac.courselore.org {
       reverse_proxy http://127.0.0.1:3000
+    }
+
+    http://leafac.courselore.org {
+      redir https://{host}{uri} 308
     }
   `,
 };
