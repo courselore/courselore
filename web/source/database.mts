@@ -2,6 +2,7 @@ import path from "node:path";
 import fs from "node:fs/promises";
 import html from "@leafac/html";
 import sql, { Database } from "@leafac/sqlite";
+import dedent from "dedent";
 import escapeStringRegexp from "escape-string-regexp";
 import cryptoRandomString from "crypto-random-string";
 import * as sanitizeXMLCharacters from "sanitize-xml-string";
@@ -998,7 +999,7 @@ export default async (application: Application): Promise<void> => {
       if (users.length === 0) return;
       if (!process.stdin.isTTY)
         throw new Error(
-          "This update requires that you answer some prompts. Please run Courselore interactively (for example, ‘./courselore’ on the command line) as opposed to through a service manager (for example, systemd).",
+          "This update requires that you answer some prompts. Please run Courselore interactively (for example, ‘./courselore configuration.mjs’ on the command line) as opposed to through a service manager (for example, systemd).",
         );
       while (true) {
         const user = (
@@ -2404,26 +2405,138 @@ export default async (application: Application): Promise<void> => {
       UPDATE "invitations" SET "courseRole" = 'course-staff' WHERE "courseRole" = 'staff';
     `,
 
-    () => {
-      const { publicKey: publicKeyObject, privateKey: privateKeyObject } =
-        forge.pki.rsa.generateKeyPair();
-      const certificateObject = forge.pki.createCertificate();
-      certificateObject.publicKey = publicKeyObject;
-      certificateObject.serialNumber =
-        "00" + Math.random().toString().slice(2, 12);
-      certificateObject.validity.notAfter = new Date(
-        Date.now() + 1000 * 365 * 24 * 60 * 60 * 1000,
-      );
-      const certificateSubject = [
-        { name: "commonName", value: application.configuration.hostname },
-        { name: "countryName", value: "US" },
-        { name: "stateOrProvinceName", value: "Maryland" },
-        { name: "localityName", value: "Baltimore" },
-        { name: "organizationName", value: "Courselore" },
-      ];
-      certificateObject.setIssuer(certificateSubject);
-      certificateObject.setSubject(certificateSubject);
-      certificateObject.sign(privateKeyObject, forge.md.sha256.create());
+    async () => {
+      const shouldPrompt =
+        application.database.get<{ count: number }>(
+          sql`
+            SELECT COUNT(*) AS "count" FROM "users"
+          `,
+        )!.count > 0;
+
+      if (shouldPrompt && !process.stdin.isTTY)
+        throw new Error(
+          "This update requires that you answer some prompts. Please run Courselore interactively (for example, ‘./courselore configuration.mjs’ on the command line) as opposed to through a service manager (for example, systemd).",
+        );
+
+      let privateKey: string;
+      let publicKey: string;
+      let certificate: string;
+      if (
+        shouldPrompt &&
+        (
+          await prompts({
+            type: "select",
+            name: "output",
+            message:
+              "This update of Courselore introduces a new system for handing keys and certificate for SAML and the upcoming LTI support",
+            choices: [
+              {
+                title:
+                  "Let Courselore generate new keys and certificate (recommended if you have not configured SAML yet)",
+              },
+              {
+                title:
+                  "Use existing keys and certificate (use existing SAML keys and certificate to not have to rotate keys with Identity Providers)",
+              },
+            ],
+          })
+        ).output === 1
+      ) {
+        console.log(dedent`
+          Requirements:
+
+          • The keys must be RSA.
+          • The keys must be at least 2048 bits long.
+          • The certificate must have a *really* long expiration date.
+          • The certificate must include ‘Subject’.
+          • The certificate must be signed with SHA-256.
+          • The keys and the certificate must be provided in PEM format.
+
+          For example, you may use the following commands to create such keys:
+
+          $ openssl req -x509 -newkey rsa:2048 -nodes -days 365000 -subj "/CN=courselore.org/C=US/ST=Maryland/L=Baltimore/O=Courselore" -keyout example.key -out example.crt
+          $ openssl x509 -pubkey -noout -in example.crt > example.pub
+
+          Which produce the following files:
+
+          • ‘example.key’: Private key.
+          • ‘example.pub’: Public key.
+          • ‘example.crt’: Certificate.
+        `);
+
+        while (true) {
+          privateKey = (
+            await prompts({
+              type: "text",
+              name: "output",
+              message:
+                "Private key (starts with ‘-----BEGIN PRIVATE KEY-----’)",
+            })
+          ).output;
+          try {
+            forge.pki.privateKeyFromPem(privateKey);
+            break;
+          } catch (error) {
+            console.log(error);
+          }
+        }
+
+        while (true) {
+          publicKey = (
+            await prompts({
+              type: "text",
+              name: "output",
+              message: "Public key (starts with ‘-----BEGIN PUBLIC KEY-----’)",
+            })
+          ).output;
+          try {
+            forge.pki.publicKeyFromPem(publicKey);
+            break;
+          } catch (error) {
+            console.log(error);
+          }
+        }
+
+        while (true) {
+          certificate = (
+            await prompts({
+              type: "text",
+              name: "output",
+              message:
+                "Certificate (starts with ‘-----BEGIN CERTIFICATE-----’)",
+            })
+          ).output;
+          try {
+            forge.pki.certificateFromPem(certificate);
+            break;
+          } catch (error) {
+            console.log(error);
+          }
+        }
+      } else {
+        const { publicKey: publicKeyObject, privateKey: privateKeyObject } =
+          forge.pki.rsa.generateKeyPair();
+        const certificateObject = forge.pki.createCertificate();
+        certificateObject.publicKey = publicKeyObject;
+        certificateObject.serialNumber =
+          "00" + Math.random().toString().slice(2, 12);
+        certificateObject.validity.notAfter = new Date(
+          Date.now() + 1000 * 365 * 24 * 60 * 60 * 1000,
+        );
+        const certificateSubject = [
+          { name: "commonName", value: application.configuration.hostname },
+          { name: "countryName", value: "US" },
+          { name: "stateOrProvinceName", value: "Maryland" },
+          { name: "localityName", value: "Baltimore" },
+          { name: "organizationName", value: "Courselore" },
+        ];
+        certificateObject.setIssuer(certificateSubject);
+        certificateObject.setSubject(certificateSubject);
+        certificateObject.sign(privateKeyObject, forge.md.sha256.create());
+        privateKey = forge.pki.privateKeyToPem(privateKeyObject);
+        publicKey = forge.pki.publicKeyToPem(publicKeyObject);
+        certificate = forge.pki.certificateToPem(certificateObject);
+      }
 
       const administrationOptions =
         application.database.get<{
@@ -2461,9 +2574,9 @@ export default async (application: Application): Promise<void> => {
           )
           VALUES (
             ${administrationOptions.latestVersion},
-            ${forge.pki.privateKeyToPem(privateKeyObject)},
-            ${forge.pki.publicKeyToPem(publicKeyObject)},
-            ${forge.pki.certificateToPem(certificateObject)}
+            ${privateKey},
+            ${publicKey},
+            ${certificate}
           )
         `,
       );
