@@ -2975,7 +2975,7 @@ export default async (application: Application): Promise<void> => {
               </h2>
 
               <p>
-                You’re trying to sign out using a different identity provider
+                You’re trying to sign out using a different Identity Provider
                 from the one you used to sign in.
               </p>
 

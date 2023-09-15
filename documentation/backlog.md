@@ -4,7 +4,6 @@
 
 **Key Management**
 
-- Migration reusing current keys to not have to ask Hopkins people to setup things again
 - Review current SAML implementation
 - Have a way to set keys externally via configuration file
 - Specify signature expectations in SAML configuration:
@@ -19,6 +18,8 @@
   - `example.mjs`
 
 - Clean keys on `courselore.org` server
+- Clean keys on `private/`
+  - Remove from `actions.yml`
 - Introduce Keycloak in development for mocking SAML
   - Embed certificates in configuration file
     - `TODO: SAML`

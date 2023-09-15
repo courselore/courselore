@@ -3,7 +3,7 @@
 import url from "node:url";
 
 export default {
-  // The main hostname through which people may access Courselore.
+  // The hostname through which people may access Courselore.
   hostname: "your-domain.edu",
 
   // The path to the directory in which Courselore stores data:
@@ -46,14 +46,14 @@ export default {
 
   // [OPTIONAL] Configuration for single sign-on and single logout via educational institutions with SAML.
   // saml: {
-  //   // For each educational institution Courselore provides the following endpoints, which may be necessary for registering Courselore as a service provider with the identity provider at the educational institution:
+  //   // For each educational institution Courselore provides the following endpoints, which may be necessary for registering Courselore as a service provider with the Identity Provider at the educational institution:
   //   // - https://your-domain.edu/saml/educational-institution/metadata
   //   // - https://your-domain.edu/saml/educational-institution/assertion-consumer-service
   //   // - https://your-domain.edu/saml/educational-institution/single-logout-service
   //   "educational-institution": {
   //     // [OPTIONAL] Set ‘public’ to ‘false’ to hide this educational institution from the main sign in page.
-  //     // It will be available from ‘/sign-in/saml’ and may be used for testing and setting up with the identity provider.
-  //     // It also enables special logging including, for example, the SAML response from the identity provider.
+  //     // It will be available from ‘/sign-in/saml’ and may be used for testing and setting up with the Identity Provider.
+  //     // It also enables special logging including, for example, the SAML response from the Identity Provider.
   //     // public: false,
 
   //     name: "Educational Institution",
@@ -84,16 +84,19 @@ export default {
 
   //     // Options for Node SAML.
   //     // See https://github.com/node-saml/node-saml
-  //     // Some of these options may not be necessary depending on the SAML configuration of the identity provider at the educational institution.
+  //     // Some of these options may not be necessary depending on the SAML configuration of the Identity Provider at the educational institution.
   //     // Do not provide the following options, which are set by Courselore:
   //     // - issuer
   //     // - callbackUrl
   //     // - logoutCallbackUrl
   //     // - validateInResponseTo
   //     // - requestIdExpirationPeriodMs
+  //     // - maxAssertionAgeMs
+  //     // - privateKey
+  //     // - decryptionPvk
   //     // - cacheProvider
   //     options: {
-  //       // The URL of the metadata for the identity provider at the educational institution.
+  //       // The URL of the metadata for the Identity Provider at the educational institution.
   //       idpIssuer:
   //         "https://identity-provider.educational-institution.edu/metadata",
   //       // The ‘Location’ given in the ‘SingleSignOnService’ entry with the ‘HTTP-Redirect’ binding.
@@ -103,51 +106,16 @@ export default {
   //       logoutUrl:
   //         "https://identity-provider.educational-institution.edu/single-logout",
 
+  //       // The Identity Provider may sign the entire SAML Response, just the assertions within a SAML Response, or both.
+  //       // The best way to find this out is to inspect a SAML Response from the Identity Provider.
+  //       wantAuthnResponseSigned: true,
+  //       wantAssertionsSigned: false,
+
   //       signatureAlgorithm: "sha256",
   //       digestAlgorithm: "sha256",
-  //       signMetadata: true,
 
-  //       // Use the following for keys and certificates stored as files whose paths are relative to the configuration file.
-  //       cert: await fs.readFile(
-  //         new URL(
-  //           "./educational-institution--saml--identity-provider--signing.crt",
-  //           import.meta.url
-  //         ),
-  //         "utf-8"
-  //       ),
-
-  //       // You may create the following keys and certificates with the following commands (see https://knowledge.digicert.com/generalinformation/INFO1745.html for more information on the ‘-subj’ parameter):
-  //       // $ openssl req -x509 -newkey rsa:2048 -nodes -days 365000 -subj "/C=US/ST=Maryland/L=Baltimore/O=Courselore/CN=courselore.org" -keyout educational-institution--saml--service-provider--signing.key -out educational-institution--saml--service-provider--signing.crt
-  //       // $ openssl req -x509 -newkey rsa:2048 -nodes -days 365000 -subj "/C=US/ST=Maryland/L=Baltimore/O=Courselore/CN=courselore.org" -keyout educational-institution--saml--service-provider--encryption.key -out educational-institution--saml--service-provider--encryption.crt
-  //       privateKey: await fs.readFile(
-  //         new URL(
-  //           "./educational-institution--saml--service-provider--signing.key",
-  //           import.meta.url
-  //         ),
-  //         "utf-8"
-  //       ),
-  //       signingCert: await fs.readFile(
-  //         new URL(
-  //           "./educational-institution--saml--service-provider--signing.crt",
-  //           import.meta.url
-  //         ),
-  //         "utf-8"
-  //       ),
-
-  //       decryptionPvk: await fs.readFile(
-  //         new URL(
-  //           "./educational-institution--saml--service-provider--encryption.key",
-  //           import.meta.url
-  //         ),
-  //         "utf-8"
-  //       ),
-  //       decryptionCert: await fs.readFile(
-  //         new URL(
-  //           "./educational-institution--saml--service-provider--encryption.crt",
-  //           import.meta.url
-  //         ),
-  //         "utf-8"
-  //       ),
+  //       // The signing certificate from the Identity Provider. Given under the ‘KeyDescriptor use="signing"’ element. Remove all whitespace.
+  //       cert: "MIIDE...aBw=",
   //     },
   //   },
 

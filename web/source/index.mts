@@ -76,10 +76,7 @@ export type Application = {
           email: string | undefined;
           name: string | undefined;
         };
-        options: ConstructorParameters<typeof saml.SAML>[0] & {
-          decryptionCert?: string;
-          signingCert?: string;
-        };
+        options: ConstructorParameters<typeof saml.SAML>[0];
       };
     };
     environment: "production" | "development" | "profile" | "default";
