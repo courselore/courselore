@@ -2128,6 +2128,7 @@ export default async (application: Application): Promise<void> => {
       ([samlIdentifier, options]) => [
         samlIdentifier,
         {
+          // TODO: SAML: Holding on to the options like this may no longer be necessary because we aren’t relying on the certificates being passed in
           ...options,
           samlIdentifier,
           saml: new saml.SAML({
@@ -2137,6 +2138,22 @@ export default async (application: Application): Promise<void> => {
             logoutCallbackUrl: `https://${application.configuration.hostname}/saml/${samlIdentifier}/single-logout-service`,
             validateInResponseTo: saml.ValidateInResponseTo.ifPresent,
             requestIdExpirationPeriodMs: 60 * 60 * 1000,
+            maxAssertionAgeMs: 60 * 60 * 1000,
+            // TODO: SAML
+            // privateKey: await fs.readFile(
+            //   new URL(
+            //     "./keys/johns-hopkins-university--saml--service-provider--signing.key",
+            //     import.meta.url,
+            //   ),
+            //   "utf-8",
+            // ),
+            // decryptionPvk: await fs.readFile(
+            //   new URL(
+            //     "./keys/johns-hopkins-university--saml--service-provider--encryption.key",
+            //     import.meta.url,
+            //   ),
+            //   "utf-8",
+            // ),
             cacheProvider: {
               saveAsync: async (key, value) => {
                 if (
@@ -2260,14 +2277,27 @@ export default async (application: Application): Promise<void> => {
   >("/saml/:samlIdentifier/metadata", (request, response, next) => {
     if (response.locals.saml === undefined) return next();
 
-    response
-      .contentType("application/xml")
-      .send(
-        response.locals.saml.saml.generateServiceProviderMetadata(
-          response.locals.saml.options.decryptionCert ?? null,
-          response.locals.saml.options.signingCert ?? null,
-        ),
-      );
+    response.contentType("application/xml").send(
+      response.locals.saml.saml.generateServiceProviderMetadata(
+        // TODO: SAML
+        // signingCert: await fs.readFile(
+        //   new URL(
+        //     "./keys/johns-hopkins-university--saml--service-provider--signing.crt",
+        //     import.meta.url,
+        //   ),
+        //   "utf-8",
+        // ),
+        // decryptionCert: await fs.readFile(
+        //   new URL(
+        //     "./keys/johns-hopkins-university--saml--service-provider--encryption.crt",
+        //     import.meta.url,
+        //   ),
+        //   "utf-8",
+        // ),
+        response.locals.saml.options.decryptionCert ?? null,
+        response.locals.saml.options.signingCert ?? null,
+      ),
+    );
   });
 
   application.web.get<
