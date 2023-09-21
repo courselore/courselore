@@ -2,7 +2,7 @@ import * as node from "@leafac/node";
 import { Application } from "./index.mjs";
 
 export type ApplicationLogging = {
-  log(...messageParts: string[]): void;
+  log: (...messageParts: string[]) => void;
 
   web: {
     locals: {

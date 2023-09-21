@@ -3,6 +3,7 @@ import express from "express";
 import cookieParser from "cookie-parser";
 import expressFileUpload from "express-fileupload";
 import { asyncHandler } from "@leafac/express-async-handler";
+import sql from "@leafac/sqlite";
 import { Application } from "./index.mjs";
 
 export type ApplicationBase = {
@@ -10,6 +11,16 @@ export type ApplicationBase = {
     locals: {
       configuration: {
         cookies: express.CookieOptions;
+      };
+      ResponseLocals: {
+        Base: Application["web"]["locals"]["ResponseLocals"]["Logging"] & {
+          administrationOptions: {
+            latestVersion: string;
+            privateKey: string;
+            certificate: string;
+            userSystemRolesWhoMayCreateCourses: Application["web"]["locals"]["helpers"]["userSystemRolesWhoMayCreateCourseses"][number];
+          };
+        };
       };
     };
   };
@@ -76,8 +87,28 @@ export default async (application: Application): Promise<void> => {
     any,
     {},
     {},
-    Application["web"]["locals"]["ResponseLocals"]["Logging"]
+    Application["web"]["locals"]["ResponseLocals"]["Base"]
   >((request, response, next) => {
+    response.locals.administrationOptions =
+      application.database.get<{
+        latestVersion: string;
+        privateKey: string;
+        certificate: string;
+        userSystemRolesWhoMayCreateCourses: Application["web"]["locals"]["helpers"]["userSystemRolesWhoMayCreateCourseses"][number];
+      }>(
+        sql`
+          SELECT
+            "latestVersion",
+            "privateKey",
+            "certificate",
+            "userSystemRolesWhoMayCreateCourses"
+          FROM "administrationOptions"
+        `,
+      ) ??
+      (() => {
+        throw new Error("Failed to get ‘administrationOptions’.");
+      })();
+
     if (
       application.configuration.environment === "development" &&
       !["GET", "HEAD", "OPTIONS", "TRACE"].includes(request.method)

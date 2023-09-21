@@ -8,7 +8,7 @@ export type ApplicationLiveConnection = {
   web: {
     locals: {
       ResponseLocals: {
-        LiveConnection: Application["web"]["locals"]["ResponseLocals"]["Logging"] & {
+        LiveConnection: Application["web"]["locals"]["ResponseLocals"]["Base"] & {
           liveConnectionNonce?: string;
         };
       };
