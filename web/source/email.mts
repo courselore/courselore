@@ -7,11 +7,6 @@ export default async (application: Application): Promise<void> => {
   let timerAbortController: AbortController;
 
   application.workerEvents.once("start", async () => {
-    const nodemailerTransport = nodemailer.createTransport(
-      application.configuration.email.options,
-      application.configuration.email.defaults,
-    );
-
     while (true) {
       application.log("sendEmailJobs", "STARTING...");
 
@@ -97,8 +92,12 @@ export default async (application: Application): Promise<void> => {
 
         const mailOptions = JSON.parse(job.mailOptions);
         try {
-          const sentMessageInfo =
-            await nodemailerTransport.sendMail(mailOptions);
+          const sentMessageInfo = await nodemailer
+            .createTransport(
+              application.configuration.email.options,
+              application.configuration.email.defaults,
+            )
+            .sendMail(mailOptions);
           application.database.run(
             sql`
               DELETE FROM "sendEmailJobs" WHERE "id" = ${job.id}
