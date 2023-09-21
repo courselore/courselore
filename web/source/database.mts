@@ -2515,43 +2515,52 @@ export default async (application: Application): Promise<void> => {
         certificate = forge.pki.certificateToPem(forgeCertificate);
       }
 
+      application.database.execute(
+        sql`
+          CREATE TABLE "new_administrationOptions" (
+            "id" INTEGER PRIMARY KEY AUTOINCREMENT CHECK ("id" = 1),
+            "latestVersion" TEXT NOT NULL,
+            "privateKey" TEXT NOT NULL,
+            "certificate" TEXT NOT NULL,
+            "userSystemRolesWhoMayCreateCourses" TEXT NOT NULL
+          );
+        `,
+      );
       const administrationOptions =
         application.database.get<{
+          userSystemRolesWhoMayCreateCourses: string;
           latestVersion: string;
         }>(
           sql`
-            SELECT "latestVersion" FROM "administrationOptions"
+            SELECT
+              "userSystemRolesWhoMayCreateCourses",
+              "latestVersion"
+            FROM "administrationOptions"
           `,
         ) ??
         (() => {
           throw new Error("Failed to get ‘administrationOptions’.");
         })();
-
-      application.database.execute(
-        sql`
-          ALTER TABLE "administrationOptions" DROP COLUMN "latestVersion";
-
-          CREATE TABLE "system" (
-            "id" INTEGER PRIMARY KEY AUTOINCREMENT CHECK ("id" = 1),
-            "latestVersion" TEXT NOT NULL,
-            "privateKey" TEXT NOT NULL,
-            "certificate" TEXT NOT NULL
-          );
-        `,
-      );
-
       application.database.run(
         sql`
-          INSERT INTO "system" (
+          INSERT INTO "administrationOptions" (
             "latestVersion",
             "privateKey",
-            "certificate"
+            "certificate",
+            "userSystemRolesWhoMayCreateCourses"
           )
           VALUES (
             ${administrationOptions.latestVersion},
             ${privateKey},
-            ${certificate}
+            ${certificate},
+            ${administrationOptions.userSystemRolesWhoMayCreateCourses}
           )
+        `,
+      );
+      application.database.execute(
+        sql`
+          DROP TABLE "administrationOptions";
+          ALTER TABLE "new_administrationOptions" RENAME TO "administrationOptions";
         `,
       );
     },
