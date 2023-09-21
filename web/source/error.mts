@@ -1,6 +1,5 @@
 import express from "express";
 import qs from "qs";
-import sql from "@leafac/sqlite";
 import html, { HTML } from "@leafac/html";
 import css from "@leafac/css";
 import javascript from "@leafac/javascript";
