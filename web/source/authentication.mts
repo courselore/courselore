@@ -90,10 +90,6 @@ export type ApplicationAuthentication = {
             accentColor: Application["web"]["locals"]["helpers"]["courseParticipantAccentColors"][number];
             mostRecentlyVisitedConversationReference: string | null;
           }[];
-
-          administrationOptions: {
-            userSystemRolesWhoMayCreateCourses: Application["web"]["locals"]["helpers"]["userSystemRolesWhoMayCreateCourseses"][number];
-          };
         };
       };
 
@@ -629,19 +625,6 @@ export default async (application: Application): Promise<void> => {
         mostRecentlyVisitedConversationReference:
           courseParticipantRow.mostRecentlyVisitedConversationReference,
       }));
-
-    response.locals.administrationOptions =
-      application.database.get<{
-        userSystemRolesWhoMayCreateCourses: Application["web"]["locals"]["helpers"]["userSystemRolesWhoMayCreateCourseses"][number];
-      }>(
-        sql`
-          SELECT "userSystemRolesWhoMayCreateCourses"
-          FROM "administrationOptions"
-        `,
-      ) ??
-      (() => {
-        throw new Error("Failed to get ‘administrationOptions’.");
-      })();
 
     next();
   });

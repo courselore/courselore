@@ -88,13 +88,13 @@ export default async (application: Application): Promise<void> => {
       );
 
     if (
+      !["GET", "HEAD", "OPTIONS", "TRACE"].includes(request.method) &&
+      request.header("CSRF-Protection") !== "true" &&
       !(
         request.originalUrl.startsWith("/saml/") &&
         (request.originalUrl.endsWith("/assertion-consumer-service") ||
           request.originalUrl.endsWith("/single-logout-service"))
-      ) &&
-      !["GET", "HEAD", "OPTIONS", "TRACE"].includes(request.method) &&
-      request.header("CSRF-Protection") !== "true"
+      )
     )
       return next("Cross-Site Request Forgery");
 
