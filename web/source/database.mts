@@ -2543,7 +2543,7 @@ export default async (application: Application): Promise<void> => {
         })();
       application.database.run(
         sql`
-          INSERT INTO "administrationOptions" (
+          INSERT INTO "new_administrationOptions" (
             "latestVersion",
             "privateKey",
             "certificate",
