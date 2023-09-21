@@ -668,11 +668,11 @@ export default async (application: Application): Promise<void> => {
     )
       return next();
 
-    const visibleSamls =
+    const samls =
       request.originalUrl === "/sign-in/saml"
-        ? samls
+        ? application.configuration.saml
         : Object.fromEntries(
-            Object.entries(samls).filter(
+            Object.entries(application.configuration.saml).filter(
               ([samlIdentifier, options]) => options.public !== false,
             ),
           );
@@ -784,7 +784,7 @@ export default async (application: Application): Promise<void> => {
             </p>
           </div>
 
-          $${Object.keys(visibleSamls).length > 0
+          $${Object.keys(samls).length > 0
             ? html`
                 <div
                   css="${css`
@@ -808,7 +808,7 @@ export default async (application: Application): Promise<void> => {
                   />
                 </div>
 
-                $${Object.entries(visibleSamls).map(
+                $${Object.entries(samls).map(
                   ([samlIdentifier, options]) => html`
                     <a
                       href="https://${application.configuration
@@ -2105,100 +2105,6 @@ export default async (application: Application): Promise<void> => {
       )
       .redirect(303, `https://${application.configuration.hostname}/`);
   });
-
-  const samls = Object.fromEntries(
-    Object.entries(application.configuration.saml).map(
-      ([samlIdentifier, options]) => [
-        samlIdentifier,
-        {
-          ...options,
-          samlIdentifier,
-          saml: new saml.SAML({
-            ...options.options,
-            issuer: `https://${application.configuration.hostname}/saml/${samlIdentifier}/metadata`,
-            callbackUrl: `https://${application.configuration.hostname}/saml/${samlIdentifier}/assertion-consumer-service`,
-            logoutCallbackUrl: `https://${application.configuration.hostname}/saml/${samlIdentifier}/single-logout-service`,
-            validateInResponseTo: saml.ValidateInResponseTo.ifPresent,
-            requestIdExpirationPeriodMs: 60 * 60 * 1000,
-            maxAssertionAgeMs: 60 * 60 * 1000,
-            privateKey: response.locals.administrationOptions.privateKey,
-            decryptionPvk: response.locals.administrationOptions.privateKey,
-            cacheProvider: {
-              saveAsync: async (key, value) => {
-                if (
-                  typeof (await samls[
-                    samlIdentifier
-                  ].saml.cacheProvider.getAsync(key)) === "string"
-                )
-                  return null;
-
-                const cacheItem = application.database.get<{
-                  createdAt: string;
-                  value: string;
-                }>(
-                  sql`
-                    SELECT * FROM "samlCache" WHERE "id" = ${
-                      application.database.run(
-                        sql`
-                          INSERT INTO "samlCache" (
-                            "createdAt",
-                            "samlIdentifier",
-                            "key",
-                            "value"
-                          )
-                          VALUES (
-                            ${new Date().toISOString()},
-                            ${samlIdentifier},
-                            ${key},
-                            ${value}
-                          )
-                        `,
-                      ).lastInsertRowid
-                    }
-                  `,
-                )!;
-
-                return {
-                  createdAt: new Date(cacheItem.createdAt).getTime(),
-                  value: cacheItem.value,
-                };
-              },
-
-              getAsync: async (key) => {
-                return (
-                  application.database.get<{ value: string }>(
-                    sql`
-                      SELECT "value"
-                      FROM "samlCache"
-                      WHERE
-                        ${new Date(
-                          new Date().getTime() - 60 * 60 * 1000,
-                        ).toISOString()} < "createdAt" AND
-                        "samlIdentifier" = ${samlIdentifier} AND
-                        "key" = ${key}
-                    `,
-                  )?.value ?? null
-                );
-              },
-
-              removeAsync: async (key) => {
-                application.database.run(
-                  sql`
-                    DELETE FROM "samlCache"
-                    WHERE
-                      "samlIdentifier" = ${samlIdentifier} AND
-                      "key" = ${key}
-                  `,
-                );
-
-                return key;
-              },
-            },
-          }),
-        },
-      ],
-    ),
-  );
 
   if (application.process.number === 0)
     application.workerEvents.once("start", async () => {
