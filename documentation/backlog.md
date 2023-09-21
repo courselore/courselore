@@ -91,6 +91,7 @@
 - https://courselore.org/courses/8537410611/conversations/84
   - Add to the `…` menu under a message the option to switch message type, which just activates the existing dropdown
 - Don’t present the staff whispers button if the conversation involves only staff members.
+- Nag about printscreen of code
 
 **Learning Tools Interoperability (LTI)**
 

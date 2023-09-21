@@ -3,6 +3,14 @@
 <details>
 <summary>2023-09-09</summary>
 
+- OCR of printscreens of code is a possibility and sounds like a fun technical challenge, but it may not be the most practical or educational approach. Any mistakes in OCR may make the whole system more annoying than useful. So it’s better to come up with a way to detect a printscreen of code and help students with copy-and-pasting.
+- The new key management solution is finished.
+
+</details>
+
+<details>
+<summary>2023-09-09</summary>
+
 - 74 sessions with SAML 🙌
 - Keycloak mystery
 - https://courselore.org/courses/8537410611/conversations/83
