@@ -4,7 +4,6 @@
 
 **Key Management**
 
-- `nodemailerTransport`
 - Introduce Keycloak in development for mocking SAML
   - Test
     - SP-initiated SSO
