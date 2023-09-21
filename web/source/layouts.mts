@@ -3017,8 +3017,9 @@ export default async (application: Application): Promise<void> => {
                                   Update Instructions
                                 </a>
                                 <a
-                                  href="https://github.com/courselore/courselore/releases/tag/v${application
-                                    .system.latestVersion}"
+                                  href="https://github.com/courselore/courselore/releases/tag/v${response
+                                    .locals.administrationOptions
+                                    .latestVersion}"
                                   target="_blank"
                                   class="dropdown--menu--item button button--green"
                                 >
