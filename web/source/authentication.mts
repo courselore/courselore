@@ -2129,7 +2129,10 @@ export default async (application: Application): Promise<void> => {
 
   type ResponseLocalsSAML =
     Application["web"]["locals"]["ResponseLocals"]["LiveConnection"] & {
-      saml: (typeof samls)[string];
+      saml: Application["configuration"]["saml"][string] & {
+        samlIdentifier: string;
+        saml: nodeSAML.SAML;
+      };
     };
 
   application.web.use<

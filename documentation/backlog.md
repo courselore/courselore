@@ -6,6 +6,9 @@
 
 - Merge `system` back into `administrationOptions`
   - Create SAML objects on-demand
+  - Double-check that creating a SAML object is “free”
+  - Double-check that creating a nodemailer object is “free”
+  - Double-check variables that are created at the top level, without taking in consideration fresh data from the database
 - Introduce Keycloak in development for mocking SAML
   - Test
     - SP-initiated SSO
