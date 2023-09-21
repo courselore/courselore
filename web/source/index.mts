@@ -17,7 +17,7 @@ import prompts from "prompts";
 import killPort from "kill-port";
 import caddyfile from "dedent";
 import dedent from "dedent";
-import * as saml from "@node-saml/node-saml";
+import * as nodeSAML from "@node-saml/node-saml";
 import logging, { ApplicationLogging } from "./logging.mjs";
 import database, { ApplicationDatabase } from "./database.mjs";
 import base, { ApplicationBase } from "./base.mjs";
@@ -76,7 +76,7 @@ export type Application = {
           email: string | undefined;
           name: string | undefined;
         };
-        options: ConstructorParameters<typeof saml.SAML>[0];
+        options: ConstructorParameters<typeof nodeSAML.SAML>[0];
       };
     };
     environment: "production" | "development" | "profile" | "default";
