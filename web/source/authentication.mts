@@ -2121,8 +2121,8 @@ export default async (application: Application): Promise<void> => {
             validateInResponseTo: saml.ValidateInResponseTo.ifPresent,
             requestIdExpirationPeriodMs: 60 * 60 * 1000,
             maxAssertionAgeMs: 60 * 60 * 1000,
-            privateKey: application.system.privateKey,
-            decryptionPvk: application.system.privateKey,
+            privateKey: response.locals.administrationOptions.privateKey,
+            decryptionPvk: response.locals.administrationOptions.privateKey,
             cacheProvider: {
               saveAsync: async (key, value) => {
                 if (
@@ -2250,8 +2250,8 @@ export default async (application: Application): Promise<void> => {
       .contentType("application/xml")
       .send(
         response.locals.saml.saml.generateServiceProviderMetadata(
-          application.system.certificate,
-          application.system.certificate,
+          response.locals.administrationOptions.certificate,
+          response.locals.administrationOptions.certificate,
         ),
       );
   });

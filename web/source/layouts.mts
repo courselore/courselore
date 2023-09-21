@@ -2945,7 +2945,10 @@ export default async (application: Application): Promise<void> => {
             </div>
 
             $${response.locals.user?.systemRole === "administrator" &&
-            semver.gt(application.system.latestVersion, application.version)
+            semver.gt(
+              response.locals.administrationOptions.latestVersion,
+              application.version,
+            )
               ? html`
                   <div>
                     <button
@@ -2990,7 +2993,8 @@ export default async (application: Application): Promise<void> => {
                                       });
                                     `}"
                                   >
-                                    ${application.system.latestVersion}
+                                    ${response.locals.administrationOptions
+                                      .latestVersion}
                                   </span>
                                 </span>
                               </h3>
