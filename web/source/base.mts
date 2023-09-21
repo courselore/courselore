@@ -3,7 +3,6 @@ import express from "express";
 import cookieParser from "cookie-parser";
 import expressFileUpload from "express-fileupload";
 import { asyncHandler } from "@leafac/express-async-handler";
-import sql from "@leafac/sqlite";
 import { Application } from "./index.mjs";
 
 export type ApplicationBase = {
@@ -14,32 +13,9 @@ export type ApplicationBase = {
       };
     };
   };
-  system: {
-    latestVersion: string;
-    privateKey: string;
-    certificate: string;
-  };
 };
 
 export default async (application: Application): Promise<void> => {
-  application.system =
-    application.database.get<{
-      latestVersion: string;
-      privateKey: string;
-      certificate: string;
-    }>(
-      sql`
-        SELECT
-          "latestVersion",
-          "privateKey",
-          "certificate"
-        FROM "system"
-      `,
-    ) ??
-    (() => {
-      throw new Error("Failed to get ‘system’.");
-    })();
-
   if (
     application.configuration.environment === "development" &&
     application.configuration.slow
