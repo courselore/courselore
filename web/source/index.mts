@@ -220,10 +220,15 @@ if (await node.isExecuted(import.meta.url)) {
                             domains: ["courselore.org"],
                             attributes: (samlResponse: any) => ({
                               email: samlResponse?.profile?.nameID,
-                              name: samlResponse?.profile?.attributes?.name,
+                              // TODO: SAML: https://github.com/keycloak/keycloak/discussions/23471
+                              // name: samlResponse?.profile?.attributes?.name,
+                              name: lodash.capitalize(
+                                samlResponse?.profile?.nameID?.split("@")?.[0],
+                              ),
                             }),
                             options: {
-                              idpIssuer: "http://127.0.0.1:8003/realms/courselore-university",
+                              idpIssuer:
+                                "http://127.0.0.1:8003/realms/courselore-university",
                               entryPoint:
                                 "http://127.0.0.1:8003/realms/courselore-university/protocol/saml",
                               logoutUrl:
