@@ -6,6 +6,7 @@
 
 - Changelog
 - Backup
+  - Backup keys
 - Deploy
 - Manual deployment
 - Clean keys on `courselore.org` server
