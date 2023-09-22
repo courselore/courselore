@@ -180,75 +180,82 @@ if (await node.isExecuted(import.meta.url)) {
           configuration:
             typeof configuration === "string"
               ? (await import(url.pathToFileURL(configuration).href)).default
-              : {
-                  hostname:
-                    process.env.TUNNEL ?? process.env.HOSTNAME ?? "127.0.0.1",
-                  dataDirectory:
-                    typeof process.env.ENVIRONMENT === "string" &&
-                    ["development", "profile"].includes(process.env.ENVIRONMENT)
-                      ? url.fileURLToPath(new URL("../data/", import.meta.url))
-                      : path.join(process.cwd(), "data"),
-                  email: {
-                    options: {
-                      host: "127.0.0.1",
-                      port: 8002,
-                    },
-                    defaults: {
-                      from: {
-                        name: "Courselore",
-                        address: "feedback@courselore.org",
-                      },
-                    },
-                  },
-                  administratorEmail: "feedback@courselore.org",
-                  staticPaths: [
-                    url.fileURLToPath(
-                      new URL(
-                        "../configuration/saml-idp/logo/",
-                        import.meta.url,
-                      ),
-                    ),
-                  ],
-                  saml: {
-                    "courselore-university": {
-                      name: "Courselore University",
-                      ...(process.env.SAML_LOGO !== "false"
-                        ? {
-                            logo: {
-                              light:
-                                "courselore-university--light--2023-09-15.webp",
-                              dark: "courselore-university--dark--2023-09-15.webp",
-                              width: 468,
-                            },
-                          }
-                        : {}),
-                      domains: ["courselore.org"],
-                      attributes: (samlResponse: any) => ({
-                        email: samlResponse?.profile?.nameID,
-                        name: samlResponse?.profile?.attributes?.name,
-                      }),
+              : await (async () => {
+                  const hostname =
+                    process.env.TUNNEL ?? process.env.HOSTNAME ?? "127.0.0.1";
+                  return {
+                    hostname,
+                    dataDirectory:
+                      typeof process.env.ENVIRONMENT === "string" &&
+                      ["development", "profile"].includes(
+                        process.env.ENVIRONMENT,
+                      )
+                        ? url.fileURLToPath(
+                            new URL("../data/", import.meta.url),
+                          )
+                        : path.join(process.cwd(), "data"),
+                    email: {
                       options: {
-                        idpIssuer: "https://127.0.0.1:8003/metadata",
-                        entryPoint: "https://127.0.0.1:8003/saml/sso",
-                        logoutUrl: "https://127.0.0.1:8003/saml/slo",
-                        wantAuthnResponseSigned: true,
-                        wantAssertionsSigned: false,
-                        signatureAlgorithm: "sha256",
-                        digestAlgorithm: "sha256",
-                        cert: await fs.readFile(
-                          new URL(
-                            "../configuration/saml-idp/certificate.pem",
-                            import.meta.url,
-                          ),
-                          "utf-8",
-                        ),
+                        host: "127.0.0.1",
+                        port: 8002,
+                      },
+                      defaults: {
+                        from: {
+                          name: "Courselore",
+                          address: "feedback@courselore.org",
+                        },
                       },
                     },
-                  },
-                  environment: process.env.ENVIRONMENT ?? "default",
-                  slow: process.env.SLOW === "true",
-                  tunnel: typeof process.env.TUNNEL === "string",
-                },
+                    administratorEmail: "feedback@courselore.org",
+                    staticPaths: [
+                      url.fileURLToPath(
+                        new URL(
+                          "../configuration/saml-idp/logo/",
+                          import.meta.url,
+                        ),
+                      ),
+                    ],
+                    saml: {
+                      "courselore-university": {
+                        name: "Courselore University",
+                        ...(process.env.SAML_LOGO !== "false"
+                          ? {
+                              logo: {
+                                light:
+                                  "courselore-university--light--2023-09-15.webp",
+                                dark: "courselore-university--dark--2023-09-15.webp",
+                                width: 468,
+                              },
+                            }
+                          : {}),
+                        domains: ["courselore.org"],
+                        attributes: (samlResponse: any) => ({
+                          email: samlResponse?.profile?.nameID,
+                          name: samlResponse?.profile?.attributes?.name,
+                        }),
+                        options: {
+                          idpIssuer: `https://${hostname}:8003/metadata`,
+                          entryPoint: `https://${hostname}:8003/saml/sso`,
+                          logoutUrl: `https://${hostname}:8003/saml/slo`,
+                          wantAuthnResponseSigned: true,
+                          wantAssertionsSigned: false,
+                          signatureAlgorithm: "sha256",
+                          digestAlgorithm: "sha256",
+                          cert: await fs.readFile(
+                            new URL(
+                              "../configuration/saml-idp/certificate.pem",
+                              import.meta.url,
+                            ),
+                            "utf-8",
+                          ),
+                        },
+                      },
+                    },
+                    environment: process.env.ENVIRONMENT ?? "default",
+                    slow: process.env.SLOW === "true",
+                    tunnel: typeof process.env.TUNNEL === "string",
+                  };
+                })(),
           static: JSON.parse(
             await fs.readFile(
               new URL("./static/paths.json", import.meta.url),
@@ -605,13 +612,8 @@ if (await node.isExecuted(import.meta.url)) {
                           "127.0.0.1",
                           "--port",
                           "8004",
-                          "--cert",
-                          url.fileURLToPath(
-                            new URL(
-                              "../configuration/saml-idp/certificate.pem",
-                              import.meta.url,
-                            ),
-                          ),
+                          "--issuer",
+                          `https://${application.configuration.hostname}:8003/metadata`,
                           "--key",
                           url.fileURLToPath(
                             new URL(
@@ -619,14 +621,13 @@ if (await node.isExecuted(import.meta.url)) {
                               import.meta.url,
                             ),
                           ),
-                          "--issuer",
-                          "https://127.0.0.1:8003/metadata",
-                          "--acsUrl",
-                          "https://127.0.0.1/saml/courselore-university/assertion-consumer-service",
-                          "--sloUrl",
-                          "https://127.0.0.1/saml/courselore-university/single-logout-service",
-                          "--audience",
-                          "https://127.0.0.1/saml/courselore-university/metadata",
+                          "--cert",
+                          url.fileURLToPath(
+                            new URL(
+                              "../configuration/saml-idp/certificate.pem",
+                              import.meta.url,
+                            ),
+                          ),
                           "--configFile",
                           url.fileURLToPath(
                             new URL(
@@ -634,6 +635,12 @@ if (await node.isExecuted(import.meta.url)) {
                               import.meta.url,
                             ),
                           ),
+                          "--audience",
+                          `https://${application.configuration.hostname}/saml/courselore-university/metadata`,
+                          "--acsUrl",
+                          `https://${application.configuration.hostname}/saml/courselore-university/assertion-consumer-service`,
+                          "--sloUrl",
+                          `https://${application.configuration.hostname}/saml/courselore-university/single-logout-service`,
                         ],
                         options: {
                           preferLocal: true,
