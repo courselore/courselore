@@ -12,6 +12,7 @@
 
 ## Unreleased
 
+- Underline style (https://courselore.org/courses/8537410611/conversations/83)
 - Added a way for users to remove themselves from a course.
 - Fixed a missing header on `/help/styling-content` when you’re signed out.
 - Introduced friendlier error messages for when a port that Courselore needs is already occupied.

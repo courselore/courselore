@@ -1207,10 +1207,6 @@ export default async (application: Application): Promise<void> => {
 
               u {
                 text-decoration: underline;
-                text-decoration-color: var(--color--zinc--300);
-                @media (prefers-color-scheme: dark) {
-                  text-decoration-color: var(--color--zinc--500);
-                }
               }
 
               a {
