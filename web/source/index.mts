@@ -620,7 +620,7 @@ if (await node.isExecuted(import.meta.url)) {
                             ),
                           ),
                           "--issuer",
-                          "https://127.0.0.1:8004/metadata",
+                          "https://127.0.0.1:8003/metadata",
                           "--acsUrl",
                           "https://127.0.0.1/saml/courselore-university/assertion-consumer-service",
                           "--sloUrl",
@@ -630,7 +630,7 @@ if (await node.isExecuted(import.meta.url)) {
                           "--configFile",
                           url.fileURLToPath(
                             new URL(
-                              "../configuration/saml-idp/configuration.mjs",
+                              "../configuration/saml-idp/configuration.js",
                               import.meta.url,
                             ),
                           ),

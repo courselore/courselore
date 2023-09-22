@@ -1,4 +1,4 @@
-export default {
+module.exports = {
   user: {
     userName: "louie@courselore.org",
     name: "Louie Renner",
