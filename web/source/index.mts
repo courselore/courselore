@@ -201,16 +201,23 @@ if (await node.isExecuted(import.meta.url)) {
                     },
                   },
                   administratorEmail: "feedback@courselore.org",
+                  staticPaths: [
+                    url.fileURLToPath(
+                      new URL(
+                        "../configuration/saml-idp/logo/",
+                        import.meta.url,
+                      ),
+                    ),
+                  ],
                   saml: {
                     "courselore-university": {
-                      public: false,
                       name: "Courselore University",
                       ...(process.env.SAML_LOGO !== "false"
                         ? {
                             logo: {
                               light:
-                                "courselore-university/courselore-university--light--2023-09-15.webp",
-                              dark: "courselore-university/courselore-university--dark--2023-09-15.webp",
+                                "courselore-university--light--2023-09-15.webp",
+                              dark: "courselore-university--dark--2023-09-15.webp",
                               width: 468,
                             },
                           }
@@ -218,21 +225,23 @@ if (await node.isExecuted(import.meta.url)) {
                       domains: ["courselore.org"],
                       attributes: (samlResponse: any) => ({
                         email: samlResponse?.profile?.nameID,
-                        // TODO: SAML: https://github.com/keycloak/keycloak/discussions/23471
-                        // name: samlResponse?.profile?.attributes?.name,
-                        name: lodash.capitalize(
-                          samlResponse?.profile?.nameID?.split("@")?.[0],
-                        ),
+                        name: samlResponse?.profile?.attributes?.name,
                       }),
                       options: {
-                        idpIssuer: "http://127.0.0.1:8003/metadata",
-                        entryPoint: "http://127.0.0.1:8003/saml/sso",
-                        logoutUrl: "http://127.0.0.1:8003/saml/slo",
+                        idpIssuer: "https://127.0.0.1:8003/metadata",
+                        entryPoint: "https://127.0.0.1:8003/saml/sso",
+                        logoutUrl: "https://127.0.0.1:8003/saml/slo",
                         wantAuthnResponseSigned: true,
                         wantAssertionsSigned: false,
                         signatureAlgorithm: "sha256",
                         digestAlgorithm: "sha256",
-                        cert: "MIIDpzCCAo+gAwIBAgIUIMKIlzOqn6BcmpY2a7HhJjFWkJMwDQYJKoZIhvcNAQELBQAwYjEXMBUGA1UEAwwOY291cnNlbG9yZS5vcmcxCzAJBgNVBAYTAlVTMREwDwYDVQQIDAhNYXJ5bGFuZDESMBAGA1UEBwwJQmFsdGltb3JlMRMwEQYDVQQKDApDb3Vyc2Vsb3JlMCAXDTIzMDkyMjExMDg0MVoYDzMwMjMwMTIzMTEwODQxWjBiMRcwFQYDVQQDDA5jb3Vyc2Vsb3JlLm9yZzELMAkGA1UEBhMCVVMxETAPBgNVBAgMCE1hcnlsYW5kMRIwEAYDVQQHDAlCYWx0aW1vcmUxEzARBgNVBAoMCkNvdXJzZWxvcmUwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCcYHruKui3Z+F4uYr2mUGOHrV3ZVYeE16ZzgVm8qm18orQVNKrexmuEHnfdfJMGQIGlHZz8dRbYIVJjdK8rCMj22kkMkRK+npweGkB1QpJhHaHl06zR/6k8CBlhv9j8Ij+JPZuMX1qTiqhxXYYmj2JVw4lqZ0PdL7VavG5Hkkz3W6On1pBTWaxRT9KgBqkIIWlEk6knCP3RjH5iiULwZpb1MWfxy+PlgDtl+Uf9z75l8zqEbbGEhhQAop5KGqDvFFx6/0Hh7ikX2ZYhV6qB9rt97Y293NE6hD6l5j6u5WS0cO1Wt+dpolziPRB1G7c/Jwm2p424yoIYDlGrUugeOhzAgMBAAGjUzBRMB0GA1UdDgQWBBSuQVMz44/F0MlemIyQi4mJSF8SCDAfBgNVHSMEGDAWgBSuQVMz44/F0MlemIyQi4mJSF8SCDAPBgNVHRMBAf8EBTADAQH/MA0GCSqGSIb3DQEBCwUAA4IBAQBqlSKHNeghLRBKpPsfLCkKfb0vxYCwn4uSUeGUmE1myg0gX3sZ5yV75soPIhq5FEQlQ4/xsceQvR+fR4zCNDpBz4NvJP92HS9gDBqxH0rAp59sIbs5FqPT/1Rsha5i/NlcN/iguBe+amFleV3cxgnPXxtXDczugnJHJVMpWzlFU12CBvo7xuqNdyIdaZYX/qu0pVpMxyyI5QMS/IlE3jjQMRPusm6E5JT0YVlIzdgHrEFVZ35VEesFRtVAG3IkaBWjm17L+T4sl3ShZhviceOiMxOovBDa1mIfbS1ftUtIoD42MYGMkPFs68C9pQBamYz5lsptT8zWKdJWGfyd/8E5",
+                        cert: await fs.readFile(
+                          new URL(
+                            "../configuration/saml-idp/certificate.pem",
+                            import.meta.url,
+                          ),
+                          "utf-8",
+                        ),
                       },
                     },
                   },
@@ -508,6 +517,12 @@ if (await node.isExecuted(import.meta.url)) {
                                 lb_retries 1
                               }
                             }
+
+                            https://${application.configuration.hostname}:8003 {
+                              reverse_proxy http://127.0.0.1:8004 {
+                                lb_retries 1
+                              }
+                            }
                           `
                         : caddyfile``
                     }
@@ -555,6 +570,10 @@ if (await node.isExecuted(import.meta.url)) {
                       "DEMONSTRATION INBOX",
                       `https://${application.configuration.hostname}:8000`,
                     );
+                    application.log(
+                      "SAML IDENTITY PROVIDER",
+                      `https://${application.configuration.hostname}:8003`,
+                    );
                     const emailsDirectory = path.join(
                       application.configuration.dataDirectory,
                       "emails",
@@ -572,6 +591,49 @@ if (await node.isExecuted(import.meta.url)) {
                           emailsDirectory,
                           "--ip",
                           "127.0.0.1",
+                        ],
+                        options: {
+                          preferLocal: true,
+                          stdout: "ignore",
+                          stderr: "ignore",
+                        },
+                      },
+                      {
+                        file: "saml-idp",
+                        arguments: [
+                          "--host",
+                          "127.0.0.1",
+                          "--port",
+                          "8004",
+                          "--cert",
+                          url.fileURLToPath(
+                            new URL(
+                              "../configuration/saml-idp/certificate.pem",
+                              import.meta.url,
+                            ),
+                          ),
+                          "--key",
+                          url.fileURLToPath(
+                            new URL(
+                              "../configuration/saml-idp/private-key.pem",
+                              import.meta.url,
+                            ),
+                          ),
+                          "--issuer",
+                          "https://127.0.0.1:8004/metadata",
+                          "--acsUrl",
+                          "https://127.0.0.1/saml/courselore-university/assertion-consumer-service",
+                          "--sloUrl",
+                          "https://127.0.0.1/saml/courselore-university/single-logout-service",
+                          "--audience",
+                          "https://127.0.0.1/saml/courselore-university/metadata",
+                          "--configFile",
+                          url.fileURLToPath(
+                            new URL(
+                              "../configuration/saml-idp/configuration.mjs",
+                              import.meta.url,
+                            ),
+                          ),
                         ],
                         options: {
                           preferLocal: true,

@@ -2318,7 +2318,10 @@ export default async (application: Application): Promise<void> => {
       const samlResponseAttributes =
         response.locals.saml.attributes(samlResponse);
 
-      if (response.locals.saml.public === false)
+      if (
+        application.configuration.demonstration ||
+        response.locals.saml.public === false
+      )
         response.locals.log(
           "SAML RESPONSE",
           JSON.stringify(samlResponse, undefined, 2),
@@ -2832,7 +2835,10 @@ export default async (application: Application): Promise<void> => {
         .validatePostRequestAsync(request.body)
         .catch(() => undefined);
 
-      if (response.locals.saml.public === false)
+      if (
+        application.configuration.demonstration ||
+        response.locals.saml.public === false
+      )
         response.locals.log(
           "SAML REQUEST",
           JSON.stringify(samlRequest, undefined, 2),
@@ -2973,7 +2979,10 @@ export default async (application: Application): Promise<void> => {
         .validatePostResponseAsync(request.body)
         .catch(() => undefined);
 
-      if (response.locals.saml.public === false)
+      if (
+        application.configuration.demonstration ||
+        response.locals.saml.public === false
+      )
         response.locals.log(
           "SAML RESPONSE",
           JSON.stringify(samlResponse, undefined, 2),

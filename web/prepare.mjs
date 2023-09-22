@@ -222,7 +222,6 @@ for (const source of [
   "./static/favicon.ico",
   "./node_modules/fake-avatars/avatars/webp/",
   "./static/demonstration/",
-  "./static/courselore-university/",
 ]) {
   const destination = path.join(
     "./build",
