@@ -4,24 +4,12 @@
 
 **Key Management**
 
-- Deployment
-  - Changelog
-  - Backup
-  - Deploy
-  - Manual deployment
-  - Clean keys on `courselore.org` server
-  - Verify Hopkins SAML single sign-on
-- Future:
-  - A user interface for setting up SAML dynamically instead of using the configuration file
-  - Let the system administrators rotate keys?
-    - Create a user interface to let them create keys using Courselore (show private key only once)
-    - Create a user interface to let them import keys created elsewhere into Courselore
-    - Serve both keys during the transition period
-  - Internalize other parts of the configuration file and turn them into `administrationOptions`, for example, `email`
-  - Let people set different keys for different Identity Providers?
-  - Have some sort of wizard for when you start Courselore for the first time to set things up:
-    - Create administrator account
-    - Setup these `administrationOptions`
+- Changelog
+- Backup
+- Deploy
+- Manual deployment
+- Clean keys on `courselore.org` server
+- Verify Hopkins SAML single sign-on
 
 **Minor Changes**
 
@@ -724,6 +712,16 @@
 - Allow people to disconnect the SAML identity from their account? (As long as they have a password?)
 - Have a way for system administrators to turn off sign in via email and password
 - Introduce a way for system administrators to clear all sessions for when they need to remove a SAML identity provider
+- A user interface for setting up SAML dynamically instead of using the configuration file
+- Let the system administrators rotate keys?
+  - Create a user interface to let them create keys using Courselore (show private key only once)
+  - Create a user interface to let them import keys created elsewhere into Courselore
+  - Serve both keys during the transition period
+- Internalize other parts of the configuration file and turn them into `administrationOptions`, for example, `email`
+- Let people set different keys for different Identity Providers?
+- Have some sort of wizard for when you start Courselore for the first time to set things up:
+  - Create administrator account
+  - Setup these `administrationOptions`
 
 ## Users
 
