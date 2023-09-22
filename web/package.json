@@ -27,8 +27,7 @@
     "clean:build": "shx rm -rf ./build/",
     "clean:data": "shx rm -rf ./data/",
     "clean:node_modules": "shx rm -rf ./node_modules/",
-    "update": "npm-check-updates --upgrade && npm install",
-    "setup:keycloak": "docker run --name keycloak --publish 8003:8080 --env KEYCLOAK_ADMIN=admin --env KEYCLOAK_ADMIN_PASSWORD=admin --detach quay.io/keycloak/keycloak start-dev"
+    "update": "npm-check-updates --upgrade && npm install"
   },
   "engines": {
     "node": ">=20"

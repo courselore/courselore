@@ -201,48 +201,41 @@ if (await node.isExecuted(import.meta.url)) {
                     },
                   },
                   administratorEmail: "feedback@courselore.org",
-                  ...(typeof process.env.SAML_CERTIFICATE === "string"
-                    ? {
-                        saml: {
-                          "courselore-university": {
-                            public: false,
-                            name: "Courselore University",
-                            ...(process.env.SAML_LOGO !== "false"
-                              ? {
-                                  logo: {
-                                    light:
-                                      "courselore-university/courselore-university--light--2023-09-15.webp",
-                                    dark: "courselore-university/courselore-university--dark--2023-09-15.webp",
-                                    width: 468,
-                                  },
-                                }
-                              : {}),
-                            domains: ["courselore.org"],
-                            attributes: (samlResponse: any) => ({
-                              email: samlResponse?.profile?.nameID,
-                              // TODO: SAML: https://github.com/keycloak/keycloak/discussions/23471
-                              // name: samlResponse?.profile?.attributes?.name,
-                              name: lodash.capitalize(
-                                samlResponse?.profile?.nameID?.split("@")?.[0],
-                              ),
-                            }),
-                            options: {
-                              idpIssuer:
-                                "http://127.0.0.1:8003/realms/courselore-university",
-                              entryPoint:
-                                "http://127.0.0.1:8003/realms/courselore-university/protocol/saml",
-                              logoutUrl:
-                                "http://127.0.0.1:8003/realms/courselore-university/protocol/saml",
-                              wantAuthnResponseSigned: true,
-                              wantAssertionsSigned: false,
-                              signatureAlgorithm: "sha256",
-                              digestAlgorithm: "sha256",
-                              cert: process.env.SAML_CERTIFICATE,
+                  saml: {
+                    "courselore-university": {
+                      public: false,
+                      name: "Courselore University",
+                      ...(process.env.SAML_LOGO !== "false"
+                        ? {
+                            logo: {
+                              light:
+                                "courselore-university/courselore-university--light--2023-09-15.webp",
+                              dark: "courselore-university/courselore-university--dark--2023-09-15.webp",
+                              width: 468,
                             },
-                          },
-                        },
-                      }
-                    : {}),
+                          }
+                        : {}),
+                      domains: ["courselore.org"],
+                      attributes: (samlResponse: any) => ({
+                        email: samlResponse?.profile?.nameID,
+                        // TODO: SAML: https://github.com/keycloak/keycloak/discussions/23471
+                        // name: samlResponse?.profile?.attributes?.name,
+                        name: lodash.capitalize(
+                          samlResponse?.profile?.nameID?.split("@")?.[0],
+                        ),
+                      }),
+                      options: {
+                        idpIssuer: "http://127.0.0.1:8003/metadata",
+                        entryPoint: "http://127.0.0.1:8003/saml/sso",
+                        logoutUrl: "http://127.0.0.1:8003/saml/slo",
+                        wantAuthnResponseSigned: true,
+                        wantAssertionsSigned: false,
+                        signatureAlgorithm: "sha256",
+                        digestAlgorithm: "sha256",
+                        cert: "MIIDpzCCAo+gAwIBAgIUIMKIlzOqn6BcmpY2a7HhJjFWkJMwDQYJKoZIhvcNAQELBQAwYjEXMBUGA1UEAwwOY291cnNlbG9yZS5vcmcxCzAJBgNVBAYTAlVTMREwDwYDVQQIDAhNYXJ5bGFuZDESMBAGA1UEBwwJQmFsdGltb3JlMRMwEQYDVQQKDApDb3Vyc2Vsb3JlMCAXDTIzMDkyMjExMDg0MVoYDzMwMjMwMTIzMTEwODQxWjBiMRcwFQYDVQQDDA5jb3Vyc2Vsb3JlLm9yZzELMAkGA1UEBhMCVVMxETAPBgNVBAgMCE1hcnlsYW5kMRIwEAYDVQQHDAlCYWx0aW1vcmUxEzARBgNVBAoMCkNvdXJzZWxvcmUwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCcYHruKui3Z+F4uYr2mUGOHrV3ZVYeE16ZzgVm8qm18orQVNKrexmuEHnfdfJMGQIGlHZz8dRbYIVJjdK8rCMj22kkMkRK+npweGkB1QpJhHaHl06zR/6k8CBlhv9j8Ij+JPZuMX1qTiqhxXYYmj2JVw4lqZ0PdL7VavG5Hkkz3W6On1pBTWaxRT9KgBqkIIWlEk6knCP3RjH5iiULwZpb1MWfxy+PlgDtl+Uf9z75l8zqEbbGEhhQAop5KGqDvFFx6/0Hh7ikX2ZYhV6qB9rt97Y293NE6hD6l5j6u5WS0cO1Wt+dpolziPRB1G7c/Jwm2p424yoIYDlGrUugeOhzAgMBAAGjUzBRMB0GA1UdDgQWBBSuQVMz44/F0MlemIyQi4mJSF8SCDAfBgNVHSMEGDAWgBSuQVMz44/F0MlemIyQi4mJSF8SCDAPBgNVHRMBAf8EBTADAQH/MA0GCSqGSIb3DQEBCwUAA4IBAQBqlSKHNeghLRBKpPsfLCkKfb0vxYCwn4uSUeGUmE1myg0gX3sZ5yV75soPIhq5FEQlQ4/xsceQvR+fR4zCNDpBz4NvJP92HS9gDBqxH0rAp59sIbs5FqPT/1Rsha5i/NlcN/iguBe+amFleV3cxgnPXxtXDczugnJHJVMpWzlFU12CBvo7xuqNdyIdaZYX/qu0pVpMxyyI5QMS/IlE3jjQMRPusm6E5JT0YVlIzdgHrEFVZ35VEesFRtVAG3IkaBWjm17L+T4sl3ShZhviceOiMxOovBDa1mIfbS1ftUtIoD42MYGMkPFs68C9pQBamYz5lsptT8zWKdJWGfyd/8E5",
+                      },
+                    },
+                  },
                   environment: process.env.ENVIRONMENT ?? "default",
                   slow: process.env.SLOW === "true",
                   tunnel: typeof process.env.TUNNEL === "string",
