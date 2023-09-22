@@ -182,7 +182,7 @@ if (await node.isExecuted(import.meta.url)) {
               ? (await import(url.pathToFileURL(configuration).href)).default
               : {
                   hostname:
-                    process.env.TUNNEL ?? process.env.HOSTNAME ?? "localhost",
+                    process.env.TUNNEL ?? process.env.HOSTNAME ?? "127.0.0.1",
                   dataDirectory:
                     typeof process.env.ENVIRONMENT === "string" &&
                     ["development", "profile"].includes(process.env.ENVIRONMENT)
@@ -223,11 +223,11 @@ if (await node.isExecuted(import.meta.url)) {
                               name: samlResponse?.profile?.attributes?.name,
                             }),
                             options: {
-                              idpIssuer: "http://127.0.0.1:8003/realms/myrealm",
+                              idpIssuer: "http://127.0.0.1:8003/realms/courselore-university",
                               entryPoint:
-                                "http://127.0.0.1:8003/realms/myrealm/protocol/saml",
+                                "http://127.0.0.1:8003/realms/courselore-university/protocol/saml",
                               logoutUrl:
-                                "http://127.0.0.1:8003/realms/myrealm/protocol/saml",
+                                "http://127.0.0.1:8003/realms/courselore-university/protocol/saml",
                               wantAuthnResponseSigned: true,
                               wantAssertionsSigned: false,
                               signatureAlgorithm: "sha256",

@@ -249,6 +249,19 @@ export type ApplicationAuthentication = {
 };
 
 export default async (application: Application): Promise<void> => {
+  application.web.get<
+    {},
+    any,
+    {},
+    {},
+    Application["web"]["locals"]["ResponseLocals"]["LiveConnection"]
+  >("/certificate.pem", (request, response) => {
+    response
+      .contentType("application/x-pem-file")
+      .header("Content-Disposition", "attachment;filename=certificate.pem")
+      .send(response.locals.administrationOptions.certificate);
+  });
+
   application.web.locals.configuration.argon2 = {
     type: argon2.argon2id,
     memoryCost: 15 * 2 ** 10,

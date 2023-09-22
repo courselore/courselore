@@ -5,6 +5,24 @@
 **Key Management**
 
 - Introduce Keycloak in development for mocking SAML
+  - Documentation
+    - `npm run setup:keycloak`
+    - <http://127.0.0.1:8003/>
+    - Administration Console
+    - Sign in as `admin`/`admin`
+    - Create a realm called `courselore-university`
+    - Check certificate at **Realm settings > SAML 2.0 Identity Provider Metadata > ds:X509Certificate** (<http://127.0.0.1:8003/realms/courselore-university/protocol/saml/descriptor>)
+    - `env SAML_CERTIFICATE="MIICuTCCAaECBgGKuMqhNDANBgkqhkiG9w0BAQsFADAgMR4wHAYDVQQDDBVjb3Vyc2Vsb3JlLXVuaXZlcnNpdHkwHhcNMjMwOTIxMTcyODIxWhcNMzMwOTIxMTczMDAxWjAgMR4wHAYDVQQDDBVjb3Vyc2Vsb3JlLXVuaXZlcnNpdHkwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDaYiDCsgkW3EtxtaUT7czpNnSQwmB+baPu+7U/VvpYpSU8vHYZ2HNO/oGwcPtNch6r8TsiObk24Kyw508+PaJTmF7WN6iQM8BEprfWbyDPqr+f0EoZO70bOLA/+2W7G3Gm8vBBPN77qVv5qkkAeNwJwcvbuOhpJMp2KJeE2cI3pQ8Al1Wg0zFahxqr+OFhT/pGTuHpALnoe5dQ8Ah2/hZumz/4MuSU/DpHotsK3lK+B9JuVozYy/XhXb070NNq8hib6rBHGtselWT650EjB9fh/xKdsALAbITfvpXT6+WpaSskzc+3bKIv5pcXV+BNzs/rhceKUYsqK8N93ZWSoq3XAgMBAAEwDQYJKoZIhvcNAQELBQADggEBAIlmV+IhwakN9aQU0fxqYSXdQNs4PI2cj+DfEqCv/y/89SzTNLI7MUeOaiIavClIIVcQzqphdbbpvR5QOsii4MjyZ3nVKESXTzB0+P1IbF56hIX8u/boZwhoV97OY+5E7z5BxWZO1h5p/sOq/izEiVCRnGrkp0kPZ0TOuCigNJ5S+6g9z31gTNBqQsHqpAgRJI0raD2fc6Ufqlm56c9LHdGg/zBqb389j4oTH7qbJ7hBi1KySJO489gKsDZfOtc+amKV7/Cc87lbDHGydf7GPO+W7yy5i+cXaPwnjegw7AsC7fxFbrDi6cF1poYJ3Awzjb4zOevd7oWT/LZV4opMwm8=" npm start`
+    - Create an User including at least **Username**, **Email** ending in `@courselore.org`, **First name**, and **Last name**
+    - Create Credentials for that user with password and **Temporary** set to **Off**
+    - Create a Client with:
+      - **Client type:** SAML
+      - **Client ID:** `https://127.0.0.1/saml/courselore-university/metadata`
+      - **Valid redirect URIs:** `https://127.0.0.1/saml/courselore-university/assertion-consumer-service`
+    - <https://127.0.0.1/certificate.pem>
+    - **Keys > Signing keys config > Import key**
+      - **Archive format:** Certificate PEM
+    - <https://127.0.0.1/sign-in/saml>
   - Test
     - SP-initiated SSO
     - SP-initiated SLO
@@ -16,7 +34,7 @@
         - Client type: SAML
         - Client ID: https://leafac--macbook.local/saml/courselore-university/metadata
         - Valid redirect URIs: https://leafac--macbook.local/saml/courselore-university/assertion-consumer-service
-      - http://127.0.0.1:8080/realms/myrealm/protocol/saml/descriptor
+      - http://127.0.0.1:8080/realms/courselore-university/protocol/saml/descriptor
     - `SAML_CERTIFICATE`
     - https://www.samltool.com/online_tools.php
     - https://samltool.io/ is probably bad (https://github.com/keycloak/keycloak/issues/22962)
