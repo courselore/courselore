@@ -4,92 +4,24 @@
 
 **Key Management**
 
-- Introduce Keycloak in development for mocking SAML
-  - Documentation
-    - `npm run setup:keycloak`
-    - <http://127.0.0.1:8003/>
-    - Administration Console
-    - Sign in as `admin`/`admin`
-    - Create a realm called `courselore-university`
-    - Check certificate at **Realm settings > SAML 2.0 Identity Provider Metadata > ds:X509Certificate** (<http://127.0.0.1:8003/realms/courselore-university/protocol/saml/descriptor>)
-    - `env SAML_CERTIFICATE="MIICuTCCAaECBgGKuMqhNDANBgkqhkiG9w0BAQsFADAgMR4wHAYDVQQDDBVjb3Vyc2Vsb3JlLXVuaXZlcnNpdHkwHhcNMjMwOTIxMTcyODIxWhcNMzMwOTIxMTczMDAxWjAgMR4wHAYDVQQDDBVjb3Vyc2Vsb3JlLXVuaXZlcnNpdHkwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDaYiDCsgkW3EtxtaUT7czpNnSQwmB+baPu+7U/VvpYpSU8vHYZ2HNO/oGwcPtNch6r8TsiObk24Kyw508+PaJTmF7WN6iQM8BEprfWbyDPqr+f0EoZO70bOLA/+2W7G3Gm8vBBPN77qVv5qkkAeNwJwcvbuOhpJMp2KJeE2cI3pQ8Al1Wg0zFahxqr+OFhT/pGTuHpALnoe5dQ8Ah2/hZumz/4MuSU/DpHotsK3lK+B9JuVozYy/XhXb070NNq8hib6rBHGtselWT650EjB9fh/xKdsALAbITfvpXT6+WpaSskzc+3bKIv5pcXV+BNzs/rhceKUYsqK8N93ZWSoq3XAgMBAAEwDQYJKoZIhvcNAQELBQADggEBAIlmV+IhwakN9aQU0fxqYSXdQNs4PI2cj+DfEqCv/y/89SzTNLI7MUeOaiIavClIIVcQzqphdbbpvR5QOsii4MjyZ3nVKESXTzB0+P1IbF56hIX8u/boZwhoV97OY+5E7z5BxWZO1h5p/sOq/izEiVCRnGrkp0kPZ0TOuCigNJ5S+6g9z31gTNBqQsHqpAgRJI0raD2fc6Ufqlm56c9LHdGg/zBqb389j4oTH7qbJ7hBi1KySJO489gKsDZfOtc+amKV7/Cc87lbDHGydf7GPO+W7yy5i+cXaPwnjegw7AsC7fxFbrDi6cF1poYJ3Awzjb4zOevd7oWT/LZV4opMwm8=" npm start`
-    - Create an User including at least **Username**, **Email** ending in `@courselore.org`, **First name**, and **Last name**
-    - Create Credentials for that user with password and **Temporary** set to **Off**
-    - Create a Client with:
-      - **Client type:** SAML
-      - **Client ID:** `https://127.0.0.1/saml/courselore-university/metadata`
-      - **Valid redirect URIs:** `https://127.0.0.1/saml/courselore-university/assertion-consumer-service`
-    - <https://127.0.0.1/certificate.pem>
-    - **Keys > Signing keys config > Import key**
-      - **Archive format:** Certificate PEM
-    - <https://127.0.0.1/sign-in/saml>
-  - Test
-    - SP-initiated SSO
-    - SP-initiated SLO
-    - IdP-initiated SSO
-    - IdP-initiated SLO
-  - Document for developers
-    - https://www.keycloak.org/getting-started/getting-started-docker
-      - In Keycloak:
-        - Client type: SAML
-        - Client ID: https://leafac--macbook.local/saml/courselore-university/metadata
-        - Valid redirect URIs: https://leafac--macbook.local/saml/courselore-university/assertion-consumer-service
-      - http://127.0.0.1:8080/realms/courselore-university/protocol/saml/descriptor
-    - `SAML_CERTIFICATE`
-    - https://www.samltool.com/online_tools.php
-    - https://samltool.io/ is probably bad (https://github.com/keycloak/keycloak/issues/22962)
-- Clean keys on `courselore.org` server
+- Deployment
+  - Changelog
+  - Backup
+  - Deploy
+  - Manual deployment
+  - Clean keys on `courselore.org` server
+  - Verify Hopkins SAML single sign-on
 - Future:
   - A user interface for setting up SAML dynamically instead of using the configuration file
   - Let the system administrators rotate keys?
     - Create a user interface to let them create keys using Courselore (show private key only once)
-    - Create a user interface to let them inform Courselore of keys created elsewhere
+    - Create a user interface to let them import keys created elsewhere into Courselore
     - Serve both keys during the transition period
-    - The complication is to reload all the SAML stuff
-  - Let people set different keys for different Identity Providers?
   - Internalize other parts of the configuration file and turn them into `administrationOptions`, for example, `email`
+  - Let people set different keys for different Identity Providers?
   - Have some sort of wizard for when you start Courselore for the first time to set things up:
     - Create administrator account
     - Setup these `administrationOptions`
-- Notes:
-
-  - One key
-    - All Identity Providers
-    - All purposes: signing & encrypting
-    - All services: SAML & LTI (OAuth)
-    - https://www.stackallocated.com/blog/2020/saml-idp-no-shared-keys/
-    - But metadata is different, because we use the URL to communicate the Identity Provider `samlIdentifier`.
-    - Pros of separate keys:
-      - Probably a bit more secure, given that an issue with a key doesn’t contaminate everything.
-      - It’s what we already have.
-    - Pros of same key:
-      - Easier to manage (think of initial configuration, rotation, and so forth).
-      - It’s what other services seem to do (Moodle, Canvas, Piazza, NOT GRADESCOPE).
-      - Setup only once with Identity Provider (think of LTI and its multiple courses with the same institution)
-      - Holds up well when we extend the LTI support to sync with the LMS at the installation level (as opposed to the course level as we’re doing now) and create courses in Courselore automatically
-  - Create keys with OpenSSL
-
-    ```
-    openssl req -x509 -newkey rsa:2048 -nodes -days 365000 -subj "/C=US/ST=Maryland/L=Baltimore/O=Courselore/CN=courselore.org" -keyout example.key -out example.crt
-    openssl x509 -pubkey -noout -in example.crt > example.pub
-
-    openssl rsa -in example.key -text -noout > example.key.txt
-    openssl rsa -inform PEM -pubin -in example.pub -text -noout > example.pub.txt
-    openssl x509 -in example.crt -text -noout > example.crt.txt
-    ```
-
-  - Libraries
-    - https://github.com/digitalbazaar/forge
-      - https://github.com/jfromaniello/selfsigned
-    - https://www.npmjs.com/package/jose
-      - Use to import certificates and export in JWK format (but can’t generate the certificate to begin with—can only generate keys)
-    - Web Crypto API
-      - No: Doesn’t support working with certificates
-    - Node.js’s crypto
-      - No: Doesn’t support generating certificates
-    - https://www.npmjs.com/package/rasha
-      - No: Doesn’t support working with certificates
-    - https://npmtrends.com/crypt-vs-crypto-js-vs-jose-vs-keypair-vs-node-forge-vs-rasha
 
 **Minor Changes**
 
