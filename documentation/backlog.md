@@ -4,7 +4,6 @@
 
 **Key Management**
 
-- Replace `127.0.0.1` with `hostname`
 - Introduce Keycloak in development for mocking SAML
   - Documentation
     - `npm run setup:keycloak`

@@ -631,7 +631,7 @@ if (await node.isExecuted(import.meta.url)) {
                           "--configFile",
                           url.fileURLToPath(
                             new URL(
-                              "../configuration/saml-idp/configuration.js",
+                              "../configuration/saml-idp/configuration.cjs",
                               import.meta.url,
                             ),
                           ),
