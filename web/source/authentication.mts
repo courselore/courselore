@@ -2167,11 +2167,11 @@ export default async (application: Application): Promise<void> => {
         issuer: `https://${application.configuration.hostname}/saml/${request.params.samlIdentifier}/metadata`,
         callbackUrl: `https://${application.configuration.hostname}/saml/${request.params.samlIdentifier}/assertion-consumer-service`,
         logoutCallbackUrl: `https://${application.configuration.hostname}/saml/${request.params.samlIdentifier}/single-logout-service`,
+        privateKey: response.locals.administrationOptions.privateKey,
+        decryptionPvk: response.locals.administrationOptions.privateKey,
         validateInResponseTo: nodeSAML.ValidateInResponseTo.ifPresent,
         requestIdExpirationPeriodMs: 60 * 60 * 1000,
         maxAssertionAgeMs: 60 * 60 * 1000,
-        privateKey: response.locals.administrationOptions.privateKey,
-        decryptionPvk: response.locals.administrationOptions.privateKey,
         cacheProvider: {
           saveAsync: async (key, value) => {
             if (
