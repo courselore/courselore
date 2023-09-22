@@ -3066,7 +3066,7 @@ export default async (application: Application): Promise<void> => {
                         if (!event.dataTransfer.types.includes("Files")) return;
                         event.preventDefault();
                         this.classList.remove("drag");
-                        const fileList = [...event.dataTransfer.items].flatMap((item) => item.webkitGetAsEntry().isFile ? [item.getAsFile()] : []);
+                        const fileList = [...event.dataTransfer.items].flatMap((item) => item.webkitGetAsEntry()?.isFile ?? true ? [item.getAsFile()] : []);
                         if (fileList.length > 0)
                           this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--attachments"]').upload(fileList);
                       };
@@ -3121,7 +3121,7 @@ export default async (application: Application): Promise<void> => {
                           }, 10 * 1000);
                         } else if (event.clipboardData.types.includes("Files")) {
                           event.preventDefault();
-                          const fileList = [...event.clipboardData.items].flatMap((item) => item.webkitGetAsEntry().isFile ? [item.getAsFile()] : []);
+                          const fileList = [...event.clipboardData.items].flatMap((item) => item.webkitGetAsEntry()?.isFile ?? true ? [item.getAsFile()] : []);
                           if (fileList.length > 0)
                             this.closest('[key="content-editor"]').querySelector('[key="content-editor--write--attachments"]').upload(fileList);
                         }

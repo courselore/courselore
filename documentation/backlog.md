@@ -14,7 +14,6 @@
 **Minor Changes**
 
 - https://courselore.org/courses/8537410611/conversations/83
-  - Select part of image and Cmd+V
   - Preserve indentation
   - Perhaps the default should be plain-text pasting, and the keyboard modifier would be for rich-text pasting
   - Nag about printscreen of code

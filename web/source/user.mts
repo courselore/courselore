@@ -930,7 +930,7 @@ export default async (application: Application): Promise<void> => {
                     event.preventDefault();
                     this.classList.remove("drag");
                     this.dragLevel = 0;
-                    const fileList = [...event.dataTransfer.items].flatMap((item) => item.webkitGetAsEntry().isFile ? [item.getAsFile()] : []);
+                    const fileList = [...event.dataTransfer.items].flatMap((item) => item.webkitGetAsEntry()?.isFile ?? true ? [item.getAsFile()] : []);
                     if (fileList.length > 0)
                       this.querySelector('[key="avatar-chooser--upload"]').upload(fileList);
                   };
