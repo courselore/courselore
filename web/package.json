@@ -74,6 +74,7 @@
     "remark-math": "^5.1.1",
     "remark-parse": "^10.0.2",
     "remark-rehype": "^10.1.0",
+    "saml-idp": "^1.2.1",
     "sanitize-xml-string": "^1.1.0",
     "semver": "^7.5.4",
     "sharp": "^0.32.5",
