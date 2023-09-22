@@ -18,6 +18,7 @@
   - Select part of image and Cmd+V
   - Preserve indentation
   - Perhaps the default should be plain-text pasting, and the keyboard modifier would be for rich-text pasting
+  - Nag about printscreen of code
   - Investigate OCR
     - https://www.npmjs.com/package/tesseract.js
     - https://www.npmjs.com/package/node-tesseract-ocr
@@ -28,7 +29,6 @@
 - https://courselore.org/courses/8537410611/conversations/84
   - Add to the `…` menu under a message the option to switch message type, which just activates the existing dropdown
 - Don’t present the staff whispers button if the conversation involves only staff members.
-- Nag about printscreen of code
 
 **Learning Tools Interoperability (LTI)**
 
