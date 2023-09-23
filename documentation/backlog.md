@@ -2,12 +2,6 @@
 
 ## Work in Progress
 
-**Key Management**
-
-- Manual deployment
-- Clean keys on `courselore.org` server
-- Verify Hopkins SAML single sign-on
-
 **Minor Changes**
 
 - https://courselore.org/courses/8537410611/conversations/83
