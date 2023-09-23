@@ -12,6 +12,12 @@
 
 ## Unreleased
 
+## 7.0.1
+
+**2023-09-23 · [Download](https://github.com/courselore/courselore/releases/tag/v7.0.1) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
+
+- Added more logging to SAML errors to help investigate issues caused by updating to Courselore 7.0.0.
+
 ## 7.0.0
 
 **2023-09-23 · [Download](https://github.com/courselore/courselore/releases/tag/v7.0.0) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
