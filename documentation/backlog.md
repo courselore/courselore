@@ -4,7 +4,6 @@
 
 **Key Management**
 
-- Backup
 - Deploy
 - Manual deployment
 - Clean keys on `courselore.org` server
