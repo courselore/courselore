@@ -4,7 +4,6 @@
 
 **Key Management**
 
-- Deploy
 - Manual deployment
 - Clean keys on `courselore.org` server
 - Verify Hopkins SAML single sign-on
