@@ -5,16 +5,23 @@
 **Minor Changes**
 
 - https://courselore.org/courses/8537410611/conversations/83
-  - Preserve indentation
-  - Perhaps the default should be plain-text pasting, and the keyboard modifier would be for rich-text pasting
-  - Nag about printscreen of code
-  - Investigate OCR
-    - https://www.npmjs.com/package/tesseract.js
-    - https://www.npmjs.com/package/node-tesseract-ocr
-    - https://www.codefromscreenshot.com/
-    - https://code.pieces.app/blog/how-we-made-our-optical-character-recognition-ocr-code-more-accurate
-    - https://code.pieces.app/blog/top-ocr-tools
-    - https://www.runtime.dev/
+  - Rich-text pasting
+    - Context-aware pasting
+    - Toggle (similar to Programmer Mode)
+    - Preserve indentation
+      - Feasible, but undesirable, because it may produce invalid Markdown unless we know in which context you’re pasting, and in other cases the spacing in Markdown doesn’t translate to HTML either
+    - Perhaps the default should be plain-text pasting, and the keyboard modifier would be for rich-text pasting
+      - Wouldn’t work across browsers, because there’s no reliable way to trigger a rich-text paste
+  - Printscreen of code
+    - Detect & teach user how to paste code
+    - OCR
+      - Only feasible if errors are **very** rare
+      - https://www.npmjs.com/package/tesseract.js
+      - https://www.npmjs.com/package/node-tesseract-ocr
+      - https://www.codefromscreenshot.com/
+      - https://code.pieces.app/blog/how-we-made-our-optical-character-recognition-ocr-code-more-accurate
+      - https://code.pieces.app/blog/top-ocr-tools
+      - https://www.runtime.dev/
 - https://courselore.org/courses/8537410611/conversations/84
   - Add to the `…` menu under a message the option to switch message type, which just activates the existing dropdown
 - Don’t present the staff whispers button if the conversation involves only staff members.

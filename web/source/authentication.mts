@@ -2299,7 +2299,11 @@ export default async (application: Application): Promise<void> => {
       const samlResponse = await response.locals.saml.saml
         .validatePostResponseAsync(request.body)
         .catch((error) => {
-          response.locals.log("SAML RESPONSE ERROR", error);
+          response.locals.log(
+            "SAML RESPONSE ERROR",
+            error,
+            JSON.stringify(request.body, undefined, 2),
+          );
           return undefined;
         });
       const samlResponseAttributes =
@@ -2820,7 +2824,14 @@ export default async (application: Application): Promise<void> => {
 
       const samlRequest = await response.locals.saml.saml
         .validatePostRequestAsync(request.body)
-        .catch(() => undefined);
+        .catch((error) => {
+          response.locals.log(
+            "SAML REQUEST MAYBE ERROR",
+            error,
+            JSON.stringify(request.body, undefined, 2),
+          );
+          return undefined;
+        });
 
       if (
         application.configuration.demonstration ||
@@ -2964,7 +2975,14 @@ export default async (application: Application): Promise<void> => {
 
       const samlResponse = await response.locals.saml.saml
         .validatePostResponseAsync(request.body)
-        .catch(() => undefined);
+        .catch((error) => {
+          response.locals.log(
+            "SAML RESPONSE ERROR",
+            error,
+            JSON.stringify(request.body, undefined, 2),
+          );
+          return undefined;
+        });
 
       if (
         application.configuration.demonstration ||
