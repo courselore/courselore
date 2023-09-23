@@ -4,8 +4,6 @@
 
 **Key Management**
 
-- Review changes
-- Changelog
 - Backup
 - Deploy
 - Manual deployment

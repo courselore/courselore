@@ -12,14 +12,43 @@
 
 ## Unreleased
 
-- Underline style (https://courselore.org/courses/8537410611/conversations/83)
-- Select part of image and Cmd+V (https://courselore.org/courses/8537410611/conversations/83)
+## 7.0.0
+
+**2023-09-23 · [Download](https://github.com/courselore/courselore/releases/tag/v7.0.0) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
+
+**This is a major release for the following reasons:**
+
+1. If you setup the experimental support for SAML, then you must apply some changes to the configuration file.
+
+   In particular, the following options are no longer supported:
+
+   - `privateKey`
+   - `signingCert`
+   - `decryptionPvk`
+   - `decryptionCert`
+   - `maxAssertionAgeMs`
+
+   And the following options are recommended:
+
+   - `wantAuthnResponseSigned`
+   - `wantAssertionsSigned`
+
+   Refer to https://github.com/courselore/courselore/blob/1aaef74c7bfee6e85a47922abcc32636db262111/web/configuration/example.mjs for details.
+
+2. You must run the Courselore executable by hand at least once to answer some prompts. We changed the way that Courselore manages keys for integrations including SAML and the upcoming LTI support. Previously you’d have to create keys and provide them to Courselore; now Courselore creates and manages keys internally.
+
+   If you had already setup SAML, then when prompted you may wish to continue using the same keys and avoid having to rotate keys with Identity Providers. This is only possible if you had the same keys for signing and encryption, as moving forward Courselore will only have one keypair for both purposes. And it’s only possible with you had a single keypair for all the SAML Identity Providers, as moving forward will only have one keypair for the whole installation.
+
+3. The ports that Courselore uses have changed. Besides ports 80 and 443, previously Courselore would bind to ports in the 6000–9000 range. Now Courselore binds to ports starting on 18000, and the number of ports depends on the number of processes, which ultimately depends on the number of CPU cores. If a port is unavailable, now Courselore will report with a friendly error message and propose to kill the other processes (as long as its run interactively instead of through a process manager).
+
+---
+
+Besides the breaking changes above, this version of Courselore also includes the following changes:
+
 - Added a way for users to remove themselves from a course.
+- Changed underline style (https://courselore.org/courses/8537410611/conversations/83).
+- Allowed you to copy-and-paste image buffers (https://courselore.org/courses/8537410611/conversations/83).
 - Fixed a missing header on `/help/styling-content` when you’re signed out.
-- Introduced friendlier error messages for when a port that Courselore needs is already occupied.
-- Breaking changes
-  - Port management
-  - Key management
 
 ## 6.2.1
 
