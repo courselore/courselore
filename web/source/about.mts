@@ -34,6 +34,7 @@ export default async (application: Application): Promise<void> => {
         head: html`
           <title>Courselore · Communication Platform for Education</title>
         `,
+        showLogoWhenSignedOut: false,
         body: html`
           <div
             css="${css`
