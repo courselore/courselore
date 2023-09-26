@@ -1,9 +1,10 @@
 # Meetings
 
 <details>
-<summary>2023-09-16</summary>
+<summary>2023-09-23</summary>
 
-- Verify Hopkins SAML single sign-on.
+- Finished the work on key management for SAML & LTI.
+- Deployed several small improvements, for example, added a way for users to remove themselves from a course.
 
 </details>
 
