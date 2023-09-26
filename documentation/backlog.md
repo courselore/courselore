@@ -14,6 +14,19 @@
       - Wouldn’t work across browsers, because there’s no reliable way to trigger a rich-text paste
   - Printscreen of code
     - Detect & teach user how to paste code
+      - Look at existing images
+      - File name
+      - Resolution & pixel density
+      - Metadata
+      - Image manipulation
+        - https://medium.com/carsales-dev/using-image-processing-to-extract-the-perfect-shot-out-of-a-screenshot-60a6295a31c4
+        - https://sharp.pixelplumbing.com/
+      - Clustering algorithm
+        - https://ml5js.org/
+        - https://keras.io/
+        - https://www.tensorflow.org/
+        - https://pytorch.org/
+        - https://towardsdatascience.com/how-i-used-machine-learning-to-detect-chat-screenshots-on-my-phone-a46d875b07af
     - OCR
       - Only feasible if errors are **very** rare
       - https://www.npmjs.com/package/tesseract.js
