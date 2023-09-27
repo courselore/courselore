@@ -27,7 +27,8 @@
     "clean:build": "shx rm -rf ./build/",
     "clean:data": "shx rm -rf ./data/",
     "clean:node_modules": "shx rm -rf ./node_modules/",
-    "update": "npm-check-updates --upgrade && npm install"
+    "update": "npm-check-updates --upgrade && npm install",
+    "backup": "rsync -av --progress --delete root@courselore.org:courselore/data/ ../../BACKUP/"
   },
   "engines": {
     "node": ">=20"
