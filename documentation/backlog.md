@@ -14,7 +14,6 @@
       - Wouldn’t work across browsers, because there’s no reliable way to trigger a rich-text paste
   - Printscreen of code
     - Detect & teach user how to paste code
-      - Look at existing images
       - File name
       - Resolution & pixel density
       - Metadata
