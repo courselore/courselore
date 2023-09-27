@@ -43,7 +43,6 @@
 
 **Learning Tools Interoperability (LTI)**
 
-- Prototype OpenID Connect with Keycloak
 - Reverse engineer LTI 1.3
 
   - Make Members request work
