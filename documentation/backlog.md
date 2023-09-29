@@ -18,6 +18,7 @@
       - Resolution & pixel density
       - Metadata
       - Image manipulation
+        - Histogram
         - https://medium.com/carsales-dev/using-image-processing-to-extract-the-perfect-shot-out-of-a-screenshot-60a6295a31c4
         - https://sharp.pixelplumbing.com/
       - Clustering algorithm
