@@ -1590,6 +1590,7 @@ const { app, BrowserWindow } = require("electron");
     - https://www.peterbe.com/plog/aggressively-prefetching-everything-you-might-click
     - https://www.mskog.com/posts/instant-page-loads-with-turbolinks-and-prefetch
     - http://instantclick.io
+  - Predictive prefetching: https://www.tensorflow.org/js/tutorials/applications/predictive_prefetching
   - References:
     - https://web.dev/speculative-prerendering/
 - Write a function to determine if processing content is even necessary. Most content doesn’t use extra features and could skip JSDOM entirely.
