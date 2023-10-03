@@ -7,6 +7,8 @@
 - Printscreen of code
   - Detect & teach user how to paste code
     - Classification with Machine Learning
+      - https://www.tensorflow.org/
+        - https://www.tensorflow.org/js/guide/nodejs
       - https://ml5js.org/
         - Only works in the browser
       - https://teachablemachine.withgoogle.com/
@@ -14,8 +16,6 @@
           - https://blog.sashido.io/how-to-load-a-teachable-machine-image-model-in-a-node-js-project/
       - https://keras.io/
         - Mostly for Python
-      - https://www.tensorflow.org/
-        - https://www.tensorflow.org/js/guide/nodejs
       - https://pytorch.org/
         - Mostly for Python
     - File name
