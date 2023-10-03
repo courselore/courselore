@@ -8,7 +8,6 @@
   - Detect & teach user how to paste code
     - Classification with Machine Learning
       - https://www.tensorflow.org/
-        - https://www.tensorflow.org/js/guide/nodejs
       - https://ml5js.org/
         - Only works in the browser
       - https://teachablemachine.withgoogle.com/
