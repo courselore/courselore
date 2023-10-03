@@ -6,24 +6,24 @@
 
 - Printscreen of code
   - Detect & teach user how to paste code
-    - File name
-    - Resolution & pixel density
-    - Metadata
-    - Image manipulation
-      - Histogram
-      - https://medium.com/carsales-dev/using-image-processing-to-extract-the-perfect-shot-out-of-a-screenshot-60a6295a31c4
-      - https://sharp.pixelplumbing.com/
-    - Clustering algorithm
+    - Classification with Machine Learning
       - https://ml5js.org/
         - Only works in the browser
       - https://teachablemachine.withgoogle.com/
         - https://github.com/SashiDo/teachablemachine-node/
           - https://blog.sashido.io/how-to-load-a-teachable-machine-image-model-in-a-node-js-project/
       - https://keras.io/
+        - Mostly for Python
       - https://www.tensorflow.org/
         - https://www.tensorflow.org/js/guide/nodejs
       - https://pytorch.org/
-      - https://towardsdatascience.com/how-i-used-machine-learning-to-detect-chat-screenshots-on-my-phone-a46d875b07af
+        - Mostly for Python
+    - File name
+    - Metadata
+    - Image manipulation
+      - Histogram
+      - https://medium.com/carsales-dev/using-image-processing-to-extract-the-perfect-shot-out-of-a-screenshot-60a6295a31c4
+      - https://sharp.pixelplumbing.com/
   - OCR
     - Only feasible if errors are **very** rare
     - https://www.npmjs.com/package/tesseract.js
