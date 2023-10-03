@@ -4,6 +4,34 @@
 
 **Minor Changes**
 
+- Printscreen of code
+  - Detect & teach user how to paste code
+    - File name
+    - Resolution & pixel density
+    - Metadata
+    - Image manipulation
+      - Histogram
+      - https://medium.com/carsales-dev/using-image-processing-to-extract-the-perfect-shot-out-of-a-screenshot-60a6295a31c4
+      - https://sharp.pixelplumbing.com/
+    - Clustering algorithm
+      - https://ml5js.org/
+        - Only works in the browser
+      - https://teachablemachine.withgoogle.com/
+        - https://github.com/SashiDo/teachablemachine-node/
+          - https://blog.sashido.io/how-to-load-a-teachable-machine-image-model-in-a-node-js-project/
+      - https://keras.io/
+      - https://www.tensorflow.org/
+        - https://www.tensorflow.org/js/guide/nodejs
+      - https://pytorch.org/
+      - https://towardsdatascience.com/how-i-used-machine-learning-to-detect-chat-screenshots-on-my-phone-a46d875b07af
+  - OCR
+    - Only feasible if errors are **very** rare
+    - https://www.npmjs.com/package/tesseract.js
+    - https://www.npmjs.com/package/node-tesseract-ocr
+    - https://www.codefromscreenshot.com/
+    - https://code.pieces.app/blog/how-we-made-our-optical-character-recognition-ocr-code-more-accurate
+    - https://code.pieces.app/blog/top-ocr-tools
+    - https://www.runtime.dev/
 - https://courselore.org/courses/8537410611/conversations/83
   - Rich-text pasting
     - Context-aware pasting
@@ -12,34 +40,6 @@
       - Feasible, but undesirable, because it may produce invalid Markdown unless we know in which context you’re pasting, and in other cases the spacing in Markdown doesn’t translate to HTML either
     - Perhaps the default should be plain-text pasting, and the keyboard modifier would be for rich-text pasting
       - Wouldn’t work across browsers, because there’s no reliable way to trigger a rich-text paste
-  - Printscreen of code
-    - Detect & teach user how to paste code
-      - File name
-      - Resolution & pixel density
-      - Metadata
-      - Image manipulation
-        - Histogram
-        - https://medium.com/carsales-dev/using-image-processing-to-extract-the-perfect-shot-out-of-a-screenshot-60a6295a31c4
-        - https://sharp.pixelplumbing.com/
-      - Clustering algorithm
-        - https://ml5js.org/
-          - Only works in the browser
-        - https://teachablemachine.withgoogle.com/
-          - https://github.com/SashiDo/teachablemachine-node/
-            - https://blog.sashido.io/how-to-load-a-teachable-machine-image-model-in-a-node-js-project/
-        - https://keras.io/
-        - https://www.tensorflow.org/
-          - https://www.tensorflow.org/js/guide/nodejs
-        - https://pytorch.org/
-        - https://towardsdatascience.com/how-i-used-machine-learning-to-detect-chat-screenshots-on-my-phone-a46d875b07af
-    - OCR
-      - Only feasible if errors are **very** rare
-      - https://www.npmjs.com/package/tesseract.js
-      - https://www.npmjs.com/package/node-tesseract-ocr
-      - https://www.codefromscreenshot.com/
-      - https://code.pieces.app/blog/how-we-made-our-optical-character-recognition-ocr-code-more-accurate
-      - https://code.pieces.app/blog/top-ocr-tools
-      - https://www.runtime.dev/
 - https://courselore.org/courses/8537410611/conversations/84
   - Add to the `…` menu under a message the option to switch message type, which just activates the existing dropdown
 - Don’t present the staff whispers button if the conversation involves only staff members.
