@@ -15,6 +15,7 @@ import * as Got from "got";
 import * as node from "@leafac/node";
 import prompts from "prompts";
 import killPort from "kill-port";
+import QRCodeTerminal from "qrcode-terminal";
 import caddyfile from "dedent";
 import dedent from "dedent";
 import * as nodeSAML from "@node-saml/node-saml";
@@ -183,6 +184,12 @@ if (await node.isExecuted(import.meta.url)) {
               : await (async () => {
                   const hostname =
                     process.env.TUNNEL ?? process.env.HOSTNAME ?? "127.0.0.1";
+                  if (
+                    processType === "main" &&
+                    (typeof process.env.TUNNEL === "string" ||
+                      typeof process.env.HOSTNAME === "string")
+                  )
+                    QRCodeTerminal.generate(`https://${hostname}`, { small: true });
                   return {
                     hostname,
                     dataDirectory:
