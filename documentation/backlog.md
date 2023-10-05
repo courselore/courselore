@@ -8,11 +8,12 @@
   - Detect & teach user how to paste code
     - Classification with Machine Learning
       - https://www.tensorflow.org/
-      - https://ml5js.org/
-        - Only works in the browser
+        - https://codelabs.developers.google.com/tensorflowjs-transfer-learning-teachable-machine
       - https://teachablemachine.withgoogle.com/
         - https://github.com/SashiDo/teachablemachine-node/
           - https://blog.sashido.io/how-to-load-a-teachable-machine-image-model-in-a-node-js-project/
+      - https://ml5js.org/
+        - Only works in the browser
       - https://keras.io/
         - Mostly for Python
       - https://pytorch.org/
