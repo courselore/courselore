@@ -7,11 +7,16 @@
 - Printscreen of code
   - Detect & teach user how to paste code
     - Classification with Machine Learning
+      - https://teachablemachine.withgoogle.com/
+        - Approaches
+          - Use Sharp and generate inputs by hand
+          - Use browser simulators
+            - https://github.com/SashiDo/teachablemachine-node/
+              - https://blog.sashido.io/how-to-load-a-teachable-machine-image-model-in-a-node-js-project/
+            - https://github.com/googlecreativelab/teachablemachine-community
+            - https://github.com/drinkspiller/teachablemachine-node-example/
       - https://www.tensorflow.org/
         - https://codelabs.developers.google.com/tensorflowjs-transfer-learning-teachable-machine
-      - https://teachablemachine.withgoogle.com/
-        - https://github.com/SashiDo/teachablemachine-node/
-          - https://blog.sashido.io/how-to-load-a-teachable-machine-image-model-in-a-node-js-project/
       - https://ml5js.org/
         - Only works in the browser
       - https://keras.io/
