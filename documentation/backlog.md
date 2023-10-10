@@ -4,6 +4,9 @@
 
 **Minor Changes**
 
+- If an uploaded image doesn’t need a thumbnail, still create a webp version of it.
+  - And avatars?
+- `.HEIC` image thumbnails aren’t working right
 - Printscreen of code
   - Detect & teach user how to paste code
     - Classification with Machine Learning
