@@ -4957,7 +4957,7 @@ ${contentSource}</textarea
               typeof metadata.width !== "number" ||
               typeof metadata.height !== "number"
             )
-              throw new Error();
+              throw new Error("Metadata width or height not found.");
             const animated =
               typeof metadata.pages === "number" && metadata.pages > 1;
             const nameThumbnail = `${attachment.name.slice(
