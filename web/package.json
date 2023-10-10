@@ -43,6 +43,7 @@
     "@leafac/sqlite": "^4.0.0",
     "@node-saml/node-saml": "^4.0.5",
     "@sindresorhus/slugify": "^2.2.1",
+    "@tensorflow/tfjs-node": "^4.11.0",
     "argon2": "^0.31.0",
     "casual": "^1.6.2",
     "commander": "^11.0.0",

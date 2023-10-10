@@ -25,6 +25,7 @@ import { toString as hastUtilToString } from "hast-util-to-string";
 import rehypeStringify from "rehype-stringify";
 import { JSDOM } from "jsdom";
 import sharp from "sharp";
+import tf from "@tensorflow/tfjs-node";
 import { execa } from "execa";
 import maybeFFmpeg from "ffmpeg-static";
 assert.equal(typeof maybeFFmpeg, "string");
@@ -4948,7 +4949,7 @@ ${contentSource}</textarea
 
         await attachment.mv(file);
 
-        if (attachment.mimetype.startsWith("image/"))
+        if (attachment.mimetype.startsWith("image/")) {
           try {
             const image = sharp(attachment.data);
             const metadata = await image.metadata();
@@ -5008,24 +5009,63 @@ ${contentSource}</textarea
                   }" />`
                 : `![${attachment.name}](${src})`
             }](${href})\n\n`;
-            continue;
           } catch (error: any) {
             response.locals.log(
               "ERROR IN CREATING THUMBNAIL",
               String(error),
               error?.stack,
             );
+            attachmentsContentSources += `[${attachment.name}](${href})\n\n`;
           }
-        else if (attachment.mimetype.startsWith("video/")) {
-          attachmentsContentSources += `<video src="${href}"></video>`;
-          continue;
-        }
 
-        attachmentsContentSources += `[${attachment.name}](${href})\n\n`;
+          let screenshotOfCodeImageTensor;
+          let screenshotOfCodePredictionsTensor;
+          try {
+            screenshotOfCodeImageTensor = tf.tensor(
+              [
+                ...(await sharp(attachment.data)
+                  .removeAlpha()
+                  .rotate()
+                  .resize({
+                    width: 224,
+                    height: 224,
+                    position: sharp.strategy.entropy,
+                  })
+                  .raw()
+                  .toBuffer()),
+              ].map((pixel) => pixel / 127.5 - 1),
+              [1, 224, 224, 3],
+            );
+            screenshotOfCodePredictionsTensor = screenshotOfCodeModel.predict(
+              screenshotOfCodeImageTensor,
+            ) as any;
+            const screenshotOfCodePrediction = (
+              await screenshotOfCodePredictionsTensor.array()
+            )[0][0];
+            if (screenshotOfCodePrediction > 0.7)
+              attachmentsContentSources += `<!-- The image above looks like a screenshot of code. Please consider providing the code as text so that people may copy-and-paste, search, and so forth. See https://${application.configuration.hostname}/help/styling-content for more information, including a list of known LANGUAGES. -->\n\n\`\`\`LANGUAGE\nCODE\n\`\`\`\n\n`;
+          } catch (error: any) {
+            response.locals.log(
+              "ERROR IN PREDICTING SCREENSHOT OF CODE",
+              String(error),
+              error?.stack,
+            );
+          } finally {
+            screenshotOfCodeImageTensor?.dispose();
+            screenshotOfCodePredictionsTensor?.dispose();
+          }
+        } else if (attachment.mimetype.startsWith("video/"))
+          attachmentsContentSources += `<video src="${href}"></video>\n\n`;
+        else attachmentsContentSources += `[${attachment.name}](${href})\n\n`;
       }
 
       response.send(`\n\n${attachmentsContentSources}`);
     }),
+  );
+
+  const screenshotOfCodeModel = await tf.loadLayersModel(
+    new URL("../static/models/screenshot-of-code/model.json", import.meta.url)
+      .href,
   );
 
   application.web.post<
