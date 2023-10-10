@@ -4,6 +4,7 @@
 
 **Minor Changes**
 
+- Links in content aren’t opening in new page?
 - `.HEIC` image thumbnails aren’t working right
 - Printscreen of code
   - Detect & teach user how to paste code

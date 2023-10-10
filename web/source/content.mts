@@ -5043,7 +5043,7 @@ ${contentSource}</textarea
               await screenshotOfCodePredictionsTensor.array()
             )[0][0];
             if (screenshotOfCodePrediction > 0.7)
-              attachmentsContentSources += `<!-- The image above looks like a screenshot of code. Please consider providing the code as text so that people may copy-and-paste, search, and so forth. See https://${application.configuration.hostname}/help/styling-content for more information, including a list of known LANGUAGES. -->\n\n\`\`\`LANGUAGE\nCODE\n\`\`\`\n\n`;
+              attachmentsContentSources += `**The image above looks like a screenshot of code. Please consider providing the code as text so that people may copy-and-paste, search, and so forth. See https://${application.configuration.hostname}/help/styling-content for more information, including a list of known LANGUAGES.**\n\n\`\`\`LANGUAGE\nCODE\n\`\`\`\n\n`;
           } catch (error: any) {
             response.locals.log(
               "ERROR IN PREDICTING SCREENSHOT OF CODE",
