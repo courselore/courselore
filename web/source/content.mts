@@ -25,7 +25,7 @@ import { toString as hastUtilToString } from "hast-util-to-string";
 import rehypeStringify from "rehype-stringify";
 import { JSDOM } from "jsdom";
 import sharp from "sharp";
-import tf from "@tensorflow/tfjs-node";
+import tensorFlow from "@tensorflow/tfjs-node";
 import { execa } from "execa";
 import maybeFFmpeg from "ffmpeg-static";
 assert.equal(typeof maybeFFmpeg, "string");
@@ -5021,7 +5021,7 @@ ${contentSource}</textarea
           let screenshotOfCodeImageTensor;
           let screenshotOfCodePredictionsTensor;
           try {
-            screenshotOfCodeImageTensor = tf.tensor(
+            screenshotOfCodeImageTensor = tensorFlow.tensor(
               [
                 ...(await sharp(attachment.data)
                   .removeAlpha()
@@ -5063,7 +5063,7 @@ ${contentSource}</textarea
     }),
   );
 
-  const screenshotOfCodeModel = await tf.loadLayersModel(
+  const screenshotOfCodeModel = await tensorFlow.loadLayersModel(
     new URL("../static/models/screenshot-of-code/model.json", import.meta.url)
       .href,
   );
