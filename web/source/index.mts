@@ -203,18 +203,6 @@ if (await node.isExecuted(import.meta.url)) {
                             new URL("../data/", import.meta.url),
                           )
                         : path.join(process.cwd(), "data"),
-                    email: {
-                      options: {
-                        host: "localhost",
-                        port: 8002,
-                      },
-                      defaults: {
-                        from: {
-                          name: "Courselore",
-                          address: "feedback@courselore.org",
-                        },
-                      },
-                    },
                     administratorEmail: "feedback@courselore.org",
                     staticPaths: [
                       url.fileURLToPath(
@@ -298,6 +286,20 @@ if (await node.isExecuted(import.meta.url)) {
         application.configuration.alternativeHostnames ??= [];
         application.configuration.hstsPreload ??= false;
         application.configuration.caddy ??= caddyfile``;
+
+        if (application.configuration.demonstration)
+          application.configuration.email = {
+            options: {
+              host: "localhost",
+              port: 8002,
+            },
+            defaults: {
+              from: {
+                name: "Courselore",
+                address: "demonstration@courselore.org",
+              },
+            },
+          };
 
         application.web.locals.configuration = {} as any;
         application.web.locals.layouts = {} as any;

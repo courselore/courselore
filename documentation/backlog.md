@@ -13,7 +13,6 @@
     - Tunneling with `leafac.courselore.org`
   - Production
     - Sending emails
-- If you’re in Demonstration Mode, force email delivery to Demonstration Inbox. Don’t require configuration file to do it.
 - Links in content aren’t opening in new page?
 - `.HEIC` image thumbnails aren’t working right
 - Printscreen of code
