@@ -4,8 +4,6 @@
 
 **Minor Changes**
 
-- Links in content aren’t opening in new page?
-- `.HEIC` image thumbnails aren’t working right
 - Printscreen of code
   - Detect & teach user how to paste code
     - Classification with Machine Learning
@@ -956,6 +954,14 @@
 - Let the “quote” selected text pick parts of paragraphs.
   - https://courselore.org/courses/8537410611/conversations/63
 - When you click on a footnote and hit the “back” browser button, you aren’t taken back to where you were, because we’re hijacking history navigation with Live-Navigation. The same issue probably happens with anchors in messages in general. The solution is probably to keep track of scrolling position in Live-Navigation, or maybe try and find a way to revert back to the default browser behavior in this special case of `window.onpopstate`.
+- Add support for `.HEIC` thumbnails
+  - https://github.com/catdad-experiments/heic-convert
+  - sharp doesn’t have support for it in the pre-compiled binaries because of patents
+  - ffmpeg doesn’t support it either
+  - It’s a minor issue anyway:
+    - iOS/macOS seems to do a good job of converting to JPG on the way out to other applications
+    - There have been only 7 uploads of `.HEIC` as of 2023-10-13
+    - This is a common issues in many applications, so chances are that iOS/macOS users already know how to deal with it
 
 **Editor**
 
