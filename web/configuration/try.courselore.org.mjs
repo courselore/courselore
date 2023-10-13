@@ -5,7 +5,7 @@ export default {
   dataDirectory: url.fileURLToPath(new URL("./data/", import.meta.url)),
   email: {
     options: {
-      host: "127.0.0.1",
+      host: "localhost",
       port: 8002,
     },
     defaults: {
@@ -20,7 +20,7 @@ export default {
   alternativeHostnames: ["try.courselore.com"],
   caddy: `
     https://leafac.courselore.org {
-      reverse_proxy http://127.0.0.1:3000
+      reverse_proxy http://localhost:3000
     }
 
     http://leafac.courselore.org {

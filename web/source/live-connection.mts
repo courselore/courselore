@@ -241,7 +241,7 @@ export default async (application: Application): Promise<void> => {
           );
           application.got
             .post(
-              `http://127.0.0.1:${
+              `http://localhost:${
                 application.ports.webEvents[application.process.number]
               }/live-updates`,
             )
@@ -321,7 +321,7 @@ export default async (application: Application): Promise<void> => {
       )
         application.got
           .post(
-            `http://127.0.0.1:${
+            `http://localhost:${
               application.ports.webEvents[application.process.number]
             }/live-updates`,
           )
@@ -396,7 +396,7 @@ export default async (application: Application): Promise<void> => {
 
     for (const port of application.ports.webEvents)
       application.got
-        .post(`http://127.0.0.1:${port}/live-updates`)
+        .post(`http://localhost:${port}/live-updates`)
         .catch((error) => {
           response.locals.log(
             "LIVE-UPDATES",
@@ -512,7 +512,7 @@ export default async (application: Application): Promise<void> => {
 
       for (const port of application.ports.webEvents)
         application.got
-          .post(`http://127.0.0.1:${port}/live-updates`)
+          .post(`http://localhost:${port}/live-updates`)
           .catch((error) => {
             response.locals.log(
               "LIVE-UPDATES",

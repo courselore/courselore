@@ -93,11 +93,11 @@ export default async (application: Application): Promise<void> => {
         const mailOptions = JSON.parse(job.mailOptions);
         try {
           const sentMessageInfo = await nodemailer
-            .createTransport(
-              application.configuration.email.options,
-              application.configuration.email.defaults,
-            )
-            .sendMail(mailOptions);
+            .createTransport(application.configuration.email.options)
+            .sendMail({
+              ...application.configuration.email.defaults,
+              ...mailOptions,
+            });
           application.database.run(
             sql`
               DELETE FROM "sendEmailJobs" WHERE "id" = ${job.id}

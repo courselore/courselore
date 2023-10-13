@@ -232,13 +232,13 @@ Disadvantages: Slower. Requires an internet connection.
 
    ```console
    # Custom Courselore Tunnel Address
-   $ ssh -NR 3000:127.0.0.1:80 root@leafac.courselore.org
+   $ ssh -NR 3000:localhost:80 root@leafac.courselore.org
 
    # Localtunnel
    $ npx localtunnel --port 80
 
    # localhost.run
-   $ ssh -NR 80:127.0.0.1:80 localhost.run
+   $ ssh -R 80:localhost:80 localhost.run 
    ```
 
 2. Run Courselore with the `TUNNEL` environment variable set to the address given in step 1, for example, in macOS and Linux:
@@ -251,7 +251,7 @@ Disadvantages: Slower. Requires an internet connection.
    $ env TUNNEL=tough-feet-train-94-60-46-156.loca.lt npm run start
 
    # localhost.run
-   $ env TUNNEL=497ac574a31cd1.lhrtunnel.link npm run start
+   $ env TUNNEL=089678d384a43b.lhr.life npm run start
    ```
 
 3. Visit the address on the other device.

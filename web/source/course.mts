@@ -3121,7 +3121,7 @@ export default async (application: Application): Promise<void> => {
       `,
     );
     application.got
-      .post(`http://127.0.0.1:${application.ports.workerEventsAny}/send-email`)
+      .post(`http://localhost:${application.ports.workerEventsAny}/send-email`)
       .catch((error) => {
         response.locals.log(
           "FAILED TO EMIT ‘/send-email’ EVENT",

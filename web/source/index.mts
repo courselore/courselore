@@ -183,13 +183,15 @@ if (await node.isExecuted(import.meta.url)) {
               ? (await import(url.pathToFileURL(configuration).href)).default
               : await (async () => {
                   const hostname =
-                    process.env.TUNNEL ?? process.env.HOSTNAME ?? "127.0.0.1";
+                    process.env.TUNNEL ?? process.env.HOSTNAME ?? "localhost";
                   if (
                     processType === "main" &&
                     (typeof process.env.TUNNEL === "string" ||
                       typeof process.env.HOSTNAME === "string")
                   )
-                    QRCodeTerminal.generate(`https://${hostname}`, { small: true });
+                    QRCodeTerminal.generate(`https://${hostname}`, {
+                      small: true,
+                    });
                   return {
                     hostname,
                     dataDirectory:
@@ -203,7 +205,7 @@ if (await node.isExecuted(import.meta.url)) {
                         : path.join(process.cwd(), "data"),
                     email: {
                       options: {
-                        host: "127.0.0.1",
+                        host: "localhost",
                         port: 8002,
                       },
                       defaults: {
@@ -332,12 +334,12 @@ if (await node.isExecuted(import.meta.url)) {
                 { port: 443, hostname: undefined },
                 ...lodash
                   .range(portStart, port)
-                  .map((port) => ({ port, hostname: "127.0.0.1" })),
+                  .map((port) => ({ port, hostname: "localhost" })),
                 ...(application.configuration.demonstration
                   ? [
                       { port: 8000, hostname: undefined },
-                      { port: 8001, hostname: "127.0.0.1" },
-                      { port: 8002, hostname: "127.0.0.1" },
+                      { port: 8001, hostname: "localhost" },
+                      { port: 8002, hostname: "localhost" },
                     ]
                   : []),
               ])
@@ -495,7 +497,7 @@ if (await node.isExecuted(import.meta.url)) {
                           }
                         }
                         reverse_proxy ${application.ports.web
-                          .map((port) => `http://127.0.0.1:${port}`)
+                          .map((port) => `http://localhost:${port}`)
                           .join(" ")} {
                           lb_retries 1
                         }
@@ -505,19 +507,19 @@ if (await node.isExecuted(import.meta.url)) {
                       }
                     }
 
-                    http://127.0.0.1:${application.ports.webEventsAny} {
-                      bind 127.0.0.1
+                    http://localhost:${application.ports.webEventsAny} {
+                      bind localhost
                       reverse_proxy ${application.ports.webEvents
-                        .map((port) => `http://127.0.0.1:${port}`)
+                        .map((port) => `http://localhost:${port}`)
                         .join(" ")} {
                         lb_retries 1
                       }
                     }
 
-                    http://127.0.0.1:${application.ports.workerEventsAny} {
-                      bind 127.0.0.1
+                    http://localhost:${application.ports.workerEventsAny} {
+                      bind localhost
                       reverse_proxy ${application.ports.workerEvents
-                        .map((port) => `http://127.0.0.1:${port}`)
+                        .map((port) => `http://localhost:${port}`)
                         .join(" ")} {
                         lb_retries 1
                       }
@@ -527,13 +529,13 @@ if (await node.isExecuted(import.meta.url)) {
                       application.configuration.demonstration
                         ? caddyfile`
                             https://${application.configuration.hostname}:8000 {
-                              reverse_proxy http://127.0.0.1:8001 {
+                              reverse_proxy http://localhost:8001 {
                                 lb_retries 1
                               }
                             }
 
                             https://${application.configuration.hostname}:8003 {
-                              reverse_proxy http://127.0.0.1:8004 {
+                              reverse_proxy http://localhost:8004 {
                                 lb_retries 1
                               }
                             }
@@ -616,7 +618,7 @@ if (await node.isExecuted(import.meta.url)) {
                         file: "saml-idp",
                         arguments: [
                           "--host",
-                          "127.0.0.1",
+                          "localhost",
                           "--port",
                           "8004",
                           "--issuer",
@@ -693,11 +695,11 @@ if (await node.isExecuted(import.meta.url)) {
             application.webEvents.emit("start");
             const webServer = application.web.listen(
               application.ports.web[application.process.number],
-              "127.0.0.1",
+              "localhost",
             );
             const webEventsServer = application.webEvents.listen(
               application.ports.webEvents[application.process.number],
-              "127.0.0.1",
+              "localhost",
             );
             await eventLoopActive;
             webServer.close();
@@ -711,7 +713,7 @@ if (await node.isExecuted(import.meta.url)) {
             application.workerEvents.emit("start");
             const workerEventsServer = application.workerEvents.listen(
               application.ports.workerEvents[application.process.number],
-              "127.0.0.1",
+              "localhost",
             );
             await eventLoopActive;
             workerEventsServer.close();
