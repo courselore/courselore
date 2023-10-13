@@ -12,6 +12,8 @@
 
 ## Unreleased
 
+**TEST**: Send emails in production.
+
 ## 7.0.1
 
 **2023-09-23 · [Download](https://github.com/courselore/courselore/releases/tag/v7.0.1) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**

@@ -4,15 +4,6 @@
 
 **Minor Changes**
 
-- `127.0.0.1` → `localhost`
-  - `try.courselore.org`
-    - Should be inaccessible
-    - Maildev `curl http://try.courselore.org:8001`
-    - Subprocesses `curl http://try.courselore.org:18000`
-    - Subprocesses `curl http://try.courselore.org:18001`
-    - Tunneling with `leafac.courselore.org`
-  - Production
-    - Sending emails
 - Links in content aren’t opening in new page?
 - `.HEIC` image thumbnails aren’t working right
 - Printscreen of code
@@ -48,6 +39,13 @@
     - https://code.pieces.app/blog/how-we-made-our-optical-character-recognition-ocr-code-more-accurate
     - https://code.pieces.app/blog/top-ocr-tools
     - https://www.runtime.dev/
+- `127.0.0.1` → `localhost`
+  - `try.courselore.org`
+    - Should be inaccessible
+    - Maildev `curl http://try.courselore.org:8001`
+    - Subprocesses `curl http://try.courselore.org:18000`
+    - Subprocesses `curl http://try.courselore.org:18001`
+    - Tunneling with `leafac.courselore.org`
 - https://courselore.org/courses/8537410611/conversations/83
   - Rich-text pasting
     - Context-aware pasting
