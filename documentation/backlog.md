@@ -5,7 +5,6 @@
 **Minor Changes**
 
 - `127.0.0.1` → `localhost`
-  - `npm t`
   - `try.courselore.org`
     - Should be inaccessible
     - Maildev `curl http://try.courselore.org:8001`
