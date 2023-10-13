@@ -4,39 +4,6 @@
 
 **Minor Changes**
 
-- Printscreen of code
-  - Detect & teach user how to paste code
-    - Classification with Machine Learning
-      - https://teachablemachine.withgoogle.com/
-        - Approaches
-          - Use Sharp and generate inputs by hand
-          - Use browser simulators
-            - https://github.com/SashiDo/teachablemachine-node/
-              - https://blog.sashido.io/how-to-load-a-teachable-machine-image-model-in-a-node-js-project/
-            - https://github.com/googlecreativelab/teachablemachine-community
-            - https://github.com/drinkspiller/teachablemachine-node-example/
-      - https://www.tensorflow.org/
-        - https://codelabs.developers.google.com/tensorflowjs-transfer-learning-teachable-machine
-      - https://ml5js.org/
-        - Only works in the browser
-      - https://keras.io/
-        - Mostly for Python
-      - https://pytorch.org/
-        - Mostly for Python
-    - File name
-    - Metadata
-    - Image manipulation
-      - Histogram
-      - https://medium.com/carsales-dev/using-image-processing-to-extract-the-perfect-shot-out-of-a-screenshot-60a6295a31c4
-      - https://sharp.pixelplumbing.com/
-  - OCR
-    - Only feasible if errors are **very** rare
-    - https://www.npmjs.com/package/tesseract.js
-    - https://www.npmjs.com/package/node-tesseract-ocr
-    - https://www.codefromscreenshot.com/
-    - https://code.pieces.app/blog/how-we-made-our-optical-character-recognition-ocr-code-more-accurate
-    - https://code.pieces.app/blog/top-ocr-tools
-    - https://www.runtime.dev/
 - `127.0.0.1` → `localhost`
   - `try.courselore.org`
     - Should be inaccessible
@@ -962,6 +929,25 @@
     - iOS/macOS seems to do a good job of converting to JPG on the way out to other applications
     - There have been only 7 uploads of `.HEIC` as of 2023-10-13
     - This is a common issues in many applications, so chances are that iOS/macOS users already know how to deal with it
+- Printscreen of code
+  - Detect
+    - Train model using Node.js instead of Teachable Machine
+      - https://codelabs.developers.google.com/tensorflowjs-transfer-learning-teachable-machine
+      - Does it yield better models?
+    - Introduce other factors:
+      - File name
+      - Metadata
+      - Image manipulation
+        - Histogram
+        - https://medium.com/carsales-dev/using-image-processing-to-extract-the-perfect-shot-out-of-a-screenshot-60a6295a31c4
+  - OCR
+    - Only feasible if errors are **very** rare
+    - https://www.npmjs.com/package/tesseract.js
+    - https://www.npmjs.com/package/node-tesseract-ocr
+    - https://www.codefromscreenshot.com/
+    - https://code.pieces.app/blog/how-we-made-our-optical-character-recognition-ocr-code-more-accurate
+    - https://code.pieces.app/blog/top-ocr-tools
+    - https://www.runtime.dev/
 
 **Editor**
 
