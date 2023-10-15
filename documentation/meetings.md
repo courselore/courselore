@@ -1,6 +1,14 @@
 # Meetings
 
 <details>
+<summary>2023-10-14</summary>
+
+- The API for an AI teaching assistant will be ready this week, and we want two features: Answering questions and chatting.
+- Finished the feature that detects screenshots of code.
+
+</details>
+
+<details>
 <summary>2023-09-23</summary>
 
 - Finished the work on key management for SAML & LTI.
