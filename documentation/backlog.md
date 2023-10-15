@@ -2,6 +2,13 @@
 
 ## Work in Progress
 
+**Screenshot of Code**
+
+- Train model using Node.js instead of Teachable Machine
+  - https://codelabs.developers.google.com/tensorflowjs-transfer-learning-teachable-machine
+  - Does it yield better models?
+- In the message mention that the point of specifying a language is syntax highlighting.
+
 **Minor Changes**
 
 - `127.0.0.1` → `localhost`
@@ -25,6 +32,11 @@
 - Conversations with myself:
   - Show **yourself** in the list of participants to pick
   - Show **ME** when there’s only you in the conversation
+
+**AI Teaching Assistant**
+
+- Answering questions.
+- Chat.
 
 **Learning Tools Interoperability (LTI)**
 
@@ -930,16 +942,12 @@
     - There have been only 7 uploads of `.HEIC` as of 2023-10-13
     - This is a common issues in many applications, so chances are that iOS/macOS users already know how to deal with it
 - Printscreen of code
-  - Detect
-    - Train model using Node.js instead of Teachable Machine
-      - https://codelabs.developers.google.com/tensorflowjs-transfer-learning-teachable-machine
-      - Does it yield better models?
-    - Introduce other factors:
-      - File name
-      - Metadata
-      - Image manipulation
-        - Histogram
-        - https://medium.com/carsales-dev/using-image-processing-to-extract-the-perfect-shot-out-of-a-screenshot-60a6295a31c4
+  - Introduce other factors in detection:
+    - File name
+    - Metadata
+    - Image manipulation
+      - Histogram
+      - https://medium.com/carsales-dev/using-image-processing-to-extract-the-perfect-shot-out-of-a-screenshot-60a6295a31c4
   - OCR
     - Only feasible if errors are **very** rare
     - https://www.npmjs.com/package/tesseract.js
