@@ -5048,7 +5048,7 @@ ${contentSource}</textarea
               await screenshotOfCodeClassificationTensor.array()
             )[0][0];
             if (screenshotOfCodeClassification > 0.7)
-              attachmentsContentSources += `**The image above looks like a screenshot of code. Please consider providing the code as text so that people may copy-and-paste, search, and so forth. See https://${application.configuration.hostname}/help/styling-content for more information, including a list of known LANGUAGES.**\n\n\`\`\`LANGUAGE\nCODE\n\`\`\`\n\n`;
+              attachmentsContentSources += `**The image above looks like a screenshot of code. Please consider providing the code as text so that people may copy-and-paste, search, and so forth. See https://${application.configuration.hostname}/help/styling-content for more information, including a list of LANGUAGES with support for syntax highlighting.**\n\n\`\`\`LANGUAGE\nCODE\n\`\`\`\n\n`;
           } catch (error: any) {
             response.locals.log(
               "ERROR IN PREDICTING SCREENSHOT OF CODE",
@@ -5896,7 +5896,7 @@ ${contentSource}</textarea
                   </tbody>
                   </table>
 
-                  ## Languages Supported in Code Blocks (\`\`\`LANGUAGE)
+                  ## Languages with Support for Syntax Highlighting in Code Blocks (\`\`\`LANGUAGE)
 
                   <details>
 

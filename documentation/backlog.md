@@ -2,13 +2,6 @@
 
 ## Work in Progress
 
-**Screenshot of Code**
-
-- Train model using Node.js instead of Teachable Machine
-  - https://codelabs.developers.google.com/tensorflowjs-transfer-learning-teachable-machine
-  - Does it yield better models?
-- In the message mention that the point of specifying a language is syntax highlighting.
-
 **Minor Changes**
 
 - `127.0.0.1` → `localhost`
