@@ -5069,7 +5069,7 @@ ${contentSource}</textarea
     }),
   );
 
-  const mobileNetModel = await tensorFlow.loadLayersModel(
+  const mobileNetModel = await tensorFlow.loadGraphModel(
     new URL(
       "../static/models/tfjs-model_imagenet_mobilenet_v3_large_100_224_feature_vector_5_default_1/model.json",
       import.meta.url,
