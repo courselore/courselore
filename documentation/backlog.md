@@ -2,6 +2,11 @@
 
 ## Work in Progress
 
+**AI Teaching Assistant**
+
+- Answering questions.
+- Chat.
+
 **Minor Changes**
 
 - Test in `try.courselore.org`
@@ -24,11 +29,6 @@
 - Conversations with myself:
   - Show **yourself** in the list of participants to pick
   - Show **ME** when there’s only you in the conversation
-
-**AI Teaching Assistant**
-
-- Answering questions.
-- Chat.
 
 **Learning Tools Interoperability (LTI)**
 
