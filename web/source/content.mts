@@ -5019,7 +5019,8 @@ ${contentSource}</textarea
           }
 
           let screenshotOfCodeImageTensor;
-          let screenshotOfCodePredictionsTensor;
+          let screenshotOfCodeFeaturesTensor;
+          let screenshotOfCodeClassificationTensor;
           try {
             screenshotOfCodeImageTensor = tensorFlow.tensor(
               [
@@ -5033,16 +5034,20 @@ ${contentSource}</textarea
                   })
                   .raw()
                   .toBuffer()),
-              ].map((pixel) => pixel / 127.5 - 1),
+              ].map((pixel) => pixel / 255),
               [1, 224, 224, 3],
             );
-            screenshotOfCodePredictionsTensor = screenshotOfCodeModel.predict(
+            screenshotOfCodeFeaturesTensor = mobileNetModel.predict(
               screenshotOfCodeImageTensor,
             ) as any;
-            const screenshotOfCodePrediction = (
-              await screenshotOfCodePredictionsTensor.array()
+            screenshotOfCodeClassificationTensor =
+              screenshotOfCodeModel.predict(
+                screenshotOfCodeFeaturesTensor,
+              ) as any;
+            const screenshotOfCodeClassification = (
+              await screenshotOfCodeClassificationTensor.array()
             )[0][0];
-            if (screenshotOfCodePrediction > 0.7)
+            if (screenshotOfCodeClassification > 0.7)
               attachmentsContentSources += `**The image above looks like a screenshot of code. Please consider providing the code as text so that people may copy-and-paste, search, and so forth. See https://${application.configuration.hostname}/help/styling-content for more information, including a list of known LANGUAGES.**\n\n\`\`\`LANGUAGE\nCODE\n\`\`\`\n\n`;
           } catch (error: any) {
             response.locals.log(
@@ -5052,7 +5057,8 @@ ${contentSource}</textarea
             );
           } finally {
             screenshotOfCodeImageTensor?.dispose();
-            screenshotOfCodePredictionsTensor?.dispose();
+            screenshotOfCodeFeaturesTensor?.dispose();
+            screenshotOfCodeClassificationTensor?.dispose();
           }
         } else if (attachment.mimetype.startsWith("video/"))
           attachmentsContentSources += `<video src="${href}"></video>\n\n`;
@@ -5063,6 +5069,12 @@ ${contentSource}</textarea
     }),
   );
 
+  const mobileNetModel = await tensorFlow.loadLayersModel(
+    new URL(
+      "../static/models/tfjs-model_imagenet_mobilenet_v3_large_100_224_feature_vector_5_default_1/model.json",
+      import.meta.url,
+    ).href,
+  );
   const screenshotOfCodeModel = await tensorFlow.loadLayersModel(
     new URL("../static/models/screenshot-of-code/model.json", import.meta.url)
       .href,
