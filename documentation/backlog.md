@@ -4,8 +4,21 @@
 
 **AI Teaching Assistant**
 
-- Answering questions.
+- Answer questions.
+  - Create an AI user.
+    - Database: new column, or shoehorn into `"conversations"."authorCourseParticipant"`?
+    - Model: Add to `MaybeCourseParticipant` or mock a `Application["web"]["locals"]["Types"]["CourseParticipant"]`?
+    - Rendering: `<i class="bi bi-robot"></i>`
+  - When asking a question:
+    - Create a placeholder answer.
+    - Enqueue a background job to fill in the placeholder answer.
+  - Create a background job that fills in that answer.
+    - Do we send notifications?
+  - Add caveats and stuff.
 - Chat.
+  - Create a new category for chatting with AI.
+  - Reuse the work above.
+    - Use the same background job as for questions?
 
 **Minor Changes**
 
