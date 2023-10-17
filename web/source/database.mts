@@ -2564,6 +2564,10 @@ export default async (application: Application): Promise<void> => {
         `,
       );
     },
+
+    sql`
+      ALTER TABLE "courses" ADD COLUMN "aiTeachingAssistantAPIKey" TEXT NULL;
+    `,
   );
 
   application.database.run(

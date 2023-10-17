@@ -4814,6 +4814,28 @@ export default async (application: Application): Promise<void> => {
                   Students may create polls
                 </label>
               </div>
+              <label class="label">
+                <p class="label--text">AI Teaching Assistant API Key</p>
+                <input
+                  type="text"
+                  name="name"
+                  value="${response.locals.course.aiTeachingAssistantAPIKey}"
+                  class="input--text"
+                />
+              </label>
+              <div
+                class="secondary"
+                css="${css`
+                  font-size: var(--font-size--xs);
+                  line-height: var(--line-height--xs);
+                `}"
+              >
+                This is an experimental feature. If you’re interested in
+                participating, please contact Ali at
+                <a href="mailto:ali@courselore.org" class="link"
+                  >ali@courselore.org</a
+                >.
+              </div>
               <div>
                 <button
                   class="button button--full-width-on-small-screen button--blue"
