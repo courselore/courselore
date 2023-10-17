@@ -2,8 +2,6 @@
 
 ## Work in Progress
 
-**TEST**: Send emails in production.
-
 **AI Teaching Assistant**
 
 - Extract library functions to do background jobs?
@@ -11,6 +9,13 @@
     - `sendEmailJobs` / `email.mts`
     - `emailNotificationMessageJobs` / `message.mts`
     - `emailNotificationDigestJobs` / UNUSED
+  - Remove `expiresAt` and use `createdAt + period` instead
+    - `"sendEmailJobs"."expiresAt"`
+      - `"sendEmailJobsExpiresAtIndex"`
+    - `"emailNotificationMessageJobs"."expiresAt"`
+      - `"emailNotificationMessageJobsExpiresAtIndex"`
+    - `"liveConnectionsMetadata"."expiresAt"`?
+      - `"liveConnectionsMetadataExpiresAtIndex"`
 - Answer questions.
   - Create an AI user.
     - Database: new column, or shoehorn into `"conversations"."authorCourseParticipant"`?
