@@ -3351,6 +3351,7 @@ export default async (application: Application): Promise<void> => {
           code: string | null;
           nextConversationReference: number;
           studentsMayCreatePollsAt: string | null;
+          aiTeachingAssistantAPIKey: string | null;
         };
         reference: string;
         email: string | null;
@@ -3385,6 +3386,7 @@ export default async (application: Application): Promise<void> => {
         courseCode: string | null;
         courseNextConversationReference: number;
         courseStudentsMayCreatePollsAt: string | null;
+        courseAITeachingAssistantAPIKey: string | null;
         reference: string;
         email: string | null;
         name: string | null;
@@ -3405,6 +3407,7 @@ export default async (application: Application): Promise<void> => {
             "courses"."code" AS "courseCode",
             "courses"."nextConversationReference" AS "courseNextConversationReference",
             "courses"."studentsMayCreatePollsAt" AS "courseStudentsMayCreatePollsAt",
+            "courses"."aiTeachingAssistantAPIKey" AS "courseAITeachingAssistantAPIKey",
             "invitations"."reference",
             "invitations"."email",
             "invitations"."name",
@@ -3432,6 +3435,7 @@ export default async (application: Application): Promise<void> => {
           code: invitation.courseCode,
           nextConversationReference: invitation.courseNextConversationReference,
           studentsMayCreatePollsAt: invitation.courseStudentsMayCreatePollsAt,
+          aiTeachingAssistantAPIKey: invitation.courseAITeachingAssistantAPIKey,
         },
         reference: invitation.reference,
         email: invitation.email,
@@ -4819,7 +4823,8 @@ export default async (application: Application): Promise<void> => {
                 <input
                   type="text"
                   name="name"
-                  value="${response.locals.course.aiTeachingAssistantAPIKey}"
+                  value="${response.locals.course.aiTeachingAssistantAPIKey ??
+                  ""}"
                   class="input--text"
                 />
               </label>
@@ -4956,6 +4961,7 @@ export default async (application: Application): Promise<void> => {
     HTML,
     {
       studentsMayCreatePolls?: "on";
+      aiTeachingAssistantAPIKey?: string;
     },
     {},
     Application["web"]["locals"]["ResponseLocals"]["CourseParticipant"]
@@ -4968,17 +4974,26 @@ export default async (application: Application): Promise<void> => {
       )
         return next();
 
-      if (![undefined, "on"].includes(request.body.studentsMayCreatePolls))
+      if (
+        ![undefined, "on"].includes(request.body.studentsMayCreatePolls) ||
+        (request.body.aiTeachingAssistantAPIKey !== undefined &&
+          (typeof request.body.aiTeachingAssistantAPIKey !== "string" ||
+            request.body.aiTeachingAssistantAPIKey.trim() === ""))
+      )
         return next("Validation");
 
       application.database.run(
         sql`
           UPDATE "courses"
-          SET "studentsMayCreatePollsAt" = ${
-            request.body.studentsMayCreatePolls === "on"
-              ? new Date().toISOString()
-              : null
-          }
+          SET
+            "studentsMayCreatePollsAt" = ${
+              request.body.studentsMayCreatePolls === "on"
+                ? new Date().toISOString()
+                : null
+            },
+            "aiTeachingAssistantAPIKey" = ${
+              request.body.aiTeachingAssistantAPIKey
+            }
           WHERE "id" = ${response.locals.course.id}
         `,
       );

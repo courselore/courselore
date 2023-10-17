@@ -66,6 +66,7 @@ export type ApplicationAuthentication = {
               code: string | null;
               nextConversationReference: number;
               studentsMayCreatePollsAt: string | null;
+              aiTeachingAssistantAPIKey: string | null;
             };
             reference: string;
             courseRole: Application["web"]["locals"]["helpers"]["courseRoles"][number];
@@ -84,6 +85,7 @@ export type ApplicationAuthentication = {
               code: string | null;
               nextConversationReference: number;
               studentsMayCreatePollsAt: string | null;
+              aiTeachingAssistantAPIKey: string | null;
             };
             reference: string;
             courseRole: Application["web"]["locals"]["helpers"]["courseRoles"][number];
@@ -501,6 +503,7 @@ export default async (application: Application): Promise<void> => {
         courseCode: string | null;
         courseNextConversationReference: number;
         courseStudentsMayCreatePollsAt: string | null;
+        courseAITeachingAssistantAPIKey: string | null;
         reference: string;
         courseRole: Application["web"]["locals"]["helpers"]["courseRoles"][number];
       }>(
@@ -517,6 +520,7 @@ export default async (application: Application): Promise<void> => {
             "courses"."code" AS "courseCode",
             "courses"."nextConversationReference" AS "courseNextConversationReference",
             "courses"."studentsMayCreatePollsAt" AS "courseStudentsMayCreatePollsAt",
+            "courses"."aiTeachingAssistantAPIKey" AS "courseAITeachingAssistantAPIKey",
             "invitations"."reference",
             "invitations"."courseRole"
           FROM "invitations"
@@ -543,6 +547,7 @@ export default async (application: Application): Promise<void> => {
           code: invitation.courseCode,
           nextConversationReference: invitation.courseNextConversationReference,
           studentsMayCreatePollsAt: invitation.courseStudentsMayCreatePollsAt,
+          aiTeachingAssistantAPIKey: invitation.courseAITeachingAssistantAPIKey,
         },
         reference: invitation.reference,
         courseRole: invitation.courseRole,
@@ -561,6 +566,7 @@ export default async (application: Application): Promise<void> => {
         courseCode: string | null;
         courseNextConversationReference: number;
         courseStudentsMayCreatePollsAt: string | null;
+        courseAITeachingAssistantAPIKey: string | null;
         reference: string;
         courseRole: Application["web"]["locals"]["helpers"]["courseRoles"][number];
         accentColor: Application["web"]["locals"]["helpers"]["courseParticipantAccentColors"][number];
@@ -579,6 +585,7 @@ export default async (application: Application): Promise<void> => {
             "courses"."code" AS "courseCode",
             "courses"."nextConversationReference" AS "courseNextConversationReference",
             "courses"."studentsMayCreatePollsAt" AS "courseStudentsMayCreatePollsAt",
+            "courses"."aiTeachingAssistantAPIKey" AS "courseAITeachingAssistantAPIKey",
             "courseParticipants"."reference",
             "courseParticipants"."courseRole",
             "courseParticipants"."accentColor",
@@ -618,6 +625,8 @@ export default async (application: Application): Promise<void> => {
             courseParticipantRow.courseNextConversationReference,
           studentsMayCreatePollsAt:
             courseParticipantRow.courseStudentsMayCreatePollsAt,
+          aiTeachingAssistantAPIKey:
+            courseParticipantRow.courseAITeachingAssistantAPIKey,
         },
         reference: courseParticipantRow.reference,
         courseRole: courseParticipantRow.courseRole,
