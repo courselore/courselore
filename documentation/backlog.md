@@ -18,10 +18,9 @@
       - `"liveConnectionsMetadata"."expiresAt"`?
         - `"liveConnectionsMetadataExpiresAtIndex"`
     - Should we use explicit `expiresAt` instead?
-      - What is `createdAt` useful for if not for setting expiration?
-        - `"sendEmailJobs"`
-        - `"emailNotificationMessageJobs"`
+      - `createdAt` isn’t useful for anything
       - Do we ever want to schedule jobs for the future (except for the case of retries)?
+        - No, we don’t.
 - Answer questions.
   - Create an AI user.
     - Database: new column, or shoehorn into `"conversations"."authorCourseParticipant"`?
