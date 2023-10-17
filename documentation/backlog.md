@@ -7,6 +7,10 @@
 **AI Teaching Assistant**
 
 - Extract library functions to do background jobs?
+  - Examples:
+    - `sendEmailJobs` / `email.mts`
+    - `emailNotificationMessageJobs` / `message.mts`
+    - `emailNotificationDigestJobs` / UNUSED
 - Answer questions.
   - Create an AI user.
     - Database: new column, or shoehorn into `"conversations"."authorCourseParticipant"`?
