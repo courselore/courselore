@@ -5,7 +5,7 @@
 **AI Teaching Assistant**
 
 - Remove `"expiresAt"` and use `"createdAt" + period` instead
-  - `"sendEmailJobs"."expiresAt"` / `email.mts`
+  - `"sendEmailJobs"."expiresAt"` / `email.mts` / `10 * 60 * 1000`
   - `"emailNotificationMessageJobs"."expiresAt"` / `message.mts`
   - `"liveConnectionsMetadata"."expiresAt"` / `live-connection.mts`
 - Extract library functions to do background jobs

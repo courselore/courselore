@@ -1623,13 +1623,11 @@ export default async (application: Application): Promise<void> => {
               INSERT INTO "sendEmailJobs" (
                 "createdAt",
                 "startAt",
-                "expiresAt",
                 "mailOptions"
               )
               VALUES (
                 ${new Date().toISOString()},
                 ${new Date().toISOString()},
-                ${new Date(Date.now() + 5 * 60 * 1000).toISOString()},
                 ${JSON.stringify({
                   to: response.locals.user.email,
                   subject: "Your Email Has Been Updated",
@@ -1699,13 +1697,11 @@ export default async (application: Application): Promise<void> => {
             INSERT INTO "sendEmailJobs" (
               "createdAt",
               "startAt",
-              "expiresAt",
               "mailOptions"
             )
             VALUES (
               ${new Date().toISOString()},
               ${new Date().toISOString()},
-              ${new Date(Date.now() + 5 * 60 * 1000).toISOString()},
               ${JSON.stringify({
                 to: response.locals.user.email,
                 subject: "Your Password Has Been Updated",

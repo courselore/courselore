@@ -932,13 +932,11 @@ export default async (application: Application): Promise<void> => {
           INSERT INTO "sendEmailJobs" (
             "createdAt",
             "startAt",
-            "expiresAt",
             "mailOptions"
           )
           VALUES (
             ${new Date().toISOString()},
             ${new Date().toISOString()},
-            ${new Date(Date.now() + 5 * 60 * 1000).toISOString()},
             ${JSON.stringify({
               to: user.email,
               subject: "Sign In",
@@ -1226,13 +1224,11 @@ export default async (application: Application): Promise<void> => {
         INSERT INTO "sendEmailJobs" (
           "createdAt",
           "startAt",
-          "expiresAt",
           "mailOptions"
         )
         VALUES (
           ${new Date().toISOString()},
           ${new Date().toISOString()},
-          ${new Date(Date.now() + 5 * 60 * 1000).toISOString()},
           ${JSON.stringify({
             to: user.email,
             subject: "Password Reset Link",
@@ -1508,13 +1504,11 @@ export default async (application: Application): Promise<void> => {
           INSERT INTO "sendEmailJobs" (
             "createdAt",
             "startAt",
-            "expiresAt",
             "mailOptions"
           )
           VALUES (
             ${new Date().toISOString()},
             ${new Date().toISOString()},
-            ${new Date(Date.now() + 5 * 60 * 1000).toISOString()},
             ${JSON.stringify({
               to: user.email,
               subject: "Your Password Has Been Reset",
@@ -1911,13 +1905,11 @@ export default async (application: Application): Promise<void> => {
         INSERT INTO "sendEmailJobs" (
           "createdAt",
           "startAt",
-          "expiresAt",
           "mailOptions"
         )
         VALUES (
           ${new Date().toISOString()},
           ${new Date().toISOString()},
-          ${new Date(Date.now() + 5 * 60 * 1000).toISOString()},
           ${JSON.stringify({
             to: userEmail,
             subject: welcome ? "Welcome to Courselore!" : "Email Verification",
@@ -2710,44 +2702,42 @@ export default async (application: Application): Promise<void> => {
 
       application.database.run(
         sql`
-            INSERT INTO "sendEmailJobs" (
-              "createdAt",
-              "startAt",
-              "expiresAt",
-              "mailOptions"
-            )
-            VALUES (
-              ${new Date().toISOString()},
-              ${new Date().toISOString()},
-              ${new Date(Date.now() + 5 * 60 * 1000).toISOString()},
-              ${JSON.stringify({
-                to: user.email,
-                subject: "Signed In",
-                html: html`
-                  <p>
-                    There has been a new sign in to Courselore with the email
-                    address <code>${user.email}</code>.
-                  </p>
+          INSERT INTO "sendEmailJobs" (
+            "createdAt",
+            "startAt",
+            "mailOptions"
+          )
+          VALUES (
+            ${new Date().toISOString()},
+            ${new Date().toISOString()},
+            ${JSON.stringify({
+              to: user.email,
+              subject: "Signed In",
+              html: html`
+                <p>
+                  There has been a new sign in to Courselore with the email
+                  address <code>${user.email}</code>.
+                </p>
 
-                  <p>
-                    If it was you signing in, then no further action is
-                    required.
-                  </p>
+                <p>
+                  If it was you signing in, then no further action is
+                  required.
+                </p>
 
-                  <p>
-                    If it was not you signing in, then please contact the system
-                    administrator at
-                    <a
-                      href="mailto:${application.configuration
-                        .administratorEmail}"
-                      >${application.configuration.administratorEmail}</a
-                    >
-                    as soon as possible.
-                  </p>
-                `,
-              })}
-            )
-          `,
+                <p>
+                  If it was not you signing in, then please contact the system
+                  administrator at
+                  <a
+                    href="mailto:${application.configuration
+                      .administratorEmail}"
+                    >${application.configuration.administratorEmail}</a
+                  >
+                  as soon as possible.
+                </p>
+              `,
+            })}
+          )
+        `,
       );
       application.got
         .post(

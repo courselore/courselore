@@ -2507,13 +2507,11 @@ export default async (application: Application): Promise<void> => {
               INSERT INTO "sendEmailJobs" (
                 "createdAt",
                 "startAt",
-                "expiresAt",
                 "mailOptions"
               )
               VALUES (
                 ${new Date().toISOString()},
                 ${new Date().toISOString()},
-                ${new Date(Date.now() + 20 * 60 * 1000).toISOString()},
                 ${JSON.stringify({
                   from: {
                     name: `${course.name} · ${application.configuration.email.defaults.from.name}`,
