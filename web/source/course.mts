@@ -4822,7 +4822,7 @@ export default async (application: Application): Promise<void> => {
                 <p class="label--text">AI Teaching Assistant API Key</p>
                 <input
                   type="text"
-                  name="name"
+                  name="aiTeachingAssistantAPIKey"
                   value="${response.locals.course.aiTeachingAssistantAPIKey ??
                   ""}"
                   class="input--text"
@@ -4975,10 +4975,16 @@ export default async (application: Application): Promise<void> => {
         return next();
 
       if (
+        typeof request.body.aiTeachingAssistantAPIKey === "string" &&
+        request.body.aiTeachingAssistantAPIKey.trim() === ""
+      )
+        delete request.body.aiTeachingAssistantAPIKey;
+
+      if (
         ![undefined, "on"].includes(request.body.studentsMayCreatePolls) ||
-        (request.body.aiTeachingAssistantAPIKey !== undefined &&
-          (typeof request.body.aiTeachingAssistantAPIKey !== "string" ||
-            request.body.aiTeachingAssistantAPIKey.trim() === ""))
+        !["undefined", "string"].includes(
+          typeof request.body.aiTeachingAssistantAPIKey,
+        )
       )
         return next("Validation");
 
