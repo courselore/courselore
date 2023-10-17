@@ -5,10 +5,6 @@
 **AI Teaching Assistant**
 
 - Extract library functions to do background jobs?
-  - Examples:
-    - `sendEmailJobs` / `email.mts`
-    - `emailNotificationMessageJobs` / `message.mts`
-    - `emailNotificationDigestJobs` / UNUSED
   - Remove `expiresAt` and use `createdAt + period` instead
     - Examples
       - `"sendEmailJobs"."expiresAt"`
@@ -17,10 +13,10 @@
         - `"emailNotificationMessageJobsExpiresAtIndex"`
       - `"liveConnectionsMetadata"."expiresAt"`?
         - `"liveConnectionsMetadataExpiresAtIndex"`
-    - Should we use explicit `expiresAt` instead?
-      - `createdAt` isn’t useful for anything
-      - Do we ever want to schedule jobs for the future (except for the case of retries)?
-        - No, we don’t.
+  - Examples:
+    - `sendEmailJobs` / `email.mts`
+    - `emailNotificationMessageJobs` / `message.mts`
+    - `emailNotificationDigestJobs` / UNUSED
 - Answer questions.
   - Create an AI user.
     - Database: new column, or shoehorn into `"conversations"."authorCourseParticipant"`?
