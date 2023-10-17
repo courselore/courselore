@@ -10,12 +10,18 @@
     - `emailNotificationMessageJobs` / `message.mts`
     - `emailNotificationDigestJobs` / UNUSED
   - Remove `expiresAt` and use `createdAt + period` instead
-    - `"sendEmailJobs"."expiresAt"`
-      - `"sendEmailJobsExpiresAtIndex"`
-    - `"emailNotificationMessageJobs"."expiresAt"`
-      - `"emailNotificationMessageJobsExpiresAtIndex"`
-    - `"liveConnectionsMetadata"."expiresAt"`?
-      - `"liveConnectionsMetadataExpiresAtIndex"`
+    - Examples
+      - `"sendEmailJobs"."expiresAt"`
+        - `"sendEmailJobsExpiresAtIndex"`
+      - `"emailNotificationMessageJobs"."expiresAt"`
+        - `"emailNotificationMessageJobsExpiresAtIndex"`
+      - `"liveConnectionsMetadata"."expiresAt"`?
+        - `"liveConnectionsMetadataExpiresAtIndex"`
+    - Should we use explicit `expiresAt` instead?
+      - What is `createdAt` useful for if not for setting expiration?
+        - `"sendEmailJobs"`
+        - `"emailNotificationMessageJobs"`
+      - Do we ever want to schedule jobs for the future (except for the case of retries)?
 - Answer questions.
   - Create an AI user.
     - Database: new column, or shoehorn into `"conversations"."authorCourseParticipant"`?
