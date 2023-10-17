@@ -2593,6 +2593,10 @@ export default async (application: Application): Promise<void> => {
       CREATE INDEX "liveConnectionsMetadataProcessNumberIndex" ON "liveConnectionsMetadata" ("processNumber");
       CREATE INDEX "liveConnectionsMetadataLiveUpdateAtIndex" ON "liveConnectionsMetadata" ("liveUpdateAt");
     `,
+
+    sql`
+      ALTER TABLE "messages" ADD COLUMN "authorAITeachingAssistantAt" TEXT NULL;
+    `,
   );
 
   application.database.run(
