@@ -4,11 +4,6 @@
 
 **AI Teaching Assistant**
 
-- Extract library functions to do background jobs
-  - Examples:
-    - `sendEmailJobs` / `email.mts`
-    - `emailNotificationMessageJobs` / `message.mts`
-    - `emailNotificationDigestJobs` / UNUSED
 - Answer questions.
   - Create an AI user.
     - Database: new column, or shoehorn into `"conversations"."authorCourseParticipant"`?
@@ -1643,6 +1638,9 @@ const { app, BrowserWindow } = require("electron");
 
 ## Infrastructure
 
+- Extract library functions to do background jobs
+  - `sendEmailJobs` / `email.mts`
+  - `emailNotificationMessageJobs` / `message.mts`
 - Have a way for people to enable/disable advanced features, for example whispers, similar to Amazing Marvin.
 - Switch from `got` to `fetch`?
   - Streaming on image/video proxy
