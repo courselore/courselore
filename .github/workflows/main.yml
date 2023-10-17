@@ -3,11 +3,15 @@ jobs:
   web--build:
     strategy:
       matrix:
-        os: [windows-latest, macos-latest, ubuntu-20.04]
+        os: [
+            # windows-latest,
+            macos-latest,
+            ubuntu-20.04,
+          ]
         include:
-          - os: windows-latest
-            build: npx caxa --input . --output "courselore--windows--${{ github.sha }}.exe" -- "{{caxa}}/node_modules/.bin/node" "{{caxa}}/build/index.mjs"
-            artifact: courselore--windows--${{ github.sha }}.exe
+          # - os: windows-latest
+          #   build: npx caxa --input . --output "courselore--windows--${{ github.sha }}.exe" -- "{{caxa}}/node_modules/.bin/node" "{{caxa}}/build/index.mjs"
+          #   artifact: courselore--windows--${{ github.sha }}.exe
           - os: macos-latest
             build: |
               npx caxa --input . --output "courselore" -- "{{caxa}}/node_modules/.bin/node" "{{caxa}}/build/index.mjs"
@@ -36,7 +40,11 @@ jobs:
   web--test:
     strategy:
       matrix:
-        os: [windows-latest, macos-latest, ubuntu-20.04]
+        os: [
+            # windows-latest,
+            macos-latest,
+            ubuntu-20.04,
+          ]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
@@ -135,10 +143,10 @@ jobs:
     needs: [web--build, web--test]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/download-artifact@v3
-        with:
-          name: courselore--windows--${{ github.sha }}.exe
-      - run: mv courselore--windows--${{ github.sha }}.exe courselore--windows--${{ github.ref_name }}.exe
+      # - uses: actions/download-artifact@v3
+      #   with:
+      #     name: courselore--windows--${{ github.sha }}.exe
+      # - run: mv courselore--windows--${{ github.sha }}.exe courselore--windows--${{ github.ref_name }}.exe
       - uses: actions/download-artifact@v3
         with:
           name: courselore--macos--${{ github.sha }}.tgz
@@ -149,7 +157,7 @@ jobs:
       - run: mv courselore--linux--${{ github.sha }}.tgz courselore--linux--${{ github.ref_name }}.tgz
       - uses: softprops/action-gh-release@v1
         with:
+          # courselore--windows--${{ github.ref_name }}.exe
           files: |
-            courselore--windows--${{ github.ref_name }}.exe
             courselore--macos--${{ github.ref_name }}.tgz
             courselore--linux--${{ github.ref_name }}.tgz
