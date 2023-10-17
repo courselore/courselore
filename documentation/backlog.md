@@ -2,6 +2,8 @@
 
 ## Work in Progress
 
+**TEST**: Send emails in production.
+
 **AI Teaching Assistant**
 
 - Extract library functions to do background jobs?

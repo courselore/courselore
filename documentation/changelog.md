@@ -12,7 +12,11 @@
 
 ## Unreleased
 
-**TEST**: Send emails in production.
+## 7.0.2
+
+**2023-10-17 · [Download](https://github.com/courselore/courselore/releases/tag/v7.0.2) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
+
+- Added a message when people upload screenshots of code teaching them how to copy-and-paste the code while keeping syntax highlighting.
 
 ## 7.0.1
 
