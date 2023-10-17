@@ -19,7 +19,7 @@ export default async (application: Application): Promise<void> => {
             SELECT "id", "mailOptions"
             FROM "sendEmailJobs"
             WHERE "createdAt" < ${new Date(
-              Date.now() - 10 * 60 * 1000,
+              Date.now() - 20 * 60 * 1000,
             ).toISOString()}
           `,
         )) {

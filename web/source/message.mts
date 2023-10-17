@@ -2119,6 +2119,45 @@ export default async (application: Application): Promise<void> => {
     message,
   }) => {
     application.database.executeTransaction(() => {
+      const job = application.database.get<{ id: number }>(
+        sql`
+          SELECT "id"
+          FROM "emailNotificationMessageJobs"
+          WHERE
+            "message" = ${message.id} AND
+            "startedAt" IS NULL
+        `,
+      );
+      if (job === undefined)
+        application.database.run(
+          sql`
+            INSERT INTO "emailNotificationMessageJobs" (
+              "createdAt",
+              "startAt",
+              "message"
+            )
+            VALUES (
+              ${new Date().toISOString()},
+              ${
+                new Date().toISOString(/* TODO: Email notification digests: Date.now() + 5 * 60 * 1000 */)
+              },
+              ${message.id}
+            )
+          `,
+        );
+      else
+        application.database.run(
+          sql`
+            UPDATE "emailNotificationMessageJobs"
+            SET
+              "createdAt" = ${new Date().toISOString()},
+              "startAt" = ${
+                new Date().toISOString(/* TODO: Email notification digests: Date.now() + 5 * 60 * 1000 */)
+              }
+            WHERE "id" = ${job.id}
+          `,
+        );
+
       application.database.run(
         sql`
           INSERT INTO "emailNotificationDeliveries" ("createdAt", "message", "courseParticipant")
@@ -2140,49 +2179,6 @@ export default async (application: Application): Promise<void> => {
             )
           `,
         );
-
-      const job = application.database.get<{ id: number }>(
-        sql`
-          SELECT "id"
-          FROM "emailNotificationMessageJobs"
-          WHERE
-            "message" = ${message.id} AND
-            "startedAt" IS NULL
-        `,
-      );
-      if (job === undefined)
-        application.database.run(
-          sql`
-            INSERT INTO "emailNotificationMessageJobs" (
-              "createdAt",
-              "startAt",
-              "expiresAt",
-              "message"
-            )
-            VALUES (
-              ${new Date().toISOString()},
-              ${new Date(
-                Date.now() /* TODO: Email notification digests: + 5 * 60 * 1000 */,
-              ).toISOString()},
-              ${new Date(Date.now() + 5 * 60 * 60 * 1000).toISOString()},
-              ${message.id}
-            )
-          `,
-        );
-      else
-        application.database.run(
-          sql`
-            UPDATE "emailNotificationMessageJobs"
-            SET
-              "startAt" = ${new Date(
-                Date.now() /* TODO: Email notification digests: + 5 * 60 * 1000 */,
-              ).toISOString()},
-              "expiresAt" = ${new Date(
-                Date.now() + 5 * 60 * 60 * 1000,
-              ).toISOString()}
-            WHERE "id" = ${job.id}
-          `,
-        );
     });
   };
 
@@ -2198,7 +2194,9 @@ export default async (application: Application): Promise<void> => {
           sql`
             SELECT "id", "message"
             FROM "emailNotificationMessageJobs"
-            WHERE "expiresAt" < ${new Date().toISOString()}
+            WHERE "createdAt" < ${new Date(
+              Date.now() - 20 * 60 * 1000,
+            ).toISOString()}
           `,
         )) {
           application.database.run(
