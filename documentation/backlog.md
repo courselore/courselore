@@ -4,18 +4,14 @@
 
 **AI Teaching Assistant**
 
-- Extract library functions to do background jobs?
-  - Remove `expiresAt` and use `createdAt + period` instead
-    - Examples
-      - `"sendEmailJobs"."expiresAt"`
-        - `"sendEmailJobsExpiresAtIndex"`
-      - `"emailNotificationMessageJobs"."expiresAt"`
-        - `"emailNotificationMessageJobsExpiresAtIndex"`
-      - `"liveConnectionsMetadata"."expiresAt"`?
-        - `"liveConnectionsMetadataExpiresAtIndex"`
+- Remove `expiresAt` and use `createdAt + period` instead
+  - `"sendEmailJobs"."expiresAt"` / `email.mts`
+  - `"emailNotificationMessageJobs"."expiresAt"` / `message.mts`
+  - `"liveConnectionsMetadata"."expiresAt"`
+- Extract library functions to do background jobs
   - Examples:
-    - `sendEmailJobs` / `email.mts`
-    - `emailNotificationMessageJobs` / `message.mts`
+    - `sendEmailJobs` 
+    - `emailNotificationMessageJobs` 
     - `emailNotificationDigestJobs` / UNUSED
 - Answer questions.
   - Create an AI user.

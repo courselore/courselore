@@ -2568,6 +2568,31 @@ export default async (application: Application): Promise<void> => {
     sql`
       ALTER TABLE "courses" ADD COLUMN "aiTeachingAssistantAPIKey" TEXT NULL;
     `,
+
+    sql`
+      CREATE INDEX "sendEmailJobsCreatedAtIndex" ON "sendEmailJobs" ("createdAt");
+      DROP INDEX "sendEmailJobsExpiresAtIndex";
+      ALTER TABLE "sendEmailJobs" DROP COLUMN "expiresAt";
+
+      CREATE INDEX "emailNotificationMessageJobsCreatedAtIndex" ON "emailNotificationMessageJobs" ("createdAt");
+      DROP INDEX "emailNotificationMessageJobsExpiresAtIndex";
+      ALTER TABLE "emailNotificationMessageJobs" DROP COLUMN "expiresAt";
+
+      DROP TABLE "liveConnectionsMetadata";
+      CREATE TABLE "liveConnectionsMetadata" (
+        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
+        "createdAt" TEXT NOT NULL,
+        "nonce" TEXT NOT NULL UNIQUE,
+        "url" TEXT NOT NULL,
+        "processNumber" INTEGER NULL,
+        "liveUpdateAt" TEXT NULL
+      );
+      CREATE INDEX "liveConnectionsMetadataCreatedAtIndex" ON "liveConnectionsMetadata" ("createdAt");
+      CREATE INDEX "liveConnectionsMetadataNonceIndex" ON "liveConnectionsMetadata" ("nonce");
+      CREATE INDEX "liveConnectionsMetadataURLIndex" ON "liveConnectionsMetadata" ("url");
+      CREATE INDEX "liveConnectionsMetadataProcessNumberIndex" ON "liveConnectionsMetadata" ("processNumber");
+      CREATE INDEX "liveConnectionsMetadataLiveUpdateAtIndex" ON "liveConnectionsMetadata" ("liveUpdateAt");
+    `,
   );
 
   application.database.run(
