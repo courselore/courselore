@@ -18,7 +18,9 @@ export default async (application: Application): Promise<void> => {
           sql`
             SELECT "id", "mailOptions"
             FROM "sendEmailJobs"
-            WHERE "expiresAt" < ${new Date().toISOString()}
+            WHERE "createdAt" < ${new Date(
+              Date.now() - 10 * 60 * 1000,
+            ).toISOString()}
           `,
         )) {
           application.database.run(
