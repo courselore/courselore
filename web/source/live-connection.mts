@@ -72,17 +72,22 @@ export default async (application: Application): Promise<void> => {
         );
 
         for (const liveConnectionMetadata of application.database.all<{
+          id: number;
           nonce: string;
         }>(
           sql`
-            SELECT "nonce", "processNumber"
+            SELECT "id", "nonce"
             FROM "liveConnectionsMetadata"
-            WHERE "expiresAt" < ${new Date().toISOString()}
+            WHERE
+              "createdAt" < ${new Date(
+                Date.now() - 60 * 1000,
+              ).toISOString()} AND
+              "processNumber" IS NULL
           `,
         )) {
           application.database.run(
             sql`
-              DELETE FROM "liveConnectionsMetadata" WHERE "nonce" = ${liveConnectionMetadata.nonce}
+              DELETE FROM "liveConnectionsMetadata" WHERE "id" = ${liveConnectionMetadata.id}
             `,
           );
           application.log(
@@ -117,10 +122,11 @@ export default async (application: Application): Promise<void> => {
       application.log("LIVE-CONNECTIONS", "CLEAN ZOMBIES", "STARTING...");
 
       for (const liveConnectionMetadata of application.database.all<{
+        id: number;
         nonce: string;
       }>(
         sql`
-          SELECT "nonce"
+          SELECT "id", "nonce"
           FROM "liveConnectionsMetadata"
           WHERE
             "processNumber" = ${application.process.number} AND
@@ -130,7 +136,7 @@ export default async (application: Application): Promise<void> => {
         application.database.run(
           sql`
             DELETE FROM "liveConnectionsMetadata"
-            WHERE "nonce" = ${liveConnectionMetadata.nonce}
+            WHERE "id" = ${liveConnectionMetadata.id}
           `,
         );
         application.log(
@@ -177,13 +183,12 @@ export default async (application: Application): Promise<void> => {
       };
 
       const liveConnectionMetadata = application.database.get<{
-        expiresAt: string | null;
         url: string;
         processNumber: number | null;
         liveUpdateAt: string | null;
       }>(
         sql`
-          SELECT "expiresAt", "url", "processNumber", "liveUpdateAt"
+          SELECT "url", "processNumber", "liveUpdateAt"
           FROM "liveConnectionsMetadata"
           WHERE "nonce" = ${nonce}
         `,
@@ -191,8 +196,7 @@ export default async (application: Application): Promise<void> => {
 
       if (
         liveConnectionMetadata !== undefined &&
-        (liveConnectionMetadata.expiresAt === null ||
-          liveConnectionMetadata.url !== request.originalUrl ||
+        (liveConnectionMetadata.url !== request.originalUrl ||
           liveConnectionMetadata.processNumber !== null)
       ) {
         response.locals.log("CONNECTION FAILED");
@@ -288,9 +292,7 @@ export default async (application: Application): Promise<void> => {
         application.database.run(
           sql`
             UPDATE "liveConnectionsMetadata"
-            SET
-              "expiresAt" = NULL,
-              "processNumber" = ${application.process.number}
+            SET "processNumber" = ${application.process.number}
             WHERE "nonce" = ${nonce}
           `,
         );
@@ -299,12 +301,14 @@ export default async (application: Application): Promise<void> => {
         application.database.run(
           sql`
             INSERT INTO "liveConnectionsMetadata" (
+              "createdAt",
               "nonce",
               "url",
               "processNumber",
               "liveUpdateAt"
             )
             VALUES (
+              ${new Date().toISOString()},
               ${nonce},
               ${request.originalUrl},
               ${application.process.number},
@@ -351,12 +355,12 @@ export default async (application: Application): Promise<void> => {
           application.database.run(
             sql`
               INSERT INTO "liveConnectionsMetadata" (
-                "expiresAt",
+                "createdAt",
                 "nonce",
                 "url"
               )
               VALUES (
-                ${new Date(Date.now() + 60 * 1000).toISOString()},
+                ${new Date().toISOString()},
                 ${response.locals.liveConnectionNonce},
                 ${request.originalUrl}
               )
@@ -425,10 +429,11 @@ export default async (application: Application): Promise<void> => {
 
       while (true) {
         const liveConnectionMetadata = application.database.get<{
+          id: number;
           nonce: string;
         }>(
           sql`
-            SELECT "nonce"
+            SELECT "id", "nonce"
             FROM "liveConnectionsMetadata"
             WHERE
               "processNumber" = ${application.process.number} AND
@@ -444,7 +449,7 @@ export default async (application: Application): Promise<void> => {
         if (liveConnection === undefined) {
           application.database.run(
             sql`
-              DELETE FROM "liveConnectionsMetadata" WHERE "nonce" = ${liveConnectionMetadata.nonce}
+              DELETE FROM "liveConnectionsMetadata" WHERE "id" = ${liveConnectionMetadata.id}
             `,
           );
           application.log(
@@ -482,7 +487,7 @@ export default async (application: Application): Promise<void> => {
           sql`
             UPDATE "liveConnectionsMetadata"
             SET "liveUpdateAt" = NULL
-            WHERE "nonce" = ${liveConnectionMetadata.nonce}
+            WHERE "id" = ${liveConnectionMetadata.id}
           `,
         );
 
