@@ -23,12 +23,6 @@
 
 **Minor Changes**
 
-- Test in `try.courselore.org`
-  - Inaccessible
-    - Maildev `curl http://try.courselore.org:8001`
-    - Subprocesses `curl http://try.courselore.org:18000`
-    - Subprocesses `curl http://try.courselore.org:18001`
-  - Tunneling with `leafac.courselore.org`
 - https://courselore.org/courses/8537410611/conversations/83
   - Rich-text pasting
     - Context-aware pasting
