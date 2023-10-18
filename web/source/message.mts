@@ -42,6 +42,7 @@ export type ApplicationMessage = {
               updatedAt: string | null;
               reference: string;
               authorCourseParticipant: Application["web"]["locals"]["Types"]["MaybeCourseParticipant"];
+              authorAITeachingAssistantAt: string | null;
               anonymousAt: string | null;
               type:
                 | "message"
@@ -202,6 +203,7 @@ export default async (application: Application): Promise<void> => {
       authorCourseParticipantCourseRole:
         | Application["web"]["locals"]["helpers"]["courseRoles"][number]
         | null;
+      authorAITeachingAssistantAt: string | null;
       anonymousAt: string | null;
       type: NonNullable<
         ReturnType<Application["web"]["locals"]["helpers"]["getMessage"]>
@@ -229,6 +231,7 @@ export default async (application: Application): Promise<void> => {
           "authorUser"."biographyPreprocessed" AS "authorUserBiographyPreprocessed",
           "authorCourseParticipant"."reference" AS "authorCourseParticipantReference",
           "authorCourseParticipant"."courseRole" AS "authorCourseParticipantCourseRole",
+          "messages"."authorAITeachingAssistantAt",
           "messages"."anonymousAt",
           "messages"."type",
           "messages"."contentSource",
@@ -291,6 +294,7 @@ export default async (application: Application): Promise<void> => {
               courseRole: messageRow.authorCourseParticipantCourseRole,
             }
           : ("no-longer-participating" as const),
+      authorAITeachingAssistantAt: messageRow.authorAITeachingAssistantAt,
       anonymousAt: messageRow.anonymousAt,
       type: messageRow.type,
       contentSource: messageRow.contentSource,

@@ -15,6 +15,7 @@
   - Create a background job that fills in that answer.
     - Don’t send notifications.
   - Add caveats and stuff.
+  - Follow-up questions?
 - Chat.
   - Create a new category for chatting with AI.
   - Reuse the work above.

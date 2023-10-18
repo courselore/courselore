@@ -2720,8 +2720,7 @@ export default async (application: Application): Promise<void> => {
                 </p>
 
                 <p>
-                  If it was you signing in, then no further action is
-                  required.
+                  If it was you signing in, then no further action is required.
                 </p>
 
                 <p>
