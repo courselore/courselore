@@ -6,9 +6,12 @@
 
 - Answer questions.
   - Create an AI user.
-    - Model: Add to `MaybeCourseParticipant` or mock a `Application["web"]["locals"]["Types"]["CourseParticipant"]`?
+    - Model:
+      - What’s the use of `"no-longer-participating"` instead of `null`?
     - Rendering: `<i class="bi bi-robot"></i>`.
-    - Don’t allow editing AI message
+    - Special cases:
+      - Don’t edit
+      - Don’t delete
   - When asking a question:
     - Create a placeholder answer.
     - Enqueue a background job to fill in the placeholder answer.
