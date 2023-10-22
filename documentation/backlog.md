@@ -6,35 +6,32 @@
 
 **Reviewed up to `56d7e1f906840e03717e6d1a776914937a271314`**
 
+- `"no-longer-participating"` → `null`?
 - Database
   - Review `"courses"."aiTeachingAssistantAPIKey"`
   - `"conversations"."aiChatID"`
   - `"messages"."authorAITeachingAssistantAt"` → `"messages"."authorAIAt"`
 - New conversation type: AI Chat.
   - User interface:
-    - Sidebar button to create conversation.
+    - Sidebar button to create conversation (`<i class="bi bi-robot"></i>`).
     - Create conversation form.
-    - Sidebar
+    - Sidebar showing conversations.
+      - Search.
+    - Conversation page itself.
+      - Disclaimer.
   - Can’t edit the properties of a conversation, for example, its type.
   - Review every use of conversation type.
-- Create an AI user.
-  - Model:
-    - What’s the use of `"no-longer-participating"` instead of `null`?
-  - Rendering: `<i class="bi bi-robot"></i>`.
+- Messages.
+  - Render AI author.
   - Special cases:
     - Don’t edit
     - Don’t delete
-- When asking a question:
-  - Create a placeholder answer.
-  - Enqueue a background job to fill in the placeholder answer.
-- Create a background job that fills in that answer.
-  - Don’t send notifications.
-- Add caveats and stuff.
+- Notifications.
 - Course Staff may observe and intervene in conversations between students and AI.
   - Course Staff messages may be edited.
-  - Course Staff messages won’t trigger the an AI answer, but will trigger notifications.
+  - Course Staff messages won’t trigger an AI answer, but will trigger notifications.
   - Exception: When the Course Staff started the conversation with AI, then naturally Course Staff messages should trigger an AI answer, and not a notification.
-- Add a new course role: Observer. They’re like Course Staff, but read-only.
+- New course role: Observer. They’re like Course Staff, but read-only.
 - Questions:
   - Notifications?
   - Can Course Staff see other Course Staff conversations with AI?
