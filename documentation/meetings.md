@@ -1,6 +1,18 @@
 # Meetings
 
 <details>
+<summary>2023-10-21</summary>
+
+- Deployed the feature to detect screenshots of code.
+- AI Teaching Assistant:
+  - API is available now.
+  - Let’s not do the “questions” feature yet, but just the “chat” feature for now.
+  - Course staff may observe and intervene in conversations between students and AI.
+  - Add a new course role: Observer. They’re like Course Staff, but read-only.
+
+</details>
+
+<details>
 <summary>2023-10-14</summary>
 
 - The API for an AI teaching assistant will be ready this week, and we want two features: Answering questions and chatting.

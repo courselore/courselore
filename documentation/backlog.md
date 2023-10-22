@@ -6,25 +6,22 @@
 
 **Reviewed up to `56d7e1f906840e03717e6d1a776914937a271314`**
 
-- Answer questions.
-  - Create an AI user.
-    - Model:
-      - What’s the use of `"no-longer-participating"` instead of `null`?
-    - Rendering: `<i class="bi bi-robot"></i>`.
-    - Special cases:
-      - Don’t edit
-      - Don’t delete
-  - When asking a question:
-    - Create a placeholder answer.
-    - Enqueue a background job to fill in the placeholder answer.
-  - Create a background job that fills in that answer.
-    - Don’t send notifications.
-  - Add caveats and stuff.
-  - Follow-up questions?
-- Chat.
-  - Create a new category for chatting with AI.
-  - Reuse the work above.
-    - Use the same background job as for questions?
+- New conversation type: AI Chat.
+- Create an AI user.
+  - Model:
+    - What’s the use of `"no-longer-participating"` instead of `null`?
+  - Rendering: `<i class="bi bi-robot"></i>`.
+  - Special cases:
+    - Don’t edit
+    - Don’t delete
+- When asking a question:
+  - Create a placeholder answer.
+  - Enqueue a background job to fill in the placeholder answer.
+- Create a background job that fills in that answer.
+  - Don’t send notifications.
+- Add caveats and stuff.
+- Course staff may observe and intervene in conversations between students and AI.
+- Add a new course role: Observer. They’re like Course Staff, but read-only.
 
 **Minor Changes**
 
