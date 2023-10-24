@@ -62,7 +62,7 @@ export default async (application: Application): Promise<void> => {
       application.log(
         id,
         `${node.elapsedTime(start)}ms`,
-        request.ip,
+        request.ip ?? "",
         request.method,
         request.originalUrl,
         ...messageParts,

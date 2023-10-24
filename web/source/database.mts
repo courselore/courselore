@@ -2172,13 +2172,9 @@ export default async (application: Application): Promise<void> => {
 
       const contentPreprocessed = await (async () => {
         const unifiedProcessor = unified()
-          // @ts-expect-error: https://github.com/orgs/rehypejs/discussions/150 / https://github.com/unifiedjs/unified/issues/227
           .use(remarkParse)
-          // @ts-expect-error: https://github.com/orgs/rehypejs/discussions/150 / https://github.com/unifiedjs/unified/issues/227
           .use(remarkGfm, { singleTilde: false })
-          // @ts-expect-error: https://github.com/orgs/rehypejs/discussions/150 / https://github.com/unifiedjs/unified/issues/227
           .use(remarkMath)
-          // @ts-expect-error: https://github.com/orgs/rehypejs/discussions/150 / https://github.com/unifiedjs/unified/issues/227
           .use(remarkRehype, { allowDangerousHtml: true })
           .use(rehypeRaw)
           .use(rehypeSanitize, {
@@ -2259,7 +2255,6 @@ export default async (application: Application): Promise<void> => {
               span: { className: "math-inline" },
             },
           })
-          // @ts-expect-error: https://github.com/orgs/rehypejs/discussions/150 / https://github.com/unifiedjs/unified/issues/227
           .use(rehypeKatex, { maxSize: 25, maxExpand: 10, output: "html" })
           .use(
             await (async () => {
