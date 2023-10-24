@@ -1286,7 +1286,8 @@ export default async (application: Application): Promise<void> => {
                       line-height: var(--line-height--xs);
                       display: flex;
                       align-items: baseline;
-                      gap: var(--space--2);
+                      column-gap: var(--space--4);
+                      row-gap: var(--space--2);
                       flex-wrap: wrap;
                     `}"
                   >
@@ -1320,7 +1321,7 @@ export default async (application: Application): Promise<void> => {
                               { conversations: request.query.conversations },
                               { addQueryPrefix: true },
                             )}"
-                            class="button button--transparent"
+                            class="button button--tight button--tight--inline button--transparent"
                           >
                             $${iconsConversationType.question.regular} Question
                           </a>
@@ -1331,10 +1332,31 @@ export default async (application: Application): Promise<void> => {
                               { conversations: request.query.conversations },
                               { addQueryPrefix: true },
                             )}"
-                            class="button button--transparent"
+                            class="button button--tight button--tight--inline button--transparent"
                           >
                             $${iconsConversationType.chat.regular} Chat
                           </a>
+                          $${typeof response.locals.course
+                            .aiTeachingAssistantAPIKey === "string"
+                            ? html`
+                                <a
+                                  href="https://${application.configuration
+                                    .hostname}/courses/${response.locals.course
+                                    .reference}/conversations/new/chat${qs.stringify(
+                                    {
+                                      ai: true,
+                                      conversations:
+                                        request.query.conversations,
+                                    },
+                                    { addQueryPrefix: true },
+                                  )}"
+                                  class="button button--tight button--tight--inline button--transparent"
+                                >
+                                  <i class="bi bi-robot"></i>
+                                  AI
+                                </a>
+                              `
+                            : html``}
                         `
                       : html`
                           <a
@@ -1355,7 +1377,7 @@ export default async (application: Application): Promise<void> => {
                               { conversations: request.query.conversations },
                               { addQueryPrefix: true },
                             )}"
-                            class="button button--transparent"
+                            class="button button--tight button--tight--inline button--transparent"
                           >
                             $${iconsConversationType.note.regular} Note
                           </a>
@@ -1366,10 +1388,31 @@ export default async (application: Application): Promise<void> => {
                               { conversations: request.query.conversations },
                               { addQueryPrefix: true },
                             )}"
-                            class="button button--transparent"
+                            class="button button--tight button--tight--inline button--transparent"
                           >
                             $${iconsConversationType.chat.regular} Chat
                           </a>
+                          $${typeof response.locals.course
+                            .aiTeachingAssistantAPIKey === "string"
+                            ? html`
+                                <a
+                                  href="https://${application.configuration
+                                    .hostname}/courses/${response.locals.course
+                                    .reference}/conversations/new/chat${qs.stringify(
+                                    {
+                                      ai: true,
+                                      conversations:
+                                        request.query.conversations,
+                                    },
+                                    { addQueryPrefix: true },
+                                  )}"
+                                  class="button button--tight button--tight--inline button--transparent"
+                                >
+                                  <i class="bi bi-robot"></i>
+                                  AI
+                                </a>
+                              `
+                            : html``}
                         `}
                   </div>
 
