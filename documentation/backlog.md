@@ -5,8 +5,6 @@
 **AI Teaching Assistant**
 
 - Update dependencies
-  - Test mathematics in messages:
-    - Custom code that handles mathematics in `content.mts`
   - Add new version of Node.js to support matrix in dependencies
 - **Reviewed up to `56d7e1f906840e03717e6d1a776914937a271314`**
 - Database
