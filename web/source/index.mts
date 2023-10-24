@@ -359,9 +359,9 @@ if (await node.isExecuted(import.meta.url)) {
                   await prompts({
                     type: "confirm",
                     name: "output",
-                    message: `The following ports are unavailable, do you want to kill the respective processes and retry? ${JSON.stringify(
+                    message: `The following ports are unavailable: ${JSON.stringify(
                       unavailablePorts,
-                    )}`,
+                    )}. Do you want to kill the processes occupying those ports and retry?`,
                     initial: true,
                   })
                 ).output
