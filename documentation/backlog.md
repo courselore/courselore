@@ -4,8 +4,6 @@
 
 **AI Teaching Assistant**
 
-- Update dependencies
-  - Add new version of Node.js to support matrix in dependencies
 - **Reviewed up to `56d7e1f906840e03717e6d1a776914937a271314`**
 - Database
   - Review `"courses"."aiTeachingAssistantAPIKey"`

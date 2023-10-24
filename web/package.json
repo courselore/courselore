@@ -30,9 +30,6 @@
     "update": "npm-check-updates --upgrade && npm install",
     "backup": "rsync -av --progress --delete root@courselore.org:courselore/data/ ../../BACKUP/"
   },
-  "engines": {
-    "node": ">=20"
-  },
   "dependencies": {
     "@leafac/caddy": "^1.0.5",
     "@leafac/css": "^0.10.0",
