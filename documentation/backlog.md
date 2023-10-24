@@ -4,7 +4,7 @@
 
 **AI Teaching Assistant**
 
-- **Reviewed up to `56d7e1f906840e03717e6d1a776914937a271314`**
+- **Reviewed up to `360ae1f9bb2b731228316c113725de0dbe4ac23d`**
 - Database
   - Review `"courses"."aiTeachingAssistantAPIKey"`
   - `"conversations"."aiChatID"`
