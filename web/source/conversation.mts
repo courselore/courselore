@@ -1353,7 +1353,7 @@ export default async (application: Application): Promise<void> => {
                                   class="button button--tight button--tight--inline button--transparent"
                                 >
                                   <i class="bi bi-robot"></i>
-                                  AI
+                                  AI Chat
                                 </a>
                               `
                             : html``}
@@ -1409,7 +1409,7 @@ export default async (application: Application): Promise<void> => {
                                   class="button button--tight button--tight--inline button--transparent"
                                 >
                                   <i class="bi bi-robot"></i>
-                                  AI
+                                  AI Chat
                                 </a>
                               `
                             : html``}
@@ -3449,6 +3449,7 @@ export default async (application: Application): Promise<void> => {
         isAnnouncement?: "true";
         isPinned?: "true";
       };
+      ai?: "true";
     },
     Application["web"]["locals"]["ResponseLocals"]["CourseParticipant"]
   >(

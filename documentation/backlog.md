@@ -12,6 +12,7 @@
       - Search.
     - Conversation page itself.
       - Disclaimer.
+    - When the course is new, have a way to create an AI Chat
   - Can’t edit the properties of a conversation, for example, its type.
   - Review every use of conversation type.
 - Messages.
