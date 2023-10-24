@@ -31,7 +31,7 @@ let staticJavaScript = javascript`
   import scrollIntoViewIfNeeded from "scroll-into-view-if-needed";
   import * as tippy from "tippy.js";
   import textareaCaret from "textarea-caret";
-  import * as textFieldEdit from "text-field-edit";
+  import textFieldEdit from "text-field-edit";
   import { unified } from "unified";
   import rehypeParse from "rehype-parse";
   import rehypeRemark from "rehype-remark";
