@@ -5189,7 +5189,9 @@ ${contentSource}</textarea
         id: number;
         createdAt: string;
         reference: string;
-        authorCourseParticipant: Application["web"]["locals"]["Types"]["MaybeCourseParticipant"];
+        authorCourseParticipant:
+          | Application["web"]["locals"]["Types"]["CourseParticipant"]
+          | null;
         multipleChoicesAt: string | null;
         closesAt: string | null;
         options: {

@@ -166,7 +166,9 @@ export type ApplicationConversation = {
               createdAt: string;
               updatedAt: string | null;
               reference: string;
-              authorCourseParticipant: Application["web"]["locals"]["Types"]["MaybeCourseParticipant"];
+              authorCourseParticipant:
+                | Application["web"]["locals"]["Types"]["CourseParticipant"]
+                | null;
               participants: Application["web"]["locals"]["helpers"]["conversationParticipantses"][number];
               anonymousAt: string | null;
               type: Application["web"]["locals"]["helpers"]["conversationTypes"][number];
@@ -190,7 +192,9 @@ export type ApplicationConversation = {
               readingsCount: number;
               endorsements: {
                 id: number;
-                courseParticipant: Application["web"]["locals"]["Types"]["MaybeCourseParticipant"];
+                courseParticipant:
+                  | Application["web"]["locals"]["Types"]["CourseParticipant"]
+                  | null;
               }[];
             }
           | undefined;

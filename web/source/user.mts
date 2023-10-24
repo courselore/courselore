@@ -61,7 +61,9 @@ export type ApplicationUser = {
                 Application["web"]["locals"]["ResponseLocals"]["CourseParticipant"]
               >
           >;
-          courseParticipant?: Application["web"]["locals"]["Types"]["MaybeCourseParticipant"];
+          courseParticipant?:
+            | Application["web"]["locals"]["Types"]["CourseParticipant"]
+            | null;
           user?: Application["web"]["locals"]["Types"]["User"] | null;
           anonymous?: boolean | "reveal";
           avatar?: boolean;

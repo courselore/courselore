@@ -41,7 +41,9 @@ export type ApplicationMessage = {
               createdAt: string;
               updatedAt: string | null;
               reference: string;
-              authorCourseParticipant: Application["web"]["locals"]["Types"]["MaybeCourseParticipant"];
+              authorCourseParticipant:
+                | Application["web"]["locals"]["Types"]["CourseParticipant"]
+                | null;
               authorAITeachingAssistantAt: string | null;
               anonymousAt: string | null;
               type:
@@ -56,16 +58,22 @@ export type ApplicationMessage = {
               readings: {
                 id: number;
                 createdAt: string;
-                courseParticipant: Application["web"]["locals"]["Types"]["MaybeCourseParticipant"];
+                courseParticipant:
+                  | Application["web"]["locals"]["Types"]["CourseParticipant"]
+                  | null;
               }[];
               endorsements: {
                 id: number;
-                courseParticipant: Application["web"]["locals"]["Types"]["MaybeCourseParticipant"];
+                courseParticipant:
+                  | Application["web"]["locals"]["Types"]["CourseParticipant"]
+                  | null;
               }[];
               likes: {
                 id: number;
                 createdAt: string;
-                courseParticipant: Application["web"]["locals"]["Types"]["MaybeCourseParticipant"];
+                courseParticipant:
+                  | Application["web"]["locals"]["Types"]["CourseParticipant"]
+                  | null;
               }[];
             }
           | undefined;

@@ -21,10 +21,6 @@ export type ApplicationCourse = {
           reference: string;
           courseRole: Application["web"]["locals"]["helpers"]["courseRoles"][number];
         };
-
-        MaybeCourseParticipant:
-          | Application["web"]["locals"]["Types"]["CourseParticipant"]
-          | null;
       };
 
       ResponseLocals: {
