@@ -24,7 +24,7 @@ export type ApplicationCourse = {
 
         MaybeCourseParticipant:
           | Application["web"]["locals"]["Types"]["CourseParticipant"]
-          | "no-longer-participating";
+          | null;
       };
 
       ResponseLocals: {
@@ -5149,7 +5149,7 @@ export default async (application: Application): Promise<void> => {
           ID: conversation.reference,
           Conversation: messages.map((message) => ({
             Role:
-              message.authorCourseParticipant === "no-longer-participating"
+              message.authorCourseParticipant === null
                 ? "No Longer Participating"
                 : labelsCourseRole[message.authorCourseParticipant.courseRole],
             Text: message.contentSearch.replace(

@@ -450,7 +450,7 @@ export default async (application: Application): Promise<void> => {
               reference: conversationRow.authorCourseParticipantReference,
               courseRole: conversationRow.authorCourseParticipantCourseRole,
             }
-          : ("no-longer-participating" as const),
+          : null,
       participants: conversationRow.participants,
       anonymousAt: conversationRow.anonymousAt,
       type: conversationRow.type,
@@ -673,7 +673,7 @@ export default async (application: Application): Promise<void> => {
                       reference: endorsementRow.courseParticipantReference,
                       courseRole: endorsementRow.courseParticipantCourseRole,
                     }
-                  : ("no-longer-participating" as const),
+                  : null,
             }))
         : [];
 
@@ -3004,8 +3004,7 @@ export default async (application: Application): Promise<void> => {
               ? false
               : response.locals.courseParticipant.courseRole ===
                   "course-staff" ||
-                (conversation.authorCourseParticipant !==
-                  "no-longer-participating" &&
+                (conversation.authorCourseParticipant !== null &&
                   conversation.authorCourseParticipant.id ===
                     response.locals.courseParticipant.id)
               ? "reveal"
@@ -3144,7 +3143,7 @@ export default async (application: Application): Promise<void> => {
                       : response.locals.courseParticipant.courseRole ===
                           "course-staff" ||
                         (searchResult.message.authorCourseParticipant !==
-                          "no-longer-participating" &&
+                          null &&
                           searchResult.message.authorCourseParticipant.id ===
                             response.locals.courseParticipant.id)
                       ? "reveal"
@@ -3167,8 +3166,7 @@ export default async (application: Application): Promise<void> => {
                       ? false
                       : response.locals.courseParticipant.courseRole ===
                           "course-staff" ||
-                        (message.authorCourseParticipant !==
-                          "no-longer-participating" &&
+                        (message.authorCourseParticipant !== null &&
                           message.authorCourseParticipant.id ===
                             response.locals.courseParticipant.id)
                       ? "reveal"
@@ -5340,8 +5338,7 @@ export default async (application: Application): Promise<void> => {
     >;
   }): boolean =>
     response.locals.courseParticipant.courseRole === "course-staff" ||
-    (response.locals.conversation.authorCourseParticipant !==
-      "no-longer-participating" &&
+    (response.locals.conversation.authorCourseParticipant !== null &&
       response.locals.conversation.authorCourseParticipant.id ===
         response.locals.courseParticipant.id);
 
@@ -6066,8 +6063,7 @@ export default async (application: Application): Promise<void> => {
                                         `
                                       : html``}
                                     $${response.locals.conversation
-                                      .authorCourseParticipant !==
-                                      "no-longer-participating" &&
+                                      .authorCourseParticipant !== null &&
                                     response.locals.conversation
                                       .authorCourseParticipant.courseRole ===
                                       "student" &&
@@ -7228,7 +7224,7 @@ export default async (application: Application): Promise<void> => {
                                                                 messages.some(
                                                                   (message) =>
                                                                     message.authorCourseParticipant !==
-                                                                      "no-longer-participating" &&
+                                                                      null &&
                                                                     message
                                                                       .authorCourseParticipant
                                                                       .id ===
@@ -7243,7 +7239,7 @@ export default async (application: Application): Promise<void> => {
                                                                 messages.some(
                                                                   (message) =>
                                                                     message.authorCourseParticipant !==
-                                                                      "no-longer-participating" &&
+                                                                      null &&
                                                                     message
                                                                       .authorCourseParticipant
                                                                       .id ===
@@ -7355,7 +7351,7 @@ export default async (application: Application): Promise<void> => {
                                         messages.some(
                                           (message) =>
                                             message.authorCourseParticipant !==
-                                              "no-longer-participating" &&
+                                              null &&
                                             message.authorCourseParticipant
                                               .id === courseParticipant.id,
                                         )) ||
@@ -7366,7 +7362,7 @@ export default async (application: Application): Promise<void> => {
                                         messages.some(
                                           (message) =>
                                             message.authorCourseParticipant !==
-                                              "no-longer-participating" &&
+                                              null &&
                                             message.authorCourseParticipant
                                               .id === courseParticipant.id,
                                         ))
@@ -8445,7 +8441,7 @@ export default async (application: Application): Promise<void> => {
                                               message.endorsements.some(
                                                 (endorsement) =>
                                                   endorsement.courseParticipant !==
-                                                    "no-longer-participating" &&
+                                                    null &&
                                                   endorsement.courseParticipant
                                                     .id ===
                                                     response.locals
@@ -8490,7 +8486,7 @@ export default async (application: Application): Promise<void> => {
                                                                       endorsement,
                                                                     ) =>
                                                                       endorsement.courseParticipant !==
-                                                                        "no-longer-participating" &&
+                                                                        null &&
                                                                       endorsement
                                                                         .courseParticipant
                                                                         .id !==
@@ -8510,7 +8506,7 @@ export default async (application: Application): Promise<void> => {
                                                                               endorsement,
                                                                             ) =>
                                                                               endorsement.courseParticipant !==
-                                                                                "no-longer-participating" &&
+                                                                                null &&
                                                                               endorsement
                                                                                 .courseParticipant
                                                                                 .id !==
@@ -8552,7 +8548,7 @@ export default async (application: Application): Promise<void> => {
                                                         $${message.endorsements.filter(
                                                           (endorsement) =>
                                                             endorsement.courseParticipant !==
-                                                            "no-longer-participating",
+                                                            null,
                                                         ).length === 0
                                                           ? html``
                                                           : html`
@@ -8573,7 +8569,7 @@ export default async (application: Application): Promise<void> => {
                                                                               endorsement,
                                                                             ) =>
                                                                               endorsement.courseParticipant ===
-                                                                              "no-longer-participating"
+                                                                              null
                                                                                 ? []
                                                                                 : [
                                                                                     endorsement
@@ -8615,7 +8611,7 @@ export default async (application: Application): Promise<void> => {
                                             response.locals.conversation
                                               .type === "question" &&
                                             (message.authorCourseParticipant ===
-                                              "no-longer-participating" ||
+                                              null ||
                                               message.authorCourseParticipant
                                                 .courseRole !==
                                                 "course-staff") &&
@@ -8629,7 +8625,7 @@ export default async (application: Application): Promise<void> => {
                                                       message.endorsements.filter(
                                                         (endorsement) =>
                                                           endorsement.courseParticipant !==
-                                                          "no-longer-participating",
+                                                          null,
                                                       ).length > 0
                                                     })
                                                       leafac.setTippy({
@@ -8647,7 +8643,7 @@ export default async (application: Application): Promise<void> => {
                                                                   endorsement,
                                                                 ) =>
                                                                   endorsement.courseParticipant ===
-                                                                  "no-longer-participating"
+                                                                  null
                                                                     ? []
                                                                     : [
                                                                         endorsement
@@ -8761,7 +8757,7 @@ export default async (application: Application): Promise<void> => {
                                                               .courseRole ===
                                                               "course-staff" ||
                                                             (message.authorCourseParticipant !==
-                                                              "no-longer-participating" &&
+                                                              null &&
                                                               message
                                                                 .authorCourseParticipant
                                                                 .id ===
@@ -8772,7 +8768,7 @@ export default async (application: Application): Promise<void> => {
                                                           : true,
                                                       name:
                                                         message.authorCourseParticipant ===
-                                                        "no-longer-participating"
+                                                        null
                                                           ? undefined
                                                           : application.web.locals.helpers.highlightSearchResult(
                                                               html`${message
@@ -8892,7 +8888,7 @@ export default async (application: Application): Promise<void> => {
                                                                   element,
                                                                   ((element.selectionStart > 0) ? "\\n\\n" : "") + "> " + ${
                                                                     message.authorCourseParticipant ===
-                                                                    "no-longer-participating"
+                                                                    null
                                                                       ? ``
                                                                       : `@${
                                                                           message.anonymousAt ===
@@ -8981,7 +8977,7 @@ export default async (application: Application): Promise<void> => {
                                             const isLiked = message.likes.some(
                                               (like) =>
                                                 like.courseParticipant !==
-                                                  "no-longer-participating" &&
+                                                  null &&
                                                 like.courseParticipant.id ===
                                                   response.locals
                                                     .courseParticipant.id,
@@ -10059,8 +10055,7 @@ export default async (application: Application): Promise<void> => {
       if (typeof request.body.isAnonymous === "string")
         if (
           !["true", "false"].includes(request.body.isAnonymous) ||
-          response.locals.conversation.authorCourseParticipant ===
-            "no-longer-participating" ||
+          response.locals.conversation.authorCourseParticipant === null ||
           response.locals.conversation.authorCourseParticipant.courseRole ===
             "course-staff" ||
           (request.body.isAnonymous === "true" &&
@@ -10095,7 +10090,7 @@ export default async (application: Application): Promise<void> => {
                   "reference" = '1' AND
                   "authorCourseParticipant" = ${
                     response.locals.conversation.authorCourseParticipant ===
-                    "no-longer-participating"
+                    null
                       ? (() => {
                           throw new Error();
                         })()

@@ -821,7 +821,7 @@ export default async (application: Application): Promise<void> => {
           authorCourseParticipant:
             pollRow.authorCourseParticipantId !== null
               ? { id: pollRow.authorCourseParticipantId }
-              : ("no-longer-participating" as const),
+              : null,
           multipleChoicesAt: pollRow.multipleChoicesAt,
           closesAt: pollRow.closesAt,
           votesCount: pollRow.votesCount,
@@ -5219,11 +5219,11 @@ ${contentSource}</textarea
       Application["web"]["locals"]["ResponseLocals"]["CourseParticipant"]
     >;
     poll: {
-      authorCourseParticipant: { id: number } | "no-longer-participating";
+      authorCourseParticipant: { id: number } | null;
     };
   }): boolean =>
     response.locals.courseParticipant.courseRole === "course-staff" ||
-    (poll.authorCourseParticipant !== "no-longer-participating" &&
+    (poll.authorCourseParticipant !== null &&
       poll.authorCourseParticipant.id === response.locals.courseParticipant.id);
 
   application.web.use<
@@ -5320,7 +5320,7 @@ ${contentSource}</textarea
                 reference: pollRow.authorCourseParticipantReference,
                 courseRole: pollRow.authorCourseParticipantCourseRole,
               }
-            : ("no-longer-participating" as const),
+            : null,
         multipleChoicesAt: pollRow.multipleChoicesAt,
         closesAt: pollRow.closesAt,
       };
@@ -5777,7 +5777,7 @@ ${contentSource}</textarea
                               reference: voteRow.courseParticipantReference,
                               courseRole: voteRow.courseParticipantCourseRole,
                             }
-                          : ("no-longer-participating" as const),
+                          : null,
                     }))
                     .map(
                       (vote) => html`

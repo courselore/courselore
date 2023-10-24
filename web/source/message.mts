@@ -293,7 +293,7 @@ export default async (application: Application): Promise<void> => {
               reference: messageRow.authorCourseParticipantReference,
               courseRole: messageRow.authorCourseParticipantCourseRole,
             }
-          : ("no-longer-participating" as const),
+          : null,
       authorAITeachingAssistantAt: messageRow.authorAITeachingAssistantAt,
       anonymousAt: messageRow.anonymousAt,
       type: messageRow.type,
@@ -378,7 +378,7 @@ export default async (application: Application): Promise<void> => {
                 reference: readingRow.courseParticipantReference,
                 courseRole: readingRow.courseParticipantCourseRole,
               }
-            : ("no-longer-participating" as const),
+            : null,
       }));
 
     const endorsements = application.database
@@ -453,7 +453,7 @@ export default async (application: Application): Promise<void> => {
                 reference: endorsementRow.courseParticipantReference,
                 courseRole: endorsementRow.courseParticipantCourseRole,
               }
-            : ("no-longer-participating" as const),
+            : null,
       }));
 
     const likes = application.database
@@ -530,7 +530,7 @@ export default async (application: Application): Promise<void> => {
                 reference: likeRow.courseParticipantReference,
                 courseRole: likeRow.courseParticipantCourseRole,
               }
-            : ("no-longer-participating" as const),
+            : null,
       }));
 
     return {
@@ -609,8 +609,7 @@ export default async (application: Application): Promise<void> => {
                     textFieldEdit.wrapSelection(
                       element,
                       ((element.selectionStart > 0) ? "\\n\\n" : "") + "> " + ${
-                        response.locals.message.authorCourseParticipant ===
-                        "no-longer-participating"
+                        response.locals.message.authorCourseParticipant === null
                           ? ``
                           : `@${
                               response.locals.message.anonymousAt === null
@@ -791,8 +790,7 @@ export default async (application: Application): Promise<void> => {
                     </button>
                   `
                 : html``}
-              $${response.locals.message.authorCourseParticipant !==
-                "no-longer-participating" &&
+              $${response.locals.message.authorCourseParticipant !== null &&
               response.locals.message.authorCourseParticipant.courseRole ===
                 "student" &&
               application.web.locals.helpers.mayEditMessage({
@@ -1178,9 +1176,8 @@ export default async (application: Application): Promise<void> => {
               $${response.locals.message.readings.reverse().map(
                 (reading) => html`
                   <div
-                    key="reading/${reading.courseParticipant ===
-                    "no-longer-participating"
-                      ? reading.courseParticipant
+                    key="reading/${reading.courseParticipant === null
+                      ? "no-longer-participating"
                       : reading.courseParticipant.reference}"
                     class="dropdown--menu--item"
                   >
@@ -1338,8 +1335,7 @@ export default async (application: Application): Promise<void> => {
       if (
         response.locals.conversation.type === "chat" &&
         mostRecentMessage !== undefined &&
-        mostRecentMessage.authorCourseParticipant !==
-          "no-longer-participating" &&
+        mostRecentMessage.authorCourseParticipant !== null &&
         response.locals.courseParticipant.id ===
           mostRecentMessage.authorCourseParticipant.id &&
         mostRecentMessage.anonymousAt === null &&
@@ -1516,7 +1512,7 @@ export default async (application: Application): Promise<void> => {
     message,
   }) =>
     response.locals.courseParticipant.courseRole === "course-staff" ||
-    (message.authorCourseParticipant !== "no-longer-participating" &&
+    (message.authorCourseParticipant !== null &&
       message.authorCourseParticipant.id ===
         response.locals.courseParticipant.id);
 
@@ -1572,8 +1568,7 @@ export default async (application: Application): Promise<void> => {
       if (typeof request.body.isAnonymous === "string")
         if (
           !["true", "false"].includes(request.body.isAnonymous) ||
-          response.locals.message.authorCourseParticipant ===
-            "no-longer-participating" ||
+          response.locals.message.authorCourseParticipant === null ||
           response.locals.message.authorCourseParticipant.courseRole ===
             "course-staff"
         )
@@ -1593,10 +1588,8 @@ export default async (application: Application): Promise<void> => {
             );
             if (
               response.locals.message.reference === "1" &&
-              response.locals.conversation.authorCourseParticipant !==
-                "no-longer-participating" &&
-              response.locals.message.authorCourseParticipant !==
-                "no-longer-participating" &&
+              response.locals.conversation.authorCourseParticipant !== null &&
+              response.locals.message.authorCourseParticipant !== null &&
               response.locals.conversation.authorCourseParticipant.id ===
                 response.locals.message.authorCourseParticipant.id
             )
@@ -1717,7 +1710,7 @@ export default async (application: Application): Promise<void> => {
                       title: response.locals.conversation.title,
                       content:
                         response.locals.message.authorCourseParticipant !==
-                          "no-longer-participating" &&
+                          null &&
                         response.locals.message.authorCourseParticipant.id !==
                           response.locals.courseParticipant.id &&
                         !(
@@ -1821,9 +1814,8 @@ export default async (application: Application): Promise<void> => {
               $${response.locals.message.likes.reverse().map(
                 (like) => html`
                   <div
-                    key="like/${like.courseParticipant ===
-                    "no-longer-participating"
-                      ? like.courseParticipant
+                    key="like/${like.courseParticipant === null
+                      ? "no-longer-participating"
                       : like.courseParticipant.reference}"
                     class="dropdown--menu--item"
                   >
@@ -1880,7 +1872,7 @@ export default async (application: Application): Promise<void> => {
       if (
         response.locals.message.likes.some(
           (like) =>
-            like.courseParticipant !== "no-longer-participating" &&
+            like.courseParticipant !== null &&
             like.courseParticipant.id === response.locals.courseParticipant.id,
         )
       )
@@ -1938,7 +1930,7 @@ export default async (application: Application): Promise<void> => {
 
       const like = response.locals.message.likes.find(
         (like) =>
-          like.courseParticipant !== "no-longer-participating" &&
+          like.courseParticipant !== null &&
           like.courseParticipant.id === response.locals.courseParticipant.id,
       );
       if (like === undefined) return next("Validation");
@@ -1979,7 +1971,7 @@ export default async (application: Application): Promise<void> => {
     response.locals.conversation.type === "question" &&
     message.reference !== "1" &&
     message.type === "answer" &&
-    (message.authorCourseParticipant === "no-longer-participating" ||
+    (message.authorCourseParticipant === null ||
       message.authorCourseParticipant.courseRole !== "course-staff");
 
   application.web.post<
@@ -2011,7 +2003,7 @@ export default async (application: Application): Promise<void> => {
       if (
         response.locals.message.endorsements.some(
           (endorsement) =>
-            endorsement.courseParticipant !== "no-longer-participating" &&
+            endorsement.courseParticipant !== null &&
             endorsement.courseParticipant.id ===
               response.locals.courseParticipant.id,
         )
@@ -2086,7 +2078,7 @@ export default async (application: Application): Promise<void> => {
 
       const endorsement = response.locals.message.endorsements.find(
         (endorsement) =>
-          endorsement.courseParticipant !== "no-longer-participating" &&
+          endorsement.courseParticipant !== null &&
           endorsement.courseParticipant.id ===
             response.locals.courseParticipant.id,
       );
@@ -2172,7 +2164,7 @@ export default async (application: Application): Promise<void> => {
           )
         `,
       );
-      if (message.authorCourseParticipant !== "no-longer-participating")
+      if (message.authorCourseParticipant !== null)
         application.database.run(
           sql`
             INSERT INTO "emailNotificationDeliveries" ("createdAt", "message", "courseParticipant")
@@ -2338,7 +2330,7 @@ export default async (application: Application): Promise<void> => {
                     name: messageRow.authorUserName,
                   },
                 }
-              : ("no-longer-participating" as const),
+              : null,
           anonymousAt: messageRow.anonymousAt,
           type: messageRow.type,
           contentPreprocessed: messageRow.contentPreprocessed,
@@ -2536,8 +2528,7 @@ export default async (application: Application): Promise<void> => {
                           },
                           { addQueryPrefix: true },
                         )}"
-                        >${message.courseParticipant ===
-                        "no-longer-participating"
+                        >${message.courseParticipant === null
                           ? "Someone who is no longer participating"
                           : message.anonymousAt !== null
                           ? `Anonymous ${
