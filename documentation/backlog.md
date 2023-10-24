@@ -7,6 +7,14 @@
 **Reviewed up to `56d7e1f906840e03717e6d1a776914937a271314`**
 
 - `"no-longer-participating"` → `null`?
+  - `"conversations"."authorCourseParticipant"`
+  - `"messages"."authorCourseParticipant"`
+  - `"messagePolls"."authorCourseParticipant"`
+  - `"messagePollVotes"."courseParticipant"`
+  - `"endorsements"."courseParticipant"`
+  - `"likes"."courseParticipant"`
+  - `"readings"."courseParticipant"`
+- `MaybeCourseParticipant` → `___?: CourseParticipant`?
 - Database
   - Review `"courses"."aiTeachingAssistantAPIKey"`
   - `"conversations"."aiChatID"`
