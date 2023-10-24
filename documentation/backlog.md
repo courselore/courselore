@@ -5,10 +5,6 @@
 **AI Teaching Assistant**
 
 - **Reviewed up to `360ae1f9bb2b731228316c113725de0dbe4ac23d`**
-- Database
-  - Review `"courses"."aiTeachingAssistantAPIKey"`
-  - `"conversations"."aiChatID"`
-  - `"messages"."authorAITeachingAssistantAt"` → `"messages"."authorAIAt"`
 - New conversation type: AI Chat.
   - User interface:
     - Sidebar button to create conversation (`<i class="bi bi-robot"></i>`).

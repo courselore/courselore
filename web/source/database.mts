@@ -2590,6 +2590,7 @@ export default async (application: Application): Promise<void> => {
     `,
 
     sql`
+      ALTER TABLE "conversations" ADD COLUMN "aiTeachingAssistantChatId" TEXT NULL;
       ALTER TABLE "messages" ADD COLUMN "authorAITeachingAssistantAt" TEXT NULL;
     `,
   );
