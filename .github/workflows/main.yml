@@ -24,15 +24,15 @@ jobs:
             artifact: courselore--linux--${{ github.sha }}.tgz
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@main
+      - uses: actions/setup-node@main
         with:
           node-version: latest
       - run: |
           cd web
           npm ci
           ${{ matrix.build }}
-      - uses: actions/upload-artifact@v3
+      - uses: actions/setup-node@main
         with:
           name: ${{ matrix.artifact }}
           path: web/${{ matrix.artifact }}
@@ -47,8 +47,8 @@ jobs:
           ]
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@main
+      - uses: actions/setup-node@main
         with:
           node-version: latest
       - run: |
@@ -60,7 +60,7 @@ jobs:
     needs: [web--build, web--test]
     runs-on: ubuntu-latest
     steps:
-      - uses: webfactory/ssh-agent@v0.7.0
+      - uses: webfactory/ssh-agent@master
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
       - run: |
@@ -69,8 +69,8 @@ jobs:
           try.courselore.org ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDCPG61mMjW9lNZBux0UU0jlkr59dl942RQQs8uiMtG1svfDrpAFft54uWWpWU5QOhmxs53lETQkKo12yUysMkXPKq6AcaVM+P+3AZXOAhhPo4yskYUPP+b8BjhGBRT1vbnhJYWl+qZ+rYbI4p5ppxifK7ACFzWpzcvbErFesCakA6Rst+YPUP8y9Gou+5Ll2SEfB1nxDE4AkMgSKhieQ/dIG8vJf0gNskWOMUORNYcLuzaAodL5HKS9pgEg5APZ986SBYYmJ0zBR/UTSrWA9L9B1kLfdbt+yGs/ul3DtGjZJwBDKmgLLy+jIO/4r4HILScKLeEFHyTuwfFuD+YA4NV+mG9daf+v/6TAKvNlJGdzbw40aB576IdJtynLAqZcbxGUyBu8WMixDRhSOYhL5Y1hTn24EPYDzOMYDVXdFgo1vdkx5AU76JJxlIGXDyL/yddXw1fuDDVaGhEw13uHuncToDgIfU2YpCbDu59mcz8Y30ZH1koPnpArwMnImXeI5c=
           try.courselore.org ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBJMLCycmcBGgAjSyi9lFkfNjD5iFovdyEbmN/N0nNWm6qLdZfAb70OUWy8NVfGMuAA55YeZynwXjl3F6nUCfQNw=
           EOF
-      - uses: actions/checkout@v3
-      - uses: actions/download-artifact@v3
+      - uses: actions/checkout@main
+      - uses: actions/download-artifact@main
         with:
           name: courselore--linux--${{ github.sha }}.tgz
       - run: |
@@ -94,7 +94,7 @@ jobs:
     needs: [web--build, web--test]
     runs-on: ubuntu-latest
     steps:
-      - uses: webfactory/ssh-agent@v0.7.0
+      - uses: webfactory/ssh-agent@master
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
       - run: |
@@ -103,8 +103,8 @@ jobs:
           courselore.org ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCebK3hsOaiDRg6LSCFsOY7QeJueZy7J+aBft1IcYHJEZw+vxxYUoeVbbxK6Kh5AmTRdyp86Z9mXWZYWT1L6jtRAo8kEGlx7FEuqhLAN3DTSj69EiT6vDa/wakz0b5NQkBIqS48dXc4Ob32ONucm1uX+btNNhiwOD5nU5nGa2wQWXb7zuxrVCgUktIUWeLSchw2gp4pQTLKNiVJWJQMOqWwwJ1PNDSqSRyQwLpR78g9EscwTfUEXQu0O1HFzSGpPzMek/6jsnRxW2VOhDE/CLVUqsbI3VsvjJnoWxNbai5f5rBnRNUFevtvQP6eQbRRCzsGlKnvDMk+5nRKJ+SmewzLydhAtYc7M/PmPms7G2+SHsSTpV9VF6E9t3UmCoQ2ruk+twjhlxc62UV210818g96s/m7rHkG0+XtMVcAiPMbVK8zm+d1njnf9wku5jDooV+lV5Ymyc+2GF/fZ0RlBXN/U1mxtv3ySxTYRcrOc0iv7KyBfyc6UGEU15+2CzaXxx8=
           courselore.org ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEE2I9w2iErs1EV4TwI9cb2C653YPon245Zr37fAW1X0
           EOF
-      - uses: actions/checkout@v3
-      - uses: actions/download-artifact@v3
+      - uses: actions/checkout@main
+      - uses: actions/download-artifact@main
         with:
           name: courselore--linux--${{ github.sha }}.tgz
       - run: |
@@ -126,8 +126,8 @@ jobs:
     needs: web--test
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@main
+      - uses: actions/setup-node@main
         with:
           node-version: latest
           registry-url: https://registry.npmjs.org/
@@ -143,19 +143,19 @@ jobs:
     needs: [web--build, web--test]
     runs-on: ubuntu-latest
     steps:
-      # - uses: actions/download-artifact@v3
+      # - uses: actions/download-artifact@main
       #   with:
       #     name: courselore--windows--${{ github.sha }}.exe
       # - run: mv courselore--windows--${{ github.sha }}.exe courselore--windows--${{ github.ref_name }}.exe
-      # - uses: actions/download-artifact@v3
+      # - uses: actions/download-artifact@main
       #   with:
       #     name: courselore--macos--${{ github.sha }}.tgz
       # - run: mv courselore--macos--${{ github.sha }}.tgz courselore--macos--${{ github.ref_name }}.tgz
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@main
         with:
           name: courselore--linux--${{ github.sha }}.tgz
       - run: mv courselore--linux--${{ github.sha }}.tgz courselore--linux--${{ github.ref_name }}.tgz
-      - uses: softprops/action-gh-release@v1
+      - uses: softprops/action-gh-release@master
         with:
           #   courselore--windows--${{ github.ref_name }}.exe
           #   courselore--macos--${{ github.ref_name }}.tgz
