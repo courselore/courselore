@@ -3533,7 +3533,7 @@ export default async (application: Application): Promise<void> => {
                     null
                       ? "the First"
                       : "a New"
-                  } Chat`
+                  } ${request.query.ai === "true" ? "AI" : ""} Chat`
                 : `Start ${
                     response.locals.mostRecentlyUpdatedConversationReference ===
                     null
@@ -3565,12 +3565,15 @@ export default async (application: Application): Promise<void> => {
                   `
                 : request.params.type === "chat"
                 ? html`
-                    $${iconsConversationType.chat.fill} Start
+                    $${request.query.ai === "true"
+                      ? html`<i class="bi bi-robot"></i>`
+                      : iconsConversationType.chat.fill}
+                    Start
                     ${response.locals
                       .mostRecentlyUpdatedConversationReference === null
                       ? "the First"
                       : "a New"}
-                    Chat
+                    ${request.query.ai === "true" ? "AI" : ""} Chat
                   `
                 : html`
                     <i class="bi bi-chat-text-fill"></i>

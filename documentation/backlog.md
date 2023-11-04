@@ -4,15 +4,20 @@
 
 **AI Teaching Assistant**
 
-- **Reviewed up to `360ae1f9bb2b731228316c113725de0dbe4ac23d`**
+**Reviewed up to `360ae1f9bb2b731228316c113725de0dbe4ac23d`**
+
+- Modeling:
+  - AI messages could be their own messages, or could simply be a column on the message that triggered the AI answer.
 - New conversation type: AI Chat.
   - User interface:
     - Create conversation form.
+      - Disclaimer.
     - Sidebar showing conversations.
       - Search.
     - Conversation page itself.
       - Disclaimer.
     - When the course is new, have a way to create an AI Chat
+  - Participants: Course Staff (and Student)
   - Can’t edit the properties of a conversation, for example, its type.
   - Review every use of conversation type.
 - Messages.
@@ -20,15 +25,14 @@
   - Special cases:
     - Don’t edit
     - Don’t delete
-- Notifications.
+- AI messages don’t trigger notifications.
 - Course Staff may observe and intervene in conversations between students and AI.
   - Course Staff messages may be edited.
   - Course Staff messages won’t trigger an AI answer, but will trigger notifications.
   - Exception: When the Course Staff started the conversation with AI, then naturally Course Staff messages should trigger an AI answer, and not a notification.
 - New course role: Observer. They’re like Course Staff, but read-only.
 - Questions:
-  - Notifications?
-  - Can Course Staff see other Course Staff conversations with AI?
+  - Notifications: AI answers could trigger notifications for Course Staff?
 
 **Minor Changes**
 
