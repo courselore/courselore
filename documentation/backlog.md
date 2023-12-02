@@ -6,6 +6,18 @@
 
 **Reviewed up to `360ae1f9bb2b731228316c113725de0dbe4ac23d`**
 
+- AI Teaching Assistant:
+  - In settings for staff members, add a field to specify the `assistantName`
+- Markdown content:
+  - `_` at the end of URL
+  - When pasting, don’t scape underscores?
+  - Add a button to change the rich-text pasting **after** pasting?
+- Add a guided tour / onboarding requirements in courses.
+- Add a Help link in footer
+
+---
+
+- Investigate server coming down.
 - Modeling:
   - AI messages could be their own messages, or could simply be a column on the message that triggered the AI answer.
 - New conversation type: AI Chat.

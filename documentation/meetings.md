@@ -1,6 +1,20 @@
 # Meetings
 
 <details>
+<summary>2023-11-18</summary>
+
+- AI Teaching Assistant:
+  - In settings for staff members, add a field to specify the `assistantName`
+- Markdown content:
+  - `_` at the end of URL
+  - When pasting, don’t scape underscores?
+  - Add a button to change the rich-text pasting **after** pasting?
+- Add a guided tour / onboarding requirements in courses.
+- Add a Help link in footer
+
+</details>
+
+<details>
 <summary>2023-10-21</summary>
 
 - Deployed the feature to detect screenshots of code.

@@ -50,6 +50,7 @@ export type ApplicationAuthentication = {
             preferContentEditorToolbarInCompactAt: string | null;
             preferAnonymousAt: string | null;
             latestNewsVersion: string;
+            agreedToAITeachingAssistantAt: string | null;
             mostRecentlyVisitedCourseReference: string | null;
           };
 
@@ -454,6 +455,7 @@ export default async (application: Application): Promise<void> => {
       preferContentEditorToolbarInCompactAt: string | null;
       preferAnonymousAt: string | null;
       latestNewsVersion: string;
+      agreedToAITeachingAssistantAt: string | null;
       mostRecentlyVisitedCourseReference: string | null;
     }>(
       sql`
@@ -479,6 +481,7 @@ export default async (application: Application): Promise<void> => {
           "users"."preferContentEditorToolbarInCompactAt",
           "users"."preferAnonymousAt",
           "users"."latestNewsVersion",
+          "users"."agreedToAITeachingAssistantAt",
           "mostRecentlyVisitedCourse"."reference" AS "mostRecentlyVisitedCourseReference"
         FROM "users"
         LEFT JOIN "courseParticipants" AS "mostRecentlyVisitedCourseParticipant" ON

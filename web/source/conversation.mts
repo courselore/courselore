@@ -3678,6 +3678,116 @@ export default async (application: Application): Promise<void> => {
                 </div>
               </div>
 
+              $${request.query.ai
+                ? html`
+                    <div class="content">
+                      <p>
+                        <strong>
+                          Welcome to our course Chatbot! Before you begin,
+                          please read the following guidelines:
+                        </strong>
+                      </p>
+                      <ol>
+                        <li>
+                          <p>
+                            <strong>Accuracy &amp; Trustworthiness:</strong>
+                            While our AI chatbot aims to provide accurate
+                            information, please be aware that AI-generated
+                            responses may occasionally produce inaccurate
+                            information about people, places, or facts. Always
+                            cross-check any critical information with other
+                            sources.
+                          </p>
+                        </li>
+                        <li>
+                          <p>
+                            <strong>Privacy &amp; Oversight:</strong>
+                            Your conversations with the chatbot are not private.
+                            All teaching staff have access to and actively
+                            monitor these conversations to ensure quality and
+                            adherence to guidelines.
+                          </p>
+                        </li>
+                        <li>
+                          <p>
+                            <strong>Scope &amp; Ethics:</strong>
+                            The chatbot is intended for use solely on topics
+                            related to this course. Please refrain from using it
+                            for other subjects. Furthermore, do not request
+                            direct answers to homework questions or any other
+                            form of unethical assistance. Always adhere to our
+                            course code of ethics when interacting with the
+                            chatbot.
+                          </p>
+                        </li>
+                        <li>
+                          <p>
+                            <strong>Conversation Integrity:</strong>
+                            Once a message is sent, it cannot be deleted or
+                            edited. If you make a mistake, simply continue the
+                            conversation and correct it in the next message,
+                            much like a verbal face-to-face conversation.
+                          </p>
+                        </li>
+                        <li>
+                          <p>
+                            <strong>Effective Conversations:</strong>
+                            To get the most out of your interactions:
+                          </p>
+                          <ul>
+                            <li>
+                              Provide sufficient context when asking questions.
+                            </li>
+                            <li>Be as specific as possible.</li>
+                            <li>
+                              If you don't understand a response, don't hesitate
+                              to ask for clarification.
+                            </li>
+                          </ul>
+                        </li>
+                      </ol>
+                      <hr />
+                      <p>
+                        <strong>Research Study Consent:</strong>
+                      </p>
+                      <p>
+                        By starting a chat with the AI, you are consenting to
+                        participate in a research study exploring how students
+                        interact with a virtual chatbot TA. Your participation
+                        is voluntary, and you can stop at any time. Moreover,
+                        using this tool will not affect your grade in this
+                        course. All conversations are anonymized and do not
+                        contain any identifying information. We label human
+                        messages as "user" and AI-generated responses as
+                        "assistant".
+                      </p>
+                      <hr />
+                      <p>
+                        <strong
+                          >Why Can't I Edit or Delete Conversations?</strong
+                        >
+                      </p>
+                      <p>
+                        There are valid concerns regarding the use of AI in
+                        education, including the accuracy of AI responses,
+                        potential for harmful outputs, and potential
+                        misalignment with pedagogical approaches. The primary
+                        strategy to address these concerns is through human
+                        oversight. Thus, to ensure transparency and maintain the
+                        integrity of the educational process, students are not
+                        permitted to delete or modify their conversations with
+                        the AI.
+                      </p>
+                      <hr />
+                      <p>
+                        Thank you for your understanding and cooperation. We
+                        hope you find this tool beneficial for your learning
+                        experience!
+                      </p>
+                    </div>
+                  `
+                : html``}
+
               <input
                 type="text"
                 name="title"

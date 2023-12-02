@@ -76,7 +76,7 @@ for (const input of await globby("./source/**/*.mts")) {
       plugins: [
         {
           visitor: {
-            ImportDeclaration(path) {
+            ImportDeclaration: (path) => {
               if (
                 (path.node.specifiers[0]?.local?.name === "css" &&
                   path.node.source?.value === "@leafac/css") ||
@@ -86,7 +86,7 @@ for (const input of await globby("./source/**/*.mts")) {
                 path.remove();
             },
 
-            TaggedTemplateExpression(path) {
+            TaggedTemplateExpression: (path) => {
               switch (path.node.tag.name) {
                 case "css": {
                   const css_ = new Function(
