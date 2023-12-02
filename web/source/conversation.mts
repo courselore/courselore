@@ -1336,27 +1336,31 @@ export default async (application: Application): Promise<void> => {
                           >
                             $${iconsConversationType.chat.regular} Chat
                           </a>
-                          $${typeof response.locals.course
-                            .aiTeachingAssistantAPIKey === "string"
-                            ? html`
-                                <a
-                                  href="https://${application.configuration
-                                    .hostname}/courses/${response.locals.course
-                                    .reference}/conversations/new/chat${qs.stringify(
-                                    {
-                                      ai: true,
-                                      conversations:
-                                        request.query.conversations,
-                                    },
-                                    { addQueryPrefix: true },
-                                  )}"
-                                  class="button button--tight button--tight--inline button--transparent"
-                                >
-                                  <i class="bi bi-robot"></i>
-                                  AI Chat
-                                </a>
-                              `
-                            : html``}
+                          $${
+                            /* TODO: AI Teaching Assistant */ false &&
+                            typeof response.locals.course
+                              .aiTeachingAssistantAPIKey === "string"
+                              ? html`
+                                  <a
+                                    href="https://${application.configuration
+                                      .hostname}/courses/${response.locals
+                                      .course
+                                      .reference}/conversations/new/chat${qs.stringify(
+                                      {
+                                        ai: true,
+                                        conversations:
+                                          request.query.conversations,
+                                      },
+                                      { addQueryPrefix: true },
+                                    )}"
+                                    class="button button--tight button--tight--inline button--transparent"
+                                  >
+                                    <i class="bi bi-robot"></i>
+                                    AI Chat
+                                  </a>
+                                `
+                              : html``
+                          }
                         `
                       : html`
                           <a
@@ -1392,27 +1396,31 @@ export default async (application: Application): Promise<void> => {
                           >
                             $${iconsConversationType.chat.regular} Chat
                           </a>
-                          $${typeof response.locals.course
-                            .aiTeachingAssistantAPIKey === "string"
-                            ? html`
-                                <a
-                                  href="https://${application.configuration
-                                    .hostname}/courses/${response.locals.course
-                                    .reference}/conversations/new/chat${qs.stringify(
-                                    {
-                                      ai: true,
-                                      conversations:
-                                        request.query.conversations,
-                                    },
-                                    { addQueryPrefix: true },
-                                  )}"
-                                  class="button button--tight button--tight--inline button--transparent"
-                                >
-                                  <i class="bi bi-robot"></i>
-                                  AI Chat
-                                </a>
-                              `
-                            : html``}
+                          $${
+                            /* TODO: AI Teaching Assistant */ false &&
+                            typeof response.locals.course
+                              .aiTeachingAssistantAPIKey === "string"
+                              ? html`
+                                  <a
+                                    href="https://${application.configuration
+                                      .hostname}/courses/${response.locals
+                                      .course
+                                      .reference}/conversations/new/chat${qs.stringify(
+                                      {
+                                        ai: true,
+                                        conversations:
+                                          request.query.conversations,
+                                      },
+                                      { addQueryPrefix: true },
+                                    )}"
+                                    class="button button--tight button--tight--inline button--transparent"
+                                  >
+                                    <i class="bi bi-robot"></i>
+                                    AI Chat
+                                  </a>
+                                `
+                              : html``
+                          }
                         `}
                   </div>
 

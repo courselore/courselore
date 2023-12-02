@@ -17,6 +17,7 @@
 
 ---
 
+- `TODO: AI Teaching Assistant`
 - Investigate server coming down.
 - Modeling:
   - AI messages could be their own messages, or could simply be a column on the message that triggered the AI answer.
