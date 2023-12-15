@@ -1,6 +1,16 @@
 # Meetings
 
 <details>
+<summary>2023-12-02</summary>
+
+- Talk about Object-Oriented Programming vs Functional Programming
+- Teaching
+- Advent of Code
+- https://github.com/radically-straightforward/radically-straightforward
+
+</details>
+
+<details>
 <summary>2023-11-18</summary>
 
 - AI Teaching Assistant:

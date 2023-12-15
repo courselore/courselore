@@ -1734,7 +1734,7 @@ const { app, BrowserWindow } = require("electron");
     - `.patch`
 - Convert from negative checks into positive checks: `== null`/`== undefined` → `typeof ___ === "string"`
 - @types/nodemailer should export things like `SentMessageInfo`, because `.sendMail()` is overloaded, so you can’t use `ReturnType<___>`
-- Children processes could tell main process that they’re ready, this way we could do things like, for example, only start Caddy when the `web` processes are ready to receive requests. If we do that, then we can enable Caddy’s active health checks.
+- Children processes could tell main process that they’re ready, this way we could do things like, for example, only start Caddy when the `web` processes are ready to receive requests. This is what worker threads & clusters call being `online`. If we do that, then we can enable Caddy’s active health checks.
 - In the authentication workflow, there’s a query parameter called `invitation`, but it isn’t used only for invitations, so rename it to something like `user`.
 - If a child process crashes too many times in a short period, then crash the main process.
 - Extract libraries:
