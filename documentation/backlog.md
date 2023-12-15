@@ -2,6 +2,26 @@
 
 ## Work in Progress
 
+- Documentation
+- Changelog
+  - systemd service
+  - No longer an npm package
+- Backup database
+- Transfer to new version of Ubuntu
+- Re-enable macOS & Windows builds
+
+---
+
+`courselore.service`
+
+```
+# FROM
+ExecStart=/root/courselore/courselore /root/courselore/configuration.mjs
+# TO
+ExecStart=/root/courselore/courselore/courselore /root/courselore/configuration.mjs
+```
+
+
 **AI Teaching Assistant**
 
 **Reviewed up to `360ae1f9bb2b731228316c113725de0dbe4ac23d`**
