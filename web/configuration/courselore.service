@@ -3,7 +3,7 @@ Description=Courselore
 After=network.target
 
 [Service]
-ExecStart=/root/courselore/courselore /root/courselore/configuration.mjs
+ExecStart=/root/courselore/courselore/courselore /root/courselore/configuration.mjs
 User=root
 Restart=always
 

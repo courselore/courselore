@@ -12,6 +12,17 @@
 
 ## Unreleased
 
+- Breaking change: New package format. 
+
+`courselore.service`
+
+```
+# FROM
+ExecStart=/root/courselore/courselore /root/courselore/configuration.mjs
+# TO
+ExecStart=/root/courselore/courselore/courselore /root/courselore/configuration.mjs
+```
+
 ## 7.0.2
 
 **2023-10-17 · [Download](https://github.com/courselore/courselore/releases/tag/v7.0.2) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
