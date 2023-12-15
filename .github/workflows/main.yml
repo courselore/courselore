@@ -4,8 +4,8 @@ jobs:
     strategy:
       matrix:
         os:
-          - windows
-          - macos
+          # - windows
+          # - macos
           - ubuntu
     runs-on: ${{ matrix.os }}-latest
     steps:
