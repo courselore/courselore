@@ -954,9 +954,7 @@ export default async (application: Application): Promise<void> => {
               ${"none"},
               ${user.emailNotificationsForAllMessagesAt},
               ${user.emailNotificationsForMentionsAt},
-              ${
-                user.emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt
-              },
+              ${user.emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt},
               ${user.emailNotificationsForMessagesInConversationsYouStartedAt},
               ${user.emailNotificationsDigestsFrequency}
             )
@@ -1152,23 +1150,23 @@ export default async (application: Application): Promise<void> => {
                 user.emailNotificationsForAllMessagesAt === null
                   ? "none"
                   : user.emailNotificationsDigestsFrequency === null
-                  ? "instant"
-                  : user.emailNotificationsDigestsFrequency === "hourly"
-                  ? "hourly-digests"
-                  : user.emailNotificationsDigestsFrequency === "daily"
-                  ? "daily-digests"
-                  : null
+                    ? "instant"
+                    : user.emailNotificationsDigestsFrequency === "hourly"
+                      ? "hourly-digests"
+                      : user.emailNotificationsDigestsFrequency === "daily"
+                        ? "daily-digests"
+                        : null
               },
               ${
                 user.emailNotificationsForAllMessagesAt === null
                   ? null
                   : user.emailNotificationsDigestsFrequency === null
-                  ? null
-                  : user.emailNotificationsDigestsFrequency === "hourly"
-                  ? hour.toISOString()
-                  : user.emailNotificationsDigestsFrequency === "daily"
-                  ? day.toISOString()
-                  : null
+                    ? null
+                    : user.emailNotificationsDigestsFrequency === "hourly"
+                      ? hour.toISOString()
+                      : user.emailNotificationsDigestsFrequency === "daily"
+                        ? day.toISOString()
+                        : null
               },
               ${user.emailNotificationsForMentionsAt},
               ${
@@ -1804,9 +1802,7 @@ export default async (application: Application): Promise<void> => {
               ${user.emailNotificationsForAllMessages},
               ${user.emailNotificationsForAllMessagesDigestDeliveredAt},
               ${user.emailNotificationsForMentionsAt},
-              ${
-                user.emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt
-              },
+              ${user.emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt},
               ${user.emailNotificationsForMessagesInConversationsYouStartedAt},
               ${user.preferContentEditorProgrammerModeAt},
               ${user.preferContentEditorToolbarInCompactAt},

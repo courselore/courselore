@@ -2224,14 +2224,15 @@ export default async (application: Application): Promise<void> => {
                             </button>
                           `
                         : showCourseSwitcher &&
-                          responseSignedIn.locals.courseParticipants.length > 0
-                        ? html`
-                            <button
-                              class="button button--tight button--tight--inline button--transparent"
-                              css="${css`
-                                max-width: 100%;
-                              `}"
-                              javascript="${javascript`
+                            responseSignedIn.locals.courseParticipants.length >
+                              0
+                          ? html`
+                              <button
+                                class="button button--tight button--tight--inline button--transparent"
+                                css="${css`
+                                  max-width: 100%;
+                                `}"
+                                javascript="${javascript`
                                 leafac.setTippy({
                                   event,
                                   element: this,
@@ -2252,12 +2253,12 @@ export default async (application: Application): Promise<void> => {
                                   },
                                 });
                               `}"
-                            >
-                              Go to Your Courses
-                              <i class="bi bi-chevron-down"></i>
-                            </button>
-                          `
-                        : html``;
+                              >
+                                Go to Your Courses
+                                <i class="bi bi-chevron-down"></i>
+                              </button>
+                            `
+                          : html``;
                     })()}
                   </div>
 

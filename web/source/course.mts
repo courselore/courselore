@@ -2572,9 +2572,9 @@ export default async (application: Application): Promise<void> => {
                                                         `}"
                                                       `
                                                     : isInvitationExpired
-                                                    ? html`
-                                                        type="button"
-                                                        javascript="${javascript`
+                                                      ? html`
+                                                          type="button"
+                                                          javascript="${javascript`
                                                           leafac.setTippy({
                                                             event,
                                                             element: this,
@@ -2585,8 +2585,8 @@ export default async (application: Application): Promise<void> => {
                                                             },
                                                           });
                                                         `}"
-                                                      `
-                                                    : html``}
+                                                        `
+                                                      : html``}
                                                 >
                                                   <i class="bi bi-envelope"></i>
                                                   Resend Invitation Email
@@ -2692,9 +2692,9 @@ export default async (application: Application): Promise<void> => {
                                                           `}"
                                                       `
                                                     : isInvitationExpired
-                                                    ? html`
-                                                        type="button"
-                                                        javascript="${javascript`
+                                                      ? html`
+                                                          type="button"
+                                                          javascript="${javascript`
                                                             leafac.setTippy({
                                                               event,
                                                               element: this,
@@ -2705,8 +2705,8 @@ export default async (application: Application): Promise<void> => {
                                                               },
                                                             });
                                                           `}"
-                                                      `
-                                                    : html``}
+                                                        `
+                                                      : html``}
                                                 >
                                                   $${iconsCourseRole[
                                                     courseRole
@@ -2853,11 +2853,11 @@ export default async (application: Application): Promise<void> => {
                                       </div>
                                     `
                                   : isInvitationExpired
-                                  ? html`
-                                      <div>
-                                        <button
-                                          class="button button--tight button--tight--inline button--transparent text--rose"
-                                          javascript="${javascript`
+                                    ? html`
+                                        <div>
+                                          <button
+                                            class="button button--tight button--tight--inline button--transparent text--rose"
+                                            javascript="${javascript`
                                             leafac.setTippy({
                                               event,
                                               element: this,
@@ -2912,19 +2912,21 @@ export default async (application: Application): Promise<void> => {
                                               },
                                             });
                                           `}"
-                                        >
-                                          <i class="bi bi-calendar-x-fill"></i>
-                                          Expired
-                                          <i class="bi bi-chevron-down"></i>
-                                        </button>
-                                      </div>
-                                    `
-                                  : invitation.expiresAt === null
-                                  ? html`
-                                      <div>
-                                        <button
-                                          class="button button--tight button--tight--inline button--transparent text--blue"
-                                          javascript="${javascript`
+                                          >
+                                            <i
+                                              class="bi bi-calendar-x-fill"
+                                            ></i>
+                                            Expired
+                                            <i class="bi bi-chevron-down"></i>
+                                          </button>
+                                        </div>
+                                      `
+                                    : invitation.expiresAt === null
+                                      ? html`
+                                          <div>
+                                            <button
+                                              class="button button--tight button--tight--inline button--transparent text--blue"
+                                              javascript="${javascript`
                                             leafac.setTippy({
                                               event,
                                               element: this,
@@ -2966,20 +2968,20 @@ export default async (application: Application): Promise<void> => {
                                               },
                                             });
                                           `}"
-                                        >
-                                          <i
-                                            class="bi bi-calendar-minus-fill"
-                                          ></i>
-                                          Doesn’t Expire
-                                          <i class="bi bi-chevron-down"></i>
-                                        </button>
-                                      </div>
-                                    `
-                                  : html`
-                                      <div>
-                                        <button
-                                          class="button button--tight button--tight--inline button--transparent text--amber"
-                                          javascript="${javascript`
+                                            >
+                                              <i
+                                                class="bi bi-calendar-minus-fill"
+                                              ></i>
+                                              Doesn’t Expire
+                                              <i class="bi bi-chevron-down"></i>
+                                            </button>
+                                          </div>
+                                        `
+                                      : html`
+                                          <div>
+                                            <button
+                                              class="button button--tight button--tight--inline button--transparent text--amber"
+                                              javascript="${javascript`
                                             leafac.setTippy({
                                               event,
                                               element: this,
@@ -3035,15 +3037,15 @@ export default async (application: Application): Promise<void> => {
                                               },
                                             });
                                           `}"
-                                        >
-                                          <i
-                                            class="bi bi-calendar-plus-fill"
-                                          ></i>
-                                          Expires
-                                          <i class="bi bi-chevron-down"></i>
-                                        </button>
-                                      </div>
-                                    `;
+                                            >
+                                              <i
+                                                class="bi bi-calendar-plus-fill"
+                                              ></i>
+                                              Expires
+                                              <i class="bi bi-chevron-down"></i>
+                                            </button>
+                                          </div>
+                                        `;
                               })()}
                             </div>
                           </div>
@@ -4380,9 +4382,9 @@ export default async (application: Application): Promise<void> => {
                                                       `}"
                                                   `
                                                 : isSelf
-                                                ? html`
-                                                    type="button"
-                                                    javascript="${javascript`
+                                                  ? html`
+                                                      type="button"
+                                                      javascript="${javascript`
                                                         leafac.setTippy({
                                                           event,
                                                           element: this,
@@ -4453,8 +4455,8 @@ export default async (application: Application): Promise<void> => {
                                                           },
                                                         });
                                                       `}"
-                                                  `
-                                                : html``}
+                                                    `
+                                                  : html``}
                                             >
                                               $${iconsCourseRole[courseRole][
                                                 courseRole === "course-staff"

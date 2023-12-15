@@ -1413,10 +1413,10 @@ export default async (application: Application): Promise<void> => {
                         "resolvedAt" = ${new Date().toISOString()}
                       `
                     : request.body.type === "follow-up-question"
-                    ? sql`,
+                      ? sql`,
                         "resolvedAt" = ${null}
                       `
-                    : sql``
+                      : sql``
                 }
               WHERE "id" = ${response.locals.conversation.id}
             `,
@@ -2419,7 +2419,7 @@ export default async (application: Application): Promise<void> => {
                 conversation.participants === "everyone"
                   ? sql``
                   : conversation.participants === "course-staff"
-                  ? sql`
+                    ? sql`
                   AND (
                     "courseParticipants"."courseRole" = 'course-staff' OR EXISTS(
                       SELECT TRUE
@@ -2430,8 +2430,8 @@ export default async (application: Application): Promise<void> => {
                     )
                   )
                 `
-                  : conversation.participants === "selected-participants"
-                  ? sql`
+                    : conversation.participants === "selected-participants"
+                      ? sql`
                   AND EXISTS(
                     SELECT TRUE
                     FROM "conversationSelectedParticipants"
@@ -2440,7 +2440,7 @@ export default async (application: Application): Promise<void> => {
                       "conversationSelectedParticipants"."courseParticipant" = "courseParticipants"."id"
                   )
                 `
-                  : sql``
+                      : sql``
               } $${
                 conversation.type === "note" &&
                 conversation.announcementAt !== null &&
@@ -2454,20 +2454,20 @@ export default async (application: Application): Promise<void> => {
                           contentProcessed.mentions.has("everyone")
                             ? sql``
                             : contentProcessed.mentions.has("course-staff")
-                            ? sql`
+                              ? sql`
                                 AND (
                                   "courseParticipants"."courseRole" = 'course-staff' OR
                                   "courseParticipants"."reference" IN ${contentProcessed.mentions}
                                 )
                               `
-                            : contentProcessed.mentions.has("students")
-                            ? sql`
+                              : contentProcessed.mentions.has("students")
+                                ? sql`
                                 AND (
                                   "courseParticipants"."courseRole" = 'student' OR
                                   "courseParticipants"."reference" IN ${contentProcessed.mentions}
                                 )
                               `
-                            : sql`
+                                : sql`
                                 AND "courseParticipants"."reference" IN ${contentProcessed.mentions}
                               `
                         }
@@ -2539,12 +2539,12 @@ export default async (application: Application): Promise<void> => {
                         >${message.courseParticipant === null
                           ? "Someone who is no longer participating"
                           : message.anonymousAt !== null
-                          ? `Anonymous ${
-                              courseParticipant.courseRole === "course-staff"
-                                ? `(${message.courseParticipant.user.name})`
-                                : ""
-                            }`
-                          : message.courseParticipant.user.name}
+                            ? `Anonymous ${
+                                courseParticipant.courseRole === "course-staff"
+                                  ? `(${message.courseParticipant.user.name})`
+                                  : ""
+                              }`
+                            : message.courseParticipant.user.name}
                         says</a
                       >:
                     </p>

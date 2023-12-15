@@ -123,20 +123,20 @@ export default async (application: Application): Promise<void> => {
                       application.addresses.tryHostname
                         ? "none"
                         : userIndex === 0
-                        ? "administrator"
-                        : Math.random() < 0.1
-                        ? "administrator"
-                        : Math.random() < 0.3
-                        ? "course-staff"
-                        : "none"
+                          ? "administrator"
+                          : Math.random() < 0.1
+                            ? "administrator"
+                            : Math.random() < 0.3
+                              ? "course-staff"
+                              : "none"
                     },
                     ${isEmailNotificationsForAllMessages},
                     ${
                       isEmailNotificationsForAllMessages === "hourly-digests"
                         ? hour.toISOString()
                         : isEmailNotificationsForAllMessages === "daily-digests"
-                        ? day.toISOString()
-                        : null
+                          ? day.toISOString()
+                          : null
                     },
                     ${
                       isEmailNotificationsForMentions
@@ -287,19 +287,19 @@ export default async (application: Application): Promise<void> => {
                 ? user.name
                 : null
               : Math.random() < 0.5
-              ? casual.full_name
-              : null;
+                ? casual.full_name
+                : null;
           const email =
             user !== null
               ? name !== null || Math.random() < 0.7
                 ? user.email
                 : null
               : name !== null || Math.random() < 0.5
-              ? `${slugify(name ?? casual.full_name)}--${cryptoRandomString({
-                  length: 5,
-                  type: "numeric",
-                })}@courselore.org`
-              : null;
+                ? `${slugify(name ?? casual.full_name)}--${cryptoRandomString({
+                    length: 5,
+                    type: "numeric",
+                  })}@courselore.org`
+                : null;
           application.database.run(
             sql`
               INSERT INTO "invitations" (
@@ -974,40 +974,40 @@ Message non-existent permanent link turned reference: <https://${
           const participants = isExampleOfAllFeaturesInRichTextMessages
             ? "everyone"
             : Math.random() < 0.5
-            ? "everyone"
-            : lodash.sample(
-                application.web.locals.helpers.conversationParticipantses,
-              )!;
+              ? "everyone"
+              : lodash.sample(
+                  application.web.locals.helpers.conversationParticipantses,
+                )!;
           const selectedParticipantCourseParticipants = lodash.uniq(
             participants === "everyone"
               ? []
               : participants === "course-staff"
-              ? [
-                  ...(courseParticipant.courseRole === "course-staff"
-                    ? []
-                    : Math.random() < 0.5
-                    ? [courseParticipant]
-                    : []),
-                  ...lodash.sampleSize(students, lodash.random(0, 10)),
-                ]
-              : participants === "selected-participants"
-              ? [
-                  ...(Math.random() < 0.5 ? [courseParticipant] : []),
-                  ...lodash.sampleSize(
-                    courseParticipants,
-                    lodash.random(2, 10),
-                  ),
-                ]
-              : [],
+                ? [
+                    ...(courseParticipant.courseRole === "course-staff"
+                      ? []
+                      : Math.random() < 0.5
+                        ? [courseParticipant]
+                        : []),
+                    ...lodash.sampleSize(students, lodash.random(0, 10)),
+                  ]
+                : participants === "selected-participants"
+                  ? [
+                      ...(Math.random() < 0.5 ? [courseParticipant] : []),
+                      ...lodash.sampleSize(
+                        courseParticipants,
+                        lodash.random(2, 10),
+                      ),
+                    ]
+                  : [],
           );
           const participantCourseParticipants = lodash.uniq([
             ...(participants === "everyone"
               ? courseParticipants
               : participants === "course-staff"
-              ? courseStaff
-              : participants === "selected-participants"
-              ? []
-              : []),
+                ? courseStaff
+                : participants === "selected-participants"
+                  ? []
+                  : []),
             ...selectedParticipantCourseParticipants,
           ]);
           const conversationConversationParticipant =
@@ -1027,8 +1027,8 @@ Message non-existent permanent link turned reference: <https://${
           const nextMessageReference = isExampleOfAllFeaturesInRichTextMessages
             ? 2
             : type === "chat"
-            ? lodash.random(50, 100)
-            : lodash.random(2, 30);
+              ? lodash.random(50, 100)
+              : lodash.random(2, 30);
           const messageCreatedAts = [conversationCreatedAt];
           for (
             let messageReference = 1;
@@ -1103,8 +1103,8 @@ Message non-existent permanent link turned reference: <https://${
                         isExampleOfAllFeaturesInRichTextMessages
                           ? null
                           : Math.random() < 0.15
-                          ? new Date().toISOString()
-                          : null
+                            ? new Date().toISOString()
+                            : null
                       },
                       ${title},
                       ${html`${title}`},
@@ -1149,17 +1149,17 @@ Message non-existent permanent link turned reference: <https://${
               messageReference === 1
                 ? conversationConversationParticipant
                 : Math.random() < 0.05
-                ? null
-                : lodash.sample(participantCourseParticipants)!;
+                  ? null
+                  : lodash.sample(participantCourseParticipants)!;
             const contentSource = isExampleOfAllFeaturesInRichTextMessages
               ? exampleOfAllFeaturesInRichTextMessages
               : type === "chat" && Math.random() < 0.9
-              ? casual.sentences(lodash.random(1, 2))
-              : lodash
-                  .times(lodash.random(1, 6), () =>
-                    casual.sentences(lodash.random(1, 6)),
-                  )
-                  .join("\n\n");
+                ? casual.sentences(lodash.random(1, 2))
+                : lodash
+                    .times(lodash.random(1, 6), () =>
+                      casual.sentences(lodash.random(1, 6)),
+                    )
+                    .join("\n\n");
             const contentPreprocessed =
               application.web.locals.partials.contentPreprocessed(
                 contentSource,
@@ -1204,25 +1204,25 @@ Message non-existent permanent link turned reference: <https://${
                           messageReference === 1
                             ? conversation.anonymousAt
                             : messageConversationParticipant?.courseRole ===
-                                "student" && Math.random() < 0.5
-                            ? new Date().toISOString()
-                            : null
+                                  "student" && Math.random() < 0.5
+                              ? new Date().toISOString()
+                              : null
                         },
                         ${
                           conversation.type === "question" &&
                           Math.random() < 0.5
                             ? "answer"
                             : conversation.type === "question" &&
-                              messageConversationParticipant?.courseRole !==
-                                "course-staff" &&
-                              Math.random() < 0.5
-                            ? "follow-up-question"
-                            : conversation.type !== "chat" &&
-                              messageConversationParticipant?.courseRole !==
-                                "student" &&
-                              Math.random() < 0.1
-                            ? "course-staff-whisper"
-                            : "message"
+                                messageConversationParticipant?.courseRole !==
+                                  "course-staff" &&
+                                Math.random() < 0.5
+                              ? "follow-up-question"
+                              : conversation.type !== "chat" &&
+                                  messageConversationParticipant?.courseRole !==
+                                    "student" &&
+                                  Math.random() < 0.1
+                                ? "course-staff-whisper"
+                                : "message"
                         },
                         ${contentSource},
                         ${contentPreprocessed.contentPreprocessed},

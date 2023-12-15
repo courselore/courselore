@@ -1037,38 +1037,38 @@ export default async (application: Application): Promise<void> => {
                   conversationWithSearchResult.conversationTitleSearchResultHighlight,
               } as const)
             : typeof conversationWithSearchResult.messageAuthorUserNameSearchResultMessageReference ===
-                "string" &&
-              typeof conversationWithSearchResult.messageAuthorUserNameSearchResultHighlight ===
-                "string"
-            ? ({
-                type: "messageAuthorUserName",
-                message: application.web.locals.helpers.getMessage({
-                  request,
-                  response,
-                  conversation,
-                  messageReference:
-                    conversationWithSearchResult.messageAuthorUserNameSearchResultMessageReference,
-                })!,
-                highlight:
-                  conversationWithSearchResult.messageAuthorUserNameSearchResultHighlight,
-              } as const)
-            : typeof conversationWithSearchResult.messageContentSearchResultMessageReference ===
-                "string" &&
-              typeof conversationWithSearchResult.messageContentSearchResultSnippet ===
-                "string"
-            ? ({
-                type: "messageContent",
-                message: application.web.locals.helpers.getMessage({
-                  request,
-                  response,
-                  conversation,
-                  messageReference:
-                    conversationWithSearchResult.messageContentSearchResultMessageReference,
-                })!,
-                snippet:
-                  conversationWithSearchResult.messageContentSearchResultSnippet,
-              } as const)
-            : undefined;
+                  "string" &&
+                typeof conversationWithSearchResult.messageAuthorUserNameSearchResultHighlight ===
+                  "string"
+              ? ({
+                  type: "messageAuthorUserName",
+                  message: application.web.locals.helpers.getMessage({
+                    request,
+                    response,
+                    conversation,
+                    messageReference:
+                      conversationWithSearchResult.messageAuthorUserNameSearchResultMessageReference,
+                  })!,
+                  highlight:
+                    conversationWithSearchResult.messageAuthorUserNameSearchResultHighlight,
+                } as const)
+              : typeof conversationWithSearchResult.messageContentSearchResultMessageReference ===
+                    "string" &&
+                  typeof conversationWithSearchResult.messageContentSearchResultSnippet ===
+                    "string"
+                ? ({
+                    type: "messageContent",
+                    message: application.web.locals.helpers.getMessage({
+                      request,
+                      response,
+                      conversation,
+                      messageReference:
+                        conversationWithSearchResult.messageContentSearchResultMessageReference,
+                    })!,
+                    snippet:
+                      conversationWithSearchResult.messageContentSearchResultSnippet,
+                  } as const)
+                : undefined;
 
         return { conversation, searchResult };
       });
@@ -2029,8 +2029,8 @@ export default async (application: Application): Promise<void> => {
                                             conversationType === "question"
                                               ? `[name="conversations[filters][isResolved]"]`
                                               : conversationType === "note"
-                                              ? `[name="conversations[filters][isAnnouncement]"]`
-                                              : ``
+                                                ? `[name="conversations[filters][isAnnouncement]"]`
+                                                : ``
                                           }))
                                             element.checked = false;
                                         };
@@ -3058,12 +3058,12 @@ export default async (application: Application): Promise<void> => {
             conversation.anonymousAt === null
               ? false
               : response.locals.courseParticipant.courseRole ===
-                  "course-staff" ||
-                (conversation.authorCourseParticipant !== null &&
-                  conversation.authorCourseParticipant.id ===
-                    response.locals.courseParticipant.id)
-              ? "reveal"
-              : true,
+                    "course-staff" ||
+                  (conversation.authorCourseParticipant !== null &&
+                    conversation.authorCourseParticipant.id ===
+                      response.locals.courseParticipant.id)
+                ? "reveal"
+                : true,
           size: "xs",
         })}
       </div>
@@ -3184,59 +3184,59 @@ export default async (application: Application): Promise<void> => {
             </div>
           `
         : searchResult?.type === "messageContent"
-        ? html`
-            <div>
+          ? html`
               <div>
-                $${application.web.locals.partials.user({
-                  request,
-                  response,
-                  courseParticipant:
-                    searchResult.message.authorCourseParticipant,
-                  anonymous:
-                    searchResult.message.anonymousAt === null
-                      ? false
-                      : response.locals.courseParticipant.courseRole ===
-                          "course-staff" ||
-                        (searchResult.message.authorCourseParticipant !==
-                          null &&
-                          searchResult.message.authorCourseParticipant.id ===
-                            response.locals.courseParticipant.id)
-                      ? "reveal"
-                      : true,
-                })}
+                <div>
+                  $${application.web.locals.partials.user({
+                    request,
+                    response,
+                    courseParticipant:
+                      searchResult.message.authorCourseParticipant,
+                    anonymous:
+                      searchResult.message.anonymousAt === null
+                        ? false
+                        : response.locals.courseParticipant.courseRole ===
+                              "course-staff" ||
+                            (searchResult.message.authorCourseParticipant !==
+                              null &&
+                              searchResult.message.authorCourseParticipant
+                                .id === response.locals.courseParticipant.id)
+                          ? "reveal"
+                          : true,
+                  })}
+                </div>
+                <div>$${searchResult.snippet}</div>
               </div>
-              <div>$${searchResult.snippet}</div>
-            </div>
-          `
-        : message !== undefined
-        ? html`
-            <div>
-              <div>
-                $${application.web.locals.partials.user({
-                  request,
-                  response,
-                  courseParticipant: message.authorCourseParticipant,
-                  anonymous:
-                    message.anonymousAt === null
-                      ? false
-                      : response.locals.courseParticipant.courseRole ===
-                          "course-staff" ||
-                        (message.authorCourseParticipant !== null &&
-                          message.authorCourseParticipant.id ===
-                            response.locals.courseParticipant.id)
-                      ? "reveal"
-                      : true,
-                })}
-              </div>
-              <div>
-                $${lodash.truncate(message.contentSearch, {
-                  length: 100,
-                  separator: /\W/,
-                })}
-              </div>
-            </div>
-          `
-        : html``}
+            `
+          : message !== undefined
+            ? html`
+                <div>
+                  <div>
+                    $${application.web.locals.partials.user({
+                      request,
+                      response,
+                      courseParticipant: message.authorCourseParticipant,
+                      anonymous:
+                        message.anonymousAt === null
+                          ? false
+                          : response.locals.courseParticipant.courseRole ===
+                                "course-staff" ||
+                              (message.authorCourseParticipant !== null &&
+                                message.authorCourseParticipant.id ===
+                                  response.locals.courseParticipant.id)
+                            ? "reveal"
+                            : true,
+                    })}
+                  </div>
+                  <div>
+                    $${lodash.truncate(message.contentSearch, {
+                      length: 100,
+                      separator: /\W/,
+                    })}
+                  </div>
+                </div>
+              `
+            : html``}
     </div>
   `;
 
@@ -3529,25 +3529,25 @@ export default async (application: Application): Promise<void> => {
                       : "a New"
                   } Note`
                 : request.params.type === "question"
-                ? `Ask ${
-                    response.locals.mostRecentlyUpdatedConversationReference ===
-                    null
-                      ? "the First"
-                      : "a New"
-                  } Question`
-                : request.params.type === "chat"
-                ? `Start ${
-                    response.locals.mostRecentlyUpdatedConversationReference ===
-                    null
-                      ? "the First"
-                      : "a New"
-                  } ${request.query.ai === "true" ? "AI" : ""} Chat`
-                : `Start ${
-                    response.locals.mostRecentlyUpdatedConversationReference ===
-                    null
-                      ? "the First"
-                      : "a New"
-                  } Conversation`}
+                  ? `Ask ${
+                      response.locals
+                        .mostRecentlyUpdatedConversationReference === null
+                        ? "the First"
+                        : "a New"
+                    } Question`
+                  : request.params.type === "chat"
+                    ? `Start ${
+                        response.locals
+                          .mostRecentlyUpdatedConversationReference === null
+                          ? "the First"
+                          : "a New"
+                      } ${request.query.ai === "true" ? "AI" : ""} Chat`
+                    : `Start ${
+                        response.locals
+                          .mostRecentlyUpdatedConversationReference === null
+                          ? "the First"
+                          : "a New"
+                      } Conversation`}
               · ${response.locals.course.name} · Courselore
             </title>
           `,
@@ -3563,35 +3563,35 @@ export default async (application: Application): Promise<void> => {
                     Note
                   `
                 : request.params.type === "question"
-                ? html`
-                    $${iconsConversationType.question.fill} Ask
-                    ${response.locals
-                      .mostRecentlyUpdatedConversationReference === null
-                      ? "the First"
-                      : "a New"}
-                    Question
-                  `
-                : request.params.type === "chat"
-                ? html`
-                    $${request.query.ai === "true"
-                      ? html`<i class="bi bi-robot"></i>`
-                      : iconsConversationType.chat.fill}
-                    Start
-                    ${response.locals
-                      .mostRecentlyUpdatedConversationReference === null
-                      ? "the First"
-                      : "a New"}
-                    ${request.query.ai === "true" ? "AI" : ""} Chat
-                  `
-                : html`
-                    <i class="bi bi-chat-text-fill"></i>
-                    Start
-                    ${response.locals
-                      .mostRecentlyUpdatedConversationReference === null
-                      ? "the First"
-                      : "a New"}
-                    Conversation
-                  `}
+                  ? html`
+                      $${iconsConversationType.question.fill} Ask
+                      ${response.locals
+                        .mostRecentlyUpdatedConversationReference === null
+                        ? "the First"
+                        : "a New"}
+                      Question
+                    `
+                  : request.params.type === "chat"
+                    ? html`
+                        $${request.query.ai === "true"
+                          ? html`<i class="bi bi-robot"></i>`
+                          : iconsConversationType.chat.fill}
+                        Start
+                        ${response.locals
+                          .mostRecentlyUpdatedConversationReference === null
+                          ? "the First"
+                          : "a New"}
+                        ${request.query.ai === "true" ? "AI" : ""} Chat
+                      `
+                    : html`
+                        <i class="bi bi-chat-text-fill"></i>
+                        Start
+                        ${response.locals
+                          .mostRecentlyUpdatedConversationReference === null
+                          ? "the First"
+                          : "a New"}
+                        Conversation
+                      `}
             </h2>
 
             <form
@@ -3804,10 +3804,11 @@ export default async (application: Application): Promise<void> => {
                 conversationDraft.title.trim() !== ""
                   ? html`value="${conversationDraft.title}"`
                   : conversationDraft === undefined &&
-                    typeof request.query.newConversation?.title === "string" &&
-                    request.query.newConversation.title.trim() !== ""
-                  ? html`value="${request.query.newConversation.title}"`
-                  : html``}
+                      typeof request.query.newConversation?.title ===
+                        "string" &&
+                      request.query.newConversation.title.trim() !== ""
+                    ? html`value="${request.query.newConversation.title}"`
+                    : html``}
                 placeholder="Title…"
                 autocomplete="off"
                 $${conversationDraft === undefined ? html`autofocus` : html``}
@@ -3822,11 +3823,11 @@ export default async (application: Application): Promise<void> => {
                   conversationDraft.content.trim() !== ""
                     ? conversationDraft.content
                     : conversationDraft === undefined &&
-                      typeof request.query.newConversation?.content ===
-                        "string" &&
-                      request.query.newConversation.content.trim() !== ""
-                    ? request.query.newConversation.content
-                    : undefined,
+                        typeof request.query.newConversation?.content ===
+                          "string" &&
+                        request.query.newConversation.content.trim() !== ""
+                      ? request.query.newConversation.content
+                      : undefined,
                 required:
                   // TODO: Conversation drafts
                   (typeof request.params.type === "string" &&
@@ -4849,32 +4850,32 @@ export default async (application: Application): Promise<void> => {
                         Note
                       `
                     : request.params.type === "question"
-                    ? html`
-                        $${iconsConversationType.question.fill} Ask
-                        ${response.locals
-                          .mostRecentlyUpdatedConversationReference === null
-                          ? "the First"
-                          : "a New"}
-                        Question
-                      `
-                    : request.params.type === "chat"
-                    ? html`
-                        $${iconsConversationType.chat.fill} Start
-                        ${response.locals
-                          .mostRecentlyUpdatedConversationReference === null
-                          ? "the First"
-                          : "a New"}
-                        Chat
-                      `
-                    : html`
-                        <i class="bi bi-chat-text-fill"></i>
-                        Start
-                        ${response.locals
-                          .mostRecentlyUpdatedConversationReference === null
-                          ? "the First"
-                          : "a New"}
-                        Conversation
-                      `}
+                      ? html`
+                          $${iconsConversationType.question.fill} Ask
+                          ${response.locals
+                            .mostRecentlyUpdatedConversationReference === null
+                            ? "the First"
+                            : "a New"}
+                          Question
+                        `
+                      : request.params.type === "chat"
+                        ? html`
+                            $${iconsConversationType.chat.fill} Start
+                            ${response.locals
+                              .mostRecentlyUpdatedConversationReference === null
+                              ? "the First"
+                              : "a New"}
+                            Chat
+                          `
+                        : html`
+                            <i class="bi bi-chat-text-fill"></i>
+                            Start
+                            ${response.locals
+                              .mostRecentlyUpdatedConversationReference === null
+                              ? "the First"
+                              : "a New"}
+                            Conversation
+                          `}
                 </button>
               </div>
 
@@ -5965,33 +5966,33 @@ export default async (application: Application): Promise<void> => {
                                     </form>
                                   `
                                 : response.locals.conversation.resolvedAt ===
-                                  null
-                                ? html`
-                                    <div
-                                      class="text--rose"
-                                      css="${css`
-                                        display: flex;
-                                        gap: var(--space--1);
-                                      `}"
-                                    >
-                                      <i
-                                        class="bi bi-patch-exclamation-fill"
-                                      ></i>
-                                      Unresolved
-                                    </div>
-                                  `
-                                : html`
-                                    <div
-                                      class="text--emerald"
-                                      css="${css`
-                                        display: flex;
-                                        gap: var(--space--1);
-                                      `}"
-                                    >
-                                      <i class="bi bi-patch-check-fill"></i>
-                                      Resolved
-                                    </div>
-                                  `}
+                                    null
+                                  ? html`
+                                      <div
+                                        class="text--rose"
+                                        css="${css`
+                                          display: flex;
+                                          gap: var(--space--1);
+                                        `}"
+                                      >
+                                        <i
+                                          class="bi bi-patch-exclamation-fill"
+                                        ></i>
+                                        Unresolved
+                                      </div>
+                                    `
+                                  : html`
+                                      <div
+                                        class="text--emerald"
+                                        css="${css`
+                                          display: flex;
+                                          gap: var(--space--1);
+                                        `}"
+                                      >
+                                        <i class="bi bi-patch-check-fill"></i>
+                                        Resolved
+                                      </div>
+                                    `}
                             `
                           : html``}
                         $${response.locals.conversation.type === "note"
@@ -6071,14 +6072,14 @@ export default async (application: Application): Promise<void> => {
                                     </form>
                                   `
                                 : response.locals.conversation
-                                    .announcementAt !== null
-                                ? html`
-                                    <div class="text--orange">
-                                      <i class="bi bi-megaphone-fill"></i>
-                                      Announcement
-                                    </div>
-                                  `
-                                : html``}
+                                      .announcementAt !== null
+                                  ? html`
+                                      <div class="text--orange">
+                                        <i class="bi bi-megaphone-fill"></i>
+                                        Announcement
+                                      </div>
+                                    `
+                                  : html``}
                             `
                           : html``}
                         $${response.locals.courseParticipant.courseRole ===
@@ -6150,13 +6151,13 @@ export default async (application: Application): Promise<void> => {
                               </form>
                             `
                           : response.locals.conversation.pinnedAt !== null
-                          ? html`
-                              <div class="text--amber">
-                                <i class="bi bi-pin-fill"></i>
-                                Pinned
-                              </div>
-                            `
-                          : html``}
+                            ? html`
+                                <div class="text--amber">
+                                  <i class="bi bi-pin-fill"></i>
+                                  Pinned
+                                </div>
+                              `
+                            : html``}
                       </div>
 
                       <div>
@@ -6856,13 +6857,13 @@ export default async (application: Application): Promise<void> => {
                                                   </form>
                                                 `
                                               : response.locals.conversation
-                                                  .taggings.length === 1 &&
-                                                response.locals.conversation
-                                                  .type !== "chat"
-                                              ? html`
-                                                  <div
-                                                    class="dropdown--menu--item button button--blue text--teal disabled"
-                                                    javascript="${javascript`
+                                                    .taggings.length === 1 &&
+                                                  response.locals.conversation
+                                                    .type !== "chat"
+                                                ? html`
+                                                    <div
+                                                      class="dropdown--menu--item button button--blue text--teal disabled"
+                                                      javascript="${javascript`
                                                       leafac.setTippy({
                                                         event,
                                                         element: this,
@@ -6873,64 +6874,6 @@ export default async (application: Application): Promise<void> => {
                                                         },
                                                       });
                                                     `}"
-                                                  >
-                                                    <i
-                                                      class="bi bi-tag-fill"
-                                                    ></i>
-                                                    ${tag.name}
-                                                    $${tag.courseStaffOnlyAt !==
-                                                    null
-                                                      ? html`
-                                                          <span
-                                                            class="text--sky"
-                                                            javascript="${javascript`
-                                                              leafac.setTippy({
-                                                                event,
-                                                                element: this,
-                                                                tippyProps: {
-                                                                  touch: false,
-                                                                  content: "This tag is visible by the course staff only.",
-                                                                },
-                                                              });
-                                                            `}"
-                                                          >
-                                                            <i
-                                                              class="bi bi-mortarboard-fill"
-                                                            ></i>
-                                                          </span>
-                                                        `
-                                                      : html``}
-                                                  </div>
-                                                `
-                                              : html`
-                                                  <form
-                                                    key="tag--${tag.reference}"
-                                                    method="DELETE"
-                                                    action="https://${application
-                                                      .configuration
-                                                      .hostname}/courses/${response
-                                                      .locals.course
-                                                      .reference}/conversations/${response
-                                                      .locals.conversation
-                                                      .reference}/taggings${qs.stringify(
-                                                      {
-                                                        conversations:
-                                                          request.query
-                                                            .conversations,
-                                                        messages:
-                                                          request.query
-                                                            .messages,
-                                                      },
-                                                      { addQueryPrefix: true },
-                                                    )}"
-                                                  >
-                                                    <input
-                                                      type="hidden"
-                                                      name="reference"
-                                                      value="${tag.reference}"
-                                                    />
-                                                    <button
-                                                      class="dropdown--menu--item button button--blue text--teal"
                                                     >
                                                       <i
                                                         class="bi bi-tag-fill"
@@ -6942,6 +6885,66 @@ export default async (application: Application): Promise<void> => {
                                                             <span
                                                               class="text--sky"
                                                               javascript="${javascript`
+                                                              leafac.setTippy({
+                                                                event,
+                                                                element: this,
+                                                                tippyProps: {
+                                                                  touch: false,
+                                                                  content: "This tag is visible by the course staff only.",
+                                                                },
+                                                              });
+                                                            `}"
+                                                            >
+                                                              <i
+                                                                class="bi bi-mortarboard-fill"
+                                                              ></i>
+                                                            </span>
+                                                          `
+                                                        : html``}
+                                                    </div>
+                                                  `
+                                                : html`
+                                                    <form
+                                                      key="tag--${tag.reference}"
+                                                      method="DELETE"
+                                                      action="https://${application
+                                                        .configuration
+                                                        .hostname}/courses/${response
+                                                        .locals.course
+                                                        .reference}/conversations/${response
+                                                        .locals.conversation
+                                                        .reference}/taggings${qs.stringify(
+                                                        {
+                                                          conversations:
+                                                            request.query
+                                                              .conversations,
+                                                          messages:
+                                                            request.query
+                                                              .messages,
+                                                        },
+                                                        {
+                                                          addQueryPrefix: true,
+                                                        },
+                                                      )}"
+                                                    >
+                                                      <input
+                                                        type="hidden"
+                                                        name="reference"
+                                                        value="${tag.reference}"
+                                                      />
+                                                      <button
+                                                        class="dropdown--menu--item button button--blue text--teal"
+                                                      >
+                                                        <i
+                                                          class="bi bi-tag-fill"
+                                                        ></i>
+                                                        ${tag.name}
+                                                        $${tag.courseStaffOnlyAt !==
+                                                        null
+                                                          ? html`
+                                                              <span
+                                                                class="text--sky"
+                                                                javascript="${javascript`
                                                                 leafac.setTippy({
                                                                   event,
                                                                   element: this,
@@ -6951,16 +6954,16 @@ export default async (application: Application): Promise<void> => {
                                                                   },
                                                                 });
                                                               `}"
-                                                            >
-                                                              <i
-                                                                class="bi bi-mortarboard-fill"
-                                                              ></i>
-                                                            </span>
-                                                          `
-                                                        : html``}
-                                                    </button>
-                                                  </form>
-                                                `,
+                                                              >
+                                                                <i
+                                                                  class="bi bi-mortarboard-fill"
+                                                                ></i>
+                                                              </span>
+                                                            `
+                                                          : html``}
+                                                      </button>
+                                                    </form>
+                                                  `,
                                           )}
                                         </div>
                                       </div>
@@ -7795,8 +7798,8 @@ export default async (application: Application): Promise<void> => {
                                 beforeMessage !== undefined
                                   ? "No more messages."
                                   : response.locals.conversation.type === "chat"
-                                  ? "Start the chat by sending the first message!"
-                                  : "All messages in this conversation have been removed."}
+                                    ? "Start the chat by sending the first message!"
+                                    : "All messages in this conversation have been removed."}
                               </p>
                             </div>
                           `
@@ -8096,117 +8099,125 @@ export default async (application: Application): Promise<void> => {
                                             </div>
                                           `
                                         : message.type === "answer" &&
-                                          message.reference !== "1" &&
-                                          response.locals.conversation.type ===
-                                            "question"
-                                        ? html`
-                                            <div
-                                              class="heading"
-                                              css="${css`
-                                                color: var(
-                                                  --color--emerald--700
-                                                );
-                                                background-color: var(
-                                                  --color--emerald--100
-                                                );
-                                                @media (prefers-color-scheme: dark) {
+                                            message.reference !== "1" &&
+                                            response.locals.conversation
+                                              .type === "question"
+                                          ? html`
+                                              <div
+                                                class="heading"
+                                                css="${css`
                                                   color: var(
-                                                    --color--emerald--200
+                                                    --color--emerald--700
                                                   );
                                                   background-color: var(
-                                                    --color--emerald--950
+                                                    --color--emerald--100
                                                   );
-                                                }
-                                                padding: var(--space--2)
-                                                  var(--space--0);
-                                                border-radius: var(
-                                                  --border-radius--base
-                                                );
-                                                writing-mode: vertical-lr;
-                                                transform: rotate(180deg);
-                                                justify-content: flex-end;
-                                                .bi {
-                                                  transform: rotate(90deg);
-                                                }
-                                              `}"
-                                            >
-                                              <i
-                                                class="bi bi-patch-check-fill"
-                                              ></i>
-                                              Answer
-                                            </div>
-                                          `
-                                        : message.type ===
-                                            "follow-up-question" &&
-                                          message.reference !== "1" &&
-                                          response.locals.conversation.type ===
-                                            "question"
-                                        ? html`
-                                            <div
-                                              class="heading"
-                                              css="${css`
-                                                color: var(--color--rose--700);
-                                                background-color: var(
-                                                  --color--rose--100
-                                                );
-                                                @media (prefers-color-scheme: dark) {
-                                                  color: var(
-                                                    --color--rose--200
+                                                  @media (prefers-color-scheme: dark) {
+                                                    color: var(
+                                                      --color--emerald--200
+                                                    );
+                                                    background-color: var(
+                                                      --color--emerald--950
+                                                    );
+                                                  }
+                                                  padding: var(--space--2)
+                                                    var(--space--0);
+                                                  border-radius: var(
+                                                    --border-radius--base
                                                   );
-                                                  background-color: var(
-                                                    --color--rose--950
-                                                  );
-                                                }
-                                                padding: var(--space--2)
-                                                  var(--space--0);
-                                                border-radius: var(
-                                                  --border-radius--base
-                                                );
-                                                writing-mode: vertical-lr;
-                                                transform: rotate(180deg);
-                                                justify-content: flex-end;
-                                                .bi {
-                                                  transform: rotate(90deg);
-                                                }
-                                              `}"
-                                            >
-                                              <i
-                                                class="bi bi-patch-question-fill"
-                                              ></i>
-                                              Follow-Up Question
-                                            </div>
-                                          `
-                                        : message.type ===
-                                            "course-staff-whisper" &&
-                                          response.locals.conversation.type !==
-                                            "chat"
-                                        ? html`
-                                            <div
-                                              class="heading"
-                                              css="${css`
-                                                color: var(--color--sky--700);
-                                                background-color: var(
-                                                  --color--sky--100
-                                                );
-                                                @media (prefers-color-scheme: dark) {
-                                                  color: var(--color--sky--200);
-                                                  background-color: var(
-                                                    --color--sky--950
-                                                  );
-                                                }
-                                                padding: var(--space--2)
-                                                  var(--space--0);
-                                                border-radius: var(
-                                                  --border-radius--base
-                                                );
-                                                writing-mode: vertical-lr;
-                                                transform: rotate(180deg);
-                                                justify-content: flex-end;
-                                                .bi {
-                                                  transform: rotate(90deg);
-                                                }
-                                              `}"
-                                              javascript="${javascript`
+                                                  writing-mode: vertical-lr;
+                                                  transform: rotate(180deg);
+                                                  justify-content: flex-end;
+                                                  .bi {
+                                                    transform: rotate(90deg);
+                                                  }
+                                                `}"
+                                              >
+                                                <i
+                                                  class="bi bi-patch-check-fill"
+                                                ></i>
+                                                Answer
+                                              </div>
+                                            `
+                                          : message.type ===
+                                                "follow-up-question" &&
+                                              message.reference !== "1" &&
+                                              response.locals.conversation
+                                                .type === "question"
+                                            ? html`
+                                                <div
+                                                  class="heading"
+                                                  css="${css`
+                                                    color: var(
+                                                      --color--rose--700
+                                                    );
+                                                    background-color: var(
+                                                      --color--rose--100
+                                                    );
+                                                    @media (prefers-color-scheme: dark) {
+                                                      color: var(
+                                                        --color--rose--200
+                                                      );
+                                                      background-color: var(
+                                                        --color--rose--950
+                                                      );
+                                                    }
+                                                    padding: var(--space--2)
+                                                      var(--space--0);
+                                                    border-radius: var(
+                                                      --border-radius--base
+                                                    );
+                                                    writing-mode: vertical-lr;
+                                                    transform: rotate(180deg);
+                                                    justify-content: flex-end;
+                                                    .bi {
+                                                      transform: rotate(90deg);
+                                                    }
+                                                  `}"
+                                                >
+                                                  <i
+                                                    class="bi bi-patch-question-fill"
+                                                  ></i>
+                                                  Follow-Up Question
+                                                </div>
+                                              `
+                                            : message.type ===
+                                                  "course-staff-whisper" &&
+                                                response.locals.conversation
+                                                  .type !== "chat"
+                                              ? html`
+                                                  <div
+                                                    class="heading"
+                                                    css="${css`
+                                                      color: var(
+                                                        --color--sky--700
+                                                      );
+                                                      background-color: var(
+                                                        --color--sky--100
+                                                      );
+                                                      @media (prefers-color-scheme: dark) {
+                                                        color: var(
+                                                          --color--sky--200
+                                                        );
+                                                        background-color: var(
+                                                          --color--sky--950
+                                                        );
+                                                      }
+                                                      padding: var(--space--2)
+                                                        var(--space--0);
+                                                      border-radius: var(
+                                                        --border-radius--base
+                                                      );
+                                                      writing-mode: vertical-lr;
+                                                      transform: rotate(180deg);
+                                                      justify-content: flex-end;
+                                                      .bi {
+                                                        transform: rotate(
+                                                          90deg
+                                                        );
+                                                      }
+                                                    `}"
+                                                    javascript="${javascript`
                                                   leafac.setTippy({
                                                     event,
                                                     element: this,
@@ -8216,14 +8227,14 @@ export default async (application: Application): Promise<void> => {
                                                     },
                                                   });
                                                 `}"
-                                            >
-                                              <i
-                                                class="bi bi-mortarboard-fill"
-                                              ></i>
-                                              Staff Whisper
-                                            </div>
-                                          `
-                                        : html``}
+                                                  >
+                                                    <i
+                                                      class="bi bi-mortarboard-fill"
+                                                    ></i>
+                                                    Staff Whisper
+                                                  </div>
+                                                `
+                                              : html``}
 
                                       <div
                                         css="${css`
@@ -8399,9 +8410,9 @@ export default async (application: Application): Promise<void> => {
                                                   "answer"
                                                     ? "text--emerald"
                                                     : message.type ===
-                                                      "follow-up-question"
-                                                    ? "text--rose"
-                                                    : ""}"
+                                                        "follow-up-question"
+                                                      ? "text--rose"
+                                                      : ""}"
                                                   javascript="${javascript`
                                                       leafac.setTippy({
                                                         event,
@@ -8578,21 +8589,21 @@ export default async (application: Application): Promise<void> => {
                                                         Message
                                                       `
                                                     : message.type === "answer"
-                                                    ? html`
-                                                        <i
-                                                          class="bi bi-patch-check-fill"
-                                                        ></i>
-                                                        Answer
-                                                      `
-                                                    : message.type ===
-                                                      "follow-up-question"
-                                                    ? html`
-                                                        <i
-                                                          class="bi bi-patch-question-fill"
-                                                        ></i>
-                                                        Follow-Up Question
-                                                      `
-                                                    : html``}
+                                                      ? html`
+                                                          <i
+                                                            class="bi bi-patch-check-fill"
+                                                          ></i>
+                                                          Answer
+                                                        `
+                                                      : message.type ===
+                                                          "follow-up-question"
+                                                        ? html`
+                                                            <i
+                                                              class="bi bi-patch-question-fill"
+                                                            ></i>
+                                                            Follow-Up Question
+                                                          `
+                                                        : html``}
                                                 </button>
                                               </div>
                                             `;
@@ -8922,19 +8933,20 @@ export default async (application: Application): Promise<void> => {
                                                         null
                                                           ? false
                                                           : response.locals
-                                                              .courseParticipant
-                                                              .courseRole ===
-                                                              "course-staff" ||
-                                                            (message.authorCourseParticipant !==
-                                                              null &&
-                                                              message
-                                                                .authorCourseParticipant
-                                                                .id ===
-                                                                response.locals
-                                                                  .courseParticipant
-                                                                  .id)
-                                                          ? "reveal"
-                                                          : true,
+                                                                .courseParticipant
+                                                                .courseRole ===
+                                                                "course-staff" ||
+                                                              (message.authorCourseParticipant !==
+                                                                null &&
+                                                                message
+                                                                  .authorCourseParticipant
+                                                                  .id ===
+                                                                  response
+                                                                    .locals
+                                                                    .courseParticipant
+                                                                    .id)
+                                                            ? "reveal"
+                                                            : true,
                                                       name:
                                                         message.authorCourseParticipant ===
                                                         null

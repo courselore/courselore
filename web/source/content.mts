@@ -890,10 +890,10 @@ export default async (application: Application): Promise<void> => {
                       poll.votesCount < 10
                         ? "var(--space--14)"
                         : poll.votesCount < 100
-                        ? "var(--space--16)"
-                        : poll.votesCount < 1000
-                        ? "var(--space--18)"
-                        : "var(--space--24)";
+                          ? "var(--space--16)"
+                          : poll.votesCount < 1000
+                            ? "var(--space--18)"
+                            : "var(--space--24)";
 
                     return html`
                       <div
@@ -4992,11 +4992,11 @@ ${contentSource}</textarea
               animated
                 ? `<video src="${src}"></video>`
                 : typeof metadata.density === "number" &&
-                  metadata.density >= 120
-                ? `<img src="${src}" alt="${attachment.name}" width="${
-                    width / 2
-                  }" />`
-                : `![${attachment.name}](${src})`
+                    metadata.density >= 120
+                  ? `<img src="${src}" alt="${attachment.name}" width="${
+                      width / 2
+                    }" />`
+                  : `![${attachment.name}](${src})`
             }](${href})\n\n`;
           } catch (error: any) {
             response.locals.log(

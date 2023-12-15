@@ -640,9 +640,9 @@ export default async (application: Application): Promise<void> => {
                                                     `}"
                                                 `
                                               : isSelf
-                                              ? html`
-                                                  type="button"
-                                                  javascript="${javascript`
+                                                ? html`
+                                                    type="button"
+                                                    javascript="${javascript`
                                                       leafac.setTippy({
                                                         event,
                                                         element: this,
@@ -709,8 +709,8 @@ export default async (application: Application): Promise<void> => {
                                                         },
                                                       });
                                                     `}"
-                                                `
-                                              : html``}
+                                                  `
+                                                : html``}
                                           >
                                             $${iconsSystemRole[systemRole]}
                                             ${labelsSystemRole[systemRole]}

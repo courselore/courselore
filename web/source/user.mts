@@ -312,8 +312,8 @@ export default async (application: Application): Promise<void> => {
     user = courseParticipant === undefined
       ? undefined
       : courseParticipant === null
-      ? null
-      : courseParticipant.user,
+        ? null
+        : courseParticipant.user,
     anonymous = user === undefined,
     avatar = true,
     decorate = user !== undefined,
@@ -368,86 +368,86 @@ export default async (application: Application): Promise<void> => {
                 </foreignObject>
               </svg>`
             : user.avatar !== null
-            ? html`<img
-                src="${user.avatar}"
-                alt="${user.name}"
-                loading="lazy"
-                css="${css`
-                  border-radius: var(--border-radius--circle);
-                  @media (prefers-color-scheme: dark) {
-                    filter: brightness(var(--brightness--90));
-                  }
-                `} ${{
-                  xs: css`
-                    width: var(--space--4);
-                    height: var(--space--4);
-                    vertical-align: var(--space---1);
-                  `,
-                  sm: css`
-                    width: var(--space--6);
-                    height: var(--space--6);
-                    vertical-align: var(--space---1-5);
-                  `,
-                  xl: css`
-                    width: var(--space--32);
-                    height: var(--space--32);
-                  `,
-                }[size]}"
-              />`
-            : html`<svg
-                viewBox="0 0 24 24"
-                style="
+              ? html`<img
+                  src="${user.avatar}"
+                  alt="${user.name}"
+                  loading="lazy"
+                  css="${css`
+                    border-radius: var(--border-radius--circle);
+                    @media (prefers-color-scheme: dark) {
+                      filter: brightness(var(--brightness--90));
+                    }
+                  `} ${{
+                    xs: css`
+                      width: var(--space--4);
+                      height: var(--space--4);
+                      vertical-align: var(--space---1);
+                    `,
+                    sm: css`
+                      width: var(--space--6);
+                      height: var(--space--6);
+                      vertical-align: var(--space---1-5);
+                    `,
+                    xl: css`
+                      width: var(--space--32);
+                      height: var(--space--32);
+                    `,
+                  }[size]}"
+                />`
+              : html`<svg
+                  viewBox="0 0 24 24"
+                  style="
                   --color--avatarless-background-color--200: var(--color--${user.avatarlessBackgroundColor}--200);
                   --color--avatarless-background-color--700: var(--color--${user.avatarlessBackgroundColor}--700);
                 "
-                css="${css`
-                  color: var(--color--avatarless-background-color--700);
-                  background-color: var(
-                    --color--avatarless-background-color--200
-                  );
-                  @media (prefers-color-scheme: dark) {
-                    color: var(--color--avatarless-background-color--200);
-                    background-color: var(
-                      --color--avatarless-background-color--700
-                    );
-                  }
-                  border-radius: var(--border-radius--circle);
-                `} ${{
-                  xs: css`
-                    width: var(--space--4);
-                    height: var(--space--4);
-                    vertical-align: var(--space---1);
-                  `,
-                  sm: css`
-                    width: var(--space--6);
-                    height: var(--space--6);
-                    vertical-align: var(--space---1-5);
-                  `,
-                  xl: css`
-                    width: var(--space--32);
-                    height: var(--space--32);
-                  `,
-                }[size]}"
-              >
-                <text
-                  x="12"
-                  y="16"
-                  text-anchor="middle"
                   css="${css`
-                    font-size: var(--font-size--2xs);
-                    line-height: var(--line-height--2xs);
-                    font-weight: var(--font-weight--black);
-                    fill: currentColor;
-                  `}"
+                    color: var(--color--avatarless-background-color--700);
+                    background-color: var(
+                      --color--avatarless-background-color--200
+                    );
+                    @media (prefers-color-scheme: dark) {
+                      color: var(--color--avatarless-background-color--200);
+                      background-color: var(
+                        --color--avatarless-background-color--700
+                      );
+                    }
+                    border-radius: var(--border-radius--circle);
+                  `} ${{
+                    xs: css`
+                      width: var(--space--4);
+                      height: var(--space--4);
+                      vertical-align: var(--space---1);
+                    `,
+                    sm: css`
+                      width: var(--space--6);
+                      height: var(--space--6);
+                      vertical-align: var(--space---1-5);
+                    `,
+                    xl: css`
+                      width: var(--space--32);
+                      height: var(--space--32);
+                    `,
+                  }[size]}"
                 >
-                  ${(() => {
-                    const nameParts = user.name.split(/\s+/);
-                    return `${nameParts[0][0]}${
-                      nameParts.length > 1 ? nameParts.at(-1)![0] : ""
-                    }`.toUpperCase();
-                  })()}
-                </text>
-              </svg>`;
+                  <text
+                    x="12"
+                    y="16"
+                    text-anchor="middle"
+                    css="${css`
+                      font-size: var(--font-size--2xs);
+                      line-height: var(--line-height--2xs);
+                      font-weight: var(--font-weight--black);
+                      fill: currentColor;
+                    `}"
+                  >
+                    ${(() => {
+                      const nameParts = user.name.split(/\s+/);
+                      return `${nameParts[0][0]}${
+                        nameParts.length > 1 ? nameParts.at(-1)![0] : ""
+                      }`.toUpperCase();
+                    })()}
+                  </text>
+                </svg>`;
 
         if (decorate && user !== null)
           userAvatar = html`<span
@@ -555,10 +555,10 @@ export default async (application: Application): Promise<void> => {
       userAvatar !== undefined && userName !== undefined
         ? html`<span>$${userAvatar}  $${userName}</span>`
         : userAvatar !== undefined
-        ? userAvatar
-        : userName !== undefined
-        ? userName
-        : undefined;
+          ? userAvatar
+          : userName !== undefined
+            ? userName
+            : undefined;
 
     if (tooltip && userHTML !== undefined)
       userHTML = html`<span
@@ -792,10 +792,10 @@ export default async (application: Application): Promise<void> => {
       anonymousAvatar !== undefined && anonymousName !== undefined
         ? html`<span>$${anonymousAvatar}  $${anonymousName}</span>`
         : anonymousAvatar !== undefined
-        ? anonymousAvatar
-        : anonymousName !== undefined
-        ? anonymousName
-        : undefined;
+          ? anonymousAvatar
+          : anonymousName !== undefined
+            ? anonymousName
+            : undefined;
 
     if (tooltip && anonymousHTML !== undefined)
       anonymousHTML = html`<span
@@ -820,15 +820,15 @@ export default async (application: Application): Promise<void> => {
           >$${anonymousHTML} ($${userHTML})</span
         >`
       : userHTML !== undefined
-      ? html`<span
-          key="partial--user--${user === null
-            ? "no-longer-participating"
-            : user!.reference}"
-          >$${userHTML}</span
-        >`
-      : anonymousHTML !== undefined
-      ? html`<span key="partial--user--anonymous">$${anonymousHTML}</span>`
-      : html``;
+        ? html`<span
+            key="partial--user--${user === null
+              ? "no-longer-participating"
+              : user!.reference}"
+            >$${userHTML}</span
+          >`
+        : anonymousHTML !== undefined
+          ? html`<span key="partial--user--anonymous">$${anonymousHTML}</span>`
+          : html``;
   };
 
   application.web.get<

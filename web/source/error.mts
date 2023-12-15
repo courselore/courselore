@@ -210,8 +210,8 @@ export default async (application: Application): Promise<void> => {
         error === "Cross-Site Request Forgery"
           ? 403
           : error === "Validation"
-          ? 422
-          : 500,
+            ? 422
+            : 500,
       )
       .send(
         application.web.locals.layouts.box({
