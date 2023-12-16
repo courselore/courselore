@@ -66,14 +66,14 @@ jobs:
       # - run: |
       #     cat >> ~/.ssh/known_hosts << "EOF"
       #     # $ ssh-keyscan courselore.org
-      #     # courselore.org:22 SSH-2.0-OpenSSH_9.0p1 Ubuntu-1ubuntu7
-      #     courselore.org ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBL+HplfvrH+yvoOFV7WeZBUarNo0hxX5yur1VmjB6bPNGGOR1sMBVWlk7KBgvPmIDMHW9VjkbSf0KUJ0TOOFB6Q=
-      #     # courselore.org:22 SSH-2.0-OpenSSH_9.0p1 Ubuntu-1ubuntu7
-      #     courselore.org ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCebK3hsOaiDRg6LSCFsOY7QeJueZy7J+aBft1IcYHJEZw+vxxYUoeVbbxK6Kh5AmTRdyp86Z9mXWZYWT1L6jtRAo8kEGlx7FEuqhLAN3DTSj69EiT6vDa/wakz0b5NQkBIqS48dXc4Ob32ONucm1uX+btNNhiwOD5nU5nGa2wQWXb7zuxrVCgUktIUWeLSchw2gp4pQTLKNiVJWJQMOqWwwJ1PNDSqSRyQwLpR78g9EscwTfUEXQu0O1HFzSGpPzMek/6jsnRxW2VOhDE/CLVUqsbI3VsvjJnoWxNbai5f5rBnRNUFevtvQP6eQbRRCzsGlKnvDMk+5nRKJ+SmewzLydhAtYc7M/PmPms7G2+SHsSTpV9VF6E9t3UmCoQ2ruk+twjhlxc62UV210818g96s/m7rHkG0+XtMVcAiPMbVK8zm+d1njnf9wku5jDooV+lV5Ymyc+2GF/fZ0RlBXN/U1mxtv3ySxTYRcrOc0iv7KyBfyc6UGEU15+2CzaXxx8=
-      #     # courselore.org:22 SSH-2.0-OpenSSH_9.0p1 Ubuntu-1ubuntu7
-      #     courselore.org ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEE2I9w2iErs1EV4TwI9cb2C653YPon245Zr37fAW1X0
-      #     # courselore.org:22 SSH-2.0-OpenSSH_9.0p1 Ubuntu-1ubuntu7
-      #     # courselore.org:22 SSH-2.0-OpenSSH_9.0p1 Ubuntu-1ubuntu7
+      #     # courselore.org:22 SSH-2.0-OpenSSH_9.3p1 Ubuntu-1ubuntu3
+      #     courselore.org ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDK5KmHPM03TNXyX8TzOJp55PF0e9CEDn0lUnMTI6dM1p0HXEncceVZSgU6Y6JXlSuVAfvYaZdddjr8jKMcDX3aeQjY1T6mEm8gauM/3us6OZccb0/5NOKNKC4d2/Dbo8pPWp2mISajNBLi4M9AzLTEXhrapurLmHArVKIlR+tIw5zWeKIDYa7/mhIBzUQmc+CkVTFFqnJnHUI3jjBYo7uXULKFTjBUZx1q380NGqUdFA4mazq6jNWOjj4jH2B0TsSJWgZsZV1FF15XgPDHqgtxtkOhNARHWsFN0Z9Gk3WFF1WZntdzHMeMd1m+AOJKwKXeqZv0pZtWDRJB45Tl4fzyUzcnKFDFxFSpaSTCXtQhEQXpTKK6YWDzw0tdswg3K8T98+TOqJObLWXRFxrOJ2WaOuVtAuICtrf/FcVGPZWy0RmZiBaWeQJ7igziwBo7IDo3MHPR/jDD7pLVz7Hx4yxy94NT9/uMKAQwjm9H/oGDItnNnxzdGsTpzi0dQyAukHs=
+      #     # courselore.org:22 SSH-2.0-OpenSSH_9.3p1 Ubuntu-1ubuntu3
+      #     # courselore.org:22 SSH-2.0-OpenSSH_9.3p1 Ubuntu-1ubuntu3
+      #     courselore.org ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBJilBVLZE9uYHaDh+qgw6voOWSGCVXAoY89AQTsbEp/K7fnU63z3astF39mKLfVfYe0DL+DVRCKwiAgWcRMH7hM=
+      #     # courselore.org:22 SSH-2.0-OpenSSH_9.3p1 Ubuntu-1ubuntu3
+      #     courselore.org ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBhdg5rEfGGMB1d6f+BZrtvXlTIFg1O8OEKsi6oLJvhD
+      #     # courselore.org:22 SSH-2.0-OpenSSH_9.3p1 Ubuntu-1ubuntu3
       #     EOF
 
       #     ssh root@courselore.org "mkdir -p courselore"
