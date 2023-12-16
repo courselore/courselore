@@ -14,8 +14,8 @@ jobs:
         with:
           node-version: latest
       - run: |
-          mv web/ courselore/
-          cd courselore/
+          mv ./web/ ./courselore/
+          cd ./courselore/
           npm install-ci-test
           npx package
       - uses: actions/upload-artifact@main
@@ -47,9 +47,9 @@ jobs:
 
           ssh root@try.courselore.org << "EOF"
           systemctl stop courselore
-          cd courselore/
-          rm -rf courselore/
-          tar -xzf courselore.tar.gz
+          cd ./courselore/
+          rm -rf ./courselore/
+          tar -xzf ./courselore.tar.gz
           mv ./data/ ./data--$(date +"%Y-%m-%d--%H-%M-%S")/ || true
           systemctl daemon-reload
           systemctl start courselore
@@ -80,9 +80,9 @@ jobs:
 
       #     ssh root@courselore.org << "EOF"
       #     systemctl stop courselore
-      #     cd courselore/
-      #     rm -rf courselore/
-      #     tar -xzf courselore.tar.gz
+      #     cd ./courselore/
+      #     rm -rf ./courselore/
+      #     tar -xzf ./courselore.tar.gz
       #     systemctl daemon-reload
       #     systemctl start courselore
       #     systemctl enable courselore
@@ -103,11 +103,11 @@ jobs:
       - run: mv courselore--macos--${{ github.sha }}.tar.gz courselore--macos--${{ github.ref_name }}.tar.gz
       - uses: actions/download-artifact@main
         with:
-          name: courselore--linux--${{ github.sha }}.tar.gz
-      - run: mv courselore--linux--${{ github.sha }}.tar.gz courselore--linux--${{ github.ref_name }}.tar.gz
+          name: courselore--ubuntu--${{ github.sha }}.tar.gz
+      - run: mv courselore--ubuntu--${{ github.sha }}.tar.gz courselore--ubuntu--${{ github.ref_name }}.tar.gz
       - uses: softprops/action-gh-release@master
         with:
           files: |
             courselore--windows--${{ github.ref_name }}.zip
             courselore--macos--${{ github.ref_name }}.tar.gz
-            courselore--linux--${{ github.ref_name }}.tar.gz
+            courselore--ubuntu--${{ github.ref_name }}.tar.gz
