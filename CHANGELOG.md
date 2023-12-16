@@ -12,6 +12,43 @@
 
 ## Unreleased
 
+## 8.0.0
+
+**2023-12-16 · [Download](https://github.com/courselore/courselore/releases/tag/v8.0.0) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
+
+**Courselore 8.0.0 is packaged in a new way and updating to it requires manual intervention from system administrators.**
+
+Since the first version, Courselore has been packaged with [caxa](https://npm.im/caxa), a packaging tool developed for Courselore that simplified the process of installing and running a Node.js application.
+
+After years of experience in Courselore, we found [several shortcomings in caxa](https://github.com/radically-straightforward/radically-straightforward/tree/092281f54705516c5d6ef2365d3acbf10dadcd7f/package#caxa). To address these issues, we introduced a new approach: [@radically-straightforward/package](https://npm.im/@radically-straightforward/package). This is part of [**Radically Straightforward**](https://github.com/radically-straightforward/radically-straightforward), a project which includes several reusable tools that are being extracted from the Courselore codebase.
+
+Previously, when you downloaded and extracted Courselore, you found a single executable binary.
+
+Now, when you download and extract Courselore, you find:
+
+- `./courselore/courselore`: The executable. **Note:** The executable is in a directory called `./courselore/`, not at the root of the tarball as it used to be.
+- `./courselore/courselore--source/`: A directory containing Courselore’s source. **Note:** Don’t modify the contents of this directory or the position of this directory to the executable.
+
+> **Note:** The tarball now uses the `.tar.gz` extension instead of `.tgz`.
+
+You may need to adapt your systemd service files accordingly, for example:
+
+`/etc/systemd/system/courselore.service`
+
+**Before**
+
+```
+ExecStart=/root/courselore/courselore /root/courselore/configuration.mjs
+```
+
+**After**
+
+```
+ExecStart=/root/courselore/courselore/courselore /root/courselore/configuration.mjs
+```
+
+> **Note:** Courselore isn’t distributed as an npm package anymore. You must download it from the [GitHub Releases](https://github.com/courselore/courselore/releases). This alleviates issues with incompatible versions of Node.js and simplifies the distribution workflow.
+
 ## 7.0.2
 
 **2023-10-17 · [Download](https://github.com/courselore/courselore/releases/tag/v7.0.2) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
