@@ -2,7 +2,7 @@
 
 > **Note:** You may be notified about new Courselore releases in the following ways:
 >
-> **Courselore:** Administrators of [self-hosted Courselore installations](self-hosting.md) see an “Update” button at the footer when a new version of Courselore is available.
+> **Courselore:** Administrators of [self-hosted Courselore installations](self-hosting.md) see an **Update** button at the footer when a new version of Courselore is available.
 >
 > **GitHub Notifications:** Watch for releases in the [Courselore repository](https://github.com/courselore/courselore/) using the **Watch > Custom > Releases** option.
 >
