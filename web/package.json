@@ -1,4 +1,5 @@
 {
+  "version": "7.0.2",
   "scripts": {
     "prepare": "node ./prepare.mjs",
     "start": "nodemon --watch \"./{package.json,tsconfig.json,prepare.mjs}\" --watch \"./source/**/*.mts\" --watch \"./static/{leafac--javascript.mjs,**/*.{webp,png,ico}}\" --watch \"./configuration/**/*.{mjs,cjs,pem,webp}\" --ext \"*\" --exec \"npm run prepare && cross-env NODE_OPTIONS=--enable-source-maps ENVIRONMENT=development node ./build/index.mjs\"",
