@@ -1,21 +1,4 @@
 {
-  "name": "courselore",
-  "version": "7.0.2",
-  "description": "Communication Platform for Education",
-  "keywords": [
-    "education",
-    "university",
-    "instructors",
-    "students",
-    "forum",
-    "chat"
-  ],
-  "homepage": "https://github.com/courselore/courselore",
-  "repository": "https://github.com/courselore/courselore",
-  "bugs": "https://github.com/courselore/courselore/issues",
-  "author": "Courselore <npm@courselore.org> (https://courselore.org)",
-  "license": "GPL-3.0",
-  "bin": "./build/index.mjs",
   "scripts": {
     "prepare": "node ./prepare.mjs",
     "start": "nodemon --watch \"./{package.json,tsconfig.json,prepare.mjs}\" --watch \"./source/**/*.mts\" --watch \"./static/{leafac--javascript.mjs,**/*.{webp,png,ico}}\" --watch \"./configuration/**/*.{mjs,cjs,pem,webp}\" --ext \"*\" --exec \"npm run prepare && cross-env NODE_OPTIONS=--enable-source-maps ENVIRONMENT=development node ./build/index.mjs\"",
