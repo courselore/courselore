@@ -100,8 +100,6 @@ jobs:
       #   with:
       #     name: courselore--macos--${{ github.sha }}.tar.gz
       - uses: actions/download-artifact@main
-        with:
-          name: courselore--ubuntu--${{ github.sha }}.tar.gz
       - run: |
           # mv courselore--windows--${{ github.sha }}.zip courselore--windows--${{ github.ref_name }}.zip
           # mv courselore--macos--${{ github.sha }}.tar.gz courselore--macos--${{ github.ref_name }}.tar.gz
