@@ -49,6 +49,8 @@ ExecStart=/root/courselore/courselore/courselore /root/courselore/configuration.
 
 > **Note:** Courselore isn’t distributed as an npm package anymore. You must download it from the [GitHub Releases](https://github.com/courselore/courselore/releases). This alleviates issues with incompatible versions of Node.js and simplifies the distribution workflow.
 
+> **Note:** The file name of the `linux` version is now called `ubuntu`: `courselore--linux--v7.0.2.tgz` → `courselore--ubuntu--v8.0.0.tar.gz`.
+
 ## 7.0.2
 
 **2023-10-17 · [Download](https://github.com/courselore/courselore/releases/tag/v7.0.2) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
