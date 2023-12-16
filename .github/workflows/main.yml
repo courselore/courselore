@@ -62,7 +62,7 @@ jobs:
       # - if: ${{ matrix.os == 'ubuntu' && startsWith(github.ref, 'refs/tags/v') }}
       # - run: |
       #     cat >> ~/.ssh/known_hosts << "EOF"
-      #     # $ ssh-keyscan courselore.org 
+      #     # $ ssh-keyscan courselore.org
       #     # courselore.org:22 SSH-2.0-OpenSSH_9.0p1 Ubuntu-1ubuntu7
       #     courselore.org ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBL+HplfvrH+yvoOFV7WeZBUarNo0hxX5yur1VmjB6bPNGGOR1sMBVWlk7KBgvPmIDMHW9VjkbSf0KUJ0TOOFB6Q=
       #     # courselore.org:22 SSH-2.0-OpenSSH_9.0p1 Ubuntu-1ubuntu7
@@ -93,21 +93,22 @@ jobs:
     needs: web
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/download-artifact@main
-        with:
-          name: courselore--windows--${{ github.sha }}.zip
-      - run: mv courselore--windows--${{ github.sha }}.zip courselore--windows--${{ github.ref_name }}.zip
-      - uses: actions/download-artifact@main
-        with:
-          name: courselore--macos--${{ github.sha }}.tar.gz
-      - run: mv courselore--macos--${{ github.sha }}.tar.gz courselore--macos--${{ github.ref_name }}.tar.gz
+      # - uses: actions/download-artifact@main
+      #   with:
+      #     name: courselore--windows--${{ github.sha }}.zip
+      # - uses: actions/download-artifact@main
+      #   with:
+      #     name: courselore--macos--${{ github.sha }}.tar.gz
       - uses: actions/download-artifact@main
         with:
           name: courselore--ubuntu--${{ github.sha }}.tar.gz
-      - run: mv courselore--ubuntu--${{ github.sha }}.tar.gz courselore--ubuntu--${{ github.ref_name }}.tar.gz
+      - run: |
+          # mv courselore--windows--${{ github.sha }}.zip courselore--windows--${{ github.ref_name }}.zip
+          # mv courselore--macos--${{ github.sha }}.tar.gz courselore--macos--${{ github.ref_name }}.tar.gz
+          mv courselore--ubuntu--${{ github.sha }}.tar.gz courselore--ubuntu--${{ github.ref_name }}.tar.gz
       - uses: softprops/action-gh-release@master
         with:
+          # courselore--windows--${{ github.ref_name }}.zip
+          # courselore--macos--${{ github.ref_name }}.tar.gz
           files: |
-            courselore--windows--${{ github.ref_name }}.zip
-            courselore--macos--${{ github.ref_name }}.tar.gz
             courselore--ubuntu--${{ github.ref_name }}.tar.gz
