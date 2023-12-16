@@ -95,7 +95,7 @@ $ rsync -av --progress --delete YOUR-USER@YOUR-SERVER.EDU:PATH-TO-COURSELORE/dat
 >
 > If you’re updating across multiple major & minor versions, then you may update the configuration file with respect to the latest version, but you must follow all other steps for all the versions in between (for example, to update 1.2.3 → 3.2.5 use a configuration file compatible with 3.2.5, but follow the other steps for 1.2.3 → 2.0.0 → 2.1.0 → 2.2.0 → 3.0.0 → 3.1.0 → 3.2.5 as well).
 >
-> Refer to the [changelog](https://github.com/courselore/courselore/blob/main/documentation/changelog.md) for more information.
+> Refer to the [changelog](https://github.com/courselore/courselore/blob/main/CHANGELOG.md) for more information.
 
 > **Note:** You may be notified about new Courselore releases in the following ways:
 >

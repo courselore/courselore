@@ -26,4 +26,3 @@
 
 - [**Self-Hosting**](/documentation/self-hosting.md)
 - [**Setting Up for Development**](/documentation/setting-up-for-development.md)
-- [**Changelog**](/documentation/changelog.md)

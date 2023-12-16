@@ -6,6 +6,7 @@
 - Changelog
   - systemd service
   - No longer an npm package
+- Test application locally
 - Backup database
 - Transfer to new version of Ubuntu
 - Re-enable macOS & Windows builds

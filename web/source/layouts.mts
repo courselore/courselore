@@ -2998,7 +2998,7 @@ export default async (application: Application): Promise<void> => {
 
                               <div class="dropdown--menu">
                                 <a
-                                  href="https://github.com/courselore/courselore/blob/main/documentation/changelog.md"
+                                  href="https://github.com/courselore/courselore/blob/main/CHANGELOG.md"
                                   target="_blank"
                                   class="dropdown--menu--item button button--transparent"
                                 >
