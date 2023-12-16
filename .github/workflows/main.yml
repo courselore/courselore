@@ -29,9 +29,15 @@ jobs:
       - if: ${{ matrix.os == 'ubuntu' && github.ref == 'refs/heads/main' }}
         run: |
           cat >> ~/.ssh/known_hosts << "EOF"
-          try.courselore.org ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHYLVf6ryLrV5YEGzIp8+3WuSTpVkVGuUQTojg5LfCcv
+          # $ ssh-keyscan try.courselore.org
+          # try.courselore.org:22 SSH-2.0-OpenSSH_9.0p1 Ubuntu-1ubuntu7
           try.courselore.org ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDCPG61mMjW9lNZBux0UU0jlkr59dl942RQQs8uiMtG1svfDrpAFft54uWWpWU5QOhmxs53lETQkKo12yUysMkXPKq6AcaVM+P+3AZXOAhhPo4yskYUPP+b8BjhGBRT1vbnhJYWl+qZ+rYbI4p5ppxifK7ACFzWpzcvbErFesCakA6Rst+YPUP8y9Gou+5Ll2SEfB1nxDE4AkMgSKhieQ/dIG8vJf0gNskWOMUORNYcLuzaAodL5HKS9pgEg5APZ986SBYYmJ0zBR/UTSrWA9L9B1kLfdbt+yGs/ul3DtGjZJwBDKmgLLy+jIO/4r4HILScKLeEFHyTuwfFuD+YA4NV+mG9daf+v/6TAKvNlJGdzbw40aB576IdJtynLAqZcbxGUyBu8WMixDRhSOYhL5Y1hTn24EPYDzOMYDVXdFgo1vdkx5AU76JJxlIGXDyL/yddXw1fuDDVaGhEw13uHuncToDgIfU2YpCbDu59mcz8Y30ZH1koPnpArwMnImXeI5c=
+          # try.courselore.org:22 SSH-2.0-OpenSSH_9.0p1 Ubuntu-1ubuntu7
           try.courselore.org ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBJMLCycmcBGgAjSyi9lFkfNjD5iFovdyEbmN/N0nNWm6qLdZfAb70OUWy8NVfGMuAA55YeZynwXjl3F6nUCfQNw=
+          # try.courselore.org:22 SSH-2.0-OpenSSH_9.0p1 Ubuntu-1ubuntu7
+          try.courselore.org ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHYLVf6ryLrV5YEGzIp8+3WuSTpVkVGuUQTojg5LfCcv
+          # try.courselore.org:22 SSH-2.0-OpenSSH_9.0p1 Ubuntu-1ubuntu7
+          # try.courselore.org:22 SSH-2.0-OpenSSH_9.0p1 Ubuntu-1ubuntu7
           EOF
 
           ssh root@try.courselore.org "mkdir -p courselore"
@@ -56,9 +62,15 @@ jobs:
       # - if: ${{ matrix.os == 'ubuntu' && startsWith(github.ref, 'refs/tags/v') }}
       # - run: |
       #     cat >> ~/.ssh/known_hosts << "EOF"
+      #     # $ ssh-keyscan courselore.org 
+      #     # courselore.org:22 SSH-2.0-OpenSSH_9.0p1 Ubuntu-1ubuntu7
       #     courselore.org ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBL+HplfvrH+yvoOFV7WeZBUarNo0hxX5yur1VmjB6bPNGGOR1sMBVWlk7KBgvPmIDMHW9VjkbSf0KUJ0TOOFB6Q=
+      #     # courselore.org:22 SSH-2.0-OpenSSH_9.0p1 Ubuntu-1ubuntu7
       #     courselore.org ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCebK3hsOaiDRg6LSCFsOY7QeJueZy7J+aBft1IcYHJEZw+vxxYUoeVbbxK6Kh5AmTRdyp86Z9mXWZYWT1L6jtRAo8kEGlx7FEuqhLAN3DTSj69EiT6vDa/wakz0b5NQkBIqS48dXc4Ob32ONucm1uX+btNNhiwOD5nU5nGa2wQWXb7zuxrVCgUktIUWeLSchw2gp4pQTLKNiVJWJQMOqWwwJ1PNDSqSRyQwLpR78g9EscwTfUEXQu0O1HFzSGpPzMek/6jsnRxW2VOhDE/CLVUqsbI3VsvjJnoWxNbai5f5rBnRNUFevtvQP6eQbRRCzsGlKnvDMk+5nRKJ+SmewzLydhAtYc7M/PmPms7G2+SHsSTpV9VF6E9t3UmCoQ2ruk+twjhlxc62UV210818g96s/m7rHkG0+XtMVcAiPMbVK8zm+d1njnf9wku5jDooV+lV5Ymyc+2GF/fZ0RlBXN/U1mxtv3ySxTYRcrOc0iv7KyBfyc6UGEU15+2CzaXxx8=
+      #     # courselore.org:22 SSH-2.0-OpenSSH_9.0p1 Ubuntu-1ubuntu7
       #     courselore.org ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEE2I9w2iErs1EV4TwI9cb2C653YPon245Zr37fAW1X0
+      #     # courselore.org:22 SSH-2.0-OpenSSH_9.0p1 Ubuntu-1ubuntu7
+      #     # courselore.org:22 SSH-2.0-OpenSSH_9.0p1 Ubuntu-1ubuntu7
       #     EOF
 
       #     ssh root@courselore.org "mkdir -p courselore"
