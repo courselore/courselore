@@ -18,11 +18,12 @@
   "bin": "./build/index.mjs",
   "scripts": {
     "prepare": "node ./prepare.mjs",
-    "start": "nodemon --watch \"./{package.json,prepare.mjs}\" --watch \"./source/**/*.mts\" --watch \"./static/{leafac--javascript.mjs,**/*.{webp,png,ico}}\" --watch \"./configuration/**/*.{mjs,cjs,crt,key,pub,webp}\" --ext \"*\" --exec \"npm run prepare && cross-env NODE_OPTIONS=--enable-source-maps ENVIRONMENT=development node ./build/index.mjs\"",
+    "start": "nodemon --watch \"./{package.json,tsconfig.json,prepare.mjs}\" --watch \"./source/**/*.mts\" --watch \"./static/{leafac--javascript.mjs,**/*.{webp,png,ico}}\" --watch \"./configuration/**/*.{mjs,cjs,pem,webp}\" --ext \"*\" --exec \"npm run prepare && cross-env NODE_OPTIONS=--enable-source-maps ENVIRONMENT=development node ./build/index.mjs\"",
     "start:profile": "shx rm -rf ./data/measurements/ && npm run prepare && cross-env ENVIRONMENT=profile node ./build/index.mjs",
     "start:clean:data": "npm run clean:data && npm run start",
     "test": "tsc --noEmit && prettier --check \"./package.json\" --check \"./tsconfig.json\" --check \"./prepare.mjs\" --check \"./source/**/*.mts\" --check \"./configuration/**/*.mjs\"",
     "test:license": "license-checker --summary",
+    "documentation:prepare-video": "ffmpeg -i \"$INPUT\" -vf \"crop=trunc(iw/2)*2:trunc(ih/2)*2\" -f mp4 -vcodec libx264 -b:v 0 -crf 25 -pix_fmt yuv420p \"$INPUT.mp4\"",
     "clean:all": "npm run clean:build && npm run clean:data && npm run clean:node_modules",
     "clean:build": "shx rm -rf ./build/",
     "clean:data": "shx rm -rf ./data/",
