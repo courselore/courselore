@@ -1,17 +1,5 @@
 # Changelog
 
-> **Note:** You may be notified about new Courselore releases in the following ways:
->
-> **Courselore:** Administrators of [self-hosted Courselore installations](self-hosting.md) see an **Update** button at the footer when a new version of Courselore is available.
->
-> **GitHub Notifications:** Watch for releases in the [Courselore repository](https://github.com/courselore/courselore/) using the **Watch > Custom > Releases** option.
->
-> **Atom Feed:** Subscribe to the [releases Atom feed](https://github.com/courselore/courselore/releases.atom).
->
-> **Email:** Use [CodeRelease.io](https://coderelease.io/) or sign up to the [releases Atom feed](https://github.com/courselore/courselore/releases.atom) via services such as [Blogtrottr](https://blogtrottr.com/) or [IFTTT](https://ifttt.com).
-
-## Unreleased
-
 ## 8.0.0
 
 **2023-12-16 · [Download](https://github.com/courselore/courselore/releases/tag/v8.0.0) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
