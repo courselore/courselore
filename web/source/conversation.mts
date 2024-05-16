@@ -1729,7 +1729,7 @@ export default async (application: Application): Promise<void> => {
                               searchAndFiltersForm.hidden = [...searchAndFilters.querySelectorAll('[key="search-and-filters--show-hide--search"], [key="search-and-filters--show-hide--filters"]')]
                                 .every((element) => !element.checked);
                               searchAndFiltersFormSection.hidden = !this.checked;
-                              for (const element of leafac.descendants(searchAndFiltersFormSection))
+                              for (const element of leafac.children(searchAndFiltersFormSection))
                                 if (element.disabled !== undefined) element.disabled = !this.checked;
                               if (this.checked)
                                 searchAndFiltersFormSection.querySelector('[name="conversations[search]"]').focus();
@@ -1766,7 +1766,7 @@ export default async (application: Application): Promise<void> => {
                               searchAndFiltersForm.hidden = [...searchAndFilters.querySelectorAll('[key="search-and-filters--show-hide--search"], [key="search-and-filters--show-hide--filters"]')]
                                 .every((element) => !element.checked);
                               searchAndFiltersFormSection.hidden = !this.checked;
-                              for (const element of leafac.descendants(searchAndFiltersFormSection))
+                              for (const element of leafac.children(searchAndFiltersFormSection))
                                 if (element.disabled !== undefined) element.disabled = !this.checked;
                             };
                           `}"
@@ -3659,7 +3659,7 @@ export default async (application: Application): Promise<void> => {
                                 notification.hidden = ${
                                   conversationType !== "note"
                                 };
-                                for (const element of leafac.descendants(notification))
+                                for (const element of leafac.children(notification))
                                   if (element.disabled !== undefined)
                                     element.disabled = ${
                                       conversationType !== "note"
@@ -7980,20 +7980,52 @@ export default async (application: Application): Promise<void> => {
                                                   message.createdAt,
                                                 ).toISOString()}"
                                                 javascript="${javascript`
-                                                    const element = this;
-                                                    leafac.relativizeDateElement(element);
+                                                  const element = this;
 
-                                                    window.clearTimeout(element.updateTimeout);
-                                                    (function update() {
-                                                      if (!leafac.isConnected(element)) return;
-                                                      const dateSeparators = [...document.querySelectorAll('[key="message--date-separator"]')];
-                                                      const thisDateSeparator = element.closest('[key="message--date-separator"]');
-                                                      const thisDateSeparatorIndex = dateSeparators.indexOf(thisDateSeparator);
-                                                      const previousDateSeparator = thisDateSeparatorIndex <= 0 ? undefined : dateSeparators[thisDateSeparatorIndex - 1];
-                                                      thisDateSeparator.hidden = previousDateSeparator !== undefined && previousDateSeparator.textContent === thisDateSeparator.textContent;
-                                                      element.updateTimeout = window.setTimeout(update, 60 * 1000 + Math.random() * 10 * 1000);
-                                                    })();
-                                                  `}"
+                                                  backgroundJob(
+                                                    element,
+                                                    "relativizeDateElementBackgroundJob",
+                                                    { interval: 60 * 1000 },
+                                                    () => {
+                                                      const date = javascript.localizeDate(element.getAttribute("datetime"));
+                                                      element.textContent =
+                                                        date === javascript.localizeDate(new Date().toISOString())
+                                                          ? "Today"
+                                                          : date ===
+                                                              javascript.localizeDate(
+                                                                (() => {
+                                                                  const date = new Date();
+                                                                  date.setDate(date.getDate() - 1);
+                                                                  return date;
+                                                                })().toISOString(),
+                                                              )
+                                                            ? "Yesterday"
+                                                            : date ===
+                                                                javascript.localizeDate(
+                                                                  (() => {
+                                                                    const date = new Date();
+                                                                    date.setDate(date.getDate() + 1);
+                                                                    return date;
+                                                                  })().toISOString(),
+                                                                )
+                                                              ? "Tomorrow"
+                                                              : \`\${date} · \${new Intl.DateTimeFormat("en-US", { weekday: "long" }).format(
+                                                                date,
+                                                              )}\`;
+                                                    },
+                                                  );
+
+                                                  window.clearTimeout(element.updateTimeout);
+                                                  (function update() {
+                                                    if (!leafac.isAttached(element)) return;
+                                                    const dateSeparators = [...document.querySelectorAll('[key="message--date-separator"]')];
+                                                    const thisDateSeparator = element.closest('[key="message--date-separator"]');
+                                                    const thisDateSeparatorIndex = dateSeparators.indexOf(thisDateSeparator);
+                                                    const previousDateSeparator = thisDateSeparatorIndex <= 0 ? undefined : dateSeparators[thisDateSeparatorIndex - 1];
+                                                    thisDateSeparator.hidden = previousDateSeparator !== undefined && previousDateSeparator.textContent === thisDateSeparator.textContent;
+                                                    element.updateTimeout = window.setTimeout(update, 60 * 1000 + Math.random() * 10 * 1000);
+                                                  })();
+                                                `}"
                                               ></time>
                                             </span>
                                             <hr
@@ -9047,8 +9079,8 @@ export default async (application: Application): Promise<void> => {
                                                               this.onclick = () => {
                                                                 tippy.hideAll();
                                                                 const selection = window.getSelection();
-                                                                const anchorElement = leafac.ancestors(selection.anchorNode).reverse().find(element => typeof element?.getAttribute?.("data-position") === "string");
-                                                                const focusElement = leafac.ancestors(selection.focusNode).reverse().find(element => typeof element?.getAttribute?.("data-position") === "string");
+                                                                const anchorElement = leafac.parents(selection.anchorNode).reverse().find(element => typeof element?.getAttribute?.("data-position") === "string");
+                                                                const focusElement = leafac.parents(selection.focusNode).reverse().find(element => typeof element?.getAttribute?.("data-position") === "string");
                                                                 const contentElement = this.closest('[key="message--show--content-area"]').querySelector('[key="message--show--content-area--content"]');
                                                                 if (
                                                                   selection.isCollapsed ||
@@ -9113,8 +9145,8 @@ export default async (application: Application): Promise<void> => {
                                                   this.onmouseup = (event) => {
                                                     window.setTimeout(() => {
                                                       const selection = window.getSelection();
-                                                      const anchorElement = leafac.ancestors(selection.anchorNode).reverse().find(element => typeof element?.getAttribute?.("data-position") === "string");
-                                                      const focusElement = leafac.ancestors(selection.focusNode).reverse().find(element => typeof element?.getAttribute?.("data-position") === "string");
+                                                      const anchorElement = leafac.parents(selection.anchorNode).reverse().find(element => typeof element?.getAttribute?.("data-position") === "string");
+                                                      const focusElement = leafac.parents(selection.focusNode).reverse().find(element => typeof element?.getAttribute?.("data-position") === "string");
                                                       if (
                                                         selection.isCollapsed ||
                                                         anchorElement === undefined ||
@@ -9701,7 +9733,7 @@ export default async (application: Application): Promise<void> => {
                         placeholder.querySelector('[key="message--new-message--placeholder--anonymous--' + (!this.querySelector('[name="isAnonymous"]').checked).toString() + '"]').hidden = true;
                       placeholder.querySelector('[key="message--new-message--placeholder--content"]').textContent = content.value;
                       placeholder.hidden = false;
-                      for (const element of leafac.ancestors(placeholder))
+                      for (const element of leafac.parents(placeholder))
                         element.scroll(0, element.scrollHeight);
                       textFieldEdit.set(content, "");
                     });

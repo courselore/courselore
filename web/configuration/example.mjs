@@ -62,7 +62,7 @@ export default {
   //     // Images should:
   //     // - Have a transparent background.
   //     // - Be approximately 300px in width, matching the other logos visually.
-  //     // - Be in WebP format. You may use https://npm.im/sharp-cli to convert from other formats into WebP using the following command:
+  //     // - Be in WebP format. You may use https://www.npmjs.com/package/sharp-cli to convert from other formats into WebP using the following command:
   //     //   $ npx sharp-cli -i educational-institution--light.png -o educational-institution--light--2023-03-28.webp
   //     // - Be appropriate for light and dark backgrounds.
   //     logo: {

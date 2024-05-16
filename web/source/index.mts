@@ -417,7 +417,7 @@ if (await node.isExecuted(import.meta.url)) {
               ),
               {
                 file: "caddy",
-                arguments: ["run", "--config", "-", "--adapter", "caddyfile"],
+                arguments: ["run", "--adapter", "caddyfile", "--config", "-"],
                 options: {
                   preferLocal: true,
                   stdout: "ignore",
@@ -697,10 +697,12 @@ if (await node.isExecuted(import.meta.url)) {
               application.ports.web[application.process.number],
               "localhost",
             );
+            webServer.unref();
             const webEventsServer = application.webEvents.listen(
               application.ports.webEvents[application.process.number],
               "localhost",
             );
+            webEventsServer.unref();
             await eventLoopActive;
             webServer.close();
             webEventsServer.close();
@@ -715,6 +717,7 @@ if (await node.isExecuted(import.meta.url)) {
               application.ports.workerEvents[application.process.number],
               "localhost",
             );
+            workerEventsServer.unref();
             await eventLoopActive;
             workerEventsServer.close();
             application.workerEvents.emit("stop");

@@ -13,7 +13,7 @@
     "clean:data": "shx rm -rf ./data/",
     "clean:node_modules": "shx rm -rf ./node_modules/",
     "upgrade": "npm-check-updates --upgrade && npm install",
-    "backup": "rsync -av --progress --delete root@courselore.org:courselore/data/ ../../BACKUP/"
+    "backup": "rsync -av --delete --progress root@courselore.org:courselore/data/ /Volumes/leafac--external-storage/Backups/courselore/"
   },
   "dependencies": {
     "@leafac/caddy": "^1.0.5",
@@ -67,7 +67,6 @@
     "unified": "^11.0.4",
     "unist-util-visit": "^5.0.0"
   },
-  "caddy": "2.7.5",
   "devDependencies": {
     "@babel/core": "^7.23.6",
     "@babel/preset-typescript": "^7.23.3",

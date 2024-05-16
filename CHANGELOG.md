@@ -18,9 +18,9 @@
 
 **Courselore 8.0.0 is packaged in a new way and updating to it requires manual intervention from system administrators.**
 
-Since the first version, Courselore has been packaged with [caxa](https://npm.im/caxa), a packaging tool developed for Courselore that simplified the process of installing and running a Node.js application.
+Since the first version, Courselore has been packaged with [caxa](https://www.npmjs.com/package/caxa), a packaging tool developed for Courselore that simplified the process of installing and running a Node.js application.
 
-After years of experience in Courselore, we found [several shortcomings in caxa](https://github.com/radically-straightforward/radically-straightforward/tree/092281f54705516c5d6ef2365d3acbf10dadcd7f/package#caxa). To address these issues, we introduced a new approach: [@radically-straightforward/package](https://npm.im/@radically-straightforward/package). This is part of [**Radically Straightforward**](https://github.com/radically-straightforward/radically-straightforward), a project which includes several reusable tools that are being extracted from the Courselore codebase.
+After years of experience in Courselore, we found [several shortcomings in caxa](https://github.com/radically-straightforward/radically-straightforward/tree/092281f54705516c5d6ef2365d3acbf10dadcd7f/package#caxa). To address these issues, we introduced a new approach: [@radically-straightforward/package](https://www.npmjs.com/package/@radically-straightforward/package). This is part of [**Radically Straightforward**](https://github.com/radically-straightforward/radically-straightforward), a project which includes several reusable tools that are being extracted from the Courselore codebase.
 
 Previously, when you downloaded and extracted Courselore, you found a single executable binary.
 

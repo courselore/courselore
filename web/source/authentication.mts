@@ -830,7 +830,7 @@ export default async (application: Application): Promise<void> => {
                       )}"
                       class="button button--transparent"
                       javascript="${javascript`
-                        this.onbeforelivenavigate = () => false;
+                        this.liveNavigate = false;
                       `}"
                     >
                       $${options.logo !== undefined
@@ -2428,7 +2428,7 @@ export default async (application: Application): Promise<void> => {
                   )}"
                   class="link"
                   javascript="${javascript`
-                    this.onbeforelivenavigate = () => false;
+                    this.liveNavigate = false;
                   `}"
                   >try again</a
                 >
@@ -2792,22 +2792,20 @@ export default async (application: Application): Promise<void> => {
       )
         return next();
 
-      response
-        .header(
-          "Live-Navigation-External-Redirect",
-          await response.locals.saml.saml.getLogoutUrlAsync(
-            {
-              issuer: `https://${application.configuration.hostname}/saml/${response.locals.session.samlIdentifier}/metadata`,
-              sessionIndex: response.locals.session.samlSessionIndex,
-              nameIDFormat:
-                "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress",
-              nameID: response.locals.session.samlNameID,
-            },
-            "",
-            {},
-          ),
-        )
-        .end();
+      response.redirect(
+        303,
+        await response.locals.saml.saml.getLogoutUrlAsync(
+          {
+            issuer: `https://${application.configuration.hostname}/saml/${response.locals.session.samlIdentifier}/metadata`,
+            sessionIndex: response.locals.session.samlSessionIndex,
+            nameIDFormat:
+              "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress",
+            nameID: response.locals.session.samlNameID,
+          },
+          "",
+          {},
+        ),
+      );
     }),
   );
 

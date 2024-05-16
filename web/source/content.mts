@@ -3766,7 +3766,7 @@ ${contentSource}</textarea
                         this.onchange = () => {
                           const closesAt = this.closest('[key="poll-editor"]').querySelector('[key="poll-editor--closes-at"]');
                           closesAt.hidden = !this.checked;
-                          for (const element of leafac.descendants(closesAt))
+                          for (const element of leafac.children(closesAt))
                             if (element.disabled !== undefined) element.disabled = !this.checked;
                         };
                       `}"
@@ -5096,7 +5096,7 @@ ${contentSource}</textarea
       !["single", "multiple"].includes(request.body.choices) ||
       (request.body.closesAt !== undefined &&
         (typeof request.body.closesAt !== "string" ||
-          !application.web.locals.helpers.isDate(request.body.closesAt) ||
+          !utilities.isDate(request.body.closesAt) ||
           application.web.locals.helpers.isPast(request.body.closesAt))) ||
       !Array.isArray(request.body.options) ||
       request.body.options.length <= 1 ||
@@ -5403,7 +5403,7 @@ ${contentSource}</textarea
         !["single", "multiple"].includes(request.body.choices) ||
         (request.body.closesAt !== undefined &&
           (typeof request.body.closesAt !== "string" ||
-            !application.web.locals.helpers.isDate(request.body.closesAt) ||
+            !utilities.isDate(request.body.closesAt) ||
             (request.body.closesAt !== response.locals.poll.closesAt &&
               application.web.locals.helpers.isPast(request.body.closesAt)))) ||
         !Array.isArray(request.body.options) ||

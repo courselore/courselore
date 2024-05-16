@@ -6,8 +6,6 @@ export type ApplicationHelpers = {
   web: {
     locals: {
       helpers: {
-        emailRegExp: RegExp;
-        isDate: (string: string) => boolean;
         isPast: (expiresAt: string | null) => boolean;
         sanitizeSearch: (
           search: string,
@@ -25,13 +23,6 @@ export type ApplicationHelpers = {
 };
 
 export default async (application: Application): Promise<void> => {
-  application.web.locals.helpers.emailRegExp =
-    /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i;
-
-  application.web.locals.helpers.isDate = (string) =>
-    string.match(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/) !== null &&
-    !isNaN(new Date(string).getTime());
-
   application.web.locals.helpers.isPast = (expiresAt) =>
     expiresAt !== null && new Date(expiresAt).getTime() <= Date.now();
 

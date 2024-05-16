@@ -2530,6 +2530,9 @@ export default async (application: Application): Promise<void> => {
                                       .session?.samlIdentifier === "string"
                                       ? `saml/${response.locals.session.samlIdentifier}/logout-request`
                                       : "sign-out"}"
+                                    javascript="${javascript`
+                                      this.liveNavigate = false;
+                                    `}"
                                   >
                                     <button
                                       class="dropdown--menu--item button button--transparent"
@@ -2623,7 +2626,6 @@ export default async (application: Application): Promise<void> => {
             `}"
             javascript="${javascript`
               if (
-                event?.detail?.previousLocation?.origin !== window.location.origin ||
                 event?.detail?.previousLocation?.pathname !== window.location.pathname ||
                 event?.detail?.previousLocation?.search !== window.location.search
               )
@@ -3072,15 +3074,11 @@ export default async (application: Application): Promise<void> => {
               let width = 5;
               window.clearTimeout(element.updateTimeout);
               (function update() {
-                if (parentElement.hidden || !leafac.isConnected(element)) return;
+                if (parentElement.hidden || !leafac.isAttached(element)) return;
                 element.style.width = width.toString() + "%";
                 width += (95 - width) / (20 + Math.random() * 15);
                 element.updateTimeout = window.setTimeout(update, 200 + Math.random() * 300);
               })();
-            };
-
-            window.onlivenavigateerror = () => {
-              this.hidden = true;
             };
           `}"
         >
