@@ -1,0 +1,12 @@
+[Unit]
+Description=Courselore
+After=network.target
+
+[Service]
+WorkingDirectory=/root/courselore/
+ExecStart=/root/courselore/courselore/courselore /root/courselore/configuration.mjs
+User=root
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

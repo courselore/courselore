@@ -9,63 +9,81 @@ import * as node from "@radically-straightforward/node";
 import caddyfile from "@radically-straightforward/caddy";
 import * as caddy from "@radically-straightforward/caddy";
 
-export const commandLineArguments = util.parseArgs({
+export type Application = {
+  commandLineArguments: {
+    values: {
+      type: undefined | "web" | "background-job";
+      port: undefined | string;
+    };
+    positionals: string[];
+  };
+  configuration: {
+    hostname: string;
+    systemAdministratorEmail: string;
+    dataDirectory: string;
+    environment: "production" | "development";
+    hstsPreload: boolean;
+    extraCaddyfile: string;
+    ports: number[];
+  };
+  server: undefined | ReturnType<typeof server>;
+  backgroundJobs: undefined | ReturnType<typeof node.backgroundJob>[];
+};
+const application = {} as Application;
+application.commandLineArguments = util.parseArgs({
   options: {
     type: { type: "string" },
     port: { type: "string" },
   },
   allowPositionals: true,
-});
-
-export const configuration: {
-  hostname: string;
-  systemAdministratorEmail: string;
-  dataDirectory: string;
-  environment: "production" | "development";
-  hstsPreload: boolean;
-  extraCaddyfile: string;
-  ports: number[];
-} = (await import(path.resolve(commandLineArguments.positionals[0]))).default;
-configuration.dataDirectory ??= path.resolve("./data/");
-configuration.environment ??= "production";
-configuration.hstsPreload ??= false;
-configuration.extraCaddyfile ??= caddyfile``;
-configuration.ports = Array.from(
+}) as Application["commandLineArguments"];
+application.configuration = (
+  await import(path.resolve(application.commandLineArguments.positionals[0]))
+).default;
+application.configuration.dataDirectory ??= path.resolve("./data/");
+await fs.mkdir(application.configuration.dataDirectory, { recursive: true });
+application.configuration.environment ??= "production";
+application.configuration.hstsPreload ??= false;
+application.configuration.extraCaddyfile ??= caddyfile``;
+application.configuration.ports = Array.from(
   { length: os.availableParallelism() },
   (value, index) => 18000 + index,
 );
+if (application.commandLineArguments.values.type === "web")
+  application.server = server({
+    port: Number(application.commandLineArguments.values.port),
+  });
+if (application.commandLineArguments.values.type === "background-job")
+  application.backgroundJobs = [];
 
-await fs.mkdir(configuration.dataDirectory, { recursive: true });
+await (await import("./database.mjs")).default(application);
 
-export const web =
-  commandLineArguments.values.type === "web"
-    ? server({
-        port: Number(commandLineArguments.values.port),
-      })
-    : undefined;
+if (application.commandLineArguments.values.type === "background-job")
+  setInterval(() => {}, 1000);
 
-await import("./database.mjs");
-
-switch (commandLineArguments.values.type) {
+switch (application.commandLineArguments.values.type) {
   case undefined: {
     utilities.log("COURSELORE", "9.0.0", "START");
     process.once("beforeExit", () => {
       utilities.log("COURSELORE", "STOP");
     });
-    for (const port of configuration.ports) {
+    for (const port of application.configuration.ports) {
       node.childProcessKeepAlive(() =>
         childProcess.spawn(
           process.argv[0],
           [
             process.argv[1],
-            ...commandLineArguments.positionals,
+            ...application.commandLineArguments.positionals,
             "--type",
             "web",
             "--port",
             String(port),
           ],
           {
-            env: { ...process.env, NODE_ENV: configuration.environment },
+            env: {
+              ...process.env,
+              NODE_ENV: application.configuration.environment,
+            },
             stdio: "inherit",
           },
         ),
@@ -75,24 +93,27 @@ switch (commandLineArguments.values.type) {
           process.argv[0],
           [
             process.argv[1],
-            ...commandLineArguments.positionals,
+            ...application.commandLineArguments.positionals,
             "--type",
             "background-job",
           ],
           {
-            env: { ...process.env, NODE_ENV: configuration.environment },
+            env: {
+              ...process.env,
+              NODE_ENV: application.configuration.environment,
+            },
             stdio: "inherit",
           },
         ),
       );
     }
     caddy.start({
-      address: configuration.hostname,
+      address: application.configuration.hostname,
       untrustedStaticFilesRoots: [],
-      dynamicServerPorts: configuration.ports,
-      email: configuration.systemAdministratorEmail,
-      hstsPreload: configuration.hstsPreload,
-      extraCaddyfile: configuration.extraCaddyfile,
+      dynamicServerPorts: application.configuration.ports,
+      email: application.configuration.systemAdministratorEmail,
+      hstsPreload: application.configuration.hstsPreload,
+      extraCaddyfile: application.configuration.extraCaddyfile,
     });
     break;
   }
