@@ -1,8 +1,6 @@
 # Changelog
 
-## 8.0.0
-
-**2023-12-16 · [Download](https://github.com/courselore/courselore/releases/tag/v8.0.0) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
+## 8.0.0 · 2023-12-16
 
 **Courselore 8.0.0 is packaged in a new way and updating to it requires manual intervention from system administrators.**
 
@@ -41,21 +39,15 @@ ExecStart=/root/courselore/courselore/courselore /root/courselore/configuration.
 
 > **Note:** Windows and macOS releases are unavailable for this version but will be available for upcoming versions.
 
-## 7.0.2
-
-**2023-10-17 · [Download](https://github.com/courselore/courselore/releases/tag/v7.0.2) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
+## 7.0.2 · 2023-10-17
 
 - Added a message when people upload screenshots of code teaching them how to copy-and-paste the code while keeping syntax highlighting.
 
-## 7.0.1
-
-**2023-09-23 · [Download](https://github.com/courselore/courselore/releases/tag/v7.0.1) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
+## 7.0.1 · 2023-09-23
 
 - Added more logging to SAML errors to help investigate issues caused by updating to Courselore 7.0.0.
 
-## 7.0.0
-
-**2023-09-23 · [Download](https://github.com/courselore/courselore/releases/tag/v7.0.0) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
+## 7.0.0 · 2023-09-23
 
 **This is a major release for the following reasons:**
 
@@ -91,27 +83,21 @@ Besides the breaking changes above, this version of Courselore also includes the
 - Allowed you to copy-and-paste image buffers (https://courselore.org/courses/8537410611/conversations/83).
 - Fixed a missing header on `/help/styling-content` when you’re signed out.
 
-## 6.2.1
-
-**2023-08-09 · [Download](https://github.com/courselore/courselore/releases/tag/v6.2.1) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
+## 6.2.1 · 2023-08-09
 
 - Fixed an issue in which trying to see invitations for existing courses would cause a server error.
 - Allow people to create a chat with only themselves: https://courselore.org/courses/8537410611/conversations/80
 - Fixed some labels on course settings, for example, “Courses Participants” → “Course Participants”.
 - Added Johns Hopkins as a SAML Identity Provider for courselore.org.
 
-## 6.2.0
-
-**2023-06-08 · [Download](https://github.com/courselore/courselore/releases/tag/v6.2.0) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
+## 6.2.0 · 2023-06-08
 
 - Changed the configuration for SAML. Please refer to https://github.com/courselore/courselore/blob/248863d9d069c890522219c6e6de01a60b9fa937/web/configuration/example.mjs for details. In particular:
   - The feature flag under `features` that hid all identity providers from the users has been replaced with the `public: false` attribute on a per-identity provider basis.
   - The `extractName` function has been replaced with `attributes`, which also needs to provide an email address.
   - **This is a breaking change, but we’re releasing it under a minor version instead of a major version because the SAML support is still experimental.**
 
-## 6.1.3
-
-**2023-06-05 · [Download](https://github.com/courselore/courselore/releases/tag/v6.1.3) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
+## 6.1.3 · 2023-06-05
 
 - Changes in terminology:
   - “Enroll in Course” → “Join Course” / “Enrollment” → “Course Participants”: Avoid students thinking that they got off the waiting list because they’re invited to Courselore.
@@ -119,15 +105,11 @@ Besides the breaking changes above, this version of Courselore also includes the
 - Improved the starting state of the `@mentions` and `#references` widgets. Instead of simply saying “Start typing to search”, they now give useful options, for example, the people who authored the most recent messages.
 - Fixed glitches when dragging-and-dropping or copying-and-pasting folders and text into the content editor and avatar uploader.
 
-## 6.1.2
-
-**2023-05-23 · [Download](https://github.com/courselore/courselore/releases/tag/v6.1.2) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
+## 6.1.2 · 2023-05-23
 
 - Added a way for staff members to export questions as JSON for research.
 
-## 6.1.1
-
-**2023-05-19 · [Download](https://github.com/courselore/courselore/releases/tag/v6.1.1) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
+## 6.1.1 · 2023-05-19
 
 - Introduced Rich-Text Pasting, which allows you to paste formatted text, spreadsheets, and so forth, directly into the content editor and preserve the formatting.
 - Introduced “Staff Whispers”, which are messages visible by staff only. Staff Whispers may be used, for example, to discuss how to answer a student’s question.
@@ -142,9 +124,7 @@ Besides the breaking changes above, this version of Courselore also includes the
   - Fixed glitches in `@mentions`/`#references` widget
   - `@mention` widget: Sort by people who have most recently participated in the conversation.
 
-## 6.1.0
-
-**2023-04-20 · [Download](https://github.com/courselore/courselore/releases/tag/v6.1.0) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
+## 6.1.0 · 2023-04-20
 
 - Added support for single sign-on and single logout with the credentials of educational institutions via SAML.
 
@@ -159,45 +139,33 @@ Besides the breaking changes above, this version of Courselore also includes the
 - Fixed styling issues on scrollbars.
 - Added a sign out button to the screen asking you to confirm your email for the case in which you’re in a public computer where you don’t have access to your email and you need to sign out.
 
-## 6.0.11
-
-**2023-03-16 · [Download](https://github.com/courselore/courselore/releases/tag/v6.0.11) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
+## 6.0.11 · 2023-03-16
 
 - Added polls.
 
-## 6.0.10
-
-**2023-02-28 · [Download](https://github.com/courselore/courselore/releases/tag/v6.0.10) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
+## 6.0.10 · 2023-02-28
 
 - Redesigned the page in which you manage tags to make it more compact.
 - Added a list of programming languages supported by the syntax highlighter in the “Styling Content” help page.
 - Fixed an issue in which relative dates could be mistakenly shown as “yesterday” (https://courselore.org/courses/8537410611/conversations/71).
 
-## 6.0.9
-
-**2023-02-18 · [Download](https://github.com/courselore/courselore/releases/tag/v6.0.9) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
+## 6.0.9 · 2023-02-18
 
 - Added the possibility of reordering tags.
 
-## 6.0.8
-
-**2023-02-10 · [Download](https://github.com/courselore/courselore/releases/tag/v6.0.8) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
+## 6.0.8 · 2023-02-10
 
 - Fixed an issue in which the image/video proxy could lead to execution of untrusted JavaScript. **This is a security issue so we recommend you to update as soon as possible.** We have no report of this issue having been explored by attackers.
 - Added the possibility of a user removing their account.
 
-## 6.0.7
-
-**2023-02-01 · [Download](https://github.com/courselore/courselore/releases/tag/v6.0.7) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
+## 6.0.7 · 2023-02-01
 
 - Changed message drafts from being stored in the browser to being stored in the server. This allows you to, for example, start drafting a message on the phone and finish it on the desktop.
 - Changed preferences such as whether Programmer Mode is enable in the content editor from being stored in the browser to being stored in the server. This makes the preferences consistent across devices.
 - Staff members can see who’s currently typing in a conversation.
 - Added a new administration page to see all courses.
 
-## 6.0.6
-
-**2023-01-27 · [Download](https://github.com/courselore/courselore/releases/tag/v6.0.6) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
+## 6.0.6 · 2023-01-27
 
 - Redesigned the content editor.
   - The toolbar occupies less space and doesn’t need horizontal scrolling. (At the cost of some options being two clicks away instead of one.)
@@ -210,44 +178,32 @@ Besides the breaking changes above, this version of Courselore also includes the
 - In relative dates (for example, “14 days ago”), the tooltip shows not only the original time in UTC, but in local time as well.
 - Fixed the link in email notifications that directs the user to update notifications preferences. https://courselore.org/courses/8537410611/conversations/68
 
-## 6.0.5
-
-**2023-01-18 · [Download](https://github.com/courselore/courselore/releases/tag/v6.0.5) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
+## 6.0.5 · 2023-01-18
 
 - Improved the performance across the application, particularly on big pages, by extracting client CSS/JavaScript and serving them as static files.
 
-## 6.0.4
-
-**2022-12-16 · [Download](https://github.com/courselore/courselore/releases/tag/v6.0.4) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
+## 6.0.4 · 2022-12-16
 
 - Improved the performance of long conversations for staff by lazy loading the “Edit Message” panel.
 
-## 6.0.3
-
-**2022-12-15 · [Download](https://github.com/courselore/courselore/releases/tag/v6.0.3) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
+## 6.0.3 · 2022-12-15
 
 - Added support for animated GIFs and videos.
 - Improved the performance of images by using WebP.
 
-## 6.0.2
-
-**2022-12-13 · [Download](https://github.com/courselore/courselore/releases/tag/v6.0.2) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
+## 6.0.2 · 2022-12-13
 
 - Added a way to “Reuse” a conversation or message across courses.
 - Improved the performance of the conversations page by lazy loading some dropdown menus.
 - Fixed a rare race condition in which the browser could try to open a Live-Connection to the server before the original request was closed, which would crash the server process.
 
-## 6.0.1
-
-**2022-12-03 · [Download](https://github.com/courselore/courselore/releases/tag/v6.0.1) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
+## 6.0.1 · 2022-12-03
 
 - Improved the performance by a factor of approximately 2 by optimizing the way we render HTML/CSS/(client-side)JavaScript.
 - Fixed an issue in which code blocks nested in other tags (for example, `<div>CODE BLOCK</div>`) would not be syntax highlighted.
 - Introduced infrastructure for developers to measure performance and profile the application.
 
-## 6.0.0
-
-**2022-11-19 · [Download](https://github.com/courselore/courselore/releases/tag/v6.0.0) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
+## 6.0.0 · 2022-11-19
 
 **This is a major release for the following reasons:**
 
@@ -309,9 +265,7 @@ Now those actions are allowed, and the only effect of archiving a course is maki
 
 The reason for this change is that for the most part people don’t participate in archived courses, but it sometimes be necessary to do it, and it could be annoying to unarchive a course momentarily just for this. For example, a staff member may want to contact certain students of an archived course in a later semester to invite them to become course assistants.
 
-## 5.0.0
-
-**2022-10-13 · [Download](https://github.com/courselore/courselore/releases/tag/v5.0.0) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
+## 5.0.0 · 2022-10-13
 
 **This is a major release because we introduced changes to the Courselore configuration file that require your intervention as a system administrator.**
 
@@ -339,28 +293,20 @@ These changes to the configuration file are relatively minor, but were caused by
 - Restructured the cache-busting mechanism to allow for caches to be reused even across different versions of Courselore—as long as the files haven’t changed, of course.
 - Reenabled HTTP/3, [which should improve the performance for people whose internet connection isn’t very reliable](https://www.smashingmagazine.com/2021/08/http3-core-concepts-part1/). Fixed the bad interactions between HTTP/3 and Firefox.
 
-## 4.1.6
-
-**2022-10-04 · [Download](https://github.com/courselore/courselore/releases/tag/v4.1.6) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
+## 4.1.6 · 2022-10-04
 
 - Fixed an issue that was reducing the size of non-High-DPI images. (<https://courselore.org/courses/8537410611/conversations/58>)
 - Fixed an issue that was causing Firefox to show “Failed to connect to the Courselore server.” for a moment during reload. (<https://courselore.org/courses/8537410611/conversations/57?messages%5BmessageReference%5D=22>)
 
-## 4.1.5
-
-**2022-09-29 · [Download](https://github.com/courselore/courselore/releases/tag/v4.1.5) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
+## 4.1.5 · 2022-09-29
 
 - Turned off HTTP/3 to try and solve issues in which Firefox refuses to make requests.
 
-## 4.1.4
-
-**2022-09-29 · [Download](https://github.com/courselore/courselore/releases/tag/v4.1.4) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
+## 4.1.4 · 2022-09-29
 
 - Fixed an issue in the treatment of Live-Updates (the technology that updates a page, for example, when a new message is sent to you) that made the server crash.
 
-## 4.1.3
-
-**2022-09-28 · [Download](https://github.com/courselore/courselore/releases/tag/v4.1.3) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
+## 4.1.3 · 2022-09-28
 
 - Fixed a mysterious issue in Firefox that caused people to see an error message: “Failed to connect to the Courselore server.”
 
@@ -368,24 +314,18 @@ These changes to the configuration file are relatively minor, but were caused by
 
   The solution is equally vexing: to set `cache: "no-store"` in the call to `fetch()` 🤷
 
-## 4.1.2
-
-**2022-09-27 · [Download](https://github.com/courselore/courselore/releases/tag/v4.1.2) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
+## 4.1.2 · 2022-09-27
 
 - Improved the performance of many actions in the conversations page by prioritizing giving feedback to the person who performed that action over updating the page for other people who are on that conversation (our so-called **Live-Updates**).
 - [Fixed an issue in which dragging-and-dropping text (as opposed to a file) into the content editor would result in an error.](https://courselore.org/courses/8537410611/conversations/47?messages%5BmessageReference%5D=5)
 
-## 4.1.1
-
-**2022-09-26 · [Download](https://github.com/courselore/courselore/releases/tag/v4.1.1) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
+## 4.1.1 · 2022-09-26
 
 - Changed the behavior of messages posted in conversations that are **Announcements**. Before, these messages behaved differently in that they would trigger immediate email notifications. The idea was that these would be follow-ups to the announcement. But in practice it seems that some of these messages are actually from students asking follow-up questions to the announcement. So now these messages are treated normally, and only the original announcement receives the special treatment when it comes to email notifications.
 - [Added support for HTTP/3 and improved the performance of serving static files, for example, images, stylesheets, attachments, and so forth.](https://github.com/caddyserver/caddy/releases/tag/v2.6.0)
 - Introduced [cache-busting](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control#immutable) to speed up loading of images, stylesheets, and so forth. This completes the treatment of the cache control policy started in Courselore version 4.1.0.
 
-## 4.1.0
-
-**2022-09-21 · [Download](https://github.com/courselore/courselore/releases/tag/v4.1.0) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
+## 4.1.0 · 2022-09-21
 
 - **Introduced a backwards-compatible change to the configuration file.**
 
@@ -458,9 +398,7 @@ These changes to the configuration file are relatively minor, but were caused by
 
   </details>
 
-## 4.0.15
-
-**2022-09-17 · [Download](https://github.com/courselore/courselore/releases/tag/v4.0.15) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
+## 4.0.15 · 2022-09-17
 
 - **Fixed a [security issue](https://fortbridge.co.uk/research/a-csrf-vulnerability-in-the-popular-csurf-package/) related to [CSRF](https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html).**
 
@@ -470,9 +408,7 @@ These changes to the configuration file are relatively minor, but were caused by
 
   The source of the issue was relying on the [`csurf` package](https://github.com/expressjs/csurf) for CSRF protection. Since the issue has been reported, the `csurf` package was deprecated and now Courselore implements its own CSRF protection using [custom headers](https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html#use-of-custom-request-headers). In the future we will add [synchronizer tokens](https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html#synchronizer-token-pattern) as added security against poorly-behaved clients that allow for custom headers in cross-site requests (for example, old versions of Flash & some PDF readers).
 
-## 4.0.14
-
-**2022-09-16 · [Download](https://github.com/courselore/courselore/releases/tag/v4.0.14) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
+## 4.0.14 · 2022-09-16
 
 - **Fixed an issue in which sessions wouldn’t be closed on the server properly on sign-out.**
 
@@ -494,9 +430,7 @@ These changes to the configuration file are relatively minor, but were caused by
 - Added a counter next to the separator for new messages in conversations you visited before (for example, “3 New”).
 - Reduced the grace period between a message being sent and its email notifications being delivered from approximately 10 minutes to approximately 2 minutes. We may bring this grace period back up when the email notification digests are more fleshed out, or we may turn this into a user setting.
 
-## 4.0.13
-
-**2022-09-10 · [Download](https://github.com/courselore/courselore/releases/tag/v4.0.13) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
+## 4.0.13 · 2022-09-10
 
 - **Fixed an issue in which students would have access to the list of people who viewed a message.**
 
@@ -518,25 +452,19 @@ These changes to the configuration file are relatively minor, but were caused by
 - Changed the error messages on the authentication & invitation workflows (sign-in, sign-up, email verification, password reset, using an invitation, and so forth) to be more informative, even in a couple cases in which that reveals some of the internal state of the application.
 - When updating email, only send an email to the previous address to inform of update if the previous address was verified. This fixes a subtle edge case in which the person mistyped their email and quickly fixed it, but the application would try to send one more email to the incorrect address, adding to the number of bounces and counting negatively towards deliverability.
 
-## 4.0.12
-
-**2022-09-07 · [Download](https://github.com/courselore/courselore/releases/tag/v4.0.12) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
+## 4.0.12 · 2022-09-07
 
 - Changed the default values of **Announcement** and **Pinned** in **New Note** from unchecked to checked. It appears that most of the time when a staff member creates a note they want it to be an announcement.
 - Added a way for staff to change the anonymity of students conversations & messages. Previously only the students themselves could do that.
 - Added a way for people to set conversations as anonymous. Previously they could only set the first message in the conversation as anonymous—the new behavior is more intuitive.
 - Changed the following operations to notify the user via email: update email, update password, and reset password. These are important operations that, if performed by an attacker, must be acted on as soon as possible.
 
-## 4.0.11
-
-**2022-09-06 · [Download](https://github.com/courselore/courselore/releases/tag/v4.0.11) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
+## 4.0.11 · 2022-09-06
 
 - **Fixed a security issue in which redirects would allow an attacker to create a link that looked legitimate but would redirect away from the application.** For example, `https://courselore.org/sign-in?redirect=.example.com/attack` would redirect to `https://courselore.org.example.com/attack`, which could be under the attacker’s control. This could have been used for scams & phishing. As far as we know the issue has **not** been explored in real attacks, but system administrators must update as soon as possible.
 - Locked down the application to users who haven’t verified their emails. Previously, they could do almost everything, including enrolling on courses, starting conversations, and so forth. One of the few restrictions was that they wouldn’t receive email notifications. Now, we require email verification to do almost anything.
 
-## 4.0.10
-
-**2022-09-03 · [Download](https://github.com/courselore/courselore/releases/tag/v4.0.10) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
+## 4.0.10 · 2022-09-03
 
 - Added the notion of **Announcements**, which are a qualification on conversations of type **Note**. Announcements may only be created by staff, and they send everyone immediate email notifications that can’t be opted-out. (Note for Courselore users from spring 2022: These new **Announcements** are similar to our old notion of **Announcement**, but now they’re a qualification on conversations of type **Note** instead of being a type of conversation in of themselves.)
 - Improved a subtle edge case on filters: Before, if you selected **Types: Question & Note**, and **Question Resolved: Resolved**, we would not include **Notes** in the filter results; now we do.
@@ -545,24 +473,18 @@ These changes to the configuration file are relatively minor, but were caused by
 - Changed the subjects on email notifications: Before it was, for example, “When is Assignment 3 due? · Principles of Programming Languages · Courselore”; now it’s just the title of the conversation, for example, “When is Assignment 3 due?”. (Note that the course name & the server name, for example, “Principles of Programming Languages · Courselore”, are already part of the “From”.)
 - Fixed an issue in which administrators of `courselore.org` could see a prompt to update to a new version even when running the latest version because of a race condition between publishing the new version to GitHub Releases and deploying to `courselore.org`.
 
-## 4.0.9
-
-**2022-09-01 · [Download](https://github.com/courselore/courselore/releases/tag/v4.0.9) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
+## 4.0.9 · 2022-09-01
 
 - Fixed the newly-introduced underlines in Safari.
 
-## 4.0.8
-
-**2022-09-01 · [Download](https://github.com/courselore/courselore/releases/tag/v4.0.8) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
+## 4.0.8 · 2022-09-01
 
 - Changed the rendering of `~example~` to show up as-is, instead of doing a ~~strikethrough~~. The strikethrough is still achievable with two `~~`: `~~example~~`. The old behavior was equivalent to GitHub’s, while the new one is equivalent to Discord’s & Reddit’s. <https://courselore.org/courses/8537410611/conversations/48>
 - Added toolbar button in content editor for strikethrough.
 - Added support for underline in the content editor with `<u></u>`.
 - Added `meta.courselore.org` redirect to Meta Courselore.
 
-## 4.0.6
-
-**2022-08-31 · [Download](https://github.com/courselore/courselore/releases/tag/v4.0.6) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
+## 4.0.6 · 2022-08-31
 
 - Changed the act of pinning of a conversation to bump the conversation to the top of the sidebar. <https://courselore.org/courses/8537410611/conversations/42>
 - Changed the color of “Participants: Selected People” from rose (which may communicate “pay attention”) to purple (which is more neutral).
@@ -570,9 +492,7 @@ These changes to the configuration file are relatively minor, but were caused by
 - Changed the **Report an Issue > Meta Courselore** button on the footer to pre-fill the tag.
 - Changed the “From” on email notifications to be, for example, “Principles of Programming Languages · Courselore” instead of “Courselore · Principles of Programming Languages”.
 
-## 4.0.5
-
-**2022-08-30 · [Download](https://github.com/courselore/courselore/releases/tag/v4.0.5) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
+## 4.0.5 · 2022-08-30
 
 - **Fixed an issue that prevented users of Microsoft Outlook from resetting their passwords.**
 
@@ -580,21 +500,15 @@ These changes to the configuration file are relatively minor, but were caused by
 
   To fix this issue, we relaxed the security policy and only mark a password reset link as used when the user has finished resetting their password.
 
-## 4.0.4
-
-**2022-08-27 · [Download](https://github.com/courselore/courselore/releases/tag/v4.0.4) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
+## 4.0.4 · 2022-08-27
 
 - Introduced the notion of **conversation participants** which allows for more control over who’s part of a conversation and enables workflows such as **Direct Messages**.
 
-## 4.0.2
-
-**2022-08-12 · [Download](https://github.com/courselore/courselore/releases/tag/v4.0.2) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
+## 4.0.2 · 2022-08-12
 
 - Changed the communication about the period of free hosting.
 
-## 4.0.1
-
-**2022-08-12 · [Download](https://github.com/courselore/courselore/releases/tag/v4.0.1) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
+## 4.0.1 · 2022-08-12
 
 - Added email notifications for conversations in which you participated, and conversations which you started.
 - Changed email notifications so that they’re threaded per conversation.
@@ -602,9 +516,7 @@ These changes to the configuration file are relatively minor, but were caused by
 - Added a delay between a message being sent and its email notifications being delivered, to leave time for edits.
 - Redesigned sidebar & “New Conversation” form.
 
-## 4.0.0
-
-**2022-07-09 · [Download](https://github.com/courselore/courselore/releases/tag/v4.0.0) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
+## 4.0.0 · 2022-07-09
 
 Courselore 4.0.0 introduces the notion of an administrative interface for you, system administrator. For now it includes only one setting, allowing you to control who’s able to create courses. Moving forward, we’ll have more settings for you to manage & collect statistics about your Courselore installation easily 🎉
 
@@ -620,23 +532,17 @@ Update to Courselore 4.0.0 with the following steps:
 
 Enjoy!
 
-## 3.3.0
-
-**2022-05-27 · [Download](https://github.com/courselore/courselore/releases/tag/v3.3.0) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
+## 3.3.0 · 2022-05-27
 
 This minor release includes a non-breaking change to the configuration to allow third-party websites to embed images sent as attachments. This is necessary for Outlook (and perhaps other email clients) to show images in email notifications. Refer to <https://github.com/courselore/courselore/blob/v3.3.0/configuration/example.mjs> and apply the changes to your configuration accordingly.
 
-## 3.2.0
-
-**2022-05-12 · [Download](https://github.com/courselore/courselore/releases/tag/v3.2.0) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
+## 3.2.0 · 2022-05-12
 
 This release includes an optional but recommended [change to a header recently introduced in the configuration file](https://github.com/courselore/courselore/blob/v3.2.0/configuration/example.mjs#L38):
 
 `Referrer-Policy same-origin` → `Referrer-Policy no-referrer`
 
-## 3.0.0
-
-**2022-04-30 · [Download](https://github.com/courselore/courselore/releases/tag/v3.0.0) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
+## 3.0.0 · 2022-04-30
 
 People who self-host their own installation of Courselore on their server must update their configuration according to the example:
 
@@ -644,42 +550,30 @@ People who self-host their own installation of Courselore on their server must u
 
 In particular, the configuration of the reverse proxy (Caddy) changed to include headers that improve security & privacy.
 
-## 2.1.0
-
-**2022-04-09 · [Download](https://github.com/courselore/courselore/releases/tag/v2.1.0) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
+## 2.1.0 · 2022-04-09
 
 In this minor release we introduce a backward-compatible but highly-recommended change to the configuration file: https://github.com/courselore/courselore/blob/f2475da6b0eb17b750cfad04f7c59a0d0f962daa/configuration/example.mjs#L54
 
 This configuration line improves the cache management in the browser and prevents the use of old client-side JavaScript, CSS, fonts, images, and so forth.
 
-## 2.0.0
-
-**2022-03-05 · [Download](https://github.com/courselore/courselore/releases/tag/v2.0.0) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
+## 2.0.0 · 2022-03-05
 
 This release includes an overhaul in the architecture for better performance and maintainability. It requires changes to your configuration. You may either [start over with the new configuration example (recommended)](https://github.com/courselore/courselore/blob/c66f3b8f46f52d53bcb17f334ddd7b834070a25d/configuration/example.mjs) or [look at the changes and apply them to your existing configuration](https://github.com/courselore/courselore/compare/v1.2.10...c66f3b8f46f52d53bcb17f334ddd7b834070a25d#diff-1d4efc9a9a4c88b7dfd373d4aec08c68c4396f2c86211734014124d8aa12d3c3).
 
-## 1.2.0
-
-**2022-01-31 · [Download](https://github.com/courselore/courselore/releases/tag/v1.2.0) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
+## 1.2.0 · 2022-01-31
 
 We made a backwards-compatible improvement to logging that requires you to change your configuration file. Please refer to https://github.com/courselore/courselore/blob/3b102a6c2a9e8658dcd12e0bf99d4b078a7b6723/configuration/example.mjs and make the appropriate adjustments.
 
-## 1.1.0
-
-**2022-01-27 · [Download](https://github.com/courselore/courselore/releases/tag/v1.1.0) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
+## 1.1.0 · 2022-01-27
 
 We made a backwards-compatible improvement to the configuration to more gracefully close resources (for example, database connections) on shutdown. Refer to https://github.com/courselore/courselore/blob/0b26b4c3bf7f0807fdf1dac91e10d5a1f45dbcc1/configuration/example.mjs#L65-L82 and update your configuration.
 
-## 1.0.0
-
-**2022-01-22 · [Download](https://github.com/courselore/courselore/releases/tag/v1.0.0) · [Backup before updating!](https://github.com/courselore/courselore/blob/main/documentation/self-hosting.md#backup)**
+## 1.0.0 · 2022-01-22
 
 This is the first release of CourseLore that’s meant for self-hosting by the larger community. The deployment process & configuration scheme are fixed, and any backward incompatible changes will only occur on major releases.
 
 There are still some known issues, and if you’re planning on using v1.0.0 you should expect to update often. If you’re an early adopter, you should join us on [Meta CourseLore](https://courselore.org/courses/8537410611/invitations/3667859788).
 
-## 0.9.0
-
-**2022-01-16 · [Download](https://github.com/courselore/courselore/releases/tag/v0.9.0) · For early adopters.**
+## 0.9.0 · 2022-01-16
 
 Contact <self-hosting@courselore.org> if you want to use this.
