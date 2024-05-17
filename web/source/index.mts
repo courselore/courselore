@@ -5,6 +5,7 @@ import fs from "node:fs/promises";
 import childProcess from "node:child_process";
 import server from "@radically-straightforward/server";
 import * as utilities from "@radically-straightforward/utilities";
+import { Database } from "@radically-straightforward/sqlite";
 import * as node from "@radically-straightforward/node";
 import caddyfile from "@radically-straightforward/caddy";
 import * as caddy from "@radically-straightforward/caddy";
@@ -26,6 +27,7 @@ export type Application = {
     extraCaddyfile: string;
     ports: number[];
   };
+  database: Database;
   server: undefined | ReturnType<typeof server>;
   backgroundJobs: undefined | ReturnType<typeof node.backgroundJob>[];
 };
