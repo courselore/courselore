@@ -29,7 +29,6 @@ export type Application = {
   };
   database: Database;
   server: undefined | ReturnType<typeof server>;
-  backgroundJobs: undefined | ReturnType<typeof node.backgroundJob>[];
 };
 const application = {} as Application;
 application.commandLineArguments = util.parseArgs({
@@ -55,8 +54,6 @@ if (application.commandLineArguments.values.type === "server")
   application.server = server({
     port: Number(application.commandLineArguments.values.port),
   });
-if (application.commandLineArguments.values.type === "background-job")
-  application.backgroundJobs = [];
 
 utilities.log(
   "COURSELORE",
@@ -122,11 +119,9 @@ if (application.commandLineArguments.values.type === undefined) {
     );
   }
   caddy.start({
-    address: application.configuration.hostname,
-    untrustedStaticFilesRoots: [],
-    dynamicServerPorts: application.configuration.ports,
-    email: application.configuration.systemAdministratorEmail,
-    hstsPreload: application.configuration.hstsPreload,
-    extraCaddyfile: application.configuration.extraCaddyfile,
+    ...application.configuration,
+    untrustedStaticFilesRoots: [
+      `/files/* "${path.join(process.cwd(), "data")}"`,
+    ],
   });
 }
