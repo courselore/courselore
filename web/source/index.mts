@@ -52,6 +52,9 @@ application.configuration.ports = Array.from(
 if (application.commandLineArguments.values.type === "server")
   application.server = server({
     port: Number(application.commandLineArguments.values.port),
+    csrfProtectionExceptionPathname: new RegExp(
+      "^/saml/[a-z0-9-]+/(assertion-consumer-service|single-logout-service)$",
+    ),
   });
 
 utilities.log(
