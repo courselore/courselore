@@ -5,10 +5,10 @@ import fs from "node:fs/promises";
 import childProcess from "node:child_process";
 import server from "@radically-straightforward/server";
 import * as utilities from "@radically-straightforward/utilities";
-import { Database } from "@radically-straightforward/sqlite";
 import * as node from "@radically-straightforward/node";
 import caddyfile from "@radically-straightforward/caddy";
 import * as caddy from "@radically-straightforward/caddy";
+import database, { ApplicationDatabase } from "./database.mjs";
 
 export type Application = {
   commandLineArguments: {
@@ -27,9 +27,8 @@ export type Application = {
     extraCaddyfile: string;
     ports: number[];
   };
-  database: Database;
   server: undefined | ReturnType<typeof server>;
-};
+} & ApplicationDatabase;
 const application = {} as Application;
 application.commandLineArguments = util.parseArgs({
   options: {
@@ -73,7 +72,7 @@ process.once("beforeExit", () => {
   );
 });
 
-await (await import("./database.mjs")).default(application);
+await database(application);
 
 if (application.commandLineArguments.values.type === undefined) {
   for (const port of application.configuration.ports) {
