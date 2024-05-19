@@ -2,6 +2,7 @@ import path from "node:path";
 import fs from "node:fs/promises";
 import sql, { Database } from "@radically-straightforward/sqlite";
 import html from "@radically-straightforward/html";
+import * as htmlUtilities from "@radically-straightforward/html";
 import dedent from "dedent";
 import cryptoRandomString from "crypto-random-string";
 import { unified } from "unified";
@@ -2321,7 +2322,7 @@ export default async (application: Application): Promise<void> => {
           const contentElement = JSDOM.fragment(html`
             <div>
               $${unifiedProcessor
-                .processSync(sanitizeXMLCharacters.sanitize(contentSource))
+                .processSync(contentSource.replace(htmlUtilities.invalidXMLCharacters, ""))
                 .toString()}
             </div>
           `).firstElementChild!;
