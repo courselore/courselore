@@ -18,7 +18,7 @@ import rehypeParse from "rehype-parse";
 import { visit as unistUtilVisit } from "unist-util-visit";
 import { toString as hastUtilToString } from "hast-util-to-string";
 import rehypeStringify from "rehype-stringify";
-import {DOMParser} from "linkedom";
+import { DOMParser } from "linkedom";
 import prompts from "prompts";
 import sharp from "sharp";
 import forge from "node-forge";
@@ -356,9 +356,10 @@ export default async (application: Application): Promise<void> => {
         (text: string): string =>
           text.replace(
             new RegExp(
-              `(?<=https://${
-                application.configuration.hostname.replaceAll(".", "\\."),
-              }/courses/\\d+/conversations/\\d+)#message--(?=\\d+)`,
+              `(?<=https://${application.configuration.hostname.replaceAll(
+                ".",
+                "\\.",
+              )}/courses/\\d+/conversations/\\d+)#message--(?=\\d+)`,
               "gi",
             ),
             "?messageReference=",
@@ -480,9 +481,10 @@ export default async (application: Application): Promise<void> => {
       ): string =>
         text.replace(
           new RegExp(
-            `(?<=https://${
-              application.configuration.hostname.replaceAll(".", "\\.")
-            }/courses/\\d+/conversations/\\d+)\\?messageReference=(?=\\d+)`,
+            `(?<=https://${application.configuration.hostname.replaceAll(
+              ".",
+              "\\.",
+            )}/courses/\\d+/conversations/\\d+)\\?messageReference=(?=\\d+)`,
             "gi",
           ),
           "?messages%5BmessageReference%5D=",
@@ -2319,13 +2321,23 @@ export default async (application: Application): Promise<void> => {
           .use(rehypeStringify as any);
 
         return (contentSource: string) => {
-          const contentElement = new DOMParser().parseFromString(html`
-            <div>
-              $${unifiedProcessor
-                .processSync(contentSource.replace(htmlUtilities.invalidXMLCharacters, ""))
-                .toString()}
-            </div>
-          `, "text/html").querySelector("div");
+          const contentElement = new DOMParser()
+            .parseFromString(
+              html`
+                <div>
+                  $${unifiedProcessor
+                    .processSync(
+                      contentSource.replace(
+                        htmlUtilities.invalidXMLCharacters,
+                        "",
+                      ),
+                    )
+                    .toString()}
+                </div>
+              `,
+              "text/html",
+            )
+            .querySelector("div");
 
           const contentPreprocessed = contentElement.innerHTML;
 
