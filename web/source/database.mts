@@ -1,5 +1,26 @@
 import path from "node:path";
+import fs from "node:fs/promises";
 import sql, { Database } from "@radically-straightforward/sqlite";
+import html from "@radically-straightforward/html";
+import dedent from "dedent";
+import cryptoRandomString from "crypto-random-string";
+import { unified } from "unified";
+import remarkParse from "remark-parse";
+import remarkGfm from "remark-gfm";
+import remarkMath from "remark-math";
+import remarkRehype from "remark-rehype";
+import rehypeRaw from "rehype-raw";
+import rehypeSanitize from "rehype-sanitize";
+import rehypeKatex from "rehype-katex";
+import * as shiki from "shiki";
+import rehypeParse from "rehype-parse";
+import { visit as unistUtilVisit } from "unist-util-visit";
+import { toString as hastUtilToString } from "hast-util-to-string";
+import rehypeStringify from "rehype-stringify";
+import { JSDOM } from "jsdom";
+import prompts from "prompts";
+import sharp from "sharp";
+import forge from "node-forge";
 import { Application } from "./index.mjs";
 
 export type ApplicationDatabase = {
@@ -334,9 +355,9 @@ export default async (application: Application): Promise<void> => {
         (text: string): string =>
           text.replace(
             new RegExp(
-              `(?<=https://${escapeStringRegexp(
-                application.configuration.hostname,
-              )}/courses/\\d+/conversations/\\d+)#message--(?=\\d+)`,
+              `(?<=https://${
+                application.configuration.hostname.replaceAll(".", "\\."),
+              }/courses/\\d+/conversations/\\d+)#message--(?=\\d+)`,
               "gi",
             ),
             "?messageReference=",
@@ -458,9 +479,9 @@ export default async (application: Application): Promise<void> => {
       ): string =>
         text.replace(
           new RegExp(
-            `(?<=https://${escapeStringRegexp(
-              application.configuration.hostname,
-            )}/courses/\\d+/conversations/\\d+)\\?messageReference=(?=\\d+)`,
+            `(?<=https://${
+              application.configuration.hostname.replaceAll(".", "\\.")
+            }/courses/\\d+/conversations/\\d+)\\?messageReference=(?=\\d+)`,
             "gi",
           ),
           "?messages%5BmessageReference%5D=",
