@@ -3,6 +3,7 @@ import fs from "node:fs/promises";
 import sql, { Database } from "@radically-straightforward/sqlite";
 import html from "@radically-straightforward/html";
 import * as htmlUtilities from "@radically-straightforward/html";
+import * as utilities from "@radically-straightforward/utilities";
 import dedent from "dedent";
 import cryptoRandomString from "crypto-random-string";
 import { unified } from "unified";
@@ -1420,7 +1421,7 @@ export default async (application: Application): Promise<void> => {
           )
           VALUES (
             ${administrationOptions.userSystemRolesWhoMayCreateCourses},
-            ${application.version}
+            ${"THIS IS NO LONGER SUPPORTED SINCE 9.0.0"}
         )
       `,
       );
@@ -1506,7 +1507,7 @@ export default async (application: Application): Promise<void> => {
               ),
             );
         } catch (error: any) {
-          application.log(
+          utilities.log(
             "DATABASE MIGRATION ERROR: FAILED TO CONVERT AVATAR TO WEBP",
             String(error),
             error?.stack,
@@ -2294,7 +2295,7 @@ export default async (application: Application): Promise<void> => {
                         `)
                         .children.find((child) => child.type === "element");
                     } catch (error: any) {
-                      application.log(
+                      utilities.log(
                         "ERROR IN SYNTAX HIGHLIGHTER",
                         String(error),
                         error?.stack,
