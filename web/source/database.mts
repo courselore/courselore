@@ -352,7 +352,7 @@ export default async (application: Application): Promise<void> => {
       );
     `,
 
-    () => {
+    (database) => {
       const makeMessageReferenceInMessagePermanentLinkVisibleToServerForPaginationToWork =
         (text: string): string =>
           text.replace(
@@ -365,7 +365,7 @@ export default async (application: Application): Promise<void> => {
             ),
             "?messageReference=",
           );
-      for (const user of application.database.all<{
+      for (const user of database.all<{
         id: number;
         biographySource: string | null;
         biographyPreprocessed: string | null;
@@ -380,7 +380,7 @@ export default async (application: Application): Promise<void> => {
           user.biographySource !== null &&
           user.biographyPreprocessed !== null
         )
-          application.database.run(
+          database.run(
             sql`
               UPDATE "users"
               SET
@@ -393,7 +393,7 @@ export default async (application: Application): Promise<void> => {
               WHERE "id" = ${user.id}
             `,
           );
-      for (const message of application.database.all<{
+      for (const message of database.all<{
         id: number;
         contentSource: string;
         contentPreprocessed: string;
@@ -405,7 +405,7 @@ export default async (application: Application): Promise<void> => {
           ORDER BY "id"
         `,
       ))
-        application.database.run(
+        database.run(
           sql`
             UPDATE "messages"
             SET
@@ -476,7 +476,7 @@ export default async (application: Application): Promise<void> => {
       );
     `,
 
-    () => {
+    (database) => {
       const changeMessageReferencePermanentLinkQueryParameter = (
         text: string,
       ): string =>
@@ -490,7 +490,7 @@ export default async (application: Application): Promise<void> => {
           ),
           "?messages%5BmessageReference%5D=",
         );
-      for (const user of application.database.all<{
+      for (const user of database.all<{
         id: number;
         biographySource: string | null;
         biographyPreprocessed: string | null;
@@ -505,7 +505,7 @@ export default async (application: Application): Promise<void> => {
           user.biographySource !== null &&
           user.biographyPreprocessed !== null
         )
-          application.database.run(
+          database.run(
             sql`
               UPDATE "users"
               SET
@@ -518,7 +518,7 @@ export default async (application: Application): Promise<void> => {
               WHERE "id" = ${user.id}
             `,
           );
-      for (const message of application.database.all<{
+      for (const message of database.all<{
         id: number;
         contentSource: string;
         contentPreprocessed: string;
@@ -530,7 +530,7 @@ export default async (application: Application): Promise<void> => {
           ORDER BY "id"
         `,
       ))
-        application.database.run(
+        database.run(
           sql`
             UPDATE "messages"
             SET
@@ -569,8 +569,8 @@ export default async (application: Application): Promise<void> => {
       ALTER TABLE "users" RENAME COLUMN "emailConfirmedAt" TO "emailVerifiedAt";
     `,
 
-    () => {
-      application.database.execute(
+    (database) => {
+      database.execute(
         sql`
           CREATE TABLE "new_users" (
             "id" INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -590,7 +590,7 @@ export default async (application: Application): Promise<void> => {
           );
         `,
       );
-      for (const user of application.database.all<{
+      for (const user of database.all<{
         id: number;
         createdAt: string;
         lastSeenOnlineAt: string;
@@ -623,7 +623,7 @@ export default async (application: Application): Promise<void> => {
           FROM "users"
         `,
       ))
-        application.database.run(
+        database.run(
           sql`
             INSERT INTO "new_users" (
               "id",
@@ -659,7 +659,7 @@ export default async (application: Application): Promise<void> => {
             )
           `,
         );
-      application.database.execute(
+      database.execute(
         sql`
           DROP TABLE "users";
           ALTER TABLE "new_users" RENAME TO "users";
@@ -677,8 +677,8 @@ export default async (application: Application): Promise<void> => {
       );
     },
 
-    () => {
-      application.database.execute(
+    (database) => {
+      database.execute(
         sql`
           CREATE TABLE "new_users" (
             "id" INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -702,7 +702,7 @@ export default async (application: Application): Promise<void> => {
           );
         `,
       );
-      for (const user of application.database.all<{
+      for (const user of database.all<{
         id: number;
         createdAt: string;
         lastSeenOnlineAt: string;
@@ -737,7 +737,7 @@ export default async (application: Application): Promise<void> => {
           FROM "users"
         `,
       ))
-        application.database.run(
+        database.run(
           sql`
             INSERT INTO "new_users" (
               "id",
@@ -797,7 +797,7 @@ export default async (application: Application): Promise<void> => {
             )
           `,
         );
-      application.database.execute(
+      database.execute(
         sql`
           DROP TABLE "users";
           ALTER TABLE "new_users" RENAME TO "users";
@@ -829,8 +829,8 @@ export default async (application: Application): Promise<void> => {
       INSERT INTO "administrationOptions" ("userSystemRolesWhoMayCreateCourses") VALUES ('all');
     `,
 
-    () => {
-      application.database.execute(
+    (database) => {
+      database.execute(
         sql`
           CREATE TABLE "new_users" (
             "id" INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -855,7 +855,7 @@ export default async (application: Application): Promise<void> => {
           );
         `,
       );
-      for (const user of application.database.all<{
+      for (const user of database.all<{
         id: number;
         createdAt: string;
         lastSeenOnlineAt: string;
@@ -900,7 +900,7 @@ export default async (application: Application): Promise<void> => {
           FROM "users"
         `,
       ))
-        application.database.run(
+        database.run(
           sql`
             INSERT INTO "new_users" (
               "id",
@@ -946,7 +946,7 @@ export default async (application: Application): Promise<void> => {
             )
           `,
         );
-      application.database.execute(
+      database.execute(
         sql`
           DROP TABLE "users";
           ALTER TABLE "new_users" RENAME TO "users";
@@ -964,8 +964,8 @@ export default async (application: Application): Promise<void> => {
       );
     },
 
-    async () => {
-      const users = application.database.all<{
+    async (database) => {
+      const users = database.all<{
         id: number;
         email: string;
         name: string;
@@ -1003,7 +1003,7 @@ export default async (application: Application): Promise<void> => {
           ).output
         )
           continue;
-        application.database.run(
+        database.run(
           sql`
             UPDATE "users" SET "systemRole" = 'administrator' WHERE "id" = ${user.id}
           `,
@@ -1017,8 +1017,8 @@ export default async (application: Application): Promise<void> => {
       }
     },
 
-    () => {
-      application.database.execute(
+    (database) => {
+      database.execute(
         sql`
           CREATE TABLE "new_users" (
             "id" INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -1047,7 +1047,7 @@ export default async (application: Application): Promise<void> => {
       hour.setUTCMinutes(0, 0, 0);
       const day = new Date();
       day.setUTCHours(0, 0, 0, 0);
-      for (const user of application.database.all<{
+      for (const user of database.all<{
         id: number;
         createdAt: string;
         lastSeenOnlineAt: string;
@@ -1094,7 +1094,7 @@ export default async (application: Application): Promise<void> => {
           FROM "users"
         `,
       ))
-        application.database.run(
+        database.run(
           sql`
             INSERT INTO "new_users" (
               "id",
@@ -1162,7 +1162,7 @@ export default async (application: Application): Promise<void> => {
             )
           `,
         );
-      application.database.execute(
+      database.execute(
         sql`
           DROP TABLE "users";
           ALTER TABLE "new_users" RENAME TO "users";
@@ -1212,8 +1212,8 @@ export default async (application: Application): Promise<void> => {
       CREATE INDEX "emailNotificationDigestJobsUserIndex" ON "emailNotificationDigestJobs" ("user");
     `,
 
-    () => {
-      application.database.execute(
+    (database) => {
+      database.execute(
         sql`
           CREATE TABLE "new_conversations" (
             "id" INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -1246,7 +1246,7 @@ export default async (application: Application): Promise<void> => {
         `,
       );
 
-      for (const conversation of application.database.all<{
+      for (const conversation of database.all<{
         id: number;
         createdAt: string;
         updatedAt: string | null;
@@ -1281,7 +1281,7 @@ export default async (application: Application): Promise<void> => {
           FROM "conversations"
         `,
       )) {
-        application.database.run(
+        database.run(
           sql`
             INSERT INTO "new_conversations" (
               "id",
@@ -1317,7 +1317,7 @@ export default async (application: Application): Promise<void> => {
           `,
         );
         if (conversation.staffOnlyAt !== null)
-          for (const enrollment of application.database.all<{
+          for (const enrollment of database.all<{
             id: number;
           }>(
             sql`
@@ -1337,7 +1337,7 @@ export default async (application: Application): Promise<void> => {
               GROUP BY "enrollments"."id"
             `,
           ))
-            application.database.run(
+            database.run(
               sql`
                 INSERT INTO "conversationSelectedParticipants" (
                   "createdAt",
@@ -1353,7 +1353,7 @@ export default async (application: Application): Promise<void> => {
             );
       }
 
-      application.database.execute(
+      database.execute(
         sql`
           DROP TABLE "conversations";
           ALTER TABLE "new_conversations" RENAME TO "conversations";
@@ -1394,8 +1394,8 @@ export default async (application: Application): Promise<void> => {
       DELETE FROM "sessions";
     `,
 
-    () => {
-      application.database.execute(
+    (database) => {
+      database.execute(
         sql`
           CREATE TABLE "new_administrationOptions" (
             "id" INTEGER PRIMARY KEY AUTOINCREMENT CHECK ("id" = 1),
@@ -1404,7 +1404,7 @@ export default async (application: Application): Promise<void> => {
           );
         `,
       );
-      const administrationOptions = application.database.get<{
+      const administrationOptions = database.get<{
         userSystemRolesWhoMayCreateCourses: string;
       }>(
         sql`
@@ -1413,7 +1413,7 @@ export default async (application: Application): Promise<void> => {
       );
       if (administrationOptions === undefined)
         throw new Error("Failed to find ‘administrationOptions’");
-      application.database.run(
+      database.run(
         sql`
           INSERT INTO "new_administrationOptions" (
             "userSystemRolesWhoMayCreateCourses",
@@ -1425,7 +1425,7 @@ export default async (application: Application): Promise<void> => {
         )
       `,
       );
-      application.database.execute(
+      database.execute(
         sql`
           DROP TABLE "administrationOptions";
           ALTER TABLE "new_administrationOptions" RENAME TO "administrationOptions";
@@ -1454,8 +1454,8 @@ export default async (application: Application): Promise<void> => {
       CREATE INDEX "sessionsUserIndex" ON "sessions" ("user");
     `,
 
-    async () => {
-      for (const user of application.database.all<{
+    async (database) => {
+      for (const user of database.all<{
         id: number;
         avatar: string;
       }>(
@@ -1515,7 +1515,7 @@ export default async (application: Application): Promise<void> => {
           continue;
         }
 
-        application.database.run(
+        database.run(
           sql`
             UPDATE "users"
             SET "avatar" = ${`https://${
@@ -1543,8 +1543,8 @@ export default async (application: Application): Promise<void> => {
       );
     `,
 
-    () => {
-      application.database.execute(
+    (database) => {
+      database.execute(
         sql`
           CREATE TABLE "new_tags" (
             "id" INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -1561,7 +1561,7 @@ export default async (application: Application): Promise<void> => {
 
       let previousCourse = -1;
       let order = -1;
-      for (const tag of application.database.all<{
+      for (const tag of database.all<{
         id: number;
         createdAt: string;
         course: number;
@@ -1584,7 +1584,7 @@ export default async (application: Application): Promise<void> => {
         `,
       )) {
         if (previousCourse !== tag.course) order = 0;
-        application.database.run(
+        database.run(
           sql`
             INSERT INTO "new_tags" (
               "id",
@@ -1610,7 +1610,7 @@ export default async (application: Application): Promise<void> => {
         order++;
       }
 
-      application.database.execute(
+      database.execute(
         sql`
           DROP TABLE "tags";
           ALTER TABLE "new_tags" RENAME TO "tags";
@@ -1656,8 +1656,8 @@ export default async (application: Application): Promise<void> => {
       SET "studentsMayCreatePollsAt" = ${new Date().toISOString()};
     `,
 
-    () => {
-      application.database.execute(
+    (database) => {
+      database.execute(
         sql`
           CREATE TABLE "new_users" (
             "id" INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -1686,7 +1686,7 @@ export default async (application: Application): Promise<void> => {
           );
         `,
       );
-      for (const user of application.database.all<{
+      for (const user of database.all<{
         id: number;
         createdAt: string;
         lastSeenOnlineAt: string;
@@ -1743,7 +1743,7 @@ export default async (application: Application): Promise<void> => {
           FROM "users"
         `,
       ))
-        application.database.run(
+        database.run(
           sql`
             INSERT INTO "new_users" (
               "id",
@@ -1797,7 +1797,7 @@ export default async (application: Application): Promise<void> => {
             )
           `,
         );
-      application.database.execute(
+      database.execute(
         sql`
           DROP TABLE "users";
           ALTER TABLE "new_users" RENAME TO "users";
@@ -1832,8 +1832,8 @@ export default async (application: Application): Promise<void> => {
       ALTER TABLE "sessions" ADD COLUMN "samlSessionIndex" TEXT NULL;
     `,
 
-    () => {
-      application.database.execute(
+    (database) => {
+      database.execute(
         sql`
           CREATE TABLE "new_users" (
             "id" INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -1862,7 +1862,7 @@ export default async (application: Application): Promise<void> => {
           );
         `,
       );
-      for (const user of application.database.all<{
+      for (const user of database.all<{
         id: number;
         createdAt: string;
         lastSeenOnlineAt: string;
@@ -1921,7 +1921,7 @@ export default async (application: Application): Promise<void> => {
           FROM "users"
         `,
       ))
-        application.database.run(
+        database.run(
           sql`
             INSERT INTO "new_users" (
               "id",
@@ -1975,7 +1975,7 @@ export default async (application: Application): Promise<void> => {
             )
           `,
         );
-      application.database.execute(
+      database.execute(
         sql`
           DROP TABLE "users";
           ALTER TABLE "new_users" RENAME TO "users";
@@ -1997,8 +1997,8 @@ export default async (application: Application): Promise<void> => {
       ALTER TABLE "messageDrafts" DROP COLUMN "answerAt";
     `,
 
-    () => {
-      application.database.execute(
+    (database) => {
+      database.execute(
         sql`
           CREATE TABLE "new_messages" (
             "id" INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -2017,7 +2017,7 @@ export default async (application: Application): Promise<void> => {
         `,
       );
 
-      for (const message of application.database.all<{
+      for (const message of database.all<{
         id: number;
         createdAt: string;
         updatedAt: string | null;
@@ -2046,7 +2046,7 @@ export default async (application: Application): Promise<void> => {
           FROM "messages"
         `,
       ))
-        application.database.run(
+        database.run(
           sql`
             INSERT INTO "new_messages" (
               "id",
@@ -2077,7 +2077,7 @@ export default async (application: Application): Promise<void> => {
           `,
         );
 
-      application.database.execute(
+      database.execute(
         sql`
           DROP TABLE "messages";
 
@@ -2116,8 +2116,8 @@ export default async (application: Application): Promise<void> => {
       ALTER TABLE "enrollments" ADD COLUMN "mostRecentlyVisitedConversation" INTEGER NULL REFERENCES "conversations" ON DELETE SET NULL;
     `,
 
-    async () => {
-      application.database.execute(
+    async (database) => {
+      database.execute(
         sql`
           DROP TABLE "conversationDrafts";
 
@@ -2351,7 +2351,7 @@ export default async (application: Application): Promise<void> => {
         };
       })();
 
-      for (const message of application.database.all<{
+      for (const message of database.all<{
         id: number;
         contentSource: string;
       }>(
@@ -2365,7 +2365,7 @@ export default async (application: Application): Promise<void> => {
         );
         const messageContentPreprocessed =
           contentPreprocessed(messageContentSource);
-        application.database.run(
+        database.run(
           sql`
             UPDATE "messages"
             SET
@@ -2387,9 +2387,9 @@ export default async (application: Application): Promise<void> => {
       UPDATE "invitations" SET "courseRole" = 'course-staff' WHERE "courseRole" = 'staff';
     `,
 
-    async () => {
+    async (database) => {
       const shouldPrompt =
-        application.database.get<{ count: number }>(
+        database.get<{ count: number }>(
           sql`
             SELECT COUNT(*) AS "count" FROM "users"
           `,
@@ -2503,7 +2503,7 @@ export default async (application: Application): Promise<void> => {
         certificate = forge.pki.certificateToPem(forgeCertificate);
       }
 
-      application.database.execute(
+      database.execute(
         sql`
           CREATE TABLE "new_administrationOptions" (
             "id" INTEGER PRIMARY KEY AUTOINCREMENT CHECK ("id" = 1),
@@ -2515,7 +2515,7 @@ export default async (application: Application): Promise<void> => {
         `,
       );
       const administrationOptions =
-        application.database.get<{
+        database.get<{
           userSystemRolesWhoMayCreateCourses: string;
           latestVersion: string;
         }>(
@@ -2529,7 +2529,7 @@ export default async (application: Application): Promise<void> => {
         (() => {
           throw new Error("Failed to get ‘administrationOptions’.");
         })();
-      application.database.run(
+      database.run(
         sql`
           INSERT INTO "new_administrationOptions" (
             "latestVersion",
@@ -2545,7 +2545,7 @@ export default async (application: Application): Promise<void> => {
           )
         `,
       );
-      application.database.execute(
+      database.execute(
         sql`
           DROP TABLE "administrationOptions";
           ALTER TABLE "new_administrationOptions" RENAME TO "administrationOptions";
