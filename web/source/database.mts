@@ -1,5 +1,6 @@
 import path from "node:path";
 import fs from "node:fs/promises";
+import readline from "node:readline/promises";
 import sql, { Database } from "@radically-straightforward/sqlite";
 import html from "@radically-straightforward/html";
 import * as htmlUtilities from "@radically-straightforward/html";
@@ -20,7 +21,6 @@ import { visit as unistUtilVisit } from "unist-util-visit";
 import { toString as hastUtilToString } from "hast-util-to-string";
 import rehypeStringify from "rehype-stringify";
 import { DOMParser } from "linkedom";
-import prompts from "prompts";
 import sharp from "sharp";
 import forge from "node-forge";
 import { Application } from "./index.mjs";
