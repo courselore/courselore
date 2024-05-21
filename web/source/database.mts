@@ -2388,30 +2388,29 @@ export default async (application: Application): Promise<void> => {
           "This update requires that you answer some questions. Please run Courselore interactively (for example, ‘./courselore/courselore ./configuration.mjs’ on the command line) instead of through a service manager (for example, systemd).",
         );
 
+      const readlineInterface = readline.createInterface({
+        input: process.stdin,
+        output: process.stdout,
+      });
+
       let privateKey: string;
       let certificate: string;
       if (
         shouldPrompt &&
-        (
-          await prompts({
-            type: "select",
-            name: "output",
-            message:
-              "This update of Courselore introduces a new system for handling the private key and certificate for SAML and the upcoming LTI support",
-            choices: [
-              {
-                title:
-                  "Let Courselore generate a new private key and certificate (recommended if you haven’t configured SAML yet)",
-              },
-              {
-                title:
-                  "Use an existing private key and certificate (recommended if you already configured SAML and don’t want to rotate the certificate with the Identity Provider)",
-              },
-            ],
-          })
-        ).output === 1
+        (await readlineInterface.question(
+          dedent`
+            This update of Courselore introduces a new system for handling the private key and certificate for SAML and the upcoming LTI support.
+            
+            1. If you haven’t configured SAML yet, then we recommend that you let Courselore generate a new private key and certificate.
+            
+            2. If you have already configured SAML and don’t want to rotate the certificate with the Identity Provider, then you may provide the existing private key and certificate.
+            
+            Choose your option [1/2]:
+          ` + " ",
+        )) === "2"
       ) {
-        console.log(dedent`
+        console.log(
+          dedent`
           Requirements:
 
           • The private key must be RSA.
@@ -2424,19 +2423,15 @@ export default async (application: Application): Promise<void> => {
           For example, you may use the following command:
 
           $ openssl req -x509 -newkey rsa:2048 -nodes -days 365000 -subj "/CN=courselore.org/C=US/ST=Maryland/L=Baltimore/O=Courselore" -keyout private-key.pem -out certificate.pem
-        `);
+        ` + "\n",
+        );
 
         while (true) {
           try {
             privateKey = await fs.readFile(
-              (
-                await prompts({
-                  type: "text",
-                  name: "output",
-                  message:
-                    "Path to the file containing the private key (starts with ‘-----BEGIN PRIVATE KEY-----’)",
-                })
-              ).output,
+              await readlineInterface.question(
+                "Path to the file containing the private key (starts with ‘-----BEGIN PRIVATE KEY-----’): ",
+              ),
               "utf-8",
             );
             forge.pki.privateKeyFromPem(privateKey);
@@ -2449,14 +2444,9 @@ export default async (application: Application): Promise<void> => {
         while (true) {
           try {
             certificate = await fs.readFile(
-              (
-                await prompts({
-                  type: "text",
-                  name: "output",
-                  message:
-                    "Path to the file containing the certificate (starts with ‘-----BEGIN CERTIFICATE-----’)",
-                })
-              ).output,
+              await readlineInterface.question(
+                "Path to the file containing the certificate (starts with ‘-----BEGIN CERTIFICATE-----’): ",
+              ),
               "utf-8",
             );
             forge.pki.certificateFromPem(certificate);
@@ -2539,6 +2529,7 @@ export default async (application: Application): Promise<void> => {
           ALTER TABLE "new_administrationOptions" RENAME TO "administrationOptions";
         `,
       );
+      readlineInterface.close();
     },
 
     sql`
