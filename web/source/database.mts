@@ -2241,6 +2241,7 @@ export default async (application: Application): Promise<void> => {
           .use(
             await (async () => {
               const shikiHighlighter = await shiki.getHighlighter({
+                langs: Object.keys(shiki.bundledLanguages),
                 themes: ["light-plus", "dark-plus"],
               });
               const rehypeParseProcessor = unified().use(rehypeParse, {
