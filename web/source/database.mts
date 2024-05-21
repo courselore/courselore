@@ -965,56 +965,44 @@ export default async (application: Application): Promise<void> => {
     },
 
     async (database) => {
-      const users = database.all<{
-        id: number;
-        email: string;
-        name: string;
-      }>(
-        sql`
-          SELECT "id", "email", "name" FROM "users" ORDER BY "id" ASC
-        `,
-      );
-      if (users.length === 0) return;
+      if (
+        database.get<{ count: number }>(
+          sql`
+            SELECT COUNT(*) AS "count" FROM "users"
+          `,
+        )!.count === 0
+      )
+        return;
       if (!process.stdin.isTTY)
         throw new Error(
-          "This update requires that you answer some prompts. Please run Courselore interactively (for example, ‘./courselore configuration.mjs’ on the command line) instead of through a service manager (for example, systemd).",
+          "This update requires that you answer some questions. Please run Courselore interactively (for example, ‘./courselore/courselore ./configuration.mjs’ on the command line) instead of through a service manager (for example, systemd).",
         );
+      const readlineInterface = readline.createInterface({
+        input: process.stdin,
+        output: process.stdout,
+      });
       while (true) {
-        const user = (
-          await prompts({
-            type: "autocomplete",
-            name: "output",
-            message:
-              "Courselore 4.0.0 introduces an administration interface and the role of system administrators. Please select a user to become the first administrator.",
-            choices: users.map((user) => ({
-              title: `${user.name} <${user.email}>`,
-              value: user,
-            })),
-          })
-        ).output;
-        if (
-          !(
-            await prompts({
-              type: "confirm",
-              name: "output",
-              message: `${user.name} <${user.email}> will become the first administrator. Is this correct?`,
-              initial: true,
-            })
-          ).output
-        )
+        const user = database.get<{
+          id: number;
+        }>(
+          sql`
+            SELECT "id"
+            FROM "users"
+            WHERE "email" = ${await readlineInterface.question("Courselore 4.0.0 introduces an administration interface and the role of system administrators. Please enter the email of an existing user to become a system administrator: ")}
+          `,
+        );
+        if (user === undefined) {
+          console.log("User not found.");
           continue;
+        }
         database.run(
           sql`
             UPDATE "users" SET "systemRole" = 'administrator' WHERE "id" = ${user.id}
           `,
         );
-        await prompts({
-          type: "text",
-          name: "output",
-          message: `${user.name} <${user.email}> has become the first administrator. Press enter to continue...`,
-        });
         break;
       }
+      readlineInterface.close();
     },
 
     (database) => {
@@ -1115,7 +1103,7 @@ export default async (application: Application): Promise<void> => {
               "emailNotificationsForAllMessagesDigestDeliveredAt",
               "emailNotificationsForMentionsAt",
               "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt",
-              "emailNotificationsForMessagesInConversationsYouStartedAt" 
+              "emailNotificationsForMessagesInConversationsYouStartedAt"
             )
             VALUES (
               ${user.id},
@@ -1240,7 +1228,7 @@ export default async (application: Application): Promise<void> => {
             "enrollment" INTEGER NOT NULL REFERENCES "enrollments" ON DELETE CASCADE,
             UNIQUE ("conversation", "enrollment") ON CONFLICT IGNORE
           );
-          
+
           CREATE INDEX "conversationSelectedParticipantsConversationIndex" ON "conversationSelectedParticipants" ("conversation");
           CREATE INDEX "conversationSelectedParticipantsEnrollmentIndex" ON "conversationSelectedParticipants" ("enrollment");
         `,
@@ -1630,7 +1618,7 @@ export default async (application: Application): Promise<void> => {
         "closesAt" TEXT NULL,
         UNIQUE ("course", "reference")
       );
-      
+
       CREATE TABLE "messagePollOptions" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
         "createdAt" TEXT NOT NULL,
@@ -1641,7 +1629,7 @@ export default async (application: Application): Promise<void> => {
         "contentPreprocessed" TEXT NOT NULL,
         UNIQUE ("messagePoll", "reference")
       );
-      
+
       CREATE TABLE "messagePollVotes" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
         "createdAt" TEXT NOT NULL,
@@ -1649,7 +1637,7 @@ export default async (application: Application): Promise<void> => {
         "enrollment" INTEGER NULL REFERENCES "enrollments" ON DELETE SET NULL,
         UNIQUE ("messagePollOption", "enrollment")
       );
-      
+
       ALTER TABLE "courses" ADD COLUMN "studentsMayCreatePollsAt" TEXT NULL;
 
       UPDATE "courses"
@@ -1827,7 +1815,7 @@ export default async (application: Application): Promise<void> => {
       CREATE INDEX "samlCacheCreatedAtIndex" ON "samlCache" ("createdAt");
 
       DELETE FROM "sessions";
-      
+
       ALTER TABLE "sessions" ADD COLUMN "samlIdentifier" TEXT NULL;
       ALTER TABLE "sessions" ADD COLUMN "samlSessionIndex" TEXT NULL;
     `,
@@ -2397,7 +2385,7 @@ export default async (application: Application): Promise<void> => {
 
       if (shouldPrompt && !process.stdin.isTTY)
         throw new Error(
-          "This update requires that you answer some prompts. Please run Courselore interactively (for example, ‘./courselore configuration.mjs’ on the command line) instead of through a service manager (for example, systemd).",
+          "This update requires that you answer some questions. Please run Courselore interactively (for example, ‘./courselore/courselore ./configuration.mjs’ on the command line) instead of through a service manager (for example, systemd).",
         );
 
       let privateKey: string;
