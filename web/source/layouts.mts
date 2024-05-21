@@ -1,3 +1,6 @@
+import css from "@radically-straightforward/css";
+import javascript from "@radically-straightforward/javascript";
+
 css`
   @import "@radically-straightforward/css/static/index.css";
   @import "@radically-straightforward/javascript/static/index.css";
