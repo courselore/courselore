@@ -1,39 +1,3 @@
-CREATE TABLE IF NOT EXISTS "_backgroundJobs" (
-              "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-              "type" TEXT NOT NULL,
-              "startAt" TEXT NOT NULL,
-              "parameters" TEXT NOT NULL,
-              "startedAt" TEXT NULL,
-              "retries" INTEGER NULL
-            ) STRICT;
-CREATE TABLE sqlite_sequence(name,seq);
-CREATE INDEX "_backgroundJobsType" ON "_backgroundJobs" ("type");
-CREATE INDEX "_backgroundJobsStartAt" ON "_backgroundJobs" ("startAt");
-CREATE INDEX "_backgroundJobsStartedAt" ON "_backgroundJobs" ("startedAt");
-CREATE INDEX "_backgroundJobsRetries" ON "_backgroundJobs" ("retries");
-CREATE VIRTUAL TABLE "usersNameSearchIndex" USING fts5(
-        content = "users",
-        content_rowid = "id",
-        "nameSearch",
-        tokenize = 'porter'
-      )
-/* usersNameSearchIndex(nameSearch) */;
-CREATE TABLE IF NOT EXISTS 'usersNameSearchIndex_data'(id INTEGER PRIMARY KEY, block BLOB);
-CREATE TABLE IF NOT EXISTS 'usersNameSearchIndex_idx'(segid, term, pgno, PRIMARY KEY(segid, term)) WITHOUT ROWID;
-CREATE TABLE IF NOT EXISTS 'usersNameSearchIndex_docsize'(id INTEGER PRIMARY KEY, sz BLOB);
-CREATE TABLE IF NOT EXISTS 'usersNameSearchIndex_config'(k PRIMARY KEY, v) WITHOUT ROWID;
-CREATE TABLE IF NOT EXISTS "emailVerifications" (
-        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT NOT NULL,
-        "nonce" TEXT NOT NULL UNIQUE,
-        "user" INTEGER NOT NULL UNIQUE REFERENCES "users" ON DELETE CASCADE
-      );
-CREATE TABLE IF NOT EXISTS "passwordResets" (
-        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT NOT NULL,
-        "nonce" TEXT NOT NULL UNIQUE,
-        "user" INTEGER NOT NULL UNIQUE REFERENCES "users" ON DELETE CASCADE
-      );
 CREATE TABLE IF NOT EXISTS "sessions" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
         "createdAt" TEXT NOT NULL,
