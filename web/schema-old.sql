@@ -66,15 +66,6 @@ CREATE TABLE "likes" (
         UNIQUE ("message", "courseParticipant")
       );
 CREATE INDEX "likesMessageIndex" ON "likes" ("message");
-CREATE TABLE "sendEmailJobs" (
-        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT NOT NULL,
-        "startAt" TEXT NOT NULL,
-        "startedAt" TEXT NULL,
-        "mailOptions" TEXT NOT NULL
-      );
-CREATE INDEX "sendEmailJobsStartAtIndex" ON "sendEmailJobs" ("startAt");
-CREATE INDEX "sendEmailJobsStartedAtIndex" ON "sendEmailJobs" ("startedAt");
 CREATE INDEX "passwordResetsCreatedAtIndex" ON "passwordResets" ("createdAt");
 CREATE INDEX "sessionsCreatedAtIndex" ON "sessions" ("createdAt");
 CREATE TABLE "flashes" (
@@ -86,28 +77,6 @@ CREATE TABLE "flashes" (
       );
 CREATE INDEX "flashesCreatedAtIndex" ON "flashes" ("createdAt");
 CREATE INDEX "emailVerificationsCreatedAtIndex" ON "emailVerifications" ("createdAt");
-CREATE TABLE "emailNotificationMessageJobs" (
-        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT NOT NULL,
-        "startAt" TEXT NOT NULL,
-        "startedAt" TEXT NULL,
-        "message" INTEGER NOT NULL REFERENCES "messages" ON DELETE CASCADE
-      );
-CREATE INDEX "emailNotificationMessageJobsStartAtIndex" ON "emailNotificationMessageJobs" ("startAt");
-CREATE INDEX "emailNotificationMessageJobsStartedAtIndex" ON "emailNotificationMessageJobs" ("startedAt");
-CREATE TABLE "emailNotificationDigestMessages" (
-        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "message" INTEGER NOT NULL REFERENCES "messages" ON DELETE CASCADE,
-        "courseParticipant" INTEGER NOT NULL REFERENCES "courseParticipants" ON DELETE CASCADE,
-        UNIQUE ("message", "courseParticipant") ON CONFLICT IGNORE
-      );
-CREATE TABLE "emailNotificationDigestJobs" (
-        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "startedAt" TEXT NOT NULL,
-        "user" INTEGER NOT NULL UNIQUE REFERENCES "users" ON DELETE CASCADE
-      );
-CREATE INDEX "emailNotificationDigestJobsStartedAtIndex" ON "emailNotificationDigestJobs" ("startedAt");
-CREATE INDEX "emailNotificationDigestJobsUserIndex" ON "emailNotificationDigestJobs" ("user");
 CREATE TABLE "conversations" (
             "id" INTEGER PRIMARY KEY AUTOINCREMENT,
             "createdAt" TEXT NOT NULL,
@@ -286,18 +255,3 @@ CREATE TABLE "administrationOptions" (
             "certificate" TEXT NOT NULL,
             "userSystemRolesWhoMayCreateCourses" TEXT NOT NULL
           );
-CREATE INDEX "sendEmailJobsCreatedAtIndex" ON "sendEmailJobs" ("createdAt");
-CREATE INDEX "emailNotificationMessageJobsCreatedAtIndex" ON "emailNotificationMessageJobs" ("createdAt");
-CREATE TABLE "liveConnectionsMetadata" (
-        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT NOT NULL,
-        "nonce" TEXT NOT NULL UNIQUE,
-        "url" TEXT NOT NULL,
-        "processNumber" INTEGER NULL,
-        "liveUpdateAt" TEXT NULL
-      );
-CREATE INDEX "liveConnectionsMetadataCreatedAtIndex" ON "liveConnectionsMetadata" ("createdAt");
-CREATE INDEX "liveConnectionsMetadataNonceIndex" ON "liveConnectionsMetadata" ("nonce");
-CREATE INDEX "liveConnectionsMetadataURLIndex" ON "liveConnectionsMetadata" ("url");
-CREATE INDEX "liveConnectionsMetadataProcessNumberIndex" ON "liveConnectionsMetadata" ("processNumber");
-CREATE INDEX "liveConnectionsMetadataLiveUpdateAtIndex" ON "liveConnectionsMetadata" ("liveUpdateAt");
