@@ -3,23 +3,15 @@ CREATE VIRTUAL TABLE "conversationsReferenceIndex" USING fts5(
         content_rowid = "id",
         "reference",
         tokenize = 'porter'
-      )
-/* conversationsReferenceIndex(reference) */;
-CREATE TABLE 'conversationsReferenceIndex_data'(id INTEGER PRIMARY KEY, block BLOB);
-CREATE TABLE 'conversationsReferenceIndex_idx'(segid, term, pgno, PRIMARY KEY(segid, term)) WITHOUT ROWID;
-CREATE TABLE 'conversationsReferenceIndex_docsize'(id INTEGER PRIMARY KEY, sz BLOB);
-CREATE TABLE 'conversationsReferenceIndex_config'(k PRIMARY KEY, v) WITHOUT ROWID;
+      );
 CREATE VIRTUAL TABLE "conversationsTitleSearchIndex" USING fts5(
         content = "conversations",
         content_rowid = "id",
         "titleSearch",
         tokenize = 'porter'
-      )
-/* conversationsTitleSearchIndex(titleSearch) */;
-CREATE TABLE 'conversationsTitleSearchIndex_data'(id INTEGER PRIMARY KEY, block BLOB);
-CREATE TABLE 'conversationsTitleSearchIndex_idx'(segid, term, pgno, PRIMARY KEY(segid, term)) WITHOUT ROWID;
-CREATE TABLE 'conversationsTitleSearchIndex_docsize'(id INTEGER PRIMARY KEY, sz BLOB);
-CREATE TABLE 'conversationsTitleSearchIndex_config'(k PRIMARY KEY, v) WITHOUT ROWID;
+      );
+
+
 CREATE TABLE "taggings" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
         "createdAt" TEXT NOT NULL,
@@ -29,28 +21,20 @@ CREATE TABLE "taggings" (
       );
 CREATE INDEX "taggingsConversationIndex" ON "taggings" ("conversation");
 CREATE INDEX "taggingsTagIndex" ON "taggings" ("tag");
+
 CREATE VIRTUAL TABLE "messagesReferenceIndex" USING fts5(
         content = "messages",
         content_rowid = "id",
         "reference",
         tokenize = 'porter'
-      )
-/* messagesReferenceIndex(reference) */;
-CREATE TABLE 'messagesReferenceIndex_data'(id INTEGER PRIMARY KEY, block BLOB);
-CREATE TABLE 'messagesReferenceIndex_idx'(segid, term, pgno, PRIMARY KEY(segid, term)) WITHOUT ROWID;
-CREATE TABLE 'messagesReferenceIndex_docsize'(id INTEGER PRIMARY KEY, sz BLOB);
-CREATE TABLE 'messagesReferenceIndex_config'(k PRIMARY KEY, v) WITHOUT ROWID;
+      );
 CREATE VIRTUAL TABLE "messagesContentSearchIndex" USING fts5(
         content = "messages",
         content_rowid = "id",
         "contentSearch",
         tokenize = 'porter'
-      )
-/* messagesContentSearchIndex(contentSearch) */;
-CREATE TABLE 'messagesContentSearchIndex_data'(id INTEGER PRIMARY KEY, block BLOB);
-CREATE TABLE 'messagesContentSearchIndex_idx'(segid, term, pgno, PRIMARY KEY(segid, term)) WITHOUT ROWID;
-CREATE TABLE 'messagesContentSearchIndex_docsize'(id INTEGER PRIMARY KEY, sz BLOB);
-CREATE TABLE 'messagesContentSearchIndex_config'(k PRIMARY KEY, v) WITHOUT ROWID;
+      );
+
 CREATE TABLE "readings" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
         "createdAt" TEXT NOT NULL,
@@ -58,6 +42,7 @@ CREATE TABLE "readings" (
         "courseParticipant" INTEGER NOT NULL REFERENCES "courseParticipants" ON DELETE CASCADE,
         UNIQUE ("message", "courseParticipant") ON CONFLICT IGNORE
       );
+
 CREATE TABLE "emailNotificationDeliveries" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
         "createdAt" TEXT NOT NULL,
