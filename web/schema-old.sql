@@ -1,45 +1,3 @@
-CREATE TABLE IF NOT EXISTS "sessions" (
-        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT NOT NULL,
-        "token" TEXT NOT NULL UNIQUE,
-        "user" INTEGER NOT NULL REFERENCES "users" ON DELETE CASCADE
-      , "samlIdentifier" TEXT NULL, "samlSessionIndex" TEXT NULL, "samlNameID" TEXT NULL);
-CREATE TABLE IF NOT EXISTS "courses" (
-        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT NOT NULL,
-        "reference" TEXT NOT NULL UNIQUE,
-        "name" TEXT NOT NULL,
-        "year" TEXT NULL,
-        "term" TEXT NULL,
-        "institution" TEXT NULL,
-        "code" TEXT NULL,
-        "nextConversationReference" INTEGER NOT NULL
-      , "archivedAt" TEXT NULL, "studentsMayCreatePollsAt" TEXT NULL, "aiTeachingAssistantAPIKey" TEXT NULL);
-CREATE TABLE IF NOT EXISTS "invitations" (
-        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT NOT NULL,
-        "expiresAt" TEXT NULL,
-        "usedAt" TEXT NULL,
-        "course" INTEGER NOT NULL REFERENCES "courses" ON DELETE CASCADE,
-        "reference" TEXT NOT NULL,
-        "email" TEXT NULL,
-        "name" TEXT NULL,
-        "courseRole" TEXT NOT NULL,
-        UNIQUE ("course", "reference")
-      );
-CREATE INDEX "invitationsCourseIndex" ON "invitations" ("course");
-CREATE INDEX "invitationsEmailIndex" ON "invitations" ("email");
-CREATE TABLE IF NOT EXISTS "courseParticipants" (
-        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT NOT NULL,
-        "user" INTEGER NOT NULL REFERENCES "users" ON DELETE CASCADE,
-        "course" INTEGER NOT NULL REFERENCES "courses" ON DELETE CASCADE,
-        "reference" TEXT NOT NULL,
-        "courseRole" TEXT NOT NULL,
-        "accentColor" TEXT NOT NULL, "mostRecentlyVisitedConversation" INTEGER NULL REFERENCES "conversations" ON DELETE SET NULL,
-        UNIQUE ("user", "course"),
-        UNIQUE ("course", "reference")
-      );
 CREATE VIRTUAL TABLE "conversationsReferenceIndex" USING fts5(
         content = "conversations",
         content_rowid = "id",
@@ -47,10 +5,10 @@ CREATE VIRTUAL TABLE "conversationsReferenceIndex" USING fts5(
         tokenize = 'porter'
       )
 /* conversationsReferenceIndex(reference) */;
-CREATE TABLE IF NOT EXISTS 'conversationsReferenceIndex_data'(id INTEGER PRIMARY KEY, block BLOB);
-CREATE TABLE IF NOT EXISTS 'conversationsReferenceIndex_idx'(segid, term, pgno, PRIMARY KEY(segid, term)) WITHOUT ROWID;
-CREATE TABLE IF NOT EXISTS 'conversationsReferenceIndex_docsize'(id INTEGER PRIMARY KEY, sz BLOB);
-CREATE TABLE IF NOT EXISTS 'conversationsReferenceIndex_config'(k PRIMARY KEY, v) WITHOUT ROWID;
+CREATE TABLE 'conversationsReferenceIndex_data'(id INTEGER PRIMARY KEY, block BLOB);
+CREATE TABLE 'conversationsReferenceIndex_idx'(segid, term, pgno, PRIMARY KEY(segid, term)) WITHOUT ROWID;
+CREATE TABLE 'conversationsReferenceIndex_docsize'(id INTEGER PRIMARY KEY, sz BLOB);
+CREATE TABLE 'conversationsReferenceIndex_config'(k PRIMARY KEY, v) WITHOUT ROWID;
 CREATE VIRTUAL TABLE "conversationsTitleSearchIndex" USING fts5(
         content = "conversations",
         content_rowid = "id",
@@ -58,11 +16,11 @@ CREATE VIRTUAL TABLE "conversationsTitleSearchIndex" USING fts5(
         tokenize = 'porter'
       )
 /* conversationsTitleSearchIndex(titleSearch) */;
-CREATE TABLE IF NOT EXISTS 'conversationsTitleSearchIndex_data'(id INTEGER PRIMARY KEY, block BLOB);
-CREATE TABLE IF NOT EXISTS 'conversationsTitleSearchIndex_idx'(segid, term, pgno, PRIMARY KEY(segid, term)) WITHOUT ROWID;
-CREATE TABLE IF NOT EXISTS 'conversationsTitleSearchIndex_docsize'(id INTEGER PRIMARY KEY, sz BLOB);
-CREATE TABLE IF NOT EXISTS 'conversationsTitleSearchIndex_config'(k PRIMARY KEY, v) WITHOUT ROWID;
-CREATE TABLE IF NOT EXISTS "taggings" (
+CREATE TABLE 'conversationsTitleSearchIndex_data'(id INTEGER PRIMARY KEY, block BLOB);
+CREATE TABLE 'conversationsTitleSearchIndex_idx'(segid, term, pgno, PRIMARY KEY(segid, term)) WITHOUT ROWID;
+CREATE TABLE 'conversationsTitleSearchIndex_docsize'(id INTEGER PRIMARY KEY, sz BLOB);
+CREATE TABLE 'conversationsTitleSearchIndex_config'(k PRIMARY KEY, v) WITHOUT ROWID;
+CREATE TABLE "taggings" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
         "createdAt" TEXT NOT NULL,
         "conversation" INTEGER NOT NULL REFERENCES "conversations" ON DELETE CASCADE,
@@ -78,10 +36,10 @@ CREATE VIRTUAL TABLE "messagesReferenceIndex" USING fts5(
         tokenize = 'porter'
       )
 /* messagesReferenceIndex(reference) */;
-CREATE TABLE IF NOT EXISTS 'messagesReferenceIndex_data'(id INTEGER PRIMARY KEY, block BLOB);
-CREATE TABLE IF NOT EXISTS 'messagesReferenceIndex_idx'(segid, term, pgno, PRIMARY KEY(segid, term)) WITHOUT ROWID;
-CREATE TABLE IF NOT EXISTS 'messagesReferenceIndex_docsize'(id INTEGER PRIMARY KEY, sz BLOB);
-CREATE TABLE IF NOT EXISTS 'messagesReferenceIndex_config'(k PRIMARY KEY, v) WITHOUT ROWID;
+CREATE TABLE 'messagesReferenceIndex_data'(id INTEGER PRIMARY KEY, block BLOB);
+CREATE TABLE 'messagesReferenceIndex_idx'(segid, term, pgno, PRIMARY KEY(segid, term)) WITHOUT ROWID;
+CREATE TABLE 'messagesReferenceIndex_docsize'(id INTEGER PRIMARY KEY, sz BLOB);
+CREATE TABLE 'messagesReferenceIndex_config'(k PRIMARY KEY, v) WITHOUT ROWID;
 CREATE VIRTUAL TABLE "messagesContentSearchIndex" USING fts5(
         content = "messages",
         content_rowid = "id",
@@ -89,25 +47,25 @@ CREATE VIRTUAL TABLE "messagesContentSearchIndex" USING fts5(
         tokenize = 'porter'
       )
 /* messagesContentSearchIndex(contentSearch) */;
-CREATE TABLE IF NOT EXISTS 'messagesContentSearchIndex_data'(id INTEGER PRIMARY KEY, block BLOB);
-CREATE TABLE IF NOT EXISTS 'messagesContentSearchIndex_idx'(segid, term, pgno, PRIMARY KEY(segid, term)) WITHOUT ROWID;
-CREATE TABLE IF NOT EXISTS 'messagesContentSearchIndex_docsize'(id INTEGER PRIMARY KEY, sz BLOB);
-CREATE TABLE IF NOT EXISTS 'messagesContentSearchIndex_config'(k PRIMARY KEY, v) WITHOUT ROWID;
-CREATE TABLE IF NOT EXISTS "readings" (
+CREATE TABLE 'messagesContentSearchIndex_data'(id INTEGER PRIMARY KEY, block BLOB);
+CREATE TABLE 'messagesContentSearchIndex_idx'(segid, term, pgno, PRIMARY KEY(segid, term)) WITHOUT ROWID;
+CREATE TABLE 'messagesContentSearchIndex_docsize'(id INTEGER PRIMARY KEY, sz BLOB);
+CREATE TABLE 'messagesContentSearchIndex_config'(k PRIMARY KEY, v) WITHOUT ROWID;
+CREATE TABLE "readings" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
         "createdAt" TEXT NOT NULL,
         "message" INTEGER NOT NULL REFERENCES "messages" ON DELETE CASCADE,
         "courseParticipant" INTEGER NOT NULL REFERENCES "courseParticipants" ON DELETE CASCADE,
         UNIQUE ("message", "courseParticipant") ON CONFLICT IGNORE
       );
-CREATE TABLE IF NOT EXISTS "emailNotificationDeliveries" (
+CREATE TABLE "emailNotificationDeliveries" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
         "createdAt" TEXT NOT NULL,
         "message" INTEGER NOT NULL REFERENCES "messages" ON DELETE CASCADE,
         "courseParticipant" INTEGER NOT NULL REFERENCES "courseParticipants" ON DELETE CASCADE,
         UNIQUE ("message", "courseParticipant") ON CONFLICT IGNORE
       );
-CREATE TABLE IF NOT EXISTS "endorsements" (
+CREATE TABLE "endorsements" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
         "createdAt" TEXT NOT NULL,
         "message" INTEGER NOT NULL REFERENCES "messages" ON DELETE CASCADE,
@@ -115,7 +73,7 @@ CREATE TABLE IF NOT EXISTS "endorsements" (
         UNIQUE ("message", "courseParticipant")
       );
 CREATE INDEX "endorsementsMessageIndex" ON "endorsements" ("message");
-CREATE TABLE IF NOT EXISTS "likes" (
+CREATE TABLE "likes" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
         "createdAt" TEXT NOT NULL,
         "message" INTEGER NOT NULL REFERENCES "messages" ON DELETE CASCADE,
@@ -123,7 +81,7 @@ CREATE TABLE IF NOT EXISTS "likes" (
         UNIQUE ("message", "courseParticipant")
       );
 CREATE INDEX "likesMessageIndex" ON "likes" ("message");
-CREATE TABLE IF NOT EXISTS "sendEmailJobs" (
+CREATE TABLE "sendEmailJobs" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
         "createdAt" TEXT NOT NULL,
         "startAt" TEXT NOT NULL,
@@ -134,7 +92,7 @@ CREATE INDEX "sendEmailJobsStartAtIndex" ON "sendEmailJobs" ("startAt");
 CREATE INDEX "sendEmailJobsStartedAtIndex" ON "sendEmailJobs" ("startedAt");
 CREATE INDEX "passwordResetsCreatedAtIndex" ON "passwordResets" ("createdAt");
 CREATE INDEX "sessionsCreatedAtIndex" ON "sessions" ("createdAt");
-CREATE TABLE IF NOT EXISTS "flashes" (
+CREATE TABLE "flashes" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
         "createdAt" TEXT NOT NULL,
         "nonce" TEXT NOT NULL UNIQUE,
@@ -143,7 +101,7 @@ CREATE TABLE IF NOT EXISTS "flashes" (
       );
 CREATE INDEX "flashesCreatedAtIndex" ON "flashes" ("createdAt");
 CREATE INDEX "emailVerificationsCreatedAtIndex" ON "emailVerifications" ("createdAt");
-CREATE TABLE IF NOT EXISTS "emailNotificationMessageJobs" (
+CREATE TABLE "emailNotificationMessageJobs" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
         "createdAt" TEXT NOT NULL,
         "startAt" TEXT NOT NULL,
@@ -152,20 +110,20 @@ CREATE TABLE IF NOT EXISTS "emailNotificationMessageJobs" (
       );
 CREATE INDEX "emailNotificationMessageJobsStartAtIndex" ON "emailNotificationMessageJobs" ("startAt");
 CREATE INDEX "emailNotificationMessageJobsStartedAtIndex" ON "emailNotificationMessageJobs" ("startedAt");
-CREATE TABLE IF NOT EXISTS "emailNotificationDigestMessages" (
+CREATE TABLE "emailNotificationDigestMessages" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
         "message" INTEGER NOT NULL REFERENCES "messages" ON DELETE CASCADE,
         "courseParticipant" INTEGER NOT NULL REFERENCES "courseParticipants" ON DELETE CASCADE,
         UNIQUE ("message", "courseParticipant") ON CONFLICT IGNORE
       );
-CREATE TABLE IF NOT EXISTS "emailNotificationDigestJobs" (
+CREATE TABLE "emailNotificationDigestJobs" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
         "startedAt" TEXT NOT NULL,
         "user" INTEGER NOT NULL UNIQUE REFERENCES "users" ON DELETE CASCADE
       );
 CREATE INDEX "emailNotificationDigestJobsStartedAtIndex" ON "emailNotificationDigestJobs" ("startedAt");
 CREATE INDEX "emailNotificationDigestJobsUserIndex" ON "emailNotificationDigestJobs" ("user");
-CREATE TABLE IF NOT EXISTS "conversations" (
+CREATE TABLE "conversations" (
             "id" INTEGER PRIMARY KEY AUTOINCREMENT,
             "createdAt" TEXT NOT NULL,
             "updatedAt" TEXT NULL,
@@ -182,7 +140,7 @@ CREATE TABLE IF NOT EXISTS "conversations" (
             "nextMessageReference" INTEGER NOT NULL, "announcementAt" TEXT NULL, "aiTeachingAssistantChatId" TEXT NULL,
             UNIQUE ("course", "reference")
           );
-CREATE TABLE IF NOT EXISTS "conversationSelectedParticipants" (
+CREATE TABLE "conversationSelectedParticipants" (
             "id" INTEGER PRIMARY KEY AUTOINCREMENT,
             "createdAt" TEXT NOT NULL,
             "conversation" INTEGER NOT NULL REFERENCES "conversations" ON DELETE CASCADE,
@@ -217,7 +175,7 @@ CREATE TRIGGER "conversationsTitleSearchIndexDelete" AFTER DELETE ON "conversati
           END;
 CREATE INDEX "sessionsTokenIndex" ON "sessions" ("token");
 CREATE INDEX "sessionsUserIndex" ON "sessions" ("user");
-CREATE TABLE IF NOT EXISTS "messageDrafts" (
+CREATE TABLE "messageDrafts" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
         "createdAt" TEXT NOT NULL,
         "conversation" INTEGER NOT NULL REFERENCES "conversations" ON DELETE CASCADE,
@@ -225,7 +183,7 @@ CREATE TABLE IF NOT EXISTS "messageDrafts" (
         "contentSource" TEXT NOT NULL,
         UNIQUE ("conversation", "authorCourseParticipant") ON CONFLICT REPLACE
       );
-CREATE TABLE IF NOT EXISTS "tags" (
+CREATE TABLE "tags" (
             "id" INTEGER PRIMARY KEY AUTOINCREMENT,
             "createdAt" TEXT NOT NULL,
             "course" INTEGER NOT NULL REFERENCES "courses" ON DELETE CASCADE,
@@ -236,7 +194,7 @@ CREATE TABLE IF NOT EXISTS "tags" (
             UNIQUE ("course", "reference")
           );
 CREATE INDEX "tagsCourseIndex" ON "tags" ("course");
-CREATE TABLE IF NOT EXISTS "messagePolls" (
+CREATE TABLE "messagePolls" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
         "createdAt" TEXT NOT NULL,
         "course" INTEGER NOT NULL REFERENCES "courses" ON DELETE CASCADE,
@@ -246,7 +204,7 @@ CREATE TABLE IF NOT EXISTS "messagePolls" (
         "closesAt" TEXT NULL,
         UNIQUE ("course", "reference")
       );
-CREATE TABLE IF NOT EXISTS "messagePollOptions" (
+CREATE TABLE "messagePollOptions" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
         "createdAt" TEXT NOT NULL,
         "messagePoll" INTEGER NOT NULL REFERENCES "messagePolls" ON DELETE CASCADE,
@@ -256,14 +214,14 @@ CREATE TABLE IF NOT EXISTS "messagePollOptions" (
         "contentPreprocessed" TEXT NOT NULL,
         UNIQUE ("messagePoll", "reference")
       );
-CREATE TABLE IF NOT EXISTS "messagePollVotes" (
+CREATE TABLE "messagePollVotes" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
         "createdAt" TEXT NOT NULL,
         "messagePollOption" INTEGER NOT NULL REFERENCES "messagePollOptions" ON DELETE CASCADE,
         "courseParticipant" INTEGER NULL REFERENCES "courseParticipants" ON DELETE SET NULL,
         UNIQUE ("messagePollOption", "courseParticipant")
       );
-CREATE TABLE IF NOT EXISTS "samlCache" (
+CREATE TABLE "samlCache" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
         "createdAt" TEXT NOT NULL,
         "samlIdentifier" TEXT NOT NULL,
@@ -271,7 +229,7 @@ CREATE TABLE IF NOT EXISTS "samlCache" (
         "value" TEXT NOT NULL
       );
 CREATE INDEX "samlCacheCreatedAtIndex" ON "samlCache" ("createdAt");
-CREATE TABLE IF NOT EXISTS "users" (
+CREATE TABLE "users" (
             "id" INTEGER PRIMARY KEY AUTOINCREMENT,
             "createdAt" TEXT NOT NULL,
             "lastSeenOnlineAt" TEXT NOT NULL,
@@ -296,7 +254,7 @@ CREATE TABLE IF NOT EXISTS "users" (
             "preferAnonymousAt" TEXT NULL,
             "latestNewsVersion" TEXT NOT NULL
           , "mostRecentlyVisitedCourseParticipant" INTEGER NULL REFERENCES "courseParticipants" ON DELETE SET NULL, "agreedToAITeachingAssistantAt" TEXT NULL);
-CREATE TABLE IF NOT EXISTS "messages" (
+CREATE TABLE "messages" (
             "id" INTEGER PRIMARY KEY AUTOINCREMENT,
             "createdAt" TEXT NOT NULL,
             "updatedAt" TEXT NULL,
@@ -336,7 +294,7 @@ CREATE INDEX "courseParticipantsUserIndex" ON "courseParticipants" ("user");
 CREATE INDEX "courseParticipantsCourseIndex" ON "courseParticipants" ("course");
 CREATE INDEX "emailNotificationDigestMessagesCourseParticipantIndex" ON "emailNotificationDigestMessages" ("courseParticipant");
 CREATE INDEX "conversationSelectedParticipantsCourseParticipantIndex" ON "conversationSelectedParticipants" ("courseParticipant");
-CREATE TABLE IF NOT EXISTS "administrationOptions" (
+CREATE TABLE "administrationOptions" (
             "id" INTEGER PRIMARY KEY AUTOINCREMENT CHECK ("id" = 1),
             "latestVersion" TEXT NOT NULL,
             "privateKey" TEXT NOT NULL,
@@ -345,7 +303,7 @@ CREATE TABLE IF NOT EXISTS "administrationOptions" (
           );
 CREATE INDEX "sendEmailJobsCreatedAtIndex" ON "sendEmailJobs" ("createdAt");
 CREATE INDEX "emailNotificationMessageJobsCreatedAtIndex" ON "emailNotificationMessageJobs" ("createdAt");
-CREATE TABLE IF NOT EXISTS "liveConnectionsMetadata" (
+CREATE TABLE "liveConnectionsMetadata" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
         "createdAt" TEXT NOT NULL,
         "nonce" TEXT NOT NULL UNIQUE,
