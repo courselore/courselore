@@ -296,16 +296,6 @@ CREATE TABLE IF NOT EXISTS "users" (
             "preferAnonymousAt" TEXT NULL,
             "latestNewsVersion" TEXT NOT NULL
           , "mostRecentlyVisitedCourseParticipant" INTEGER NULL REFERENCES "courseParticipants" ON DELETE SET NULL, "agreedToAITeachingAssistantAt" TEXT NULL);
-CREATE TRIGGER "usersNameSearchIndexInsert" AFTER INSERT ON "users" BEGIN
-            INSERT INTO "usersNameSearchIndex" ("rowid", "nameSearch") VALUES ("new"."id", "new"."nameSearch");
-          END;
-CREATE TRIGGER "usersNameSearchIndexUpdate" AFTER UPDATE ON "users" BEGIN
-            INSERT INTO "usersNameSearchIndex" ("usersNameSearchIndex", "rowid", "nameSearch") VALUES ('delete', "old"."id", "old"."nameSearch");
-            INSERT INTO "usersNameSearchIndex" ("rowid", "nameSearch") VALUES ("new"."id", "new"."nameSearch");
-          END;
-CREATE TRIGGER "usersNameSearchIndexDelete" AFTER DELETE ON "users" BEGIN
-            INSERT INTO "usersNameSearchIndex" ("usersNameSearchIndex", "rowid", "nameSearch") VALUES ('delete', "old"."id", "old"."nameSearch");
-          END;
 CREATE TABLE IF NOT EXISTS "messages" (
             "id" INTEGER PRIMARY KEY AUTOINCREMENT,
             "createdAt" TEXT NOT NULL,
