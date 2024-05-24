@@ -143,7 +143,7 @@ create trigger "search_courseConversations_titleSearch_delete" after delete on "
 end;
 
 alter table "conversationSelectedParticipants" rename to "old_conversationSelectedParticipants";
-create table "courseConversationSelectedParticipants" (
+create table "courseConversationParticipations" (
   "identifier" integer primary key autoincrement,
   "courseConversation" integer not null references "courseConversations" on delete cascade,
   "courseParticipation" integer not null references "courseParticipations" on delete cascade,
