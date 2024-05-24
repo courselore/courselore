@@ -53,18 +53,3 @@ create table "messagePollVotes" (
         "courseParticipant" integer null references "courseParticipants" on delete set null,
         unique ("messagePollOption", "courseParticipant")
       ) strict;
-create table "messages" (
-            "identifier" integer primary key autoincrement,
-            "createdAt" text not null,
-            "updatedAt" text null,
-            "conversation" integer not null references "conversations" on delete cascade,
-            "reference" text not null,
-            "authorCourseParticipant" integer null references "courseParticipants" on delete set null,
-            "anonymousAt" text null,
-            "type" text not null,
-            "contentSource" text not null,
-            "contentPreprocessed" text not null,
-            "contentSearch" text not null, "authorAITeachingAssistantAt" text null,
-            unique ("conversation", "reference")
-          ) strict;
-          -- FTS on "reference" and "contentSearch"

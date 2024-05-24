@@ -100,8 +100,8 @@ end;
 create table "userSessions" (
   "identifier" integer primary key autoincrement,
   "externalIdentifier" text not null unique,
-  "createdAt" text not null,
   "user" integer not null references "users" on delete cascade,
+  "createdAt" text not null,
   "samlIdentifier" text null,
   "samlSessionIndex" text null,
   "samlNameID" text null
@@ -138,8 +138,8 @@ create table "courses" (
 create table "courseInvitationEmails" (
   "identifier" integer primary key autoincrement,
   "externalIdentifier" text not null unique,
-  "createdAt" text not null,
   "course" integer not null references "courses" on delete cascade,
+  "createdAt" text not null,
   "email" text not null,
   "courseRole" text not null
 ) strict;
@@ -161,7 +161,7 @@ create table "courseParticipations" (
 
 create table "courseConversations" (
   "identifier" integer primary key autoincrement,
-  "externalIdentifier" text not null unique,
+  "externalIdentifier" text not null,
   "course" integer not null references "courses" on delete cascade,
   "createdAt" text not null,
   "updatedAt" text null,
@@ -244,6 +244,51 @@ create table "courseConversationMessageDrafts" (
   "contentSource" text not null,
   unique ("courseConversation", "createdBy")
 ) strict;
+
+create table "courseConversationMessages" (
+  "identifier" integer primary key autoincrement,
+  "externalIdentifier" text not null,
+  "courseConversation" integer not null references "courseConversations" on delete cascade,
+  "createdAt" text not null,
+  "updatedAt" text null,
+  "createdBy" integer null references "courseParticipations" on delete set null,
+  "type" text not null,
+  "anonymous" integer not null,
+  "contentSource" text not null,
+  "contentPreprocessed" text not null,
+  "contentSearch" text not null,
+  unique ("courseConversation", "externalIdentifier")
+) strict;
+create virtual table "search_courseConversationMessages_externalIdentifier" using fts5(
+  content = "courseConversationMessages",
+  content_rowid = "identifier",
+  "externalIdentifier",
+  tokenize = 'porter'
+);
+create trigger "search_courseConversationMessages_externalIdentifier_insert" after insert on "courseConversationMessages" begin
+  insert into "search_courseConversationMessages_externalIdentifier" ("rowid", "externalIdentifier") values ("new"."identifier", "new"."externalIdentifier");
+end;
+create trigger "search_courseConversationMessages_externalIdentifier_update" after update on "courseConversationMessages" begin
+  update "search_courseConversationMessages_externalIdentifier" set "externalIdentifier" = "new"."externalIdentifier" where "rowid" = "old"."identifier";
+end;
+create trigger "search_courseConversationMessages_externalIdentifier_delete" after delete on "courseConversationMessages" begin
+  delete from "search_courseConversationMessages_externalIdentifier" where "rowid" = "old"."identifier";
+end;
+create virtual table "search_courseConversationMessages_contentSearch" using fts5(
+  content = "courseConversationMessages",
+  content_rowid = "identifier",
+  "contentSearch",
+  tokenize = 'porter'
+);
+create trigger "search_courseConversationMessages_contentSearch_insert" after insert on "courseConversationMessages" begin
+  insert into "search_courseConversationMessages_contentSearch" ("rowid", "contentSearch") values ("new"."identifier", "new"."contentSearch");
+end;
+create trigger "search_courseConversationMessages_contentSearch_update" after update on "courseConversationMessages" begin
+  update "search_courseConversationMessages_contentSearch" set "contentSearch" = "new"."contentSearch" where "rowid" = "old"."identifier";
+end;
+create trigger "search_courseConversationMessages_contentSearch_delete" after delete on "courseConversationMessages" begin
+  delete from "search_courseConversationMessages_contentSearch" where "rowid" = "old"."identifier";
+end;
 
 -------------------------------------------------------------------------------
 
