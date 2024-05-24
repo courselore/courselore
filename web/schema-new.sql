@@ -164,8 +164,9 @@ create table "courseConversations" (
   "externalIdentifier" text not null,
   "course" integer not null references "courses" on delete cascade,
   "createdAt" text not null,
-  "updatedAt" text null,
-  "createdBy" integer null references "courseParticipations" on delete set null,
+  "courseStaffUpdatedAt" text null,
+  "studentsUpdatedAt" text null,
+  "createdByCourseParticipation" integer null references "courseParticipations" on delete set null,
   "pinned" integer not null,
   "type" text not null,
   "resolved" integer not null,
@@ -178,7 +179,8 @@ create table "courseConversations" (
 ) strict;
 create index "index_courseConversations_course" on "courseConversations" ("course");
 create index "index_courseConversations_createdAt" on "courseConversations" ("createdAt");
-create index "index_courseConversations_updatedAt" on "courseConversations" ("updatedAt");
+create index "index_courseConversations_courseStaffUpdatedAt" on "courseConversations" ("courseStaffUpdatedAt");
+create index "index_courseConversations_studentsUpdatedAt" on "courseConversations" ("studentsUpdatedAt");
 create index "index_courseConversations_pinned" on "courseConversations" ("pinned");
 create index "index_courseConversations_type" on "courseConversations" ("type");
 create index "index_courseConversations_resolved" on "courseConversations" ("resolved");
@@ -240,9 +242,9 @@ create table "courseConversationTaggings" (
 create table "courseConversationMessageDrafts" (
   "identifier" integer primary key autoincrement,
   "courseConversation" integer not null references "courseConversations" on delete cascade,
-  "createdBy" integer not null references "courseParticipations" on delete cascade,
+  "createdByCourseParticipation" integer not null references "courseParticipations" on delete cascade,
   "contentSource" text not null,
-  unique ("courseConversation", "createdBy")
+  unique ("courseConversation", "createdByCourseParticipation")
 ) strict;
 
 create table "courseConversationMessages" (
@@ -251,7 +253,7 @@ create table "courseConversationMessages" (
   "courseConversation" integer not null references "courseConversations" on delete cascade,
   "createdAt" text not null,
   "updatedAt" text null,
-  "createdBy" integer null references "courseParticipations" on delete set null,
+  "createdByCourseParticipation" integer null references "courseParticipations" on delete set null,
   "type" text not null,
   "anonymous" integer not null,
   "contentSource" text not null,
