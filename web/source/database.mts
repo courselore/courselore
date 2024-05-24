@@ -2904,7 +2904,7 @@ export default async (application: Application): Promise<void> => {
             unique ("courseConversationMessage", "courseParticipation")
           ) strict;
           
-          create table "likes" (
+          create table "courseConversationMessageLikes" (
             "identifier" integer primary key autoincrement,
             "courseConversationMessage" integer not null references "courseConversationMessages" on delete cascade,
             "courseParticipation" integer not null references "courseParticipations" on delete cascade,
