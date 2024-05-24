@@ -1,208 +1,134 @@
-CREATE TABLE "taggings" (
-        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT NOT NULL,
-        "conversation" INTEGER NOT NULL REFERENCES "conversations" ON DELETE CASCADE,
-        "tag" INTEGER NOT NULL REFERENCES "tags" ON DELETE CASCADE,
-        UNIQUE ("conversation", "tag")
-      );
-CREATE INDEX "taggingsConversationIndex" ON "taggings" ("conversation");
-CREATE INDEX "taggingsTagIndex" ON "taggings" ("tag");
-
-CREATE VIRTUAL TABLE "messagesReferenceIndex" USING fts5(
-        content = "messages",
-        content_rowid = "id",
-        "reference",
-        tokenize = 'porter'
-      );
-CREATE VIRTUAL TABLE "messagesContentSearchIndex" USING fts5(
-        content = "messages",
-        content_rowid = "id",
-        "contentSearch",
-        tokenize = 'porter'
-      );
-
-CREATE TABLE "readings" (
-        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT NOT NULL,
-        "message" INTEGER NOT NULL REFERENCES "messages" ON DELETE CASCADE,
-        "courseParticipant" INTEGER NOT NULL REFERENCES "courseParticipants" ON DELETE CASCADE,
-        UNIQUE ("message", "courseParticipant") ON CONFLICT IGNORE
-      );
-
-CREATE TABLE "emailNotificationDeliveries" (
-        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT NOT NULL,
-        "message" INTEGER NOT NULL REFERENCES "messages" ON DELETE CASCADE,
-        "courseParticipant" INTEGER NOT NULL REFERENCES "courseParticipants" ON DELETE CASCADE,
-        UNIQUE ("message", "courseParticipant") ON CONFLICT IGNORE
-      );
-CREATE TABLE "endorsements" (
-        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT NOT NULL,
-        "message" INTEGER NOT NULL REFERENCES "messages" ON DELETE CASCADE,
-        "courseParticipant" INTEGER NULL REFERENCES "courseParticipants" ON DELETE SET NULL,
-        UNIQUE ("message", "courseParticipant")
-      );
-CREATE INDEX "endorsementsMessageIndex" ON "endorsements" ("message");
-CREATE TABLE "likes" (
-        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT NOT NULL,
-        "message" INTEGER NOT NULL REFERENCES "messages" ON DELETE CASCADE,
-        "courseParticipant" INTEGER NULL REFERENCES "courseParticipants" ON DELETE SET NULL,
-        UNIQUE ("message", "courseParticipant")
-      );
-CREATE INDEX "likesMessageIndex" ON "likes" ("message");
-CREATE INDEX "conversationSelectedParticipantsConversationIndex" ON "conversationSelectedParticipants" ("conversation");
-CREATE INDEX "conversationsCourseIndex" ON "conversations" ("course");
-CREATE TRIGGER "conversationsReferenceIndexInsert" AFTER INSERT ON "conversations" BEGIN
-            INSERT INTO "conversationsReferenceIndex" ("rowid", "reference") VALUES ("new"."id", "new"."reference");
-          END;
-CREATE TRIGGER "conversationsReferenceIndexUpdate" AFTER UPDATE ON "conversations" BEGIN
-            INSERT INTO "conversationsReferenceIndex" ("conversationsReferenceIndex", "rowid", "reference") VALUES ('delete', "old"."id", "old"."reference");
-            INSERT INTO "conversationsReferenceIndex" ("rowid", "reference") VALUES ("new"."id", "new"."reference");
-          END;
-CREATE TRIGGER "conversationsReferenceIndexDelete" AFTER DELETE ON "conversations" BEGIN
-            INSERT INTO "conversationsReferenceIndex" ("conversationsReferenceIndex", "rowid", "reference") VALUES ('delete', "old"."id", "old"."reference");
-          END;
-CREATE INDEX "conversationsParticipantsIndex" ON "conversations" ("participants");
-CREATE INDEX "conversationsTypeIndex" ON "conversations" ("type");
-CREATE INDEX "conversationsPinnedAtIndex" ON "conversations" ("pinnedAt");
-CREATE INDEX "conversationsResolvedAtIndex" ON "conversations" ("resolvedAt");
-CREATE TRIGGER "conversationsTitleSearchIndexInsert" AFTER INSERT ON "conversations" BEGIN
-            INSERT INTO "conversationsTitleSearchIndex" ("rowid", "titleSearch") VALUES ("new"."id", "new"."titleSearch");
-          END;
-CREATE TRIGGER "conversationsTitleSearchIndexUpdate" AFTER UPDATE ON "conversations" BEGIN
-            INSERT INTO "conversationsTitleSearchIndex" ("conversationsTitleSearchIndex", "rowid", "titleSearch") VALUES ('delete', "old"."id", "old"."titleSearch");
-            INSERT INTO "conversationsTitleSearchIndex" ("rowid", "titleSearch") VALUES ("new"."id", "new"."titleSearch");
-          END;
-CREATE TRIGGER "conversationsTitleSearchIndexDelete" AFTER DELETE ON "conversations" BEGIN
-            INSERT INTO "conversationsTitleSearchIndex" ("conversationsTitleSearchIndex", "rowid", "titleSearch") VALUES ('delete', "old"."id", "old"."titleSearch");
-          END;
-CREATE INDEX "sessionsTokenIndex" ON "sessions" ("token");
-CREATE INDEX "sessionsUserIndex" ON "sessions" ("user");
-CREATE TABLE "messageDrafts" (
-        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT NOT NULL,
-        "conversation" INTEGER NOT NULL REFERENCES "conversations" ON DELETE CASCADE,
-        "authorCourseParticipant" INTEGER NOT NULL REFERENCES "courseParticipants" ON DELETE CASCADE,
-        "contentSource" TEXT NOT NULL,
-        UNIQUE ("conversation", "authorCourseParticipant") ON CONFLICT REPLACE
-      );
-CREATE TABLE "tags" (
-            "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-            "createdAt" TEXT NOT NULL,
-            "course" INTEGER NOT NULL REFERENCES "courses" ON DELETE CASCADE,
-            "reference" TEXT NOT NULL,
-            "order" INTEGER NOT NULL,
-            "name" TEXT NOT NULL,
-            "courseStaffOnlyAt" TEXT NULL,
-            UNIQUE ("course", "reference")
-          );
-CREATE INDEX "tagsCourseIndex" ON "tags" ("course");
-CREATE TABLE "messagePolls" (
-        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT NOT NULL,
-        "course" INTEGER NOT NULL REFERENCES "courses" ON DELETE CASCADE,
-        "reference" TEXT NOT NULL,
-        "authorCourseParticipant" INTEGER NULL REFERENCES "courseParticipants" ON DELETE SET NULL,
-        "multipleChoicesAt" TEXT NULL,
-        "closesAt" TEXT NULL,
-        UNIQUE ("course", "reference")
-      );
-CREATE TABLE "messagePollOptions" (
-        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT NOT NULL,
-        "messagePoll" INTEGER NOT NULL REFERENCES "messagePolls" ON DELETE CASCADE,
-        "reference" TEXT NOT NULL,
-        "order" INTEGER NOT NULL,
-        "contentSource" TEXT NOT NULL,
-        "contentPreprocessed" TEXT NOT NULL,
-        UNIQUE ("messagePoll", "reference")
-      );
-CREATE TABLE "messagePollVotes" (
-        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT NOT NULL,
-        "messagePollOption" INTEGER NOT NULL REFERENCES "messagePollOptions" ON DELETE CASCADE,
-        "courseParticipant" INTEGER NULL REFERENCES "courseParticipants" ON DELETE SET NULL,
-        UNIQUE ("messagePollOption", "courseParticipant")
-      );
-CREATE TABLE "samlCache" (
-        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT NOT NULL,
-        "samlIdentifier" TEXT NOT NULL,
-        "key" TEXT NOT NULL UNIQUE,
-        "value" TEXT NOT NULL
-      );
-CREATE INDEX "samlCacheCreatedAtIndex" ON "samlCache" ("createdAt");
-CREATE TABLE "users" (
-            "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-            "createdAt" TEXT NOT NULL,
-            "lastSeenOnlineAt" TEXT NOT NULL,
-            "reference" TEXT NOT NULL UNIQUE,
-            "email" TEXT NOT NULL UNIQUE COLLATE NOCASE,
-            "password" TEXT NULL,
-            "emailVerifiedAt" TEXT NULL,
-            "name" TEXT NOT NULL,
-            "nameSearch" TEXT NOT NULL,
-            "avatar" TEXT NULL,
-            "avatarlessBackgroundColor" TEXT NOT NULL,
-            "biographySource" TEXT NULL,
-            "biographyPreprocessed" TEXT NULL,
-            "systemRole" TEXT NOT NULL,
-            "emailNotificationsForAllMessages" TEXT NOT NULL,
-            "emailNotificationsForAllMessagesDigestDeliveredAt" TEXT NULL,
-            "emailNotificationsForMentionsAt" TEXT NULL,
-            "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt" TEXT NULL,
-            "emailNotificationsForMessagesInConversationsYouStartedAt" TEXT NULL,
-            "preferContentEditorProgrammerModeAt" TEXT NULL,
-            "preferContentEditorToolbarInCompactAt" TEXT NULL,
-            "preferAnonymousAt" TEXT NULL,
-            "latestNewsVersion" TEXT NOT NULL
-          , "mostRecentlyVisitedCourseParticipant" INTEGER NULL REFERENCES "courseParticipants" ON DELETE SET NULL, "agreedToAITeachingAssistantAt" TEXT NULL);
-CREATE TABLE "messages" (
-            "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-            "createdAt" TEXT NOT NULL,
-            "updatedAt" TEXT NULL,
-            "conversation" INTEGER NOT NULL REFERENCES "conversations" ON DELETE CASCADE,
-            "reference" TEXT NOT NULL,
-            "authorCourseParticipant" INTEGER NULL REFERENCES "courseParticipants" ON DELETE SET NULL,
-            "anonymousAt" TEXT NULL,
-            "type" TEXT NOT NULL,
-            "contentSource" TEXT NOT NULL,
-            "contentPreprocessed" TEXT NOT NULL,
-            "contentSearch" TEXT NOT NULL, "authorAITeachingAssistantAt" TEXT NULL,
-            UNIQUE ("conversation", "reference")
-          );
-CREATE INDEX "messagesConversationIndex" ON "messages" ("conversation");
-CREATE INDEX "messagesTypeIndex" ON "messages" ("type");
-CREATE TRIGGER "messagesReferenceIndexInsert" AFTER INSERT ON "messages" BEGIN
-            INSERT INTO "messagesReferenceIndex" ("rowid", "reference") VALUES ("new"."id", "new"."reference");
-          END;
-CREATE TRIGGER "messagesReferenceIndexUpdate" AFTER UPDATE ON "messages" BEGIN
-            INSERT INTO "messagesReferenceIndex" ("messagesReferenceIndex", "rowid", "reference") VALUES ('delete', "old"."id", "old"."reference");
-            INSERT INTO "messagesReferenceIndex" ("rowid", "reference") VALUES ("new"."id", "new"."reference");
-          END;
-CREATE TRIGGER "messagesReferenceIndexDelete" AFTER DELETE ON "messages" BEGIN
-            INSERT INTO "messagesReferenceIndex" ("messagesReferenceIndex", "rowid", "reference") VALUES ('delete', "old"."id", "old"."reference");
-          END;
-CREATE TRIGGER "messagesContentSearchIndexInsert" AFTER INSERT ON "messages" BEGIN
-            INSERT INTO "messagesContentSearchIndex" ("rowid", "contentSearch") VALUES ("new"."id", "new"."contentSearch");
-          END;
-CREATE TRIGGER "messagesContentSearchIndexUpdate" AFTER UPDATE ON "messages" BEGIN
-            INSERT INTO "messagesContentSearchIndex" ("messagesContentSearchIndex", "rowid", "contentSearch") VALUES ('delete', "old"."id", "old"."contentSearch");
-            INSERT INTO "messagesContentSearchIndex" ("rowid", "contentSearch") VALUES ("new"."id", "new"."contentSearch");
-          END;
-CREATE TRIGGER "messagesContentSearchIndexDelete" AFTER DELETE ON "messages" BEGIN
-            INSERT INTO "messagesContentSearchIndex" ("messagesContentSearchIndex", "rowid", "contentSearch") VALUES ('delete', "old"."id", "old"."contentSearch");
-          END;
-CREATE INDEX "courseParticipantsUserIndex" ON "courseParticipants" ("user");
-CREATE INDEX "courseParticipantsCourseIndex" ON "courseParticipants" ("course");
-CREATE INDEX "emailNotificationDigestMessagesCourseParticipantIndex" ON "emailNotificationDigestMessages" ("courseParticipant");
-CREATE INDEX "conversationSelectedParticipantsCourseParticipantIndex" ON "conversationSelectedParticipants" ("courseParticipant");
-CREATE TABLE "administrationOptions" (
-            "id" INTEGER PRIMARY KEY AUTOINCREMENT CHECK ("id" = 1),
-            "latestVersion" TEXT NOT NULL,
-            "privateKey" TEXT NOT NULL,
-            "certificate" TEXT NOT NULL,
-            "userSystemRolesWhoMayCreateCourses" TEXT NOT NULL
-          );
+create table "taggings" (
+        "identity" integer primary key autoincrement,
+        "createdAt" text not null,
+        "conversation" integer not null references "conversations" on delete cascade,
+        "tag" integer not null references "tags" on delete cascade,
+        unique ("conversation", "tag")
+      ) strict;
+create table "readings" (
+        "identity" integer primary key autoincrement,
+        "createdAt" text not null,
+        "message" integer not null references "messages" on delete cascade,
+        "courseParticipant" integer not null references "courseParticipants" on delete cascade,
+        unique ("message", "courseParticipant") on conflict ignore
+      ) strict;
+create table "emailNotificationDeliveries" (
+        "identity" integer primary key autoincrement,
+        "createdAt" text not null,
+        "message" integer not null references "messages" on delete cascade,
+        "courseParticipant" integer not null references "courseParticipants" on delete cascade,
+        unique ("message", "courseParticipant") on conflict ignore
+      ) strict;
+create table "endorsements" (
+        "identity" integer primary key autoincrement,
+        "createdAt" text not null,
+        "message" integer not null references "messages" on delete cascade,
+        "courseParticipant" integer null references "courseParticipants" on delete set null,
+        unique ("message", "courseParticipant")
+      ) strict;
+create table "likes" (
+        "identity" integer primary key autoincrement,
+        "createdAt" text not null,
+        "message" integer not null references "messages" on delete cascade,
+        "courseParticipant" integer null references "courseParticipants" on delete set null,
+        unique ("message", "courseParticipant")
+      ) strict;
+create table "messageDrafts" (
+        "identity" integer primary key autoincrement,
+        "createdAt" text not null,
+        "conversation" integer not null references "conversations" on delete cascade,
+        "authorCourseParticipant" integer not null references "courseParticipants" on delete cascade,
+        "contentSource" text not null,
+        unique ("conversation", "authorCourseParticipant") on conflict replace
+      ) strict;
+create table "tags" (
+            "identity" integer primary key autoincrement,
+            "createdAt" text not null,
+            "course" integer not null references "courses" on delete cascade,
+            "reference" text not null,
+            "order" integer not null,
+            "name" text not null,
+            "courseStaffOnlyAt" text null,
+            unique ("course", "reference")
+          ) strict;
+create table "messagePolls" (
+        "identity" integer primary key autoincrement,
+        "createdAt" text not null,
+        "course" integer not null references "courses" on delete cascade,
+        "reference" text not null,
+        "authorCourseParticipant" integer null references "courseParticipants" on delete set null,
+        "multipleChoicesAt" text null,
+        "closesAt" text null,
+        unique ("course", "reference")
+      ) strict;
+create table "messagePollOptions" (
+        "identity" integer primary key autoincrement,
+        "createdAt" text not null,
+        "messagePoll" integer not null references "messagePolls" on delete cascade,
+        "reference" text not null,
+        "order" integer not null,
+        "contentSource" text not null,
+        "contentPreprocessed" text not null,
+        unique ("messagePoll", "reference")
+      ) strict;
+create table "messagePollVotes" (
+        "identity" integer primary key autoincrement,
+        "createdAt" text not null,
+        "messagePollOption" integer not null references "messagePollOptions" on delete cascade,
+        "courseParticipant" integer null references "courseParticipants" on delete set null,
+        unique ("messagePollOption", "courseParticipant")
+      ) strict;
+create table "samlCache" (
+        "identity" integer primary key autoincrement,
+        "createdAt" text not null,
+        "samlIdentifier" text not null,
+        "key" text not null unique,
+        "value" text not null
+      ) strict;
+create table "users" (
+            "identity" integer primary key autoincrement,
+            "createdAt" text not null,
+            "lastSeenOnlineAt" text not null,
+            "reference" text not null unique,
+            "email" text not null unique collate nocase,
+            "password" text null,
+            "emailVerifiedAt" text null,
+            "name" text not null,
+            "nameSearch" text not null,
+            "avatar" text null,
+            "avatarlessBackgroundColor" text not null,
+            "biographySource" text null,
+            "biographyPreprocessed" text null,
+            "systemRole" text not null,
+            "emailNotificationsForAllMessages" text not null,
+            "emailNotificationsForAllMessagesDigestDeliveredAt" text null,
+            "emailNotificationsForMentionsAt" text null,
+            "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt" text null,
+            "emailNotificationsForMessagesInConversationsYouStartedAt" text null,
+            "preferContentEditorProgrammerModeAt" text null,
+            "preferContentEditorToolbarInCompactAt" text null,
+            "preferAnonymousAt" text null,
+            "latestNewsVersion" text not null
+          , "mostRecentlyVisitedCourseParticipant" integer null references "courseParticipants" on delete set null, "agreedToAITeachingAssistantAt" text null) strict;
+create table "messages" (
+            "identity" integer primary key autoincrement,
+            "createdAt" text not null,
+            "updatedAt" text null,
+            "conversation" integer not null references "conversations" on delete cascade,
+            "reference" text not null,
+            "authorCourseParticipant" integer null references "courseParticipants" on delete set null,
+            "anonymousAt" text null,
+            "type" text not null,
+            "contentSource" text not null,
+            "contentPreprocessed" text not null,
+            "contentSearch" text not null, "authorAITeachingAssistantAt" text null,
+            unique ("conversation", "reference")
+          ) strict;
+          -- FTS on "reference" and "contentSearch"
+create table "administrationOptions" (
+            "identity" integer primary key autoincrement check ("id" = 1),
+            "latestVersion" text not null,
+            "privateKey" text not null,
+            "certificate" text not null,
+            "userSystemRolesWhoMayCreateCourses" text not null
+          ) strict;
