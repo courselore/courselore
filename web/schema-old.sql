@@ -1,10 +1,3 @@
-create table "taggings" (
-        "identifier" integer primary key autoincrement,
-        "createdAt" text not null,
-        "conversation" integer not null references "conversations" on delete cascade,
-        "tag" integer not null references "tags" on delete cascade,
-        unique ("conversation", "tag")
-      ) strict;
 create table "readings" (
         "identifier" integer primary key autoincrement,
         "createdAt" text not null,
@@ -32,14 +25,6 @@ create table "likes" (
         "message" integer not null references "messages" on delete cascade,
         "courseParticipant" integer null references "courseParticipants" on delete set null,
         unique ("message", "courseParticipant")
-      ) strict;
-create table "messageDrafts" (
-        "identifier" integer primary key autoincrement,
-        "createdAt" text not null,
-        "conversation" integer not null references "conversations" on delete cascade,
-        "authorCourseParticipant" integer not null references "courseParticipants" on delete cascade,
-        "contentSource" text not null,
-        unique ("conversation", "authorCourseParticipant") on conflict replace
       ) strict;
 create table "messagePolls" (
         "identifier" integer primary key autoincrement,

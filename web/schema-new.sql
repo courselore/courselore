@@ -223,13 +223,27 @@ create table "courseConversationParticipations" (
 create table "courseConversationTags" (
   "identifier" integer primary key autoincrement,
   "externalIdentifier" text not null unique,
-  "createdAt" text not null,
   "course" integer not null references "courses" on delete cascade,
   "order" integer not null,
   "name" text not null,
   "courseStaffOnly" integer not null
 ) strict;
 create index "index_courseConversationTags_course" on "courseConversationTags" ("course");
+
+create table "courseConversationTaggings" (
+  "identifier" integer primary key autoincrement,
+  "courseConversation" integer not null references "courseConversations" on delete cascade,
+  "courseConversationTag" integer not null references "courseConversationTags" on delete cascade,
+  unique ("conversation", "tag")
+) strict;
+
+create table "courseConversationMessageDrafts" (
+  "identifier" integer primary key autoincrement,
+  "courseConversation" integer not null references "courseConversations" on delete cascade,
+  "createdBy" integer not null references "courseParticipations" on delete cascade,
+  "contentSource" text not null,
+  unique ("courseConversation", "createdBy")
+) strict;
 
 -------------------------------------------------------------------------------
 
