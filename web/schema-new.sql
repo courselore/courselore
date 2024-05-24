@@ -49,8 +49,6 @@ alter table "taggings" rename to "old_taggings";
 alter table "tags" rename to "old_tags";
 alter table "users" rename to "old_users";
 
--------------------------------------------------------------------------------
-
 create table "users" (
   "identifier" integer primary key autoincrement,
   "externalIdentifier" text not null unique,
