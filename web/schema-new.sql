@@ -1,17 +1,80 @@
-alter table "users" rename to "old_users";
+drop trigger "conversationsReferenceIndexDelete";
+drop trigger "conversationsReferenceIndexInsert";
+drop trigger "conversationsReferenceIndexUpdate";
+drop trigger "conversationsTitleSearchIndexDelete";
+drop trigger "conversationsTitleSearchIndexInsert";
+drop trigger "conversationsTitleSearchIndexUpdate";
+drop trigger "usersNameSearchIndexDelete";
+drop trigger "usersNameSearchIndexInsert";
+drop trigger "usersNameSearchIndexUpdate";
+drop trigger "messagesContentSearchIndexDelete";
+drop trigger "messagesContentSearchIndexInsert";
+drop trigger "messagesContentSearchIndexUpdate";
+drop trigger "messagesReferenceIndexDelete";
+drop trigger "messagesReferenceIndexInsert";
+drop trigger "messagesReferenceIndexUpdate";
+
+drop table "conversationsReferenceIndex";
+drop table "conversationsTitleSearchIndex";
+drop table "messagesContentSearchIndex";
+drop table "messagesReferenceIndex";
 drop table "usersNameSearchIndex";
+drop table "emailNotificationDigestJobs";
+drop table "emailNotificationDigestMessages";
+drop table "emailNotificationMessageJobs";
 drop table "emailVerifications";
+drop table "flashes";
+drop table "liveConnectionsMetadata";
 drop table "passwordResets";
+drop table "sendEmailJobs";
+
+alter table "administrationOptions" rename to "old_administrationOptions";
+alter table "conversations" rename to "old_conversations";
+alter table "conversationSelectedParticipants" rename to "old_conversationSelectedParticipants";
+alter table "courseParticipants" rename to "old_courseParticipants";
+alter table "courses" rename to "old_courses";
+alter table "emailNotificationDeliveries" rename to "old_emailNotificationDeliveries";
+alter table "endorsements" rename to "old_endorsements";
+alter table "invitations" rename to "old_invitations";
+alter table "likes" rename to "old_likes";
+alter table "messageDrafts" rename to "old_messageDrafts";
+alter table "messagePollOptions" rename to "old_messagePollOptions";
+alter table "messagePolls" rename to "old_messagePolls";
+alter table "messagePollVotes" rename to "old_messagePollVotes";
+alter table "messages" rename to "old_messages";
+alter table "readings" rename to "old_readings";
+alter table "samlCache" rename to "old_samlCache";
+alter table "sessions" rename to "old_sessions";
+alter table "taggings" rename to "old_taggings";
+alter table "tags" rename to "old_tags";
+alter table "users" rename to "old_users";
+
+-------------------------------------------------------------------------------
+
 create table "users" (
   "identifier" integer primary key autoincrement,
   "externalIdentifier" text not null unique,
   "createdAt" text not null,
   "name" text not null,
   "nameSearch" text not null,
-  "emailVerification" text null unique,
+  "email" text not null unique,
+  "emailVerificationNonce" text null unique,
   "emailVerificationCreatedAt" text null,
-  "passwordReset" text null unique,
-  "passwordResetCreatedAt" text null
+  "emailVerified" integer not null,
+  "password" text null,
+  "passwordResetNonce" text null unique,
+  "passwordResetCreatedAt" text null,
+  "avatar" text null,
+  "avatarlessBackgroundColor" text not null,
+  "systemRole" text not null,
+  "lastSeenOnlineAt" text not null,
+  "emailNotificationsForAllMessages" integer not null,
+  "emailNotificationsForMessagesIncludingMentions" integer not null,
+  "emailNotificationsForMessagesInConversationsYouStarted" integer not null,
+  "emailNotificationsForMessagesInConversationsInWhichYouParticipated" integer not null,
+  "contentEditorProgrammerMode" integer not null,
+  "anonymous" integer not null,
+  "mostRecentlyVisitedCourseParticipation" integer null references "courseParticipations" on delete set null
 ) strict;
 create virtual table "search_users_nameSearch" using fts5(
   content = "users",
@@ -29,7 +92,6 @@ create trigger "search_users_nameSearch_delete" after delete on "users" begin
   delete from "search_users_nameSearch" where "rowid" = "old"."identifier";
 end;
 
-alter table "sessions" rename to "old_sessions";
 create table "userSessions" (
   "identifier" integer primary key autoincrement,
   "externalIdentifier" text not null unique,
@@ -42,7 +104,6 @@ create table "userSessions" (
 create index "index_userSessions_createdAt" on "userSessions" ("createdAt");
 create index "index_userSessions_user" on "userSessions" ("user");
 
-alter table "courses" rename to "old_courses";
 create table "courses" (
   "identifier" integer primary key autoincrement,
   "externalIdentifier" text not null unique,
@@ -61,7 +122,6 @@ create table "courses" (
   "archivedAt" text null
 ) strict;
 
-alter table "invitations" rename to "old_invitations";
 create table "courseInvitationEmails" (
   "identifier" integer primary key autoincrement,
   "externalIdentifier" text not null unique,
@@ -74,7 +134,6 @@ create index "index_courseInvitationEmails_createdAt" on "courseInvitationEmails
 create index "index_courseInvitationEmails_course" on "courseInvitationEmails" ("course");
 create index "index_courseInvitationEmails_email" on "courseInvitationEmails" ("email");
 
-alter table "courseParticipants" rename to "old_courseParticipants";
 create table "courseParticipations" (
   "identifier" integer primary key autoincrement,
   "externalIdentifier" text not null unique,
@@ -87,7 +146,6 @@ create table "courseParticipations" (
   unique ("user", "course")
 ) strict;
 
-alter table "conversations" rename to "old_conversations";
 create table "courseConversations" (
   "identifier" integer primary key autoincrement,
   "externalIdentifier" text not null unique,
@@ -142,7 +200,6 @@ create trigger "search_courseConversations_titleSearch_delete" after delete on "
   delete from "search_courseConversations_titleSearch" where "rowid" = "old"."identifier";
 end;
 
-alter table "conversationSelectedParticipants" rename to "old_conversationSelectedParticipants";
 create table "courseConversationParticipations" (
   "identifier" integer primary key autoincrement,
   "courseConversation" integer not null references "courseConversations" on delete cascade,
@@ -150,7 +207,6 @@ create table "courseConversationParticipations" (
   unique ("courseConversation", "courseParticipation")
 ) strict;
 
-alter table "tags" rename to "old_tags";
 create table "courseConversationTags" (
   "identifier" integer primary key autoincrement,
   "externalIdentifier" text not null unique,
@@ -162,13 +218,25 @@ create table "courseConversationTags" (
 ) strict;
 create index "index_courseConversationTags_course" on "courseConversationTags" ("course");
 
-------------------------------------------------
+-------------------------------------------------------------------------------
 
-drop table "old_users";
-drop table "old_sessions";
-drop table "old_courses";
-drop table "old_invitations";
-drop table "old_courseParticipants";
+drop table "old_administrationOptions";
 drop table "old_conversations";
 drop table "old_conversationSelectedParticipants";
+drop table "old_courseParticipants";
+drop table "old_courses";
+drop table "old_emailNotificationDeliveries";
+drop table "old_endorsements";
+drop table "old_invitations";
+drop table "old_likes";
+drop table "old_messageDrafts";
+drop table "old_messagePollOptions";
+drop table "old_messagePolls";
+drop table "old_messagePollVotes";
+drop table "old_messages";
+drop table "old_readings";
+drop table "old_samlCache";
+drop table "old_sessions";
+drop table "old_taggings";
 drop table "old_tags";
+drop table "old_users";

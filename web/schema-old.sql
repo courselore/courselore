@@ -75,31 +75,6 @@ create table "samlCache" (
         "key" text not null unique,
         "value" text not null
       ) strict;
-create table "users" (
-            "identifier" integer primary key autoincrement,
-            "createdAt" text not null,
-            "lastSeenOnlineAt" text not null,
-            "reference" text not null unique,
-            "email" text not null unique collate nocase,
-            "password" text null,
-            "emailVerifiedAt" text null,
-            "name" text not null,
-            "nameSearch" text not null,
-            "avatar" text null,
-            "avatarlessBackgroundColor" text not null,
-            "biographySource" text null,
-            "biographyPreprocessed" text null,
-            "systemRole" text not null,
-            "emailNotificationsForAllMessages" text not null,
-            "emailNotificationsForAllMessagesDigestDeliveredAt" text null,
-            "emailNotificationsForMentionsAt" text null,
-            "emailNotificationsForMessagesInConversationsInWhichYouParticipatedAt" text null,
-            "emailNotificationsForMessagesInConversationsYouStartedAt" text null,
-            "preferContentEditorProgrammerModeAt" text null,
-            "preferContentEditorToolbarInCompactAt" text null,
-            "preferAnonymousAt" text null,
-            "latestNewsVersion" text not null
-          , "mostRecentlyVisitedCourseParticipant" integer null references "courseParticipants" on delete set null, "agreedToAITeachingAssistantAt" text null) strict;
 create table "messages" (
             "identifier" integer primary key autoincrement,
             "createdAt" text not null,
