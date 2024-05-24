@@ -2916,7 +2916,7 @@ export default async (application: Application): Promise<void> => {
       if (application.configuration.environment !== "development")
         throw new Error("TODO: Migration");
 
-      database.run(
+      database.execute(
         sql`
           drop table "old_administrationOptions";
           drop table "old_conversations";
