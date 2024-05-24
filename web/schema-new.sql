@@ -317,6 +317,28 @@ create table "courseConversationMessagePollVotes" (
   unique ("courseConversationMessagePollOption", "courseParticipation")
 ) strict;
 
+create table "courseConversationMessageEmailNotificationDeliveries" (
+  "identifier" integer primary key autoincrement,
+  "courseConversationMessage" integer not null references "courseConversationMessages" on delete cascade,
+  "courseParticipation" integer not null references "courseParticipations" on delete cascade,
+  unique ("courseConversationMessage", "courseParticipation")
+) strict;
+
+create table "courseConversationMessageReadings" (
+  "identifier" integer primary key autoincrement,
+  "createdAt" text not null,
+  "courseConversationMessage" integer not null references "courseConversationMessages" on delete cascade,
+  "courseParticipation" integer not null references "courseParticipations" on delete cascade,
+  unique ("courseConversationMessage", "courseParticipation")
+) strict;
+
+create table "likes" (
+  "identifier" integer primary key autoincrement,
+  "courseConversationMessage" integer not null references "courseConversationMessages" on delete cascade,
+  "courseParticipation" integer not null references "courseParticipations" on delete cascade,
+  unique ("courseConversationMessage", "courseParticipation")
+) strict;
+
 -------------------------------------------------------------------------------
 
 drop table "old_administrationOptions";
