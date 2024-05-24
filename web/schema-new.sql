@@ -236,7 +236,7 @@ create table "courseConversationTaggings" (
   "identifier" integer primary key autoincrement,
   "courseConversation" integer not null references "courseConversations" on delete cascade,
   "courseConversationTag" integer not null references "courseConversationTags" on delete cascade,
-  unique ("conversation", "tag")
+  unique ("courseConversation", "courseConversationTag")
 ) strict;
 
 create table "courseConversationMessageDrafts" (
