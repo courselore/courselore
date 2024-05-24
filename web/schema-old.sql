@@ -68,13 +68,6 @@ create table "messagePollVotes" (
         "courseParticipant" integer null references "courseParticipants" on delete set null,
         unique ("messagePollOption", "courseParticipant")
       ) strict;
-create table "samlCache" (
-        "identifier" integer primary key autoincrement,
-        "createdAt" text not null,
-        "samlIdentifier" text not null,
-        "key" text not null unique,
-        "value" text not null
-      ) strict;
 create table "messages" (
             "identifier" integer primary key autoincrement,
             "createdAt" text not null,
@@ -90,10 +83,3 @@ create table "messages" (
             unique ("conversation", "reference")
           ) strict;
           -- FTS on "reference" and "contentSearch"
-create table "administrationOptions" (
-            "identifier" integer primary key autoincrement check ("id" = 1),
-            "latestVersion" text not null,
-            "privateKey" text not null,
-            "certificate" text not null,
-            "userSystemRolesWhoMayCreateCourses" text not null
-          ) strict;

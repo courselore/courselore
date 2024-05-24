@@ -49,6 +49,13 @@ alter table "taggings" rename to "old_taggings";
 alter table "tags" rename to "old_tags";
 alter table "users" rename to "old_users";
 
+create table "administrationOptions" (
+  "identifier" integer primary key autoincrement,
+  "privateKey" text not null,
+  "certificate" text not null,
+  "userSystemRolesWhoMayCreateCourses" text not null
+) strict;
+
 create table "users" (
   "identifier" integer primary key autoincrement,
   "externalIdentifier" text not null unique,
@@ -101,6 +108,14 @@ create table "userSessions" (
 ) strict;
 create index "index_userSessions_createdAt" on "userSessions" ("createdAt");
 create index "index_userSessions_user" on "userSessions" ("user");
+
+create table "samlCache" (
+  "identifier" integer primary key autoincrement,
+  "createdAt" text not null,
+  "samlIdentifier" text not null,
+  "key" text not null unique,
+  "value" text not null
+) strict;
 
 create table "courses" (
   "identifier" integer primary key autoincrement,
