@@ -292,6 +292,31 @@ create trigger "search_courseConversationMessages_contentSearch_delete" after de
   delete from "search_courseConversationMessages_contentSearch" where "rowid" = "old"."identifier";
 end;
 
+create table "courseConversationMessagePolls" (
+  "identifier" integer primary key autoincrement,
+  "externalIdentifier" text not null unique,
+  "course" integer not null references "courses" on delete cascade,
+  "createdByCourseParticipation" integer null references "courseParticipations" on delete set null,
+  "multipleChoices" integer not null,
+  "closed" integer not null
+) strict;
+
+create table "courseConversationMessagePollOptions" (
+  "identifier" integer primary key autoincrement,
+  "externalIdentifier" text not null unique,
+  "courseConversationMessagePoll" integer not null references "courseConversationMessagePolls" on delete cascade,
+  "order" integer not null,
+  "contentSource" text not null,
+  "contentPreprocessed" text not null
+) strict;
+
+create table "courseConversationMessagePollVotes" (
+  "identifier" integer primary key autoincrement,
+  "courseConversationMessagePollOption" integer not null references "courseConversationMessagePollOptions" on delete cascade,
+  "courseParticipation" integer null references "courseParticipations" on delete set null,
+  unique ("courseConversationMessagePollOption", "courseParticipation")
+) strict;
+
 -------------------------------------------------------------------------------
 
 drop table "old_administrationOptions";
