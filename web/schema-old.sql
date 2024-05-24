@@ -1,17 +1,3 @@
-CREATE VIRTUAL TABLE "conversationsReferenceIndex" USING fts5(
-        content = "conversations",
-        content_rowid = "id",
-        "reference",
-        tokenize = 'porter'
-      );
-CREATE VIRTUAL TABLE "conversationsTitleSearchIndex" USING fts5(
-        content = "conversations",
-        content_rowid = "id",
-        "titleSearch",
-        tokenize = 'porter'
-      );
-
-
 CREATE TABLE "taggings" (
         "id" INTEGER PRIMARY KEY AUTOINCREMENT,
         "createdAt" TEXT NOT NULL,
@@ -66,41 +52,6 @@ CREATE TABLE "likes" (
         UNIQUE ("message", "courseParticipant")
       );
 CREATE INDEX "likesMessageIndex" ON "likes" ("message");
-CREATE INDEX "passwordResetsCreatedAtIndex" ON "passwordResets" ("createdAt");
-CREATE INDEX "sessionsCreatedAtIndex" ON "sessions" ("createdAt");
-CREATE TABLE "flashes" (
-        "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-        "createdAt" TEXT NOT NULL,
-        "nonce" TEXT NOT NULL UNIQUE,
-        "theme" TEXT NOT NULL,
-        "content" TEXT NOT NULL
-      );
-CREATE INDEX "flashesCreatedAtIndex" ON "flashes" ("createdAt");
-CREATE INDEX "emailVerificationsCreatedAtIndex" ON "emailVerifications" ("createdAt");
-CREATE TABLE "conversations" (
-            "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-            "createdAt" TEXT NOT NULL,
-            "updatedAt" TEXT NULL,
-            "course" INTEGER NOT NULL REFERENCES "courses" ON DELETE CASCADE,
-            "reference" TEXT NOT NULL,
-            "authorCourseParticipant" INTEGER NULL REFERENCES "courseParticipants" ON DELETE SET NULL,
-            "participants" TEXT NOT NULL,
-            "anonymousAt" TEXT NULL,
-            "type" TEXT NOT NULL,
-            "pinnedAt" TEXT NULL,
-            "resolvedAt" TEXT NULL,
-            "title" TEXT NOT NULL,
-            "titleSearch" TEXT NOT NULL,
-            "nextMessageReference" INTEGER NOT NULL, "announcementAt" TEXT NULL, "aiTeachingAssistantChatId" TEXT NULL,
-            UNIQUE ("course", "reference")
-          );
-CREATE TABLE "conversationSelectedParticipants" (
-            "id" INTEGER PRIMARY KEY AUTOINCREMENT,
-            "createdAt" TEXT NOT NULL,
-            "conversation" INTEGER NOT NULL REFERENCES "conversations" ON DELETE CASCADE,
-            "courseParticipant" INTEGER NOT NULL REFERENCES "courseParticipants" ON DELETE CASCADE,
-            UNIQUE ("conversation", "courseParticipant") ON CONFLICT IGNORE
-          );
 CREATE INDEX "conversationSelectedParticipantsConversationIndex" ON "conversationSelectedParticipants" ("conversation");
 CREATE INDEX "conversationsCourseIndex" ON "conversations" ("course");
 CREATE TRIGGER "conversationsReferenceIndexInsert" AFTER INSERT ON "conversations" BEGIN
