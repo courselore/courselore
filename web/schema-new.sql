@@ -19,14 +19,14 @@ drop table "conversationsTitleSearchIndex";
 drop table "messagesContentSearchIndex";
 drop table "messagesReferenceIndex";
 drop table "usersNameSearchIndex";
+drop table "sendEmailJobs";
+drop table "emailNotificationMessageJobs";
 drop table "emailNotificationDigestJobs";
 drop table "emailNotificationDigestMessages";
-drop table "emailNotificationMessageJobs";
 drop table "emailVerifications";
-drop table "flashes";
-drop table "liveConnectionsMetadata";
 drop table "passwordResets";
-drop table "sendEmailJobs";
+drop table "liveConnectionsMetadata";
+drop table "flashes";
 
 alter table "administrationOptions" rename to "old_administrationOptions";
 alter table "conversations" rename to "old_conversations";
