@@ -150,6 +150,18 @@ create table "courseConversationParticipations" (
   unique ("courseConversation", "courseParticipation")
 ) strict;
 
+alter table "tags" rename to "old_tags";
+create table "courseConversationTags" (
+  "identifier" integer primary key autoincrement,
+  "externalIdentifier" text not null unique,
+  "createdAt" text not null,
+  "course" integer not null references "courses" on delete cascade,
+  "order" integer not null,
+  "name" text not null,
+  "courseStaffOnly" integer not null
+) strict;
+create index "index_courseConversationTags_course" on "courseConversationTags" ("course");
+
 ------------------------------------------------
 
 drop table "old_users";
@@ -159,3 +171,4 @@ drop table "old_invitations";
 drop table "old_courseParticipants";
 drop table "old_conversations";
 drop table "old_conversationSelectedParticipants";
+drop table "old_tags";
