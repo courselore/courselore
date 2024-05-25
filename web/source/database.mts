@@ -2700,9 +2700,9 @@ export default async (application: Application): Promise<void> => {
             "code" text null,
             "invitationLinkCourseStaffToken" text not null,
             "invitationLinkCourseStaffActive" integer not null,
-            "invitationLinkStudentsToken" text not null,
-            "invitationLinkStudentsActive" integer not null,
-            "studentsMayCreatePolls" integer not null,
+            "invitationLinkCourseStudentsToken" text not null,
+            "invitationLinkCourseStudentsActive" integer not null,
+            "courseStudentsMayCreatePolls" integer not null,
             "archivedAt" text null,
             "nextCourseConversationExternalIdentifier" integer not null
           ) strict;
@@ -2737,7 +2737,7 @@ export default async (application: Application): Promise<void> => {
             "course" integer not null references "courses" on delete cascade,
             "createdAt" text not null,
             "courseStaffUpdatedAt" text null,
-            "studentsUpdatedAt" text null,
+            "courseStudentsUpdatedAt" text null,
             "createdByCourseParticipation" integer null references "courseParticipations" on delete set null,
             "pinned" integer not null,
             "type" text not null,
@@ -2752,7 +2752,7 @@ export default async (application: Application): Promise<void> => {
           create index "index_courseConversations_course" on "courseConversations" ("course");
           create index "index_courseConversations_createdAt" on "courseConversations" ("createdAt");
           create index "index_courseConversations_courseStaffUpdatedAt" on "courseConversations" ("courseStaffUpdatedAt");
-          create index "index_courseConversations_studentsUpdatedAt" on "courseConversations" ("studentsUpdatedAt");
+          create index "index_courseConversations_courseStudentsUpdatedAt" on "courseConversations" ("courseStudentsUpdatedAt");
           create index "index_courseConversations_pinned" on "courseConversations" ("pinned");
           create index "index_courseConversations_type" on "courseConversations" ("type");
           create index "index_courseConversations_questionResolved" on "courseConversations" ("questionResolved");
