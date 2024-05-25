@@ -8,6 +8,7 @@ import * as utilities from "@radically-straightforward/utilities";
 import * as node from "@radically-straightforward/node";
 import caddyfile from "@radically-straightforward/caddy";
 import * as caddy from "@radically-straightforward/caddy";
+import * as argon2 from "argon2";
 import database, { ApplicationDatabase } from "./database.mjs";
 import demonstration from "./demonstration.mjs";
 
@@ -27,6 +28,7 @@ export type Application = {
     hstsPreload: boolean;
     extraCaddyfile: string;
     ports: number[];
+    argon2: argon2.Options
   };
   server: undefined | ReturnType<typeof server>;
 } & ApplicationDatabase;
@@ -50,6 +52,12 @@ application.configuration.ports = Array.from(
   { length: os.availableParallelism() },
   (value, index) => 18000 + index,
 );
+application.configuration.argon2 = {
+  type: argon2.argon2id,
+  memoryCost: 12288,
+  timeCost: 3,
+  parallelism: 1,
+};
 if (application.commandLineArguments.values.type === "server")
   application.server = server({
     port: Number(application.commandLineArguments.values.port),
