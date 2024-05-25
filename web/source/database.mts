@@ -2621,7 +2621,7 @@ export default async (application: Application): Promise<void> => {
           alter table "tags" rename to "old_tags";
           alter table "users" rename to "old_users";
           
-          create table "administrationOptions" (
+          create table "systemOptions" (
             "identifier" integer primary key autoincrement,
             "privateKey" text not null,
             "certificate" text not null,
@@ -2641,8 +2641,8 @@ export default async (application: Application): Promise<void> => {
             "password" text null,
             "passwordResetNonce" text null unique,
             "passwordResetCreatedAt" text null,
-            "avatar" text null,
             "avatarlessBackgroundColor" text not null,
+            "avatar" text null,
             "systemRole" text not null,
             "lastSeenOnlineAt" text not null,
             "emailNotificationsForAllMessages" integer not null,
@@ -2681,7 +2681,7 @@ export default async (application: Application): Promise<void> => {
           create index "index_userSessions_createdAt" on "userSessions" ("createdAt");
           create index "index_userSessions_user" on "userSessions" ("user");
           
-          create table "samlCache" (
+          create table "userSessionsSamlCache" (
             "identifier" integer primary key autoincrement,
             "createdAt" text not null,
             "samlIdentifier" text not null,
@@ -2698,13 +2698,13 @@ export default async (application: Application): Promise<void> => {
             "term" text null,
             "institution" text null,
             "code" text null,
-            "invitationLinkCourseStaff" text not null,
+            "invitationLinkCourseStaffToken" text not null,
             "invitationLinkCourseStaffActive" integer not null,
-            "invitationLinkStudents" text not null,
+            "invitationLinkStudentsToken" text not null,
             "invitationLinkStudentsActive" integer not null,
             "studentsMayCreatePolls" integer not null,
-            "nextConversationExternalIdentifier" integer not null,
-            "archivedAt" text null
+            "archivedAt" text null,
+            "nextCourseConversationExternalIdentifier" integer not null
           ) strict;
           
           create table "courseInvitationEmails" (
@@ -2727,7 +2727,7 @@ export default async (application: Application): Promise<void> => {
             "createdAt" text not null,
             "courseRole" text not null,
             "accentColor" text not null,
-            "mostRecentlyVisitedConversation" integer null references "conversations" on delete set null,
+            "mostRecentlyVisitedCourseConversation" integer null references "courseConversations" on delete set null,
             unique ("user", "course")
           ) strict;
           
@@ -2741,12 +2741,12 @@ export default async (application: Application): Promise<void> => {
             "createdByCourseParticipation" integer null references "courseParticipations" on delete set null,
             "pinned" integer not null,
             "type" text not null,
-            "resolved" integer not null,
+            "questionResolved" integer not null,
             "participants" text not null,
             "anonymous" integer not null,
             "title" text not null,
             "titleSearch" text not null,
-            "nextMessageExternalIdentifier" integer not null,
+            "nextCourseConversationMessageExternalIdentifier" integer not null,
             unique ("course", "externalIdentifier")
           ) strict;
           create index "index_courseConversations_course" on "courseConversations" ("course");
@@ -2755,7 +2755,7 @@ export default async (application: Application): Promise<void> => {
           create index "index_courseConversations_studentsUpdatedAt" on "courseConversations" ("studentsUpdatedAt");
           create index "index_courseConversations_pinned" on "courseConversations" ("pinned");
           create index "index_courseConversations_type" on "courseConversations" ("type");
-          create index "index_courseConversations_resolved" on "courseConversations" ("resolved");
+          create index "index_courseConversations_questionResolved" on "courseConversations" ("questionResolved");
           create virtual table "search_courseConversations_externalIdentifier" using fts5(
             content = "courseConversations",
             content_rowid = "identifier",
@@ -2882,7 +2882,7 @@ export default async (application: Application): Promise<void> => {
             "contentPreprocessed" text not null
           ) strict;
           
-          create table "courseConversationMessagePollVotes" (
+          create table "courseConversationMessagePollOptionVotes" (
             "identifier" integer primary key autoincrement,
             "courseConversationMessagePollOption" integer not null references "courseConversationMessagePollOptions" on delete cascade,
             "courseParticipation" integer null references "courseParticipations" on delete set null,
@@ -2907,7 +2907,7 @@ export default async (application: Application): Promise<void> => {
           create table "courseConversationMessageLikes" (
             "identifier" integer primary key autoincrement,
             "courseConversationMessage" integer not null references "courseConversationMessages" on delete cascade,
-            "courseParticipation" integer not null references "courseParticipations" on delete cascade,
+            "courseParticipation" integer null references "courseParticipations" on delete set null,
             unique ("courseConversationMessage", "courseParticipation")
           ) strict;
         `,
