@@ -2915,6 +2915,39 @@ export default async (application: Application): Promise<void> => {
         `,
       );
 
+      const administrationOptions = database.get<{
+        privateKey: string;
+        certificate: string;
+        userSystemRolesWhoMayCreateCourses:
+          | "all"
+          | "staff-and-administrators"
+          | "administrators";
+      }>(
+        sql`
+          select "privateKey", "certificate", "userSystemRolesWhoMayCreateCourses" from "old_administrationOptions";
+        `,
+      )!;
+      database.run(
+        sql`
+          insert into "systemOptions" (
+            "privateKey",
+            "certificate",
+            "userSystemRolesWhoMayCreateCourses"
+          )
+          values (
+            ${administrationOptions.privateKey},
+            ${administrationOptions.certificate},
+            ${
+              {
+                all: "systemUser",
+                "staff-and-administrators": "systemStaff",
+                administrators: "systemAdministrator",
+              }[administrationOptions.userSystemRolesWhoMayCreateCourses]
+            }
+          );
+        `,
+      );
+
       if (application.configuration.environment !== "development")
         throw new Error("TODO: Migration");
 
