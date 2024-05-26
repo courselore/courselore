@@ -2979,8 +2979,6 @@ export default async (application: Application): Promise<void> => {
       if (application.configuration.environment === "development") {
         const users = new Array<{
           identifier: number;
-          email: string;
-          name: string;
         }>();
         const password = await argon2.hash(
           "courselore",
@@ -2991,8 +2989,6 @@ export default async (application: Application): Promise<void> => {
           users.push(
             database.get<{
               identifier: number;
-              email: string;
-              name: string;
             }>(
               sql`
                 select * from "users" where "identifier" = ${
@@ -3068,6 +3064,80 @@ export default async (application: Application): Promise<void> => {
           );
         }
         const user = users.shift()!;
+
+        for (const courseData of [
+          {
+            name: "Principles of Programming Languages",
+            year: String(
+              new Date(Date.now() - 365 * 24 * 60 * 60 * 1000).getFullYear(),
+            ),
+            term: "Spring",
+            code: "EN.601.426/626",
+            archivedAt: new Date(
+              Date.now() - 200 * 24 * 60 * 60 * 1000,
+            ).toISOString(),
+          },
+          {
+            name: "Object-Oriented Software Engineering",
+          },
+          {
+            name: "Full-Stack JavaScript",
+            year: String(new Date().getFullYear()),
+            term: "Spring",
+          },
+          {
+            name: "Principles of Programming Languages",
+            year: String(new Date().getFullYear()),
+            term: new Date().getMonth() < 6 ? "Spring" : "Fall",
+            code: "EN.601.426/626",
+          },
+        ]) {
+          const course = database.get<{
+            identifier: number;
+            nextCourseConversationExternalIdentifier: number;
+          }>(
+            sql`
+              select * from "courses" where "identifier" = ${
+                database.run(
+                  sql`
+                    insert into "courses" (
+                      "externalIdentifier",
+                      "createdAt",
+                      "name",
+                      "year",
+                      "term",
+                      "institution",
+                      "code",
+                      "invitationLinkCourseStaffToken",
+                      "invitationLinkCourseStaffActive",
+                      "invitationLinkCourseStudentsToken",
+                      "invitationLinkCourseStudentsActive",
+                      "courseStudentsMayCreatePolls",
+                      "archivedAt",
+                      "nextCourseConversationExternalIdentifier"
+                    )
+                    values (
+                      ${cryptoRandomString({ length: 10, type: "numeric" })},
+                      ${new Date(Date.now() - Math.floor(Math.random() * 365 * 24 * 60 * 60 * 1000)).toISOString()},
+                      ${courseData.name},
+                      ${courseData.year},
+                      ${courseData.term},
+                      ${Math.random() < 0.5 ? "Johns Hopkins University" : null},
+                      ${courseData.code},
+                      ${cryptoRandomString({ length: 20, type: "numeric" })},
+                      ${Number(Math.random() < 0.2)},
+                      ${cryptoRandomString({ length: 20, type: "numeric" })},
+                      ${Number(Math.random() < 0.8)},
+                      ${Number(Math.random() < 0.8)},
+                      ${courseData.archivedAt},
+                      ${100 + Math.floor(Math.random() * 30)}
+                    );
+                  `,
+                ).lastInsertRowid
+              };
+            `,
+          )!;
+        }
       }
     },
   );
