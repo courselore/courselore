@@ -10,7 +10,6 @@ import caddyfile from "@radically-straightforward/caddy";
 import * as caddy from "@radically-straightforward/caddy";
 import * as argon2 from "argon2";
 import database, { ApplicationDatabase } from "./database.mjs";
-import demonstration from "./demonstration.mjs";
 
 export type Application = {
   commandLineArguments: {
@@ -85,7 +84,6 @@ process.once("beforeExit", () => {
 });
 
 await database(application);
-await demonstration(application);
 
 if (application.commandLineArguments.values.type === undefined) {
   for (const port of application.configuration.ports) {
