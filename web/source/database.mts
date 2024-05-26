@@ -2569,7 +2569,7 @@ export default async (application: Application): Promise<void> => {
       ALTER TABLE "messages" ADD COLUMN "authorAITeachingAssistantAt" TEXT NULL;
     `,
 
-    (database) => {
+    async (database) => {
       database.execute(
         sql`
           drop trigger "conversationsReferenceIndexDelete";
@@ -2942,29 +2942,26 @@ export default async (application: Application): Promise<void> => {
           drop table "old_users";        
         `,
       );
-    },
 
-    ...(application.configuration.environment === "development"
-      ? [
-          async (database: Database) => {
-            const users = new Array<{
+      if (application.configuration.environment === "development") {
+        const users = new Array<{
+          identifier: number;
+          email: string;
+          name: string;
+        }>();
+        const password = await argon2.hash(
+          "courselore",
+          application.configuration.argon2,
+        );
+        for (let userIndex = 0; userIndex < 151; userIndex++) {
+          const name = casual.full_name;
+          users.push(
+            database.get<{
               identifier: number;
               email: string;
               name: string;
-            }>();
-            const password = await argon2.hash(
-              "courselore",
-              application.configuration.argon2,
-            );
-            for (let userIndex = 0; userIndex < 151; userIndex++) {
-              const name = casual.full_name;
-              users.push(
-                database.get<{
-                  identifier: number;
-                  email: string;
-                  name: string;
-                }>(
-                  sql`
+            }>(
+              sql`
                 select * from "users" where "identifier" = ${
                   database.run(
                     sql`
@@ -3033,13 +3030,12 @@ export default async (application: Application): Promise<void> => {
                     `,
                   ).lastInsertRowid
                 };
-              `,
-                )!,
-              );
-            }
-            const user = users.shift()!;
-          },
-        ]
-      : []),
+          `,
+            )!,
+          );
+        }
+        const user = users.shift()!;
+      }
+    },
   );
 };
