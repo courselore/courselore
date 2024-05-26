@@ -3051,7 +3051,7 @@ export default async (application: Application): Promise<void> => {
                             ? `https://${application.configuration.hostname}/node_modules/fake-avatars/avatars/webp/${Math.floor(Math.random() * 263)}.webp`
                             : null
                         },
-                        ${userIndex === 0 || Math.random() < 0.05 ? "system-administrator" : Math.random() < 0.2 ? "system-staff" : "system-user"},
+                        ${userIndex === 0 || Math.random() < 0.05 ? "systemAdministrator" : Math.random() < 0.2 ? "systemStaff" : "systemUser"},
                         ${new Date(Date.now() - Math.floor(Math.random() * 24 * 60 * 60 * 1000)).toISOString()},
                         ${Number(Math.random() < 0.1)},
                         ${Number(Math.random() < 0.9)},
