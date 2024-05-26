@@ -2943,36 +2943,32 @@ export default async (application: Application): Promise<void> => {
         `,
       );
     },
-  );
 
-  if (
-    application.configuration.environment === "development" &&
-    application.database.get<{ count: number }>(
-      sql`
-        select count(*) as "count" from "users";
-      `,
-    )!.count === 0
-  ) {
-    console.log("LOAD DEMONSTRATION DATA");
-    /*
-        const users = new Array<{
-          id: number;
-          email: string;
-          name: string;
-        }>();
-        for (let userIndex = 0; userIndex < 151; userIndex++) {
-          const name = casual.full_name;
-          users.push(
-            application.database.get<{
+    ...(application.configuration.environment === "development"
+      ? [
+          async (database: Database) => {
+            const users = new Array<{
               id: number;
               email: string;
               name: string;
-            }>(
-              sql`
-                SELECT * FROM "users" WHERE "id" = ${
-                  application.database.run(
+            }>();
+            const password = await argon2.hash(
+              "courselore",
+              application.configuration.argon2,
+            );
+            for (let userIndex = 0; userIndex < 151; userIndex++) {
+              const name = casual.full_name;
+              users.push(
+                database.get<{
+                  id: number;
+                  email: string;
+                  name: string;
+                }>(
+                  sql`
+                select * from "users" where "id" = ${
+                  database.run(
                     sql`
-                      INSERT INTO "users" (
+                      insert into "users" (
                         "externalIdentifier",
                         "createdAt",
                         "name",
@@ -2991,17 +2987,14 @@ export default async (application: Application): Promise<void> => {
                         "contentEditorProgrammerMode",
                         "anonymous"
                       )
-                      VALUES (
+                      values (
                         ${cryptoRandomString({ length: 20, type: "numeric" })},
                         ${new Date(Date.now() - Math.floor(Math.random() * 24 * 60 * 60 * 1000)).toISOString()},
                         ${name},
                         ${name},
-                        ${`${name.replaceAll(/[^A-Za-z]/, "-").toLowerCase()}--${cryptoRandomString({ length: 3, type: "numeric" })}@courselore.org`},
+                        ${`${userIndex === 0 ? "administrator" : `${name.replaceAll(/[^A-Za-z]/, "-").toLowerCase()}--${cryptoRandomString({ length: 3, type: "numeric" })}`}@courselore.org`},
                         ${Number(true)},
-                        ${await argon2.hash(
-                          "courselore",
-                          application.configuration.argon2,
-                        )},
+                        ${password},
                         ${
                           [
                             "red",
@@ -3025,10 +3018,7 @@ export default async (application: Application): Promise<void> => {
                         },
                         ${
                           Math.random() < 0.1
-                            ? new URL(
-                                `/node_modules/fake-avatars/avatars/webp/${Math.floor(Math.random() * 263)}.webp`,
-                                request.URL,
-                              ).href
+                            ? `https://${application.configuration.hostname}/node_modules/fake-avatars/avatars/webp/${Math.floor(Math.random() * 263)}.webp`
                             : null
                         },
                         ${userIndex === 0 || Math.random() < 0.05 ? "system-administrator" : Math.random() < 0.2 ? "system-staff" : "system-user"},
@@ -3039,15 +3029,17 @@ export default async (application: Application): Promise<void> => {
                         ${Math.random() < 0.9},
                         ${Math.random() < 0.1},
                         ${Math.random() < 0.8}
-                      )
+                      );
                     `,
                   ).lastInsertRowid
-                }
+                };
               `,
-            )!,
-          );
-        }
-        const demonstrationUser = users.shift()!;
-    */
-  }
+                )!,
+              );
+            }
+            const user = users.shift()!;
+          },
+        ]
+      : []),
+  );
 };
