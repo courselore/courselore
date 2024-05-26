@@ -2948,7 +2948,7 @@ export default async (application: Application): Promise<void> => {
       ? [
           async (database: Database) => {
             const users = new Array<{
-              id: number;
+              identifier: number;
               email: string;
               name: string;
             }>();
@@ -2960,12 +2960,12 @@ export default async (application: Application): Promise<void> => {
               const name = casual.full_name;
               users.push(
                 database.get<{
-                  id: number;
+                  identifier: number;
                   email: string;
                   name: string;
                 }>(
                   sql`
-                select * from "users" where "id" = ${
+                select * from "users" where "identifier" = ${
                   database.run(
                     sql`
                       insert into "users" (
@@ -2992,7 +2992,7 @@ export default async (application: Application): Promise<void> => {
                         ${new Date(Date.now() - Math.floor(Math.random() * 24 * 60 * 60 * 1000)).toISOString()},
                         ${name},
                         ${name},
-                        ${`${userIndex === 0 ? "administrator" : `${name.replaceAll(/[^A-Za-z]/, "-").toLowerCase()}--${cryptoRandomString({ length: 3, type: "numeric" })}`}@courselore.org`},
+                        ${`${userIndex === 0 ? "administrator" : `${name.replaceAll(/[^A-Za-z]/g, "-").toLowerCase()}--${cryptoRandomString({ length: 3, type: "numeric" })}`}@courselore.org`},
                         ${Number(true)},
                         ${password},
                         ${
@@ -3023,12 +3023,12 @@ export default async (application: Application): Promise<void> => {
                         },
                         ${userIndex === 0 || Math.random() < 0.05 ? "system-administrator" : Math.random() < 0.2 ? "system-staff" : "system-user"},
                         ${new Date(Date.now() - Math.floor(Math.random() * 24 * 60 * 60 * 1000)).toISOString()},
-                        ${Math.random() < 0.1},
-                        ${Math.random() < 0.9},
-                        ${Math.random() < 0.9},
-                        ${Math.random() < 0.9},
-                        ${Math.random() < 0.1},
-                        ${Math.random() < 0.8}
+                        ${Number(Math.random() < 0.1)},
+                        ${Number(Math.random() < 0.9)},
+                        ${Number(Math.random() < 0.9)},
+                        ${Number(Math.random() < 0.9)},
+                        ${Number(Math.random() < 0.1)},
+                        ${Number(Math.random() < 0.8)}
                       );
                     `,
                   ).lastInsertRowid
