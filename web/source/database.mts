@@ -2754,7 +2754,7 @@ export default async (application: Application): Promise<void> => {
             "pinned" integer not null,
             "type" text not null,
             "questionResolved" integer not null,
-            "participants" text not null,
+            "participations" text not null,
             "anonymous" integer not null,
             "title" text not null,
             "titleSearch" text not null,
