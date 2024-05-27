@@ -3318,7 +3318,7 @@ export default async (application: Application): Promise<void> => {
                           )
                           values (
                             ${courseConversation.identifier},
-                            ${courseParticipation.identifier},
+                            ${courseParticipation.identifier}
                           );
                         `,
                       ).lastInsertRowid
@@ -3326,6 +3326,25 @@ export default async (application: Application): Promise<void> => {
                   `,
                 )!,
             );
+            const courseConversationTagsCopy = [...courseConversationTags];
+            for (
+              let courseConversationTaggingIndex = 0;
+              courseConversationTaggingIndex <
+              1 + Math.floor(Math.random() * 4);
+              courseConversationTaggingIndex++
+            )
+              database.run(
+                sql`
+                  insert into "courseConversationTaggings" (
+                    "courseConversation",
+                    "courseConversationTag"
+                  )
+                  values (
+                    ${courseConversation.identifier},
+                    ${courseConversationTagsCopy.splice(Math.floor(Math.random() * courseConversationTagsCopy.length), 1)[0].identifier}
+                  );
+                `,
+              );
           }
         }
       }
