@@ -3386,7 +3386,7 @@ export default async (application: Application): Promise<void> => {
                             ${courseConversation.identifier},
                             ${new Date(Date.now() - Math.floor((1 + course.nextCourseConversationExternalIdentifier - courseConversationIndex + Math.random() * 0.5) * 5 * 60 * 60 * 1000)).toISOString()},
                             ${Math.random() < 0.05 ? new Date(Date.now() - Math.floor(24 * 5 * 60 * 60 * 1000)).toISOString() : null},
-                            ${Math.random() < 0.9 ? courseParticipations[Math.floor(Math.random() * courseParticipations.length)] : null},
+                            ${Math.random() < 0.9 ? courseParticipations[Math.floor(Math.random() * courseParticipations.length)].identifier : null},
                             ${
                               courseConversationMessageIndex === 0 ||
                               Math.random() < 0.6
