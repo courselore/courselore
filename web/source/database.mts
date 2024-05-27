@@ -3358,6 +3358,10 @@ export default async (application: Application): Promise<void> => {
               courseConversation.nextCourseConversationMessageExternalIdentifier;
               courseConversationMessageIndex++
             ) {
+              const courseConversationMessageContentSentences = Array.from(
+                { length: 1 + Math.floor(Math.random() * 5) },
+                () => casual.sentences(1 + Math.floor(Math.random() * 5)),
+              );
               const courseConversationMessage = database.get<{
                 identifier: number;
               }>(
@@ -3368,18 +3372,35 @@ export default async (application: Application): Promise<void> => {
                           insert into "courseConversationMessages" (
                             "externalIdentifier",
                             "courseConversation",
-                            "createdAt" text not null,
-                            "updatedAt" text null,
-                            "createdByCourseParticipation" integer null references "courseParticipations" on delete set null,
-                            "courseConversationMessageType" text not null,
-                            "anonymous" integer not null,
-                            "contentSource" text not null,
-                            "contentPreprocessed" text not null,
-                            "contentSearch" text not null,
-                            unique ("courseConversation", "externalIdentifier")
+                            "createdAt",
+                            "updatedAt",
+                            "createdByCourseParticipation",
+                            "courseConversationMessageType",
+                            "anonymous",
+                            "contentSource",
+                            "contentPreprocessed",
+                            "contentSearch"
                           )
                           values (
-                            TODO
+                            ${String(courseConversationMessageIndex + 1)},
+                            ${courseConversation.identifier},
+                            ${new Date(Date.now() - Math.floor((1 + course.nextCourseConversationExternalIdentifier - courseConversationIndex + Math.random() * 0.5) * 5 * 60 * 60 * 1000)).toISOString()},
+                            ${Math.random() < 0.05 ? new Date(Date.now() - Math.floor(24 * 5 * 60 * 60 * 1000)).toISOString() : null},
+                            ${Math.random() < 0.9 ? courseParticipations[Math.floor(Math.random() * courseParticipations.length)] : null},
+                            ${
+                              courseConversationMessageIndex === 0 ||
+                              Math.random() < 0.6
+                                ? "courseConversationMessageMessage"
+                                : Math.random() < 0.5
+                                  ? "courseConversationMessageAnswer"
+                                  : Math.random() < 0.5
+                                    ? "courseConversationMessageFollowUpQuestion"
+                                    : "courseConversationMessageCourseStaffWhisper"
+                            },
+                            ${Number(Math.random() < 0.7)},
+                            ${courseConversationMessageContentSentences.join("\n\n")},
+                            ${courseConversationMessageContentSentences.map((sentence) => `<p>${sentence}</p>`).join("\n\n")},
+                            ${courseConversationMessageContentSentences.join("\n\n")}
                           );
                         `,
                       ).lastInsertRowid
