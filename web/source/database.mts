@@ -2979,6 +2979,7 @@ export default async (application: Application): Promise<void> => {
       if (application.configuration.environment === "development") {
         const users = new Array<{
           identifier: number;
+          email: string;
         }>();
         const password = await argon2.hash(
           "courselore",
@@ -2989,6 +2990,7 @@ export default async (application: Application): Promise<void> => {
           users.push(
             database.get<{
               identifier: number;
+              email: string;
             }>(
               sql`
                 select * from "users" where "identifier" = ${
@@ -3137,6 +3139,38 @@ export default async (application: Application): Promise<void> => {
               };
             `,
           )!;
+          const courseUsers = [...users];
+          for (
+            let courseInvitationEmailIndex = 0;
+            courseInvitationEmailIndex < Math.floor(Math.random() * 30);
+            courseInvitationEmailIndex++
+          ) {
+            database.run(
+              sql`
+                insert into "courseInvitationEmails" (
+                  "externalIdentifier",
+                  "course",
+                  "createdAt",
+                  "email",
+                  "courseRole"
+                )
+                values (
+                  ${cryptoRandomString({ length: 20, type: "numeric" })},
+                  ${course.identifier},
+                  ${new Date(Date.now() - Math.floor(Math.random() * 10 * 24 * 60 * 60 * 1000)).toISOString()},
+                  ${
+                    Math.random() < 0.5
+                      ? `${casual.full_name.replaceAll(/[^A-Za-z]/g, "-").toLowerCase()}--${cryptoRandomString({ length: 3, type: "numeric" })}@courselore.org`
+                      : courseUsers.splice(
+                          Math.floor(Math.random() * courseUsers.length),
+                          1,
+                        )[0].email
+                  },
+                  ${Math.random() < 0.5 ? "courseStaff" : "courseStudent"}
+                );
+              `,
+            );
+          }
         }
       }
     },
