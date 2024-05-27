@@ -2655,6 +2655,7 @@ export default async (application: Application): Promise<void> => {
             "anonymous" integer not null,
             "mostRecentlyVisitedCourseParticipation" integer null references "courseParticipations"
           ) strict;
+          create index "index_users_mostRecentlyVisitedCourseParticipation" on "users" ("mostRecentlyVisitedCourseParticipation");
           create virtual table "search_users_nameSearch" using fts5(
             content = "users",
             content_rowid = "identifier",
@@ -2732,6 +2733,7 @@ export default async (application: Application): Promise<void> => {
             "mostRecentlyVisitedCourseConversation" integer null references "courseConversations",
             unique ("user", "course")
           ) strict;
+          create index "index_courseParticipations_mostRecentlyVisitedCourseConversation" on "courseParticipations" ("mostRecentlyVisitedCourseConversation");
 
           create table "courseConversationTags" (
             "identifier" integer primary key autoincrement,
@@ -2756,7 +2758,6 @@ export default async (application: Application): Promise<void> => {
             "nextCourseConversationMessageExternalIdentifier" integer not null,
             unique ("course", "externalIdentifier")
           ) strict;
-          create index "index_courseConversations_course" on "courseConversations" ("course");
           create index "index_courseConversations_pinned" on "courseConversations" ("pinned");
           create index "index_courseConversations_courseConversationType" on "courseConversations" ("courseConversationType");
           create index "index_courseConversations_questionResolved" on "courseConversations" ("questionResolved");
@@ -2827,7 +2828,8 @@ export default async (application: Application): Promise<void> => {
             "contentSearch" text not null,
             unique ("courseConversation", "externalIdentifier")
           ) strict;
-          create index "index_courseConversations_courseConversationMessageType" on "courseConversationMessages" ("courseConversationMessageType");
+          create index "index_courseConversationMessages_createdByCourseParticipation" on "courseConversationMessages" ("createdByCourseParticipation");
+          create index "index_courseConversationMessages_courseConversationMessageType" on "courseConversationMessages" ("courseConversationMessageType");
           create virtual table "search_courseConversationMessages_externalIdentifier" using fts5(
             content = "courseConversationMessages",
             content_rowid = "identifier",
@@ -2867,6 +2869,7 @@ export default async (application: Application): Promise<void> => {
             "multipleChoices" integer not null,
             "closed" integer not null
           ) strict;
+          create index "index_courseConversationMessagePolls_createdByCourseParticipation" on "courseConversationMessagePolls" ("createdByCourseParticipation");
           
           create table "courseConversationMessagePollOptions" (
             "identifier" integer primary key autoincrement,
@@ -2876,6 +2879,7 @@ export default async (application: Application): Promise<void> => {
             "contentSource" text not null,
             "contentPreprocessed" text not null
           ) strict;
+          create index "index_courseConversationMessagePollOptions_courseConversationMessagePoll" on "courseConversationMessagePollOptions" ("courseConversationMessagePoll");
           
           create table "courseConversationMessagePollOptionVotes" (
             "identifier" integer primary key autoincrement,
