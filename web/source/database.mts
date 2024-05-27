@@ -2970,12 +2970,12 @@ export default async (application: Application): Promise<void> => {
       );
 
       if (application.configuration.environment === "development") {
-        const password = await argon2.hash(
+        const userPassword = await argon2.hash(
           "courselore",
           application.configuration.argon2,
         );
         const users = Array.from({ length: 151 }, (value, userIndex) => {
-          const name = casual.full_name;
+          const userName = casual.full_name;
           return database.get<{
             identifier: number;
             email: string;
@@ -3006,11 +3006,11 @@ export default async (application: Application): Promise<void> => {
                     values (
                       ${cryptoRandomString({ length: 20, type: "numeric" })},
                       ${new Date(Date.now() - Math.floor(Math.random() * 24 * 60 * 60 * 1000)).toISOString()},
-                      ${name},
-                      ${name},
-                      ${`${userIndex === 0 ? "administrator" : `${name.replaceAll(/[^A-Za-z]/g, "-").toLowerCase()}--${cryptoRandomString({ length: 3, type: "numeric" })}`}@courselore.org`},
+                      ${userName},
+                      ${userName},
+                      ${`${userIndex === 0 ? "administrator" : `${userName.replaceAll(/[^A-Za-z]/g, "-").toLowerCase()}--${cryptoRandomString({ length: 3, type: "numeric" })}`}@courselore.org`},
                       ${Number(true)},
-                      ${password},
+                      ${userPassword},
                       ${
                         [
                           "red",
@@ -3130,7 +3130,7 @@ export default async (application: Application): Promise<void> => {
             let courseInvitationEmailIndex = 0;
             courseInvitationEmailIndex < Math.floor(Math.random() * 30);
             courseInvitationEmailIndex++
-          ) {
+          )
             database.run(
               sql`
                 insert into "courseInvitationEmails" (
@@ -3156,7 +3156,6 @@ export default async (application: Application): Promise<void> => {
                 );
               `,
             );
-          }
           const courseParticipations = [
             user,
             ...Array.from(
@@ -3223,14 +3222,8 @@ export default async (application: Application): Promise<void> => {
             { name: "Assignment 4" },
             { name: "Assignment 5" },
             { name: "Assignment 6" },
-            {
-              name: "Change for Next Year",
-              courseStaffOnly: true,
-            },
-            {
-              name: "Duplicate Question",
-              courseStaffOnly: true,
-            },
+            { name: "Change for Next Year", courseStaffOnly: true },
+            { name: "Duplicate Question", courseStaffOnly: true },
           ].map((courseConversationTag, courseConversationTagIndex) =>
             database.get<{ identifier: number }>(
               sql`
@@ -3263,7 +3256,7 @@ export default async (application: Application): Promise<void> => {
             course.nextCourseConversationExternalIdentifier;
             courseConversationIndex++
           ) {
-            const title = (
+            const courseConversationTitle = (
               casual.words(1 + Math.floor(Math.random() * 10)) +
               (Math.random() < 0.2 ? "?" : "")
             ).replace(/./, (character) => character.toUpperCase());
@@ -3290,8 +3283,8 @@ export default async (application: Application): Promise<void> => {
                         ${Math.random() < 0.3 ? "courseConversationNote" : "courseConversationQuestion"},
                         ${Number(Math.random() < 0.5)},
                         ${Math.random() < 0.3 ? "courseStudent" : Math.random() < 0.8 ? "courseStaff" : "courseConversationParticipations"},
-                        ${title},
-                        ${title},
+                        ${courseConversationTitle},
+                        ${courseConversationTitle},
                         ${1 + Math.floor(Math.random() * 15)}
                       );
                     `,
