@@ -3262,7 +3262,10 @@ export default async (application: Application): Promise<void> => {
               casual.words(1 + Math.floor(Math.random() * 10)) +
               (Math.random() < 0.2 ? "?" : "")
             ).replace(/./, (character) => character.toUpperCase());
-            const courseConversation = database.get<{ identifier: number }>(
+            const courseConversation = database.get<{
+              identifier: number;
+              nextCourseConversationMessageExternalIdentifier: number;
+            }>(
               sql`
                 select * from "courseConversations" where "identifier" = ${
                   database.run(
@@ -3345,6 +3348,41 @@ export default async (application: Application): Promise<void> => {
                   );
                 `,
               );
+            for (
+              let courseConversationMessageIndex = 0;
+              courseConversationMessageIndex <
+              courseConversation.nextCourseConversationMessageExternalIdentifier;
+              courseConversationMessageIndex++
+            ) {
+              const courseConversationMessage = database.get<{
+                identifier: number;
+              }>(
+                sql`
+                    select * from "courseConversationMessages" where "identifier" = ${
+                      database.run(
+                        sql`
+                          insert into "courseConversationMessages" (
+                            "externalIdentifier",
+                            "courseConversation",
+                            "createdAt" text not null,
+                            "updatedAt" text null,
+                            "createdByCourseParticipation" integer null references "courseParticipations" on delete set null,
+                            "courseConversationMessageType" text not null,
+                            "anonymous" integer not null,
+                            "contentSource" text not null,
+                            "contentPreprocessed" text not null,
+                            "contentSearch" text not null,
+                            unique ("courseConversation", "externalIdentifier")
+                          )
+                          values (
+                            TODO
+                          );
+                        `,
+                      ).lastInsertRowid
+                    };
+                  `,
+              )!;
+            }
           }
         }
       }
