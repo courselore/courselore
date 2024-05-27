@@ -2653,7 +2653,7 @@ export default async (application: Application): Promise<void> => {
             "emailNotificationsForMessagesInConversationsInWhichYouParticipated" integer not null,
             "contentEditorProgrammerMode" integer not null,
             "anonymous" integer not null,
-            "mostRecentlyVisitedCourseParticipation" integer null references "courseParticipations" on delete set null
+            "mostRecentlyVisitedCourseParticipation" integer null references "courseParticipations"
           ) strict;
           create virtual table "search_users_nameSearch" using fts5(
             content = "users",
@@ -2674,7 +2674,7 @@ export default async (application: Application): Promise<void> => {
           create table "userSessions" (
             "identifier" integer primary key autoincrement,
             "externalIdentifier" text not null unique,
-            "user" integer not null references "users" on delete cascade,
+            "user" integer not null references "users",
             "createdAt" text not null,
             "samlIdentifier" text null,
             "samlSessionIndex" text null,
@@ -2712,7 +2712,7 @@ export default async (application: Application): Promise<void> => {
           create table "courseInvitationEmails" (
             "identifier" integer primary key autoincrement,
             "externalIdentifier" text not null unique,
-            "course" integer not null references "courses" on delete cascade,
+            "course" integer not null references "courses",
             "createdAt" text not null,
             "email" text not null,
             "courseRole" text not null
@@ -2724,19 +2724,19 @@ export default async (application: Application): Promise<void> => {
           create table "courseParticipations" (
             "identifier" integer primary key autoincrement,
             "externalIdentifier" text not null unique,
-            "user" integer not null references "users" on delete cascade,
-            "course" integer not null references "courses" on delete cascade,
+            "user" integer not null references "users",
+            "course" integer not null references "courses",
             "createdAt" text not null,
             "courseRole" text not null,
             "accentColor" text not null,
-            "mostRecentlyVisitedCourseConversation" integer null references "courseConversations" on delete set null,
+            "mostRecentlyVisitedCourseConversation" integer null references "courseConversations",
             unique ("user", "course")
           ) strict;
 
           create table "courseConversationTags" (
             "identifier" integer primary key autoincrement,
             "externalIdentifier" text not null unique,
-            "course" integer not null references "courses" on delete cascade,
+            "course" integer not null references "courses",
             "order" integer not null,
             "name" text not null,
             "courseStaffOnly" integer not null
@@ -2746,7 +2746,7 @@ export default async (application: Application): Promise<void> => {
           create table "courseConversations" (
             "identifier" integer primary key autoincrement,
             "externalIdentifier" text not null,
-            "course" integer not null references "courses" on delete cascade,
+            "course" integer not null references "courses",
             "pinned" integer not null,
             "courseConversationType" text not null,
             "questionResolved" integer not null,
@@ -2793,22 +2793,22 @@ export default async (application: Application): Promise<void> => {
           
           create table "courseConversationParticipations" (
             "identifier" integer primary key autoincrement,
-            "courseConversation" integer not null references "courseConversations" on delete cascade,
-            "courseParticipation" integer not null references "courseParticipations" on delete cascade,
+            "courseConversation" integer not null references "courseConversations",
+            "courseParticipation" integer not null references "courseParticipations",
             unique ("courseConversation", "courseParticipation")
           ) strict;
           
           create table "courseConversationTaggings" (
             "identifier" integer primary key autoincrement,
-            "courseConversation" integer not null references "courseConversations" on delete cascade,
-            "courseConversationTag" integer not null references "courseConversationTags" on delete cascade,
+            "courseConversation" integer not null references "courseConversations",
+            "courseConversationTag" integer not null references "courseConversationTags",
             unique ("courseConversation", "courseConversationTag")
           ) strict;
           
           create table "courseConversationMessageDrafts" (
             "identifier" integer primary key autoincrement,
-            "courseConversation" integer not null references "courseConversations" on delete cascade,
-            "createdByCourseParticipation" integer not null references "courseParticipations" on delete cascade,
+            "courseConversation" integer not null references "courseConversations",
+            "createdByCourseParticipation" integer not null references "courseParticipations",
             "contentSource" text not null,
             unique ("courseConversation", "createdByCourseParticipation")
           ) strict;
@@ -2816,10 +2816,10 @@ export default async (application: Application): Promise<void> => {
           create table "courseConversationMessages" (
             "identifier" integer primary key autoincrement,
             "externalIdentifier" text not null,
-            "courseConversation" integer not null references "courseConversations" on delete cascade,
+            "courseConversation" integer not null references "courseConversations",
             "createdAt" text not null,
             "updatedAt" text null,
-            "createdByCourseParticipation" integer null references "courseParticipations" on delete set null,
+            "createdByCourseParticipation" integer null references "courseParticipations",
             "courseConversationMessageType" text not null,
             "anonymous" integer not null,
             "contentSource" text not null,
@@ -2862,8 +2862,8 @@ export default async (application: Application): Promise<void> => {
           create table "courseConversationMessagePolls" (
             "identifier" integer primary key autoincrement,
             "externalIdentifier" text not null unique,
-            "course" integer not null references "courses" on delete cascade,
-            "createdByCourseParticipation" integer null references "courseParticipations" on delete set null,
+            "course" integer not null references "courses",
+            "createdByCourseParticipation" integer null references "courseParticipations",
             "multipleChoices" integer not null,
             "closed" integer not null
           ) strict;
@@ -2871,7 +2871,7 @@ export default async (application: Application): Promise<void> => {
           create table "courseConversationMessagePollOptions" (
             "identifier" integer primary key autoincrement,
             "externalIdentifier" text not null unique,
-            "courseConversationMessagePoll" integer not null references "courseConversationMessagePolls" on delete cascade,
+            "courseConversationMessagePoll" integer not null references "courseConversationMessagePolls",
             "order" integer not null,
             "contentSource" text not null,
             "contentPreprocessed" text not null
@@ -2879,30 +2879,30 @@ export default async (application: Application): Promise<void> => {
           
           create table "courseConversationMessagePollOptionVotes" (
             "identifier" integer primary key autoincrement,
-            "courseConversationMessagePollOption" integer not null references "courseConversationMessagePollOptions" on delete cascade,
-            "courseParticipation" integer null references "courseParticipations" on delete set null,
+            "courseConversationMessagePollOption" integer not null references "courseConversationMessagePollOptions",
+            "courseParticipation" integer null references "courseParticipations",
             unique ("courseConversationMessagePollOption", "courseParticipation")
           ) strict;
           
           create table "courseConversationMessageEmailNotificationDeliveries" (
             "identifier" integer primary key autoincrement,
-            "courseConversationMessage" integer not null references "courseConversationMessages" on delete cascade,
-            "courseParticipation" integer not null references "courseParticipations" on delete cascade,
+            "courseConversationMessage" integer not null references "courseConversationMessages",
+            "courseParticipation" integer not null references "courseParticipations",
             unique ("courseConversationMessage", "courseParticipation")
           ) strict;
           
           create table "courseConversationMessageReadings" (
             "identifier" integer primary key autoincrement,
             "createdAt" text not null,
-            "courseConversationMessage" integer not null references "courseConversationMessages" on delete cascade,
-            "courseParticipation" integer not null references "courseParticipations" on delete cascade,
+            "courseConversationMessage" integer not null references "courseConversationMessages",
+            "courseParticipation" integer not null references "courseParticipations",
             unique ("courseConversationMessage", "courseParticipation")
           ) strict;
           
           create table "courseConversationMessageLikes" (
             "identifier" integer primary key autoincrement,
-            "courseConversationMessage" integer not null references "courseConversationMessages" on delete cascade,
-            "courseParticipation" integer null references "courseParticipations" on delete set null,
+            "courseConversationMessage" integer not null references "courseConversationMessages",
+            "courseParticipation" integer null references "courseParticipations",
             unique ("courseConversationMessage", "courseParticipation")
           ) strict;
         `,
