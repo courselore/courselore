@@ -2747,26 +2747,18 @@ export default async (application: Application): Promise<void> => {
             "identifier" integer primary key autoincrement,
             "externalIdentifier" text not null,
             "course" integer not null references "courses" on delete cascade,
-            "createdAt" text not null,
-            "courseStaffUpdatedAt" text null,
-            "courseStudentsUpdatedAt" text null,
-            "createdByCourseParticipation" integer null references "courseParticipations" on delete set null,
             "pinned" integer not null,
             "courseConversationType" text not null,
             "questionResolved" integer not null,
             "courseConversationParticipations" text not null,
-            "anonymous" integer not null,
             "title" text not null,
             "titleSearch" text not null,
             "nextCourseConversationMessageExternalIdentifier" integer not null,
             unique ("course", "externalIdentifier")
           ) strict;
           create index "index_courseConversations_course" on "courseConversations" ("course");
-          create index "index_courseConversations_createdAt" on "courseConversations" ("createdAt");
-          create index "index_courseConversations_courseStaffUpdatedAt" on "courseConversations" ("courseStaffUpdatedAt");
-          create index "index_courseConversations_courseStudentsUpdatedAt" on "courseConversations" ("courseStudentsUpdatedAt");
           create index "index_courseConversations_pinned" on "courseConversations" ("pinned");
-          create index "index_courseConversations_type" on "courseConversations" ("type");
+          create index "index_courseConversations_courseConversationType" on "courseConversations" ("courseConversationType");
           create index "index_courseConversations_questionResolved" on "courseConversations" ("questionResolved");
           create virtual table "search_courseConversations_externalIdentifier" using fts5(
             content = "courseConversations",
@@ -2835,6 +2827,7 @@ export default async (application: Application): Promise<void> => {
             "contentSearch" text not null,
             unique ("courseConversation", "externalIdentifier")
           ) strict;
+          create index "index_courseConversations_courseConversationMessageType" on "courseConversationMessages" ("courseConversationMessageType");
           create virtual table "search_courseConversationMessages_externalIdentifier" using fts5(
             content = "courseConversationMessages",
             content_rowid = "identifier",
@@ -3270,6 +3263,10 @@ export default async (application: Application): Promise<void> => {
             course.nextCourseConversationExternalIdentifier;
             courseConversationIndex++
           ) {
+            const title = (
+              casual.words(1 + Math.floor(Math.random() * 10)) +
+              (Math.random() < 0.2 ? "?" : "")
+            ).replace(/./, (character) => character.toUpperCase());
             const courseConversation = database.get<{ identifier: number }>(
               sql`
                 select * from "courseConversations" where "identifier" = ${
@@ -3278,15 +3275,10 @@ export default async (application: Application): Promise<void> => {
                       insert into "courseConversations" (
                         "externalIdentifier",
                         "course",
-                        "createdAt",
-                        "courseStaffUpdatedAt",
-                        "courseStudentsUpdatedAt",
-                        "createdByCourseParticipation",
                         "pinned",
                         "courseConversationType",
                         "questionResolved",
                         "courseConversationParticipations",
-                        "anonymous",
                         "title",
                         "titleSearch",
                         "nextCourseConversationMessageExternalIdentifier"
@@ -3294,14 +3286,13 @@ export default async (application: Application): Promise<void> => {
                       values (
                         ${String(courseConversationIndex + 1)},
                         ${course.identifier},
-                        ${new Date(Date.now() - Math.floor((1 + course.nextCourseConversationExternalIdentifier - courseConversationIndex + Math.random() * 0.5) * 5 * 60 * 60 * 1000)).toISOString()},
-                        ${Math.random() < 0.7 ? new Date(Date.now() - Math.floor(24 * 5 * 60 * 60 * 1000)).toISOString() : null},
-                        ${Math.random() < 0.7 ? new Date(Date.now() - Math.floor(24 * 5 * 60 * 60 * 1000)).toISOString() : null},
-                        ${Math.random() < 0.9 ? courseParticipations[Math.floor(Math.random() * courseParticipations.length)] : null},
                         ${Number(Math.random() < 0.1)},
                         ${Math.random() < 0.3 ? "courseConversationNote" : "courseConversationQuestion"},
                         ${Number(Math.random() < 0.5)},
-                        TODO
+                        ${Math.random() < 0.3 ? "courseStudent" : Math.random() < 0.8 ? "courseStaff" : "courseConversationParticipations"},
+                        ${title},
+                        ${title},
+                        ${1 + Math.floor(Math.random() * 15)}
                       );
                     `,
                   ).lastInsertRowid
