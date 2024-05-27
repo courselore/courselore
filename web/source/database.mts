@@ -2752,9 +2752,9 @@ export default async (application: Application): Promise<void> => {
             "courseStudentsUpdatedAt" text null,
             "createdByCourseParticipation" integer null references "courseParticipations" on delete set null,
             "pinned" integer not null,
-            "type" text not null,
+            "courseConversationType" text not null,
             "questionResolved" integer not null,
-            "participations" text not null,
+            "courseConversationParticipations" text not null,
             "anonymous" integer not null,
             "title" text not null,
             "titleSearch" text not null,
@@ -2828,7 +2828,7 @@ export default async (application: Application): Promise<void> => {
             "createdAt" text not null,
             "updatedAt" text null,
             "createdByCourseParticipation" integer null references "courseParticipations" on delete set null,
-            "type" text not null,
+            "courseConversationMessageType" text not null,
             "anonymous" integer not null,
             "contentSource" text not null,
             "contentPreprocessed" text not null,
@@ -3264,6 +3264,51 @@ export default async (application: Application): Promise<void> => {
               `,
             ),
           );
+          for (
+            let courseConversationIndex = 0;
+            courseConversationIndex <
+            course.nextCourseConversationExternalIdentifier;
+            courseConversationIndex++
+          ) {
+            const courseConversation = database.get<{ identifier: number }>(
+              sql`
+                select * from "courseConversations" where "identifier" = ${
+                  database.run(
+                    sql`
+                      insert into "courseConversations" (
+                        "externalIdentifier",
+                        "course",
+                        "createdAt",
+                        "courseStaffUpdatedAt",
+                        "courseStudentsUpdatedAt",
+                        "createdByCourseParticipation",
+                        "pinned",
+                        "courseConversationType",
+                        "questionResolved",
+                        "courseConversationParticipations",
+                        "anonymous",
+                        "title",
+                        "titleSearch",
+                        "nextCourseConversationMessageExternalIdentifier"
+                      )
+                      values (
+                        ${String(courseConversationIndex + 1)},
+                        ${course.identifier},
+                        ${new Date(Date.now() - Math.floor((1 + course.nextCourseConversationExternalIdentifier - courseConversationIndex + Math.random() * 0.5) * 5 * 60 * 60 * 1000)).toISOString()},
+                        ${Math.random() < 0.7 ? new Date(Date.now() - Math.floor(24 * 5 * 60 * 60 * 1000)).toISOString() : null},
+                        ${Math.random() < 0.7 ? new Date(Date.now() - Math.floor(24 * 5 * 60 * 60 * 1000)).toISOString() : null},
+                        ${Math.random() < 0.9 ? courseParticipations[Math.floor(Math.random() * courseParticipations.length)] : null},
+                        ${Number(Math.random() < 0.1)},
+                        ${Math.random() < 0.3 ? "courseConversationNote" : "courseConversationQuestion"},
+                        ${Number(Math.random() < 0.5)},
+                        TODO
+                      );
+                    `,
+                  ).lastInsertRowid
+                };
+              `,
+            );
+          }
         }
       }
     },
