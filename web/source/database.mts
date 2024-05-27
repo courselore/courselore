@@ -3066,7 +3066,6 @@ export default async (application: Application): Promise<void> => {
           );
         }
         const user = users.shift()!;
-
         for (const courseData of [
           {
             name: "Principles of Programming Languages",
@@ -3078,20 +3077,20 @@ export default async (application: Application): Promise<void> => {
             archivedAt: new Date(
               Date.now() - 200 * 24 * 60 * 60 * 1000,
             ).toISOString(),
-          },
-          {
-            name: "Object-Oriented Software Engineering",
+            courseRole: "courseStaff",
           },
           {
             name: "Full-Stack JavaScript",
             year: String(new Date().getFullYear()),
             term: "Spring",
+            courseRole: "courseStudent",
           },
           {
             name: "Principles of Programming Languages",
             year: String(new Date().getFullYear()),
             term: new Date().getMonth() < 6 ? "Spring" : "Fall",
             code: "EN.601.426/626",
+            courseRole: "courseStaff",
           },
         ]) {
           const course = database.get<{
@@ -3171,6 +3170,66 @@ export default async (application: Application): Promise<void> => {
               `,
             );
           }
+          const courseParticipations = new Array<{ identifier: number }>();
+          for (const [courseUserIndex, courseUser] of [
+            user,
+            ...Array.from(
+              { length: Math.floor(60 + Math.random() * 50) },
+              () =>
+                courseUsers.splice(
+                  Math.floor(Math.random() * courseUsers.length),
+                  1,
+                )[0],
+            ),
+          ].entries())
+            courseParticipations.push(
+              database.get<{ identifier: number }>(
+                sql`
+                  select * from "courseParticipations" where "identifier" = ${
+                    database.run(
+                      sql`
+                        insert into "courseParticipations" (
+                          "externalIdentifier",
+                          "user",
+                          "course",
+                          "createdAt",
+                          "courseRole",
+                          "accentColor"
+                        )
+                        values (
+                          ${cryptoRandomString({ length: 10, type: "numeric" })},
+                          ${courseUser.identifier},
+                          ${course.identifier},
+                          ${new Date(Date.now() - Math.floor(Math.random() * 100 * 24 * 60 * 60 * 1000)).toISOString()},
+                          ${courseUserIndex === 0 ? courseData.courseRole : Math.random() < 0.15 ? "courseStaff" : "courseStudent"},
+                          ${
+                            [
+                              "red",
+                              "orange",
+                              "amber",
+                              "yellow",
+                              "lime",
+                              "green",
+                              "emerald",
+                              "teal",
+                              "cyan",
+                              "sky",
+                              "blue",
+                              "indigo",
+                              "violet",
+                              "purple",
+                              "fuchsia",
+                              "pink",
+                              "rose",
+                            ][Math.floor(Math.random() * 17)]
+                          }
+                        );
+                      `,
+                    ).lastInsertRowid
+                  };
+                `,
+              )!,
+            );
         }
       }
     },
