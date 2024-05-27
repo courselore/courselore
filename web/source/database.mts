@@ -2977,94 +2977,88 @@ export default async (application: Application): Promise<void> => {
       );
 
       if (application.configuration.environment === "development") {
-        const users = new Array<{
-          identifier: number;
-          email: string;
-        }>();
         const password = await argon2.hash(
           "courselore",
           application.configuration.argon2,
         );
-        for (let userIndex = 0; userIndex < 151; userIndex++) {
+        const users = Array.from({ length: 151 }, (value, userIndex) => {
           const name = casual.full_name;
-          users.push(
-            database.get<{
-              identifier: number;
-              email: string;
-            }>(
-              sql`
-                select * from "users" where "identifier" = ${
-                  database.run(
-                    sql`
-                      insert into "users" (
-                        "externalIdentifier",
-                        "createdAt",
-                        "name",
-                        "nameSearch",
-                        "email",
-                        "emailVerified",
-                        "password",
-                        "avatarlessBackgroundColor",
-                        "avatar",
-                        "systemRole",
-                        "lastSeenOnlineAt",
-                        "emailNotificationsForAllMessages",
-                        "emailNotificationsForMessagesIncludingMentions",
-                        "emailNotificationsForMessagesInConversationsYouStarted",
-                        "emailNotificationsForMessagesInConversationsInWhichYouParticipated",
-                        "contentEditorProgrammerMode",
-                        "anonymous"
-                      )
-                      values (
-                        ${cryptoRandomString({ length: 20, type: "numeric" })},
-                        ${new Date(Date.now() - Math.floor(Math.random() * 24 * 60 * 60 * 1000)).toISOString()},
-                        ${name},
-                        ${name},
-                        ${`${userIndex === 0 ? "administrator" : `${name.replaceAll(/[^A-Za-z]/g, "-").toLowerCase()}--${cryptoRandomString({ length: 3, type: "numeric" })}`}@courselore.org`},
-                        ${Number(true)},
-                        ${password},
-                        ${
-                          [
-                            "red",
-                            "orange",
-                            "amber",
-                            "yellow",
-                            "lime",
-                            "green",
-                            "emerald",
-                            "teal",
-                            "cyan",
-                            "sky",
-                            "blue",
-                            "indigo",
-                            "violet",
-                            "purple",
-                            "fuchsia",
-                            "pink",
-                            "rose",
-                          ][Math.floor(Math.random() * 17)]
-                        },
-                        ${
-                          Math.random() < 0.1
-                            ? `https://${application.configuration.hostname}/node_modules/fake-avatars/avatars/webp/${Math.floor(Math.random() * 263)}.webp`
-                            : null
-                        },
-                        ${userIndex === 0 || Math.random() < 0.05 ? "systemAdministrator" : Math.random() < 0.2 ? "systemStaff" : "systemUser"},
-                        ${new Date(Date.now() - Math.floor(Math.random() * 24 * 60 * 60 * 1000)).toISOString()},
-                        ${Number(Math.random() < 0.1)},
-                        ${Number(Math.random() < 0.9)},
-                        ${Number(Math.random() < 0.9)},
-                        ${Number(Math.random() < 0.9)},
-                        ${Number(Math.random() < 0.1)},
-                        ${Number(Math.random() < 0.8)}
-                      );
-                    `,
-                  ).lastInsertRowid
-                };
-          `,
-            )!,
-          );
-        }
+          return database.get<{
+            identifier: number;
+            email: string;
+          }>(
+            sql`
+              select * from "users" where "identifier" = ${
+                database.run(
+                  sql`
+                    insert into "users" (
+                      "externalIdentifier",
+                      "createdAt",
+                      "name",
+                      "nameSearch",
+                      "email",
+                      "emailVerified",
+                      "password",
+                      "avatarlessBackgroundColor",
+                      "avatar",
+                      "systemRole",
+                      "lastSeenOnlineAt",
+                      "emailNotificationsForAllMessages",
+                      "emailNotificationsForMessagesIncludingMentions",
+                      "emailNotificationsForMessagesInConversationsYouStarted",
+                      "emailNotificationsForMessagesInConversationsInWhichYouParticipated",
+                      "contentEditorProgrammerMode",
+                      "anonymous"
+                    )
+                    values (
+                      ${cryptoRandomString({ length: 20, type: "numeric" })},
+                      ${new Date(Date.now() - Math.floor(Math.random() * 24 * 60 * 60 * 1000)).toISOString()},
+                      ${name},
+                      ${name},
+                      ${`${userIndex === 0 ? "administrator" : `${name.replaceAll(/[^A-Za-z]/g, "-").toLowerCase()}--${cryptoRandomString({ length: 3, type: "numeric" })}`}@courselore.org`},
+                      ${Number(true)},
+                      ${password},
+                      ${
+                        [
+                          "red",
+                          "orange",
+                          "amber",
+                          "yellow",
+                          "lime",
+                          "green",
+                          "emerald",
+                          "teal",
+                          "cyan",
+                          "sky",
+                          "blue",
+                          "indigo",
+                          "violet",
+                          "purple",
+                          "fuchsia",
+                          "pink",
+                          "rose",
+                        ][Math.floor(Math.random() * 17)]
+                      },
+                      ${
+                        Math.random() < 0.1
+                          ? `https://${application.configuration.hostname}/node_modules/fake-avatars/avatars/webp/${Math.floor(Math.random() * 263)}.webp`
+                          : null
+                      },
+                      ${userIndex === 0 || Math.random() < 0.05 ? "systemAdministrator" : Math.random() < 0.2 ? "systemStaff" : "systemUser"},
+                      ${new Date(Date.now() - Math.floor(Math.random() * 24 * 60 * 60 * 1000)).toISOString()},
+                      ${Number(Math.random() < 0.1)},
+                      ${Number(Math.random() < 0.9)},
+                      ${Number(Math.random() < 0.9)},
+                      ${Number(Math.random() < 0.9)},
+                      ${Number(Math.random() < 0.1)},
+                      ${Number(Math.random() < 0.8)}
+                    );
+                  `,
+                ).lastInsertRowid
+              };
+        `,
+          )!;
+        });
         const user = users.shift()!;
         for (const courseData of [
           {
@@ -3170,19 +3164,20 @@ export default async (application: Application): Promise<void> => {
               `,
             );
           }
-          const courseParticipations = new Array<{ identifier: number }>();
-          for (const [courseUserIndex, courseUser] of [
-            user,
-            ...Array.from(
-              { length: Math.floor(60 + Math.random() * 50) },
-              () =>
-                courseUsers.splice(
-                  Math.floor(Math.random() * courseUsers.length),
-                  1,
-                )[0],
-            ),
-          ].entries())
-            courseParticipations.push(
+          const courseParticipations = [
+            ...[
+              user,
+              ...Array.from(
+                { length: Math.floor(60 + Math.random() * 50) },
+                () =>
+                  courseUsers.splice(
+                    Math.floor(Math.random() * courseUsers.length),
+                    1,
+                  )[0],
+              ),
+            ].entries(),
+          ].map(
+            ([courseUserIndex, courseUser]) =>
               database.get<{ identifier: number }>(
                 sql`
                   select * from "courseParticipations" where "identifier" = ${
@@ -3229,7 +3224,7 @@ export default async (application: Application): Promise<void> => {
                   };
                 `,
               )!,
-            );
+          );
         }
       }
     },
