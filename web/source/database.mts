@@ -3125,7 +3125,7 @@ export default async (application: Application): Promise<void> => {
               };
             `,
           )!;
-          const courseUsers = [...users];
+          const usersCopy = [...users];
           for (
             let courseInvitationEmailIndex = 0;
             courseInvitationEmailIndex < Math.floor(Math.random() * 30);
@@ -3147,8 +3147,8 @@ export default async (application: Application): Promise<void> => {
                   ${
                     Math.random() < 0.5
                       ? `${casual.full_name.replaceAll(/[^A-Za-z]/g, "-").toLowerCase()}--${cryptoRandomString({ length: 3, type: "numeric" })}@courselore.org`
-                      : courseUsers.splice(
-                          Math.floor(Math.random() * courseUsers.length),
+                      : usersCopy.splice(
+                          Math.floor(Math.random() * usersCopy.length),
                           1,
                         )[0].email
                   },
@@ -3159,15 +3159,15 @@ export default async (application: Application): Promise<void> => {
           const courseParticipations = [
             user,
             ...Array.from(
-              { length: Math.floor(60 + Math.random() * 50) },
+              { length: 60 + Math.floor(Math.random() * 50) },
               () =>
-                courseUsers.splice(
-                  Math.floor(Math.random() * courseUsers.length),
+                usersCopy.splice(
+                  Math.floor(Math.random() * usersCopy.length),
                   1,
                 )[0],
             ),
           ].map(
-            (courseUser, courseUserIndex) =>
+            (user, userIndex) =>
               database.get<{ identifier: number }>(
                 sql`
                   select * from "courseParticipations" where "identifier" = ${
@@ -3183,10 +3183,10 @@ export default async (application: Application): Promise<void> => {
                         )
                         values (
                           ${cryptoRandomString({ length: 10, type: "numeric" })},
-                          ${courseUser.identifier},
+                          ${user.identifier},
                           ${course.identifier},
                           ${new Date(Date.now() - Math.floor(Math.random() * 100 * 24 * 60 * 60 * 1000)).toISOString()},
-                          ${courseUserIndex === 0 ? courseData.courseRole : Math.random() < 0.15 ? "courseStaff" : "courseStudent"},
+                          ${userIndex === 0 ? courseData.courseRole : Math.random() < 0.15 ? "courseStaff" : "courseStudent"},
                           ${
                             [
                               "red",
@@ -3215,6 +3215,7 @@ export default async (application: Application): Promise<void> => {
                 `,
               )!,
           );
+          const courseParticipation = courseParticipations.shift()!;
           const courseConversationTags = [
             { name: "Assignment 1" },
             { name: "Assignment 2" },
@@ -3224,31 +3225,32 @@ export default async (application: Application): Promise<void> => {
             { name: "Assignment 6" },
             { name: "Change for Next Year", courseStaffOnly: true },
             { name: "Duplicate Question", courseStaffOnly: true },
-          ].map((courseConversationTag, courseConversationTagIndex) =>
-            database.get<{ identifier: number }>(
-              sql`
-                select * from "courseConversationTags" where "identifier" = ${
-                  database.run(
-                    sql`
-                      insert into "courseConversationTags" (
-                        "externalIdentifier",
-                        "course",
-                        "order",
-                        "name",
-                        "courseStaffOnly"
-                      )
-                      values (
-                        ${cryptoRandomString({ length: 10, type: "numeric" })},
-                        ${course.identifier},
-                        ${courseConversationTagIndex},
-                        ${courseConversationTag.name},
-                        ${Number(courseConversationTag.courseStaffOnly ?? false)}
-                      );
-                    `,
-                  ).lastInsertRowid
-                };
-              `,
-            ),
+          ].map(
+            (courseConversationTag, courseConversationTagIndex) =>
+              database.get<{ identifier: number }>(
+                sql`
+                  select * from "courseConversationTags" where "identifier" = ${
+                    database.run(
+                      sql`
+                        insert into "courseConversationTags" (
+                          "externalIdentifier",
+                          "course",
+                          "order",
+                          "name",
+                          "courseStaffOnly"
+                        )
+                        values (
+                          ${cryptoRandomString({ length: 10, type: "numeric" })},
+                          ${course.identifier},
+                          ${courseConversationTagIndex},
+                          ${courseConversationTag.name},
+                          ${Number(courseConversationTag.courseStaffOnly ?? false)}
+                        );
+                      `,
+                    ).lastInsertRowid
+                  };
+                `,
+              )!,
           );
           for (
             let courseConversationIndex = 0;
@@ -3291,6 +3293,38 @@ export default async (application: Application): Promise<void> => {
                   ).lastInsertRowid
                 };
               `,
+            )!;
+            const courseParticipationsCopy = [...courseParticipations];
+            const courseConversationParticipations = [
+              ...(Math.random() < 0.7 ? [courseParticipation] : []),
+              ...Array.from(
+                { length: Math.floor(Math.random() * 10) },
+                () =>
+                  courseParticipationsCopy.splice(
+                    Math.floor(Math.random() * courseParticipationsCopy.length),
+                    1,
+                  )[0],
+              ),
+            ].map(
+              (courseParticipation) =>
+                database.get<{ identifier: number }>(
+                  sql`
+                    select * from "courseConversationParticipations" where "identifier" = ${
+                      database.run(
+                        sql`
+                          insert into "courseConversationParticipations" (
+                            "courseConversation",
+                            "courseParticipation"
+                          )
+                          values (
+                            ${courseConversation.identifier},
+                            ${courseParticipation.identifier},
+                          );
+                        `,
+                      ).lastInsertRowid
+                    };
+                  `,
+                )!,
             );
           }
         }
