@@ -2732,6 +2732,16 @@ export default async (application: Application): Promise<void> => {
             "mostRecentlyVisitedCourseConversation" integer null references "courseConversations" on delete set null,
             unique ("user", "course")
           ) strict;
+
+          create table "courseConversationTags" (
+            "identifier" integer primary key autoincrement,
+            "externalIdentifier" text not null unique,
+            "course" integer not null references "courses" on delete cascade,
+            "order" integer not null,
+            "name" text not null,
+            "courseStaffOnly" integer not null
+          ) strict;
+          create index "index_courseConversationTags_course" on "courseConversationTags" ("course");
           
           create table "courseConversations" (
             "identifier" integer primary key autoincrement,
@@ -2795,16 +2805,6 @@ export default async (application: Application): Promise<void> => {
             "courseParticipation" integer not null references "courseParticipations" on delete cascade,
             unique ("courseConversation", "courseParticipation")
           ) strict;
-          
-          create table "courseConversationTags" (
-            "identifier" integer primary key autoincrement,
-            "externalIdentifier" text not null unique,
-            "course" integer not null references "courses" on delete cascade,
-            "order" integer not null,
-            "name" text not null,
-            "courseStaffOnly" integer not null
-          ) strict;
-          create index "index_courseConversationTags_course" on "courseConversationTags" ("course");
           
           create table "courseConversationTaggings" (
             "identifier" integer primary key autoincrement,
