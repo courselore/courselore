@@ -3132,9 +3132,10 @@ export default async (application: Application): Promise<void> => {
           const usersForCourseInvitationEmailsAndCourseParticipations = [
             ...users,
           ];
+          const courseInvitationEmailsCount = Math.floor(Math.random() * 30);
           for (
             let courseInvitationEmailIndex = 0;
-            courseInvitationEmailIndex < Math.floor(Math.random() * 30);
+            courseInvitationEmailIndex < courseInvitationEmailsCount;
             courseInvitationEmailIndex++
           )
             database.run(
@@ -3299,10 +3300,10 @@ export default async (application: Application): Promise<void> => {
                         ${Number(Math.random() < 0.1)},
                         ${Math.random() < 0.3 ? "courseConversationNote" : "courseConversationQuestion"},
                         ${Number(Math.random() < 0.5)},
-                        ${Math.random() < 0.3 ? "courseStudent" : Math.random() < 0.8 ? "courseStaff" : "courseConversationParticipations"},
+                        ${courseConversationIndex === 0 || Math.random() < 0.3 ? "courseStudent" : Math.random() < 0.8 ? "courseStaff" : "courseConversationParticipations"},
                         ${courseConversationTitle},
                         ${courseConversationTitle},
-                        ${1 + Math.floor(Math.random() * 15)}
+                        ${courseConversationIndex === 0 ? 1 : 1 + Math.floor(Math.random() * 15)}
                       );
                     `,
                   ).lastInsertRowid
@@ -3341,10 +3342,11 @@ export default async (application: Application): Promise<void> => {
             const courseConversationTagsForCourseConversationTaggings = [
               ...courseConversationTags,
             ];
+            const courseConversationTaggingsCount =
+              1 + Math.floor(Math.random() * 4);
             for (
               let courseConversationTaggingIndex = 0;
-              courseConversationTaggingIndex <
-              1 + Math.floor(Math.random() * 4);
+              courseConversationTaggingIndex < courseConversationTaggingsCount;
               courseConversationTaggingIndex++
             )
               database.run(
@@ -3441,6 +3443,65 @@ export default async (application: Application): Promise<void> => {
                     );
                   `,
                 );
+            }
+            if (courseConversationIndex === 0) {
+              const courseConversationMessagePoll = database.get<{
+                identifier: number;
+              }>(
+                sql`
+                  select * from "courseConversationMessagePolls" where "identifier" = ${
+                    database.run(
+                      sql`
+                        insert into "courseConversationMessagePolls" (
+                          "externalIdentifier",
+                          "course",
+                          "createdByCourseParticipation",
+                          "multipleChoices",
+                          "closed"
+                        )
+                        values (
+                          ${cryptoRandomString({ length: 20, type: "numeric" })},
+                          ${course.identifier},
+                          ${courseParticipation.identifier},
+                          ${Number(false)},
+                          ${Number(Math.random() < 0.5)}
+                        );
+                      `,
+                    ).lastInsertRowid
+                  };
+                `,
+              )!;
+              const courseConversationMessagePollOptions = Array.from(
+                { length: 3 + Math.floor(Math.random() * 4) },
+                (courseConversationMessagePollOptionIndex) => {
+                  const courseConversationMessagePollOptionContentSentence =
+                    casual.title;
+                  return database.get<{ identifier: number }>(
+                    sql`
+                      select * from "courseConversationMessagePollOptions" where "identifier" = ${
+                        database.run(
+                          sql`
+                            insert into "courseConversationMessagePollOptions" (
+                              "externalIdentifier",
+                              "courseConversationMessagePoll",
+                              "order",
+                              "contentSource",
+                              "contentPreprocessed"
+                            )
+                            values (
+                              ${cryptoRandomString({ length: 20, type: "numeric" })},
+                              ${courseConversationMessagePoll.identifier},
+                              ${courseConversationMessagePollOptionIndex},
+                              ${courseConversationMessagePollOptionContentSentence},
+                              ${`<p>${courseConversationMessagePollOptionContentSentence}</p>`}
+                            );
+                          `,
+                        ).lastInsertRowid
+                      };
+                    `,
+                  )!;
+                },
+              );
             }
           }
         }
