@@ -3476,7 +3476,10 @@ export default async (application: Application): Promise<void> => {
                   )!;
                   const courseConversationMessagePollOptions = Array.from(
                     { length: 3 + Math.floor(Math.random() * 4) },
-                    (courseConversationMessagePollOptionIndex) => {
+                    (
+                      courseConversationMessagePollOptionValue,
+                      courseConversationMessagePollOptionIndex,
+                    ) => {
                       const courseConversationMessagePollOptionContentSentence =
                         casual.title;
                       return database.get<{ identifier: number }>(
@@ -3564,10 +3567,9 @@ export default async (application: Application): Promise<void> => {
               database.run(
                 sql`
                   insert into "courseConversationMessageDrafts" (
-                    "courseConversation" integer not null references "courseConversations",
-                    "createdByCourseParticipation" integer not null references "courseParticipations",
-                    "contentSource" text not null,
-                    unique ("courseConversation", "createdByCourseParticipation")
+                    "courseConversation",
+                    "createdByCourseParticipation",
+                    "contentSource"
                   )
                   values (
                     ${courseConversation.identifier},
