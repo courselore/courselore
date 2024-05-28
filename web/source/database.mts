@@ -3129,7 +3129,9 @@ export default async (application: Application): Promise<void> => {
               };
             `,
           )!;
-          const usersCopy = [...users];
+          const usersForCourseInvitationEmailsAndCourseParticipations = [
+            ...users,
+          ];
           for (
             let courseInvitationEmailIndex = 0;
             courseInvitationEmailIndex < Math.floor(Math.random() * 30);
@@ -3151,8 +3153,11 @@ export default async (application: Application): Promise<void> => {
                   ${
                     Math.random() < 0.5
                       ? `${casual.full_name.replaceAll(/[^A-Za-z]/g, "-").toLowerCase()}--${cryptoRandomString({ length: 3, type: "numeric" })}@courselore.org`
-                      : usersCopy.splice(
-                          Math.floor(Math.random() * usersCopy.length),
+                      : usersForCourseInvitationEmailsAndCourseParticipations.splice(
+                          Math.floor(
+                            Math.random() *
+                              usersForCourseInvitationEmailsAndCourseParticipations.length,
+                          ),
                           1,
                         )[0].email
                   },
@@ -3165,8 +3170,11 @@ export default async (application: Application): Promise<void> => {
             ...Array.from(
               { length: 60 + Math.floor(Math.random() * 50) },
               () =>
-                usersCopy.splice(
-                  Math.floor(Math.random() * usersCopy.length),
+                usersForCourseInvitationEmailsAndCourseParticipations.splice(
+                  Math.floor(
+                    Math.random() *
+                      usersForCourseInvitationEmailsAndCourseParticipations.length,
+                  ),
                   1,
                 )[0],
             ),
@@ -3301,14 +3309,19 @@ export default async (application: Application): Promise<void> => {
                 };
               `,
             )!;
-            const courseParticipationsCopy = [...courseParticipations];
+            const courseParticipationsForCourseConversationParticipations = [
+              ...courseParticipations,
+            ];
             const courseConversationParticipations = [
               ...(Math.random() < 0.7 ? [courseParticipation] : []),
               ...Array.from(
                 { length: Math.floor(Math.random() * 10) },
                 () =>
-                  courseParticipationsCopy.splice(
-                    Math.floor(Math.random() * courseParticipationsCopy.length),
+                  courseParticipationsForCourseConversationParticipations.splice(
+                    Math.floor(
+                      Math.random() *
+                        courseParticipationsForCourseConversationParticipations.length,
+                    ),
                     1,
                   )[0],
               ),
@@ -3333,7 +3346,9 @@ export default async (application: Application): Promise<void> => {
                   `,
                 )!,
             );
-            const courseConversationTagsCopy = [...courseConversationTags];
+            const courseConversationTagsForCourseConversationTaggings = [
+              ...courseConversationTags,
+            ];
             for (
               let courseConversationTaggingIndex = 0;
               courseConversationTaggingIndex <
@@ -3348,7 +3363,7 @@ export default async (application: Application): Promise<void> => {
                   )
                   values (
                     ${courseConversation.identifier},
-                    ${courseConversationTagsCopy.splice(Math.floor(Math.random() * courseConversationTagsCopy.length), 1)[0].identifier}
+                    ${courseConversationTagsForCourseConversationTaggings.splice(Math.floor(Math.random() * courseConversationTagsForCourseConversationTaggings.length), 1)[0].identifier}
                   );
                 `,
               );
@@ -3407,6 +3422,33 @@ export default async (application: Application): Promise<void> => {
                     };
                   `,
               )!;
+              const courseConversationMessageLikesCount =
+                Math.random() < 0.6
+                  ? 0
+                  : Math.random() < 0.8
+                    ? Math.floor(Math.random() * 3)
+                    : Math.floor(Math.random() * 30);
+              const courseParticipationsForCourseConversationMessageLikes = [
+                ...courseParticipations,
+              ];
+              for (
+                let courseConversationMessageLikeIndex = 0;
+                courseConversationMessageLikeIndex <
+                courseConversationMessageLikesCount;
+                courseConversationMessageLikeIndex++
+              )
+                database.run(
+                  sql`
+                    insert into "courseConversationMessageLikes" (
+                      "courseConversationMessage",
+                      "courseParticipation"
+                    )
+                    values (
+                      ${courseConversationMessage.identifier},
+                      ${courseParticipationsForCourseConversationMessageLikes.splice(Math.floor(Math.random() * courseParticipationsForCourseConversationMessageLikes.length), 1)[0].identifier}
+                    );
+                  `,
+                );
             }
           }
         }
