@@ -3312,7 +3312,7 @@ export default async (application: Application): Promise<void> => {
             const courseParticipationsForCourseConversationParticipations = [
               ...courseParticipations,
             ];
-            const courseConversationParticipations = [
+            for (const courseParticipationForCourseConversationParticipations of [
               ...(Math.random() < 0.7 ? [courseParticipation] : []),
               ...Array.from(
                 { length: Math.floor(Math.random() * 10) },
@@ -3325,27 +3325,19 @@ export default async (application: Application): Promise<void> => {
                     1,
                   )[0],
               ),
-            ].map(
-              (courseParticipation) =>
-                database.get<{ identifier: number }>(
-                  sql`
-                    select * from "courseConversationParticipations" where "identifier" = ${
-                      database.run(
-                        sql`
-                          insert into "courseConversationParticipations" (
-                            "courseConversation",
-                            "courseParticipation"
-                          )
-                          values (
-                            ${courseConversation.identifier},
-                            ${courseParticipation.identifier}
-                          );
-                        `,
-                      ).lastInsertRowid
-                    };
-                  `,
-                )!,
-            );
+            ])
+              database.run(
+                sql`
+                insert into "courseConversationParticipations" (
+                  "courseConversation",
+                  "courseParticipation"
+                )
+                values (
+                  ${courseConversation.identifier},
+                  ${courseParticipationForCourseConversationParticipations.identifier}
+                );
+              `,
+              );
             const courseConversationTagsForCourseConversationTaggings = [
               ...courseConversationTags,
             ];
