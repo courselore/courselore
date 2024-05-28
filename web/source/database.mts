@@ -3445,62 +3445,136 @@ export default async (application: Application): Promise<void> => {
                 );
             }
             if (courseConversationIndex === 0) {
-              const courseConversationMessagePoll = database.get<{
-                identifier: number;
-              }>(
-                sql`
-                  select * from "courseConversationMessagePolls" where "identifier" = ${
-                    database.run(
-                      sql`
-                        insert into "courseConversationMessagePolls" (
-                          "externalIdentifier",
-                          "course",
-                          "createdByCourseParticipation",
-                          "multipleChoices",
-                          "closed"
-                        )
-                        values (
-                          ${cryptoRandomString({ length: 20, type: "numeric" })},
-                          ${course.identifier},
-                          ${courseParticipation.identifier},
-                          ${Number(false)},
-                          ${Number(Math.random() < 0.5)}
-                        );
-                      `,
-                    ).lastInsertRowid
-                  };
-                `,
-              )!;
-              const courseConversationMessagePollOptions = Array.from(
-                { length: 3 + Math.floor(Math.random() * 4) },
-                (courseConversationMessagePollOptionIndex) => {
-                  const courseConversationMessagePollOptionContentSentence =
-                    casual.title;
-                  return database.get<{ identifier: number }>(
+              const courseConversationMessagePolls = [false, true].map(
+                (courseConversationMessagePollMultipleChoices) => {
+                  const courseConversationMessagePoll = database.get<{
+                    identifier: number;
+                    multipleChoices: number;
+                  }>(
                     sql`
-                      select * from "courseConversationMessagePollOptions" where "identifier" = ${
-                        database.run(
-                          sql`
-                            insert into "courseConversationMessagePollOptions" (
-                              "externalIdentifier",
-                              "courseConversationMessagePoll",
-                              "order",
-                              "contentSource",
-                              "contentPreprocessed"
-                            )
-                            values (
-                              ${cryptoRandomString({ length: 20, type: "numeric" })},
-                              ${courseConversationMessagePoll.identifier},
-                              ${courseConversationMessagePollOptionIndex},
-                              ${courseConversationMessagePollOptionContentSentence},
-                              ${`<p>${courseConversationMessagePollOptionContentSentence}</p>`}
-                            );
-                          `,
-                        ).lastInsertRowid
-                      };
-                    `,
+                    select * from "courseConversationMessagePolls" where "identifier" = ${
+                      database.run(
+                        sql`
+                          insert into "courseConversationMessagePolls" (
+                            "externalIdentifier",
+                            "course",
+                            "createdByCourseParticipation",
+                            "multipleChoices",
+                            "closed"
+                          )
+                          values (
+                            ${cryptoRandomString({ length: 20, type: "numeric" })},
+                            ${course.identifier},
+                            ${courseParticipation.identifier},
+                            ${Number(courseConversationMessagePollMultipleChoices)},
+                            ${Number(Math.random() < 0.5)}
+                          );
+                        `,
+                      ).lastInsertRowid
+                    };
+                  `,
                   )!;
+                  const courseConversationMessagePollOptions = Array.from(
+                    { length: 3 + Math.floor(Math.random() * 4) },
+                    (courseConversationMessagePollOptionIndex) => {
+                      const courseConversationMessagePollOptionContentSentence =
+                        casual.title;
+                      return database.get<{ identifier: number }>(
+                        sql`
+                        select * from "courseConversationMessagePollOptions" where "identifier" = ${
+                          database.run(
+                            sql`
+                              insert into "courseConversationMessagePollOptions" (
+                                "externalIdentifier",
+                                "courseConversationMessagePoll",
+                                "order",
+                                "contentSource",
+                                "contentPreprocessed"
+                              )
+                              values (
+                                ${cryptoRandomString({ length: 20, type: "numeric" })},
+                                ${courseConversationMessagePoll.identifier},
+                                ${courseConversationMessagePollOptionIndex},
+                                ${courseConversationMessagePollOptionContentSentence},
+                                ${`<p>${courseConversationMessagePollOptionContentSentence}</p>`}
+                              );
+                            `,
+                          ).lastInsertRowid
+                        };
+                      `,
+                      )!;
+                    },
+                  );
+                  const courseConversationMessagePollOptionVotesCount =
+                    Math.random() < 0.5
+                      ? 3 + Math.floor(Math.random() * 5)
+                      : 30 + Math.floor(Math.random() * 10);
+                  const courseParticipationsForCourseConversationMessagePollOptionVotes =
+                    [...courseParticipations];
+                  for (
+                    let courseConversationMessagePollOptionVoteIndex = 0;
+                    courseConversationMessagePollOptionVoteIndex <
+                    courseConversationMessagePollOptionVotesCount;
+                    courseConversationMessagePollOptionVoteIndex++
+                  ) {
+                    const courseParticipationForCourseConversationMessagePollOptionVotes =
+                      courseParticipationsForCourseConversationMessagePollOptionVotes.splice(
+                        Math.floor(
+                          Math.random() *
+                            courseParticipationsForCourseConversationMessagePollOptionVotes.length,
+                        ),
+                        1,
+                      )[0];
+                    const courseConversationMessagePollOptionsForCourseConversationMessagePollOptionVotes =
+                      [...courseConversationMessagePollOptions];
+                    const courseConversationMessagePollOptionVotesCount =
+                      Boolean(courseConversationMessagePoll.multipleChoices)
+                        ? 1 + Math.floor(Math.random() * 3)
+                        : 1;
+                    for (
+                      let courseConversationMessagePollOptionVoteIndex = 0;
+                      courseConversationMessagePollOptionVoteIndex <
+                      courseConversationMessagePollOptionVotesCount;
+                      courseConversationMessagePollOptionVoteIndex++
+                    )
+                      database.run(
+                        sql`
+                          insert into "courseConversationMessagePollOptionVotes" (
+                            "courseConversationMessagePollOption",
+                            "courseParticipation"
+                          )
+                          values (
+                            ${
+                              courseConversationMessagePollOptionsForCourseConversationMessagePollOptionVotes.splice(
+                                Math.floor(
+                                  Math.random() *
+                                    courseConversationMessagePollOptionsForCourseConversationMessagePollOptionVotes.length,
+                                ),
+                                1,
+                              )[0].identifier
+                            },
+                            ${courseParticipationForCourseConversationMessagePollOptionVotes.identifier}
+                          );
+                        `,
+                      );
+                  }
+                  return courseConversationMessagePoll;
                 },
+              );
+              database.run(
+                sql`
+                  insert into "courseConversationMessageDrafts" (
+                    "courseConversation" integer not null references "courseConversations",
+                    "createdByCourseParticipation" integer not null references "courseParticipations",
+                    "contentSource" text not null,
+                    unique ("courseConversation", "createdByCourseParticipation")
+                  )
+                  values (
+                    ${courseConversation.identifier},
+                    ${courseParticipation.identifier},
+                    ${`TODO`}
+                  );
+                `,
               );
             }
           }
