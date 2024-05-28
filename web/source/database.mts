@@ -3328,15 +3328,15 @@ export default async (application: Application): Promise<void> => {
             ])
               database.run(
                 sql`
-                insert into "courseConversationParticipations" (
-                  "courseConversation",
-                  "courseParticipation"
-                )
-                values (
-                  ${courseConversation.identifier},
-                  ${courseParticipationForCourseConversationParticipations.identifier}
-                );
-              `,
+                  insert into "courseConversationParticipations" (
+                    "courseConversation",
+                    "courseParticipation"
+                  )
+                  values (
+                    ${courseConversation.identifier},
+                    ${courseParticipationForCourseConversationParticipations.identifier}
+                  );
+                `,
               );
             const courseConversationTagsForCourseConversationTaggings = [
               ...courseConversationTags,
