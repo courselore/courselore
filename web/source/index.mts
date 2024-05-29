@@ -87,6 +87,10 @@ process.once("beforeExit", () => {
 await database(application);
 await conversations(application);
 
+// TODO
+if (application.commandLineArguments.values.type === "background-job")
+  setInterval(() => {}, 1000);
+
 if (application.commandLineArguments.values.type === undefined) {
   for (const port of application.configuration.ports) {
     node.childProcessKeepAlive(() =>
