@@ -3574,7 +3574,319 @@ export default async (application: Application): Promise<void> => {
                   values (
                     ${courseConversation.identifier},
                     ${courseParticipation.identifier},
-                    ${`TODO`}
+                    ${
+                      markdown`
+# Headings
+
+${lodash
+  .times(lodash.random(1, 6), () => casual.sentences(lodash.random(1, 6)))
+  .join("\n\n")}
+
+# Heading 1
+
+${lodash
+  .times(lodash.random(1, 6), () => casual.sentences(lodash.random(1, 6)))
+  .join("\n\n")}
+
+## Heading 2
+
+${lodash
+  .times(lodash.random(1, 6), () => casual.sentences(lodash.random(1, 6)))
+  .join("\n\n")}
+
+### Heading 3
+
+${lodash
+  .times(lodash.random(1, 6), () => casual.sentences(lodash.random(1, 6)))
+  .join("\n\n")}
+
+#### Heading 4
+
+${lodash
+  .times(lodash.random(1, 6), () => casual.sentences(lodash.random(1, 6)))
+  .join("\n\n")}
+
+##### Heading 5
+
+${lodash
+  .times(lodash.random(1, 6), () => casual.sentences(lodash.random(1, 6)))
+  .join("\n\n")}
+
+###### Heading 6
+
+${lodash
+  .times(lodash.random(1, 6), () => casual.sentences(lodash.random(1, 6)))
+  .join("\n\n")}
+
+# Separator
+
+${casual.sentences(lodash.random(5, 10))}
+
+---
+
+${casual.sentences(lodash.random(5, 10))}
+
+# Inline
+
+**Bold**, _italics_, <u>underline</u>, ~~strikethrough~~, [link](https://courselore.org), www.example.com, https://example.com, contact@example.com, $E=mc^2$, \`code\`, <ins>insertion</ins>, ~~deletion~~ (~one tilde~), <sup>superscript</sup>, <sub>subscript</sub>, and a line  
+break.
+
+# Image
+
+![Image](https://${
+  application.configuration.hostname
+}/node_modules/fake-avatars/avatars/webp/1.webp)
+
+# Animated GIF
+
+[<video src="https://${
+  application.configuration.hostname
+}/demonstration/video.mp4"></video>](https://${
+  application.configuration.hostname
+}/demonstration/video.mp4)
+
+# Video
+
+<video src="https://${
+  application.configuration.hostname
+}/demonstration/video.mp4"></video>
+
+# Image/Video Proxy
+
+![Proxied image](https://interactive-examples.mdn.mozilla.net/media/cc0-images/grapefruit-slice-332-332.jpg)
+
+<video src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4"></video>
+
+# Polls
+
+<courselore-poll reference="${pollSingleChoice.reference}"></courselore-poll>
+
+<courselore-poll reference="${pollMultipleChoice.reference}"></courselore-poll>
+
+# Lists
+
+- Banana
+- Pyjamas
+- Phone
+
+---
+
+${lodash
+  .times(
+    lodash.random(3, 6),
+    () =>
+      `- ${lodash
+        .times(lodash.random(1, 6), () => casual.sentences(lodash.random(1, 6)))
+        .join("\n\n  ")}`
+  )
+  .join("\n\n")}
+
+---
+
+1. Banana
+2. Pyjamas
+3. Phone
+
+---
+
+${lodash
+  .times(
+    lodash.random(3, 6),
+    (index) =>
+      `${index + 1}. ${lodash
+        .times(lodash.random(1, 6), () => casual.sentences(lodash.random(1, 6)))
+        .join("\n\n   ")}`
+  )
+  .join("\n\n")}
+
+---
+
+${lodash
+  .times(
+    lodash.random(4, 8),
+    () =>
+      `- [${Math.random() < 0.5 ? " " : "x"}] ${casual.sentences(
+        lodash.random(1, 6)
+      )}`
+  )
+  .join("\n")}
+
+# Blockquote
+
+${lodash
+  .times(
+    lodash.random(3, 6),
+    () =>
+      `> ${lodash
+        .times(lodash.random(1, 6), () => casual.sentences(lodash.random(1, 6)))
+        .join("\n> ")}`
+  )
+  .join("\n>\n")}
+
+# Table
+
+| Left-aligned | Center-aligned | Right-aligned |
+| :---         |     :---:      |          ---: |
+| git status   | git status     | git status    |
+| git diff     | git diff       | git diff      |
+
+| Left-aligned | Center-aligned | Right-aligned | Left-aligned | Center-aligned | Right-aligned | Left-aligned | Center-aligned | Right-aligned |
+| :---         |     :---:      |          ---: | :---         |     :---:      |          ---: | :---         |     :---:      |          ---: |
+| git status   | git status     | git status    | git status   | git status     | git status    | git status   | git status     | git status    |
+| git diff     | git diff       | git diff      | git diff     | git diff       | git diff      | git diff     | git diff       | git diff      |
+
+# Details
+
+<details>
+<summary>Example of details with summary</summary>
+
+${lodash
+  .times(lodash.random(1, 6), () => casual.sentences(lodash.random(1, 6)))
+  .join("\n\n")}
+
+</details>
+
+<details>
+
+${lodash
+  .times(lodash.random(1, 6), () => casual.sentences(lodash.random(1, 6)))
+  .join("\n\n")}
+
+</details>
+
+# Footnotes
+
+Footnote[^1] and another.[^2]
+
+[^1]: ${casual.sentences(lodash.random(1, 6))}
+
+[^2]: ${casual.sentences(lodash.random(1, 6))}
+
+# Cross-Site Scripting
+
+👍<script>document.write("💩");</script>🙌
+
+# Mathematics
+
+$\\displaystyle \\frac{1}{\\Bigl(\\sqrt{\\phi \\sqrt{5}}-\\phi\\Bigr) e^{\\frac25 \\pi}} = 1+\\frac{e^{-2\\pi}} {1+\\frac{e^{-4\\pi}} {1+\\frac{e^{-6\\pi}} {1+\\frac{e^{-8\\pi}} {1+\\cdots} } } }$
+
+Lift($L$) can be determined by Lift Coefficient ($C_L$) like the following
+equation.
+
+$$
+L = \\frac{1}{2} \\rho v^2 S C_L
+$$
+
+A raw dollar sign: \\$
+
+$$
+\\invalidMacro
+$$
+
+Prevent large width/height visual affronts:
+
+$$
+\\rule{500em}{500em}
+$$
+
+# Syntax Highlighting
+
+\`\`\`javascript
+for (let orderIndex = 2; orderIndex <= order; orderIndex++) {
+const upperLeft = [];
+const lowerLeft = [];
+const lowerRight = [];
+const upperRight = [];
+for (const [x, y] of points) {
+upperLeft.push([y / 2, x / 2]);
+lowerLeft.push([x / 2, y / 2 + 1 / 2]);
+lowerRight.push([x / 2 + 1 / 2, y / 2 + 1 / 2]);
+upperRight.push([(1 - y) / 2 + 1 / 2, (1 - x) / 2]);
+}
+points = [...upperLeft, ...lowerLeft, ...lowerRight, ...upperRight];
+}
+\`\`\`
+
+\`\`\`
+L          TE
+A       A
+C    V
+R A
+DOU
+LOU
+REUSE
+QUE TU
+PORTES
+ET QUI T'
+ORNE O CI
+VILISÉ
+OTE-  TU VEUX
+LA    BIEN
+SI      RESPI
+    RER       - Apollinaire
+\`\`\`
+
+<pre>
+L          TE
+A       A
+C    V
+R A
+DOU
+LOU
+REUSE
+QUE TU
+PORTES
+ET QUI T'
+ORNE O CI
+VILISÉ
+OTE-  TU VEUX
+LA    BIEN
+SI      RESPI
+    RER       - Apollinaire
+</pre>
+
+# \`@mentions\`
+
+Self: @${courseParticipant.reference}
+
+Other: @${lodash.sample(courseParticipants)!.reference}
+
+Non-existent: @1571024857
+
+Course roles: @everyone, @course-staff, @students
+
+# \`#references\`
+
+Conversation self: #1
+
+Conversation other: #2
+
+Conversation non-existent: #14981039481
+
+Conversation permanent link turned reference: <https://${
+  application.configuration.hostname
+}/courses/${course.reference}/conversations/1>
+
+Conversation non-existent permanent link turned reference: <https://${
+  application.configuration.hostname
+}/courses/${course.reference}/conversations/14981039481>
+
+Message self: #1/1
+
+Message other: #2/1
+
+Message non-existent: #1/2
+
+Message permanent link turned reference: <https://${
+  application.configuration.hostname
+}/courses/${course.reference}/conversations/1?messages%5BmessageReference%5D=1>
+
+Message non-existent permanent link turned reference: <https://${
+  application.configuration.hostname
+}/courses/${course.reference}/conversations/1?messages%5BmessageReference%5D=2>
+`;
+
+                    }
                   );
                 `,
               );
