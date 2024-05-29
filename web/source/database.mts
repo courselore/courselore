@@ -6,6 +6,7 @@ import html from "@radically-straightforward/html";
 import * as htmlUtilities from "@radically-straightforward/html";
 import * as utilities from "@radically-straightforward/utilities";
 import dedent from "dedent";
+import markdown from "dedent";
 import cryptoRandomString from "crypto-random-string";
 import argon2 from "argon2";
 import casual from "casual";
@@ -2945,6 +2946,11 @@ export default async (application: Application): Promise<void> => {
         `,
       );
 
+      // TODO
+      // <courselore-poll reference=""> -> <courselore-poll identifier="">
+      // @everyone, @course-staff, @students -> @all, @course-staff, @course-students
+      // messages%5BmessageReference%5D -> message
+
       if (application.configuration.environment !== "development")
         throw new Error("TODO: Migration");
 
@@ -3574,319 +3580,270 @@ export default async (application: Application): Promise<void> => {
                   values (
                     ${courseConversation.identifier},
                     ${courseParticipation.identifier},
-                    ${
-                      markdown`
-# Headings
+                    ${markdown`
+                        # Headings
 
-${lodash
-  .times(lodash.random(1, 6), () => casual.sentences(lodash.random(1, 6)))
-  .join("\n\n")}
+                        ${Array.from({ length: 1 + Math.floor(Math.random() * 7) }, () => casual.sentences(1 + Math.floor(Math.random() * 7))).join("\n\n")}
 
-# Heading 1
+                        # Heading 1
 
-${lodash
-  .times(lodash.random(1, 6), () => casual.sentences(lodash.random(1, 6)))
-  .join("\n\n")}
+                        ${Array.from({ length: 1 + Math.floor(Math.random() * 7) }, () => casual.sentences(1 + Math.floor(Math.random() * 7))).join("\n\n")}
 
-## Heading 2
+                        ## Heading 2
 
-${lodash
-  .times(lodash.random(1, 6), () => casual.sentences(lodash.random(1, 6)))
-  .join("\n\n")}
+                        ${Array.from({ length: 1 + Math.floor(Math.random() * 7) }, () => casual.sentences(1 + Math.floor(Math.random() * 7))).join("\n\n")}
 
-### Heading 3
+                        ### Heading 3
 
-${lodash
-  .times(lodash.random(1, 6), () => casual.sentences(lodash.random(1, 6)))
-  .join("\n\n")}
+                        ${Array.from({ length: 1 + Math.floor(Math.random() * 7) }, () => casual.sentences(1 + Math.floor(Math.random() * 7))).join("\n\n")}
 
-#### Heading 4
+                        #### Heading 4
 
-${lodash
-  .times(lodash.random(1, 6), () => casual.sentences(lodash.random(1, 6)))
-  .join("\n\n")}
+                        ${Array.from({ length: 1 + Math.floor(Math.random() * 7) }, () => casual.sentences(1 + Math.floor(Math.random() * 7))).join("\n\n")}
 
-##### Heading 5
+                        ##### Heading 5
 
-${lodash
-  .times(lodash.random(1, 6), () => casual.sentences(lodash.random(1, 6)))
-  .join("\n\n")}
+                        ${Array.from({ length: 1 + Math.floor(Math.random() * 7) }, () => casual.sentences(1 + Math.floor(Math.random() * 7))).join("\n\n")}
 
-###### Heading 6
+                        ###### Heading 6
 
-${lodash
-  .times(lodash.random(1, 6), () => casual.sentences(lodash.random(1, 6)))
-  .join("\n\n")}
+                        ${Array.from({ length: 1 + Math.floor(Math.random() * 7) }, () => casual.sentences(1 + Math.floor(Math.random() * 7))).join("\n\n")}
 
-# Separator
+                        # Separator
 
-${casual.sentences(lodash.random(5, 10))}
+                        ${casual.sentences(3 + Math.floor(Math.random() * 5))}
 
----
+                        ---
 
-${casual.sentences(lodash.random(5, 10))}
+                        ${casual.sentences(3 + Math.floor(Math.random() * 5))}
 
-# Inline
+                        # Inline
 
-**Bold**, _italics_, <u>underline</u>, ~~strikethrough~~, [link](https://courselore.org), www.example.com, https://example.com, contact@example.com, $E=mc^2$, \`code\`, <ins>insertion</ins>, ~~deletion~~ (~one tilde~), <sup>superscript</sup>, <sub>subscript</sub>, and a line  
-break.
+                        **Bold**, _italics_, <u>underline</u>, ~~strikethrough~~, [link](https://courselore.org), www.example.com, https://example.com, contact@example.com, $E=mc^2$, \`code\`, <ins>insertion</ins>, ~~deletion~~ (~one tilde~), <sup>superscript</sup>, <sub>subscript</sub>, and a line  
+                        break.
 
-# Image
+                        # Image
 
-![Image](https://${
-  application.configuration.hostname
-}/node_modules/fake-avatars/avatars/webp/1.webp)
+                        ![Image](https://${
+                          application.configuration.hostname
+                        }/node_modules/fake-avatars/avatars/webp/1.webp)
 
-# Animated GIF
+                        # Animated GIF
 
-[<video src="https://${
-  application.configuration.hostname
-}/demonstration/video.mp4"></video>](https://${
-  application.configuration.hostname
-}/demonstration/video.mp4)
+                        [<video src="https://${
+                          application.configuration.hostname
+                        }/development/video-example.mp4"></video>](https://${
+                          application.configuration.hostname
+                        }/development/video-example.mp4)
 
-# Video
+                        # Video
 
-<video src="https://${
-  application.configuration.hostname
-}/demonstration/video.mp4"></video>
+                        <video src="https://${
+                          application.configuration.hostname
+                        }/development/video-example.mp4"></video>
 
-# Image/Video Proxy
+                        # Image/Video Proxy
 
-![Proxied image](https://interactive-examples.mdn.mozilla.net/media/cc0-images/grapefruit-slice-332-332.jpg)
+                        ![Proxied image](https://interactive-examples.mdn.mozilla.net/media/cc0-images/grapefruit-slice-332-332.jpg)
 
-<video src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4"></video>
+                        <video src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4"></video>
 
-# Polls
+                        # Polls
 
-<courselore-poll reference="${pollSingleChoice.reference}"></courselore-poll>
+                        ${courseConversationMessagePolls.map((courseConversationMessagePoll) => markdown`<courselore-poll identifier="${courseConversationMessagePoll.identifier}"></courselore-poll>`).join("\n\n")}
 
-<courselore-poll reference="${pollMultipleChoice.reference}"></courselore-poll>
+                        # Lists
 
-# Lists
+                        - Banana
+                        - Pyjamas
+                        - Phone
 
-- Banana
-- Pyjamas
-- Phone
+                        ---
 
----
+                        ${Array.from({ length: 3 + Math.floor(Math.random() * 4) }, () => `- ${Array.from({ length: 1 + Math.floor(Math.random() * 7) }, () => casual.sentences(1 + Math.floor(Math.random() * 7))).join("\n\n  ")}`).join("\n\n")}
 
-${lodash
-  .times(
-    lodash.random(3, 6),
-    () =>
-      `- ${lodash
-        .times(lodash.random(1, 6), () => casual.sentences(lodash.random(1, 6)))
-        .join("\n\n  ")}`
-  )
-  .join("\n\n")}
+                        ---
 
----
+                        1. Banana
+                        2. Pyjamas
+                        3. Phone
 
-1. Banana
-2. Pyjamas
-3. Phone
+                        ---
 
----
+                        ${Array.from({ length: 3 + Math.floor(Math.random() * 4) }, (listItemValue, listItemIndex) => `${listItemIndex + 1}. ${Array.from({ length: 1 + Math.floor(Math.random() * 7) }, () => casual.sentences(1 + Math.floor(Math.random() * 7))).join("\n\n  ")}`).join("\n\n")}
 
-${lodash
-  .times(
-    lodash.random(3, 6),
-    (index) =>
-      `${index + 1}. ${lodash
-        .times(lodash.random(1, 6), () => casual.sentences(lodash.random(1, 6)))
-        .join("\n\n   ")}`
-  )
-  .join("\n\n")}
+                        ---
 
----
+                        ${Array.from(
+                          { length: 4 + Math.floor(Math.random() * 5) },
+                          () =>
+                            `- [${Math.random() < 0.5 ? " " : "x"}] ${casual.sentences(
+                              1 + Math.floor(Math.random() * 7),
+                            )}`,
+                        ).join("\n")}
 
-${lodash
-  .times(
-    lodash.random(4, 8),
-    () =>
-      `- [${Math.random() < 0.5 ? " " : "x"}] ${casual.sentences(
-        lodash.random(1, 6)
-      )}`
-  )
-  .join("\n")}
+                        # Blockquote
 
-# Blockquote
+                        ${Array.from({ length: 1 + Math.floor(Math.random() * 7) }, () => `> ${casual.sentences(1 + Math.floor(Math.random() * 7))}`).join("\n>\n")}
 
-${lodash
-  .times(
-    lodash.random(3, 6),
-    () =>
-      `> ${lodash
-        .times(lodash.random(1, 6), () => casual.sentences(lodash.random(1, 6)))
-        .join("\n> ")}`
-  )
-  .join("\n>\n")}
-
-# Table
-
-| Left-aligned | Center-aligned | Right-aligned |
-| :---         |     :---:      |          ---: |
-| git status   | git status     | git status    |
-| git diff     | git diff       | git diff      |
-
-| Left-aligned | Center-aligned | Right-aligned | Left-aligned | Center-aligned | Right-aligned | Left-aligned | Center-aligned | Right-aligned |
-| :---         |     :---:      |          ---: | :---         |     :---:      |          ---: | :---         |     :---:      |          ---: |
-| git status   | git status     | git status    | git status   | git status     | git status    | git status   | git status     | git status    |
-| git diff     | git diff       | git diff      | git diff     | git diff       | git diff      | git diff     | git diff       | git diff      |
-
-# Details
-
-<details>
-<summary>Example of details with summary</summary>
-
-${lodash
-  .times(lodash.random(1, 6), () => casual.sentences(lodash.random(1, 6)))
-  .join("\n\n")}
-
-</details>
-
-<details>
-
-${lodash
-  .times(lodash.random(1, 6), () => casual.sentences(lodash.random(1, 6)))
-  .join("\n\n")}
-
-</details>
-
-# Footnotes
-
-Footnote[^1] and another.[^2]
-
-[^1]: ${casual.sentences(lodash.random(1, 6))}
-
-[^2]: ${casual.sentences(lodash.random(1, 6))}
-
-# Cross-Site Scripting
-
-👍<script>document.write("💩");</script>🙌
-
-# Mathematics
-
-$\\displaystyle \\frac{1}{\\Bigl(\\sqrt{\\phi \\sqrt{5}}-\\phi\\Bigr) e^{\\frac25 \\pi}} = 1+\\frac{e^{-2\\pi}} {1+\\frac{e^{-4\\pi}} {1+\\frac{e^{-6\\pi}} {1+\\frac{e^{-8\\pi}} {1+\\cdots} } } }$
-
-Lift($L$) can be determined by Lift Coefficient ($C_L$) like the following
-equation.
-
-$$
-L = \\frac{1}{2} \\rho v^2 S C_L
-$$
-
-A raw dollar sign: \\$
+                        # Table
 
-$$
-\\invalidMacro
-$$
+                        | Left-aligned | Center-aligned | Right-aligned |
+                        | :---         |     :---:      |          ---: |
+                        | git status   | git status     | git status    |
+                        | git diff     | git diff       | git diff      |
 
-Prevent large width/height visual affronts:
-
-$$
-\\rule{500em}{500em}
-$$
-
-# Syntax Highlighting
-
-\`\`\`javascript
-for (let orderIndex = 2; orderIndex <= order; orderIndex++) {
-const upperLeft = [];
-const lowerLeft = [];
-const lowerRight = [];
-const upperRight = [];
-for (const [x, y] of points) {
-upperLeft.push([y / 2, x / 2]);
-lowerLeft.push([x / 2, y / 2 + 1 / 2]);
-lowerRight.push([x / 2 + 1 / 2, y / 2 + 1 / 2]);
-upperRight.push([(1 - y) / 2 + 1 / 2, (1 - x) / 2]);
-}
-points = [...upperLeft, ...lowerLeft, ...lowerRight, ...upperRight];
-}
-\`\`\`
-
-\`\`\`
-L          TE
-A       A
-C    V
-R A
-DOU
-LOU
-REUSE
-QUE TU
-PORTES
-ET QUI T'
-ORNE O CI
-VILISÉ
-OTE-  TU VEUX
-LA    BIEN
-SI      RESPI
-    RER       - Apollinaire
-\`\`\`
-
-<pre>
-L          TE
-A       A
-C    V
-R A
-DOU
-LOU
-REUSE
-QUE TU
-PORTES
-ET QUI T'
-ORNE O CI
-VILISÉ
-OTE-  TU VEUX
-LA    BIEN
-SI      RESPI
-    RER       - Apollinaire
-</pre>
-
-# \`@mentions\`
-
-Self: @${courseParticipant.reference}
-
-Other: @${lodash.sample(courseParticipants)!.reference}
-
-Non-existent: @1571024857
-
-Course roles: @everyone, @course-staff, @students
-
-# \`#references\`
-
-Conversation self: #1
-
-Conversation other: #2
-
-Conversation non-existent: #14981039481
-
-Conversation permanent link turned reference: <https://${
-  application.configuration.hostname
-}/courses/${course.reference}/conversations/1>
-
-Conversation non-existent permanent link turned reference: <https://${
-  application.configuration.hostname
-}/courses/${course.reference}/conversations/14981039481>
-
-Message self: #1/1
-
-Message other: #2/1
-
-Message non-existent: #1/2
-
-Message permanent link turned reference: <https://${
-  application.configuration.hostname
-}/courses/${course.reference}/conversations/1?messages%5BmessageReference%5D=1>
-
-Message non-existent permanent link turned reference: <https://${
-  application.configuration.hostname
-}/courses/${course.reference}/conversations/1?messages%5BmessageReference%5D=2>
-`;
-
-                    }
+                        | Left-aligned | Center-aligned | Right-aligned | Left-aligned | Center-aligned | Right-aligned | Left-aligned | Center-aligned | Right-aligned |
+                        | :---         |     :---:      |          ---: | :---         |     :---:      |          ---: | :---         |     :---:      |          ---: |
+                        | git status   | git status     | git status    | git status   | git status     | git status    | git status   | git status     | git status    |
+                        | git diff     | git diff       | git diff      | git diff     | git diff       | git diff      | git diff     | git diff       | git diff      |
+
+                        # Details
+
+                        <details>
+                        <summary>Example of details with summary</summary>
+
+                        ${Array.from({ length: 1 + Math.floor(Math.random() * 7) }, () => casual.sentences(1 + Math.floor(Math.random() * 7))).join("\n\n")}
+
+                        </details>
+
+                        <details>
+
+                        ${Array.from({ length: 1 + Math.floor(Math.random() * 7) }, () => casual.sentences(1 + Math.floor(Math.random() * 7))).join("\n\n")}
+
+                        </details>
+
+                        # Footnotes
+
+                        Footnote[^1] and another.[^2]
+
+                        [^1]: ${casual.sentences(1 + Math.floor(Math.random() * 7))}
+
+                        [^2]: ${casual.sentences(1 + Math.floor(Math.random() * 7))}
+
+                        # Cross-Site Scripting
+
+                        👍<script>document.write("💩");</script>🙌
+
+                        # Mathematics
+
+                        $\\displaystyle \\frac{1}{\\Bigl(\\sqrt{\\phi \\sqrt{5}}-\\phi\\Bigr) e^{\\frac25 \\pi}} = 1+\\frac{e^{-2\\pi}} {1+\\frac{e^{-4\\pi}} {1+\\frac{e^{-6\\pi}} {1+\\frac{e^{-8\\pi}} {1+\\cdots} } } }$
+
+                        Lift($L$) can be determined by Lift Coefficient ($C_L$) like the following
+                        equation.
+
+                        $$
+                        L = \\frac{1}{2} \\rho v^2 S C_L
+                        $$
+
+                        A raw dollar sign: \\$
+
+                        $$
+                        \\invalidMacro
+                        $$
+
+                        Prevent large width/height visual affronts:
+
+                        $$
+                        \\rule{500em}{500em}
+                        $$
+
+                        # Syntax Highlighting
+
+                        \`\`\`javascript
+                        for (let orderIndex = 2; orderIndex <= order; orderIndex++) {
+                          const upperLeft = [];
+                          const lowerLeft = [];
+                          const lowerRight = [];
+                          const upperRight = [];
+                          for (const [x, y] of points) {
+                            upperLeft.push([y / 2, x / 2]);
+                            lowerLeft.push([x / 2, y / 2 + 1 / 2]);
+                            lowerRight.push([x / 2 + 1 / 2, y / 2 + 1 / 2]);
+                            upperRight.push([(1 - y) / 2 + 1 / 2, (1 - x) / 2]);
+                          }
+                          points = [...upperLeft, ...lowerLeft, ...lowerRight, ...upperRight];
+                        }
+                        \`\`\`
+
+                        \`\`\`
+                        L          TE
+                        A       A
+                        C    V
+                        R A
+                        DOU
+                        LOU
+                        REUSE
+                        QUE TU
+                        PORTES
+                        ET QUI T'
+                        ORNE O CI
+                        VILISÉ
+                        OTE-  TU VEUX
+                        LA    BIEN
+                        SI      RESPI
+                            RER       - Apollinaire
+                        \`\`\`
+
+                        <pre>
+                        L          TE
+                        A       A
+                        C    V
+                        R A
+                        DOU
+                        LOU
+                        REUSE
+                        QUE TU
+                        PORTES
+                        ET QUI T'
+                        ORNE O CI
+                        VILISÉ
+                        OTE-  TU VEUX
+                        LA    BIEN
+                        SI      RESPI
+                            RER       - Apollinaire
+                        </pre>
+
+                        # \`@mentions\`
+
+                        Self: @${courseParticipation.identifier}
+
+                        Other: @${courseParticipations[Math.floor(Math.random() * courseParticipations.length)].identifier}
+
+                        Non-existent: @1571024857
+
+                        Course roles: @all, @course-staff, @course-students
+
+                        # \`#references\`
+
+                        Conversation self: #1
+
+                        Conversation other: #2
+
+                        Conversation non-existent: #14981039481
+
+                        Conversation permanent link turned reference: <https://${
+                          application.configuration.hostname
+                        }/courses/${course.identifier}/conversations/1>
+
+                        Conversation non-existent permanent link turned reference: <https://${
+                          application.configuration.hostname
+                        }/courses/${course.identifier}/conversations/14981039481>
+
+                        Message self: #1/2
+
+                        Message other: #2/1
+
+                        Message non-existent: #1/100
+
+                        Message permanent link turned reference: <https://${
+                          application.configuration.hostname
+                        }/courses/${course.identifier}/conversations/1?message=1>
+
+                        Message non-existent permanent link turned reference: <https://${
+                          application.configuration.hostname
+                        }/courses/${course.identifier}/conversations/1?message=100>
+                        `}
                   );
                 `,
               );
