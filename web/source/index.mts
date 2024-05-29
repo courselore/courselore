@@ -10,6 +10,7 @@ import caddyfile from "@radically-straightforward/caddy";
 import * as caddy from "@radically-straightforward/caddy";
 import * as argon2 from "argon2";
 import database, { ApplicationDatabase } from "./database.mjs";
+import conversations from "./conversations.mjs";
 
 export type Application = {
   commandLineArguments: {
@@ -27,7 +28,7 @@ export type Application = {
     hstsPreload: boolean;
     extraCaddyfile: string;
     ports: number[];
-    argon2: argon2.Options
+    argon2: argon2.Options;
   };
   server: undefined | ReturnType<typeof server>;
 } & ApplicationDatabase;
@@ -84,6 +85,7 @@ process.once("beforeExit", () => {
 });
 
 await database(application);
+await conversations(application);
 
 if (application.commandLineArguments.values.type === undefined) {
   for (const port of application.configuration.ports) {
