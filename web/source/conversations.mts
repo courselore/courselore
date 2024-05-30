@@ -124,14 +124,6 @@ export default async (application: Application): Promise<void> => {
               inset: 0;
               display: flex;
               flex-direction: column;
-
-              &.col-resize {
-                cursor: col-resize !important;
-                * {
-                  user-select: none;
-                  pointer-events: none;
-                }
-              }
             `}"
             javascript="${javascript`
               javascript.liveConnection(${request.id}, { reload: ${application.configuration.environment === "development"} });
@@ -247,14 +239,16 @@ export default async (application: Application): Promise<void> => {
                     this.onmousedown = (event) => {
                       if (event.button !== 0) return;
                       this.classList.add("active");
-                      document.querySelector("body").classList.add("col-resize");
+                      document.querySelector("body").classList.add("noninteractive");
+                      document.querySelector("body").style.cursor = "col-resize";
                       document.onmousemove = (event) => {
                         const element = this.closest('[key="main"]').querySelector('[key~="courseConversations"]');
                         element.style.width = String(Math.min(Math.max(event.clientX, 16 * 16), 32 * 16)) + "px";
                       };
                       document.onmouseup = () => {
                         this.classList.remove("active");
-                        document.querySelector("body").classList.remove("col-resize");
+                        document.querySelector("body").classList.remove("noninteractive");
+                        document.querySelector("body").style.cursor = "";
                         document.onmousemove = undefined;
                       };
                     };
