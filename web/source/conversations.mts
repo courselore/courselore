@@ -131,7 +131,7 @@ export default async (application: Application): Promise<void> => {
                 css="${css`
                   height: var(--space--1);
                 `}"
-                style="background-color: var(--color--${courseParticipation.accentColor}--500);"
+                style="background-color: light-dark(var(--color--${courseParticipation.accentColor}--500), var(--color--${courseParticipation.accentColor}--700));"
               ></div>
               <div
                 key="header"
@@ -147,6 +147,7 @@ export default async (application: Application): Promise<void> => {
                 `}"
               >
                 <a
+                  key="logo"
                   href="${new URL("/", request.URL).href}"
                   css="${css`
                     font-weight: 700;
@@ -154,6 +155,11 @@ export default async (application: Application): Promise<void> => {
                     align-items: center;
                     gap: var(--space--1);
                     cursor: pointer;
+                    transition-property: var(--transition-property--colors);
+                    transition-duration: var(--transition-duration--150);
+                    transition-timing-function: var(
+                      --transition-timing-function--ease-in-out
+                    );
                     &:hover,
                     &:focus-within {
                       color: light-dark(
@@ -167,11 +173,6 @@ export default async (application: Application): Promise<void> => {
                         var(--color--blue--600)
                       );
                     }
-                    transition-property: var(--transition-property--colors);
-                    transition-duration: var(--transition-duration--150);
-                    transition-timing-function: var(
-                      --transition-timing-function--ease-in-out
-                    );
                   `}"
                 >
                   <svg width="20" height="20" viewBox="0 0 20 20">
@@ -186,6 +187,7 @@ export default async (application: Application): Promise<void> => {
                   <div>Courselore</div>
                 </a>
                 <div
+                  key="course"
                   css="${css`
                     flex: 1;
                     min-width: 0;
@@ -210,7 +212,7 @@ export default async (application: Application): Promise<void> => {
                     <i class="bi bi-chevron-down"></i>
                   </button>
                 </div>
-                <button>LF</button>
+                <button key="user">LF</button>
               </div>
               <div key="main">HELLO</div>
             </div>
