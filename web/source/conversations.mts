@@ -59,7 +59,12 @@ export default async (application: Application): Promise<void> => {
     ) => {
       response.end(html`
         <!doctype html>
-        <html style="color-scheme: light dark">
+        <html
+          style="color-scheme: light dark;"
+          javascript="${javascript`
+            javascript.liveConnection(${request.id}, { reload: ${application.configuration.environment === "development"} });
+          `}"
+        >
           <head>
             <title>Courselore</title>
             <meta
