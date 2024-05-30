@@ -149,33 +149,9 @@ export default async (application: Application): Promise<void> => {
                 <a
                   key="logo"
                   href="${new URL("/", request.URL).href}"
+                  class="button"
                   css="${css`
                     font-weight: 700;
-                    border-radius: var(--border-radius--1);
-                    padding: var(--space--1) var(--space--2);
-                    margin: var(--space---1) var(--space---2);
-                    display: flex;
-                    align-items: center;
-                    gap: var(--space--1);
-                    cursor: pointer;
-                    transition-property: var(--transition-property--colors);
-                    transition-duration: var(--transition-duration--150);
-                    transition-timing-function: var(
-                      --transition-timing-function--ease-in-out
-                    );
-                    &:hover,
-                    &:focus-within {
-                      background-color: light-dark(
-                        var(--color--slate--100),
-                        var(--color--slate--800)
-                      );
-                    }
-                    &:active {
-                      background-color: light-dark(
-                        var(--color--slate--200),
-                        var(--color--slate--700)
-                      );
-                    }
                   `}"
                 >
                   <svg width="20" height="20" viewBox="0 0 20 20">
@@ -197,6 +173,7 @@ export default async (application: Application): Promise<void> => {
                   `}"
                 >
                   <button
+                    class="button"
                     css="${css`
                       max-width: 100%;
                       display: flex;
@@ -215,7 +192,7 @@ export default async (application: Application): Promise<void> => {
                     <i class="bi bi-chevron-down"></i>
                   </button>
                 </div>
-                <button key="user">LF</button>
+                <button key="user" class="button">LF</button>
               </div>
               <div key="main">HELLO</div>
             </div>

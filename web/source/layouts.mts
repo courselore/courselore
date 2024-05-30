@@ -12,7 +12,29 @@ css`
   @import "katex/dist/katex.css";
 
   .button {
-    
+    border-radius: var(--border-radius--1);
+    padding: var(--space--1) var(--space--2);
+    margin: var(--space---1) var(--space---2);
+    display: flex;
+    align-items: center;
+    gap: var(--space--1);
+    cursor: pointer;
+    transition-property: var(--transition-property--colors);
+    transition-duration: var(--transition-duration--150);
+    transition-timing-function: var(--transition-timing-function--ease-in-out);
+    &:hover,
+    &:focus-within {
+      background-color: light-dark(
+        var(--color--slate--100),
+        var(--color--slate--800)
+      );
+    }
+    &:active {
+      background-color: light-dark(
+        var(--color--slate--200),
+        var(--color--slate--700)
+      );
+    }
   }
 `;
 
