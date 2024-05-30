@@ -109,6 +109,9 @@ export default async (application: Application): Promise<void> => {
                       var(--color--slate--200),
                       var(--color--slate--800)
                     );
+                  display: flex;
+                  justify-content: space-between;
+                  gap: var(--space--4);
                 `}"
               >
                 <a
@@ -117,7 +120,26 @@ export default async (application: Application): Promise<void> => {
                     font-weight: 700;
                     display: flex;
                     align-items: center;
-                    gap: var(--space--2);
+                    gap: var(--space--1);
+                    cursor: pointer;
+                    &:hover,
+                    &:focus-within {
+                      color: light-dark(
+                        var(--color--blue--500),
+                        var(--color--blue--500)
+                      );
+                    }
+                    &:active {
+                      color: light-dark(
+                        var(--color--blue--600),
+                        var(--color--blue--600)
+                      );
+                    }
+                    transition-property: var(--transition-property--colors);
+                    transition-duration: var(--transition-duration--150);
+                    transition-timing-function: var(
+                      --transition-timing-function--ease-in-out
+                    );
                   `}"
                 >
                   <svg width="20" height="20" viewBox="0 0 20 20">
