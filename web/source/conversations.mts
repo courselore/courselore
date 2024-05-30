@@ -135,10 +135,10 @@ export default async (application: Application): Promise<void> => {
             >
               <div
                 key="accentColor"
+                style="background-color: light-dark(var(--color--${courseParticipation.accentColor}--500), var(--color--${courseParticipation.accentColor}--700));"
                 css="${css`
                   height: var(--space--1);
                 `}"
-                style="background-color: light-dark(var(--color--${courseParticipation.accentColor}--500), var(--color--${courseParticipation.accentColor}--700));"
               ></div>
               <div
                 key="header"
@@ -209,7 +209,8 @@ export default async (application: Application): Promise<void> => {
                 `}"
               >
                 <div
-                  key="courseConversations (/courses/${course.externalId})"
+                  key="courseConversations /courses/${course.externalId}"
+                  style="width: 320px;"
                   css="${css`
                     border-right: var(--border-width--1) solid
                       light-dark(
@@ -233,17 +234,32 @@ export default async (application: Application): Promise<void> => {
                       transition-timing-function: var(
                         --transition-timing-function--ease-in-out
                       );
-                      &:hover {
+                      &:hover,
+                      &.active {
                         background-color: light-dark(
                           var(--color--blue--500),
                           var(--color--blue--500)
                         );
                       }
                     `}"
+                    javascript="${javascript`
+                      this.onmousedown = (event) => {
+                        if (event.button !== 0) return;
+                        this.classList.add("active");
+                        document.onmousemove = (event) => {
+                          const element = this.closest('[key="main"]').querySelector('[key~="courseConversations"]');
+                          element.style.width = String(Number(element.style.width.slice(0, -"px".length)) + event.movementX) + "px";
+                        };
+                        document.onmouseup = () => {
+                          this.classList.remove("active");
+                          document.onmousemove = () => {};
+                        };
+                      };
+                    `}"
                   ></div>
                 </div>
                 <div
-                  key="courseConversation (/courses/${course.externalId}/conversations/${courseConversation.externalId})"
+                  key="courseConversation /courses/${course.externalId}/conversations/${courseConversation.externalId}"
                   css="${css`
                     flex: 1;
                   `}"
