@@ -222,6 +222,7 @@ export default async (application: Application): Promise<void> => {
                     position: absolute;
                     transform: translateX(-50%);
                     cursor: col-resize;
+                    pointer-events: auto;
                     transition-property: var(--transition-property--colors);
                     transition-duration: var(--transition-duration--150);
                     transition-timing-function: var(
@@ -236,14 +237,8 @@ export default async (application: Application): Promise<void> => {
                     }
                   `}"
                   javascript="${javascript`
-                    this.lastOnmousedownAt ??= 0;
                     this.onmousedown = (event) => {
                       if (event.button !== 0) return;
-                      if (Date.now() - this.lastOnmousedownAt < 300) {
-                        this.closest('[key="main"]').querySelector('[key~="courseConversations"]').style.width = String(20 * 16) +"px";
-                        return;
-                      }
-                      this.lastOnmousedownAt = Date.now();
                       this.classList.add("active");
                       document.querySelector("body").classList.add("noninteractive");
                       document.querySelector("body").style.cursor = "col-resize";
@@ -257,6 +252,9 @@ export default async (application: Application): Promise<void> => {
                         document.querySelector("body").style.cursor = "";
                         document.onmousemove = undefined;
                       };
+                    };
+                    this.ondblclick = (event) => {
+                      this.closest('[key="main"]').querySelector('[key~="courseConversations"]').style.width = String(20 * 16) +"px";
                     };
                   `}"
                 ></div>
