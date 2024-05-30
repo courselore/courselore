@@ -1,4 +1,5 @@
 import * as serverTypes from "@radically-straightforward/server";
+import sql from "@radically-straightforward/sqlite";
 import html from "@radically-straightforward/html";
 import css from "@radically-straightforward/css";
 import javascript from "@radically-straightforward/javascript";
@@ -6,6 +7,41 @@ import * as caddy from "@radically-straightforward/caddy";
 import { Application } from "./index.mjs";
 
 export default async (application: Application): Promise<void> => {
+  // TODO
+  application.server?.push({
+    method: "GET",
+    pathname: "/",
+    handler: (
+      request: serverTypes.Request<
+        { courseIdentifier: string; conversationIdentifier: string },
+        { message: string },
+        {},
+        {},
+        {}
+      >,
+      response,
+    ) => {
+      const course = application.database.get<{
+        identifier: number;
+        externalIdentifier: number;
+      }>(
+        sql`
+          select "identifier", "externalIdentifier" from "courses" limit 1;
+        `,
+      )!;
+      const conversation = application.database.get<{
+        externalIdentifier: number;
+      }>(
+        sql`
+          select "externalIdentifier" from "courseConversations" where "course" = ${course.identifier};
+        `,
+      )!;
+      response.redirect(
+        `/courses/${course.externalIdentifier}/conversations/${conversation.externalIdentifier}`,
+      );
+    },
+  });
+
   application.server?.push({
     method: "GET",
     pathname: new RegExp(
