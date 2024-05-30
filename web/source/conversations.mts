@@ -244,17 +244,18 @@ export default async (application: Application): Promise<void> => {
                     javascript="${javascript`
                       this.onmousedown = (event) => {
                         if (event.button !== 0) return;
+                        document.querySelector("body").style.userSelect = "none";
                         document.onmousemove = (event) => {
                           const element = this.closest('[key="main"]').querySelector('[key~="courseConversations"]');
-                          element.style.width = String(Math.max(16 * 16, Math.min(32 * 16, Number(element.style.width.slice(0, -"px".length)) + event.movementX))) + "px";
+                          element.style.width = String(Math.min(Math.max(event.clientX, 16 * 16), 32 * 16)) + "px";
                         };
                         document.onmouseup = () => {
+                          document.querySelector("body").style.userSelect = "";
                           document.onmousemove = undefined;
                         };
                       };
                       this.ondblclick = (event) => {
-                        const element = this.closest('[key="main"]').querySelector('[key~="courseConversations"]');
-                        element.style.width = String(20 * 16) +"px";
+                        this.closest('[key="main"]').querySelector('[key~="courseConversations"]').style.width = String(20 * 16) +"px";
                       };
                     `}"
                   ></div>
