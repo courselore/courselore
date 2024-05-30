@@ -57,6 +57,32 @@ export default async (application: Application): Promise<void> => {
       >,
       response,
     ) => {
+      const user = application.database.get<{ id: number; name: string }>(
+        sql`
+          select "id", "name" from "users" where "id" = ${1};
+        `,
+      );
+      if (user === undefined) return;
+      const course = application.database.get<{ id: number; name: string }>(
+        sql`
+          select "id", "name" from "courses" where "externalId" = ${request.pathname.courseId};
+        `,
+      );
+      if (course === undefined) return;
+      const courseParticipation = application.database.get<{
+        accentColor: string;
+      }>(
+        sql`
+          select "accentColor" from "courseParticipations" where "user" = ${user.id} and "course" = ${course.id};
+        `,
+      );
+      if (courseParticipation === undefined) return;
+      const courseConversation = application.database.get<{ id: number }>(
+        sql`
+          select "id" from "courseConversations" where "course" = ${course.id} and "externalId" = ${request.pathname.conversationId}
+        `,
+      );
+      if (courseConversation === undefined) return;
       response.end(html`
         <!doctype html>
         <html style="color-scheme: light dark;">
@@ -101,6 +127,13 @@ export default async (application: Application): Promise<void> => {
               `}"
             >
               <div
+                key="accent-color"
+                css="${css`
+                  height: var(--space--1);
+                `}"
+                style="background-color: var(--color--${courseParticipation.accentColor}--500);"
+              ></div>
+              <div
                 key="header"
                 css="${css`
                   padding: var(--space--2) var(--space--4);
@@ -110,7 +143,6 @@ export default async (application: Application): Promise<void> => {
                       var(--color--slate--800)
                     );
                   display: flex;
-                  justify-content: space-between;
                   gap: var(--space--4);
                 `}"
               >
@@ -153,6 +185,22 @@ export default async (application: Application): Promise<void> => {
                   </svg>
                   <div>Courselore</div>
                 </a>
+                <div
+                  css="${css`
+                    flex: 1;
+                  `}"
+                >
+                  <button
+                    css="${css`
+                      display: flex;
+                      gap: var(--space--1);
+                    `}"
+                  >
+                    <div>${course.name}</div>
+                    <i class="bi bi-chevron-down"></i>
+                  </button>
+                </div>
+                <button>LF</button>
               </div>
               <div key="main">HELLO</div>
             </div>
