@@ -205,10 +205,7 @@ export default async (application: Application): Promise<void> => {
                         text-overflow: ellipsis;
                       `}"
                     >
-                      ${course.name} ${course.name} ${course.name}
-                      ${course.name} ${course.name} ${course.name}
-                      ${course.name} ${course.name} ${course.name}
-                      ${course.name} ${course.name} ${course.name}
+                      ${course.name}
                     </div>
                     <i class="bi bi-chevron-down"></i>
                   </button>
