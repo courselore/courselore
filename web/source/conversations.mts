@@ -216,16 +216,36 @@ export default async (application: Application): Promise<void> => {
                         var(--color--slate--200),
                         var(--color--slate--800)
                       );
-                    overflow: auto;
                   `}"
                 >
                   courseConversations
+                </div>
+                <div key="separator">
+                  <div
+                    css="${css`
+                      width: var(--border-width--4);
+                      height: 100%;
+                      position: absolute;
+                      transform: translateX(-50%);
+                      cursor: col-resize;
+                      transition-property: var(--transition-property--colors);
+                      transition-duration: var(--transition-duration--150);
+                      transition-timing-function: var(
+                        --transition-timing-function--ease-in-out
+                      );
+                      &:hover {
+                        background-color: light-dark(
+                          var(--color--blue--500),
+                          var(--color--blue--500)
+                        );
+                      }
+                    `}"
+                  ></div>
                 </div>
                 <div
                   key="courseConversation (/courses/${course.externalId}/conversations/${courseConversation.externalId})"
                   css="${css`
                     flex: 1;
-                    overflow: auto;
                   `}"
                 >
                   courseConversation
