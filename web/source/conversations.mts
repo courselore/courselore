@@ -120,154 +120,157 @@ export default async (application: Application): Promise<void> => {
                 var(--color--slate--800),
                 var(--color--slate--200)
               );
+              position: absolute;
+              inset: 0;
+              display: flex;
+              flex-direction: column;
+
+              &.col-resize {
+                cursor: col-resize !important;
+                * {
+                  user-select: none;
+                  pointer-events: none;
+                }
+              }
             `}"
             javascript="${javascript`
               javascript.liveConnection(${request.id}, { reload: ${application.configuration.environment === "development"} });
             `}"
           >
             <div
+              key="accentColor"
+              style="background-color: light-dark(var(--color--${courseParticipation.accentColor}--500), var(--color--${courseParticipation.accentColor}--700));"
               css="${css`
-                position: absolute;
-                inset: 0;
+                height: var(--space--1);
+              `}"
+            ></div>
+            <div
+              key="header"
+              css="${css`
+                padding: var(--space--2) var(--space--4);
+                border-bottom: var(--border-width--1) solid
+                  light-dark(var(--color--slate--200), var(--color--slate--800));
                 display: flex;
-                flex-direction: column;
+                gap: var(--space--4);
+              `}"
+            >
+              <a
+                key="logo"
+                href="${new URL("/", request.URL).href}"
+                class="button"
+                css="${css`
+                  font-weight: 700;
+                `}"
+              >
+                <svg width="20" height="20" viewBox="0 0 20 20">
+                  <path
+                    d="M 2.5 2.5 L 7.5 7.5 L 2.5 7.5 L 7.5 2.5 L 2.5 12.5 L 7.5 17.5 L 7.5 12.5 L 2.5 17.5 L 12.5 12.5 L 17.5 17.5 L 17.5 12.5 L 12.5 17.5 L 17.5 7.5 L 12.5 2.5 L 17.5 2.5 L 12.5 7.5 Z"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+                <div>Courselore</div>
+              </a>
+              <div
+                key="course"
+                css="${css`
+                  flex: 1;
+                  min-width: 0;
+                `}"
+              >
+                <button
+                  class="button"
+                  css="${css`
+                    max-width: 100%;
+                    display: flex;
+                    gap: var(--space--1);
+                  `}"
+                >
+                  <div
+                    css="${css`
+                      white-space: nowrap;
+                      overflow: hidden;
+                      text-overflow: ellipsis;
+                    `}"
+                  >
+                    ${course.name}
+                  </div>
+                  <i class="bi bi-chevron-down"></i>
+                </button>
+              </div>
+              <button key="user" class="button">LF</button>
+            </div>
+            <div
+              key="main"
+              css="${css`
+                flex: 1;
+                display: flex;
               `}"
             >
               <div
-                key="accentColor"
-                style="background-color: light-dark(var(--color--${courseParticipation.accentColor}--500), var(--color--${courseParticipation.accentColor}--700));"
+                key="courseConversations /courses/${course.externalId}"
+                style="width: ${String(20 * 16)}px;"
                 css="${css`
-                  height: var(--space--1);
-                `}"
-              ></div>
-              <div
-                key="header"
-                css="${css`
-                  padding: var(--space--2) var(--space--4);
-                  border-bottom: var(--border-width--1) solid
+                  border-right: var(--border-width--1) solid
                     light-dark(
                       var(--color--slate--200),
                       var(--color--slate--800)
                     );
-                  display: flex;
-                  gap: var(--space--4);
                 `}"
               >
-                <a
-                  key="logo"
-                  href="${new URL("/", request.URL).href}"
-                  class="button"
-                  css="${css`
-                    font-weight: 700;
-                  `}"
-                >
-                  <svg width="20" height="20" viewBox="0 0 20 20">
-                    <path
-                      d="M 2.5 2.5 L 7.5 7.5 L 2.5 7.5 L 7.5 2.5 L 2.5 12.5 L 7.5 17.5 L 7.5 12.5 L 2.5 17.5 L 12.5 12.5 L 17.5 17.5 L 17.5 12.5 L 12.5 17.5 L 17.5 7.5 L 12.5 2.5 L 17.5 2.5 L 12.5 7.5 Z"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                  </svg>
-                  <div>Courselore</div>
-                </a>
+                courseConversations
+              </div>
+              <div key="separator">
                 <div
-                  key="course"
                   css="${css`
-                    flex: 1;
-                    min-width: 0;
+                    width: var(--border-width--4);
+                    height: 100%;
+                    position: absolute;
+                    transform: translateX(-50%);
+                    cursor: col-resize;
+                    transition-property: var(--transition-property--colors);
+                    transition-duration: var(--transition-duration--150);
+                    transition-timing-function: var(
+                      --transition-timing-function--ease-in-out
+                    );
+                    &:hover,
+                    &.active {
+                      background-color: light-dark(
+                        var(--color--blue--500),
+                        var(--color--blue--500)
+                      );
+                    }
                   `}"
-                >
-                  <button
-                    class="button"
-                    css="${css`
-                      max-width: 100%;
-                      display: flex;
-                      gap: var(--space--1);
-                    `}"
-                  >
-                    <div
-                      css="${css`
-                        white-space: nowrap;
-                        overflow: hidden;
-                        text-overflow: ellipsis;
-                      `}"
-                    >
-                      ${course.name}
-                    </div>
-                    <i class="bi bi-chevron-down"></i>
-                  </button>
-                </div>
-                <button key="user" class="button">LF</button>
+                  javascript="${javascript`
+                    this.onmousedown = (event) => {
+                      if (event.button !== 0) return;
+                      this.classList.add("active");
+                      document.querySelector("body").classList.add("col-resize");
+                      document.onmousemove = (event) => {
+                        const element = this.closest('[key="main"]').querySelector('[key~="courseConversations"]');
+                        element.style.width = String(Math.min(Math.max(event.clientX, 16 * 16), 32 * 16)) + "px";
+                      };
+                      document.onmouseup = () => {
+                        this.classList.remove("active");
+                        document.querySelector("body").classList.remove("col-resize");
+                        document.onmousemove = undefined;
+                      };
+                    };
+                    this.ondblclick = (event) => {
+                      this.closest('[key="main"]').querySelector('[key~="courseConversations"]').style.width = String(20 * 16) +"px";
+                    };
+                  `}"
+                ></div>
               </div>
               <div
-                key="main"
+                key="courseConversation /courses/${course.externalId}/conversations/${courseConversation.externalId}"
                 css="${css`
                   flex: 1;
-                  display: flex;
                 `}"
               >
-                <div
-                  key="courseConversations /courses/${course.externalId}"
-                  style="width: ${String(20 * 16)}px;"
-                  css="${css`
-                    border-right: var(--border-width--1) solid
-                      light-dark(
-                        var(--color--slate--200),
-                        var(--color--slate--800)
-                      );
-                  `}"
-                >
-                  courseConversations
-                </div>
-                <div key="separator">
-                  <div
-                    css="${css`
-                      width: var(--border-width--4);
-                      height: 100%;
-                      position: absolute;
-                      transform: translateX(-50%);
-                      cursor: col-resize;
-                      transition-property: var(--transition-property--colors);
-                      transition-duration: var(--transition-duration--150);
-                      transition-timing-function: var(
-                        --transition-timing-function--ease-in-out
-                      );
-                      &:hover {
-                        background-color: light-dark(
-                          var(--color--blue--500),
-                          var(--color--blue--500)
-                        );
-                      }
-                    `}"
-                    javascript="${javascript`
-                      this.onmousedown = (event) => {
-                        if (event.button !== 0) return;
-                        document.querySelector("body").style.userSelect = "none";
-                        document.onmousemove = (event) => {
-                          const element = this.closest('[key="main"]').querySelector('[key~="courseConversations"]');
-                          element.style.width = String(Math.min(Math.max(event.clientX, 16 * 16), 32 * 16)) + "px";
-                        };
-                        document.onmouseup = () => {
-                          document.querySelector("body").style.userSelect = "";
-                          document.onmousemove = undefined;
-                        };
-                      };
-                      this.ondblclick = (event) => {
-                        this.closest('[key="main"]').querySelector('[key~="courseConversations"]').style.width = String(20 * 16) +"px";
-                      };
-                    `}"
-                  ></div>
-                </div>
-                <div
-                  key="courseConversation /courses/${course.externalId}/conversations/${courseConversation.externalId}"
-                  css="${css`
-                    flex: 1;
-                  `}"
-                >
-                  courseConversation
-                </div>
+                courseConversation
               </div>
             </div>
           </body>
