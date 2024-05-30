@@ -246,7 +246,7 @@ export default async (application: Application): Promise<void> => {
                         if (event.button !== 0) return;
                         document.onmousemove = (event) => {
                           const element = this.closest('[key="main"]').querySelector('[key~="courseConversations"]');
-                          element.style.width = String(Number(element.style.width.slice(0, -"px".length)) + event.movementX) + "px";
+                          element.style.width = String(Math.max(240, Math.min(576, Number(element.style.width.slice(0, -"px".length)) + event.movementX))) + "px";
                         };
                         document.onmouseup = () => {
                           document.onmousemove = undefined;
