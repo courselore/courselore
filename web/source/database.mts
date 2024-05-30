@@ -2625,15 +2625,15 @@ export default async (application: Application): Promise<void> => {
           alter table "users" rename to "old_users";
           
           create table "systemOptions" (
-            "identifier" integer primary key autoincrement,
+            "id" integer primary key autoincrement,
             "privateKey" text not null,
             "certificate" text not null,
             "userSystemRolesWhoMayCreateCourses" text not null
           ) strict;
           
           create table "users" (
-            "identifier" integer primary key autoincrement,
-            "externalIdentifier" text not null unique,
+            "id" integer primary key autoincrement,
+            "externalId" text not null unique,
             "createdAt" text not null,
             "name" text not null,
             "nameSearch" text not null,
@@ -2659,23 +2659,23 @@ export default async (application: Application): Promise<void> => {
           create index "index_users_mostRecentlyVisitedCourseParticipation" on "users" ("mostRecentlyVisitedCourseParticipation");
           create virtual table "search_users_nameSearch" using fts5(
             content = "users",
-            content_rowid = "identifier",
+            content_rowid = "id",
             "nameSearch",
             tokenize = 'porter'
           );
           create trigger "search_users_nameSearch_insert" after insert on "users" begin
-            insert into "search_users_nameSearch" ("rowid", "nameSearch") values ("new"."identifier", "new"."nameSearch");
+            insert into "search_users_nameSearch" ("rowid", "nameSearch") values ("new"."id", "new"."nameSearch");
           end;
           create trigger "search_users_nameSearch_update" after update on "users" begin
-            update "search_users_nameSearch" set "nameSearch" = "new"."nameSearch" where "rowid" = "old"."identifier";
+            update "search_users_nameSearch" set "nameSearch" = "new"."nameSearch" where "rowid" = "old"."id";
           end;
           create trigger "search_users_nameSearch_delete" after delete on "users" begin
-            delete from "search_users_nameSearch" where "rowid" = "old"."identifier";
+            delete from "search_users_nameSearch" where "rowid" = "old"."id";
           end;
           
           create table "userSessions" (
-            "identifier" integer primary key autoincrement,
-            "externalIdentifier" text not null unique,
+            "id" integer primary key autoincrement,
+            "externalId" text not null unique,
             "user" integer not null references "users",
             "createdAt" text not null,
             "samlIdentifier" text null,
@@ -2686,7 +2686,7 @@ export default async (application: Application): Promise<void> => {
           create index "index_userSessions_user" on "userSessions" ("user");
           
           create table "userSessionsSamlCache" (
-            "identifier" integer primary key autoincrement,
+            "id" integer primary key autoincrement,
             "createdAt" text not null,
             "samlIdentifier" text not null,
             "key" text not null unique,
@@ -2694,8 +2694,8 @@ export default async (application: Application): Promise<void> => {
           ) strict;
           
           create table "courses" (
-            "identifier" integer primary key autoincrement,
-            "externalIdentifier" text not null unique,
+            "id" integer primary key autoincrement,
+            "externalId" text not null unique,
             "createdAt" text not null,
             "name" text not null,
             "year" text null,
@@ -2708,12 +2708,12 @@ export default async (application: Application): Promise<void> => {
             "invitationLinkCourseStudentsActive" integer not null,
             "courseStudentsMayCreatePolls" integer not null,
             "archivedAt" text null,
-            "nextCourseConversationExternalIdentifier" integer not null
+            "nextCourseConversationExternalId" integer not null
           ) strict;
           
           create table "courseInvitationEmails" (
-            "identifier" integer primary key autoincrement,
-            "externalIdentifier" text not null unique,
+            "id" integer primary key autoincrement,
+            "externalId" text not null unique,
             "course" integer not null references "courses",
             "createdAt" text not null,
             "email" text not null,
@@ -2724,8 +2724,8 @@ export default async (application: Application): Promise<void> => {
           create index "index_courseInvitationEmails_email" on "courseInvitationEmails" ("email");
           
           create table "courseParticipations" (
-            "identifier" integer primary key autoincrement,
-            "externalIdentifier" text not null unique,
+            "id" integer primary key autoincrement,
+            "externalId" text not null unique,
             "user" integer not null references "users",
             "course" integer not null references "courses",
             "createdAt" text not null,
@@ -2737,8 +2737,8 @@ export default async (application: Application): Promise<void> => {
           create index "index_courseParticipations_mostRecentlyVisitedCourseConversation" on "courseParticipations" ("mostRecentlyVisitedCourseConversation");
 
           create table "courseConversationTags" (
-            "identifier" integer primary key autoincrement,
-            "externalIdentifier" text not null unique,
+            "id" integer primary key autoincrement,
+            "externalId" text not null unique,
             "course" integer not null references "courses",
             "order" integer not null,
             "name" text not null,
@@ -2747,8 +2747,8 @@ export default async (application: Application): Promise<void> => {
           create index "index_courseConversationTags_course" on "courseConversationTags" ("course");
           
           create table "courseConversations" (
-            "identifier" integer primary key autoincrement,
-            "externalIdentifier" text not null,
+            "id" integer primary key autoincrement,
+            "externalId" text not null,
             "course" integer not null references "courses",
             "pinned" integer not null,
             "courseConversationType" text not null,
@@ -2756,59 +2756,59 @@ export default async (application: Application): Promise<void> => {
             "courseConversationParticipations" text not null,
             "title" text not null,
             "titleSearch" text not null,
-            "nextCourseConversationMessageExternalIdentifier" integer not null,
-            unique ("course", "externalIdentifier")
+            "nextCourseConversationMessageExternalId" integer not null,
+            unique ("course", "externalId")
           ) strict;
           create index "index_courseConversations_pinned" on "courseConversations" ("pinned");
           create index "index_courseConversations_courseConversationType" on "courseConversations" ("courseConversationType");
           create index "index_courseConversations_questionResolved" on "courseConversations" ("questionResolved");
-          create virtual table "search_courseConversations_externalIdentifier" using fts5(
+          create virtual table "search_courseConversations_externalId" using fts5(
             content = "courseConversations",
-            content_rowid = "identifier",
-            "externalIdentifier",
+            content_rowid = "id",
+            "externalId",
             tokenize = 'porter'
           );
-          create trigger "search_courseConversations_externalIdentifier_insert" after insert on "courseConversations" begin
-            insert into "search_courseConversations_externalIdentifier" ("rowid", "externalIdentifier") values ("new"."identifier", "new"."externalIdentifier");
+          create trigger "search_courseConversations_externalId_insert" after insert on "courseConversations" begin
+            insert into "search_courseConversations_externalId" ("rowid", "externalId") values ("new"."id", "new"."externalId");
           end;
-          create trigger "search_courseConversations_externalIdentifier_update" after update on "courseConversations" begin
-            update "search_courseConversations_externalIdentifier" set "externalIdentifier" = "new"."externalIdentifier" where "rowid" = "old"."identifier";
+          create trigger "search_courseConversations_externalId_update" after update on "courseConversations" begin
+            update "search_courseConversations_externalId" set "externalId" = "new"."externalId" where "rowid" = "old"."id";
           end;
-          create trigger "search_courseConversations_externalIdentifier_delete" after delete on "courseConversations" begin
-            delete from "search_courseConversations_externalIdentifier" where "rowid" = "old"."identifier";
+          create trigger "search_courseConversations_externalId_delete" after delete on "courseConversations" begin
+            delete from "search_courseConversations_externalId" where "rowid" = "old"."id";
           end;
           create virtual table "search_courseConversations_titleSearch" using fts5(
             content = "courseConversations",
-            content_rowid = "identifier",
+            content_rowid = "id",
             "titleSearch",
             tokenize = 'porter'
           );
           create trigger "search_courseConversations_titleSearch_insert" after insert on "courseConversations" begin
-            insert into "search_courseConversations_titleSearch" ("rowid", "titleSearch") values ("new"."identifier", "new"."titleSearch");
+            insert into "search_courseConversations_titleSearch" ("rowid", "titleSearch") values ("new"."id", "new"."titleSearch");
           end;
           create trigger "search_courseConversations_titleSearch_update" after update on "courseConversations" begin
-            update "search_courseConversations_titleSearch" set "titleSearch" = "new"."titleSearch" where "rowid" = "old"."identifier";
+            update "search_courseConversations_titleSearch" set "titleSearch" = "new"."titleSearch" where "rowid" = "old"."id";
           end;
           create trigger "search_courseConversations_titleSearch_delete" after delete on "courseConversations" begin
-            delete from "search_courseConversations_titleSearch" where "rowid" = "old"."identifier";
+            delete from "search_courseConversations_titleSearch" where "rowid" = "old"."id";
           end;
           
           create table "courseConversationParticipations" (
-            "identifier" integer primary key autoincrement,
+            "id" integer primary key autoincrement,
             "courseConversation" integer not null references "courseConversations",
             "courseParticipation" integer not null references "courseParticipations",
             unique ("courseConversation", "courseParticipation")
           ) strict;
           
           create table "courseConversationTaggings" (
-            "identifier" integer primary key autoincrement,
+            "id" integer primary key autoincrement,
             "courseConversation" integer not null references "courseConversations",
             "courseConversationTag" integer not null references "courseConversationTags",
             unique ("courseConversation", "courseConversationTag")
           ) strict;
           
           create table "courseConversationMessageDrafts" (
-            "identifier" integer primary key autoincrement,
+            "id" integer primary key autoincrement,
             "courseConversation" integer not null references "courseConversations",
             "createdByCourseParticipation" integer not null references "courseParticipations",
             "contentSource" text not null,
@@ -2816,8 +2816,8 @@ export default async (application: Application): Promise<void> => {
           ) strict;
           
           create table "courseConversationMessages" (
-            "identifier" integer primary key autoincrement,
-            "externalIdentifier" text not null,
+            "id" integer primary key autoincrement,
+            "externalId" text not null,
             "courseConversation" integer not null references "courseConversations",
             "createdAt" text not null,
             "updatedAt" text null,
@@ -2827,44 +2827,44 @@ export default async (application: Application): Promise<void> => {
             "contentSource" text not null,
             "contentPreprocessed" text not null,
             "contentSearch" text not null,
-            unique ("courseConversation", "externalIdentifier")
+            unique ("courseConversation", "externalId")
           ) strict;
           create index "index_courseConversationMessages_createdByCourseParticipation" on "courseConversationMessages" ("createdByCourseParticipation");
           create index "index_courseConversationMessages_courseConversationMessageType" on "courseConversationMessages" ("courseConversationMessageType");
-          create virtual table "search_courseConversationMessages_externalIdentifier" using fts5(
+          create virtual table "search_courseConversationMessages_externalId" using fts5(
             content = "courseConversationMessages",
-            content_rowid = "identifier",
-            "externalIdentifier",
+            content_rowid = "id",
+            "externalId",
             tokenize = 'porter'
           );
-          create trigger "search_courseConversationMessages_externalIdentifier_insert" after insert on "courseConversationMessages" begin
-            insert into "search_courseConversationMessages_externalIdentifier" ("rowid", "externalIdentifier") values ("new"."identifier", "new"."externalIdentifier");
+          create trigger "search_courseConversationMessages_externalId_insert" after insert on "courseConversationMessages" begin
+            insert into "search_courseConversationMessages_externalId" ("rowid", "externalId") values ("new"."id", "new"."externalId");
           end;
-          create trigger "search_courseConversationMessages_externalIdentifier_update" after update on "courseConversationMessages" begin
-            update "search_courseConversationMessages_externalIdentifier" set "externalIdentifier" = "new"."externalIdentifier" where "rowid" = "old"."identifier";
+          create trigger "search_courseConversationMessages_externalId_update" after update on "courseConversationMessages" begin
+            update "search_courseConversationMessages_externalId" set "externalId" = "new"."externalId" where "rowid" = "old"."id";
           end;
-          create trigger "search_courseConversationMessages_externalIdentifier_delete" after delete on "courseConversationMessages" begin
-            delete from "search_courseConversationMessages_externalIdentifier" where "rowid" = "old"."identifier";
+          create trigger "search_courseConversationMessages_externalId_delete" after delete on "courseConversationMessages" begin
+            delete from "search_courseConversationMessages_externalId" where "rowid" = "old"."id";
           end;
           create virtual table "search_courseConversationMessages_contentSearch" using fts5(
             content = "courseConversationMessages",
-            content_rowid = "identifier",
+            content_rowid = "id",
             "contentSearch",
             tokenize = 'porter'
           );
           create trigger "search_courseConversationMessages_contentSearch_insert" after insert on "courseConversationMessages" begin
-            insert into "search_courseConversationMessages_contentSearch" ("rowid", "contentSearch") values ("new"."identifier", "new"."contentSearch");
+            insert into "search_courseConversationMessages_contentSearch" ("rowid", "contentSearch") values ("new"."id", "new"."contentSearch");
           end;
           create trigger "search_courseConversationMessages_contentSearch_update" after update on "courseConversationMessages" begin
-            update "search_courseConversationMessages_contentSearch" set "contentSearch" = "new"."contentSearch" where "rowid" = "old"."identifier";
+            update "search_courseConversationMessages_contentSearch" set "contentSearch" = "new"."contentSearch" where "rowid" = "old"."id";
           end;
           create trigger "search_courseConversationMessages_contentSearch_delete" after delete on "courseConversationMessages" begin
-            delete from "search_courseConversationMessages_contentSearch" where "rowid" = "old"."identifier";
+            delete from "search_courseConversationMessages_contentSearch" where "rowid" = "old"."id";
           end;
           
           create table "courseConversationMessagePolls" (
-            "identifier" integer primary key autoincrement,
-            "externalIdentifier" text not null unique,
+            "id" integer primary key autoincrement,
+            "externalId" text not null unique,
             "course" integer not null references "courses",
             "createdByCourseParticipation" integer null references "courseParticipations",
             "multipleChoices" integer not null,
@@ -2873,8 +2873,8 @@ export default async (application: Application): Promise<void> => {
           create index "index_courseConversationMessagePolls_createdByCourseParticipation" on "courseConversationMessagePolls" ("createdByCourseParticipation");
           
           create table "courseConversationMessagePollOptions" (
-            "identifier" integer primary key autoincrement,
-            "externalIdentifier" text not null unique,
+            "id" integer primary key autoincrement,
+            "externalId" text not null unique,
             "courseConversationMessagePoll" integer not null references "courseConversationMessagePolls",
             "order" integer not null,
             "contentSource" text not null,
@@ -2883,21 +2883,21 @@ export default async (application: Application): Promise<void> => {
           create index "index_courseConversationMessagePollOptions_courseConversationMessagePoll" on "courseConversationMessagePollOptions" ("courseConversationMessagePoll");
           
           create table "courseConversationMessagePollOptionVotes" (
-            "identifier" integer primary key autoincrement,
+            "id" integer primary key autoincrement,
             "courseConversationMessagePollOption" integer not null references "courseConversationMessagePollOptions",
             "courseParticipation" integer null references "courseParticipations",
             unique ("courseConversationMessagePollOption", "courseParticipation")
           ) strict;
           
           create table "courseConversationMessageEmailNotificationDeliveries" (
-            "identifier" integer primary key autoincrement,
+            "id" integer primary key autoincrement,
             "courseConversationMessage" integer not null references "courseConversationMessages",
             "courseParticipation" integer not null references "courseParticipations",
             unique ("courseConversationMessage", "courseParticipation")
           ) strict;
           
           create table "courseConversationMessageReadings" (
-            "identifier" integer primary key autoincrement,
+            "id" integer primary key autoincrement,
             "createdAt" text not null,
             "courseConversationMessage" integer not null references "courseConversationMessages",
             "courseParticipation" integer not null references "courseParticipations",
@@ -2905,7 +2905,7 @@ export default async (application: Application): Promise<void> => {
           ) strict;
           
           create table "courseConversationMessageLikes" (
-            "identifier" integer primary key autoincrement,
+            "id" integer primary key autoincrement,
             "courseConversationMessage" integer not null references "courseConversationMessages",
             "courseParticipation" integer null references "courseParticipations",
             unique ("courseConversationMessage", "courseParticipation")
@@ -2947,7 +2947,7 @@ export default async (application: Application): Promise<void> => {
       );
 
       // TODO
-      // <courselore-poll reference=""> -> <courselore-poll identifier="">
+      // <courselore-poll reference=""> -> <courselore-poll id="">
       // @everyone, @course-staff, @students -> @all, @course-staff, @course-students
       // messages%5BmessageReference%5D -> message
 
@@ -2987,15 +2987,15 @@ export default async (application: Application): Promise<void> => {
         const users = Array.from({ length: 151 }, (value, userIndex) => {
           const userName = casual.full_name;
           return database.get<{
-            identifier: number;
+            id: number;
             email: string;
           }>(
             sql`
-              select * from "users" where "identifier" = ${
+              select * from "users" where "id" = ${
                 database.run(
                   sql`
                     insert into "users" (
-                      "externalIdentifier",
+                      "externalId",
                       "createdAt",
                       "name",
                       "nameSearch",
@@ -3091,15 +3091,15 @@ export default async (application: Application): Promise<void> => {
           },
         ]) {
           const course = database.get<{
-            identifier: number;
-            nextCourseConversationExternalIdentifier: number;
+            id: number;
+            nextCourseConversationExternalId: number;
           }>(
             sql`
-              select * from "courses" where "identifier" = ${
+              select * from "courses" where "id" = ${
                 database.run(
                   sql`
                     insert into "courses" (
-                      "externalIdentifier",
+                      "externalId",
                       "createdAt",
                       "name",
                       "year",
@@ -3112,7 +3112,7 @@ export default async (application: Application): Promise<void> => {
                       "invitationLinkCourseStudentsActive",
                       "courseStudentsMayCreatePolls",
                       "archivedAt",
-                      "nextCourseConversationExternalIdentifier"
+                      "nextCourseConversationExternalId"
                     )
                     values (
                       ${cryptoRandomString({ length: 10, type: "numeric" })},
@@ -3147,7 +3147,7 @@ export default async (application: Application): Promise<void> => {
             database.run(
               sql`
                 insert into "courseInvitationEmails" (
-                  "externalIdentifier",
+                  "externalId",
                   "course",
                   "createdAt",
                   "email",
@@ -3155,7 +3155,7 @@ export default async (application: Application): Promise<void> => {
                 )
                 values (
                   ${cryptoRandomString({ length: 20, type: "numeric" })},
-                  ${course.identifier},
+                  ${course.id},
                   ${new Date(Date.now() - Math.floor(Math.random() * 10 * 24 * 60 * 60 * 1000)).toISOString()},
                   ${
                     Math.random() < 0.5
@@ -3187,13 +3187,13 @@ export default async (application: Application): Promise<void> => {
             ),
           ].map(
             (user, userIndex) =>
-              database.get<{ identifier: number }>(
+              database.get<{ id: number }>(
                 sql`
-                  select * from "courseParticipations" where "identifier" = ${
+                  select * from "courseParticipations" where "id" = ${
                     database.run(
                       sql`
                         insert into "courseParticipations" (
-                          "externalIdentifier",
+                          "externalId",
                           "user",
                           "course",
                           "createdAt",
@@ -3202,8 +3202,8 @@ export default async (application: Application): Promise<void> => {
                         )
                         values (
                           ${cryptoRandomString({ length: 10, type: "numeric" })},
-                          ${user.identifier},
-                          ${course.identifier},
+                          ${user.id},
+                          ${course.id},
                           ${new Date(Date.now() - Math.floor(Math.random() * 100 * 24 * 60 * 60 * 1000)).toISOString()},
                           ${userIndex === 0 ? courseData.courseRole : Math.random() < 0.15 ? "courseStaff" : "courseStudent"},
                           ${
@@ -3246,13 +3246,13 @@ export default async (application: Application): Promise<void> => {
             { name: "Duplicate Question", courseStaffOnly: true },
           ].map(
             (courseConversationTag, courseConversationTagIndex) =>
-              database.get<{ identifier: number }>(
+              database.get<{ id: number }>(
                 sql`
-                  select * from "courseConversationTags" where "identifier" = ${
+                  select * from "courseConversationTags" where "id" = ${
                     database.run(
                       sql`
                         insert into "courseConversationTags" (
-                          "externalIdentifier",
+                          "externalId",
                           "course",
                           "order",
                           "name",
@@ -3260,7 +3260,7 @@ export default async (application: Application): Promise<void> => {
                         )
                         values (
                           ${cryptoRandomString({ length: 10, type: "numeric" })},
-                          ${course.identifier},
+                          ${course.id},
                           ${courseConversationTagIndex},
                           ${courseConversationTag.name},
                           ${Number(courseConversationTag.courseStaffOnly ?? false)}
@@ -3273,8 +3273,7 @@ export default async (application: Application): Promise<void> => {
           );
           for (
             let courseConversationIndex = 0;
-            courseConversationIndex <
-            course.nextCourseConversationExternalIdentifier;
+            courseConversationIndex < course.nextCourseConversationExternalId;
             courseConversationIndex++
           ) {
             const courseConversationTitle = (
@@ -3282,15 +3281,15 @@ export default async (application: Application): Promise<void> => {
               (Math.random() < 0.2 ? "?" : "")
             ).replace(/./, (character) => character.toUpperCase());
             const courseConversation = database.get<{
-              identifier: number;
-              nextCourseConversationMessageExternalIdentifier: number;
+              id: number;
+              nextCourseConversationMessageExternalId: number;
             }>(
               sql`
-                select * from "courseConversations" where "identifier" = ${
+                select * from "courseConversations" where "id" = ${
                   database.run(
                     sql`
                       insert into "courseConversations" (
-                        "externalIdentifier",
+                        "externalId",
                         "course",
                         "pinned",
                         "courseConversationType",
@@ -3298,11 +3297,11 @@ export default async (application: Application): Promise<void> => {
                         "courseConversationParticipations",
                         "title",
                         "titleSearch",
-                        "nextCourseConversationMessageExternalIdentifier"
+                        "nextCourseConversationMessageExternalId"
                       )
                       values (
                         ${String(courseConversationIndex + 1)},
-                        ${course.identifier},
+                        ${course.id},
                         ${Number(Math.random() < 0.1)},
                         ${Math.random() < 0.3 ? "courseConversationNote" : "courseConversationQuestion"},
                         ${Number(Math.random() < 0.5)},
@@ -3340,8 +3339,8 @@ export default async (application: Application): Promise<void> => {
                     "courseParticipation"
                   )
                   values (
-                    ${courseConversation.identifier},
-                    ${courseParticipationForCourseConversationParticipations.identifier}
+                    ${courseConversation.id},
+                    ${courseParticipationForCourseConversationParticipations.id}
                   );
                 `,
               );
@@ -3362,15 +3361,15 @@ export default async (application: Application): Promise<void> => {
                     "courseConversationTag"
                   )
                   values (
-                    ${courseConversation.identifier},
-                    ${courseConversationTagsForCourseConversationTaggings.splice(Math.floor(Math.random() * courseConversationTagsForCourseConversationTaggings.length), 1)[0].identifier}
+                    ${courseConversation.id},
+                    ${courseConversationTagsForCourseConversationTaggings.splice(Math.floor(Math.random() * courseConversationTagsForCourseConversationTaggings.length), 1)[0].id}
                   );
                 `,
               );
             for (
               let courseConversationMessageIndex = 0;
               courseConversationMessageIndex <
-              courseConversation.nextCourseConversationMessageExternalIdentifier;
+              courseConversation.nextCourseConversationMessageExternalId;
               courseConversationMessageIndex++
             ) {
               const courseConversationMessageContentSentences = Array.from(
@@ -3378,14 +3377,14 @@ export default async (application: Application): Promise<void> => {
                 () => casual.sentences(1 + Math.floor(Math.random() * 5)),
               );
               const courseConversationMessage = database.get<{
-                identifier: number;
+                id: number;
               }>(
                 sql`
-                    select * from "courseConversationMessages" where "identifier" = ${
+                    select * from "courseConversationMessages" where "id" = ${
                       database.run(
                         sql`
                           insert into "courseConversationMessages" (
-                            "externalIdentifier",
+                            "externalId",
                             "courseConversation",
                             "createdAt",
                             "updatedAt",
@@ -3398,10 +3397,10 @@ export default async (application: Application): Promise<void> => {
                           )
                           values (
                             ${String(courseConversationMessageIndex + 1)},
-                            ${courseConversation.identifier},
-                            ${new Date(Date.now() - Math.floor((1 + course.nextCourseConversationExternalIdentifier - courseConversationIndex + Math.random() * 0.5) * 5 * 60 * 60 * 1000)).toISOString()},
+                            ${courseConversation.id},
+                            ${new Date(Date.now() - Math.floor((1 + course.nextCourseConversationExternalId - courseConversationIndex + Math.random() * 0.5) * 5 * 60 * 60 * 1000)).toISOString()},
                             ${Math.random() < 0.05 ? new Date(Date.now() - Math.floor(24 * 5 * 60 * 60 * 1000)).toISOString() : null},
-                            ${Math.random() < 0.9 ? courseParticipations[Math.floor(Math.random() * courseParticipations.length)].identifier : null},
+                            ${Math.random() < 0.9 ? courseParticipations[Math.floor(Math.random() * courseParticipations.length)].id : null},
                             ${
                               courseConversationMessageIndex === 0 ||
                               Math.random() < 0.6
@@ -3444,8 +3443,8 @@ export default async (application: Application): Promise<void> => {
                       "courseParticipation"
                     )
                     values (
-                      ${courseConversationMessage.identifier},
-                      ${courseParticipationsForCourseConversationMessageLikes.splice(Math.floor(Math.random() * courseParticipationsForCourseConversationMessageLikes.length), 1)[0].identifier}
+                      ${courseConversationMessage.id},
+                      ${courseParticipationsForCourseConversationMessageLikes.splice(Math.floor(Math.random() * courseParticipationsForCourseConversationMessageLikes.length), 1)[0].id}
                     );
                   `,
                 );
@@ -3454,15 +3453,15 @@ export default async (application: Application): Promise<void> => {
               const courseConversationMessagePolls = [false, true].map(
                 (courseConversationMessagePollMultipleChoices) => {
                   const courseConversationMessagePoll = database.get<{
-                    identifier: number;
+                    id: number;
                     multipleChoices: number;
                   }>(
                     sql`
-                    select * from "courseConversationMessagePolls" where "identifier" = ${
+                    select * from "courseConversationMessagePolls" where "id" = ${
                       database.run(
                         sql`
                           insert into "courseConversationMessagePolls" (
-                            "externalIdentifier",
+                            "externalId",
                             "course",
                             "createdByCourseParticipation",
                             "multipleChoices",
@@ -3470,8 +3469,8 @@ export default async (application: Application): Promise<void> => {
                           )
                           values (
                             ${cryptoRandomString({ length: 20, type: "numeric" })},
-                            ${course.identifier},
-                            ${courseParticipation.identifier},
+                            ${course.id},
+                            ${courseParticipation.id},
                             ${Number(courseConversationMessagePollMultipleChoices)},
                             ${Number(Math.random() < 0.5)}
                           );
@@ -3488,13 +3487,13 @@ export default async (application: Application): Promise<void> => {
                     ) => {
                       const courseConversationMessagePollOptionContentSentence =
                         casual.title;
-                      return database.get<{ identifier: number }>(
+                      return database.get<{ id: number }>(
                         sql`
-                        select * from "courseConversationMessagePollOptions" where "identifier" = ${
+                        select * from "courseConversationMessagePollOptions" where "id" = ${
                           database.run(
                             sql`
                               insert into "courseConversationMessagePollOptions" (
-                                "externalIdentifier",
+                                "externalId",
                                 "courseConversationMessagePoll",
                                 "order",
                                 "contentSource",
@@ -3502,7 +3501,7 @@ export default async (application: Application): Promise<void> => {
                               )
                               values (
                                 ${cryptoRandomString({ length: 20, type: "numeric" })},
-                                ${courseConversationMessagePoll.identifier},
+                                ${courseConversationMessagePoll.id},
                                 ${courseConversationMessagePollOptionIndex},
                                 ${courseConversationMessagePollOptionContentSentence},
                                 ${`<p>${courseConversationMessagePollOptionContentSentence}</p>`}
@@ -3560,9 +3559,9 @@ export default async (application: Application): Promise<void> => {
                                     courseConversationMessagePollOptionsForCourseConversationMessagePollOptionVotes.length,
                                 ),
                                 1,
-                              )[0].identifier
+                              )[0].id
                             },
-                            ${courseParticipationForCourseConversationMessagePollOptionVotes.identifier}
+                            ${courseParticipationForCourseConversationMessagePollOptionVotes.id}
                           );
                         `,
                       );
@@ -3578,8 +3577,8 @@ export default async (application: Application): Promise<void> => {
                     "contentSource"
                   )
                   values (
-                    ${courseConversation.identifier},
-                    ${courseParticipation.identifier},
+                    ${courseConversation.id},
+                    ${courseParticipation.id},
                     ${markdown`
                         # Headings
 
@@ -3650,7 +3649,7 @@ export default async (application: Application): Promise<void> => {
 
                         # Polls
 
-                        ${courseConversationMessagePolls.map((courseConversationMessagePoll) => markdown`<courselore-poll identifier="${courseConversationMessagePoll.identifier}"></courselore-poll>`).join("\n\n")}
+                        ${courseConversationMessagePolls.map((courseConversationMessagePoll) => markdown`<courselore-poll id="${courseConversationMessagePoll.id}"></courselore-poll>`).join("\n\n")}
 
                         # Lists
 
@@ -3806,9 +3805,9 @@ export default async (application: Application): Promise<void> => {
 
                         # \`@mentions\`
 
-                        Self: @${courseParticipation.identifier}
+                        Self: @${courseParticipation.id}
 
-                        Other: @${courseParticipations[Math.floor(Math.random() * courseParticipations.length)].identifier}
+                        Other: @${courseParticipations[Math.floor(Math.random() * courseParticipations.length)].id}
 
                         Non-existent: @1571024857
 
@@ -3824,11 +3823,11 @@ export default async (application: Application): Promise<void> => {
 
                         Conversation permanent link turned reference: <https://${
                           application.configuration.hostname
-                        }/courses/${course.identifier}/conversations/1>
+                        }/courses/${course.id}/conversations/1>
 
                         Conversation non-existent permanent link turned reference: <https://${
                           application.configuration.hostname
-                        }/courses/${course.identifier}/conversations/14981039481>
+                        }/courses/${course.id}/conversations/14981039481>
 
                         Message self: #1/2
 
@@ -3838,11 +3837,11 @@ export default async (application: Application): Promise<void> => {
 
                         Message permanent link turned reference: <https://${
                           application.configuration.hostname
-                        }/courses/${course.identifier}/conversations/1?message=1>
+                        }/courses/${course.id}/conversations/1?message=1>
 
                         Message non-existent permanent link turned reference: <https://${
                           application.configuration.hostname
-                        }/courses/${course.identifier}/conversations/1?message=100>
+                        }/courses/${course.id}/conversations/1?message=100>
                         `}
                   );
                 `,

@@ -13,7 +13,7 @@ export default async (application: Application): Promise<void> => {
     pathname: "/",
     handler: (
       request: serverTypes.Request<
-        { courseIdentifier: string; conversationIdentifier: string },
+        { courseId: string; conversationId: string },
         { message: string },
         {},
         {},
@@ -22,22 +22,22 @@ export default async (application: Application): Promise<void> => {
       response,
     ) => {
       const course = application.database.get<{
-        identifier: number;
-        externalIdentifier: number;
+        id: number;
+        externalId: number;
       }>(
         sql`
-          select "identifier", "externalIdentifier" from "courses" limit 1;
+          select "id", "externalId" from "courses" limit 1;
         `,
       )!;
       const conversation = application.database.get<{
-        externalIdentifier: number;
+        externalId: number;
       }>(
         sql`
-          select "externalIdentifier" from "courseConversations" where "course" = ${course.identifier};
+          select "externalId" from "courseConversations" where "course" = ${course.id};
         `,
       )!;
       response.redirect(
-        `/courses/${course.externalIdentifier}/conversations/${conversation.externalIdentifier}`,
+        `/courses/${course.externalId}/conversations/${conversation.externalId}`,
       );
     },
   });
@@ -45,11 +45,11 @@ export default async (application: Application): Promise<void> => {
   application.server?.push({
     method: "GET",
     pathname: new RegExp(
-      "^/courses/(?<courseIdentifier>[0-9]+)/conversations/(?<conversationIdentifier>[0-9]+)$",
+      "^/courses/(?<courseId>[0-9]+)/conversations/(?<conversationId>[0-9]+)$",
     ),
     handler: (
       request: serverTypes.Request<
-        { courseIdentifier: string; conversationIdentifier: string },
+        { courseId: string; conversationId: string },
         { message: string },
         {},
         {},
