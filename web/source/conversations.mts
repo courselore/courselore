@@ -188,15 +188,28 @@ export default async (application: Application): Promise<void> => {
                 <div
                   css="${css`
                     flex: 1;
+                    min-width: 0;
                   `}"
                 >
                   <button
                     css="${css`
+                      max-width: 100%;
                       display: flex;
                       gap: var(--space--1);
                     `}"
                   >
-                    <div>${course.name}</div>
+                    <div
+                      css="${css`
+                        white-space: nowrap;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                      `}"
+                    >
+                      ${course.name} ${course.name} ${course.name}
+                      ${course.name} ${course.name} ${course.name}
+                      ${course.name} ${course.name} ${course.name}
+                      ${course.name} ${course.name} ${course.name}
+                    </div>
                     <i class="bi bi-chevron-down"></i>
                   </button>
                 </div>
