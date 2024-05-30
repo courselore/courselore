@@ -234,8 +234,7 @@ export default async (application: Application): Promise<void> => {
                       transition-timing-function: var(
                         --transition-timing-function--ease-in-out
                       );
-                      &:hover,
-                      &.active {
+                      &:hover {
                         background-color: light-dark(
                           var(--color--blue--500),
                           var(--color--blue--500)
@@ -245,14 +244,12 @@ export default async (application: Application): Promise<void> => {
                     javascript="${javascript`
                       this.onmousedown = (event) => {
                         if (event.button !== 0) return;
-                        this.classList.add("active");
                         document.onmousemove = (event) => {
                           const element = this.closest('[key="main"]').querySelector('[key~="courseConversations"]');
                           element.style.width = String(Number(element.style.width.slice(0, -"px".length)) + event.movementX) + "px";
                         };
                         document.onmouseup = () => {
-                          this.classList.remove("active");
-                          document.onmousemove = () => {};
+                          document.onmousemove = undefined;
                         };
                       };
                     `}"
