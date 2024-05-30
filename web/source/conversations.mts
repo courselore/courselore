@@ -59,12 +59,7 @@ export default async (application: Application): Promise<void> => {
     ) => {
       response.end(html`
         <!doctype html>
-        <html
-          style="color-scheme: light dark;"
-          javascript="${javascript`
-            javascript.liveConnection(${request.id}, { reload: ${application.configuration.environment === "development"} });
-          `}"
-        >
+        <html style="color-scheme: light dark;">
           <head>
             <title>Courselore</title>
             <meta
@@ -84,6 +79,9 @@ export default async (application: Application): Promise<void> => {
                 var(--font-family--sans-serif);
               font-size: var(--font-size--3-5);
               line-height: var(--font-size--3-5--line-height);
+            `}"
+            javascript="${javascript`
+              javascript.liveConnection(${request.id}, { reload: ${application.configuration.environment === "development"} });
             `}"
           >
             <div
