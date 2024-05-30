@@ -10,6 +10,10 @@ css`
   @import "@fontsource-variable/jetbrains-mono/wght-italic.css";
   @import "bootstrap-icons/font/bootstrap-icons.css";
   @import "katex/dist/katex.css";
+
+  .button {
+    
+  }
 `;
 
 javascript`

@@ -151,6 +151,9 @@ export default async (application: Application): Promise<void> => {
                   href="${new URL("/", request.URL).href}"
                   css="${css`
                     font-weight: 700;
+                    border-radius: var(--border-radius--1);
+                    padding: var(--space--1) var(--space--2);
+                    margin: var(--space---1) var(--space---2);
                     display: flex;
                     align-items: center;
                     gap: var(--space--1);
@@ -162,15 +165,15 @@ export default async (application: Application): Promise<void> => {
                     );
                     &:hover,
                     &:focus-within {
-                      color: light-dark(
-                        var(--color--blue--500),
-                        var(--color--blue--500)
+                      background-color: light-dark(
+                        var(--color--slate--100),
+                        var(--color--slate--800)
                       );
                     }
                     &:active {
-                      color: light-dark(
-                        var(--color--blue--600),
-                        var(--color--blue--600)
+                      background-color: light-dark(
+                        var(--color--slate--200),
+                        var(--color--slate--700)
                       );
                     }
                   `}"
