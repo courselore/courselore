@@ -63,9 +63,13 @@ export default async (application: Application): Promise<void> => {
         `,
       );
       if (user === undefined) return;
-      const course = application.database.get<{ id: number; name: string }>(
+      const course = application.database.get<{
+        id: number;
+        externalId: string;
+        name: string;
+      }>(
         sql`
-          select "id", "name" from "courses" where "externalId" = ${request.pathname.courseId};
+          select "id", "externalId", "name" from "courses" where "externalId" = ${request.pathname.courseId};
         `,
       );
       if (course === undefined) return;
@@ -77,9 +81,12 @@ export default async (application: Application): Promise<void> => {
         `,
       );
       if (courseParticipation === undefined) return;
-      const courseConversation = application.database.get<{ id: number }>(
+      const courseConversation = application.database.get<{
+        id: number;
+        externalId: string;
+      }>(
         sql`
-          select "id" from "courseConversations" where "course" = ${course.id} and "externalId" = ${request.pathname.conversationId}
+          select "id", "externalId" from "courseConversations" where "course" = ${course.id} and "externalId" = ${request.pathname.conversationId}
         `,
       );
       if (courseConversation === undefined) return;
@@ -127,7 +134,7 @@ export default async (application: Application): Promise<void> => {
               `}"
             >
               <div
-                key="accent-color"
+                key="accentColor"
                 css="${css`
                   height: var(--space--1);
                 `}"
@@ -194,7 +201,36 @@ export default async (application: Application): Promise<void> => {
                 </div>
                 <button key="user" class="button">LF</button>
               </div>
-              <div key="main">HELLO</div>
+              <div
+                key="main"
+                css="${css`
+                  flex: 1;
+                  display: flex;
+                `}"
+              >
+                <div
+                  key="courseConversations (/courses/${course.externalId})"
+                  css="${css`
+                    border-right: var(--border-width--1) solid
+                      light-dark(
+                        var(--color--slate--200),
+                        var(--color--slate--800)
+                      );
+                    overflow: auto;
+                  `}"
+                >
+                  courseConversations
+                </div>
+                <div
+                  key="courseConversation (/courses/${course.externalId}/conversations/${courseConversation.externalId})"
+                  css="${css`
+                    flex: 1;
+                    overflow: auto;
+                  `}"
+                >
+                  courseConversation
+                </div>
+              </div>
             </div>
           </body>
         </html>
