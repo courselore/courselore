@@ -252,6 +252,10 @@ export default async (application: Application): Promise<void> => {
                           document.onmousemove = undefined;
                         };
                       };
+                      this.ondblclick = (event) => {
+                        const element = this.closest('[key="main"]').querySelector('[key~="courseConversations"]');
+                        element.style.width = "320px";
+                      };
                     `}"
                   ></div>
                 </div>
