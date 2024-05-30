@@ -79,6 +79,14 @@ export default async (application: Application): Promise<void> => {
                 var(--font-family--sans-serif);
               font-size: var(--font-size--3-5);
               line-height: var(--font-size--3-5--line-height);
+              background-color: light-dark(
+                var(--color--white),
+                var(--color--black)
+              );
+              color: light-dark(
+                var(--color--slate--800),
+                var(--color--slate--200)
+              );
             `}"
             javascript="${javascript`
               javascript.liveConnection(${request.id}, { reload: ${application.configuration.environment === "development"} });
@@ -86,14 +94,6 @@ export default async (application: Application): Promise<void> => {
           >
             <div
               css="${css`
-                background-color: light-dark(
-                  var(--color--white),
-                  var(--color--black)
-                );
-                color: light-dark(
-                  var(--color--slate--800),
-                  var(--color--slate--200)
-                );
                 position: absolute;
                 inset: 0;
                 display: flex;
@@ -103,11 +103,7 @@ export default async (application: Application): Promise<void> => {
               <div
                 key="header"
                 css="${css`
-                  background-color: light-dark(
-                    var(--color--slate--50),
-                    var(--color--slate--950)
-                  );
-                  padding: var(--space--1) var(--space--2);
+                  padding: var(--space--2) var(--space--4);
                   border-bottom: var(--border-width--1) solid
                     light-dark(
                       var(--color--slate--200),
