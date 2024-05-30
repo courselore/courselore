@@ -111,13 +111,26 @@ export default async (application: Application): Promise<void> => {
                     );
                 `}"
               >
-                <div
+                <a
+                  href="${new URL("/", request.URL).href}"
                   css="${css`
                     font-weight: 700;
+                    display: flex;
+                    align-items: center;
+                    gap: var(--space--2);
                   `}"
                 >
-                  <a href="${new URL("/", request.URL).href}">Courselore</a>
-                </div>
+                  <svg width="20" height="20" viewBox="0 0 20 20">
+                    <path
+                      d="M 2.5 2.5 L 7.5 7.5 L 2.5 7.5 L 7.5 2.5 L 2.5 12.5 L 7.5 17.5 L 7.5 12.5 L 2.5 17.5 L 12.5 12.5 L 17.5 17.5 L 17.5 12.5 L 12.5 17.5 L 17.5 7.5 L 12.5 2.5 L 17.5 2.5 L 12.5 7.5 Z"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                  <div>Courselore</div>
+                </a>
               </div>
               <div key="main">HELLO</div>
             </div>
