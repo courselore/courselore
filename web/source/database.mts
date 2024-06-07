@@ -3842,7 +3842,7 @@ export default async (application: Application): Promise<void> => {
                         Message non-existent permanent link turned reference: <https://${
                           application.configuration.hostname
                         }/courses/${course.id}/conversations/1?message=100>
-                        `}
+                      `}
                   );
                 `,
               );
