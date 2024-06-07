@@ -188,9 +188,6 @@ export default async (application: Application): Promise<void> => {
           border-radius: var(--border-radius--1);
           padding: var(--space--1) var(--space--2);
           margin: var(--space---1) var(--space---2);
-          display: flex;
-          align-items: center;
-          gap: var(--space--1);
           cursor: pointer;
           transition-property: var(--transition-property--colors);
           transition-duration: var(--transition-duration--150);
@@ -228,7 +225,11 @@ export default async (application: Application): Promise<void> => {
       `;
       response.end(html`
         <!doctype html>
-        <html style="color-scheme: light dark;">
+        <html
+          css="${css`
+            color-scheme: light dark;
+          `}"
+        >
           <head>
             <title>Courselore</title>
             <meta
