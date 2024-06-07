@@ -7,17 +7,16 @@ import * as caddy from "@radically-straightforward/caddy";
 import { Application } from "./index.mjs";
 
 export default async (application: Application): Promise<void> => {
-  // TODO
   application.server?.push({
     method: "GET",
     pathname: "/",
     handler: (
       request: serverTypes.Request<
-        { courseId: string; conversationId: string },
-        { message: string },
         {},
         {},
-        {}
+        {},
+        {},
+        Application["types"]["states"]["User"]
       >,
       response,
     ) => {
@@ -29,7 +28,7 @@ export default async (application: Application): Promise<void> => {
           select "id", "externalId" from "courses" limit 1;
         `,
       )!;
-      const conversation = application.database.get<{
+      const courseConversation = application.database.get<{
         externalId: number;
       }>(
         sql`
@@ -37,59 +36,138 @@ export default async (application: Application): Promise<void> => {
         `,
       )!;
       response.redirect(
-        `/courses/${course.externalId}/conversations/${conversation.externalId}`,
+        `/courses/${course.externalId}/conversations/${courseConversation.externalId}`,
       );
+    },
+  });
+
+  application.server?.push({
+    handler: (
+      request: serverTypes.Request<
+        {},
+        {},
+        {},
+        {},
+        Application["types"]["states"]["User"]
+      >,
+      response,
+    ) => {
+      request.state.user = application.database.get<{
+        id: number;
+        name: string;
+      }>(
+        sql`
+          select "id", "name"
+          from "users"
+          where "id" = ${1};
+        `,
+      );
+    },
+  });
+
+  type CourseState = Application["types"]["states"]["User"] & {
+    course: {
+      id: number;
+      externalId: string;
+      name: string;
+    };
+    courseParticipation: {
+      id: number;
+      accentColor: string;
+    };
+  };
+  application.server?.push({
+    pathname: new RegExp("^/courses/(?<courseId>[0-9]+)(?:$|/)"),
+    handler: (
+      request: serverTypes.Request<
+        { courseId: string },
+        {},
+        {},
+        {},
+        CourseConversationState
+      >,
+      response,
+    ) => {
+      if (request.state.user === undefined) return;
+      request.state.course = application.database.get<{
+        id: number;
+        externalId: string;
+        name: string;
+      }>(
+        sql`
+          select "id", "externalId", "name"
+          from "courses"
+          where "externalId" = ${request.pathname.courseId};
+        `,
+      );
+      if (request.state.course === undefined) return;
+      request.state.courseParticipation = application.database.get<{
+        id: number;
+        accentColor: string;
+      }>(
+        sql`
+          select "id", "accentColor"
+          from "courseParticipations"
+          where
+            "user" = ${request.state.user.id} and
+            "course" = ${request.state.course.id};
+        `,
+      );
+      if (request.state.courseParticipation === undefined) return;
+    },
+  });
+
+  type CourseConversationState = CourseState & {
+    courseConversation: {
+      id: number;
+      externalId: string;
+    };
+  };
+  application.server?.push({
+    pathname: new RegExp(
+      "^/courses/(?<courseId>[0-9]+)/conversations/(?<courseConversationId>[0-9]+)(?:$|/)",
+    ),
+    handler: (
+      request: serverTypes.Request<
+        { courseConversationId: string },
+        {},
+        {},
+        {},
+        CourseConversationState
+      >,
+      response,
+    ) => {
+      if (
+        request.state.course === undefined ||
+        request.state.courseParticipation === undefined
+      )
+        return;
+      request.state.courseConversation = application.database.get<{
+        id: number;
+        externalId: string;
+      }>(
+        sql`
+          select "id", "externalId"
+          from "courseConversations"
+          where
+            "course" = ${request.state.course.id} and
+            "externalId" = ${request.pathname.courseConversationId}
+        `,
+      );
+      if (request.state.courseConversation === undefined) return;
     },
   });
 
   application.server?.push({
     method: "GET",
     pathname: new RegExp(
-      "^/courses/(?<courseId>[0-9]+)/conversations/(?<conversationId>[0-9]+)$",
+      "^/courses/(?<courseId>[0-9]+)/conversations/(?<courseConversationId>[0-9]+)$",
     ),
     handler: (
-      request: serverTypes.Request<
-        { courseId: string; conversationId: string },
-        { message: string },
-        {},
-        {},
-        {}
-      >,
+      request: serverTypes.Request<{}, {}, {}, {}, CourseConversationState>,
       response,
     ) => {
-      const user = application.database.get<{ id: number; name: string }>(
-        sql`
-          select "id", "name" from "users" where "id" = ${1};
-        `,
-      );
-      if (user === undefined) return;
-      const course = application.database.get<{
-        id: number;
-        externalId: string;
-        name: string;
-      }>(
-        sql`
-          select "id", "externalId", "name" from "courses" where "externalId" = ${request.pathname.courseId};
-        `,
-      );
-      if (course === undefined) return;
-      const courseParticipation = application.database.get<{
-        accentColor: string;
-      }>(
-        sql`
-          select "accentColor" from "courseParticipations" where "user" = ${user.id} and "course" = ${course.id};
-        `,
-      );
-      if (courseParticipation === undefined) return;
-      const courseConversation = application.database.get<{
-        id: number;
-        externalId: string;
-      }>(
-        sql`
-          select "id", "externalId" from "courseConversations" where "course" = ${course.id} and "externalId" = ${request.pathname.conversationId}
-        `,
-      );
-      if (courseConversation === undefined) return;
+      if (request.state.courseConversation === undefined) return;
 
       css`
         @import "@radically-straightforward/css/static/index.css";
@@ -184,7 +262,9 @@ export default async (application: Application): Promise<void> => {
           >
             <div
               key="accentColor"
-              style="background-color: light-dark(var(--color--${courseParticipation.accentColor}--500), var(--color--${courseParticipation.accentColor}--700));"
+              style="background-color: light-dark(var(--color--${request.state
+                .courseParticipation.accentColor}--500), var(--color--${request
+                .state.courseParticipation.accentColor}--700));"
               css="${css`
                 height: var(--space--1);
               `}"
@@ -240,7 +320,7 @@ export default async (application: Application): Promise<void> => {
                       text-overflow: ellipsis;
                     `}"
                   >
-                    ${course.name}
+                    ${request.state.course.name}
                   </div>
                   <i class="bi bi-chevron-down"></i>
                 </button>
@@ -255,7 +335,8 @@ export default async (application: Application): Promise<void> => {
               `}"
             >
               <div
-                key="courseConversations /courses/${course.externalId}"
+                key="courseConversations /courses/${request.state.course
+                  .externalId}"
                 style="width: ${String(20 * 16)}px;"
                 css="${css`
                   border-right: var(--border-width--1) solid
@@ -313,7 +394,9 @@ export default async (application: Application): Promise<void> => {
                 ></div>
               </div>
               <div
-                key="courseConversation /courses/${course.externalId}/conversations/${courseConversation.externalId}"
+                key="courseConversation /courses/${request.state.course
+                  .externalId}/conversations/${request.state.courseConversation
+                  .externalId}"
                 css="${css`
                   flex: 1;
                 `}"

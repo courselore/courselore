@@ -13,6 +13,17 @@ import database, { ApplicationDatabase } from "./database.mjs";
 import conversations from "./conversations.mjs";
 
 export type Application = {
+  types: {
+    states: {
+      // TODO
+      User: {
+        user: {
+          id: number;
+          name: string;
+        };
+      };
+    };
+  };
   commandLineArguments: {
     values: {
       type: undefined | "server" | "backgroundJob";
