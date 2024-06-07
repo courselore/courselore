@@ -25,14 +25,18 @@ export default async (application: Application): Promise<void> => {
         externalId: number;
       }>(
         sql`
-          select "id", "externalId" from "courses" limit 1;
+          select "id", "externalId"
+          from "courses"
+          limit 1;
         `,
       )!;
       const courseConversation = application.database.get<{
         externalId: number;
       }>(
         sql`
-          select "externalId" from "courseConversations" where "course" = ${course.id};
+          select "externalId"
+          from "courseConversations"
+          where "course" = ${course.id};
         `,
       )!;
       response.redirect(
@@ -55,9 +59,10 @@ export default async (application: Application): Promise<void> => {
       request.state.user = application.database.get<{
         id: number;
         name: string;
+        darkMode: "system" | "light" | "dark";
       }>(
         sql`
-          select "id", "name"
+          select "id", "name", "darkMode"
           from "users"
           where "id" = ${1};
         `,
@@ -168,6 +173,7 @@ export default async (application: Application): Promise<void> => {
       response,
     ) => {
       if (
+        request.state.user === undefined ||
         request.state.course === undefined ||
         request.state.courseParticipation === undefined ||
         request.state.courseConversation === undefined
@@ -226,9 +232,19 @@ export default async (application: Application): Promise<void> => {
       response.end(html`
         <!doctype html>
         <html
-          css="${css`
-            color-scheme: light dark;
-          `}"
+          css="${request.state.user.darkMode === "system"
+            ? css`
+                color-scheme: light dark;
+              `
+            : request.state.user.darkMode === "light"
+              ? css`
+                  color-scheme: light;
+                `
+              : request.state.user.darkMode === "dark"
+                ? css`
+                    color-scheme: dark;
+                  `
+                : css``}"
         >
           <head>
             <title>Courselore</title>

@@ -20,6 +20,7 @@ export type Application = {
         user: {
           id: number;
           name: string;
+          darkMode: "system" | "light" | "dark";
         };
       };
     };
