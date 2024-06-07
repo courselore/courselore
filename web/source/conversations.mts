@@ -167,7 +167,12 @@ export default async (application: Application): Promise<void> => {
       request: serverTypes.Request<{}, {}, {}, {}, CourseConversationState>,
       response,
     ) => {
-      if (request.state.courseConversation === undefined) return;
+      if (
+        request.state.course === undefined ||
+        request.state.courseParticipation === undefined ||
+        request.state.courseConversation === undefined
+      )
+        return;
 
       css`
         @import "@radically-straightforward/css/static/index.css";
@@ -281,7 +286,7 @@ export default async (application: Application): Promise<void> => {
             >
               <a
                 key="logo"
-                href="${new URL("/", request.URL).href}"
+                href="https://${application.configuration.hostname}"
                 class="button"
                 css="${css`
                   font-weight: 700;
