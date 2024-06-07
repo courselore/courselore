@@ -27,6 +27,7 @@ export type Application = {
     environment: "production" | "development";
     hstsPreload: boolean;
     extraCaddyfile: string;
+    tunnel: boolean;
     ports: number[];
     argon2: argon2.Options;
   };
@@ -61,9 +62,7 @@ application.configuration.argon2 = {
 if (application.commandLineArguments.values.type === "server")
   application.server = server({
     port: Number(application.commandLineArguments.values.port),
-    csrfProtectionExceptionPathname: new RegExp(
-      "^/saml/[a-z0-9-]+/(assertion-consumer-service|single-logout-service)$",
-    ),
+    csrfProtectionExceptionPathname: new RegExp("^TODO$"),
   });
 
 utilities.log(
