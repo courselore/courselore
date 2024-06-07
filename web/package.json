@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "prepare": "tsc && build --file-to-copy-with-hash \"./static/about/\" --file-to-copy-without-hash \"./static/favicon.ico\" --file-to-copy-without-hash \"./static/apple-touch-icon.png\" --file-to-copy-without-hash \"./node_modules/fake-avatars/avatars/webp/\" --file-to-copy-without-hash \"./static/development/\"",
+    "prepare": "tsc && build --file-to-copy-with-hash \"./static/about/\" --file-to-copy-without-hash \"./static/favicon.ico\" --file-to-copy-without-hash \"./node_modules/fake-avatars/avatars/webp/\" --file-to-copy-without-hash \"./static/development/\"",
     "start": "nodemon --watch \"./package.json\" --watch \"./tsconfig.json\" --watch \"./source/**/*.mts\" --watch \"./static/**/*.ico\" --watch \"./configuration/**/*.mjs\" --ext \"*\" --exec \"npm run prepare && node ./build/index.mjs ./configuration/development.mjs\"",
     "test": "npm run prepare && prettier --check \"./package.json\" --check \"./tsconfig.json\" --check \"./source/**/*.mts\" --check \"./configuration/**/*.mjs\"",
     "backup": "rsync -av --delete --progress root@courselore.org:courselore/data/ /Volumes/leafac--external-storage/Backups/courselore/"
