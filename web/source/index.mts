@@ -15,7 +15,7 @@ import conversations from "./conversations.mjs";
 export type Application = {
   commandLineArguments: {
     values: {
-      type: undefined | "server" | "background-job";
+      type: undefined | "server" | "backgroundJob";
       port: undefined | string;
     };
     positionals: string[];
@@ -88,7 +88,7 @@ await database(application);
 await conversations(application);
 
 // TODO
-if (application.commandLineArguments.values.type === "background-job")
+if (application.commandLineArguments.values.type === "backgroundJob")
   setInterval(() => {}, 1000);
 
 if (application.commandLineArguments.values.type === undefined) {
@@ -120,7 +120,7 @@ if (application.commandLineArguments.values.type === undefined) {
           process.argv[1],
           ...application.commandLineArguments.positionals,
           "--type",
-          "background-job",
+          "backgroundJob",
           "--port",
           String(port),
         ],
