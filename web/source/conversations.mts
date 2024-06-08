@@ -270,8 +270,8 @@ export default async (application: Application): Promise<void> => {
                 var(--color--black)
               );
               color: light-dark(
-                var(--color--slate--800),
-                var(--color--slate--200)
+                var(--color--black),
+                var(--color--white)
               );
               position: absolute;
               inset: 0;
