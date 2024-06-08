@@ -193,25 +193,28 @@ export default async (application: Application): Promise<void> => {
         .button {
           border-radius: var(--border-radius--1);
           padding: var(--space--1) var(--space--2);
-          margin: var(--space---1) var(--space---2);
           cursor: pointer;
           transition-property: var(--transition-property--colors);
           transition-duration: var(--transition-duration--150);
           transition-timing-function: var(
             --transition-timing-function--ease-in-out
           );
-          &:hover,
-          &:focus-within {
-            background-color: light-dark(
-              var(--color--slate--100),
-              var(--color--slate--800)
-            );
-          }
-          &:active {
-            background-color: light-dark(
-              var(--color--slate--200),
-              var(--color--slate--700)
-            );
+
+          &.button--transparent {
+            margin: var(--space---1) var(--space---2);
+            &:hover,
+            &:focus-within {
+              background-color: light-dark(
+                var(--color--slate--100),
+                var(--color--slate--800)
+              );
+            }
+            &:active {
+              background-color: light-dark(
+                var(--color--slate--200),
+                var(--color--slate--700)
+              );
+            }
           }
         }
       `;
@@ -269,10 +272,7 @@ export default async (application: Application): Promise<void> => {
                 var(--color--white),
                 var(--color--black)
               );
-              color: light-dark(
-                var(--color--black),
-                var(--color--white)
-              );
+              color: light-dark(var(--color--black), var(--color--white));
               position: absolute;
               inset: 0;
               display: flex;
@@ -303,9 +303,10 @@ export default async (application: Application): Promise<void> => {
               <a
                 key="logo"
                 href="https://${application.configuration.hostname}"
-                class="button"
+                class="button button--transparent"
                 css="${css`
-                  font-weight: 700;
+                  display: flex;
+                  gap: var(--space--1);
                 `}"
               >
                 <svg width="20" height="20" viewBox="0 0 20 20">
@@ -317,7 +318,13 @@ export default async (application: Application): Promise<void> => {
                     stroke-linejoin="round"
                   />
                 </svg>
-                <div>Courselore</div>
+                <div
+                  css="${css`
+                    font-weight: 700;
+                  `}"
+                >
+                  Courselore
+                </div>
               </a>
               <div
                 key="course"
@@ -327,7 +334,7 @@ export default async (application: Application): Promise<void> => {
                 `}"
               >
                 <button
-                  class="button"
+                  class="button button--transparent"
                   css="${css`
                     max-width: 100%;
                     display: flex;
@@ -346,7 +353,7 @@ export default async (application: Application): Promise<void> => {
                   <i class="bi bi-chevron-down"></i>
                 </button>
               </div>
-              <button key="user" class="button">LF</button>
+              <button key="user" class="button button--transparent">LF</button>
             </div>
             <div
               key="main"
