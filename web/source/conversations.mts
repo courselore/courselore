@@ -284,9 +284,8 @@ export default async (application: Application): Promise<void> => {
           >
             <div
               key="accentColor"
-              style="background-color: light-dark(var(--color--${request.state
-                .courseParticipation.accentColor}--500), var(--color--${request
-                .state.courseParticipation.accentColor}--700));"
+              style="background-color: var(--color--${request.state
+                .courseParticipation.accentColor}--500);"
               css="${css`
                 height: var(--space--1);
               `}"
