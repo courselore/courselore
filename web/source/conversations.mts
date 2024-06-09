@@ -181,7 +181,6 @@ export default async (application: Application): Promise<void> => {
         return;
 
       css`
-        @import "@radically-straightforward/css/static/index.css";
         @import "@radically-straightforward/javascript/static/index.css";
         @import "@fontsource-variable/public-sans";
         @import "@fontsource-variable/public-sans/wght-italic.css";
