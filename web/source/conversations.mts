@@ -217,6 +217,22 @@ export default async (application: Application): Promise<void> => {
             }
           }
         }
+
+        .tippy-box {
+          background-color: light-dark(
+            var(--color--slate--50),
+            var(--color--slate--950)
+          );
+          color: light-dark(var(--color--black), var(--color--white));
+          border: var(--border-width--1) solid
+            light-dark(var(--color--slate--400), var(--color--slate--600));
+          border-radius: var(--border-radius--1);
+          box-shadow: var(--box-shadow--4);
+
+          .tippy-content {
+            padding: var(--space--1) var(--space--2);
+          }
+        }
       `;
       javascript`
         import * as javascript from "@radically-straightforward/javascript/static/index.mjs";
@@ -255,6 +271,7 @@ export default async (application: Application): Promise<void> => {
               name="description"
               content="Communication Platform for Education"
             />
+            <meta name="version" content="${application.version}" />
             <link rel="stylesheet" href="/${caddy.staticFiles["index.css"]}" />
             <script src="/${caddy.staticFiles["index.mjs"]}"></script>
             <meta

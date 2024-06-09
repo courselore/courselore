@@ -25,6 +25,7 @@ export type Application = {
       };
     };
   };
+  version: string;
   commandLineArguments: {
     values: {
       type: undefined | "server" | "backgroundJob";
@@ -46,6 +47,7 @@ export type Application = {
   server: undefined | ReturnType<typeof server>;
 } & ApplicationDatabase;
 const application = {} as Application;
+application.version = "8.0.0";
 application.commandLineArguments = util.parseArgs({
   options: {
     type: { type: "string" },
@@ -79,7 +81,7 @@ if (application.commandLineArguments.values.type === "server")
 
 utilities.log(
   "COURSELORE",
-  "9.0.0",
+  application.version,
   "START",
   application.commandLineArguments.values.type ??
     application.configuration.hostname,
