@@ -226,9 +226,6 @@ export default async (application: Application): Promise<void> => {
             light-dark(var(--color--slate--400), var(--color--slate--600));
           border-radius: var(--border-radius--1);
           box-shadow: var(--box-shadow--4);
-          .tippy-content {
-            padding: var(--space--1) var(--space--2);
-          }
           &[data-theme~="error"] {
             color: light-dark(var(--color--red--800), var(--color--red--200));
             background-color: light-dark(
@@ -237,6 +234,9 @@ export default async (application: Application): Promise<void> => {
             );
             border: var(--border-width--1) solid
               light-dark(var(--color--red--400), var(--color--red--600));
+          }
+          .tippy-content {
+            padding: var(--space--1) var(--space--2);
           }
         }
       `;
