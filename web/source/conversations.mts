@@ -409,6 +409,7 @@ export default async (application: Application): Promise<void> => {
                     cursor: col-resize;
                     pointer-events: auto;
                     transition-property: var(--transition-property--colors);
+                    transition-delay: var(--transition-duration--150);
                     transition-duration: var(--transition-duration--150);
                     transition-timing-function: var(
                       --transition-timing-function--ease-in-out
