@@ -356,8 +356,8 @@ export default async (application: Application): Promise<void> => {
                   position: absolute;
                   inset: 0;
                   opacity: var(--opacity--0);
-                  transform: translateX(-102%);
                   cursor: pointer;
+                  pointer-events: none;
                   transition-property: var(--transition-property--opacity);
                   transition-duration: var(--transition-duration--150);
                   transition-timing-function: var(
@@ -366,7 +366,7 @@ export default async (application: Application): Promise<void> => {
                   @media (max-width: 899px) {
                     [key="main"].sidebar & {
                       opacity: var(--opacity--80);
-                      transform: translateX(0%);
+                      pointer-events: auto;
                     }
                   }
                 `}"
