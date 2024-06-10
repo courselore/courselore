@@ -22,6 +22,7 @@ export type ApplicationUsers = {
 };
 
 export default async (application: Application): Promise<void> => {
+  // TODO
   application.server?.push({
     handler: (
       request: serverTypes.Request<
@@ -45,6 +46,39 @@ export default async (application: Application): Promise<void> => {
           where "id" = ${1};
         `,
       );
+    },
+  });
+
+  application.server?.push({
+    method: "PATCH",
+    pathname: "/settings",
+    handler: (
+      request: serverTypes.Request<
+        {},
+        {},
+        {},
+        { sidebarWidth: string },
+        Application["types"]["states"]["User"]
+      >,
+      response,
+    ) => {
+      if (request.state.user === undefined) return;
+      if (typeof request.body.sidebarWidth === "string")
+        if (
+          request.body.sidebarWidth.match(/^[0-9]+$/) === null ||
+          Number(request.body.sidebarWidth) < 60 * 4 ||
+          112 * 4 < Number(request.body.sidebarWidth)
+        )
+          throw "validation";
+        else
+          application.database.run(
+            sql`
+              update "users"
+              set "sidebarWidth" = ${Number(request.body.sidebarWidth)}
+              where "id" = ${request.state.user.id};
+            `,
+          );
+      response.redirect();
     },
   });
 };

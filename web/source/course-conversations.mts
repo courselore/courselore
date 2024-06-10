@@ -336,6 +336,7 @@ export default async (application: Application): Promise<void> => {
                     };
                     const updateSidebarWidth = utilities.foregroundJob(async () => {
                       await fetch(${`https://${application.configuration.hostname}/settings`}, {
+                        redirect: "manual",
                         method: "PATCH",
                         headers: { "CSRF-Protection": "true" },
                         body: new URLSearchParams({ sidebarWidth: this.closest('[key="main"]').querySelector('[key~="courseConversations"]').style.width.slice(0, -"px".length) }),
