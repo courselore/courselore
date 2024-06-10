@@ -13,6 +13,24 @@ export type ApplicationUsers = {
         user: {
           id: number;
           name: string;
+          avatarlessBackgroundColor:
+            | "red"
+            | "orange"
+            | "amber"
+            | "yellow"
+            | "lime"
+            | "green"
+            | "emerald"
+            | "teal"
+            | "cyan"
+            | "sky"
+            | "blue"
+            | "indigo"
+            | "violet"
+            | "purple"
+            | "fuchsia"
+            | "pink"
+            | "rose";
           darkMode: "system" | "light" | "dark";
           sidebarWidth: number;
         };
@@ -37,11 +55,29 @@ export default async (application: Application): Promise<void> => {
       request.state.user = application.database.get<{
         id: number;
         name: string;
+        avatarlessBackgroundColor:
+          | "red"
+          | "orange"
+          | "amber"
+          | "yellow"
+          | "lime"
+          | "green"
+          | "emerald"
+          | "teal"
+          | "cyan"
+          | "sky"
+          | "blue"
+          | "indigo"
+          | "violet"
+          | "purple"
+          | "fuchsia"
+          | "pink"
+          | "rose";
         darkMode: "system" | "light" | "dark";
         sidebarWidth: number;
       }>(
         sql`
-          select "id", "name", "darkMode", "sidebarWidth"
+          select "id", "name", "avatarlessBackgroundColor", "darkMode", "sidebarWidth"
           from "users"
           where "id" = ${1};
         `,

@@ -262,7 +262,23 @@ export default async (application: Application): Promise<void> => {
                   <i class="bi bi-chevron-down"></i>
                 </button>
               </div>
-              <button key="user" class="button button--transparent">LF</button>
+              <button
+                key="user"
+                class="button button--transparent"
+                style="
+                  color: var(--color--${request.state.user
+                  .avatarlessBackgroundColor}--800);
+                  background-color: var(--color--${request.state.user
+                  .avatarlessBackgroundColor}--200);
+                "
+                css="${css`
+                  width: var(--space--7);
+                  height: var(--space--7);
+                  border-radius: var(--border-radius--1);
+                `}"
+              >
+                LF
+              </button>
             </div>
             <div
               key="main"
