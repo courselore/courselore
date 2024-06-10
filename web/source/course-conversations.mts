@@ -339,6 +339,13 @@ export default async (application: Application): Promise<void> => {
                       var(--color--slate--800)
                     );
                   @media (max-width: 899px) {
+                    position: absolute;
+                    inset: 0;
+                    right: var(--space--14);
+                    background-color: light-dark(
+                      var(--color--white),
+                      var(--color--black)
+                    );
                   }
                   @media (min-width: 900px) {
                     width: var(--width);
