@@ -10,21 +10,14 @@ import caddyfile from "@radically-straightforward/caddy";
 import * as caddy from "@radically-straightforward/caddy";
 import * as argon2 from "argon2";
 import database, { ApplicationDatabase } from "./database.mjs";
+// TODO
+import * as serverTypes from "@radically-straightforward/server";
+import sql from "@radically-straightforward/sqlite";
+import users, { ApplicationUsers } from "./users.mjs";
+import courses, { ApplicationCourses } from "./courses.mjs";
 import conversations from "./conversations.mjs";
 
 export type Application = {
-  types: {
-    states: {
-      User: {
-        user: {
-          id: number;
-          name: string;
-          darkMode: "system" | "light" | "dark";
-          sidebarWidth: number;
-        };
-      };
-    };
-  };
   version: string;
   commandLineArguments: {
     values: {
@@ -45,7 +38,9 @@ export type Application = {
     argon2: argon2.Options;
   };
   server: undefined | ReturnType<typeof server>;
-} & ApplicationDatabase;
+} & ApplicationDatabase &
+  ApplicationUsers &
+  ApplicationCourses;
 const application = {} as Application;
 application.version = "8.0.0";
 application.commandLineArguments = util.parseArgs({
@@ -98,6 +93,46 @@ process.once("beforeExit", () => {
 });
 
 await database(application);
+// TODO
+application.server?.push({
+  method: "GET",
+  pathname: "/",
+  handler: (
+    request: serverTypes.Request<
+      {},
+      {},
+      {},
+      {},
+      Application["types"]["states"]["User"]
+    >,
+    response,
+  ) => {
+    const course = application.database.get<{
+      id: number;
+      externalId: number;
+    }>(
+      sql`
+        select "id", "externalId"
+        from "courses"
+        limit 1;
+      `,
+    )!;
+    const courseConversation = application.database.get<{
+      externalId: number;
+    }>(
+      sql`
+        select "externalId"
+        from "courseConversations"
+        where "course" = ${course.id};
+      `,
+    )!;
+    response.redirect(
+      `/courses/${course.externalId}/conversations/${courseConversation.externalId}`,
+    );
+  },
+});
+await users(application);
+await courses(application);
 await conversations(application);
 
 // TODO
