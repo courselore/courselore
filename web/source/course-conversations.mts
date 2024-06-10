@@ -331,13 +331,18 @@ export default async (application: Application): Promise<void> => {
               <div
                 key="courseConversations /courses/${request.state.course
                   .externalId}"
-                style="width: ${String(request.state.user.sidebarWidth)}px;"
+                style="--width: ${String(request.state.user.sidebarWidth)}px;"
                 css="${css`
                   border-right: var(--border-width--1) solid
                     light-dark(
                       var(--color--slate--200),
                       var(--color--slate--800)
                     );
+                  @media (max-width: 899px) {
+                  }
+                  @media (min-width: 900px) {
+                    width: var(--width);
+                  }
                 `}"
               >
                 courseConversations
@@ -346,6 +351,9 @@ export default async (application: Application): Promise<void> => {
                 key="separator"
                 css="${css`
                   position: relative;
+                  @media (max-width: 899px) {
+                    display: none;
+                  }
                 `}"
               >
                 <div
@@ -377,7 +385,7 @@ export default async (application: Application): Promise<void> => {
                       document.querySelector("body").classList.add("noninteractive");
                       document.querySelector("body").style.cursor = "col-resize";
                       document.onpointermove = (event) => {
-                        this.closest('[key="main"]').querySelector('[key~="courseConversations"]').style.width = String(Math.min(Math.max(Math.floor(event.clientX), 60 * 4), 112 * 4)) + "px";
+                        this.closest('[key="main"]').querySelector('[key~="courseConversations"]').style.setProperty("--width", String(Math.min(Math.max(Math.floor(event.clientX), 60 * 4), 112 * 4)) + "px");
                       };
                       document.onpointerup = () => {
                         this.classList.remove("active");
@@ -389,7 +397,7 @@ export default async (application: Application): Promise<void> => {
                       };
                     };
                     this.ondblclick = (event) => {
-                      this.closest('[key="main"]').querySelector('[key~="courseConversations"]').style.width = String(80 * 4) +"px";
+                      this.closest('[key="main"]').querySelector('[key~="courseConversations"]').style.setProperty("--width", String(80 * 4) +"px");
                       updateSidebarWidth();
                     };
                     const updateSidebarWidth = utilities.foregroundJob(async () => {
@@ -397,7 +405,7 @@ export default async (application: Application): Promise<void> => {
                         redirect: "manual",
                         method: "PATCH",
                         headers: { "CSRF-Protection": "true" },
-                        body: new URLSearchParams({ sidebarWidth: this.closest('[key="main"]').querySelector('[key~="courseConversations"]').style.width.slice(0, -"px".length) }),
+                        body: new URLSearchParams({ sidebarWidth: this.closest('[key="main"]').querySelector('[key~="courseConversations"]').style.getPropertyValue("--width").slice(0, -"px".length) }),
                       });
                     });
                   `}"
