@@ -226,6 +226,7 @@ export default async (application: Application): Promise<void> => {
               `}"
             >
               <button
+                key="hamburger"
                 class="button button--square button--transparent"
                 css="${css`
                   font-size: var(--font-size--5);
@@ -235,6 +236,9 @@ export default async (application: Application): Promise<void> => {
                   display: flex;
                   justify-content: center;
                   align-items: center;
+                  @media (min-width: 900px) {
+                    display: none;
+                  }
                 `}"
                 javascript="${javascript`
                   this.onclick = () => {
