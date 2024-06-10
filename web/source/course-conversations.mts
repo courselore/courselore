@@ -225,6 +225,25 @@ export default async (application: Application): Promise<void> => {
                 gap: var(--space--4);
               `}"
             >
+              <button
+                class="button button--square button--transparent"
+                css="${css`
+                  font-size: var(--font-size--5);
+                  line-height: var(--font-size--5--line-height);
+                  width: var(--space--6);
+                  height: var(--space--6);
+                  display: flex;
+                  justify-content: center;
+                  align-items: center;
+                `}"
+                javascript="${javascript`
+                  this.onclick = () => {
+                    document.querySelector('[key="main"]').classList.add("sidebar");
+                  };
+                `}"
+              >
+                <i class="bi bi-list"></i>
+              </button>
               <a
                 key="logo"
                 href="https://${application.configuration.hostname}"
