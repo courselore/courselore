@@ -79,7 +79,7 @@ utilities.log(
   application.version,
   "START",
   application.commandLineArguments.values.type ??
-    application.configuration.hostname,
+    `https://${application.configuration.hostname}`,
   application.commandLineArguments.values.port ?? "",
 );
 process.once("beforeExit", () => {
@@ -87,7 +87,7 @@ process.once("beforeExit", () => {
     "COURSELORE",
     "STOP",
     application.commandLineArguments.values.type ??
-      application.configuration.hostname,
+      `https://${application.configuration.hostname}`,
     application.commandLineArguments.values.port ?? "",
   );
 });
