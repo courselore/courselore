@@ -243,6 +243,7 @@ export default async (application: Application): Promise<void> => {
       `;
       javascript`
         import * as javascript from "@radically-straightforward/javascript/static/index.mjs";
+        import * as utilities from "@radically-straightforward/utilities";
         import * as tippy from "tippy.js";
         import Mousetrap from "mousetrap";
         import scrollIntoViewIfNeeded from "scroll-into-view-if-needed";
@@ -430,19 +431,27 @@ export default async (application: Application): Promise<void> => {
                       document.querySelector("body").classList.add("noninteractive");
                       document.querySelector("body").style.cursor = "col-resize";
                       document.onmousemove = (event) => {
-                        const element = this.closest('[key="main"]').querySelector('[key~="courseConversations"]');
-                        element.style.width = String(Math.min(Math.max(event.clientX, 60 * 4), 112 * 4)) + "px";
+                        this.closest('[key="main"]').querySelector('[key~="courseConversations"]').style.width = String(Math.min(Math.max(event.clientX, 60 * 4), 112 * 4)) + "px";
                       };
                       document.onmouseup = () => {
                         this.classList.remove("active");
                         document.querySelector("body").classList.remove("noninteractive");
                         document.querySelector("body").style.cursor = "";
                         document.onmousemove = undefined;
+                        updateSidebarWidth();
                       };
                     };
                     this.ondblclick = (event) => {
                       this.closest('[key="main"]').querySelector('[key~="courseConversations"]').style.width = String(80 * 4) +"px";
+                      updateSidebarWidth();
                     };
+                    const updateSidebarWidth = utilities.foregroundJob(async () => {
+                      await fetch(${`https://${application.configuration.hostname}/settings`}, {
+                        method: "PATCH",
+                        headers: { "CSRF-Protection": "true" },
+                        body: new URLSearchParams({ sidebarWidth: this.closest('[key="main"]').querySelector('[key~="courseConversations"]').style.width.slice(0, -"px".length) }),
+                      });
+                    });
                   `}"
                 ></div>
               </div>
