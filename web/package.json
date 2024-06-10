@@ -39,7 +39,7 @@
   "devDependencies": {
     "@fontsource-variable/jetbrains-mono": "^5.0.21",
     "@fontsource-variable/public-sans": "^5.0.19",
-    "@radically-straightforward/development": "^1.0.16",
+    "@radically-straightforward/development": "^1.0.17",
     "@types/lodash": "^4.17.5",
     "@types/node": "^20.14.2",
     "@types/node-forge": "^1.3.11",
