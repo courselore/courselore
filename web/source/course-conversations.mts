@@ -300,7 +300,12 @@ export default async (application: Application): Promise<void> => {
                   padding: var(--space--0);
                 `}"
               >
-                HH
+                ${(() => {
+                  const nameParts = request.state.user.name.split(/\s+/);
+                  return nameParts.length === 1
+                    ? nameParts[0][0]
+                    : nameParts[0][0] + nameParts.at(-1)![0];
+                })()}
               </button>
             </div>
             <div
