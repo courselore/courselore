@@ -193,9 +193,17 @@ export default async (application: Application): Promise<void> => {
           >
             <div
               key="accentColor"
-              style="background-color: var(--color--${request.state
-                .courseParticipation.accentColor}--500);"
+              style="
+                --background-color--light: var(--color--${request.state
+                .courseParticipation.accentColor}--500);
+                --background-color--dark: var(--color--${request.state
+                .courseParticipation.accentColor}--500);
+              "
               css="${css`
+                background-color: light-dark(
+                  var(--background-color--light),
+                  var(--background-color--dark)
+                );
                 height: var(--space--1);
               `}"
             ></div>
@@ -266,12 +274,21 @@ export default async (application: Application): Promise<void> => {
                 key="user"
                 class="button button--transparent"
                 style="
-                  color: var(--color--${request.state.user
+                  --color--light: var(--color--${request.state.user
                   .avatarlessBackgroundColor}--800);
-                  background-color: var(--color--${request.state.user
+                  --color--dark: var(--color--${request.state.user
                   .avatarlessBackgroundColor}--200);
+                  --background-color--light: var(--color--${request.state.user
+                  .avatarlessBackgroundColor}--200);
+                  --background-color--dark: var(--color--${request.state.user
+                  .avatarlessBackgroundColor}--800);
                 "
                 css="${css`
+                  color: light-dark(var(--color--light), var(--color--dark));
+                  background-color: light-dark(
+                    var(--background-color--light),
+                    var(--background-color--dark)
+                  );
                   width: var(--space--7);
                   height: var(--space--7);
                   border-radius: var(--border-radius--1);
