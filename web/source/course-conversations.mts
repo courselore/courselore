@@ -382,8 +382,7 @@ export default async (application: Application): Promise<void> => {
                 `}"
               ></button>
               <div
-                key="courseConversations /courses/${request.state.course
-                  .externalId}"
+                key="sidebar /courses/${request.state.course.externalId}"
                 style="--width: ${String(request.state.user.sidebarWidth)}px;"
                 css="${css`
                   border-right: var(--border-width--1) solid
@@ -391,6 +390,8 @@ export default async (application: Application): Promise<void> => {
                       var(--color--slate--200),
                       var(--color--slate--800)
                     );
+                  display: flex;
+                  flex-direction: column;
                   @media (max-width: 899px) {
                     background-color: light-dark(
                       var(--color--white),
@@ -415,7 +416,8 @@ export default async (application: Application): Promise<void> => {
                   }
                 `}"
               >
-                courseConversations
+                <div key="actions"></div>
+                <div key="courseConversations"></div>
               </div>
               <div
                 key="separator"
@@ -455,7 +457,7 @@ export default async (application: Application): Promise<void> => {
                       document.querySelector("body").classList.add("noninteractive");
                       document.querySelector("body").style.cursor = "col-resize";
                       document.onpointermove = (event) => {
-                        this.closest('[key="main"]').querySelector('[key~="courseConversations"]').style.setProperty("--width", String(Math.min(Math.max(Math.floor(event.clientX), 60 * 4), 112 * 4)) + "px");
+                        this.closest('[key="main"]').querySelector('[key~="sidebar"]').style.setProperty("--width", String(Math.min(Math.max(Math.floor(event.clientX), 60 * 4), 112 * 4)) + "px");
                       };
                       document.onpointerup = () => {
                         this.classList.remove("active");
@@ -467,7 +469,7 @@ export default async (application: Application): Promise<void> => {
                       };
                     };
                     this.ondblclick = (event) => {
-                      this.closest('[key="main"]').querySelector('[key~="courseConversations"]').style.setProperty("--width", String(80 * 4) +"px");
+                      this.closest('[key="main"]').querySelector('[key~="sidebar"]').style.setProperty("--width", String(80 * 4) +"px");
                       updateSidebarWidth();
                     };
                     const updateSidebarWidth = utilities.foregroundJob(async () => {
@@ -475,7 +477,7 @@ export default async (application: Application): Promise<void> => {
                         redirect: "manual",
                         method: "PATCH",
                         headers: { "CSRF-Protection": "true" },
-                        body: new URLSearchParams({ sidebarWidth: this.closest('[key="main"]').querySelector('[key~="courseConversations"]').style.getPropertyValue("--width").slice(0, -"px".length) }),
+                        body: new URLSearchParams({ sidebarWidth: this.closest('[key="main"]').querySelector('[key~="sidebar"]').style.getPropertyValue("--width").slice(0, -"px".length) }),
                       });
                     });
                   `}"
