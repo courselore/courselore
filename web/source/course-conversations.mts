@@ -352,6 +352,7 @@ export default async (application: Application): Promise<void> => {
               `}"
             >
               <button
+                key="sidebar-close"
                 css="${css`
                   background-color: light-dark(
                     var(--color--slate--800),
@@ -363,7 +364,7 @@ export default async (application: Application): Promise<void> => {
                   cursor: pointer;
                   pointer-events: none;
                   transition-property: var(--transition-property--opacity);
-                  transition-duration: var(--transition-duration--150);
+                  transition-duration: var(--transition-duration--200);
                   transition-timing-function: var(
                     --transition-timing-function--ease-in-out
                   );
@@ -391,16 +392,17 @@ export default async (application: Application): Promise<void> => {
                       var(--color--slate--800)
                     );
                   @media (max-width: 899px) {
-                    position: absolute;
-                    inset: 0;
-                    right: var(--space--14);
                     background-color: light-dark(
                       var(--color--white),
                       var(--color--black)
                     );
+                    position: absolute;
+                    inset: 0;
+                    right: var(--space--14);
+                    max-width: var(--space--112);
                     transform: translateX(-102%);
                     transition-property: var(--transition-property--transform);
-                    transition-duration: var(--transition-duration--150);
+                    transition-duration: var(--transition-duration--200);
                     transition-timing-function: var(
                       --transition-timing-function--ease-in-out
                     );
