@@ -371,6 +371,9 @@ export default async (application: Application): Promise<void> => {
                     transition-timing-function: var(
                       --transition-timing-function--ease-in-out
                     );
+                    [key="main"].sidebar & {
+                      transform: translateX(0%);
+                    }
                   }
                   @media (min-width: 900px) {
                     width: var(--width);
