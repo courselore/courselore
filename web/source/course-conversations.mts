@@ -347,6 +347,35 @@ export default async (application: Application): Promise<void> => {
                 display: flex;
               `}"
             >
+              <button
+                css="${css`
+                  background-color: light-dark(
+                    var(--color--slate--800),
+                    var(--color--slate--200)
+                  );
+                  position: absolute;
+                  inset: 0;
+                  opacity: var(--opacity--0);
+                  transform: translateX(-102%);
+                  cursor: pointer;
+                  transition-property: var(--transition-property--opacity);
+                  transition-duration: var(--transition-duration--150);
+                  transition-timing-function: var(
+                    --transition-timing-function--ease-in-out
+                  );
+                  @media (max-width: 899px) {
+                    [key="main"].sidebar & {
+                      opacity: var(--opacity--80);
+                      transform: translateX(0%);
+                    }
+                  }
+                `}"
+                javascript="${javascript`
+                  this.onclick = () => {
+                    document.querySelector('[key="main"]').classList.remove("sidebar");
+                  };
+                `}"
+              ></button>
               <div
                 key="courseConversations /courses/${request.state.course
                   .externalId}"
