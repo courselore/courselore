@@ -83,8 +83,14 @@ export default async (application: Application): Promise<void> => {
           transition-timing-function: var(
             --transition-timing-function--ease-in-out
           );
+          &.button--square {
+            padding: var(--space--1);
+          }
           &.button--transparent {
             margin: var(--space---1) var(--space---2);
+            &.button--square {
+              margin: var(--space---1);
+            }
             &:hover,
             &:focus-within {
               background-color: light-dark(
@@ -274,38 +280,45 @@ export default async (application: Application): Promise<void> => {
               </div>
               <button
                 key="user"
-                class="button"
-                style="
-                  --color--light: var(--color--${request.state.user
-                  .avatarlessBackgroundColor}--800);
-                  --color--dark: var(--color--${request.state.user
-                  .avatarlessBackgroundColor}--200);
-                  --background-color--light: var(--color--${request.state.user
-                  .avatarlessBackgroundColor}--200);
-                  --background-color--dark: var(--color--${request.state.user
-                  .avatarlessBackgroundColor}--800);
-                "
-                css="${css`
-                  font-size: var(--font-size--3);
-                  line-height: var(--font-size--3--line-height);
-                  letter-spacing: var(--letter-spacing--1);
-                  font-weight: 700;
-                  color: light-dark(var(--color--light), var(--color--dark));
-                  background-color: light-dark(
-                    var(--background-color--light),
-                    var(--background-color--dark)
-                  );
-                  width: var(--space--6);
-                  height: var(--space--6);
-                  padding: var(--space--0);
-                `}"
+                class="button button--square button--transparent"
               >
-                ${(() => {
-                  const nameParts = request.state.user.name.split(/\s+/);
-                  return nameParts.length === 1
-                    ? nameParts[0][0]
-                    : nameParts[0][0] + nameParts.at(-1)![0];
-                })()}
+                <div
+                  style="
+                    --color--light: var(--color--${request.state.user
+                    .avatarlessBackgroundColor}--800);
+                    --color--dark: var(--color--${request.state.user
+                    .avatarlessBackgroundColor}--200);
+                    --background-color--light: var(--color--${request.state.user
+                    .avatarlessBackgroundColor}--200);
+                    --background-color--dark: var(--color--${request.state.user
+                    .avatarlessBackgroundColor}--800);
+                  "
+                  css="${css`
+                    font-size: var(--font-size--3);
+                    line-height: var(--font-size--3--line-height);
+                    letter-spacing: var(--letter-spacing--1);
+                    font-weight: 700;
+                    color: light-dark(var(--color--light), var(--color--dark));
+                    background-color: light-dark(
+                      var(--background-color--light),
+                      var(--background-color--dark)
+                    );
+                    width: var(--space--6);
+                    height: var(--space--6);
+                    border-radius: var(--border-radius--1);
+                    overflow: hidden;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                  `}"
+                >
+                  ${(() => {
+                    const nameParts = request.state.user.name.split(/\s+/);
+                    return nameParts.length === 1
+                      ? nameParts[0][0]
+                      : nameParts[0][0] + nameParts.at(-1)![0];
+                  })()}
+                </div>
               </button>
             </div>
             <div
