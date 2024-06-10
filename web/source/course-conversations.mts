@@ -346,6 +346,12 @@ export default async (application: Application): Promise<void> => {
                       var(--color--white),
                       var(--color--black)
                     );
+                    transform: translateX(-102%);
+                    transition-property: var(--transition-property--transform);
+                    transition-duration: var(--transition-duration--150);
+                    transition-timing-function: var(
+                      --transition-timing-function--ease-in-out
+                    );
                   }
                   @media (min-width: 900px) {
                     width: var(--width);
