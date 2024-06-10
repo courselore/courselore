@@ -214,6 +214,8 @@ export default async (application: Application): Promise<void> => {
                 border-bottom: var(--border-width--1) solid
                   light-dark(var(--color--slate--200), var(--color--slate--800));
                 display: flex;
+                justify-content: space-between;
+                align-items: center;
                 gap: var(--space--4);
               `}"
             >
@@ -272,7 +274,7 @@ export default async (application: Application): Promise<void> => {
               </div>
               <button
                 key="user"
-                class="button button--transparent"
+                class="button"
                 style="
                   --color--light: var(--color--${request.state.user
                   .avatarlessBackgroundColor}--800);
@@ -284,17 +286,21 @@ export default async (application: Application): Promise<void> => {
                   .avatarlessBackgroundColor}--800);
                 "
                 css="${css`
+                  font-size: var(--font-size--3);
+                  line-height: var(--font-size--3--line-height);
+                  letter-spacing: var(--letter-spacing--1);
+                  font-weight: 700;
                   color: light-dark(var(--color--light), var(--color--dark));
                   background-color: light-dark(
                     var(--background-color--light),
                     var(--background-color--dark)
                   );
-                  width: var(--space--7);
-                  height: var(--space--7);
-                  border-radius: var(--border-radius--1);
+                  width: var(--space--6);
+                  height: var(--space--6);
+                  padding: var(--space--0);
                 `}"
               >
-                LF
+                HH
               </button>
             </div>
             <div
