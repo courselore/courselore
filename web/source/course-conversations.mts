@@ -349,6 +349,7 @@ export default async (application: Application): Promise<void> => {
               css="${css`
                 flex: 1;
                 display: flex;
+                min-height: 0;
               `}"
             >
               <button
@@ -439,7 +440,14 @@ export default async (application: Application): Promise<void> => {
                     <i class="bi bi-filter"></i>  Filter
                   </button>
                 </div>
-                <div key="courseConversations"></div>
+                <div
+                  key="courseConversations"
+                  css="${css`
+                    overflow: auto;
+                  `}"
+                >
+                  ${"courseConversations ".repeat(1000)}
+                </div>
               </div>
               <div
                 key="separator"
