@@ -15,7 +15,7 @@ import * as serverTypes from "@radically-straightforward/server";
 import sql from "@radically-straightforward/sqlite";
 import users, { ApplicationUsers } from "./users.mjs";
 import courses, { ApplicationCourses } from "./courses.mjs";
-import conversations from "./conversations.mjs";
+import courseConversations from "./course-conversations.mjs";
 
 export type Application = {
   version: string;
@@ -133,7 +133,7 @@ application.server?.push({
 });
 await users(application);
 await courses(application);
-await conversations(application);
+await courseConversations(application);
 
 // TODO
 if (application.commandLineArguments.values.type === "backgroundJob")
