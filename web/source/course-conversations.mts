@@ -431,13 +431,13 @@ export default async (application: Application): Promise<void> => {
                   `}"
                 >
                   <button class="button button--transparent">
-                    <i class="bi bi-plus-lg"></i>  New
+                    <i class="bi bi-plus-lg"></i> New
                   </button>
                   <button class="button button--transparent">
-                    <i class="bi bi-search"></i>  Search
+                    <i class="bi bi-search"></i> Search
                   </button>
                   <button class="button button--transparent">
-                    <i class="bi bi-filter"></i>  Filter
+                    <i class="bi bi-filter"></i> Filter
                   </button>
                 </div>
                 <div
