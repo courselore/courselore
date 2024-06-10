@@ -401,7 +401,12 @@ export default async (application: Application): Promise<void> => {
               >
                 courseConversations
               </div>
-              <div key="separator">
+              <div
+                key="separator"
+                css="${css`
+                  position: relative;
+                `}"
+              >
                 <div
                   css="${css`
                     width: var(--border-width--4);
