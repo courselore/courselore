@@ -3054,7 +3054,7 @@ export default async (application: Application): Promise<void> => {
                       ${userIndex === 0 || Math.random() < 0.05 ? "systemAdministrator" : Math.random() < 0.2 ? "systemStaff" : "systemUser"},
                       ${new Date(Date.now() - Math.floor(Math.random() * 24 * 60 * 60 * 1000)).toISOString()},
                       ${"system"},
-                      ${20 * 16},
+                      ${80 * 4},
                       ${Number(Math.random() < 0.1)},
                       ${Number(Math.random() < 0.9)},
                       ${Number(Math.random() < 0.9)},

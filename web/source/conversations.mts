@@ -431,7 +431,7 @@ export default async (application: Application): Promise<void> => {
                       document.querySelector("body").style.cursor = "col-resize";
                       document.onmousemove = (event) => {
                         const element = this.closest('[key="main"]').querySelector('[key~="courseConversations"]');
-                        element.style.width = String(Math.min(Math.max(event.clientX, 16 * 16), 32 * 16)) + "px";
+                        element.style.width = String(Math.min(Math.max(event.clientX, 60 * 4), 112 * 4)) + "px";
                       };
                       document.onmouseup = () => {
                         this.classList.remove("active");
@@ -441,7 +441,7 @@ export default async (application: Application): Promise<void> => {
                       };
                     };
                     this.ondblclick = (event) => {
-                      this.closest('[key="main"]').querySelector('[key~="courseConversations"]').style.width = String(20 * 16) +"px";
+                      this.closest('[key="main"]').querySelector('[key~="courseConversations"]').style.width = String(80 * 4) +"px";
                     };
                   `}"
                 ></div>
