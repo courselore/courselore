@@ -314,19 +314,20 @@ export default async (application: Application): Promise<void> => {
                     }
                   `}"
                   javascript="${javascript`
-                    this.onmousedown = (event) => {
+                    this.onpointerdown = (event) => {
                       if (event.button !== 0) return;
                       this.classList.add("active");
                       document.querySelector("body").classList.add("noninteractive");
                       document.querySelector("body").style.cursor = "col-resize";
-                      document.onmousemove = (event) => {
-                        this.closest('[key="main"]').querySelector('[key~="courseConversations"]').style.width = String(Math.min(Math.max(event.clientX, 60 * 4), 112 * 4)) + "px";
+                      document.onpointermove = (event) => {
+                        this.closest('[key="main"]').querySelector('[key~="courseConversations"]').style.width = String(Math.min(Math.max(Math.floor(event.clientX), 60 * 4), 112 * 4)) + "px";
                       };
-                      document.onmouseup = () => {
+                      document.onpointerup = () => {
                         this.classList.remove("active");
                         document.querySelector("body").classList.remove("noninteractive");
                         document.querySelector("body").style.cursor = "";
-                        document.onmousemove = undefined;
+                        document.onpointermove = undefined;
+                        document.onpointerup = undefined;
                         updateSidebarWidth();
                       };
                     };
