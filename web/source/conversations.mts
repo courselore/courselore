@@ -60,9 +60,10 @@ export default async (application: Application): Promise<void> => {
         id: number;
         name: string;
         darkMode: "system" | "light" | "dark";
+        sidebarWidth: number;
       }>(
         sql`
-          select "id", "name", "darkMode"
+          select "id", "name", "darkMode", "sidebarWidth"
           from "users"
           where "id" = ${1};
         `,
@@ -388,7 +389,7 @@ export default async (application: Application): Promise<void> => {
               <div
                 key="courseConversations /courses/${request.state.course
                   .externalId}"
-                style="width: ${String(20 * 16)}px;"
+                style="width: ${String(request.state.user.sidebarWidth)}px;"
                 css="${css`
                   border-right: var(--border-width--1) solid
                     light-dark(

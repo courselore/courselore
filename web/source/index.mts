@@ -15,12 +15,12 @@ import conversations from "./conversations.mjs";
 export type Application = {
   types: {
     states: {
-      // TODO
       User: {
         user: {
           id: number;
           name: string;
           darkMode: "system" | "light" | "dark";
+          sidebarWidth: number;
         };
       };
     };
