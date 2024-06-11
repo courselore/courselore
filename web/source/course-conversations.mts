@@ -590,7 +590,7 @@ export default async (application: Application): Promise<void> => {
                               var(--color--slate--50),
                               var(--color--slate--950)
                             );
-                            padding: var(--space--2) var(--space--4);
+                            padding: var(--space--1-5) var(--space--4);
                             border-bottom: var(--border-width--1) solid
                               light-dark(
                                 var(--color--slate--200),
