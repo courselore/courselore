@@ -112,6 +112,26 @@ export default async (application: Application): Promise<void> => {
               );
             }
           }
+          &.button--blue {
+            color: light-dark(var(--color--blue--50), var(--color--blue--950));
+            background-color: light-dark(
+              var(--color--blue--500),
+              var(--color--blue--500)
+            );
+            &:hover,
+            &:focus-within {
+              background-color: light-dark(
+                var(--color--blue--400),
+                var(--color--blue--400)
+              );
+            }
+            &:active {
+              background-color: light-dark(
+                var(--color--blue--600),
+                var(--color--blue--600)
+              );
+            }
+          }
         }
 
         .tippy-box {
@@ -435,27 +455,31 @@ export default async (application: Application): Promise<void> => {
                     padding: var(--space--2) var(--space--4);
                     display: flex;
                     gap: var(--space--4);
-                    align-items: center;
                   `}"
                 >
                   <a
                     href="https://${application.configuration
                       .hostname}/courses/${request.state.course
                       .externalId}/conversations/new"
-                    class="button button--square button--icon button--transparent"
+                    class="button button--square button--blue"
                     css="${css`
-                      font-size: var(--font-size--4);
-                      line-height: var(--font-size--4--line-height);
+                      font-size: var(--font-size--7-5);
+                      font-weight: 700;
+                      height: 100%;
+                      aspect-ratio: var(--aspect-ratio--square);
+                      display: flex;
+                      justify-content: center;
+                      align-items: center;
                     `}"
                     javascript="${javascript`
                       javascript.tippy({
                         event,
                         element: this,
-                        content: "New",
+                        content: "New Conversation",
                       });
                     `}"
                   >
-                    <i class="bi bi-plus-lg"></i>
+                    +
                   </a>
                   <div
                     key="search-and-filter"
@@ -539,7 +563,7 @@ export default async (application: Application): Promise<void> => {
                   `}"
                 >
                   $${[
-                    html`<i class="bi bi-pin"></i> Pinned`,
+                    html`<i class="bi bi-pin-fill"></i> Pinned`,
                     `2024-04-03 — 2024-04-14`,
                     `2024-04-03 — 2024-04-14`,
                     `2024-04-03 — 2024-04-14`,
