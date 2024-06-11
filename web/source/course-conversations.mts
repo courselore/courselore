@@ -244,7 +244,7 @@ export default async (application: Application): Promise<void> => {
                 `}"
                 javascript="${javascript`
                   this.onclick = () => {
-                    document.querySelector('[key="main"]').classList.add("sidebar");
+                    document.querySelector('[key="main"]').classList.add("sidebar--open");
                   };
                 `}"
               >
@@ -374,7 +374,7 @@ export default async (application: Application): Promise<void> => {
                     --transition-timing-function--ease-in-out
                   );
                   @media (max-width: 899px) {
-                    [key="main"].sidebar & {
+                    [key="main"].sidebar--open & {
                       opacity: var(--opacity--30);
                       pointer-events: auto;
                     }
@@ -382,7 +382,7 @@ export default async (application: Application): Promise<void> => {
                 `}"
                 javascript="${javascript`
                   this.onclick = () => {
-                    document.querySelector('[key="main"]').classList.remove("sidebar");
+                    document.querySelector('[key="main"]').classList.remove("sidebar--open");
                   };
                 `}"
               ></button>
@@ -413,7 +413,7 @@ export default async (application: Application): Promise<void> => {
                     transition-timing-function: var(
                       --transition-timing-function--ease-in-out
                     );
-                    [key="main"].sidebar & {
+                    [key="main"].sidebar--open & {
                       transform: translateX(0%);
                     }
                   }
