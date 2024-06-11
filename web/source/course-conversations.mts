@@ -599,7 +599,7 @@ export default async (application: Application): Promise<void> => {
                       ></i>
                       <div><i class="bi bi-pin"></i> Pinned</div>
                     </summary>
-                    World
+                    courseConversations
                   </details>
                 </div>
               </div>
