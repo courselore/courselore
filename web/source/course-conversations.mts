@@ -597,7 +597,24 @@ export default async (application: Application): Promise<void> => {
                           }
                         `}"
                       ></i>
-                      <div><i class="bi bi-pin"></i> Pinned</div>
+                      <div
+                        css="${css`
+                          flex: 1;
+                        `}"
+                      >
+                        <i class="bi bi-pin"></i> Pinned
+                      </div>
+                      <div
+                        css="${css`
+                          background-color: light-dark(
+                            var(--color--blue--500),
+                            var(--color--blue--500)
+                          );
+                          width: var(--space--1-5);
+                          height: var(--space--1-5);
+                          border-radius: var(--border-radius--circle);
+                        `}"
+                      ></div>
                     </summary>
                     courseConversations
                   </details>
