@@ -2709,8 +2709,7 @@ export default async (application: Application): Promise<void> => {
             "invitationLinkCourseStudentsToken" text not null,
             "invitationLinkCourseStudentsActive" integer not null,
             "courseStudentsMayCreatePolls" integer not null,
-            "archivedAt" text null,
-            "nextCourseConversationExternalId" integer not null
+            "archivedAt" text null
           ) strict;
           
           create table "courseInvitationEmails" (
@@ -2750,16 +2749,14 @@ export default async (application: Application): Promise<void> => {
           
           create table "courseConversations" (
             "id" integer primary key autoincrement,
-            "externalId" text not null,
+            "externalId" text not null unique,
             "course" integer not null references "courses",
             "pinned" integer not null,
             "courseConversationType" text not null,
             "questionResolved" integer not null,
             "courseConversationParticipations" text not null,
             "title" text not null,
-            "titleSearch" text not null,
-            "nextCourseConversationMessageExternalId" integer not null,
-            unique ("course", "externalId")
+            "titleSearch" text not null
           ) strict;
           create index "index_courseConversations_pinned" on "courseConversations" ("pinned");
           create index "index_courseConversations_courseConversationType" on "courseConversations" ("courseConversationType");
@@ -2819,7 +2816,7 @@ export default async (application: Application): Promise<void> => {
           
           create table "courseConversationMessages" (
             "id" integer primary key autoincrement,
-            "externalId" text not null,
+            "externalId" text not null unique,
             "courseConversation" integer not null references "courseConversations",
             "createdAt" text not null,
             "updatedAt" text null,
@@ -2828,8 +2825,7 @@ export default async (application: Application): Promise<void> => {
             "anonymous" integer not null,
             "contentSource" text not null,
             "contentPreprocessed" text not null,
-            "contentSearch" text not null,
-            unique ("courseConversation", "externalId")
+            "contentSearch" text not null
           ) strict;
           create index "index_courseConversationMessages_createdByCourseParticipation" on "courseConversationMessages" ("createdByCourseParticipation");
           create index "index_courseConversationMessages_courseConversationMessageType" on "courseConversationMessages" ("courseConversationMessageType");
@@ -2952,6 +2948,7 @@ export default async (application: Application): Promise<void> => {
       // <courselore-poll reference=""> -> <courselore-poll id="">
       // @everyone, @course-staff, @students -> @all, @course-staff, @course-students
       // messages%5BmessageReference%5D -> message
+      // "courseConversations"."externalId" and "courseConversationMessages"."externalId" aren’t sequential anymore
 
       if (application.configuration.environment !== "development")
         throw new Error("TODO: Migration");
@@ -3098,7 +3095,6 @@ export default async (application: Application): Promise<void> => {
         ]) {
           const course = database.get<{
             id: number;
-            nextCourseConversationExternalId: number;
           }>(
             sql`
               select * from "courses" where "id" = ${
@@ -3117,8 +3113,7 @@ export default async (application: Application): Promise<void> => {
                       "invitationLinkCourseStudentsToken",
                       "invitationLinkCourseStudentsActive",
                       "courseStudentsMayCreatePolls",
-                      "archivedAt",
-                      "nextCourseConversationExternalId"
+                      "archivedAt"
                     )
                     values (
                       ${cryptoRandomString({ length: 10, type: "numeric" })},
@@ -3133,8 +3128,7 @@ export default async (application: Application): Promise<void> => {
                       ${cryptoRandomString({ length: 20, type: "numeric" })},
                       ${Number(Math.random() < 0.8)},
                       ${Number(Math.random() < 0.8)},
-                      ${courseData.archivedAt},
-                      ${100 + Math.floor(Math.random() * 30)}
+                      ${courseData.archivedAt}
                     );
                   `,
                 ).lastInsertRowid
@@ -3277,9 +3271,10 @@ export default async (application: Application): Promise<void> => {
                 `,
               )!,
           );
+          const courseConversationsCount = 100 + Math.floor(Math.random() * 30);
           for (
             let courseConversationIndex = 0;
-            courseConversationIndex < course.nextCourseConversationExternalId;
+            courseConversationIndex < courseConversationsCount;
             courseConversationIndex++
           ) {
             const courseConversationTitle = (
@@ -3288,7 +3283,6 @@ export default async (application: Application): Promise<void> => {
             ).replace(/./, (character) => character.toUpperCase());
             const courseConversation = database.get<{
               id: number;
-              nextCourseConversationMessageExternalId: number;
             }>(
               sql`
                 select * from "courseConversations" where "id" = ${
@@ -3302,19 +3296,17 @@ export default async (application: Application): Promise<void> => {
                         "questionResolved",
                         "courseConversationParticipations",
                         "title",
-                        "titleSearch",
-                        "nextCourseConversationMessageExternalId"
+                        "titleSearch"
                       )
                       values (
-                        ${String(courseConversationIndex + 1)},
+                        ${cryptoRandomString({ length: 10, type: "numeric" })},
                         ${course.id},
                         ${Number(Math.random() < 0.1)},
                         ${Math.random() < 0.3 ? "courseConversationNote" : "courseConversationQuestion"},
                         ${Number(Math.random() < 0.5)},
                         ${courseConversationIndex === 0 || Math.random() < 0.3 ? "courseStudent" : Math.random() < 0.8 ? "courseStaff" : "courseConversationParticipations"},
                         ${courseConversationTitle},
-                        ${courseConversationTitle},
-                        ${courseConversationIndex === 0 ? 1 : 1 + Math.floor(Math.random() * 15)}
+                        ${courseConversationTitle}
                       );
                     `,
                   ).lastInsertRowid
@@ -3372,10 +3364,13 @@ export default async (application: Application): Promise<void> => {
                   );
                 `,
               );
+            const courseConversationMessagesCount =
+              courseConversationIndex === 0
+                ? 1
+                : 1 + Math.floor(Math.random() * 15);
             for (
               let courseConversationMessageIndex = 0;
-              courseConversationMessageIndex <
-              courseConversation.nextCourseConversationMessageExternalId;
+              courseConversationMessageIndex < courseConversationMessagesCount;
               courseConversationMessageIndex++
             ) {
               const courseConversationMessageContentSentences = Array.from(
@@ -3402,9 +3397,9 @@ export default async (application: Application): Promise<void> => {
                             "contentSearch"
                           )
                           values (
-                            ${String(courseConversationMessageIndex + 1)},
+                            ${cryptoRandomString({ length: 20, type: "numeric" })},
                             ${courseConversation.id},
-                            ${new Date(Date.now() - Math.floor((1 + course.nextCourseConversationExternalId - courseConversationIndex + Math.random() * 0.5) * 5 * 60 * 60 * 1000)).toISOString()},
+                            ${new Date(Date.now() - Math.floor((1 + courseConversationsCount - courseConversationIndex + Math.random() * 0.5) * 5 * 60 * 60 * 1000)).toISOString()},
                             ${Math.random() < 0.05 ? new Date(Date.now() - Math.floor(24 * 5 * 60 * 60 * 1000)).toISOString() : null},
                             ${Math.random() < 0.9 ? courseParticipations[Math.floor(Math.random() * courseParticipations.length)].id : null},
                             ${
