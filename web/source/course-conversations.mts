@@ -83,11 +83,20 @@ export default async (application: Application): Promise<void> => {
           transition-timing-function: var(
             --transition-timing-function--ease-in-out
           );
+          &.button--icon {
+            width: var(--space--6);
+            height: var(--space--6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+          }
+          &.button--icon,
           &.button--square {
             padding: var(--space--1);
           }
           &.button--transparent {
             margin: var(--space---1) var(--space---2);
+            &.button--icon,
             &.button--square {
               margin: var(--space---1);
             }
@@ -425,20 +434,67 @@ export default async (application: Application): Promise<void> => {
                         var(--color--slate--200),
                         var(--color--slate--800)
                       );
-                    padding: var(--space--1) var(--space--4);
+                    padding: var(--space--2) var(--space--4);
                     display: flex;
                     gap: var(--space--4);
+                    align-items: center;
                   `}"
                 >
-                  <button class="button button--transparent">
-                    <i class="bi bi-plus-lg"></i> New
+                  <button class="button button--icon button--transparent">
+                    <i class="bi bi-plus-lg"></i>
                   </button>
-                  <button class="button button--transparent">
-                    <i class="bi bi-search"></i> Search
+                  <button class="button button--icon button--transparent">
+                    <i class="bi bi-filter"></i>
                   </button>
-                  <button class="button button--transparent">
-                    <i class="bi bi-filter"></i> Filter
-                  </button>
+                  <form
+                    css="${css`
+                      flex: 1;
+                    `}"
+                  >
+                    <div
+                      css="${css`
+                        background-color: light-dark(
+                          var(--color--slate--50),
+                          var(--color--slate--950)
+                        );
+                        border: var(--border-width--1) solid
+                          light-dark(
+                            var(--color--slate--400),
+                            var(--color--slate--600)
+                          );
+                        border-radius: var(--border-radius--1);
+                        display: flex;
+                        align-items: center;
+                        transition-property: var(--transition-property--colors);
+                        transition-duration: var(--transition-duration--150);
+                        transition-timing-function: var(
+                          --transition-timing-function--ease-in-out
+                        );
+                        &:focus-within {
+                          border-color: light-dark(
+                            var(--color--blue--500),
+                            var(--color--blue--500)
+                          );
+                        }
+                      `}"
+                    >
+                      <input
+                        type="text"
+                        css="${css`
+                          flex: 1;
+                          padding: var(--space--1) var(--space--2);
+                        `}"
+                      />
+                      <button
+                        class="button button--icon button--transparent"
+                        css="${css`
+                          margin-right: var(--space--0);
+                        `}"
+                      >
+                        <i class="bi bi-search"></i>
+                      </button>
+                    </div>
+                  </form>
                 </div>
                 <div
                   key="courseConversations"
