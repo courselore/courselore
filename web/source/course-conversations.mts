@@ -516,7 +516,8 @@ export default async (application: Application): Promise<void> => {
                       css="${css`
                         flex: 1;
                         min-width: var(--space--0);
-                        padding: var(--space--1) var(--space--2);
+                        padding: var(--space--1) var(--space--0) var(--space--1)
+                          var(--space--2);
                       `}"
                     />
                     <button
