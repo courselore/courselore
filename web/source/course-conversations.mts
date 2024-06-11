@@ -446,8 +446,6 @@ export default async (application: Application): Promise<void> => {
                       javascript.tippy({
                         event,
                         element: this,
-                        touch: false,
-                        interactive: false,
                         content: "New",
                       });
                     `}"
@@ -501,8 +499,6 @@ export default async (application: Application): Promise<void> => {
                         javascript.tippy({
                           event,
                           element: this,
-                          touch: false,
-                          interactive: false,
                           content: "Search",
                         });
                         this.onclick = () => {
@@ -521,8 +517,6 @@ export default async (application: Application): Promise<void> => {
                         javascript.tippy({
                           event,
                           element: this,
-                          touch: false,
-                          interactive: false,
                           content: "Filter",
                         });
                       `}"
