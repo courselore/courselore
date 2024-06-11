@@ -406,7 +406,7 @@ export default async (application: Application): Promise<void> => {
                     inset: 0;
                     right: var(--space--14);
                     max-width: var(--space--112);
-                    transform: translateX(-102%);
+                    transform: translateX(-101%);
                     transition-property: var(--transition-property--transform);
                     transition-duration: var(--transition-duration--200);
                     transition-timing-function: var(
