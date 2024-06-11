@@ -281,7 +281,7 @@ export default async (application: Application): Promise<void> => {
                 key="course"
                 css="${css`
                   flex: 1;
-                  min-width: 0;
+                  min-width: var(--space--0);
                 `}"
               >
                 <button
@@ -461,7 +461,7 @@ export default async (application: Application): Promise<void> => {
                     key="search-and-filter"
                     css="${css`
                       flex: 1;
-                      min-width: 0;
+                      min-width: var(--space--0);
                       background-color: light-dark(
                         var(--color--slate--50),
                         var(--color--slate--950)
@@ -491,7 +491,7 @@ export default async (application: Application): Promise<void> => {
                       name="courseConversations.search"
                       css="${css`
                         flex: 1;
-                        min-width: 0;
+                        min-width: var(--space--0);
                         padding: var(--space--1) var(--space--2);
                       `}"
                     />
@@ -721,10 +721,10 @@ export default async (application: Application): Promise<void> => {
                                 </div>
                                 <div
                                   css="${css`
-                                    padding-top: var(--space--0-5);
                                     flex: 1;
                                     display: flex;
                                     flex-direction: column;
+                                    min-width: var(--space--0);
                                   `}"
                                 >
                                   <div
@@ -740,6 +740,7 @@ export default async (application: Application): Promise<void> => {
                                       line-height: var(
                                         --font-size--3--line-height
                                       );
+                                      font-weight: 500;
                                       color: light-dark(
                                         var(--color--slate--600),
                                         var(--color--slate--400)
@@ -754,19 +755,7 @@ export default async (application: Application): Promise<void> => {
                                     >
                                       2024-03-02
                                     </div>
-                                  </div>
-                                  <div
-                                    css="${css`
-                                      font-size: var(--font-size--3);
-                                      line-height: var(
-                                        --font-size--3--line-height
-                                      );
-                                      color: light-dark(
-                                        var(--color--slate--600),
-                                        var(--color--slate--400)
-                                      );
-                                    `}"
-                                  >
+                                    <br />
                                     $${Math.random() < 0.5
                                       ? html`<div
                                           css="${css`
@@ -781,6 +770,25 @@ export default async (application: Application): Promise<void> => {
                                       : Math.random() < 0.5
                                         ? html`Question`
                                         : html`Note`}
+                                  </div>
+                                  <div
+                                    css="${css`
+                                      font-size: var(--font-size--3);
+                                      line-height: var(
+                                        --font-size--3--line-height
+                                      );
+                                      color: light-dark(
+                                        var(--color--slate--500),
+                                        var(--color--slate--500)
+                                      );
+                                      white-space: nowrap;
+                                      overflow: hidden;
+                                      text-overflow: ellipsis;
+                                    `}"
+                                  >
+                                    Human is behind a closed door, emergency!
+                                    abandoned! meeooowwww!!! headbutt owner's
+                                    knee chase laser be a nyan cat,
                                   </div>
                                 </div>
                                 <div
