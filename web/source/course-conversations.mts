@@ -436,7 +436,10 @@ export default async (application: Application): Promise<void> => {
                     align-items: center;
                   `}"
                 >
-                  <button
+                  <a
+                    href="https://${application.configuration
+                      .hostname}/courses/${request.state.course
+                      .externalId}/conversations/new"
                     class="button button--square button--icon button--transparent"
                     css="${css`
                       font-size: var(--font-size--4);
@@ -451,7 +454,7 @@ export default async (application: Application): Promise<void> => {
                     `}"
                   >
                     <i class="bi bi-plus-lg"></i>
-                  </button>
+                  </a>
                   <div
                     key="search-and-filter"
                     css="${css`
