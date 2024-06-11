@@ -534,7 +534,7 @@ export default async (application: Application): Promise<void> => {
                     overflow: auto;
                   `}"
                 >
-                  ${"courseConversations ".repeat(1000)}
+                  courseConversations
                 </div>
               </div>
               <div
