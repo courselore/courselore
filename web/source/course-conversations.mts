@@ -442,10 +442,20 @@ export default async (application: Application): Promise<void> => {
                       font-size: var(--font-size--4);
                       line-height: var(--font-size--4--line-height);
                     `}"
+                    javascript="${javascript`
+                      javascript.tippy({
+                        event,
+                        element: this,
+                        touch: false,
+                        interactive: false,
+                        content: "New",
+                      });
+                    `}"
                   >
                     <i class="bi bi-plus-lg"></i>
                   </button>
-                  <form
+                  <div
+                    key="search-and-filter"
                     css="${css`
                       flex: 1;
                       min-width: 0;
@@ -475,6 +485,7 @@ export default async (application: Application): Promise<void> => {
                   >
                     <input
                       type="text"
+                      name="courseConversations.search"
                       css="${css`
                         flex: 1;
                         min-width: 0;
@@ -486,6 +497,18 @@ export default async (application: Application): Promise<void> => {
                       css="${css`
                         padding: var(--space--1) var(--space--2);
                       `}"
+                      javascript="${javascript`
+                        javascript.tippy({
+                          event,
+                          element: this,
+                          touch: false,
+                          interactive: false,
+                          content: "Search",
+                        });
+                        this.onclick = () => {
+                          this.closest('[key="search-and-filter"]').querySelector('[name="courseConversations.search"]').focus();
+                        };
+                      `}"
                     >
                       <i class="bi bi-search"></i>
                     </button>
@@ -494,10 +517,19 @@ export default async (application: Application): Promise<void> => {
                       css="${css`
                         padding: var(--space--1) var(--space--2);
                       `}"
+                      javascript="${javascript`
+                        javascript.tippy({
+                          event,
+                          element: this,
+                          touch: false,
+                          interactive: false,
+                          content: "Filter",
+                        });
+                      `}"
                     >
                       <i class="bi bi-filter"></i>
                     </button>
-                  </form>
+                  </div>
                 </div>
                 <div
                   key="courseConversations"
