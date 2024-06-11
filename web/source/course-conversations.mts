@@ -538,86 +538,111 @@ export default async (application: Application): Promise<void> => {
                     flex-direction: column;
                   `}"
                 >
-                  <details>
-                    <summary
-                      css="${css`
-                        font-size: var(--font-size--3);
-                        line-height: var(--font-size--3--line-height);
-                        font-weight: 600;
-                        color: light-dark(
-                          var(--color--slate--600),
-                          var(--color--slate--400)
-                        );
-                        background-color: light-dark(
-                          var(--color--slate--50),
-                          var(--color--slate--950)
-                        );
-                        padding: var(--space--1) var(--space--4);
-                        border-bottom: var(--border-width--1) solid
-                          light-dark(
-                            var(--color--slate--200),
-                            var(--color--slate--800)
-                          );
-                        cursor: pointer;
-                        transition-property: var(--transition-property--colors);
-                        transition-duration: var(--transition-duration--150);
-                        transition-timing-function: var(
-                          --transition-timing-function--ease-in-out
-                        );
-                        display: flex;
-                        gap: var(--space--2);
-                        align-items: center;
-                        &:hover,
-                        &:focus-within {
-                          background-color: light-dark(
-                            var(--color--slate--100),
-                            var(--color--slate--800)
-                          );
-                        }
-                        &:active {
-                          background-color: light-dark(
-                            var(--color--slate--200),
-                            var(--color--slate--900)
-                          );
-                        }
-                      `}"
-                    >
-                      <i
-                        class="bi bi-chevron-right"
-                        css="${css`
-                          transition-property: var(
-                            --transition-property--transform
-                          );
-                          transition-duration: var(--transition-duration--150);
-                          transition-timing-function: var(
-                            --transition-timing-function--ease-in-out
-                          );
-                          details[open] > summary > & {
-                            transform: rotate(var(--transform--rotate--90));
-                          }
-                        `}"
-                      ></i>
-                      <div
-                        css="${css`
-                          flex: 1;
-                        `}"
-                      >
-                        <i class="bi bi-pin"></i> Pinned
-                      </div>
-                      <div
-                        css="${css`
-                          background-color: light-dark(
-                            var(--color--blue--500),
-                            var(--color--blue--500)
-                          );
-                          width: var(--space--1-5);
-                          height: var(--space--1-5);
-                          border-radius: var(--border-radius--circle);
-                        `}"
-                      ></div>
-                    </summary>
-                    courseConversations
-                  </details>
+                  $${[
+                    html`<i class="bi bi-pin"></i> Pinned`,
+                    `2024-04-03 — 2024-04-14`,
+                    `2024-04-03 — 2024-04-14`,
+                    `2024-04-03 — 2024-04-14`,
+                    `2024-04-03 — 2024-04-14`,
+                    `2024-04-03 — 2024-04-14`,
+                    `2024-04-03 — 2024-04-14`,
+                    `2024-04-03 — 2024-04-14`,
+                    `2024-04-03 — 2024-04-14`,
+                    `2024-04-03 — 2024-04-14`,
+                  ].map(
+                    (label) => html`
+                      <details>
+                        <summary
+                          css="${css`
+                            font-size: var(--font-size--3);
+                            line-height: var(--font-size--3--line-height);
+                            font-weight: 600;
+                            color: light-dark(
+                              var(--color--slate--600),
+                              var(--color--slate--400)
+                            );
+                            background-color: light-dark(
+                              var(--color--slate--50),
+                              var(--color--slate--950)
+                            );
+                            padding: var(--space--1) var(--space--4);
+                            border-bottom: var(--border-width--1) solid
+                              light-dark(
+                                var(--color--slate--200),
+                                var(--color--slate--800)
+                              );
+                            cursor: pointer;
+                            transition-property: var(
+                              --transition-property--colors
+                            );
+                            transition-duration: var(
+                              --transition-duration--150
+                            );
+                            transition-timing-function: var(
+                              --transition-timing-function--ease-in-out
+                            );
+                            display: flex;
+                            gap: var(--space--2);
+                            align-items: center;
+                            &:hover,
+                            &:focus-within {
+                              background-color: light-dark(
+                                var(--color--slate--100),
+                                var(--color--slate--800)
+                              );
+                            }
+                            &:active {
+                              background-color: light-dark(
+                                var(--color--slate--200),
+                                var(--color--slate--900)
+                              );
+                            }
+                          `}"
+                        >
+                          <i
+                            class="bi bi-chevron-right"
+                            css="${css`
+                              transition-property: var(
+                                --transition-property--transform
+                              );
+                              transition-duration: var(
+                                --transition-duration--150
+                              );
+                              transition-timing-function: var(
+                                --transition-timing-function--ease-in-out
+                              );
+                              details[open] > summary > & {
+                                transform: rotate(var(--transform--rotate--90));
+                              }
+                            `}"
+                          ></i>
+                          <div
+                            css="${css`
+                              flex: 1;
+                            `}"
+                          >
+                            $${label}
+                          </div>
+                          $${Math.random() < 0.3
+                            ? html`
+                                <div
+                                  css="${css`
+                                    background-color: light-dark(
+                                      var(--color--blue--500),
+                                      var(--color--blue--500)
+                                    );
+                                    width: var(--space--1-5);
+                                    height: var(--space--1-5);
+                                    border-radius: var(--border-radius--circle);
+                                  `}"
+                                ></div>
+                              `
+                            : html``}
+                        </summary>
+                        courseConversations
+                      </details>
+                    `,
+                  )}
                 </div>
               </div>
               <div
