@@ -623,10 +623,111 @@ export default async (application: Application): Promise<void> => {
                           >
                             $${label}
                           </div>
-                          $${Math.random() < 0.3
-                            ? html`
+                          <div
+                            css="${css`
+                              background-color: light-dark(
+                                var(--color--blue--500),
+                                var(--color--blue--500)
+                              );
+                              width: var(--space--1-5);
+                              height: var(--space--1-5);
+                              border-radius: var(--border-radius--circle);
+                            `} ${Math.random() < 0.7
+                              ? css`
+                                  visibility: hidden;
+                                `
+                              : css``}"
+                          ></div>
+                        </summary>
+                        <div
+                          css="${css`
+                            display: flex;
+                            flex-direction: column;
+                          `}"
+                        >
+                          $${Array.from(
+                            { length: 1 + Math.floor(Math.random() * 4) },
+                            () => html`
+                              <a
+                                href="/"
+                                css="${css`
+                                  padding: var(--space--2) var(--space--4);
+                                  border-bottom: var(--border-width--1) solid
+                                    light-dark(
+                                      var(--color--slate--200),
+                                      var(--color--slate--800)
+                                    );
+                                  display: flex;
+                                  gap: var(--space--4);
+                                  cursor: pointer;
+                                  transition-property: var(
+                                    --transition-property--colors
+                                  );
+                                  transition-duration: var(
+                                    --transition-duration--150
+                                  );
+                                  transition-timing-function: var(
+                                    --transition-timing-function--ease-in-out
+                                  );
+                                  &:hover,
+                                  &:focus-within {
+                                    background-color: light-dark(
+                                      var(--color--slate--100),
+                                      var(--color--slate--800)
+                                    );
+                                  }
+                                  &:active {
+                                    background-color: light-dark(
+                                      var(--color--slate--200),
+                                      var(--color--slate--900)
+                                    );
+                                  }
+                                `}"
+                              >
+                                <div>
+                                  <div
+                                    style="
+                                  --color--light: var(--color--pink--800);
+                                  --color--dark: var(--color--pink--200);
+                                  --background-color--light: var(--color--pink--200);
+                                  --background-color--dark: var(--color--pink--800);
+                                "
+                                    css="${css`
+                                      font-size: var(--font-size--3);
+                                      line-height: var(
+                                        --font-size--3--line-height
+                                      );
+                                      letter-spacing: var(--letter-spacing--1);
+                                      font-weight: 800;
+                                      color: light-dark(
+                                        var(--color--light),
+                                        var(--color--dark)
+                                      );
+                                      background-color: light-dark(
+                                        var(--background-color--light),
+                                        var(--background-color--dark)
+                                      );
+                                      width: var(--space--6);
+                                      height: var(--space--6);
+                                      border-radius: var(--border-radius--1);
+                                      overflow: hidden;
+                                      display: flex;
+                                      justify-content: center;
+                                      align-items: center;
+                                    `}"
+                                  >
+                                    AW
+                                  </div>
+                                </div>
                                 <div
                                   css="${css`
+                                    flex: 1;
+                                  `}"
+                                ></div>
+                                <div
+                                  css="${css`
+                                    align-self: center;
+
                                     background-color: light-dark(
                                       var(--color--blue--500),
                                       var(--color--blue--500)
@@ -634,12 +735,16 @@ export default async (application: Application): Promise<void> => {
                                     width: var(--space--1-5);
                                     height: var(--space--1-5);
                                     border-radius: var(--border-radius--circle);
-                                  `}"
+                                  `} ${Math.random() < 0.7
+                                    ? css`
+                                        visibility: hidden;
+                                      `
+                                    : css``}"
                                 ></div>
-                              `
-                            : html``}
-                        </summary>
-                        courseConversations
+                              </a>
+                            `,
+                          )}
+                        </div>
                       </details>
                     `,
                   )}
