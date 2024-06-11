@@ -360,8 +360,8 @@ export default async (application: Application): Promise<void> => {
                 key="sidebar--underlay"
                 css="${css`
                   background-color: light-dark(
-                    var(--color--slate--800),
-                    var(--color--slate--200)
+                    var(--color--black),
+                    var(--color--white)
                   );
                   position: absolute;
                   inset: 0;
@@ -375,7 +375,7 @@ export default async (application: Application): Promise<void> => {
                   );
                   @media (max-width: 899px) {
                     [key="main"].sidebar & {
-                      opacity: var(--opacity--80);
+                      opacity: var(--opacity--30);
                       pointer-events: auto;
                     }
                   }
@@ -406,6 +406,7 @@ export default async (application: Application): Promise<void> => {
                     inset: 0;
                     right: var(--space--14);
                     max-width: var(--space--112);
+                    box-shadow: var(--box-shadow--25);
                     transform: translateX(-101%);
                     transition-property: var(--transition-property--transform);
                     transition-duration: var(--transition-duration--200);
