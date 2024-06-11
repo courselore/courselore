@@ -445,15 +445,6 @@ export default async (application: Application): Promise<void> => {
                   >
                     <i class="bi bi-plus-lg"></i>
                   </button>
-                  <button
-                    class="button button--square button--icon button--transparent"
-                    css="${css`
-                      font-size: var(--font-size--4);
-                      line-height: var(--font-size--4--line-height);
-                    `}"
-                  >
-                    <i class="bi bi-filter"></i>
-                  </button>
                   <form
                     css="${css`
                       flex: 1;
@@ -497,6 +488,14 @@ export default async (application: Application): Promise<void> => {
                       `}"
                     >
                       <i class="bi bi-search"></i>
+                    </button>
+                    <button
+                      class="button button--icon button--transparent"
+                      css="${css`
+                        padding: var(--space--1) var(--space--2);
+                      `}"
+                    >
+                      <i class="bi bi-filter"></i>
                     </button>
                   </form>
                 </div>
