@@ -76,24 +76,26 @@ export default async (application: Application): Promise<void> => {
 
         .button {
           border-radius: var(--border-radius--1);
-          padding: var(--space--1) var(--space--2);
           cursor: pointer;
           transition-property: var(--transition-property--colors);
           transition-duration: var(--transition-duration--150);
           transition-timing-function: var(
             --transition-timing-function--ease-in-out
           );
-          &.button--icon {
-            width: var(--space--6);
-            height: var(--space--6);
+          &.button--rectangle {
+            padding: var(--space--1) var(--space--2);
+          }
+          &.button--square {
             padding: var(--space--1);
+          }
+          &.button--icon .bi {
             display: flex;
-            justify-content: center;
-            align-items: center;
           }
           &.button--transparent {
-            margin: var(--space---1) var(--space---2);
-            &.button--icon {
+            &.button--rectangle {
+              margin: var(--space---1) var(--space---2);
+            }
+            &.button--square {
               margin: var(--space---1);
             }
             &:hover,
@@ -232,7 +234,7 @@ export default async (application: Application): Promise<void> => {
             >
               <button
                 key="hamburger"
-                class="button button--icon button--transparent"
+                class="button button--square button--icon button--transparent"
                 css="${css`
                   font-size: var(--font-size--5);
                   line-height: var(--font-size--5--line-height);
@@ -251,10 +253,11 @@ export default async (application: Application): Promise<void> => {
               <a
                 key="logo"
                 href="https://${application.configuration.hostname}"
-                class="button button--transparent"
+                class="button button--rectangle button--transparent"
                 css="${css`
                   display: flex;
                   gap: var(--space--1);
+                  align-items: center;
                 `}"
               >
                 <svg width="20" height="20" viewBox="0 0 20 20">
@@ -282,11 +285,12 @@ export default async (application: Application): Promise<void> => {
                 `}"
               >
                 <button
-                  class="button button--transparent"
+                  class="button button--rectangle button--transparent"
                   css="${css`
                     max-width: 100%;
                     display: flex;
                     gap: var(--space--1);
+                    align-items: center;
                   `}"
                 >
                   <div
@@ -303,11 +307,7 @@ export default async (application: Application): Promise<void> => {
               </div>
               <button
                 key="user"
-                class="button button--icon button--transparent"
-                css="${css`
-                  width: auto;
-                  height: auto;
-                `}"
+                class="button button--square button--transparent"
               >
                 <div
                   style="
@@ -435,10 +435,14 @@ export default async (application: Application): Promise<void> => {
                     align-items: center;
                   `}"
                 >
-                  <button class="button button--icon button--transparent">
+                  <button
+                    class="button button--square button--icon button--transparent"
+                  >
                     <i class="bi bi-plus-lg"></i>
                   </button>
-                  <button class="button button--icon button--transparent">
+                  <button
+                    class="button button--square button--icon button--transparent"
+                  >
                     <i class="bi bi-filter"></i>
                   </button>
                   <form
@@ -481,7 +485,7 @@ export default async (application: Application): Promise<void> => {
                         `}"
                       />
                       <button
-                        class="button button--icon button--transparent"
+                        class="button button--square button--icon button--transparent"
                         css="${css`
                           margin-right: var(--space--0);
                         `}"
