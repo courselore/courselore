@@ -340,10 +340,12 @@ export default async (application: Application): Promise<void> => {
                   `}"
                 >
                   ${(() => {
-                    const nameParts = request.state.user.name.split(/\s+/);
-                    return nameParts.length === 1
-                      ? nameParts[0][0]
-                      : nameParts[0][0] + nameParts.at(-1)![0];
+                    const nameParts = request.state.user.name
+                      .split(/\s+/)
+                      .filter((namePart) => namePart !== "");
+                    return nameParts.length < 2
+                      ? request.state.user.name.trim()[0]
+                      : nameParts.at(0)![0] + nameParts.at(-1)![0];
                   })()}
                 </div>
               </button>
@@ -541,8 +543,6 @@ export default async (application: Application): Promise<void> => {
                       css="${css`
                         font-size: var(--font-size--3);
                         line-height: var(--font-size--3--line-height);
-                        text-transform: uppercase;
-                        letter-spacing: var(--letter-spacing--1);
                         font-weight: 700;
                         color: light-dark(
                           var(--color--slate--600),
