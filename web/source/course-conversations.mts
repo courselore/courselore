@@ -687,11 +687,11 @@ export default async (application: Application): Promise<void> => {
                                 <div>
                                   <div
                                     style="
-                                  --color--light: var(--color--pink--800);
-                                  --color--dark: var(--color--pink--200);
-                                  --background-color--light: var(--color--pink--200);
-                                  --background-color--dark: var(--color--pink--800);
-                                "
+                                      --color--light: var(--color--pink--800);
+                                      --color--dark: var(--color--pink--200);
+                                      --background-color--light: var(--color--pink--200);
+                                      --background-color--dark: var(--color--pink--800);
+                                    "
                                     css="${css`
                                       font-size: var(--font-size--3);
                                       line-height: var(
@@ -721,9 +721,68 @@ export default async (application: Application): Promise<void> => {
                                 </div>
                                 <div
                                   css="${css`
+                                    padding-top: var(--space--0-5);
                                     flex: 1;
+                                    display: flex;
+                                    flex-direction: column;
                                   `}"
-                                ></div>
+                                >
+                                  <div
+                                    css="${css`
+                                      font-weight: 600;
+                                    `}"
+                                  >
+                                    Example of a conversation
+                                  </div>
+                                  <div
+                                    css="${css`
+                                      font-size: var(--font-size--3);
+                                      line-height: var(
+                                        --font-size--3--line-height
+                                      );
+                                      color: light-dark(
+                                        var(--color--slate--600),
+                                        var(--color--slate--400)
+                                      );
+                                    `}"
+                                  >
+                                    Abigail Wall ·
+                                    <div
+                                      css="${css`
+                                        display: inline-block;
+                                      `}"
+                                    >
+                                      2024-03-02
+                                    </div>
+                                  </div>
+                                  <div
+                                    css="${css`
+                                      font-size: var(--font-size--3);
+                                      line-height: var(
+                                        --font-size--3--line-height
+                                      );
+                                      color: light-dark(
+                                        var(--color--slate--600),
+                                        var(--color--slate--400)
+                                      );
+                                    `}"
+                                  >
+                                    $${Math.random() < 0.5
+                                      ? html`<div
+                                          css="${css`
+                                            color: light-dark(
+                                              var(--color--red--600),
+                                              var(--color--red--400)
+                                            );
+                                          `}"
+                                        >
+                                          Question · Unresolved
+                                        </div>`
+                                      : Math.random() < 0.5
+                                        ? html`Question`
+                                        : html`Note`}
+                                  </div>
+                                </div>
                                 <div
                                   css="${css`
                                     align-self: center;
