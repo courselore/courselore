@@ -324,7 +324,7 @@ export default async (application: Application): Promise<void> => {
                     font-size: var(--font-size--3);
                     line-height: var(--font-size--3--line-height);
                     letter-spacing: var(--letter-spacing--1);
-                    font-weight: 700;
+                    font-weight: 800;
                     color: light-dark(var(--color--light), var(--color--dark));
                     background-color: light-dark(
                       var(--background-color--light),
@@ -543,7 +543,7 @@ export default async (application: Application): Promise<void> => {
                       css="${css`
                         font-size: var(--font-size--3);
                         line-height: var(--font-size--3--line-height);
-                        font-weight: 700;
+                        font-weight: 600;
                         color: light-dark(
                           var(--color--slate--600),
                           var(--color--slate--400)
@@ -564,6 +564,9 @@ export default async (application: Application): Promise<void> => {
                         transition-timing-function: var(
                           --transition-timing-function--ease-in-out
                         );
+                        display: flex;
+                        gap: var(--space--2);
+                        align-items: center;
                         &:hover,
                         &:focus-within {
                           background-color: light-dark(
@@ -579,7 +582,22 @@ export default async (application: Application): Promise<void> => {
                         }
                       `}"
                     >
-                      <i class="bi bi-pin"></i> Pinned
+                      <i
+                        class="bi bi-chevron-right"
+                        css="${css`
+                          transition-property: var(
+                            --transition-property--transform
+                          );
+                          transition-duration: var(--transition-duration--150);
+                          transition-timing-function: var(
+                            --transition-timing-function--ease-in-out
+                          );
+                          details[open] > summary > & {
+                            transform: rotate(var(--transform--rotate--90));
+                          }
+                        `}"
+                      ></i>
+                      <div><i class="bi bi-pin"></i> Pinned</div>
                     </summary>
                     World
                   </details>
