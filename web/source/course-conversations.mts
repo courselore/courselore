@@ -108,7 +108,7 @@ export default async (application: Application): Promise<void> => {
             &:active {
               background-color: light-dark(
                 var(--color--slate--200),
-                var(--color--slate--700)
+                var(--color--slate--900)
               );
             }
           }
@@ -532,9 +532,57 @@ export default async (application: Application): Promise<void> => {
                   key="courseConversations"
                   css="${css`
                     overflow: auto;
+                    display: flex;
+                    flex-direction: column;
                   `}"
                 >
-                  courseConversations
+                  <details>
+                    <summary
+                      css="${css`
+                        font-size: var(--font-size--3);
+                        line-height: var(--font-size--3--line-height);
+                        text-transform: uppercase;
+                        letter-spacing: var(--letter-spacing--1);
+                        font-weight: 700;
+                        color: light-dark(
+                          var(--color--slate--600),
+                          var(--color--slate--400)
+                        );
+                        background-color: light-dark(
+                          var(--color--slate--50),
+                          var(--color--slate--950)
+                        );
+                        padding: var(--space--1) var(--space--4);
+                        border-bottom: var(--border-width--1) solid
+                          light-dark(
+                            var(--color--slate--200),
+                            var(--color--slate--800)
+                          );
+                        cursor: pointer;
+                        transition-property: var(--transition-property--colors);
+                        transition-duration: var(--transition-duration--150);
+                        transition-timing-function: var(
+                          --transition-timing-function--ease-in-out
+                        );
+                        &:hover,
+                        &:focus-within {
+                          background-color: light-dark(
+                            var(--color--slate--100),
+                            var(--color--slate--800)
+                          );
+                        }
+                        &:active {
+                          background-color: light-dark(
+                            var(--color--slate--200),
+                            var(--color--slate--900)
+                          );
+                        }
+                      `}"
+                    >
+                      <i class="bi bi-pin"></i> Pinned
+                    </summary>
+                    World
+                  </details>
                 </div>
               </div>
               <div
