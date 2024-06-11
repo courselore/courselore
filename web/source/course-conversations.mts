@@ -86,18 +86,14 @@ export default async (application: Application): Promise<void> => {
           &.button--icon {
             width: var(--space--6);
             height: var(--space--6);
+            padding: var(--space--1);
             display: flex;
             justify-content: center;
             align-items: center;
           }
-          &.button--icon,
-          &.button--square {
-            padding: var(--space--1);
-          }
           &.button--transparent {
             margin: var(--space---1) var(--space---2);
-            &.button--icon,
-            &.button--square {
+            &.button--icon {
               margin: var(--space---1);
             }
             &:hover,
@@ -236,15 +232,10 @@ export default async (application: Application): Promise<void> => {
             >
               <button
                 key="hamburger"
-                class="button button--square button--transparent"
+                class="button button--icon button--transparent"
                 css="${css`
                   font-size: var(--font-size--5);
                   line-height: var(--font-size--5--line-height);
-                  width: var(--space--6);
-                  height: var(--space--6);
-                  display: flex;
-                  justify-content: center;
-                  align-items: center;
                   @media (min-width: 900px) {
                     display: none;
                   }
@@ -312,7 +303,11 @@ export default async (application: Application): Promise<void> => {
               </div>
               <button
                 key="user"
-                class="button button--square button--transparent"
+                class="button button--icon button--transparent"
+                css="${css`
+                  width: auto;
+                  height: auto;
+                `}"
               >
                 <div
                   style="
@@ -362,7 +357,7 @@ export default async (application: Application): Promise<void> => {
               `}"
             >
               <button
-                key="sidebar-close"
+                key="sidebar--underlay"
                 css="${css`
                   background-color: light-dark(
                     var(--color--slate--800),
@@ -506,7 +501,7 @@ export default async (application: Application): Promise<void> => {
                 </div>
               </div>
               <div
-                key="separator"
+                key="sidebar--separator"
                 css="${css`
                   position: relative;
                   @media (max-width: 899px) {
