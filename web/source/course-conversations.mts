@@ -437,62 +437,67 @@ export default async (application: Application): Promise<void> => {
                 >
                   <button
                     class="button button--square button--icon button--transparent"
+                    css="${css`
+                      font-size: var(--font-size--4);
+                      line-height: var(--font-size--4--line-height);
+                    `}"
                   >
                     <i class="bi bi-plus-lg"></i>
                   </button>
                   <button
                     class="button button--square button--icon button--transparent"
+                    css="${css`
+                      font-size: var(--font-size--4);
+                      line-height: var(--font-size--4--line-height);
+                    `}"
                   >
                     <i class="bi bi-filter"></i>
                   </button>
                   <form
                     css="${css`
                       flex: 1;
+                      min-width: 0;
+                      background-color: light-dark(
+                        var(--color--slate--50),
+                        var(--color--slate--950)
+                      );
+                      border: var(--border-width--1) solid
+                        light-dark(
+                          var(--color--slate--400),
+                          var(--color--slate--600)
+                        );
+                      border-radius: var(--border-radius--1);
+                      display: flex;
+                      align-items: center;
+                      transition-property: var(--transition-property--colors);
+                      transition-duration: var(--transition-duration--150);
+                      transition-timing-function: var(
+                        --transition-timing-function--ease-in-out
+                      );
+                      &:focus-within {
+                        border-color: light-dark(
+                          var(--color--blue--500),
+                          var(--color--blue--500)
+                        );
+                      }
                     `}"
                   >
-                    <div
+                    <input
+                      type="text"
                       css="${css`
-                        background-color: light-dark(
-                          var(--color--slate--50),
-                          var(--color--slate--950)
-                        );
-                        border: var(--border-width--1) solid
-                          light-dark(
-                            var(--color--slate--400),
-                            var(--color--slate--600)
-                          );
-                        border-radius: var(--border-radius--1);
-                        display: flex;
-                        align-items: center;
-                        transition-property: var(--transition-property--colors);
-                        transition-duration: var(--transition-duration--150);
-                        transition-timing-function: var(
-                          --transition-timing-function--ease-in-out
-                        );
-                        &:focus-within {
-                          border-color: light-dark(
-                            var(--color--blue--500),
-                            var(--color--blue--500)
-                          );
-                        }
+                        flex: 1;
+                        min-width: 0;
+                        padding: var(--space--1) var(--space--2);
+                      `}"
+                    />
+                    <button
+                      class="button button--square button--icon button--transparent"
+                      css="${css`
+                        margin-right: var(--space--0);
                       `}"
                     >
-                      <input
-                        type="text"
-                        css="${css`
-                          flex: 1;
-                          padding: var(--space--1) var(--space--2);
-                        `}"
-                      />
-                      <button
-                        class="button button--square button--icon button--transparent"
-                        css="${css`
-                          margin-right: var(--space--0);
-                        `}"
-                      >
-                        <i class="bi bi-search"></i>
-                      </button>
-                    </div>
+                      <i class="bi bi-search"></i>
+                    </button>
                   </form>
                 </div>
                 <div
