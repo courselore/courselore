@@ -469,7 +469,6 @@ export default async (application: Application): Promise<void> => {
                         );
                       border-radius: var(--border-radius--1);
                       display: flex;
-                      align-items: center;
                       transition-property: var(--transition-property--colors);
                       transition-duration: var(--transition-duration--150);
                       transition-timing-function: var(
@@ -492,9 +491,9 @@ export default async (application: Application): Promise<void> => {
                       `}"
                     />
                     <button
-                      class="button button--square button--icon button--transparent"
+                      class="button button--icon button--transparent"
                       css="${css`
-                        margin-right: var(--space--0);
+                        padding: var(--space--1) var(--space--2);
                       `}"
                     >
                       <i class="bi bi-search"></i>
