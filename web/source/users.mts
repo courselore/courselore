@@ -13,7 +13,7 @@ export type ApplicationUsers = {
         user: {
           id: number;
           name: string;
-          avatarlessBackgroundColor:
+          color:
             | "red"
             | "orange"
             | "amber"
@@ -55,7 +55,7 @@ export default async (application: Application): Promise<void> => {
       request.state.user = application.database.get<{
         id: number;
         name: string;
-        avatarlessBackgroundColor:
+        color:
           | "red"
           | "orange"
           | "amber"
@@ -77,7 +77,7 @@ export default async (application: Application): Promise<void> => {
         sidebarWidth: number;
       }>(
         sql`
-          select "id", "name", "avatarlessBackgroundColor", "darkMode", "sidebarWidth"
+          select "id", "name", "color", "darkMode", "sidebarWidth"
           from "users"
           where "id" = ${1};
         `,

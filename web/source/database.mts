@@ -2644,7 +2644,7 @@ export default async (application: Application): Promise<void> => {
             "password" text null,
             "passwordResetNonce" text null unique,
             "passwordResetCreatedAt" text null,
-            "avatarlessBackgroundColor" text not null,
+            "color" text not null,
             "avatar" text null,
             "systemRole" text not null,
             "lastSeenOnlineAt" text not null,
@@ -2731,7 +2731,7 @@ export default async (application: Application): Promise<void> => {
             "course" integer not null references "courses",
             "createdAt" text not null,
             "courseRole" text not null,
-            "accentColor" text not null,
+            "color" text not null,
             "mostRecentlyVisitedCourseConversation" integer null references "courseConversations",
             unique ("user", "course")
           ) strict;
@@ -3001,7 +3001,7 @@ export default async (application: Application): Promise<void> => {
                       "email",
                       "emailVerified",
                       "password",
-                      "avatarlessBackgroundColor",
+                      "color",
                       "avatar",
                       "systemRole",
                       "lastSeenOnlineAt",
@@ -3198,7 +3198,7 @@ export default async (application: Application): Promise<void> => {
                           "course",
                           "createdAt",
                           "courseRole",
-                          "accentColor"
+                          "color"
                         )
                         values (
                           ${cryptoRandomString({ length: 10, type: "numeric" })},

@@ -263,16 +263,17 @@ export default async (application: Application): Promise<void> => {
             `}"
           >
             <div
-              key="accentColor ${request.state.courseParticipation.accentColor}"
+              key="courseParticipationColor ${request.state.courseParticipation
+                .color}"
               style="
                 --background-color--light: var(--color--${request.state
-                .courseParticipation.accentColor}--500);
+                .courseParticipation.color}--500);
                 --background-color--dark: var(--color--${request.state
-                .courseParticipation.accentColor}--500);
+                .courseParticipation.color}--500);
                 --border-color--light: var(--color--${request.state
-                .courseParticipation.accentColor}--600);
+                .courseParticipation.color}--600);
                 --border-color--dark: var(--color--${request.state
-                .courseParticipation.accentColor}--600);
+                .courseParticipation.color}--600);
               "
               css="${css`
                 background-color: light-dark(
@@ -379,17 +380,17 @@ export default async (application: Application): Promise<void> => {
                 <div
                   style="
                     --color--light: var(--color--${request.state.user
-                    .avatarlessBackgroundColor}--800);
+                    .color}--800);
                     --color--dark: var(--color--${request.state.user
-                    .avatarlessBackgroundColor}--200);
+                    .color}--200);
                     --background-color--light: var(--color--${request.state.user
-                    .avatarlessBackgroundColor}--200);
+                    .color}--200);
                     --background-color--dark: var(--color--${request.state.user
-                    .avatarlessBackgroundColor}--800);
+                    .color}--800);
                     --border-color--light: var(--color--${request.state.user
-                    .avatarlessBackgroundColor}--300);
+                    .color}--300);
                     --border-color--dark: var(--color--${request.state.user
-                    .avatarlessBackgroundColor}--900);
+                    .color}--900);
                   "
                   css="${css`
                     font-size: var(--font-size--3);

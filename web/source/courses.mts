@@ -17,7 +17,7 @@ export type ApplicationCourses = {
         };
         courseParticipation: {
           id: number;
-          accentColor: string;
+          color: string;
         };
       };
     };
@@ -52,10 +52,10 @@ export default async (application: Application): Promise<void> => {
       if (request.state.course === undefined) return;
       request.state.courseParticipation = application.database.get<{
         id: number;
-        accentColor: string;
+        color: string;
       }>(
         sql`
-          select "id", "accentColor"
+          select "id", "color"
           from "courseParticipations"
           where
             "user" = ${request.state.user.id} and
