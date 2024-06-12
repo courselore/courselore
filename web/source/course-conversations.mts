@@ -11,6 +11,17 @@ export default async (application: Application): Promise<void> => {
     courseConversation: {
       id: number;
       externalId: string;
+      pinned: number;
+      courseConversationType:
+        | "courseConversationNote"
+        | "courseConversationQuestion";
+      questionResolved: number;
+      courseConversationParticipations:
+        | "courseStudent"
+        | "courseStaff"
+        | "courseConversationParticipations";
+      title: string;
+      titleSearch: string;
     };
   };
   application.server?.push({
@@ -35,9 +46,28 @@ export default async (application: Application): Promise<void> => {
       request.state.courseConversation = application.database.get<{
         id: number;
         externalId: string;
+        pinned: number;
+        courseConversationType:
+          | "courseConversationNote"
+          | "courseConversationQuestion";
+        questionResolved: number;
+        courseConversationParticipations:
+          | "courseStudent"
+          | "courseStaff"
+          | "courseConversationParticipations";
+        title: string;
+        titleSearch: string;
       }>(
         sql`
-          select "id", "externalId"
+          select 
+            "id",
+            "externalId",
+            "pinned",
+            "courseConversationType",
+            "questionResolved",
+            "courseConversationParticipations",
+            "title",
+            "titleSearch"
           from "courseConversations"
           where
             "course" = ${request.state.course.id} and
@@ -622,6 +652,7 @@ export default async (application: Application): Promise<void> => {
                 >
                   $${[
                     "Pinned",
+                    "This week",
                     "2024-04-03 — 2024-04-14",
                     "2024-04-03 — 2024-04-14",
                     "2024-04-03 — 2024-04-14",
@@ -986,8 +1017,94 @@ export default async (application: Application): Promise<void> => {
                       var(--space--8);
                     display: flex;
                     flex-direction: column;
+                    gap: var(--space--8);
                   `}"
-                ></div>
+                >
+                  <div
+                    css="${css`
+                      display: flex;
+                      flex-direction: column;
+                      gap: var(--space--1);
+                    `}"
+                  >
+                    <div
+                      css="${css`
+                        display: flex;
+                        gap: var(--space--4);
+                      `}"
+                    >
+                      <div
+                        css="${css`
+                          flex: 1;
+                          font-size: var(--font-size--4);
+                          line-height: var(--font-size--4--line-height);
+                          font-weight: 700;
+                        `}"
+                      >
+                        ${request.state.courseConversation.title}
+                      </div>
+                      <div>
+                        <button
+                          class="button button--square button--icon button--transparent"
+                          css="${css`
+                            font-weight: 500;
+                            color: light-dark(
+                              var(--color--slate--600),
+                              var(--color--slate--400)
+                            );
+                          `}"
+                        >
+                          <i class="bi bi-three-dots-vertical"></i>
+                        </button>
+                      </div>
+                    </div>
+                    <div
+                      css="${css`
+                        font-size: var(--font-size--3);
+                        line-height: var(--font-size--3--line-height);
+                        font-weight: 500;
+                        color: light-dark(
+                          var(--color--slate--600),
+                          var(--color--slate--400)
+                        );
+                        display: flex;
+                        flex-wrap: wrap;
+                        column-gap: var(--space--4);
+                        row-gap: var(--space--2);
+                      `}"
+                    >
+                      <button
+                        class="button button--rectangle button--transparent"
+                      >
+                        ${request.state.courseConversation
+                          .courseConversationType === "courseConversationNote"
+                          ? "Note"
+                          : request.state.courseConversation
+                                .courseConversationType ===
+                              "courseConversationQuestion"
+                            ? "Question"
+                            : (() => {
+                                throw new Error();
+                              })()} <i class="bi bi-chevron-down"></i>
+                      </button>
+                      $${request.state.courseConversation
+                        .courseConversationType === "courseConversationQuestion"
+                        ? html`
+                            <button
+                              class="button button--rectangle button--transparent"
+                            >
+                              ${request.state.courseConversation
+                                .questionResolved === Number(true)
+                                ? "Resolved"
+                                : "Unresolved"} <i
+                                class="bi bi-chevron-down"
+                              ></i>
+                            </button>
+                          `
+                        : html``}
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </body>
