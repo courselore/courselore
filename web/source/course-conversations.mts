@@ -112,26 +112,64 @@ export default async (application: Application): Promise<void> => {
               );
             }
           }
-          &.button--blue {
-            color: light-dark(var(--color--blue--50), var(--color--blue--950));
+          ${[
+            "red",
+            "orange",
+            "amber",
+            "yellow",
+            "lime",
+            "green",
+            "emerald",
+            "teal",
+            "cyan",
+            "sky",
+            "blue",
+            "indigo",
+            "violet",
+            "purple",
+            "fuchsia",
+            "pink",
+            "rose",
+          ].map(
+            (color) => css`
+              &.button--${color} {
+                color: light-dark(
+                  var(--color--${color}--50),
+                  var(--color--${color}--950)
+                );
             background-color: light-dark(
-              var(--color--blue--500),
-              var(--color--blue--500)
+                  var(--color--${color}--500),
+                  var(--color--${color}--500)
+                );
+                border: var(--border-width--1) solid
+                  light-dark(
+                    var(--color--${color}--600),
+                    var(--color--${color}--600)
             );
             &:hover,
             &:focus-within {
               background-color: light-dark(
-                var(--color--blue--400),
-                var(--color--blue--400)
+                    var(--color--${color}--400),
+                    var(--color--${color}--400)
+                  );
+                  border-color: light-dark(
+                    var(--color--${color}--500),
+                    var(--color--${color}--500)
               );
             }
             &:active {
               background-color: light-dark(
-                var(--color--blue--600),
-                var(--color--blue--600)
-              );
+                    var(--color--${color}--600),
+                    var(--color--${color}--600)
+                  );
+                  border-color: light-dark(
+                    var(--color--${color}--700),
+                    var(--color--${color}--700)
+                  );
             }
           }
+            `,
+          )}
         }
 
         .tippy-box {
