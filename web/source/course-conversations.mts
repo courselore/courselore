@@ -137,7 +137,7 @@ export default async (application: Application): Promise<void> => {
                   var(--color--${color}--50),
                   var(--color--${color}--950)
                 );
-            background-color: light-dark(
+                background-color: light-dark(
                   var(--color--${color}--500),
                   var(--color--${color}--500)
                 );
@@ -145,20 +145,20 @@ export default async (application: Application): Promise<void> => {
                   light-dark(
                     var(--color--${color}--600),
                     var(--color--${color}--600)
-            );
-            &:hover,
-            &:focus-within {
-              background-color: light-dark(
+                  );
+                &:hover,
+                &:focus-within {
+                  background-color: light-dark(
                     var(--color--${color}--400),
                     var(--color--${color}--400)
                   );
                   border-color: light-dark(
                     var(--color--${color}--500),
                     var(--color--${color}--500)
-              );
-            }
-            &:active {
-              background-color: light-dark(
+                  );
+                }
+                &:active {
+                  background-color: light-dark(
                     var(--color--${color}--600),
                     var(--color--${color}--600)
                   );
@@ -166,8 +166,8 @@ export default async (application: Application): Promise<void> => {
                     var(--color--${color}--700),
                     var(--color--${color}--700)
                   );
-            }
-          }
+                }
+              }
             `,
           )}
         }
@@ -386,6 +386,10 @@ export default async (application: Application): Promise<void> => {
                     .avatarlessBackgroundColor}--200);
                     --background-color--dark: var(--color--${request.state.user
                     .avatarlessBackgroundColor}--800);
+                    --border-color--light: var(--color--${request.state.user
+                    .avatarlessBackgroundColor}--300);
+                    --border-color--dark: var(--color--${request.state.user
+                    .avatarlessBackgroundColor}--900);
                   "
                   css="${css`
                     font-size: var(--font-size--3);
@@ -397,6 +401,11 @@ export default async (application: Application): Promise<void> => {
                       var(--background-color--light),
                       var(--background-color--dark)
                     );
+                    border: var(--border-width--1) solid
+                      light-dark(
+                        var(--border-color--light),
+                        var(--border-color--dark)
+                      );
                     width: var(--space--6);
                     height: var(--space--6);
                     border-radius: var(--border-radius--1);
@@ -611,16 +620,16 @@ export default async (application: Application): Promise<void> => {
                   `}"
                 >
                   $${[
-                    html`<i class="bi bi-pin-fill"></i> Pinned`,
-                    `2024-04-03 — 2024-04-14`,
-                    `2024-04-03 — 2024-04-14`,
-                    `2024-04-03 — 2024-04-14`,
-                    `2024-04-03 — 2024-04-14`,
-                    `2024-04-03 — 2024-04-14`,
-                    `2024-04-03 — 2024-04-14`,
-                    `2024-04-03 — 2024-04-14`,
-                    `2024-04-03 — 2024-04-14`,
-                    `2024-04-03 — 2024-04-14`,
+                    "Pinned",
+                    "2024-04-03 — 2024-04-14",
+                    "2024-04-03 — 2024-04-14",
+                    "2024-04-03 — 2024-04-14",
+                    "2024-04-03 — 2024-04-14",
+                    "2024-04-03 — 2024-04-14",
+                    "2024-04-03 — 2024-04-14",
+                    "2024-04-03 — 2024-04-14",
+                    "2024-04-03 — 2024-04-14",
+                    "2024-04-03 — 2024-04-14",
                   ].map(
                     (label) => html`
                       <details>
@@ -693,7 +702,7 @@ export default async (application: Application): Promise<void> => {
                               flex: 1;
                             `}"
                           >
-                            $${label}
+                            ${label}
                           </div>
                           <div
                             css="${css`
@@ -763,6 +772,8 @@ export default async (application: Application): Promise<void> => {
                                       --color--dark: var(--color--pink--200);
                                       --background-color--light: var(--color--pink--200);
                                       --background-color--dark: var(--color--pink--800);
+                                      --border-color--light: var(--color--pink--300);
+                                      --border-color--dark: var(--color--pink--900);
                                     "
                                     css="${css`
                                       font-size: var(--font-size--3);
@@ -779,6 +790,11 @@ export default async (application: Application): Promise<void> => {
                                         var(--background-color--light),
                                         var(--background-color--dark)
                                       );
+                                      border: var(--border-width--1) solid
+                                        light-dark(
+                                          var(--border-color--light),
+                                          var(--border-color--dark)
+                                        );
                                       width: var(--space--6);
                                       height: var(--space--6);
                                       border-radius: var(--border-radius--1);
