@@ -225,12 +225,16 @@ export default async (application: Application): Promise<void> => {
             `}"
           >
             <div
-              key="accentColor"
+              key="accentColor ${request.state.courseParticipation.accentColor}"
               style="
                 --background-color--light: var(--color--${request.state
                 .courseParticipation.accentColor}--500);
                 --background-color--dark: var(--color--${request.state
                 .courseParticipation.accentColor}--500);
+                --border-color--light: var(--color--${request.state
+                .courseParticipation.accentColor}--600);
+                --border-color--dark: var(--color--${request.state
+                .courseParticipation.accentColor}--600);
               "
               css="${css`
                 background-color: light-dark(
@@ -238,6 +242,11 @@ export default async (application: Application): Promise<void> => {
                   var(--background-color--dark)
                 );
                 height: var(--space--1);
+                border-bottom: var(--border-width--1) solid
+                  light-dark(
+                    var(--border-color--light),
+                    var(--border-color--dark)
+                  );
               `}"
             ></div>
             <div
