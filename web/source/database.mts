@@ -2751,16 +2751,16 @@ export default async (application: Application): Promise<void> => {
             "id" integer primary key autoincrement,
             "externalId" text not null unique,
             "course" integer not null references "courses",
-            "pinned" integer not null,
             "courseConversationType" text not null,
             "questionResolved" integer not null,
             "courseConversationParticipations" text not null,
+            "pinned" integer not null,
             "title" text not null,
             "titleSearch" text not null
           ) strict;
-          create index "index_courseConversations_pinned" on "courseConversations" ("pinned");
           create index "index_courseConversations_courseConversationType" on "courseConversations" ("courseConversationType");
           create index "index_courseConversations_questionResolved" on "courseConversations" ("questionResolved");
+          create index "index_courseConversations_pinned" on "courseConversations" ("pinned");
           create virtual table "search_courseConversations_externalId" using fts5(
             content = "courseConversations",
             content_rowid = "id",
@@ -3291,20 +3291,20 @@ export default async (application: Application): Promise<void> => {
                       insert into "courseConversations" (
                         "externalId",
                         "course",
-                        "pinned",
                         "courseConversationType",
                         "questionResolved",
                         "courseConversationParticipations",
+                        "pinned",
                         "title",
                         "titleSearch"
                       )
                       values (
                         ${cryptoRandomString({ length: 10, type: "numeric" })},
                         ${course.id},
-                        ${Number(Math.random() < 0.1)},
                         ${Math.random() < 0.3 ? "courseConversationNote" : "courseConversationQuestion"},
                         ${Number(Math.random() < 0.5)},
                         ${courseConversationIndex === 0 || Math.random() < 0.3 ? "courseStudent" : Math.random() < 0.8 ? "courseStaff" : "courseConversationParticipations"},
+                        ${Number(Math.random() < 0.1)},
                         ${courseConversationTitle},
                         ${courseConversationTitle}
                       );

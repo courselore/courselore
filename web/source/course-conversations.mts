@@ -11,7 +11,6 @@ export default async (application: Application): Promise<void> => {
     courseConversation: {
       id: number;
       externalId: string;
-      pinned: number;
       courseConversationType:
         | "courseConversationNote"
         | "courseConversationQuestion";
@@ -20,6 +19,7 @@ export default async (application: Application): Promise<void> => {
         | "courseStudent"
         | "courseStaff"
         | "courseConversationParticipations";
+      pinned: number;
       title: string;
       titleSearch: string;
     };
@@ -46,7 +46,6 @@ export default async (application: Application): Promise<void> => {
       request.state.courseConversation = application.database.get<{
         id: number;
         externalId: string;
-        pinned: number;
         courseConversationType:
           | "courseConversationNote"
           | "courseConversationQuestion";
@@ -55,6 +54,7 @@ export default async (application: Application): Promise<void> => {
           | "courseStudent"
           | "courseStaff"
           | "courseConversationParticipations";
+        pinned: number;
         title: string;
         titleSearch: string;
       }>(
@@ -62,10 +62,10 @@ export default async (application: Application): Promise<void> => {
           select 
             "id",
             "externalId",
-            "pinned",
             "courseConversationType",
             "questionResolved",
             "courseConversationParticipations",
+            "pinned",
             "title",
             "titleSearch"
           from "courseConversations"
@@ -1102,6 +1102,32 @@ export default async (application: Application): Promise<void> => {
                             </button>
                           `
                         : html``}
+                      <button
+                        class="button button--rectangle button--transparent"
+                      >
+                        ${request.state.courseConversation
+                          .courseConversationParticipations === "courseStudent"
+                          ? "Students"
+                          : request.state.courseConversation
+                                .courseConversationParticipations ===
+                              "courseStaff"
+                            ? "Course staff"
+                            : request.state.courseConversation
+                                  .courseConversationParticipations ===
+                                "courseConversationParticipations"
+                              ? "Selected people"
+                              : (() => {
+                                  throw new Error();
+                                })()} <i class="bi bi-chevron-down"></i>
+                      </button>
+                      <button
+                        class="button button--rectangle button--transparent"
+                      >
+                        ${request.state.courseConversation.pinned ===
+                        Number(true)
+                          ? "Pinned"
+                          : "Unpinned"} <i class="bi bi-chevron-down"></i>
+                      </button>
                     </div>
                   </div>
                 </div>
