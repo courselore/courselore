@@ -214,21 +214,19 @@ export default async (application: Application): Promise<void> => {
       response.end(html`
         <!doctype html>
         <html
-          css="${
-            request.state.user.darkMode === "system"
+          css="${request.state.user.darkMode === "system"
+            ? css`
+                color-scheme: light dark;
+              `
+            : request.state.user.darkMode === "light"
               ? css`
-                  color-scheme: light dark;
+                  color-scheme: light;
                 `
-              : request.state.user.darkMode === "light"
+              : request.state.user.darkMode === "dark"
                 ? css`
-                    color-scheme: light;
+                    color-scheme: dark;
                   `
-                : request.state.user.darkMode === "dark"
-                  ? css`
-                      color-scheme: dark;
-                    `
-                  : css``
-          }"
+                : css``}"
         >
           <head>
             <title>Courselore</title>
@@ -265,22 +263,17 @@ export default async (application: Application): Promise<void> => {
             `}"
           >
             <div
-              key="courseParticipationColor ${
-                request.state.courseParticipation.color
-              }"
+              key="courseParticipationColor ${request.state.courseParticipation
+                .color}"
               style="
-                --background-color--light: var(--color--${
-                  request.state.courseParticipation.color
-                }--500);
-                --background-color--dark: var(--color--${
-                  request.state.courseParticipation.color
-                }--500);
-                --border-color--light: var(--color--${
-                  request.state.courseParticipation.color
-                }--600);
-                --border-color--dark: var(--color--${
-                  request.state.courseParticipation.color
-                }--600);
+                --background-color--light: var(--color--${request.state
+                .courseParticipation.color}--500);
+                --background-color--dark: var(--color--${request.state
+                .courseParticipation.color}--500);
+                --border-color--light: var(--color--${request.state
+                .courseParticipation.color}--600);
+                --border-color--dark: var(--color--${request.state
+                .courseParticipation.color}--600);
               "
               css="${css`
                 background-color: light-dark(
@@ -386,24 +379,18 @@ export default async (application: Application): Promise<void> => {
               >
                 <div
                   style="
-                    --color--light: var(--color--${
-                      request.state.user.color
-                    }--800);
-                    --color--dark: var(--color--${
-                      request.state.user.color
-                    }--200);
-                    --background-color--light: var(--color--${
-                      request.state.user.color
-                    }--200);
-                    --background-color--dark: var(--color--${
-                      request.state.user.color
-                    }--800);
-                    --border-color--light: var(--color--${
-                      request.state.user.color
-                    }--300);
-                    --border-color--dark: var(--color--${
-                      request.state.user.color
-                    }--900);
+                    --color--light: var(--color--${request.state.user
+                    .color}--800);
+                    --color--dark: var(--color--${request.state.user
+                    .color}--200);
+                    --background-color--light: var(--color--${request.state.user
+                    .color}--200);
+                    --background-color--dark: var(--color--${request.state.user
+                    .color}--800);
+                    --border-color--light: var(--color--${request.state.user
+                    .color}--300);
+                    --border-color--dark: var(--color--${request.state.user
+                    .color}--900);
                   "
                   css="${css`
                     font-size: var(--font-size--3);
@@ -528,11 +515,9 @@ export default async (application: Application): Promise<void> => {
                   `}"
                 >
                   <a
-                    href="https://${
-                      application.configuration.hostname
-                    }/courses/${
-                      request.state.course.externalId
-                    }/conversations/new"
+                    href="https://${application.configuration
+                      .hostname}/courses/${request.state.course
+                      .externalId}/conversations/new"
                     class="button button--square button--blue"
                     css="${css`
                       font-size: var(--font-size--7-5);
@@ -986,9 +971,9 @@ export default async (application: Application): Promise<void> => {
                 ></div>
               </div>
               <div
-                key="courseConversation /courses/${
-                  request.state.course.externalId
-                }/conversations/${request.state.courseConversation.externalId}"
+                key="courseConversation /courses/${request.state.course
+                  .externalId}/conversations/${request.state.courseConversation
+                  .externalId}"
                 css="${css`
                   flex: 1;
                   overflow: auto;
@@ -1002,7 +987,7 @@ export default async (application: Application): Promise<void> => {
                     display: flex;
                     flex-direction: column;
                   `}"
-                >
+                ></div>
               </div>
             </div>
           </body>
