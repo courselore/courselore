@@ -122,6 +122,13 @@ export default async (application: Application): Promise<void> => {
         @import "bootstrap-icons/font/bootstrap-icons.css";
         @import "katex/dist/katex.css";
 
+        .text--secondary {
+          font-size: var(--font-size--3);
+          line-height: var(--font-size--3--line-height);
+          font-weight: 600;
+          color: light-dark(var(--color--slate--600), var(--color--slate--400));
+        }
+
         .input--text {
           background-color: light-dark(
             var(--color--slate--50),
@@ -671,6 +678,7 @@ export default async (application: Application): Promise<void> => {
                       `}"
                     />
                     <button
+                      key="search"
                       class="button button--icon button--transparent"
                       css="${css`
                         padding: var(--space--1) var(--space--2);
@@ -689,6 +697,7 @@ export default async (application: Application): Promise<void> => {
                       <i class="bi bi-search"></i>
                     </button>
                     <button
+                      key="filter"
                       class="button button--icon button--transparent"
                       css="${css`
                         padding: var(--space--1) var(--space--2);
@@ -729,14 +738,8 @@ export default async (application: Application): Promise<void> => {
                     (label) => html`
                       <details>
                         <summary
+                          class="text--secondary"
                           css="${css`
-                            font-size: var(--font-size--3);
-                            line-height: var(--font-size--3--line-height);
-                            font-weight: 600;
-                            color: light-dark(
-                              var(--color--slate--600),
-                              var(--color--slate--400)
-                            );
                             background-color: light-dark(
                               var(--color--slate--50),
                               var(--color--slate--950)
@@ -764,13 +767,13 @@ export default async (application: Application): Promise<void> => {
                             &:focus-within {
                               background-color: light-dark(
                                 var(--color--slate--100),
-                                var(--color--slate--800)
+                                var(--color--slate--900)
                               );
                             }
                             &:active {
                               background-color: light-dark(
                                 var(--color--slate--200),
-                                var(--color--slate--900)
+                                var(--color--slate--800)
                               );
                             }
                           `}"
