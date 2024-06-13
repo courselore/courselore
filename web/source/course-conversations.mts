@@ -25,7 +25,7 @@ export default async (application: Application): Promise<void> => {
     };
     courseConversationTaggings: Set<number>;
   };
-  
+
   application.server?.push({
     pathname: new RegExp(
       "^/courses/(?<courseId>[0-9]+)/conversations/(?<courseConversationId>[0-9]+)(?:$|/)",
@@ -236,8 +236,10 @@ export default async (application: Application): Promise<void> => {
               var(--color--red--50),
               var(--color--red--950)
             );
-            border: var(--border-width--1) solid
-              light-dark(var(--color--red--400), var(--color--red--600));
+            border-color: light-dark(
+              var(--color--red--400),
+              var(--color--red--600)
+            );
           }
           .tippy-content {
             padding: var(--space--1) var(--space--2);
