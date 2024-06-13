@@ -821,7 +821,7 @@ export default async (application: Application): Promise<void> => {
                               transition-timing-function: var(
                                 --transition-timing-function--ease-in-out
                               );
-                            `} ${index % 3 === 0
+                            `} ${index % 3 === 0 || index % 5 === 0
                               ? css`
                                   opacity: var(--opacity--0);
                                 `
