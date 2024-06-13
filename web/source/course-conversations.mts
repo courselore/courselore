@@ -1164,14 +1164,8 @@ export default async (application: Application): Promise<void> => {
                         </div>
                       </div>
                       <div
+                        class="text--secondary"
                         css="${css`
-                          font-size: var(--font-size--3);
-                          line-height: var(--font-size--3--line-height);
-                          font-weight: 500;
-                          color: light-dark(
-                            var(--color--slate--600),
-                            var(--color--slate--400)
-                          );
                           display: flex;
                           flex-wrap: wrap;
                           column-gap: var(--space--4);
