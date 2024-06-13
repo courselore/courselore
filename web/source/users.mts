@@ -52,7 +52,7 @@ export type ApplicationUsers = {
           emailNotificationsForMessagesInConversationsInWhichYouParticipated: number;
           contentEditorProgrammerMode: number;
           anonymous: number;
-          mostRecentlyVisitedCourseParticipation: number | null;
+          mostRecentlyVisitedCourse: number | null;
         };
       };
     };
@@ -113,7 +113,7 @@ export default async (application: Application): Promise<void> => {
         emailNotificationsForMessagesInConversationsInWhichYouParticipated: number;
         contentEditorProgrammerMode: number;
         anonymous: number;
-        mostRecentlyVisitedCourseParticipation: number | null;
+        mostRecentlyVisitedCourse: number | null;
       }>(
         sql`
           select
@@ -141,7 +141,7 @@ export default async (application: Application): Promise<void> => {
             "emailNotificationsForMessagesInConversationsInWhichYouParticipated",
             "contentEditorProgrammerMode",
             "anonymous",
-            "mostRecentlyVisitedCourseParticipation"
+            "mostRecentlyVisitedCourse"
           from "users"
           where
             "id" = ${1} and
@@ -164,18 +164,27 @@ export default async (application: Application): Promise<void> => {
       >,
       response,
     ) => {
-      if (
-        request.state.user === undefined ||
-        request.state.user.mostRecentlyVisitedCourseParticipation === null
-      )
-        return;
+      if (request.state.user === undefined) return;
       const course = application.database.get<{
         externalId: number;
       }>(
         sql`
           select "externalId"
           from "courses"
-          where "id" = ${request.state.user.mostRecentlyVisitedCourseParticipation};
+          where "id" = ${
+            request.state.user.mostRecentlyVisitedCourse ??
+            application.database.get<{
+              course: number;
+            }>(
+              sql`
+                select "course"
+                from "courseParticipations"
+                where "user" = ${request.state.user.id}
+                order by "id" desc
+                limit 1;
+              `,
+            )?.course
+          };
         `,
       );
       if (course === undefined) return;

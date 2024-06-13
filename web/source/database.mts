@@ -2656,9 +2656,9 @@ export default async (application: Application): Promise<void> => {
             "emailNotificationsForMessagesInConversationsInWhichYouParticipated" integer not null,
             "contentEditorProgrammerMode" integer not null,
             "anonymous" integer not null,
-            "mostRecentlyVisitedCourseParticipation" integer null references "courseParticipations"
+            "mostRecentlyVisitedCourse" integer null references "courses"
           ) strict;
-          create index "index_users_mostRecentlyVisitedCourseParticipation" on "users" ("mostRecentlyVisitedCourseParticipation");
+          create index "index_users_mostRecentlyVisitedCourse" on "users" ("mostRecentlyVisitedCourse");
           create virtual table "search_users_nameSearch" using fts5(
             content = "users",
             content_rowid = "id",
