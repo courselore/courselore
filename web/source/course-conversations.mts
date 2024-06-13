@@ -839,7 +839,7 @@ export default async (application: Application): Promise<void> => {
                                       var(--color--slate--800)
                                     );
                                   display: flex;
-                                  gap: var(--space--4);
+                                  gap: var(--space--2);
                                   cursor: pointer;
                                   transition-property: var(
                                     --transition-property--colors
@@ -1106,7 +1106,7 @@ export default async (application: Application): Promise<void> => {
                     css="${css`
                       display: flex;
                       flex-direction: column;
-                      gap: var(--space--4);
+                      gap: var(--space--8);
                     `}"
                   >
                     <div
@@ -1251,7 +1251,14 @@ export default async (application: Application): Promise<void> => {
                         )}
                       </div>
                     </div>
-                    <div key="courseConversationMessages">
+                    <div
+                      key="courseConversationMessages"
+                      css="${css`
+                        display: flex;
+                        flex-direction: column;
+                        gap: var(--space--4);
+                      `}"
+                    >
                       $${application.database
                         .all<{
                           id: number;
@@ -1295,7 +1302,88 @@ export default async (application: Application): Promise<void> => {
                             order by "id" asc;
                           `,
                         )
-                        .map((courseConversationMessage) => html``)}
+                        .map(
+                          (courseConversationMessage) => html`
+                            <div
+                              key="courseConversationMessage ${courseConversationMessage.externalId}"
+                              css="${css`
+                                display: flex;
+                                gap: var(--space--2);
+                              `}"
+                            >
+                              <div key="courseConversationMessage--createdBy">
+                                <div
+                                  key="user--avatar"
+                                  style="
+                                      --color--light: var(--color--pink--800);
+                                      --color--dark: var(--color--pink--200);
+                                      --background-color--light: var(--color--pink--200);
+                                      --background-color--dark: var(--color--pink--800);
+                                      --border-color--light: var(--color--pink--300);
+                                      --border-color--dark: var(--color--pink--900);
+                                    "
+                                  css="${css`
+                                    font-size: var(--font-size--3);
+                                    line-height: var(--space--0);
+                                    letter-spacing: var(--letter-spacing--1);
+                                    font-weight: 800;
+                                    color: light-dark(
+                                      var(--color--light),
+                                      var(--color--dark)
+                                    );
+                                    background-color: light-dark(
+                                      var(--background-color--light),
+                                      var(--background-color--dark)
+                                    );
+                                    width: var(--space--8);
+                                    height: var(--space--8);
+                                    border: var(--border-width--1) solid
+                                      light-dark(
+                                        var(--border-color--light),
+                                        var(--border-color--dark)
+                                      );
+                                    border-radius: var(--border-radius--1);
+                                    overflow: hidden;
+                                    display: flex;
+                                    justify-content: center;
+                                    align-items: center;
+                                  `}"
+                                >
+                                  AW
+                                </div>
+                              </div>
+                              <div
+                                key="courseConversationMessage--main"
+                                css="${css`
+                                  display: flex;
+                                  flex-direction: column;
+                                `}"
+                              >
+                                <div
+                                  key="courseConversationMessage--heading"
+                                  class="text--secondary"
+                                >
+                                  <span
+                                    css="${css`
+                                      font-weight: 600;
+                                    `}"
+                                    >Abigal Wall</span
+                                  > ·
+                                  <div
+                                    css="${css`
+                                      display: inline-block;
+                                    `}"
+                                  >
+                                    2024-03-02
+                                  </div>
+                                </div>
+                                <div key="courseConversationMessage--body">
+                                  ${courseConversationMessage.contentSource}
+                                </div>
+                              </div>
+                            </div>
+                          `,
+                        )}
                     </div>
                   </div>
                 </div>
