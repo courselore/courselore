@@ -12,7 +12,17 @@ export type ApplicationUsers = {
       User: {
         user: {
           id: number;
+          externalId: string;
+          createdAt: string;
           name: string;
+          nameSearch: string;
+          email: string;
+          emailVerificationNonce: string | null;
+          emailVerificationCreatedAt: string | null;
+          emailVerified: number;
+          password: string | null;
+          passwordResetNonce: string | null;
+          passwordResetCreatedAt: string | null;
           color:
             | "red"
             | "orange"
@@ -31,8 +41,18 @@ export type ApplicationUsers = {
             | "fuchsia"
             | "pink"
             | "rose";
+          avatar: string | null;
+          systemRole: "systemAdministrator" | "systemStaff" | "systemUser";
+          lastSeenOnlineAt: string;
           darkMode: "system" | "light" | "dark";
           sidebarWidth: number;
+          emailNotificationsForAllMessages: number;
+          emailNotificationsForMessagesIncludingMentions: number;
+          emailNotificationsForMessagesInConversationsYouStarted: number;
+          emailNotificationsForMessagesInConversationsInWhichYouParticipated: number;
+          contentEditorProgrammerMode: number;
+          anonymous: number;
+          mostRecentlyVisitedCourseParticipation: number | null;
         };
       };
     };
@@ -54,7 +74,17 @@ export default async (application: Application): Promise<void> => {
     ) => {
       request.state.user = application.database.get<{
         id: number;
+        externalId: string;
+        createdAt: string;
         name: string;
+        nameSearch: string;
+        email: string;
+        emailVerificationNonce: string | null;
+        emailVerificationCreatedAt: string | null;
+        emailVerified: number;
+        password: string | null;
+        passwordResetNonce: string | null;
+        passwordResetCreatedAt: string | null;
         color:
           | "red"
           | "orange"
@@ -73,11 +103,46 @@ export default async (application: Application): Promise<void> => {
           | "fuchsia"
           | "pink"
           | "rose";
+        avatar: string | null;
+        systemRole: "systemAdministrator" | "systemStaff" | "systemUser";
+        lastSeenOnlineAt: string;
         darkMode: "system" | "light" | "dark";
         sidebarWidth: number;
+        emailNotificationsForAllMessages: number;
+        emailNotificationsForMessagesIncludingMentions: number;
+        emailNotificationsForMessagesInConversationsYouStarted: number;
+        emailNotificationsForMessagesInConversationsInWhichYouParticipated: number;
+        contentEditorProgrammerMode: number;
+        anonymous: number;
+        mostRecentlyVisitedCourseParticipation: number | null;
       }>(
         sql`
-          select "id", "name", "color", "darkMode", "sidebarWidth"
+          select
+            "id",
+            "externalId",
+            "createdAt",
+            "name",
+            "nameSearch",
+            "email",
+            "emailVerificationNonce",
+            "emailVerificationCreatedAt",
+            "emailVerified",
+            "password",
+            "passwordResetNonce",
+            "passwordResetCreatedAt",
+            "color",
+            "avatar",
+            "systemRole",
+            "lastSeenOnlineAt",
+            "darkMode",
+            "sidebarWidth",
+            "emailNotificationsForAllMessages",
+            "emailNotificationsForMessagesIncludingMentions",
+            "emailNotificationsForMessagesInConversationsYouStarted",
+            "emailNotificationsForMessagesInConversationsInWhichYouParticipated",
+            "contentEditorProgrammerMode",
+            "anonymous",
+            "mostRecentlyVisitedCourseParticipation"
           from "users"
           where "id" = ${1};
         `,
@@ -137,7 +202,11 @@ export default async (application: Application): Promise<void> => {
       >,
       response,
     ) => {
-      if (request.state.user === undefined) return;
+      if (
+        request.state.user === undefined ||
+        request.state.user.emailVerified === Number(false)
+      )
+        return;
       if (typeof request.body.sidebarWidth === "string")
         if (
           request.body.sidebarWidth.match(/^[0-9]+$/) === null ||
