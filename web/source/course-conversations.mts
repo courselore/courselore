@@ -122,6 +122,28 @@ export default async (application: Application): Promise<void> => {
         @import "bootstrap-icons/font/bootstrap-icons.css";
         @import "katex/dist/katex.css";
 
+        .input--text {
+          background-color: light-dark(
+            var(--color--slate--50),
+            var(--color--slate--950)
+          );
+          padding: var(--space--1) var(--space--2);
+          border: var(--border-width--1) solid
+            light-dark(var(--color--slate--400), var(--color--slate--600));
+          border-radius: var(--border-radius--1);
+          transition-property: var(--transition-property--colors);
+          transition-duration: var(--transition-duration--150);
+          transition-timing-function: var(
+            --transition-timing-function--ease-in-out
+          );
+          &:focus-within {
+            border-color: light-dark(
+              var(--color--blue--500),
+              var(--color--blue--500)
+            );
+          }
+        }
+
         .button {
           border-radius: var(--border-radius--1);
           cursor: pointer;
@@ -630,31 +652,12 @@ export default async (application: Application): Promise<void> => {
                   </a>
                   <div
                     key="search-and-filter"
+                    class="input--text"
                     css="${css`
                       flex: 1;
                       min-width: var(--space--0);
-                      background-color: light-dark(
-                        var(--color--slate--50),
-                        var(--color--slate--950)
-                      );
-                      border: var(--border-width--1) solid
-                        light-dark(
-                          var(--color--slate--400),
-                          var(--color--slate--600)
-                        );
-                      border-radius: var(--border-radius--1);
+                      padding: var(--space--0);
                       display: flex;
-                      transition-property: var(--transition-property--colors);
-                      transition-duration: var(--transition-duration--150);
-                      transition-timing-function: var(
-                        --transition-timing-function--ease-in-out
-                      );
-                      &:focus-within {
-                        border-color: light-dark(
-                          var(--color--blue--500),
-                          var(--color--blue--500)
-                        );
-                      }
                     `}"
                   >
                     <input
