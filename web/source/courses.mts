@@ -13,7 +13,18 @@ export type ApplicationCourses = {
         course: {
           id: number;
           externalId: string;
+          createdAt: string;
           name: string;
+          year: string | null;
+          term: string | null;
+          institution: string | null;
+          code: string | null;
+          invitationLinkCourseStaffToken: string;
+          invitationLinkCourseStaffActive: number;
+          invitationLinkCourseStudentsToken: string;
+          invitationLinkCourseStudentsActive: number;
+          courseStudentsMayCreatePolls: number;
+          archivedAt: string | null;
         };
         courseParticipation: {
           id: number;
@@ -38,7 +49,7 @@ export type ApplicationCourses = {
             | "fuchsia"
             | "pink"
             | "rose";
-          mostRecentlyVisitedCourseConversation: number;
+          mostRecentlyVisitedCourseConversation: number | null;
         };
         courseConversationTags: {
           id: number;
@@ -68,10 +79,35 @@ export default async (application: Application): Promise<void> => {
       request.state.course = application.database.get<{
         id: number;
         externalId: string;
+        createdAt: string;
         name: string;
+        year: string | null;
+        term: string | null;
+        institution: string | null;
+        code: string | null;
+        invitationLinkCourseStaffToken: string;
+        invitationLinkCourseStaffActive: number;
+        invitationLinkCourseStudentsToken: string;
+        invitationLinkCourseStudentsActive: number;
+        courseStudentsMayCreatePolls: number;
+        archivedAt: string | null;
       }>(
         sql`
-          select "id", "externalId", "name"
+          select
+            "id",
+            "externalId",
+            "createdAt",
+            "name",
+            "year",
+            "term",
+            "institution",
+            "code",
+            "invitationLinkCourseStaffToken",
+            "invitationLinkCourseStaffActive",
+            "invitationLinkCourseStudentsToken",
+            "invitationLinkCourseStudentsActive",
+            "courseStudentsMayCreatePolls",
+            "archivedAt"
           from "courses"
           where "externalId" = ${request.pathname.courseId};
         `,
@@ -100,7 +136,7 @@ export default async (application: Application): Promise<void> => {
           | "fuchsia"
           | "pink"
           | "rose";
-        mostRecentlyVisitedCourseConversation: number;
+        mostRecentlyVisitedCourseConversation: number | null;
       }>(
         sql`
           select

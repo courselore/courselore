@@ -144,7 +144,9 @@ export default async (application: Application): Promise<void> => {
             "anonymous",
             "mostRecentlyVisitedCourseParticipation"
           from "users"
-          where "id" = ${1};
+          where
+            "id" = ${1} and
+            "emailVerified" = ${Number(true)};
         `,
       );
     },
