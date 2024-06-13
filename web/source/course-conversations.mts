@@ -109,7 +109,9 @@ export default async (application: Application): Promise<void> => {
         request.state.user === undefined ||
         request.state.course === undefined ||
         request.state.courseParticipation === undefined ||
-        request.state.courseConversation === undefined
+        request.state.courseConversationTags === undefined ||
+        request.state.courseConversation === undefined ||
+        request.state.courseConversationTaggings === undefined
       )
         return;
 
@@ -1244,8 +1246,20 @@ export default async (application: Application): Promise<void> => {
                         >
                           Tags <i class="bi bi-chevron-down"></i>
                         </button>
-                        <div>Homework 1</div>
-                        <div>Duplicate question</div>
+                        $${request.state.courseConversationTags.map(
+                          (courseConversationTag) =>
+                            request.state.courseConversationTaggings!.has(
+                              courseConversationTag.id,
+                            )
+                              ? html`
+                                  <div
+                                    key="courseConversationTag ${courseConversationTag.externalId}"
+                                  >
+                                    ${courseConversationTag.name}
+                                  </div>
+                                `
+                              : html``,
+                        )}
                       </div>
                     </div>
                     <div key="courseConversation--messages">
