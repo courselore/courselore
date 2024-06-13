@@ -735,7 +735,7 @@ export default async (application: Application): Promise<void> => {
                     "2024-04-03 — 2024-04-14",
                     "2024-04-03 — 2024-04-14",
                   ].map(
-                    (label) => html`
+                    (label, index) => html`
                       <details key="courseConversationsGroup ${label}">
                         <summary
                           class="text--secondary"
@@ -812,9 +812,18 @@ export default async (application: Application): Promise<void> => {
                               width: var(--space--1-5);
                               height: var(--space--1-5);
                               border-radius: var(--border-radius--circle);
-                            `} ${Math.random() < 0.7
+                              transition-property: var(
+                                --transition-property--opacity
+                              );
+                              transition-duration: var(
+                                --transition-duration--150
+                              );
+                              transition-timing-function: var(
+                                --transition-timing-function--ease-in-out
+                              );
+                            `} ${index % 3 === 0
                               ? css`
-                                  visibility: hidden;
+                                  opacity: var(--opacity--0);
                                 `
                               : css``}"
                           ></div>
