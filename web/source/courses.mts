@@ -176,4 +176,40 @@ export default async (application: Application): Promise<void> => {
       );
     },
   });
+
+  application.server?.push({
+    method: "GET",
+    pathname: new RegExp("^/courses/(?<courseId>[0-9]+)$"),
+    handler: (
+      request: serverTypes.Request<
+        {},
+        {},
+        {},
+        {},
+        Application["types"]["states"]["Course"]
+      >,
+      response,
+    ) => {
+      if (
+        request.state.course === undefined ||
+        request.state.courseParticipation === undefined ||
+        request.state.courseParticipation
+          .mostRecentlyVisitedCourseConversation === null
+      )
+        return;
+      const courseConversation = application.database.get<{
+        externalId: number;
+      }>(
+        sql`
+          select "externalId"
+          from "courseConversations"
+          where "id" = ${request.state.courseParticipation.mostRecentlyVisitedCourseConversation};
+        `,
+      );
+      if (courseConversation === undefined) return;
+      response.redirect(
+        `/courses/${request.state.course.externalId}/conversations/${courseConversation.externalId}`,
+      );
+    },
+  });
 };

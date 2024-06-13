@@ -60,7 +60,6 @@ export type ApplicationUsers = {
 };
 
 export default async (application: Application): Promise<void> => {
-  // TODO
   application.server?.push({
     handler: (
       request: serverTypes.Request<
@@ -152,7 +151,6 @@ export default async (application: Application): Promise<void> => {
     },
   });
 
-  // TODO
   application.server?.push({
     method: "GET",
     pathname: "/",
@@ -166,28 +164,22 @@ export default async (application: Application): Promise<void> => {
       >,
       response,
     ) => {
+      if (
+        request.state.user === undefined ||
+        request.state.user.mostRecentlyVisitedCourseParticipation === null
+      )
+        return;
       const course = application.database.get<{
-        id: number;
-        externalId: number;
-      }>(
-        sql`
-          select "id", "externalId"
-          from "courses"
-          limit 1;
-        `,
-      )!;
-      const courseConversation = application.database.get<{
         externalId: number;
       }>(
         sql`
           select "externalId"
-          from "courseConversations"
-          where "course" = ${course.id};
+          from "courses"
+          where "id" = ${request.state.user.mostRecentlyVisitedCourseParticipation};
         `,
-      )!;
-      response.redirect(
-        `/courses/${course.externalId}/conversations/${courseConversation.externalId}`,
       );
+      if (course === undefined) return;
+      response.redirect(`/courses/${course.externalId}`);
     },
   });
 
