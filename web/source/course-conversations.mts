@@ -1361,19 +1361,40 @@ export default async (application: Application): Promise<void> => {
                                 <div
                                   key="courseConversationMessage--heading"
                                   class="text--secondary"
+                                  css="${css`
+                                    display: flex;
+                                    gap: var(--space--2);
+                                  `}"
                                 >
-                                  <span
+                                  <div
                                     css="${css`
-                                      font-weight: 700;
+                                      flex: 1;
                                     `}"
-                                    >Abigal Wall</span
-                                  > ·
-                                  <span
-                                    css="${css`
-                                      display: inline-block;
-                                    `}"
-                                    >2024-03-02</span
                                   >
+                                    <span
+                                      css="${css`
+                                        font-weight: 700;
+                                      `}"
+                                      >Abigal Wall</span
+                                    > ·
+                                    <span
+                                      css="${css`
+                                        display: inline-block;
+                                      `}"
+                                      >2024-03-02</span
+                                    >
+                                  </div>
+                                  <div>
+                                    <button
+                                      key="courseConversation--heading--menu"
+                                      class="text--secondary button button--square button--icon button--transparent"
+                                      css="${css`
+                                        margin-right: var(--space---0-5);
+                                      `}"
+                                    >
+                                      <i class="bi bi-three-dots-vertical"></i>
+                                    </button>
+                                  </div>
                                 </div>
                                 <div key="courseConversationMessage--body">
                                   ${courseConversationMessage.contentSource}
