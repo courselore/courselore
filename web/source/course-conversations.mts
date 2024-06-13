@@ -391,7 +391,7 @@ export default async (application: Application): Promise<void> => {
                 class="button button--square button--icon button--transparent"
                 css="${css`
                   font-size: var(--font-size--5);
-                  line-height: var(--font-size--5--line-height);
+                  line-height: var(--space--0);
                   @media (min-width: 900px) {
                     display: none;
                   }
@@ -414,9 +414,9 @@ export default async (application: Application): Promise<void> => {
                   align-items: center;
                 `}"
               >
-                <svg width="20" height="20" viewBox="0 0 20 20">
+                <svg width="24" height="24" viewBox="0 0 24 24">
                   <path
-                    d="M 2.5 2.5 L 7.5 7.5 L 2.5 7.5 L 7.5 2.5 L 2.5 12.5 L 7.5 17.5 L 7.5 12.5 L 2.5 17.5 L 12.5 12.5 L 17.5 17.5 L 17.5 12.5 L 12.5 17.5 L 17.5 7.5 L 12.5 2.5 L 17.5 2.5 L 12.5 7.5 Z"
+                    d="M 3 3 L 9 9 L 3 9 L 9 3 L 3 15 L 9 21 L 9 15 L 3 21 L 15 15 L 21 21 L 21 15 L 15 21 L 21 9 L 15 3 L 21 3 L 15 9 Z"
                     fill="none"
                     stroke="currentColor"
                     stroke-linecap="round"
@@ -426,6 +426,8 @@ export default async (application: Application): Promise<void> => {
                 <div
                   css="${css`
                     font-weight: 700;
+                    font-size: var(--font-size--4);
+                    line-height: var(--font-size--4--line-height);
                   `}"
                 >
                   Courselore
@@ -480,7 +482,7 @@ export default async (application: Application): Promise<void> => {
                   "
                   css="${css`
                     font-size: var(--font-size--3);
-                    line-height: var(--font-size--3--line-height);
+                    line-height: var(--space--0);
                     letter-spacing: var(--letter-spacing--1);
                     font-weight: 800;
                     color: light-dark(var(--color--light), var(--color--dark));
@@ -488,13 +490,13 @@ export default async (application: Application): Promise<void> => {
                       var(--background-color--light),
                       var(--background-color--dark)
                     );
+                    width: var(--space--6);
+                    height: var(--space--6);
                     border: var(--border-width--1) solid
                       light-dark(
                         var(--border-color--light),
                         var(--border-color--dark)
                       );
-                    width: var(--space--6);
-                    height: var(--space--6);
                     border-radius: var(--border-radius--1);
                     overflow: hidden;
                     display: flex;
@@ -607,6 +609,7 @@ export default async (application: Application): Promise<void> => {
                     class="button button--square button--blue"
                     css="${css`
                       font-size: var(--font-size--7-5);
+                      line-height: var(--space--0);
                       font-weight: 700;
                       height: 100%;
                       aspect-ratio: var(--aspect-ratio--square);
@@ -865,9 +868,7 @@ export default async (application: Application): Promise<void> => {
                                     "
                                     css="${css`
                                       font-size: var(--font-size--3);
-                                      line-height: var(
-                                        --font-size--3--line-height
-                                      );
+                                      line-height: var(--space--0);
                                       letter-spacing: var(--letter-spacing--1);
                                       font-weight: 800;
                                       color: light-dark(
@@ -878,13 +879,13 @@ export default async (application: Application): Promise<void> => {
                                         var(--background-color--light),
                                         var(--background-color--dark)
                                       );
+                                      width: var(--space--6);
+                                      height: var(--space--6);
                                       border: var(--border-width--1) solid
                                         light-dark(
                                           var(--border-color--light),
                                           var(--border-color--dark)
                                         );
-                                      width: var(--space--6);
-                                      height: var(--space--6);
                                       border-radius: var(--border-radius--1);
                                       overflow: hidden;
                                       display: flex;
