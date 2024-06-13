@@ -603,6 +603,7 @@ export default async (application: Application): Promise<void> => {
                   `}"
                 >
                   <a
+                    key="new-conversation"
                     href="https://${application.configuration
                       .hostname}/courses/${request.state.course
                       .externalId}/conversations/new"
