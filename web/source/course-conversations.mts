@@ -25,6 +25,7 @@ export default async (application: Application): Promise<void> => {
     };
     courseConversationTaggings: Set<number>;
   };
+  
   application.server?.push({
     pathname: new RegExp(
       "^/courses/(?<courseId>[0-9]+)/conversations/(?<courseConversationId>[0-9]+)(?:$|/)",
