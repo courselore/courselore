@@ -736,7 +736,7 @@ export default async (application: Application): Promise<void> => {
                     "2024-04-03 — 2024-04-14",
                   ].map(
                     (label) => html`
-                      <details>
+                      <details key="courseConversationsGroup ${label}">
                         <summary
                           class="text--secondary"
                           css="${css`
@@ -803,6 +803,7 @@ export default async (application: Application): Promise<void> => {
                             ${label}
                           </div>
                           <div
+                            key="unread"
                             css="${css`
                               background-color: light-dark(
                                 var(--color--blue--500),
