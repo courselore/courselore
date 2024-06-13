@@ -1244,6 +1244,8 @@ export default async (application: Application): Promise<void> => {
                         >
                           Tags <i class="bi bi-chevron-down"></i>
                         </button>
+                        <div>Homework 1</div>
+                        <div>Duplicate question</div>
                       </div>
                     </div>
                     <div key="courseConversation--messages">
