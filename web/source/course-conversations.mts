@@ -241,6 +241,42 @@ export default async (application: Application): Promise<void> => {
               var(--color--red--600)
             );
           }
+          ${[
+            "red",
+            "orange",
+            "amber",
+            "yellow",
+            "lime",
+            "green",
+            "emerald",
+            "teal",
+            "cyan",
+            "sky",
+            "blue",
+            "indigo",
+            "violet",
+            "purple",
+            "fuchsia",
+            "pink",
+            "rose",
+          ].map(
+            (color) => css`
+              &[data-theme~="error"] {
+                color: light-dark(
+                  var(--color--${color}--800),
+                  var(--color--${color}--200)
+                );
+                background-color: light-dark(
+                  var(--color--${color}--50),
+                  var(--color--${color}--950)
+                );
+                border-color: light-dark(
+                  var(--color--${color}--400),
+                  var(--color--${color}--600)
+                );
+              }
+            `,
+          )}
           .tippy-content {
             padding: var(--space--1) var(--space--2);
           }
