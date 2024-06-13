@@ -110,7 +110,7 @@ export default async (application: Application): Promise<void> => {
         .text--secondary {
           font-size: var(--font-size--3);
           line-height: var(--font-size--3--line-height);
-          font-weight: 500;
+          font-weight: 600;
           color: light-dark(var(--color--slate--600), var(--color--slate--400));
         }
 
@@ -927,12 +927,17 @@ export default async (application: Application): Promise<void> => {
                                     key="courseConversation--main--details"
                                     class="text--secondary"
                                   >
-                                    Abigail Wall ·
-                                    <span
+                                    Abigail Wall<span
                                       css="${css`
-                                        display: inline-block;
+                                        font-weight: 400;
                                       `}"
-                                      >2024-03-02</span
+                                      > ·
+                                      <span
+                                        css="${css`
+                                          display: inline-block;
+                                        `}"
+                                        >2024-03-02</span
+                                      ></span
                                     >
                                     <br />
                                     $${Math.random() < 0.5
@@ -943,12 +948,17 @@ export default async (application: Application): Promise<void> => {
                                               var(--color--red--400)
                                             );
                                           `}"
-                                          >Question · Unresolved</span
+                                          >Question · Unresolved</span
                                         >`
                                       : Math.random() < 0.5
                                         ? html`Question`
-                                        : html`Note`} ·
-                                    Assignment 2 · Duplicate question
+                                        : html`Note`}<span
+                                      css="${css`
+                                        font-weight: 400;
+                                      `}"
+                                      > · Assignment 2 · Duplicate
+                                      question</span
+                                    >
                                   </div>
                                   <div
                                     key="courseConversation--main--excerpt"
@@ -1242,6 +1252,9 @@ export default async (application: Application): Promise<void> => {
                               ? html`
                                   <div
                                     key="courseConversationTag ${courseConversationTag.externalId}"
+                                    css=${css`
+                                      font-weight: 400;
+                                    `}
                                   >
                                     ${courseConversationTag.name}
                                   </div>
@@ -1377,27 +1390,32 @@ export default async (application: Application): Promise<void> => {
                                         font-weight: 700;
                                       `}"
                                       >Abigal Wall</span
-                                    > ·
-                                    <span
+                                    ><span
                                       css="${css`
-                                        display: inline-block;
+                                        font-weight: 400;
                                       `}"
-                                      >2024-03-02</span
-                                    > $${courseConversationMessage.courseConversationMessageType ===
-                                    "courseConversationMessageMessage"
-                                      ? html``
-                                      : courseConversationMessage.courseConversationMessageType ===
-                                          "courseConversationMessageAnswer"
-                                        ? html`· Answer`
+                                      > ·
+                                      <span
+                                        css="${css`
+                                          display: inline-block;
+                                        `}"
+                                        >2024-03-02</span
+                                      > $${courseConversationMessage.courseConversationMessageType ===
+                                      "courseConversationMessageMessage"
+                                        ? html``
                                         : courseConversationMessage.courseConversationMessageType ===
-                                            "courseConversationMessageFollowUpQuestion"
-                                          ? html`· Follow-up question`
+                                            "courseConversationMessageAnswer"
+                                          ? html`· Answer`
                                           : courseConversationMessage.courseConversationMessageType ===
-                                              "courseConversationMessageCourseStaffWhisper"
-                                            ? html`· Course staff whisper`
-                                            : (() => {
-                                                throw new Error();
-                                              })()}
+                                              "courseConversationMessageFollowUpQuestion"
+                                            ? html`· Follow-up question`
+                                            : courseConversationMessage.courseConversationMessageType ===
+                                                "courseConversationMessageCourseStaffWhisper"
+                                              ? html`· Course staff whisper`
+                                              : (() => {
+                                                  throw new Error();
+                                                })()}</span
+                                    >
                                   </div>
                                   <div>
                                     <button
