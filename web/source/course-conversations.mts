@@ -1129,7 +1129,7 @@ export default async (application: Application): Promise<void> => {
                       css="${css`
                         display: flex;
                         flex-direction: column;
-                        gap: var(--space--1);
+                        gap: var(--space--2);
                       `}"
                     >
                       <div
@@ -1228,6 +1228,21 @@ export default async (application: Application): Promise<void> => {
                           Number(true)
                             ? "Pinned"
                             : "Unpinned"} <i class="bi bi-chevron-down"></i>
+                        </button>
+                      </div>
+                      <div
+                        class="text--secondary"
+                        css="${css`
+                          display: flex;
+                          flex-wrap: wrap;
+                          column-gap: var(--space--4);
+                          row-gap: var(--space--2);
+                        `}"
+                      >
+                        <button
+                          class="button button--rectangle button--transparent"
+                        >
+                          Tags <i class="bi bi-chevron-down"></i>
                         </button>
                       </div>
                     </div>
