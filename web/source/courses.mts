@@ -17,8 +17,35 @@ export type ApplicationCourses = {
         };
         courseParticipation: {
           id: number;
-          color: string;
+          externalId: string;
+          createdAt: string;
+          courseRole: "courseStaff" | "courseStudent";
+          color:
+            | "red"
+            | "orange"
+            | "amber"
+            | "yellow"
+            | "lime"
+            | "green"
+            | "emerald"
+            | "teal"
+            | "cyan"
+            | "sky"
+            | "blue"
+            | "indigo"
+            | "violet"
+            | "purple"
+            | "fuchsia"
+            | "pink"
+            | "rose";
+          mostRecentlyVisitedCourseConversation: number;
         };
+        courseConversationTags: {
+          id: number;
+          externalId: string;
+          name: string;
+          courseStaff: number;
+        }[];
       };
     };
   };
@@ -52,10 +79,37 @@ export default async (application: Application): Promise<void> => {
       if (request.state.course === undefined) return;
       request.state.courseParticipation = application.database.get<{
         id: number;
-        color: string;
+        externalId: string;
+        createdAt: string;
+        courseRole: "courseStaff" | "courseStudent";
+        color:
+          | "red"
+          | "orange"
+          | "amber"
+          | "yellow"
+          | "lime"
+          | "green"
+          | "emerald"
+          | "teal"
+          | "cyan"
+          | "sky"
+          | "blue"
+          | "indigo"
+          | "violet"
+          | "purple"
+          | "fuchsia"
+          | "pink"
+          | "rose";
+        mostRecentlyVisitedCourseConversation: number;
       }>(
         sql`
-          select "id", "color"
+          select
+            "id",
+            "externalId",
+            "createdAt",
+            "courseRole",
+            "color",
+            "mostRecentlyVisitedCourseConversation"
           from "courseParticipations"
           where
             "user" = ${request.state.user.id} and
@@ -63,6 +117,27 @@ export default async (application: Application): Promise<void> => {
         `,
       );
       if (request.state.courseParticipation === undefined) return;
+      request.state.courseConversationTags = application.database.all<{
+        id: number;
+        externalId: string;
+        name: string;
+        courseStaff: number;
+      }>(
+        sql`
+          select "id", "externalId", "name", "courseStaff"
+          from "courseConversationTags"
+          where
+            "course" = ${request.state.course.id}$${
+              request.state.courseParticipation.courseRole !== "courseStaff"
+                ? sql`
+                    and
+                    "courseStaff" = ${Number(true)}
+                  `
+                : sql``
+            }
+          order by "order";
+        `,
+      );
     },
   });
 };

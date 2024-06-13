@@ -2743,7 +2743,7 @@ export default async (application: Application): Promise<void> => {
             "course" integer not null references "courses",
             "order" integer not null,
             "name" text not null,
-            "courseStaffOnly" integer not null
+            "courseStaff" integer not null
           ) strict;
           create index "index_courseConversationTags_course" on "courseConversationTags" ("course");
           
@@ -3242,8 +3242,8 @@ export default async (application: Application): Promise<void> => {
             { name: "Assignment 4" },
             { name: "Assignment 5" },
             { name: "Assignment 6" },
-            { name: "Change for Next Year", courseStaffOnly: true },
-            { name: "Duplicate Question", courseStaffOnly: true },
+            { name: "Change for Next Year", courseStaff: true },
+            { name: "Duplicate Question", courseStaff: true },
           ].map(
             (courseConversationTag, courseConversationTagIndex) =>
               database.get<{ id: number }>(
@@ -3256,14 +3256,14 @@ export default async (application: Application): Promise<void> => {
                           "course",
                           "order",
                           "name",
-                          "courseStaffOnly"
+                          "courseStaff"
                         )
                         values (
                           ${cryptoRandomString({ length: 10, type: "numeric" })},
                           ${course.id},
                           ${courseConversationTagIndex},
                           ${courseConversationTag.name},
-                          ${Number(courseConversationTag.courseStaffOnly ?? false)}
+                          ${Number(courseConversationTag.courseStaff ?? false)}
                         );
                       `,
                     ).lastInsertRowid
