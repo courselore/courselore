@@ -192,9 +192,7 @@ export default async (application: Application): Promise<void> => {
     ) => {
       if (
         request.state.course === undefined ||
-        request.state.courseParticipation === undefined ||
-        request.state.courseParticipation
-          .mostRecentlyVisitedCourseConversation === null
+        request.state.courseParticipation === undefined
       )
         return;
       const courseConversation = application.database.get<{
@@ -203,7 +201,21 @@ export default async (application: Application): Promise<void> => {
         sql`
           select "externalId"
           from "courseConversations"
-          where "id" = ${request.state.courseParticipation.mostRecentlyVisitedCourseConversation};
+          $${
+            typeof request.state.courseParticipation
+              .mostRecentlyVisitedCourseConversation === "number"
+              ? sql`
+                  where "id" = ${
+                    request.state.courseParticipation
+                      .mostRecentlyVisitedCourseConversation
+                  }
+                `
+              : sql`
+                  where "course" = ${request.state.course.id} -- TODO: "courseConversationParticipations"
+                  order by "id" desc
+                  limit 1
+                `
+          };
         `,
       );
       if (courseConversation === undefined) return;
