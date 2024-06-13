@@ -81,17 +81,20 @@ export default async (application: Application): Promise<void> => {
       request.state.courseConversationTaggings = new Set(
         application.database
           .all<{
-            id: number;
+            courseConversationTag: number;
           }>(
             sql`
-              select "id"
+              select "courseConversationTag"
               from "courseConversationTaggings"
               where
                 "courseConversation" = ${request.state.courseConversation.id} and
                 "courseConversationTag" in ${request.state.courseConversationTags.map((courseConversationTag) => courseConversationTag.id)};
             `,
           )
-          .map((courseConversationTagging) => courseConversationTagging.id),
+          .map(
+            (courseConversationTagging) =>
+              courseConversationTagging.courseConversationTag,
+          ),
       );
     },
   });
