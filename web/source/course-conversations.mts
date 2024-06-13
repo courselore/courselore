@@ -23,6 +23,7 @@ export default async (application: Application): Promise<void> => {
       title: string;
       titleSearch: string;
     };
+    courseConversationTaggings: Set<number>;
   };
   application.server?.push({
     pathname: new RegExp(
@@ -40,7 +41,8 @@ export default async (application: Application): Promise<void> => {
     ) => {
       if (
         request.state.course === undefined ||
-        request.state.courseParticipation === undefined
+        request.state.courseParticipation === undefined ||
+        request.state.courseConversationTags === undefined
       )
         return;
       request.state.courseConversation = application.database.get<{
@@ -75,6 +77,21 @@ export default async (application: Application): Promise<void> => {
         `,
       );
       if (request.state.courseConversation === undefined) return;
+      request.state.courseConversationTaggings = new Set(
+        application.database
+          .all<{
+            id: number;
+          }>(
+            sql`
+              select "id"
+              from "courseConversationTaggings"
+              where
+                "courseConversation" = ${request.state.courseConversation.id} and
+                "courseConversationTag" in ${request.state.courseConversationTags.map((courseConversationTag) => courseConversationTag.id)};
+            `,
+          )
+          .map((courseConversationTagging) => courseConversationTagging.id),
+      );
     },
   });
 
