@@ -163,7 +163,7 @@ export default async (application: Application): Promise<void> => {
           select "id", "externalId", "name", "courseStaff"
           from "courseConversationTags"
           where
-            "course" = ${request.state.course.id}$${
+            "course" = ${request.state.course.id} $${
               request.state.courseParticipation.courseRole !== "courseStaff"
                 ? sql`
                     and
