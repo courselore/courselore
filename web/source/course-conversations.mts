@@ -1123,7 +1123,7 @@ export default async (application: Application): Promise<void> => {
                       css="${css`
                         display: flex;
                         flex-direction: column;
-                        gap: var(--space--2);
+                        gap: var(--space--1);
                       `}"
                     >
                       <div
@@ -1161,106 +1161,114 @@ export default async (application: Application): Promise<void> => {
                         class="text--secondary"
                         css="${css`
                           display: flex;
-                          flex-wrap: wrap;
-                          column-gap: var(--space--4);
-                          row-gap: var(--space--2);
+                          flex-direction: column;
+                          gap: var(--space--2);
                         `}"
                       >
-                        <button
-                          class="button button--rectangle button--transparent"
+                        <div
+                          css="${css`
+                            display: flex;
+                            flex-wrap: wrap;
+                            column-gap: var(--space--4);
+                            row-gap: var(--space--2);
+                          `}"
                         >
-                          ${request.state.courseConversation
-                            .courseConversationType === "courseConversationNote"
-                            ? "Note"
-                            : request.state.courseConversation
-                                  .courseConversationType ===
-                                "courseConversationQuestion"
-                              ? "Question"
-                              : (() => {
-                                  throw new Error();
-                                })()} <i class="bi bi-chevron-down"></i>
-                        </button>
-                        $${request.state.courseConversation
-                          .courseConversationType ===
-                        "courseConversationQuestion"
-                          ? html`
-                              <button
-                                class="button button--rectangle button--transparent"
-                              >
-                                ${request.state.courseConversation
-                                  .questionResolved === Number(true)
-                                  ? "Resolved"
-                                  : "Unresolved"} <i
-                                  class="bi bi-chevron-down"
-                                ></i>
-                              </button>
-                            `
-                          : html``}
-                        <button
-                          class="button button--rectangle button--transparent"
-                        >
-                          ${request.state.courseConversation
-                            .courseConversationParticipations ===
-                          "courseStudent"
-                            ? "Students"
-                            : request.state.courseConversation
-                                  .courseConversationParticipations ===
-                                "courseStaff"
-                              ? "Course staff"
+                          <button
+                            class="button button--rectangle button--transparent"
+                          >
+                            ${request.state.courseConversation
+                              .courseConversationType ===
+                            "courseConversationNote"
+                              ? "Note"
                               : request.state.courseConversation
-                                    .courseConversationParticipations ===
-                                  "courseConversationParticipations"
-                                ? "Selected people"
+                                    .courseConversationType ===
+                                  "courseConversationQuestion"
+                                ? "Question"
                                 : (() => {
                                     throw new Error();
                                   })()} <i class="bi bi-chevron-down"></i>
-                        </button>
-                        <button
-                          class="button button--rectangle button--transparent"
+                          </button>
+                          $${request.state.courseConversation
+                            .courseConversationType ===
+                          "courseConversationQuestion"
+                            ? html`
+                                <button
+                                  class="button button--rectangle button--transparent"
+                                >
+                                  ${request.state.courseConversation
+                                    .questionResolved === Number(true)
+                                    ? "Resolved"
+                                    : "Unresolved"} <i
+                                    class="bi bi-chevron-down"
+                                  ></i>
+                                </button>
+                              `
+                            : html``}
+                          <button
+                            class="button button--rectangle button--transparent"
+                          >
+                            ${request.state.courseConversation
+                              .courseConversationParticipations ===
+                            "courseStudent"
+                              ? "Students"
+                              : request.state.courseConversation
+                                    .courseConversationParticipations ===
+                                  "courseStaff"
+                                ? "Course staff"
+                                : request.state.courseConversation
+                                      .courseConversationParticipations ===
+                                    "courseConversationParticipations"
+                                  ? "Selected people"
+                                  : (() => {
+                                      throw new Error();
+                                    })()} <i class="bi bi-chevron-down"></i>
+                          </button>
+                          <button
+                            class="button button--rectangle button--transparent"
+                          >
+                            ${request.state.courseConversation.pinned ===
+                            Number(true)
+                              ? "Pinned"
+                              : "Unpinned"} <i class="bi bi-chevron-down"></i>
+                          </button>
+                        </div>
+                        <div
+                          css="${css`
+                            display: flex;
+                            flex-wrap: wrap;
+                            column-gap: var(--space--4);
+                            row-gap: var(--space--2);
+                          `}"
                         >
-                          ${request.state.courseConversation.pinned ===
-                          Number(true)
-                            ? "Pinned"
-                            : "Unpinned"} <i class="bi bi-chevron-down"></i>
-                        </button>
-                      </div>
-                      <div
-                        class="text--secondary"
-                        css="${css`
-                          display: flex;
-                          flex-wrap: wrap;
-                          column-gap: var(--space--4);
-                          row-gap: var(--space--2);
-                        `}"
-                      >
-                        <button
-                          class="button button--rectangle button--transparent"
-                        >
-                          Tags <i class="bi bi-chevron-down"></i>
-                        </button>
-                        $${request.state.courseConversationTags.map(
-                          (courseConversationTag) =>
-                            application.database.get(
-                              sql`
+                          <button
+                            class="button button--rectangle button--transparent"
+                          >
+                            Tags <i class="bi bi-chevron-down"></i>
+                          </button>
+                          $${request.state.courseConversationTags.map(
+                            (courseConversationTag) =>
+                              application.database.get(
+                                sql`
                                 select true
                                 from "courseConversationTaggings"
                                 where
                                   "courseConversation" = ${request.state.courseConversation!.id} and
                                   "courseConversationTag" = ${courseConversationTag.id};
                               `,
-                            ) !== undefined
-                              ? html`
-                                  <div
-                                    key="courseConversationTag ${courseConversationTag.externalId}"
-                                    css=${css`
-                                      font-weight: 400;
-                                    `}
-                                  >
-                                    ${courseConversationTag.name}
-                                  </div>
-                                `
-                              : html``,
-                        )}
+                              ) !== undefined
+                                ? html`
+                                    <div
+                                      key="courseConversationTag ${courseConversationTag.externalId}"
+                                      css=${css`
+                                        font-weight: 400;
+                                      `}
+                                    >
+                                      ${courseConversationTag.name}
+                                    </div>
+                                  `
+                                : html``,
+                          )}
+                        </div>
                       </div>
                     </div>
                     <div
