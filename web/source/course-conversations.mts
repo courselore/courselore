@@ -1354,6 +1354,7 @@ export default async (application: Application): Promise<void> => {
                               <div
                                 key="courseConversationMessage--main"
                                 css="${css`
+                                  flex: 1;
                                   display: flex;
                                   flex-direction: column;
                                 `}"
@@ -1382,7 +1383,21 @@ export default async (application: Application): Promise<void> => {
                                         display: inline-block;
                                       `}"
                                       >2024-03-02</span
-                                    >
+                                    > $${courseConversationMessage.courseConversationMessageType ===
+                                    "courseConversationMessageMessage"
+                                      ? html``
+                                      : courseConversationMessage.courseConversationMessageType ===
+                                          "courseConversationMessageAnswer"
+                                        ? html`· Answer`
+                                        : courseConversationMessage.courseConversationMessageType ===
+                                            "courseConversationMessageFollowUpQuestion"
+                                          ? html`· Follow-up question`
+                                          : courseConversationMessage.courseConversationMessageType ===
+                                              "courseConversationMessageCourseStaffWhisper"
+                                            ? html`· Course staff whisper`
+                                            : (() => {
+                                                throw new Error();
+                                              })()}
                                   </div>
                                   <div>
                                     <button
