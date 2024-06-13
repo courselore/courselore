@@ -621,7 +621,7 @@ export default async (application: Application): Promise<void> => {
                 `}"
               >
                 <div
-                  key="actions"
+                  key="sidebar--menu"
                   css="${css`
                     border-bottom: var(--border-width--1) solid
                       light-dark(
@@ -1139,6 +1139,7 @@ export default async (application: Application): Promise<void> => {
                         `}"
                       >
                         <div
+                          key="courseConversation--heading--title"
                           css="${css`
                             flex: 1;
                             font-size: var(--font-size--4);
@@ -1148,18 +1149,14 @@ export default async (application: Application): Promise<void> => {
                         >
                           ${request.state.courseConversation.title}
                         </div>
-                        <div
-                          css="${css`
-                            display: flex;
-                            justify-content: center;
-                            align-items: center;
-                          `}"
-                        >
+                        <div>
                           <button
+                            key="courseConversation--heading--menu"
                             class="text--secondary button button--square button--icon button--transparent"
                             css="${css`
                               font-size: var(--font-size--4);
                               line-height: var(--space--0);
+                              margin-top: var(--space--0);
                             `}"
                           >
                             <i class="bi bi-three-dots-vertical"></i>
