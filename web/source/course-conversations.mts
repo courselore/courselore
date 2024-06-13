@@ -23,7 +23,6 @@ export default async (application: Application): Promise<void> => {
       title: string;
       titleSearch: string;
     };
-    courseConversationTaggings: Set<number>;
   };
 
   application.server?.push({
@@ -78,24 +77,6 @@ export default async (application: Application): Promise<void> => {
         `,
       );
       if (request.state.courseConversation === undefined) return;
-      request.state.courseConversationTaggings = new Set(
-        application.database
-          .all<{
-            courseConversationTag: number;
-          }>(
-            sql`
-              select "courseConversationTag"
-              from "courseConversationTaggings"
-              where
-                "courseConversation" = ${request.state.courseConversation.id} and
-                "courseConversationTag" in ${request.state.courseConversationTags.map((courseConversationTag) => courseConversationTag.id)};
-            `,
-          )
-          .map(
-            (courseConversationTagging) =>
-              courseConversationTagging.courseConversationTag,
-          ),
-      );
     },
   });
 
@@ -113,8 +94,7 @@ export default async (application: Application): Promise<void> => {
         request.state.course === undefined ||
         request.state.courseParticipation === undefined ||
         request.state.courseConversationTags === undefined ||
-        request.state.courseConversation === undefined ||
-        request.state.courseConversationTaggings === undefined
+        request.state.courseConversation === undefined
       )
         return;
 
@@ -1251,9 +1231,15 @@ export default async (application: Application): Promise<void> => {
                         </button>
                         $${request.state.courseConversationTags.map(
                           (courseConversationTag) =>
-                            request.state.courseConversationTaggings!.has(
-                              courseConversationTag.id,
-                            )
+                            application.database.get(
+                              sql`
+                                select true
+                                from "courseConversationTaggings"
+                                where
+                                  "courseConversation" = ${request.state.courseConversation!.id} and
+                                  "courseConversationTag" = ${courseConversationTag.id};
+                              `,
+                            ) !== undefined
                               ? html`
                                   <div
                                     key="courseConversationTag ${courseConversationTag.externalId}"
