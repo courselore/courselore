@@ -3242,8 +3242,8 @@ export default async (application: Application): Promise<void> => {
             { name: "Assignment 4" },
             { name: "Assignment 5" },
             { name: "Assignment 6" },
-            { name: "Change for Next Year", courseStaff: true },
-            { name: "Duplicate Question", courseStaff: true },
+            { name: "Change for next year", courseStaff: true },
+            { name: "Duplicate question", courseStaff: true },
           ].map(
             (courseConversationTag, courseConversationTagIndex) =>
               database.get<{ id: number }>(

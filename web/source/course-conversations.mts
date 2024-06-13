@@ -928,28 +928,27 @@ export default async (application: Application): Promise<void> => {
                                     class="text--secondary"
                                   >
                                     Abigail Wall ·
-                                    <div
+                                    <span
                                       css="${css`
                                         display: inline-block;
                                       `}"
+                                      >2024-03-02</span
                                     >
-                                      2024-03-02
-                                    </div>
                                     <br />
                                     $${Math.random() < 0.5
-                                      ? html`<div
+                                      ? html`<span
                                           css="${css`
                                             color: light-dark(
                                               var(--color--red--600),
                                               var(--color--red--400)
                                             );
                                           `}"
-                                        >
-                                          Question · Unresolved
-                                        </div>`
+                                          >Question · Unresolved</span
+                                        >`
                                       : Math.random() < 0.5
                                         ? html`Question`
-                                        : html`Note`}
+                                        : html`Note`} ·
+                                    Assignment 2 · Duplicate question
                                   </div>
                                   <div
                                     key="courseConversation--main--excerpt"
@@ -1323,7 +1322,7 @@ export default async (application: Application): Promise<void> => {
                                       --border-color--dark: var(--color--pink--900);
                                     "
                                   css="${css`
-                                    font-size: var(--font-size--3);
+                                    font-size: var(--font-size--3-5);
                                     line-height: var(--space--0);
                                     letter-spacing: var(--letter-spacing--1);
                                     font-weight: 800;
@@ -1365,17 +1364,16 @@ export default async (application: Application): Promise<void> => {
                                 >
                                   <span
                                     css="${css`
-                                      font-weight: 600;
+                                      font-weight: 700;
                                     `}"
                                     >Abigal Wall</span
                                   > ·
-                                  <div
+                                  <span
                                     css="${css`
                                       display: inline-block;
                                     `}"
+                                    >2024-03-02</span
                                   >
-                                    2024-03-02
-                                  </div>
                                 </div>
                                 <div key="courseConversationMessage--body">
                                   ${courseConversationMessage.contentSource}
