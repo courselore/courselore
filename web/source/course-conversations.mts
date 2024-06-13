@@ -125,7 +125,7 @@ export default async (application: Application): Promise<void> => {
         .text--secondary {
           font-size: var(--font-size--3);
           line-height: var(--font-size--3--line-height);
-          font-weight: 600;
+          font-weight: 500;
           color: light-dark(var(--color--slate--600), var(--color--slate--400));
         }
 
@@ -495,6 +495,7 @@ export default async (application: Application): Promise<void> => {
                 class="button button--square button--transparent"
               >
                 <div
+                  key="user--avatar"
                   style="
                     --color--light: var(--color--${request.state.user
                     .color}--800);
@@ -836,9 +837,15 @@ export default async (application: Application): Promise<void> => {
                         >
                           $${Array.from(
                             { length: 1 + Math.floor(Math.random() * 4) },
-                            () => html`
+                            (value, index) => html`
                               <a
-                                href="/"
+                                key="courseConversation /courses/${request.state
+                                  .course!.externalId}/conversations/${String(
+                                  index,
+                                )}"
+                                href="https://${application.configuration
+                                  .hostname}/courses/${request.state.course!
+                                  .externalId}/conversations/${String(index)}"
                                 css="${css`
                                   padding: var(--space--2) var(--space--4);
                                   border-bottom: var(--border-width--1) solid
@@ -861,20 +868,21 @@ export default async (application: Application): Promise<void> => {
                                   &:hover,
                                   &:focus-within {
                                     background-color: light-dark(
-                                      var(--color--slate--100),
-                                      var(--color--slate--800)
+                                      var(--color--slate--50),
+                                      var(--color--slate--950)
                                     );
                                   }
                                   &:active {
                                     background-color: light-dark(
-                                      var(--color--slate--200),
+                                      var(--color--slate--100),
                                       var(--color--slate--900)
                                     );
                                   }
                                 `}"
                               >
-                                <div>
+                                <div key="courseConversation--user">
                                   <div
+                                    key="user--avatar"
                                     style="
                                       --color--light: var(--color--pink--800);
                                       --color--dark: var(--color--pink--200);
@@ -914,14 +922,16 @@ export default async (application: Application): Promise<void> => {
                                   </div>
                                 </div>
                                 <div
+                                  key="courseConversation--main"
                                   css="${css`
                                     flex: 1;
+                                    min-width: var(--space--0);
                                     display: flex;
                                     flex-direction: column;
-                                    min-width: var(--space--0);
                                   `}"
                                 >
                                   <div
+                                    key="courseConversation--main--title"
                                     css="${css`
                                       font-weight: 600;
                                     `}"
@@ -929,17 +939,8 @@ export default async (application: Application): Promise<void> => {
                                     Example of a conversation
                                   </div>
                                   <div
-                                    css="${css`
-                                      font-size: var(--font-size--3);
-                                      line-height: var(
-                                        --font-size--3--line-height
-                                      );
-                                      font-weight: 500;
-                                      color: light-dark(
-                                        var(--color--slate--600),
-                                        var(--color--slate--400)
-                                      );
-                                    `}"
+                                    key="courseConversation--main--details"
+                                    class="text--secondary"
                                   >
                                     Abigail Wall ·
                                     <div
@@ -966,6 +967,7 @@ export default async (application: Application): Promise<void> => {
                                         : html`Note`}
                                   </div>
                                   <div
+                                    key="courseConversation--main--excerpt"
                                     css="${css`
                                       font-size: var(--font-size--3);
                                       line-height: var(
@@ -986,22 +988,39 @@ export default async (application: Application): Promise<void> => {
                                   </div>
                                 </div>
                                 <div
+                                  key="courseConversation--unread"
                                   css="${css`
                                     align-self: center;
-
-                                    background-color: light-dark(
-                                      var(--color--blue--500),
-                                      var(--color--blue--500)
-                                    );
-                                    width: var(--space--1-5);
-                                    height: var(--space--1-5);
-                                    border-radius: var(--border-radius--circle);
-                                  `} ${Math.random() < 0.7
-                                    ? css`
-                                        visibility: hidden;
-                                      `
-                                    : css``}"
-                                ></div>
+                                  `}"
+                                >
+                                  <div
+                                    key="unread"
+                                    css="${css`
+                                      background-color: light-dark(
+                                        var(--color--blue--500),
+                                        var(--color--blue--500)
+                                      );
+                                      width: var(--space--1-5);
+                                      height: var(--space--1-5);
+                                      border-radius: var(
+                                        --border-radius--circle
+                                      );
+                                      transition-property: var(
+                                        --transition-property--opacity
+                                      );
+                                      transition-duration: var(
+                                        --transition-duration--150
+                                      );
+                                      transition-timing-function: var(
+                                        --transition-timing-function--ease-in-out
+                                      );
+                                    `} ${index % 3 === 0 || index % 5 === 0
+                                      ? css`
+                                          opacity: var(--opacity--0);
+                                        `
+                                      : css``}"
+                                  ></div>
+                                </div>
                               </a>
                             `,
                           )}
