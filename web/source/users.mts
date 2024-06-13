@@ -85,6 +85,45 @@ export default async (application: Application): Promise<void> => {
     },
   });
 
+  // TODO
+  application.server?.push({
+    method: "GET",
+    pathname: "/",
+    handler: (
+      request: serverTypes.Request<
+        {},
+        {},
+        {},
+        {},
+        Application["types"]["states"]["User"]
+      >,
+      response,
+    ) => {
+      const course = application.database.get<{
+        id: number;
+        externalId: number;
+      }>(
+        sql`
+          select "id", "externalId"
+          from "courses"
+          limit 1;
+        `,
+      )!;
+      const courseConversation = application.database.get<{
+        externalId: number;
+      }>(
+        sql`
+          select "externalId"
+          from "courseConversations"
+          where "course" = ${course.id};
+        `,
+      )!;
+      response.redirect(
+        `/courses/${course.externalId}/conversations/${courseConversation.externalId}`,
+      );
+    },
+  });
+
   application.server?.push({
     method: "PATCH",
     pathname: "/settings",
