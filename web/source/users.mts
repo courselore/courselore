@@ -202,11 +202,7 @@ export default async (application: Application): Promise<void> => {
       >,
       response,
     ) => {
-      if (
-        request.state.user === undefined ||
-        request.state.user.emailVerified === Number(false)
-      )
-        return;
+      if (request.state.user === undefined) return;
       if (typeof request.body.sidebarWidth === "string")
         if (
           request.body.sidebarWidth.match(/^[0-9]+$/) === null ||
