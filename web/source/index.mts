@@ -13,6 +13,7 @@ import database, { ApplicationDatabase } from "./database.mjs";
 import users, { ApplicationUsers } from "./users.mjs";
 import courses, { ApplicationCourses } from "./courses.mjs";
 import courseConversations from "./course-conversations.mjs";
+import courseConversationMessages from "./course-conversation-messages.mjs";
 
 export type Application = {
   version: string;
@@ -103,6 +104,7 @@ application.server?.push({
 await users(application);
 await courses(application);
 await courseConversations(application);
+await courseConversationMessages(application);
 
 // TODO
 if (application.commandLineArguments.values.type === "backgroundJob")
