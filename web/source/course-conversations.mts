@@ -114,6 +114,12 @@ export default async (application: Application): Promise<void> => {
           color: light-dark(var(--color--slate--600), var(--color--slate--400));
         }
 
+        .text--tertiary {
+          font-size: var(--font-size--3);
+          line-height: var(--font-size--3--line-height);
+          color: light-dark(var(--color--slate--500), var(--color--slate--500));
+        }
+
         .input--text {
           background-color: light-dark(
             var(--color--slate--50),
@@ -736,6 +742,9 @@ export default async (application: Application): Promise<void> => {
                                 var(--color--slate--200),
                                 var(--color--slate--800)
                               );
+                            display: flex;
+                            gap: var(--space--2);
+                            align-items: center;
                             cursor: pointer;
                             transition-property: var(
                               --transition-property--colors
@@ -746,9 +755,6 @@ export default async (application: Application): Promise<void> => {
                             transition-timing-function: var(
                               --transition-timing-function--ease-in-out
                             );
-                            display: flex;
-                            gap: var(--space--2);
-                            align-items: center;
                             &:hover,
                             &:focus-within {
                               background-color: light-dark(
@@ -962,15 +968,8 @@ export default async (application: Application): Promise<void> => {
                                   </div>
                                   <div
                                     key="courseConversation--main--excerpt"
+                                    class="text--tertiary"
                                     css="${css`
-                                      font-size: var(--font-size--3);
-                                      line-height: var(
-                                        --font-size--3--line-height
-                                      );
-                                      color: light-dark(
-                                        var(--color--slate--500),
-                                        var(--color--slate--500)
-                                      );
                                       white-space: nowrap;
                                       overflow: hidden;
                                       text-overflow: ellipsis;
@@ -1099,13 +1098,7 @@ export default async (application: Application): Promise<void> => {
                   key="main--main"
                   css="${css`
                     max-width: var(--space--168);
-                    @media (max-width: 899px) {
-                      padding: var(--space--4);
-                    }
-                    @media (min-width: 900px) {
-                      padding: var(--space--4) var(--space--4) var(--space--4)
-                        var(--space--8);
-                    }
+                    padding: var(--space--2) var(--space--4);
                   `}"
                 >
                   <div
@@ -1397,7 +1390,7 @@ export default async (application: Application): Promise<void> => {
                                       css="${css`
                                         font-weight: 700;
                                       `}"
-                                      >Abigal Wall</span
+                                      >Abigail Wall</span
                                     ><span
                                       css="${css`
                                         font-weight: 400;
