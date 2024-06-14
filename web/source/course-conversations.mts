@@ -1124,7 +1124,7 @@ export default async (application: Application): Promise<void> => {
                   });
                   const readIntersectionObserverForegroundJob = utilities.foregroundJob(async () => {
                     if (readIntersectionObserverForegroundJobCourseConversationMessageIds.size === 0) return;
-                    const body = new URLSearchParams([...readIntersectionObserverForegroundJobCourseConversationMessageIds].map(courseConversationMessageId => ["courseConversationMessageId", courseConversationMessageId]));
+                    const body = new URLSearchParams([...readIntersectionObserverForegroundJobCourseConversationMessageIds].map(courseConversationMessageId => ["courseConversationMessageIds[]", courseConversationMessageId]));
                     readIntersectionObserverForegroundJobCourseConversationMessageIds.clear();
                     await fetch(${`https://${application.configuration.hostname}/courses/${
                       request.state.course!.externalId
