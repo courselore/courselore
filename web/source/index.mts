@@ -12,7 +12,9 @@ import * as argon2 from "argon2";
 import database, { ApplicationDatabase } from "./database.mjs";
 import users, { ApplicationUsers } from "./users.mjs";
 import courses, { ApplicationCourses } from "./courses.mjs";
-import courseConversations from "./course-conversations.mjs";
+import courseConversations, {
+  ApplicationCourseConversation,
+} from "./course-conversations.mjs";
 import courseConversationMessages from "./course-conversation-messages.mjs";
 
 export type Application = {
@@ -38,7 +40,8 @@ export type Application = {
   server: undefined | ReturnType<typeof server>;
 } & ApplicationDatabase &
   ApplicationUsers &
-  ApplicationCourses;
+  ApplicationCourses &
+  ApplicationCourseConversation;
 const application = {} as Application;
 application.version = "8.0.0";
 application.commandLineArguments = util.parseArgs({

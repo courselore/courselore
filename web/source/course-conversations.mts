@@ -6,25 +6,31 @@ import javascript from "@radically-straightforward/javascript";
 import * as caddy from "@radically-straightforward/caddy";
 import { Application } from "./index.mjs";
 
-export default async (application: Application): Promise<void> => {
-  type CourseConversationState = Application["types"]["states"]["Course"] & {
-    courseConversation: {
-      id: number;
-      externalId: string;
-      courseConversationType:
-        | "courseConversationNote"
-        | "courseConversationQuestion";
-      questionResolved: number;
-      courseConversationParticipations:
-        | "courseStudent"
-        | "courseStaff"
-        | "courseConversationParticipations";
-      pinned: number;
-      title: string;
-      titleSearch: string;
+export type ApplicationCourseConversation = {
+  types: {
+    states: {
+      CourseConversation: Application["types"]["states"]["Course"] & {
+        courseConversation: {
+          id: number;
+          externalId: string;
+          courseConversationType:
+            | "courseConversationNote"
+            | "courseConversationQuestion";
+          questionResolved: number;
+          courseConversationParticipations:
+            | "courseStudent"
+            | "courseStaff"
+            | "courseConversationParticipations";
+          pinned: number;
+          title: string;
+          titleSearch: string;
+        };
+      };
     };
   };
+};
 
+export default async (application: Application): Promise<void> => {
   application.server?.push({
     pathname: new RegExp(
       "^/courses/(?<courseId>[0-9]+)/conversations/(?<courseConversationId>[0-9]+)(?:$|/)",
@@ -35,7 +41,7 @@ export default async (application: Application): Promise<void> => {
         {},
         {},
         {},
-        CourseConversationState
+        Application["types"]["states"]["CourseConversation"]
       >,
       response,
     ) => {
@@ -86,7 +92,13 @@ export default async (application: Application): Promise<void> => {
       "^/courses/(?<courseId>[0-9]+)/conversations/(?<courseConversationId>[0-9]+)$",
     ),
     handler: (
-      request: serverTypes.Request<{}, {}, {}, {}, CourseConversationState>,
+      request: serverTypes.Request<
+        {},
+        {},
+        {},
+        {},
+        Application["types"]["states"]["CourseConversation"]
+      >,
       response,
     ) => {
       if (
