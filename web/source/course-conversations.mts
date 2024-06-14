@@ -1096,7 +1096,6 @@ export default async (application: Application): Promise<void> => {
                 javascript="${javascript`
                   // TODO: If conversation page.
                   this.readIntersectionObserver?.disconnect();
-                  delete this.readIntersectionObserver;
                   this.readIntersectionObserver = new IntersectionObserver((entries) => {
                     for (const entry of entries) {
                       if (entry.intersectionRatio !== 1) continue;
