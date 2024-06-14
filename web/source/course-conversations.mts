@@ -661,7 +661,7 @@ export default async (application: Application): Promise<void> => {
                   >
                     <input
                       type="text"
-                      name="courseConversations.search"
+                      name="conversations.search"
                       css="${css`
                         flex: 1;
                         min-width: var(--space--0);
@@ -682,7 +682,7 @@ export default async (application: Application): Promise<void> => {
                           content: "Search",
                         });
                         this.onclick = () => {
-                          this.closest('[key="search-and-filter"]').querySelector('[name="courseConversations.search"]').focus();
+                          this.closest('[key="search-and-filter"]').querySelector('[name="conversations.search"]').focus();
                         };
                       `}"
                     >
@@ -1093,6 +1093,40 @@ export default async (application: Application): Promise<void> => {
                   flex: 1;
                   overflow: auto;
                 `}"
+                javascript="${javascript`
+                  // TODO: If conversation page.
+                  this.readIntersectionObserver?.disconnect();
+                  delete this.readIntersectionObserver;
+                  this.readIntersectionObserver = new IntersectionObserver((entries) => {
+                    for (const entry of entries) {
+                      if (entry.intersectionRatio !== 1) continue;
+                      readIntersectionObserverForegroundJobCourseConversationMessageIds.add(entry.target.courseConversationMessageId);
+                      this.readIntersectionObserver.unobserve(entry.target);
+                      setTimeout(() => {
+                        entry.target.classList.remove("unread");
+                      }, 1000);
+                    }
+                    readIntersectionObserverForegroundJob();
+                  }, {
+                    root: this,
+                    threshold: 1,
+                  });
+                  const readIntersectionObserverForegroundJob = utilities.foregroundJob(async () => {
+                    if (readIntersectionObserverForegroundJobCourseConversationMessageIds.size === 0) return;
+                    const body = new URLSearchParams([...readIntersectionObserverForegroundJobCourseConversationMessageIds].map(courseConversationMessageId => ["courseConversationMessageId", courseConversationMessageId]));
+                    readIntersectionObserverForegroundJobCourseConversationMessageIds.clear();
+                    await fetch(${`https://${application.configuration.hostname}/courses/${
+                      request.state.course!.externalId
+                    }/conversations/${
+                      request.state.courseConversation!.externalId
+                    }/messages/readings`}, {
+                      method: "PUT",
+                      headers: { "CSRF-Protection": "true" },
+                      body,
+                    });
+                  });
+                  const readIntersectionObserverForegroundJobCourseConversationMessageIds = new Set();
+                `}"
               >
                 <div
                   key="main--main"
@@ -1426,35 +1460,53 @@ export default async (application: Application): Promise<void> => {
                                         vertical-align: var(--space--px);
                                       `}"
                                     >
-                                      <div
-                                        key="unread"
-                                        css="${css`
-                                          background-color: light-dark(
-                                            var(--color--blue--500),
-                                            var(--color--blue--500)
-                                          );
-                                          width: var(--space--1-5);
-                                          height: var(--space--1-5);
-                                          border-radius: var(
-                                            --border-radius--circle
-                                          );
-                                          transition-property: var(
-                                            --transition-property--opacity
-                                          );
-                                          transition-duration: var(
-                                            --transition-duration--150
-                                          );
-                                          transition-timing-function: var(
-                                            --transition-timing-function--ease-in-out
-                                          );
-                                        `} ${courseConversationMessage.id %
-                                          3 !==
-                                        0
-                                          ? css`
-                                              opacity: var(--opacity--0);
-                                            `
-                                          : css``}"
-                                      ></div>
+                                      $${(() => {
+                                        const unread =
+                                          application.database.get(
+                                            sql`
+                                              select true
+                                              from "courseConversationMessageReadings"
+                                              where
+                                                "courseConversationMessage" = ${courseConversationMessage.id} and
+                                                "courseParticipation" = ${request.state.courseParticipation!.id};
+                                            `,
+                                          ) === undefined;
+                                        return html`
+                                          <div
+                                            key="unread"
+                                            class="${unread ? "unread" : ""}"
+                                            css="${css`
+                                              background-color: light-dark(
+                                                var(--color--blue--500),
+                                                var(--color--blue--500)
+                                              );
+                                              width: var(--space--1-5);
+                                              height: var(--space--1-5);
+                                              border-radius: var(
+                                                --border-radius--circle
+                                              );
+                                              transition-property: var(
+                                                --transition-property--opacity
+                                              );
+                                              transition-duration: var(
+                                                --transition-duration--150
+                                              );
+                                              transition-timing-function: var(
+                                                --transition-timing-function--ease-in-out
+                                              );
+                                              &:not(.unread) {
+                                                opacity: var(--opacity--0);
+                                              }
+                                            `}"
+                                            javascript="${javascript`
+                                              if (${unread}) {
+                                                this.closest('[key="main--main--scrolling"]').readIntersectionObserver.observe(this);
+                                                this.courseConversationMessageId = ${courseConversationMessage.externalId};
+                                              }
+                                            `}"
+                                          ></div>
+                                        `;
+                                      })()}
                                     </span>
                                   </div>
                                   <div>
