@@ -90,6 +90,16 @@ process.once("beforeExit", () => {
 });
 
 await database(application);
+// TODO
+application.server?.push({
+  handler: (request, response) => {
+    if (
+      request.liveConnection?.establish &&
+      request.liveConnection.skipUpdateOnEstablish
+    )
+      response.end();
+  },
+});
 await users(application);
 await courses(application);
 await courseConversations(application);
