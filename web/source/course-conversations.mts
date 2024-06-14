@@ -1098,7 +1098,7 @@ export default async (application: Application): Promise<void> => {
                   key="main--main"
                   css="${css`
                     max-width: var(--space--168);
-                    padding: var(--space--2) var(--space--4);
+                    padding: var(--space--3) var(--space--6);
                   `}"
                 >
                   <div
@@ -1108,7 +1108,7 @@ export default async (application: Application): Promise<void> => {
                     css="${css`
                       display: flex;
                       flex-direction: column;
-                      gap: var(--space--8);
+                      gap: var(--space--6);
                     `}"
                   >
                     <div
@@ -1242,19 +1242,19 @@ export default async (application: Application): Promise<void> => {
                             (courseConversationTag) =>
                               application.database.get(
                                 sql`
-                                select true
-                                from "courseConversationTaggings"
-                                where
-                                  "courseConversation" = ${request.state.courseConversation!.id} and
-                                  "courseConversationTag" = ${courseConversationTag.id};
-                              `,
+                                  select true
+                                  from "courseConversationTaggings"
+                                  where
+                                    "courseConversation" = ${request.state.courseConversation!.id} and
+                                    "courseConversationTag" = ${courseConversationTag.id};
+                                `,
                               ) !== undefined
                                 ? html`
                                     <div
                                       key="courseConversationTag ${courseConversationTag.externalId}"
-                                      css=${css`
+                                      css="${css`
                                         font-weight: 400;
-                                      `}
+                                      `}"
                                     >
                                       ${courseConversationTag.name}
                                     </div>
@@ -1318,7 +1318,11 @@ export default async (application: Application): Promise<void> => {
                         .map(
                           (courseConversationMessage) => html`
                             <div
-                              key="courseConversationMessage ${courseConversationMessage.externalId}"
+                              key="courseConversationMessage /courses/${request
+                                .state.course!
+                                .externalId}/conversations/${request.state
+                                .courseConversation!
+                                .externalId}/messages/${courseConversationMessage.externalId}"
                               css="${css`
                                 display: flex;
                                 gap: var(--space--2);
@@ -1416,7 +1420,42 @@ export default async (application: Application): Promise<void> => {
                                               : (() => {
                                                   throw new Error();
                                                 })()}</span
+                                    >   <span
+                                      css="${css`
+                                        display: inline-block;
+                                        vertical-align: var(--space--px);
+                                      `}"
                                     >
+                                      <div
+                                        key="unread"
+                                        css="${css`
+                                          background-color: light-dark(
+                                            var(--color--blue--500),
+                                            var(--color--blue--500)
+                                          );
+                                          width: var(--space--1-5);
+                                          height: var(--space--1-5);
+                                          border-radius: var(
+                                            --border-radius--circle
+                                          );
+                                          transition-property: var(
+                                            --transition-property--opacity
+                                          );
+                                          transition-duration: var(
+                                            --transition-duration--150
+                                          );
+                                          transition-timing-function: var(
+                                            --transition-timing-function--ease-in-out
+                                          );
+                                        `} ${courseConversationMessage.id %
+                                          3 !==
+                                        0
+                                          ? css`
+                                              opacity: var(--opacity--0);
+                                            `
+                                          : css``}"
+                                      ></div>
+                                    </span>
                                   </div>
                                   <div>
                                     <button
