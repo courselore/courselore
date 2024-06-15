@@ -607,7 +607,6 @@ export default async (application: Application): Promise<void> => {
                     inset: 0;
                     right: var(--space--14);
                     max-width: var(--space--112);
-                    box-shadow: var(--box-shadow--25);
                     transform: translateX(-101%);
                     transition-property: var(--transition-property--transform);
                     transition-duration: var(--transition-duration--200);
@@ -616,6 +615,7 @@ export default async (application: Application): Promise<void> => {
                     );
                     [key="main"].sidebar--open & {
                       transform: translateX(0%);
+                      box-shadow: var(--box-shadow--25);
                     }
                   }
                   @media (min-width: 900px) {
@@ -1143,7 +1143,12 @@ export default async (application: Application): Promise<void> => {
                   key="main--main"
                   css="${css`
                     max-width: var(--space--168);
-                    padding: var(--space--3) var(--space--6);
+                    @media (max-width: 899px) {
+                      padding: var(--space--2) var(--space--4);
+                    }
+                    @media (min-width: 900px) {
+                      padding: var(--space--3) var(--space--6);
+                    }
                   `}"
                 >
                   <div
