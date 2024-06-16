@@ -995,7 +995,9 @@ export default async (application: Application): Promise<void> => {
                                 <div
                                   key="courseConversation--unread"
                                   css="${css`
-                                    align-self: center;
+                                    display: flex;
+                                    justify-content: center;
+                                    align-items: center;
                                   `}"
                                 >
                                   <div
@@ -1131,7 +1133,7 @@ export default async (application: Application): Promise<void> => {
                     }/conversations/${
                       request.state.courseConversation!.externalId
                     }/messages/readings`}, {
-                      method: "PUT",
+                      method: "POST",
                       headers: { "CSRF-Protection": "true" },
                       body,
                     });
