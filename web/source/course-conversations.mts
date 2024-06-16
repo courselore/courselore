@@ -1321,7 +1321,7 @@ export default async (application: Application): Promise<void> => {
                       css="${css`
                         display: flex;
                         flex-direction: column;
-                        gap: var(--space--4);
+                        gap: var(--space--6);
                       `}"
                     >
                       $${application.database
@@ -1404,8 +1404,8 @@ export default async (application: Application): Promise<void> => {
                                       var(--background-color--light),
                                       var(--background-color--dark)
                                     );
-                                    width: var(--space--8);
-                                    height: var(--space--8);
+                                    width: var(--space--9);
+                                    height: var(--space--9);
                                     border: var(--border-width--1) solid
                                       light-dark(
                                         var(--border-color--light),
@@ -1427,6 +1427,7 @@ export default async (application: Application): Promise<void> => {
                                   flex: 1;
                                   display: flex;
                                   flex-direction: column;
+                                  gap: var(--space--1);
                                 `}"
                               >
                                 <div
@@ -1539,8 +1540,16 @@ export default async (application: Application): Promise<void> => {
                                     </button>
                                   </div>
                                 </div>
-                                <div key="courseConversationMessage--body">
+                                <div key="courseConversationMessage--content">
                                   ${courseConversationMessage.contentSource}
+                                </div>
+                                <div key="courseConversationMessage--footer">
+                                  <button
+                                    key="courseConversation--footer--like"
+                                    class="text--secondary button button--rectangle button--transparent"
+                                  >
+                                    <i class="bi bi-hand-thumbs-up"></i> Like
+                                  </button>
                                 </div>
                               </div>
                             </div>
