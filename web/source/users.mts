@@ -50,7 +50,6 @@ export type ApplicationUsers = {
           emailNotificationsForMessagesIncludingMentions: number;
           emailNotificationsForMessagesInConversationsYouStarted: number;
           emailNotificationsForMessagesInConversationsInWhichYouParticipated: number;
-          contentEditorProgrammerMode: number;
           anonymous: number;
           mostRecentlyVisitedCourse: number | null;
         };
@@ -111,7 +110,6 @@ export default async (application: Application): Promise<void> => {
         emailNotificationsForMessagesIncludingMentions: number;
         emailNotificationsForMessagesInConversationsYouStarted: number;
         emailNotificationsForMessagesInConversationsInWhichYouParticipated: number;
-        contentEditorProgrammerMode: number;
         anonymous: number;
         mostRecentlyVisitedCourse: number | null;
       }>(
@@ -139,7 +137,6 @@ export default async (application: Application): Promise<void> => {
             "emailNotificationsForMessagesIncludingMentions",
             "emailNotificationsForMessagesInConversationsYouStarted",
             "emailNotificationsForMessagesInConversationsInWhichYouParticipated",
-            "contentEditorProgrammerMode",
             "anonymous",
             "mostRecentlyVisitedCourse"
           from "users"

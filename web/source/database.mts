@@ -2654,7 +2654,6 @@ export default async (application: Application): Promise<void> => {
             "emailNotificationsForMessagesIncludingMentions" integer not null,
             "emailNotificationsForMessagesInConversationsYouStarted" integer not null,
             "emailNotificationsForMessagesInConversationsInWhichYouParticipated" integer not null,
-            "contentEditorProgrammerMode" integer not null,
             "anonymous" integer not null,
             "mostRecentlyVisitedCourse" integer null references "courses"
           ) strict;
@@ -3011,7 +3010,6 @@ export default async (application: Application): Promise<void> => {
                       "emailNotificationsForMessagesIncludingMentions",
                       "emailNotificationsForMessagesInConversationsYouStarted",
                       "emailNotificationsForMessagesInConversationsInWhichYouParticipated",
-                      "contentEditorProgrammerMode",
                       "anonymous"
                     )
                     values (
@@ -3056,7 +3054,6 @@ export default async (application: Application): Promise<void> => {
                       ${Number(Math.random() < 0.9)},
                       ${Number(Math.random() < 0.9)},
                       ${Number(Math.random() < 0.9)},
-                      ${Number(Math.random() < 0.1)},
                       ${Number(Math.random() < 0.8)}
                     );
                   `,

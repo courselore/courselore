@@ -214,6 +214,7 @@ export default async (application: Application): Promise<void> => {
           ].map(
             (color) => css`
               &.button--${color} {
+                font-weight: 600;
                 color: light-dark(
                   var(--color--${color}--50),
                   var(--color--${color}--950)
@@ -1555,6 +1556,40 @@ export default async (application: Application): Promise<void> => {
                             </div>
                           `,
                         )}
+                    </div>
+                    <div key="courseConversationMessage/new">
+                      <form
+                        novalidate
+                        css="${css`
+                          display: flex;
+                          flex-direction: column;
+                          gap: var(--space--1);
+                        `}"
+                      >
+                        <textarea
+                          class="input--text"
+                          css="${css`
+                            font-family: "JetBrains Mono Variable",
+                              var(--font-family--sans-serif);
+                          `}"
+                        ></textarea>
+                        <div
+                          css="${css`
+                            display: flex;
+                            gap: var(--space--2);
+                          `}"
+                        >
+                          <button class="button button--rectangle button--blue">
+                            Send
+                          </button>
+                          <label
+                            ><input
+                              type="checkbox"
+                              name="anonymous"
+                            /> Anonymous</label
+                          >
+                        </div>
+                      </form>
                     </div>
                   </div>
                 </div>
