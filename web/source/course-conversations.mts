@@ -1164,7 +1164,7 @@ export default async (application: Application): Promise<void> => {
                     `}"
                   >
                     <div
-                      key="courseConversation--heading"
+                      key="courseConversation--header"
                       css="${css`
                         display: flex;
                         flex-direction: column;
@@ -1178,7 +1178,7 @@ export default async (application: Application): Promise<void> => {
                         `}"
                       >
                         <div
-                          key="courseConversation--heading--title"
+                          key="courseConversation--header--title"
                           css="${css`
                             flex: 1;
                             font-size: var(--font-size--4);
@@ -1190,7 +1190,7 @@ export default async (application: Application): Promise<void> => {
                         </div>
                         <div>
                           <button
-                            key="courseConversation--heading--menu"
+                            key="courseConversation--header--menu"
                             class="text--secondary button button--square button--icon button--transparent"
                             css="${css`
                               font-size: var(--font-size--4);
@@ -1430,7 +1430,7 @@ export default async (application: Application): Promise<void> => {
                                 `}"
                               >
                                 <div
-                                  key="courseConversationMessage--heading"
+                                  key="courseConversationMessage--header"
                                   class="text--secondary"
                                   css="${css`
                                     display: flex;
@@ -1529,7 +1529,7 @@ export default async (application: Application): Promise<void> => {
                                   </div>
                                   <div>
                                     <button
-                                      key="courseConversation--heading--menu"
+                                      key="courseConversation--header--menu"
                                       class="text--secondary button button--square button--icon button--transparent"
                                       css="${css`
                                         margin-right: var(--space---0-5);
