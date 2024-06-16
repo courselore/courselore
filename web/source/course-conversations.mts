@@ -1574,6 +1574,7 @@ export default async (application: Application): Promise<void> => {
                           `}"
                         ></textarea>
                         <div
+                          class="text--secondary"
                           css="${css`
                             display: flex;
                             gap: var(--space--4);
@@ -1584,7 +1585,7 @@ export default async (application: Application): Promise<void> => {
                             Send
                           </button>
                           <label
-                            class="text--secondary button button--rectangle button--transparent"
+                            class="button button--rectangle button--transparent"
                             ><input
                               type="checkbox"
                               name="anonymous"
