@@ -1576,13 +1576,15 @@ export default async (application: Application): Promise<void> => {
                         <div
                           css="${css`
                             display: flex;
-                            gap: var(--space--2);
+                            gap: var(--space--4);
+                            align-items: center;
                           `}"
                         >
                           <button class="button button--rectangle button--blue">
                             Send
                           </button>
                           <label
+                            class="text--secondary button button--rectangle button--transparent"
                             ><input
                               type="checkbox"
                               name="anonymous"
