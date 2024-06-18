@@ -1650,54 +1650,6 @@ export default async (application: Application): Promise<void> => {
                             <button
                               class="button button--square button--icon button--transparent"
                             >
-                              <i class="bi bi-type-italic"></i>
-                            </button>
-                            <button
-                              class="button button--square button--icon button--transparent"
-                            >
-                              <i class="bi bi-type-underline"></i>
-                            </button>
-                            <button
-                              class="button button--square button--icon button--transparent"
-                            >
-                              <i class="bi bi-type-strikethrough"></i>
-                            </button>
-                            <div
-                              css="${css`
-                                border-right: var(--border-width--1) solid
-                                  light-dark(
-                                    var(--color--slate--200),
-                                    var(--color--slate--800)
-                                  );
-                              `}"
-                            ></div>
-                            <button
-                              class="button button--square button--icon button--transparent"
-                            >
-                              <i class="bi bi-list-ul"></i>
-                            </button>
-                            <button
-                              class="button button--square button--icon button--transparent"
-                            >
-                              <i class="bi bi-list-ol"></i>
-                            </button>
-                            <button
-                              class="button button--square button--icon button--transparent"
-                            >
-                              <i class="bi bi-list-check"></i>
-                            </button>
-                            <div
-                              css="${css`
-                                border-right: var(--border-width--1) solid
-                                  light-dark(
-                                    var(--color--slate--200),
-                                    var(--color--slate--800)
-                                  );
-                              `}"
-                            ></div>
-                            <button
-                              class="button button--square button--icon button--transparent"
-                            >
                               <i class="bi bi-link"></i>
                             </button>
                             <button
@@ -1708,17 +1660,13 @@ export default async (application: Application): Promise<void> => {
                             <button
                               class="button button--square button--icon button--transparent"
                             >
-                              <i class="bi bi-paperclip"></i>
+                              <i class="bi bi-code"></i>
                             </button>
-                            <div
-                              css="${css`
-                                border-right: var(--border-width--1) solid
-                                  light-dark(
-                                    var(--color--slate--200),
-                                    var(--color--slate--800)
-                                  );
-                              `}"
-                            ></div>
+                            <button
+                              class="button button--square button--icon button--transparent"
+                            >
+                              <i class="bi bi-calculator"></i>
+                            </button>
                             <button
                               class="button button--square button--icon button--transparent"
                             >
@@ -1726,11 +1674,7 @@ export default async (application: Application): Promise<void> => {
                             </button>
                             <div
                               css="${css`
-                                border-right: var(--border-width--1) solid
-                                  light-dark(
-                                    var(--color--slate--200),
-                                    var(--color--slate--800)
-                                  );
+                                flex: 1;
                               `}"
                             ></div>
                             <button
@@ -1738,15 +1682,6 @@ export default async (application: Application): Promise<void> => {
                             >
                               <i class="bi bi-eyeglasses"></i>
                             </button>
-                            <div
-                              css="${css`
-                                border-right: var(--border-width--1) solid
-                                  light-dark(
-                                    var(--color--slate--200),
-                                    var(--color--slate--800)
-                                  );
-                              `}"
-                            ></div>
                             <button
                               class="button button--square button--icon button--transparent"
                             >
