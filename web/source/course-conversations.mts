@@ -1733,13 +1733,6 @@ export default async (application: Application): Promise<void> => {
                             </button>
                             <button
                               class="button button--square button--icon button--transparent"
-                              javascript="${javascript`
-                                javascript.tippy({
-                                  event,
-                                  element: this,
-                                  content: "Menu",
-                                });
-                              `}"
                             >
                               <i class="bi bi-three-dots-vertical"></i>
                             </button>
