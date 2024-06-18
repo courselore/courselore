@@ -1644,31 +1644,73 @@ export default async (application: Application): Promise<void> => {
                           >
                             <button
                               class="button button--square button--icon button--transparent"
+                              javascript="${javascript`
+                                javascript.tippy({
+                                  event,
+                                  element: this,
+                                  content: "Bold",
+                                });
+                              `}"
                             >
                               <i class="bi bi-type-bold"></i>
                             </button>
                             <button
                               class="button button--square button--icon button--transparent"
+                              javascript="${javascript`
+                                javascript.tippy({
+                                  event,
+                                  element: this,
+                                  content: "Link",
+                                });
+                              `}"
                             >
                               <i class="bi bi-link"></i>
                             </button>
                             <button
                               class="button button--square button--icon button--transparent"
+                              javascript="${javascript`
+                                javascript.tippy({
+                                  event,
+                                  element: this,
+                                  content: "Image",
+                                });
+                              `}"
                             >
                               <i class="bi bi-image"></i>
                             </button>
                             <button
                               class="button button--square button--icon button--transparent"
+                              javascript="${javascript`
+                                javascript.tippy({
+                                  event,
+                                  element: this,
+                                  content: "Code block",
+                                });
+                              `}"
                             >
                               <i class="bi bi-code"></i>
                             </button>
                             <button
                               class="button button--square button--icon button--transparent"
+                              javascript="${javascript`
+                                javascript.tippy({
+                                  event,
+                                  element: this,
+                                  content: "Mathematics block",
+                                });
+                              `}"
                             >
                               <i class="bi bi-calculator"></i>
                             </button>
                             <button
                               class="button button--square button--icon button--transparent"
+                              javascript="${javascript`
+                                javascript.tippy({
+                                  event,
+                                  element: this,
+                                  content: "Poll",
+                                });
+                              `}"
                             >
                               <i class="bi bi-card-checklist"></i>
                             </button>
@@ -1679,11 +1721,25 @@ export default async (application: Application): Promise<void> => {
                             ></div>
                             <button
                               class="button button--square button--icon button--transparent"
+                              javascript="${javascript`
+                                javascript.tippy({
+                                  event,
+                                  element: this,
+                                  content: "Preview",
+                                });
+                              `}"
                             >
                               <i class="bi bi-eyeglasses"></i>
                             </button>
                             <button
                               class="button button--square button--icon button--transparent"
+                              javascript="${javascript`
+                                javascript.tippy({
+                                  event,
+                                  element: this,
+                                  content: "Menu",
+                                });
+                              `}"
                             >
                               <i class="bi bi-three-dots-vertical"></i>
                             </button>
@@ -1715,7 +1771,7 @@ export default async (application: Application): Promise<void> => {
                               type="checkbox"
                               name="anonymous"
                               class="input--checkbox"
-                            />  Anonymous
+                            />  Anonymous to other students
                           </label>
                         </div>
                       </form>
