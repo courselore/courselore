@@ -154,7 +154,8 @@ export default async (application: Application): Promise<void> => {
           }
         }
 
-        .input--checkbox {
+        .input--checkbox,
+        .input--radio {
           color: light-dark(var(--color--slate--50), var(--color--slate--950));
           background-color: light-dark(
             var(--color--slate--50),
@@ -164,8 +165,6 @@ export default async (application: Application): Promise<void> => {
           height: var(--space--3-5);
           border: var(--border-width--1) solid
             light-dark(var(--color--slate--400), var(--color--slate--600));
-          border-radius: var(--border-radius--1);
-          vertical-align: var(--space---0-5);
           display: inline-flex;
           justify-content: center;
           align-items: center;
@@ -184,8 +183,23 @@ export default async (application: Application): Promise<void> => {
               var(--color--blue--600)
             );
           }
+        }
+
+        .input--checkbox {
+          vertical-align: var(--space---0-5);
+          border-radius: var(--border-radius--1);
           &::after {
             content: "\\f633";
+            font-family: "bootstrap-icons";
+          }
+        }
+
+        .input--radio {
+          vertical-align: var(--space--px);
+          border-radius: var(--border-radius--circle);
+          font-size: var(--space--1-5);
+          &::after {
+            content: "\\f287";
             font-family: "bootstrap-icons";
           }
         }
@@ -1628,24 +1642,6 @@ export default async (application: Application): Promise<void> => {
                               name="anonymous"
                               class="input--checkbox"
                             />  Anonymous
-                          </label>
-                          <label
-                            class="button button--rectangle button--transparent"
-                          >
-                            <input
-                              type="radio"
-                              name="remove"
-                              class="input--radio"
-                            />  Remove
-                          </label>
-                          <label
-                            class="button button--rectangle button--transparent"
-                          >
-                            <input
-                              type="radio"
-                              name="remove"
-                              class="input--radio"
-                            />  Me
                           </label>
                         </div>
                       </form>
