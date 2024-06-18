@@ -1616,13 +1616,67 @@ export default async (application: Application): Promise<void> => {
                           gap: var(--space--2);
                         `}"
                       >
-                        <textarea
+                        <div
+                          key="contentEditor"
                           class="input--text"
                           css="${css`
-                            font-family: "JetBrains Mono Variable",
-                              var(--font-family--sans-serif);
+                            padding: var(--space--0);
+                            display: flex;
+                            flex-direction: column;
                           `}"
-                        ></textarea>
+                        >
+                          <div
+                            key="contentEditor--menu"
+                            class="text--secondary"
+                            css="${css`
+                              font-size: var(--font-size--3-5);
+                              line-height: var(--font-size--3-5--line-height);
+                              padding: var(--space--1-5) var(--space--2);
+                              border-bottom: var(--border-width--1) solid
+                                light-dark(
+                                  var(--color--slate--200),
+                                  var(--color--slate--800)
+                                );
+                              display: flex;
+                              flex-wrap: wrap;
+                              gap: var(--space--2);
+                            `}"
+                          >
+                            <button
+                              class="button button--square button--icon button--transparent"
+                            >
+                              <i class="bi bi-three-dots-vertical"></i>
+                            </button>
+                            <button
+                              class="button button--square button--icon button--transparent"
+                            >
+                              <i class="bi bi-three-dots-vertical"></i>
+                            </button>
+                            <button
+                              class="button button--square button--icon button--transparent"
+                            >
+                              <i class="bi bi-three-dots-vertical"></i>
+                            </button>
+                            <button
+                              class="button button--square button--icon button--transparent"
+                            >
+                              <i class="bi bi-three-dots-vertical"></i>
+                            </button>
+                            <button
+                              class="button button--square button--icon button--transparent"
+                            >
+                              <i class="bi bi-three-dots-vertical"></i>
+                            </button>
+                          </div>
+                          <textarea
+                            key="contentEditor--textarea"
+                            css="${css`
+                              font-family: "JetBrains Mono Variable",
+                                var(--font-family--sans-serif);
+                              padding: var(--space--1) var(--space--2);
+                            `}"
+                          ></textarea>
+                        </div>
                         <div
                           class="text--secondary"
                           css="${css`
