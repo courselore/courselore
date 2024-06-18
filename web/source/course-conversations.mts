@@ -154,6 +154,42 @@ export default async (application: Application): Promise<void> => {
           }
         }
 
+        .input--checkbox {
+          color: light-dark(var(--color--slate--50), var(--color--slate--950));
+          background-color: light-dark(
+            var(--color--slate--50),
+            var(--color--slate--950)
+          );
+          width: var(--space--3-5);
+          height: var(--space--3-5);
+          border: var(--border-width--1) solid
+            light-dark(var(--color--slate--400), var(--color--slate--600));
+          border-radius: var(--border-radius--1);
+          vertical-align: var(--space---0-5);
+          display: inline-flex;
+          justify-content: center;
+          align-items: center;
+          transition-property: var(--transition-property--colors);
+          transition-duration: var(--transition-duration--150);
+          transition-timing-function: var(
+            --transition-timing-function--ease-in-out
+          );
+          &:checked {
+            background-color: light-dark(
+              var(--color--blue--500),
+              var(--color--blue--500)
+            );
+            border-color: light-dark(
+              var(--color--blue--600),
+              var(--color--blue--600)
+            );
+          }
+          &::after {
+            content: "\\f633";
+            font-family: "bootstrap-icons";
+          }
+        }
+
         .button {
           border-radius: var(--border-radius--1);
           cursor: pointer;
@@ -1563,7 +1599,7 @@ export default async (application: Application): Promise<void> => {
                         css="${css`
                           display: flex;
                           flex-direction: column;
-                          gap: var(--space--1);
+                          gap: var(--space--2);
                         `}"
                       >
                         <textarea
@@ -1590,52 +1626,26 @@ export default async (application: Application): Promise<void> => {
                             <input
                               type="checkbox"
                               name="anonymous"
-                              css="${css`
-                                color: light-dark(
-                                  var(--color--slate--50),
-                                  var(--color--slate--950)
-                                );
-                                background-color: light-dark(
-                                  var(--color--slate--50),
-                                  var(--color--slate--950)
-                                );
-                                width: var(--space--3-5);
-                                height: var(--space--3-5);
-                                border: var(--border-width--1) solid
-                                  light-dark(
-                                    var(--color--slate--400),
-                                    var(--color--slate--600)
-                                  );
-                                border-radius: var(--border-radius--1);
-                                vertical-align: var(--space---0-5);
-                                display: inline-flex;
-                                justify-content: center;
-                                align-items: center;
-                                transition-property: var(
-                                  --transition-property--colors
-                                );
-                                transition-duration: var(
-                                  --transition-duration--150
-                                );
-                                transition-timing-function: var(
-                                  --transition-timing-function--ease-in-out
-                                );
-                                &:checked {
-                                  background-color: light-dark(
-                                    var(--color--blue--500),
-                                    var(--color--blue--500)
-                                  );
-                                  border-color: light-dark(
-                                    var(--color--blue--600),
-                                    var(--color--blue--600)
-                                  );
-                                }
-                                &::after {
-                                  content: "\\f633";
-                                  font-family: "bootstrap-icons";
-                                }
-                              `}"
+                              class="input--checkbox"
                             />  Anonymous
+                          </label>
+                          <label
+                            class="button button--rectangle button--transparent"
+                          >
+                            <input
+                              type="radio"
+                              name="remove"
+                              class="input--radio"
+                            />  Remove
+                          </label>
+                          <label
+                            class="button button--rectangle button--transparent"
+                          >
+                            <input
+                              type="radio"
+                              name="remove"
+                              class="input--radio"
+                            />  Me
                           </label>
                         </div>
                       </form>
