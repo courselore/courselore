@@ -1645,23 +1645,108 @@ export default async (application: Application): Promise<void> => {
                             <button
                               class="button button--square button--icon button--transparent"
                             >
-                              <i class="bi bi-three-dots-vertical"></i>
+                              <i class="bi bi-type-bold"></i>
                             </button>
                             <button
                               class="button button--square button--icon button--transparent"
                             >
-                              <i class="bi bi-three-dots-vertical"></i>
+                              <i class="bi bi-type-italic"></i>
                             </button>
                             <button
                               class="button button--square button--icon button--transparent"
                             >
-                              <i class="bi bi-three-dots-vertical"></i>
+                              <i class="bi bi-type-underline"></i>
                             </button>
                             <button
                               class="button button--square button--icon button--transparent"
                             >
-                              <i class="bi bi-three-dots-vertical"></i>
+                              <i class="bi bi-type-strikethrough"></i>
                             </button>
+                            <div
+                              css="${css`
+                                border-right: var(--border-width--1) solid
+                                  light-dark(
+                                    var(--color--slate--200),
+                                    var(--color--slate--800)
+                                  );
+                              `}"
+                            ></div>
+                            <button
+                              class="button button--square button--icon button--transparent"
+                            >
+                              <i class="bi bi-list-ul"></i>
+                            </button>
+                            <button
+                              class="button button--square button--icon button--transparent"
+                            >
+                              <i class="bi bi-list-ol"></i>
+                            </button>
+                            <button
+                              class="button button--square button--icon button--transparent"
+                            >
+                              <i class="bi bi-list-check"></i>
+                            </button>
+                            <div
+                              css="${css`
+                                border-right: var(--border-width--1) solid
+                                  light-dark(
+                                    var(--color--slate--200),
+                                    var(--color--slate--800)
+                                  );
+                              `}"
+                            ></div>
+                            <button
+                              class="button button--square button--icon button--transparent"
+                            >
+                              <i class="bi bi-link"></i>
+                            </button>
+                            <button
+                              class="button button--square button--icon button--transparent"
+                            >
+                              <i class="bi bi-image"></i>
+                            </button>
+                            <button
+                              class="button button--square button--icon button--transparent"
+                            >
+                              <i class="bi bi-paperclip"></i>
+                            </button>
+                            <div
+                              css="${css`
+                                border-right: var(--border-width--1) solid
+                                  light-dark(
+                                    var(--color--slate--200),
+                                    var(--color--slate--800)
+                                  );
+                              `}"
+                            ></div>
+                            <button
+                              class="button button--square button--icon button--transparent"
+                            >
+                              <i class="bi bi-card-checklist"></i>
+                            </button>
+                            <div
+                              css="${css`
+                                border-right: var(--border-width--1) solid
+                                  light-dark(
+                                    var(--color--slate--200),
+                                    var(--color--slate--800)
+                                  );
+                              `}"
+                            ></div>
+                            <button
+                              class="button button--square button--icon button--transparent"
+                            >
+                              <i class="bi bi-eyeglasses"></i>
+                            </button>
+                            <div
+                              css="${css`
+                                border-right: var(--border-width--1) solid
+                                  light-dark(
+                                    var(--color--slate--200),
+                                    var(--color--slate--800)
+                                  );
+                              `}"
+                            ></div>
                             <button
                               class="button button--square button--icon button--transparent"
                             >
