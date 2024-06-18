@@ -1578,7 +1578,7 @@ export default async (application: Application): Promise<void> => {
                           css="${css`
                             display: flex;
                             gap: var(--space--4);
-                            align-items: center;
+                            align-items: baseline;
                           `}"
                         >
                           <button class="button button--rectangle button--blue">
@@ -1586,10 +1586,15 @@ export default async (application: Application): Promise<void> => {
                           </button>
                           <label
                             class="button button--rectangle button--transparent"
-                            ><input
+                          >
+                            <input
                               type="checkbox"
                               name="anonymous"
                               css="${css`
+                                color: light-dark(
+                                  var(--color--slate--50),
+                                  var(--color--slate--950)
+                                );
                                 background-color: light-dark(
                                   var(--color--slate--50),
                                   var(--color--slate--950)
@@ -1620,13 +1625,18 @@ export default async (application: Application): Promise<void> => {
                                     var(--color--blue--500),
                                     var(--color--blue--500)
                                   );
-                                  &::after {
-                                    content: "";
-                                  }
+                                  border-color: light-dark(
+                                    var(--color--blue--600),
+                                    var(--color--blue--600)
+                                  );
+                                }
+                                &::after {
+                                  content: "\\f633";
+                                  font-family: "bootstrap-icons";
                                 }
                               `}"
-                            />  Anonymous</label
-                          >
+                            />  Anonymous
+                          </label>
                         </div>
                       </form>
                     </div>
