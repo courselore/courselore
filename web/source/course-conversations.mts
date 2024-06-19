@@ -1752,8 +1752,8 @@ export default async (application: Application): Promise<void> => {
                             css="${css`
                               font-family: "JetBrains Mono Variable",
                                 var(--font-family--sans-serif);
-                              padding: var(--space--1) var(--space--2);
                               height: var(--space--44);
+                              padding: var(--space--1) var(--space--2);
                             `}"
                           ></textarea>
                         </div>
