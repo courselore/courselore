@@ -126,13 +126,6 @@ export default async (application: Application): Promise<void> => {
           color: light-dark(var(--color--slate--600), var(--color--slate--400));
         }
 
-        .text--tertiary {
-          font-size: var(--font-size--3);
-          line-height: var(--font-size--3--line-height);
-          font-weight: 400;
-          color: light-dark(var(--color--slate--500), var(--color--slate--500));
-        }
-
         .input--text {
           background-color: light-dark(
             var(--color--slate--50),
@@ -997,7 +990,10 @@ export default async (application: Application): Promise<void> => {
                                     key="courseConversation--main--details"
                                     class="text--secondary"
                                   >
-                                    Abigail Wall<span class="text--tertiary"
+                                    Abigail Wall<span
+                                      css="${css`
+                                        font-weight: 400;
+                                      `}"
                                       > ·
                                       <span
                                         css="${css`
@@ -1020,15 +1016,24 @@ export default async (application: Application): Promise<void> => {
                                       : Math.random() < 0.5
                                         ? html`Question`
                                         : html`Note`}<span
-                                      class="text--tertiary"
+                                      css="${css`
+                                        font-weight: 400;
+                                      `}"
                                       > · Assignment 2 · Duplicate
                                       question</span
                                     >
                                   </div>
                                   <div
                                     key="courseConversation--main--excerpt"
-                                    class="text--tertiary"
                                     css="${css`
+                                      font-size: var(--font-size--3);
+                                      line-height: var(
+                                        --font-size--3--line-height
+                                      );
+                                      color: light-dark(
+                                        var(--color--slate--500),
+                                        var(--color--slate--500)
+                                      );
                                       white-space: nowrap;
                                       overflow: hidden;
                                       text-overflow: ellipsis;
@@ -1578,7 +1583,7 @@ export default async (application: Application): Promise<void> => {
                                   <div>
                                     <button
                                       key="courseConversation--header--menu"
-                                      class="text--secondary button button--square button--icon button--transparent"
+                                      class="button button--square button--icon button--transparent"
                                       css="${css`
                                         margin-right: var(--space---0-5);
                                       `}"
@@ -1590,10 +1595,13 @@ export default async (application: Application): Promise<void> => {
                                 <div key="courseConversationMessage--content">
                                   ${courseConversationMessage.contentSource}
                                 </div>
-                                <div key="courseConversationMessage--footer">
+                                <div
+                                  key="courseConversationMessage--footer"
+                                  class="text--secondary"
+                                >
                                   <button
                                     key="courseConversation--footer--like"
-                                    class="text--secondary button button--rectangle button--transparent"
+                                    class="button button--rectangle button--transparent"
                                   >
                                     <i class="bi bi-hand-thumbs-up"></i> Like
                                   </button>
