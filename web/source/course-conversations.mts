@@ -129,6 +129,7 @@ export default async (application: Application): Promise<void> => {
         .text--tertiary {
           font-size: var(--font-size--3);
           line-height: var(--font-size--3--line-height);
+          font-weight: 400;
           color: light-dark(var(--color--slate--500), var(--color--slate--500));
         }
 
@@ -996,10 +997,7 @@ export default async (application: Application): Promise<void> => {
                                     key="courseConversation--main--details"
                                     class="text--secondary"
                                   >
-                                    Abigail Wall<span
-                                      css="${css`
-                                        font-weight: 400;
-                                      `}"
+                                    Abigail Wall<span class="text--tertiary"
                                       > ·
                                       <span
                                         css="${css`
@@ -1022,9 +1020,7 @@ export default async (application: Application): Promise<void> => {
                                       : Math.random() < 0.5
                                         ? html`Question`
                                         : html`Note`}<span
-                                      css="${css`
-                                        font-weight: 400;
-                                      `}"
+                                      class="text--tertiary"
                                       > · Assignment 2 · Duplicate
                                       question</span
                                     >
