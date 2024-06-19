@@ -1514,13 +1514,43 @@ export default async (application: Application): Promise<void> => {
                                         ? html``
                                         : courseConversationMessage.courseConversationMessageType ===
                                             "courseConversationMessageAnswer"
-                                          ? html`· Answer`
+                                          ? html`·
+                                              <span
+                                                css="${css`
+                                                  font-weight: 700;
+                                                  color: light-dark(
+                                                    var(--color--green--500),
+                                                    var(--color--green--500)
+                                                  );
+                                                `}"
+                                                >Answer</span
+                                              >`
                                           : courseConversationMessage.courseConversationMessageType ===
                                               "courseConversationMessageFollowUpQuestion"
-                                            ? html`· Follow-up question`
+                                            ? html`·
+                                                <span
+                                                  css="${css`
+                                                    font-weight: 700;
+                                                    color: light-dark(
+                                                      var(--color--red--500),
+                                                      var(--color--red--500)
+                                                    );
+                                                  `}"
+                                                  >Follow-up question</span
+                                                >`
                                             : courseConversationMessage.courseConversationMessageType ===
                                                 "courseConversationMessageCourseStaffWhisper"
-                                              ? html`· Course staff whisper`
+                                              ? html`·
+                                                  <span
+                                                    css="${css`
+                                                      font-weight: 700;
+                                                      color: light-dark(
+                                                        var(--color--blue--500),
+                                                        var(--color--blue--500)
+                                                      );
+                                                    `}"
+                                                    >Course staff whisper</span
+                                                  >`
                                               : (() => {
                                                   throw new Error();
                                                 })()}</span
