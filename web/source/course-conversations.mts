@@ -366,7 +366,6 @@ export default async (application: Application): Promise<void> => {
         import * as tippy from "tippy.js";
         import Mousetrap from "mousetrap";
         import scrollIntoViewIfNeeded from "scroll-into-view-if-needed";
-        import autosize from "autosize";
         import textareaCaret from "textarea-caret";
         import textFieldEdit from "text-field-edit";
         import { unified } from "unified";
@@ -1754,7 +1753,7 @@ export default async (application: Application): Promise<void> => {
                               font-family: "JetBrains Mono Variable",
                                 var(--font-family--sans-serif);
                               padding: var(--space--1) var(--space--2);
-                              height: var(--space--16);
+                              height: var(--space--44);
                             `}"
                           ></textarea>
                         </div>
