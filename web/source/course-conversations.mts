@@ -1431,6 +1431,60 @@ export default async (application: Application): Promise<void> => {
                                 gap: var(--space--2);
                               `}"
                             >
+                              $${(() => {
+                                const unread =
+                                  application.database.get(
+                                    sql`
+                                  select true
+                                  from "courseConversationMessageReadings"
+                                  where
+                                    "courseConversationMessage" = ${courseConversationMessage.id} and
+                                    "courseParticipation" = ${request.state.courseParticipation!.id};
+                                `,
+                                  ) === undefined;
+                                return html`
+                                  <div
+                                    css="${css`
+                                      position: absolute;
+                                      display: none;
+                                    `}"
+                                  >
+                                    <div
+                                      key="unread"
+                                      class="${unread ? "unread" : ""}"
+                                      css="${css`
+                                        background-color: light-dark(
+                                          var(--color--blue--500),
+                                          var(--color--blue--500)
+                                        );
+                                        width: var(--space--1-5);
+                                        height: var(--space--1-5);
+                                        border-radius: var(
+                                          --border-radius--circle
+                                        );
+                                        transition-property: var(
+                                          --transition-property--opacity
+                                        );
+                                        transition-duration: var(
+                                          --transition-duration--150
+                                        );
+                                        transition-timing-function: var(
+                                          --transition-timing-function--ease-in-out
+                                        );
+                                        &:not(.unread) {
+                                          opacity: var(--opacity--0);
+                                        }
+                                      `}"
+                                      javascript="${javascript`
+                                        if (${unread}) {
+                                          this.closest('[key="main--main--scrolling"]').readIntersectionObserver.observe(this);
+                                          this.courseConversationMessageId = ${courseConversationMessage.externalId};
+                                        }
+                                      `}"
+                                    ></div>
+                                  </div>
+                                `;
+                              })()}
                               <div key="courseConversationMessage--createdBy">
                                 <div
                                   key="user--avatar"
