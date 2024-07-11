@@ -5,6 +5,7 @@ import sql, { Database } from "@radically-straightforward/sqlite";
 import html from "@radically-straightforward/html";
 import * as htmlUtilities from "@radically-straightforward/html";
 import * as utilities from "@radically-straightforward/utilities";
+import * as examples from "@radically-straightforward/examples";
 import dedent from "dedent";
 import markdown from "dedent";
 import cryptoRandomString from "crypto-random-string";
