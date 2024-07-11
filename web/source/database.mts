@@ -2983,7 +2983,7 @@ export default async (application: Application): Promise<void> => {
           application.configuration.argon2,
         );
         const users = Array.from({ length: 151 }, (value, userIndex) => {
-          const userName = casual.full_name;
+          const userName = examples.name();
           return database.get<{
             id: number;
             email: string;
@@ -3156,7 +3156,7 @@ export default async (application: Application): Promise<void> => {
                   ${new Date(Date.now() - Math.floor(Math.random() * 10 * 24 * 60 * 60 * 1000)).toISOString()},
                   ${
                     Math.random() < 0.5
-                      ? `${casual.full_name.replaceAll(/[^A-Za-z]/g, "-").toLowerCase()}--${cryptoRandomString({ length: 3, type: "numeric" })}@courselore.org`
+                      ? `${examples.name().replaceAll(/[^A-Za-z]/g, "-").toLowerCase()}--${cryptoRandomString({ length: 3, type: "numeric" })}@courselore.org`
                       : usersForCourseInvitationEmailsAndCourseParticipations.splice(
                           Math.floor(
                             Math.random() *
