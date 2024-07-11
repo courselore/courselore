@@ -9,7 +9,6 @@ import dedent from "dedent";
 import markdown from "dedent";
 import cryptoRandomString from "crypto-random-string";
 import argon2 from "argon2";
-import casual from "casual";
 import { unified } from "unified";
 import remarkParse from "remark-parse";
 import remarkGfm from "remark-gfm";
@@ -3043,7 +3042,7 @@ export default async (application: Application): Promise<void> => {
                       },
                       ${
                         Math.random() < 0.1
-                          ? `https://${application.configuration.hostname}/node_modules/fake-avatars/avatars/webp/${Math.floor(Math.random() * 263)}.webp`
+                          ? `https://${application.configuration.hostname}/node_modules/@radically-straightforward/examples/avatars/webp/${Math.floor(Math.random() * 263)}.webp`
                           : null
                       },
                       ${userIndex === 0 || Math.random() < 0.05 ? "systemAdministrator" : Math.random() < 0.2 ? "systemStaff" : "systemUser"},
@@ -3623,7 +3622,7 @@ export default async (application: Application): Promise<void> => {
 
                         ![Image](https://${
                           application.configuration.hostname
-                        }/node_modules/fake-avatars/avatars/webp/1.webp)
+                        }/node_modules/@radically-straightforward/examples/avatars/webp/1.webp)
 
                         # Animated GIF
 
