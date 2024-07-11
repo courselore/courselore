@@ -2231,7 +2231,7 @@ export default async (application: Application): Promise<void> => {
           .use(rehypeKatex, { maxSize: 25, maxExpand: 10, output: "html" })
           .use(
             await (async () => {
-              const shikiHighlighter = await shiki.getHighlighter({
+              const shikiHighlighter = await shiki.createHighlighter({
                 langs: Object.keys(shiki.bundledLanguages),
                 themes: ["light-plus", "dark-plus"],
               });
