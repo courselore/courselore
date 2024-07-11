@@ -2978,6 +2978,12 @@ export default async (application: Application): Promise<void> => {
       );
 
       if (application.configuration.environment === "development") {
+        const examplesTextModel = JSON.parse(
+          await fs.readFile(
+            new URL("../models/text/model.json", import.meta.url),
+            "utf-8",
+          ),
+        );
         const userPassword = await argon2.hash(
           "courselore",
           application.configuration.argon2,
@@ -3156,7 +3162,10 @@ export default async (application: Application): Promise<void> => {
                   ${new Date(Date.now() - Math.floor(Math.random() * 10 * 24 * 60 * 60 * 1000)).toISOString()},
                   ${
                     Math.random() < 0.5
-                      ? `${examples.name().replaceAll(/[^A-Za-z]/g, "-").toLowerCase()}--${cryptoRandomString({ length: 3, type: "numeric" })}@courselore.org`
+                      ? `${examples
+                          .name()
+                          .replaceAll(/[^A-Za-z]/g, "-")
+                          .toLowerCase()}--${cryptoRandomString({ length: 3, type: "numeric" })}@courselore.org`
                       : usersForCourseInvitationEmailsAndCourseParticipations.splice(
                           Math.floor(
                             Math.random() *
@@ -3274,10 +3283,10 @@ export default async (application: Application): Promise<void> => {
             courseConversationIndex < courseConversationsCount;
             courseConversationIndex++
           ) {
-            const courseConversationTitle = (
-              casual.words(1 + Math.floor(Math.random() * 10)) +
-              (Math.random() < 0.2 ? "?" : "")
-            ).replace(/./, (character) => character.toUpperCase());
+            const courseConversationTitle = examples.text({
+              model: examplesTextModel,
+              length: 0,
+            });
             const courseConversation = database.get<{
               id: number;
             }>(
@@ -3370,10 +3379,10 @@ export default async (application: Application): Promise<void> => {
               courseConversationMessageIndex < courseConversationMessagesCount;
               courseConversationMessageIndex++
             ) {
-              const courseConversationMessageContentSentences = Array.from(
-                { length: 1 + Math.floor(Math.random() * 5) },
-                () => casual.sentences(1 + Math.floor(Math.random() * 5)),
-              );
+              const courseConversationMessageContentSource = examples.text({
+                model: examplesTextModel,
+                length: 1 + Math.floor(Math.random() * 5),
+              });
               const courseConversationMessage = database.get<{
                 id: number;
               }>(
@@ -3410,9 +3419,12 @@ export default async (application: Application): Promise<void> => {
                                     : "courseConversationMessageCourseStaffWhisper"
                             },
                             ${Number(Math.random() < 0.7)},
-                            ${courseConversationMessageContentSentences.join("\n\n")},
-                            ${courseConversationMessageContentSentences.map((sentence) => `<p>${sentence}</p>`).join("\n\n")},
-                            ${courseConversationMessageContentSentences.join("\n\n")}
+                            ${courseConversationMessageContentSource},
+                            ${courseConversationMessageContentSource
+                              .split("\n\n")
+                              .map((paragraph) => `<p>${paragraph}</p>`)
+                              .join("\n\n")},
+                            ${courseConversationMessageContentSource}
                           );
                         `,
                       ).lastInsertRowid
@@ -3483,8 +3495,8 @@ export default async (application: Application): Promise<void> => {
                       courseConversationMessagePollOptionValue,
                       courseConversationMessagePollOptionIndex,
                     ) => {
-                      const courseConversationMessagePollOptionContentSentence =
-                        casual.title;
+                      const courseConversationMessagePollOptionContentSource =
+                        examples.text({ model: examplesTextModel, length: 0 });
                       return database.get<{ id: number }>(
                         sql`
                         select * from "courseConversationMessagePollOptions" where "id" = ${
@@ -3501,8 +3513,8 @@ export default async (application: Application): Promise<void> => {
                                 ${cryptoRandomString({ length: 20, type: "numeric" })},
                                 ${courseConversationMessagePoll.id},
                                 ${courseConversationMessagePollOptionIndex},
-                                ${courseConversationMessagePollOptionContentSentence},
-                                ${`<p>${courseConversationMessagePollOptionContentSentence}</p>`}
+                                ${courseConversationMessagePollOptionContentSource},
+                                ${`<p>${courseConversationMessagePollOptionContentSource}</p>`}
                               );
                             `,
                           ).lastInsertRowid
@@ -3580,39 +3592,39 @@ export default async (application: Application): Promise<void> => {
                     ${markdown`
                         # Headings
 
-                        ${Array.from({ length: 1 + Math.floor(Math.random() * 7) }, () => casual.sentences(1 + Math.floor(Math.random() * 7))).join("\n\n")}
+                        ${examples.text({ model: examplesTextModel, length: 1 + Math.floor(Math.random() * 7) })}
 
                         # Heading 1
 
-                        ${Array.from({ length: 1 + Math.floor(Math.random() * 7) }, () => casual.sentences(1 + Math.floor(Math.random() * 7))).join("\n\n")}
+                        ${examples.text({ model: examplesTextModel, length: 1 + Math.floor(Math.random() * 7) })}
 
                         ## Heading 2
 
-                        ${Array.from({ length: 1 + Math.floor(Math.random() * 7) }, () => casual.sentences(1 + Math.floor(Math.random() * 7))).join("\n\n")}
+                        ${examples.text({ model: examplesTextModel, length: 1 + Math.floor(Math.random() * 7) })}
 
                         ### Heading 3
 
-                        ${Array.from({ length: 1 + Math.floor(Math.random() * 7) }, () => casual.sentences(1 + Math.floor(Math.random() * 7))).join("\n\n")}
+                        ${examples.text({ model: examplesTextModel, length: 1 + Math.floor(Math.random() * 7) })}
 
                         #### Heading 4
 
-                        ${Array.from({ length: 1 + Math.floor(Math.random() * 7) }, () => casual.sentences(1 + Math.floor(Math.random() * 7))).join("\n\n")}
+                        ${examples.text({ model: examplesTextModel, length: 1 + Math.floor(Math.random() * 7) })}
 
                         ##### Heading 5
 
-                        ${Array.from({ length: 1 + Math.floor(Math.random() * 7) }, () => casual.sentences(1 + Math.floor(Math.random() * 7))).join("\n\n")}
+                        ${examples.text({ model: examplesTextModel, length: 1 + Math.floor(Math.random() * 7) })}
 
                         ###### Heading 6
 
-                        ${Array.from({ length: 1 + Math.floor(Math.random() * 7) }, () => casual.sentences(1 + Math.floor(Math.random() * 7))).join("\n\n")}
+                        ${examples.text({ model: examplesTextModel, length: 1 + Math.floor(Math.random() * 7) })}
 
                         # Separator
 
-                        ${casual.sentences(3 + Math.floor(Math.random() * 5))}
+                        ${examples.text({ model: examplesTextModel, length: 1 + Math.floor(Math.random() * 7) })}
 
                         ---
 
-                        ${casual.sentences(3 + Math.floor(Math.random() * 5))}
+                        ${examples.text({ model: examplesTextModel, length: 1 + Math.floor(Math.random() * 7) })}
 
                         # Inline
 
@@ -3657,7 +3669,7 @@ export default async (application: Application): Promise<void> => {
 
                         ---
 
-                        ${Array.from({ length: 3 + Math.floor(Math.random() * 4) }, () => `- ${Array.from({ length: 1 + Math.floor(Math.random() * 7) }, () => casual.sentences(1 + Math.floor(Math.random() * 7))).join("\n\n  ")}`).join("\n\n")}
+                        ${Array.from({ length: 3 + Math.floor(Math.random() * 4) }, () => `- ${examples.text({ model: examplesTextModel, length: 1 + Math.floor(Math.random() * 7) }).replaceAll("\n\n", "\n\n  ")}`)}
 
                         ---
 
@@ -3667,21 +3679,28 @@ export default async (application: Application): Promise<void> => {
 
                         ---
 
-                        ${Array.from({ length: 3 + Math.floor(Math.random() * 4) }, (listItemValue, listItemIndex) => `${listItemIndex + 1}. ${Array.from({ length: 1 + Math.floor(Math.random() * 7) }, () => casual.sentences(1 + Math.floor(Math.random() * 7))).join("\n\n  ")}`).join("\n\n")}
+                        ${Array.from({ length: 3 + Math.floor(Math.random() * 4) }, (listItemValue, listItemIndex) => `${listItemIndex + 1}. ${examples.text({ model: examplesTextModel, length: 1 + Math.floor(Math.random() * 7) }).replaceAll("\n\n", "\n\n   ")}`)}
 
                         ---
 
-                        ${Array.from(
-                          { length: 4 + Math.floor(Math.random() * 5) },
-                          () =>
-                            `- [${Math.random() < 0.5 ? " " : "x"}] ${casual.sentences(
-                              1 + Math.floor(Math.random() * 7),
-                            )}`,
-                        ).join("\n")}
+                        - [ ] Banana
+                        - [x] Pyjamas
+                        - [ ] Phone
+
+                        ---
+
+                        ${Array.from({ length: 3 + Math.floor(Math.random() * 4) }, () => `- [${Math.random() < 0.5 ? " " : "x"}] ${examples.text({ model: examplesTextModel, length: 1 + Math.floor(Math.random() * 7) }).replaceAll("\n\n", "\n\n  ")}`)}
 
                         # Blockquote
 
-                        ${Array.from({ length: 1 + Math.floor(Math.random() * 7) }, () => `> ${casual.sentences(1 + Math.floor(Math.random() * 7))}`).join("\n>\n")}
+                        ${examples
+                          .text({
+                            model: examplesTextModel,
+                            length: 1 + Math.floor(Math.random() * 7),
+                          })
+                          .split("\n")
+                          .map((paragraph) => `> ${paragraph}`)
+                          .join("\n")}
 
                         # Table
 
@@ -3700,13 +3719,13 @@ export default async (application: Application): Promise<void> => {
                         <details>
                         <summary>Example of details with summary</summary>
 
-                        ${Array.from({ length: 1 + Math.floor(Math.random() * 7) }, () => casual.sentences(1 + Math.floor(Math.random() * 7))).join("\n\n")}
+                        ${examples.text({ model: examplesTextModel, length: 1 + Math.floor(Math.random() * 7) })}
 
                         </details>
 
                         <details>
 
-                        ${Array.from({ length: 1 + Math.floor(Math.random() * 7) }, () => casual.sentences(1 + Math.floor(Math.random() * 7))).join("\n\n")}
+                        ${examples.text({ model: examplesTextModel, length: 1 + Math.floor(Math.random() * 7) })}
 
                         </details>
 
@@ -3714,9 +3733,9 @@ export default async (application: Application): Promise<void> => {
 
                         Footnote[^1] and another.[^2]
 
-                        [^1]: ${casual.sentences(1 + Math.floor(Math.random() * 7))}
+                        [^1]: ${examples.text({ model: examplesTextModel, length: 1 })})}
 
-                        [^2]: ${casual.sentences(1 + Math.floor(Math.random() * 7))}
+                        [^2]: ${examples.text({ model: examplesTextModel, length: 1 })})}
 
                         # Cross-Site Scripting
 
