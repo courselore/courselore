@@ -2748,7 +2748,7 @@ export default async (application: Application): Promise<void> => {
           
           create table "courseConversations" (
             "id" integer primary key autoincrement,
-            "externalId" text not null unique,
+            "externalId" text not null,
             "course" integer not null references "courses",
             "courseConversationType" text not null,
             "questionResolved" integer not null,
@@ -2756,7 +2756,8 @@ export default async (application: Application): Promise<void> => {
             "pinned" integer not null,
             "title" text not null,
             "titleSearch" text not null,
-            "courseConversationMessagesNextExternalId" integer not null
+            "courseConversationMessagesNextExternalId" integer not null,
+            unique ("externalId", "course")
           ) strict;
           create index "index_courseConversations_courseConversationType" on "courseConversations" ("courseConversationType");
           create index "index_courseConversations_questionResolved" on "courseConversations" ("questionResolved");
@@ -2816,7 +2817,7 @@ export default async (application: Application): Promise<void> => {
           
           create table "courseConversationMessages" (
             "id" integer primary key autoincrement,
-            "externalId" text not null unique,
+            "externalId" text not null,
             "courseConversation" integer not null references "courseConversations",
             "createdAt" text not null,
             "updatedAt" text null,
@@ -2825,7 +2826,8 @@ export default async (application: Application): Promise<void> => {
             "anonymous" integer not null,
             "contentSource" text not null,
             "contentPreprocessed" text not null,
-            "contentSearch" text not null
+            "contentSearch" text not null,
+            unique ("externalId", "courseConversation")
           ) strict;
           create index "index_courseConversationMessages_createdByCourseParticipation" on "courseConversationMessages" ("createdByCourseParticipation");
           create index "index_courseConversationMessages_courseConversationMessageType" on "courseConversationMessages" ("courseConversationMessageType");
