@@ -2707,7 +2707,8 @@ export default async (application: Application): Promise<void> => {
             "invitationLinkCourseStudentsToken" text not null,
             "invitationLinkCourseStudentsActive" integer not null,
             "courseStudentsMayCreatePolls" integer not null,
-            "archivedAt" text null
+            "archivedAt" text null,
+            "courseConversationsNextExternalId" integer not null
           ) strict;
           
           create table "courseInvitationEmails" (
@@ -2754,7 +2755,8 @@ export default async (application: Application): Promise<void> => {
             "courseConversationParticipations" text not null,
             "pinned" integer not null,
             "title" text not null,
-            "titleSearch" text not null
+            "titleSearch" text not null,
+            "courseConversationMessagesNextExternalId" integer not null
           ) strict;
           create index "index_courseConversations_courseConversationType" on "courseConversations" ("courseConversationType");
           create index "index_courseConversations_questionResolved" on "courseConversations" ("questionResolved");
@@ -2946,7 +2948,6 @@ export default async (application: Application): Promise<void> => {
       // <courselore-poll reference=""> -> <courselore-poll id="">
       // @everyone, @course-staff, @students -> @all, @course-staff, @course-students
       // messages%5BmessageReference%5D -> message
-      // "courseConversations"."externalId" and "courseConversationMessages"."externalId" aren’t sequential anymore
 
       if (application.configuration.environment !== "development")
         throw new Error("TODO: Migration");
@@ -3093,11 +3094,12 @@ export default async (application: Application): Promise<void> => {
             term: new Date().getMonth() < 6 ? "Spring" : "Fall",
             code: "EN.601.426/626",
             courseRole: "courseStaff",
-            courseConversationsCount: 50,
+            courseConversationsNextExternalId: 31,
           },
         ]) {
           const course = database.get<{
             id: number;
+            courseConversationsNextExternalId: number;
           }>(
             sql`
               select * from "courses" where "id" = ${
@@ -3116,7 +3118,8 @@ export default async (application: Application): Promise<void> => {
                       "invitationLinkCourseStudentsToken",
                       "invitationLinkCourseStudentsActive",
                       "courseStudentsMayCreatePolls",
-                      "archivedAt"
+                      "archivedAt",
+                      "courseConversationsNextExternalId"
                     )
                     values (
                       ${cryptoRandomString({ length: 10, type: "numeric" })},
@@ -3131,7 +3134,8 @@ export default async (application: Application): Promise<void> => {
                       ${cryptoRandomString({ length: 20, type: "numeric" })},
                       ${Number(Math.random() < 0.8)},
                       ${Number(Math.random() < 0.8)},
-                      ${courseData.archivedAt}
+                      ${courseData.archivedAt},
+                      ${courseData.courseConversationsNextExternalId ?? 4}
                     );
                   `,
                 ).lastInsertRowid
@@ -3278,10 +3282,10 @@ export default async (application: Application): Promise<void> => {
               )!,
           );
           for (
-            let courseConversationIndex = 0;
-            courseConversationIndex <
-            (courseData.courseConversationsCount ?? 3);
-            courseConversationIndex++
+            let courseConversationExternalId = 1;
+            courseConversationExternalId <
+            course.courseConversationsNextExternalId;
+            courseConversationExternalId++
           ) {
             const courseConversationTitle = examples.text({
               model: examplesTextModel,
@@ -3289,6 +3293,7 @@ export default async (application: Application): Promise<void> => {
             });
             const courseConversation = database.get<{
               id: number;
+              courseConversationMessagesNextExternalId: number;
             }>(
               sql`
                 select * from "courseConversations" where "id" = ${
@@ -3302,17 +3307,23 @@ export default async (application: Application): Promise<void> => {
                         "courseConversationParticipations",
                         "pinned",
                         "title",
-                        "titleSearch"
+                        "titleSearch",
+                        "courseConversationMessagesNextExternalId"
                       )
                       values (
-                        ${cryptoRandomString({ length: 10, type: "numeric" })},
+                        ${String(courseConversationExternalId)},
                         ${course.id},
                         ${Math.random() < 0.3 ? "courseConversationNote" : "courseConversationQuestion"},
                         ${Number(Math.random() < 0.5)},
-                        ${courseConversationIndex === 0 || Math.random() < 0.3 ? "courseStudent" : Math.random() < 0.8 ? "courseStaff" : "courseConversationParticipations"},
-                        ${Number(Math.random() < 0.1)},
+                        ${courseConversationExternalId === 1 || Math.random() < 0.3 ? "courseStudent" : Math.random() < 0.8 ? "courseStaff" : "courseConversationParticipations"},
+                        ${Number(courseConversationExternalId !== 1 && Math.random() < 0.1)},
                         ${courseConversationTitle},
-                        ${courseConversationTitle}
+                        ${courseConversationTitle},
+                        ${
+                          courseConversationExternalId === 1
+                            ? 1
+                            : 1 + Math.floor(Math.random() * 15)
+                        }
                       );
                     `,
                   ).lastInsertRowid
@@ -3370,14 +3381,11 @@ export default async (application: Application): Promise<void> => {
                   );
                 `,
               );
-            const courseConversationMessagesCount =
-              courseConversationIndex === 0
-                ? 1
-                : 1 + Math.floor(Math.random() * 15);
             for (
-              let courseConversationMessageIndex = 0;
-              courseConversationMessageIndex < courseConversationMessagesCount;
-              courseConversationMessageIndex++
+              let courseConversationMessageExternalId = 1;
+              courseConversationMessageExternalId <
+              courseConversation.courseConversationMessagesNextExternalId;
+              courseConversationMessageExternalId++
             ) {
               const courseConversationMessageContentSource = examples.text({
                 model: examplesTextModel,
@@ -3403,13 +3411,13 @@ export default async (application: Application): Promise<void> => {
                             "contentSearch"
                           )
                           values (
-                            ${cryptoRandomString({ length: 20, type: "numeric" })},
+                            ${courseConversationMessageExternalId},
                             ${courseConversation.id},
-                            ${new Date(Date.now() - Math.floor((1 + (courseData.courseConversationsCount ?? 3) - courseConversationIndex + Math.random() * 0.5) * 5 * 60 * 60 * 1000)).toISOString()},
+                            ${new Date(Date.now() - Math.floor((course.courseConversationsNextExternalId - courseConversationExternalId + Math.random() * 0.5) * 5 * 60 * 60 * 1000)).toISOString()},
                             ${Math.random() < 0.05 ? new Date(Date.now() - Math.floor(24 * 5 * 60 * 60 * 1000)).toISOString() : null},
                             ${Math.random() < 0.9 ? courseParticipations[Math.floor(Math.random() * courseParticipations.length)].id : null},
                             ${
-                              courseConversationMessageIndex === 0 ||
+                              courseConversationMessageExternalId === 1 ||
                               Math.random() < 0.6
                                 ? "courseConversationMessageMessage"
                                 : Math.random() < 0.5
@@ -3459,7 +3467,7 @@ export default async (application: Application): Promise<void> => {
                   `,
                 );
             }
-            if (courseConversationIndex === 0) {
+            if (courseConversationExternalId === 1) {
               const courseConversationMessagePolls = [false, true].map(
                 (courseConversationMessagePollMultipleChoices) => {
                   const courseConversationMessagePoll = database.get<{
