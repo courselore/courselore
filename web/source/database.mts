@@ -3093,6 +3093,7 @@ export default async (application: Application): Promise<void> => {
             term: new Date().getMonth() < 6 ? "Spring" : "Fall",
             code: "EN.601.426/626",
             courseRole: "courseStaff",
+            courseConversationsCount: 50,
           },
         ]) {
           const course = database.get<{
@@ -3276,10 +3277,10 @@ export default async (application: Application): Promise<void> => {
                 `,
               )!,
           );
-          const courseConversationsCount = 100 + Math.floor(Math.random() * 30);
           for (
             let courseConversationIndex = 0;
-            courseConversationIndex < courseConversationsCount;
+            courseConversationIndex <
+            (courseData.courseConversationsCount ?? 3);
             courseConversationIndex++
           ) {
             const courseConversationTitle = examples.text({
@@ -3404,7 +3405,7 @@ export default async (application: Application): Promise<void> => {
                           values (
                             ${cryptoRandomString({ length: 20, type: "numeric" })},
                             ${courseConversation.id},
-                            ${new Date(Date.now() - Math.floor((1 + courseConversationsCount - courseConversationIndex + Math.random() * 0.5) * 5 * 60 * 60 * 1000)).toISOString()},
+                            ${new Date(Date.now() - Math.floor((1 + (courseData.courseConversationsCount ?? 3) - courseConversationIndex + Math.random() * 0.5) * 5 * 60 * 60 * 1000)).toISOString()},
                             ${Math.random() < 0.05 ? new Date(Date.now() - Math.floor(24 * 5 * 60 * 60 * 1000)).toISOString() : null},
                             ${Math.random() < 0.9 ? courseParticipations[Math.floor(Math.random() * courseParticipations.length)].id : null},
                             ${
