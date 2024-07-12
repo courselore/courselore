@@ -25,6 +25,7 @@ export type ApplicationCourses = {
           invitationLinkCourseStudentsActive: number;
           courseStudentsMayCreatePolls: number;
           archivedAt: string | null;
+          courseConversationsNextExternalId: number;
         };
         courseParticipation: {
           id: number;
@@ -91,6 +92,7 @@ export default async (application: Application): Promise<void> => {
         invitationLinkCourseStudentsActive: number;
         courseStudentsMayCreatePolls: number;
         archivedAt: string | null;
+        courseConversationsNextExternalId: number;
       }>(
         sql`
           select
@@ -107,7 +109,8 @@ export default async (application: Application): Promise<void> => {
             "invitationLinkCourseStudentsToken",
             "invitationLinkCourseStudentsActive",
             "courseStudentsMayCreatePolls",
-            "archivedAt"
+            "archivedAt",
+            "courseConversationsNextExternalId"
           from "courses"
           where "externalId" = ${request.pathname.courseId};
         `,

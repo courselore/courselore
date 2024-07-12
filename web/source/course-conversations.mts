@@ -24,6 +24,7 @@ export type ApplicationCourseConversation = {
           pinned: number;
           title: string;
           titleSearch: string;
+          courseConversationMessagesNextExternalId: number;
         };
       };
     };
@@ -65,6 +66,7 @@ export default async (application: Application): Promise<void> => {
         pinned: number;
         title: string;
         titleSearch: string;
+        courseConversationMessagesNextExternalId: number;
       }>(
         sql`
           select 
@@ -75,7 +77,8 @@ export default async (application: Application): Promise<void> => {
             "courseConversationParticipations",
             "pinned",
             "title",
-            "titleSearch"
+            "titleSearch",
+            "courseConversationMessagesNextExternalId"
           from "courseConversations"
           where
             "course" = ${request.state.course.id} and
