@@ -7,11 +7,10 @@
   },
   "dependencies": {
     "@node-saml/node-saml": "^5.0.0",
-    "@radically-straightforward/production": "^1.0.25",
+    "@radically-straightforward/production": "^1.0.26",
     "@tensorflow/tfjs-node": "^4.20.0",
     "argon2": "^0.40.3",
     "crypto-random-string": "^5.0.0",
-    "dedent": "^1.5.3",
     "ffmpeg-static": "^5.2.0",
     "hast-util-to-string": "^3.0.0",
     "linkedom": "^0.18.4",

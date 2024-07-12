@@ -5,9 +5,8 @@ import sql, { Database } from "@radically-straightforward/sqlite";
 import html from "@radically-straightforward/html";
 import * as htmlUtilities from "@radically-straightforward/html";
 import * as utilities from "@radically-straightforward/utilities";
+import { dedent as markdown } from "@radically-straightforward/utilities";
 import * as examples from "@radically-straightforward/examples";
-import dedent from "dedent";
-import markdown from "dedent";
 import cryptoRandomString from "crypto-random-string";
 import argon2 from "argon2";
 import { unified } from "unified";
@@ -2401,7 +2400,7 @@ export default async (application: Application): Promise<void> => {
       if (
         shouldPrompt &&
         (await readlineInterface.question(
-          dedent`
+          utilities.dedent`
             This update of Courselore introduces a new system for handling the private key and certificate for SAML and the upcoming LTI support.
             
             1. If you haven’t configured SAML yet, then we recommend that you let Courselore generate a new private key and certificate.
@@ -2413,20 +2412,20 @@ export default async (application: Application): Promise<void> => {
         )) === "2"
       ) {
         console.log(
-          dedent`
-          Requirements:
+          utilities.dedent`
+            Requirements:
 
-          • The private key must be RSA.
-          • The private key must be at least 2048 bits long.
-          • The certificate must have a *really* long expiration date.
-          • The certificate must include ‘Subject’.
-          • The certificate must be signed with SHA-256.
-          • The private key and the certificate must be provided in PEM format.
+            • The private key must be RSA.
+            • The private key must be at least 2048 bits long.
+            • The certificate must have a *really* long expiration date.
+            • The certificate must include ‘Subject’.
+            • The certificate must be signed with SHA-256.
+            • The private key and the certificate must be provided in PEM format.
 
-          For example, you may use the following command:
+            For example, you may use the following command:
 
-          $ openssl req -x509 -newkey rsa:2048 -nodes -days 365000 -subj "/CN=courselore.org/C=US/ST=Maryland/L=Baltimore/O=Courselore" -keyout private-key.pem -out certificate.pem
-        ` + "\n",
+            $ openssl req -x509 -newkey rsa:2048 -nodes -days 365000 -subj "/CN=courselore.org/C=US/ST=Maryland/L=Baltimore/O=Courselore" -keyout private-key.pem -out certificate.pem
+          ` + "\n",
         );
 
         while (true) {
