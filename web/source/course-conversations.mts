@@ -1430,6 +1430,7 @@ export default async (application: Application): Promise<void> => {
                                 .courseConversation!
                                 .externalId}/messages/${courseConversationMessage.externalId}"
                               css="${css`
+                                position: relative;
                                 display: flex;
                                 gap: var(--space--2);
                               `}"
@@ -1449,7 +1450,8 @@ export default async (application: Application): Promise<void> => {
                                   <div
                                     css="${css`
                                       position: absolute;
-                                      display: none;
+                                      margin-left: var(--space---2-5);
+                                      margin-top: var(--space--4);
                                     `}"
                                   >
                                     <div
