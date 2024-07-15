@@ -113,7 +113,16 @@ export default async (application: Application): Promise<void> => {
       )
         return;
 
-      response.end(html`
+      response.end(
+        application.layouts.main({
+          request,
+          response,
+          head: html``,
+          body: html``,
+        }),
+      );
+
+      html`
         <!doctype html>
         <html
           css="${request.state.user.darkMode === "system"
@@ -1585,7 +1594,7 @@ export default async (application: Application): Promise<void> => {
             </div>
           </body>
         </html>
-      `);
+      `;
     },
   });
 };
