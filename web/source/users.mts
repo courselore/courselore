@@ -251,8 +251,6 @@ export default async (application: Application): Promise<void> => {
           var(--background-color--light),
           var(--background-color--dark)
         );
-        width: var(--space--${String(size)});
-        height: var(--space--${String(size)});
         border: var(--border-width--1) solid
           light-dark(var(--border-color--light), var(--border-color--dark));
         border-radius: var(--border-radius--1);
@@ -260,7 +258,12 @@ export default async (application: Application): Promise<void> => {
         display: flex;
         justify-content: center;
         align-items: center;
-      `}"
+      `} ${size === 6
+        ? css`
+            width: var(--space--6);
+            height: var(--space--6);
+          `
+        : css``}"
     >
       ${(() => {
         const nameParts = user.name
