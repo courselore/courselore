@@ -39,6 +39,8 @@ export type Application = {
     argon2: argon2.Options;
   };
   server: undefined | ReturnType<typeof server>;
+  layouts: {};
+  partials: {};
 } & ApplicationDatabase &
   ApplicationLayouts &
   ApplicationUsers &
@@ -76,6 +78,8 @@ if (application.commandLineArguments.values.type === "server")
     port: Number(application.commandLineArguments.values.port),
     csrfProtectionExceptionPathname: new RegExp("^TODO$"),
   });
+application.layouts = {} as Application["layouts"];
+application.partials = {} as Application["partials"];
 
 utilities.log(
   "COURSELORE",
