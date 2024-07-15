@@ -2950,6 +2950,8 @@ export default async (application: Application): Promise<void> => {
       // <courselore-poll reference=""> -> <courselore-poll id="">
       // @everyone, @course-staff, @students -> @all, @course-staff, @course-students
       // messages%5BmessageReference%5D -> message
+      // re-preprocess all content, because syntax highlighting has changed
+      //   remove re-process from code above, first because it became obsolete, and second because it imports and hard-codes a bunch of stuff (though the hard-coding may continue being the way to go, because the rest of the application hasn’t been imported yet, and because we want the database migrations to be self-contained)
 
       if (application.configuration.environment !== "development")
         throw new Error("TODO: Migration");

@@ -10,6 +10,7 @@ import caddyfile from "@radically-straightforward/caddy";
 import * as caddy from "@radically-straightforward/caddy";
 import * as argon2 from "argon2";
 import database, { ApplicationDatabase } from "./database.mjs";
+import layouts, { ApplicationLayouts } from "./layouts.mjs";
 import users, { ApplicationUsers } from "./users.mjs";
 import courses, { ApplicationCourses } from "./courses.mjs";
 import courseConversations, {
@@ -39,6 +40,7 @@ export type Application = {
   };
   server: undefined | ReturnType<typeof server>;
 } & ApplicationDatabase &
+  ApplicationLayouts &
   ApplicationUsers &
   ApplicationCourses &
   ApplicationCourseConversation;
@@ -94,6 +96,7 @@ process.once("beforeExit", () => {
 });
 
 await database(application);
+await layouts(application);
 // TODO
 application.server?.push({
   handler: (request, response) => {
