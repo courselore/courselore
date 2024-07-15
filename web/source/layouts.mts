@@ -512,44 +512,47 @@ export default async (application: Application): Promise<void> => {
                                     Course settings
                                   </a>
                                   <hr class="separator" />
-                                </div>
-                                <div hidden>
-                                  <div
-                                    css="${css`
-                                      font-weight: 600;
-                                    `}"
+                                  <a
+                                    href="https://${application.configuration
+                                      .hostname}/courses/TODO"
                                   >
-                                    ${request.state.course.name}
-                                  </div>
-                                  $${(() => {
-                                    const courseInformation = [
-                                      [
-                                        request.state.course.year,
-                                        request.state.course.term,
-                                      ],
-                                      [
-                                        request.state.course.code,
-                                        request.state.course.institution,
-                                      ],
-                                    ]
-                                      .map((line) =>
-                                        line
-                                          .filter(
-                                            (segment) =>
-                                              typeof segment === "string",
-                                          )
-                                          .join(" · "),
-                                      )
-                                      .filter((part) => part !== "")
-                                      .join(html`<br />`);
-                                    return courseInformation !== ""
-                                      ? html`
-                                          <div class="text--secondary">
-                                            $${courseInformation}
-                                          </div>
-                                        `
-                                      : html``;
-                                  })()}
+                                    <div
+                                      css="${css`
+                                        font-weight: 600;
+                                      `}"
+                                    >
+                                      ${request.state.course.name}
+                                    </div>
+                                    $${(() => {
+                                      const courseInformation = [
+                                        [
+                                          request.state.course.year,
+                                          request.state.course.term,
+                                        ],
+                                        [
+                                          request.state.course.code,
+                                          request.state.course.institution,
+                                        ],
+                                      ]
+                                        .map((line) =>
+                                          line
+                                            .filter(
+                                              (segment) =>
+                                                typeof segment === "string",
+                                            )
+                                            .join(" · "),
+                                        )
+                                        .filter((part) => part !== "")
+                                        .join(html`<br />`);
+                                      return courseInformation !== ""
+                                        ? html`
+                                            <div class="text--secondary">
+                                              $${courseInformation}
+                                            </div>
+                                          `
+                                        : html``;
+                                    })()}
+                                  </a>
                                 </div>
                               `},
                             });
