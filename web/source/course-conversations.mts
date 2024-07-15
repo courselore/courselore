@@ -1466,12 +1466,12 @@ export default async (application: Application): Promise<void> => {
                                 const unread =
                                   application.database.get(
                                     sql`
-                                  select true
-                                  from "courseConversationMessageReadings"
-                                  where
-                                    "courseConversationMessage" = ${courseConversationMessage.id} and
-                                    "courseParticipation" = ${request.state.courseParticipation!.id};
-                                `,
+                                      select true
+                                      from "courseConversationMessageViews"
+                                      where
+                                        "courseConversationMessage" = ${courseConversationMessage.id} and
+                                        "courseParticipation" = ${request.state.courseParticipation!.id};
+                                    `,
                                   ) === undefined;
                                 return html`
                                   <div
