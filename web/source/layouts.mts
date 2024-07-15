@@ -462,6 +462,31 @@ export default async (application: Application): Promise<void> => {
                             gap: var(--space--1);
                             align-items: center;
                           `}"
+                          javascript="${javascript`
+                            javascript.tippy({
+                              event,
+                              element: this,
+                              placement: "bottom-start",
+                              interactive: true,
+                              trigger: "click",
+                              content: ${html`
+                                <div
+                                  css="${css`
+                                    font-weight: 600;
+                                  `}"
+                                >
+                                  ${request.state.course.name}
+                                </div>
+                                <div class="text--secondary">
+                                  ${request.state.course.year ?? ""} ·
+                                  ${request.state.course.term ?? ""}<br />
+                                  ${request.state.course.code ?? ""} ·
+                                  ${request.state.course.institution ?? ""}
+                                </div>
+                                <hr />
+                              `},
+                            });
+                          `}"
                         >
                           <div
                             css="${css`
