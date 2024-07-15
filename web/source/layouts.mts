@@ -19,7 +19,8 @@ export type ApplicationLayouts = {
         {},
         {},
         {},
-        Application["types"]["states"]["User"]
+        Application["types"]["states"]["User"] &
+          Application["types"]["states"]["Course"]
       >;
       response: serverTypes.Response;
       head: HTML;
@@ -344,6 +345,36 @@ export default async (application: Application): Promise<void> => {
             flex-direction: column;
           `}"
         >
+          $${request.state.courseParticipation !== undefined
+            ? html`
+                <div
+                  key="courseParticipationColor ${request.state
+                    .courseParticipation.color}"
+                  style="
+                    --background-color--light: var(--color--${request.state
+                    .courseParticipation.color}--500);
+                    --background-color--dark: var(--color--${request.state
+                    .courseParticipation.color}--500);
+                    --border-color--light: var(--color--${request.state
+                    .courseParticipation.color}--600);
+                    --border-color--dark: var(--color--${request.state
+                    .courseParticipation.color}--600);
+                  "
+                  css="${css`
+                    background-color: light-dark(
+                      var(--background-color--light),
+                      var(--background-color--dark)
+                    );
+                    height: var(--space--1);
+                    border-bottom: var(--border-width--1) solid
+                      light-dark(
+                        var(--border-color--light),
+                        var(--border-color--dark)
+                      );
+                  `}"
+                ></div>
+              `
+            : html``}
           $${body}
         </body>
       </html>
