@@ -48,6 +48,11 @@ export default async (application: Application): Promise<void> => {
       color: light-dark(var(--color--slate--600), var(--color--slate--400));
     }
 
+    .separator {
+      border-top: var(--border-width--1) solid
+        light-dark(var(--color--slate--200), var(--color--slate--800));
+    }
+
     .input--text {
       background-color: light-dark(
         var(--color--slate--50),
@@ -472,41 +477,75 @@ export default async (application: Application): Promise<void> => {
                               content: ${html`
                                 <div
                                   css="${css`
-                                    font-weight: 600;
+                                    display: flex;
+                                    flex-direction: column;
+                                    gap: var(--space--2);
                                   `}"
                                 >
-                                  ${request.state.course.name}
+                                  <a
+                                    href="https://${application.configuration
+                                      .hostname}/courses/${request.state.course
+                                      .externalId}/"
+                                    class="button button--rectangle button--transparent ${request.URL.pathname.match(
+                                      new RegExp("^/courses/[0-9]+/settings$"),
+                                    ) === null
+                                      ? "button--blue"
+                                      : ""}"
+                                  >
+                                    Conversations
+                                  </a>
+                                  <a
+                                    href="https://${application.configuration
+                                      .hostname}/courses/${request.state.course
+                                      .externalId}/settings"
+                                    class="button button--rectangle button--transparent ${request.URL.pathname.match(
+                                      new RegExp("^/courses/[0-9]+/settings$"),
+                                    ) !== null
+                                      ? "button--blue"
+                                      : ""}"
+                                  >
+                                    Course settings
+                                  </a>
+                                  <hr class="separator" />
                                 </div>
-                                $${(() => {
-                                  const courseInformation = [
-                                    [
-                                      request.state.course.year,
-                                      request.state.course.term,
-                                    ],
-                                    [
-                                      request.state.course.code,
-                                      request.state.course.institution,
-                                    ],
-                                  ]
-                                    .map((line) =>
-                                      line
-                                        .filter(
-                                          (segment) =>
-                                            typeof segment === "string",
-                                        )
-                                        .join(" · "),
-                                    )
-                                    .filter((part) => part !== "")
-                                    .join(html`<br />`);
-                                  return courseInformation !== ""
-                                    ? html`
-                                        <div class="text--secondary">
-                                          $${courseInformation}
-                                        </div>
-                                      `
-                                    : html``;
-                                })()}
-                                <hr />
+                                <div hidden>
+                                  <div
+                                    css="${css`
+                                      font-weight: 600;
+                                    `}"
+                                  >
+                                    ${request.state.course.name}
+                                  </div>
+                                  $${(() => {
+                                    const courseInformation = [
+                                      [
+                                        request.state.course.year,
+                                        request.state.course.term,
+                                      ],
+                                      [
+                                        request.state.course.code,
+                                        request.state.course.institution,
+                                      ],
+                                    ]
+                                      .map((line) =>
+                                        line
+                                          .filter(
+                                            (segment) =>
+                                              typeof segment === "string",
+                                          )
+                                          .join(" · "),
+                                      )
+                                      .filter((part) => part !== "")
+                                      .join(html`<br />`);
+                                    return courseInformation !== ""
+                                      ? html`
+                                          <div class="text--secondary">
+                                            $${courseInformation}
+                                          </div>
+                                        `
+                                      : html``;
+                                  })()}
+                                </div>
                               `},
                             });
                           `}"
