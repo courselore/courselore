@@ -390,7 +390,6 @@ export default async (application: Application): Promise<void> => {
                       var(--color--slate--800)
                     );
                   display: flex;
-                  justify-content: space-between;
                   align-items: center;
                   gap: var(--space--4);
                 `}"
@@ -446,15 +445,15 @@ export default async (application: Application): Promise<void> => {
                     Courselore
                   </div>
                 </a>
-                $${request.state.course !== undefined
-                  ? html`
-                      <div
-                        key="course"
-                        css="${css`
-                          flex: 1;
-                          min-width: var(--space--0);
-                        `}"
-                      >
+                <div
+                  key="course"
+                  css="${css`
+                    flex: 1;
+                    min-width: var(--space--0);
+                  `}"
+                >
+                  $${request.state.course !== undefined
+                    ? html`
                         <button
                           class="button button--rectangle button--transparent"
                           css="${css`
@@ -475,9 +474,9 @@ export default async (application: Application): Promise<void> => {
                           </div>
                           <i class="bi bi-chevron-down"></i>
                         </button>
-                      </div>
-                    `
-                  : html``}
+                      `
+                    : html``}
+                </div>
                 $${request.state.user !== undefined
                   ? html`
                       <button
