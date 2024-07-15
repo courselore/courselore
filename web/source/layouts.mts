@@ -462,7 +462,8 @@ export default async (application: Application): Promise<void> => {
                     min-width: var(--space--0);
                   `}"
                 >
-                  $${request.state.course !== undefined
+                  $${request.state.user !== undefined &&
+                  request.state.course !== undefined
                     ? html`
                         <button
                           class="button button--rectangle button--transparent"
@@ -512,47 +513,94 @@ export default async (application: Application): Promise<void> => {
                                     Course settings
                                   </a>
                                   <hr class="separator" />
-                                  <a
-                                    href="https://${application.configuration
-                                      .hostname}/courses/TODO"
-                                  >
-                                    <div
-                                      css="${css`
-                                        font-weight: 600;
-                                      `}"
-                                    >
-                                      ${request.state.course.name}
-                                    </div>
-                                    $${(() => {
-                                      const courseInformation = [
-                                        [
-                                          request.state.course.year,
-                                          request.state.course.term,
-                                        ],
-                                        [
-                                          request.state.course.code,
-                                          request.state.course.institution,
-                                        ],
-                                      ]
-                                        .map((line) =>
-                                          line
-                                            .filter(
-                                              (segment) =>
-                                                typeof segment === "string",
-                                            )
-                                            .join(" · "),
-                                        )
-                                        .filter((part) => part !== "")
-                                        .join(html`<br />`);
-                                      return courseInformation !== ""
-                                        ? html`
-                                            <div class="text--secondary">
-                                              $${courseInformation}
-                                            </div>
-                                          `
-                                        : html``;
-                                    })()}
-                                  </a>
+                                  $${application.database
+                                    .all<{
+                                      externalId: string;
+                                      name: string;
+                                      year: string | null;
+                                      term: string | null;
+                                      code: string | null;
+                                      institution: string | null;
+                                      archivedAt: string | null;
+                                    }>(
+                                      sql`
+                                        select
+                                          "courses"."externalId",
+                                          "courses"."name",
+                                          "courses"."year",
+                                          "courses"."term",
+                                          "courses"."code",
+                                          "courses"."institution",
+                                          "courses"."archivedAt"
+                                        from "courses"
+                                        join "courseParticipations" on
+                                          "courses"."id" = "courseParticipations"."course" and
+                                          "courseParticipations"."user" = ${request.state.user.id}
+                                        order by
+                                          "courses"."archivedAt" is not null,
+                                          "courseParticipations"."id" desc;
+                                      `,
+                                    )
+                                    .map(
+                                      (course) => html`
+                                        <a
+                                          href="https://${application
+                                            .configuration
+                                            .hostname}/courses/${course.externalId}"
+                                          class="button button--rectangle button--transparent ${request.URL.pathname.match(
+                                            new RegExp(
+                                              `^/courses/${course.externalId}/`,
+                                            ),
+                                          ) !== null
+                                            ? "button--blue"
+                                            : ""} button--dropdown-menu"
+                                        >
+                                          <div>${course.name}</div>
+                                          $${(() => {
+                                            const courseInformation = [
+                                              typeof course.archivedAt ===
+                                              "string"
+                                                ? html`<span
+                                                    css="${css`
+                                                      font-weight: 700;
+                                                      color: light-dark(
+                                                        var(--color--red--500),
+                                                        var(--color--red--500)
+                                                      );
+                                                    `}"
+                                                    >Archived</span
+                                                  >`
+                                                : html``,
+                                              html`${course.year ?? ""}`,
+                                              html`${course.term ?? ""}`,
+                                              html`${course.code ?? ""}`,
+                                              html`${course.institution ?? ""}`,
+                                            ]
+                                              .filter(
+                                                (courseInformationPart) =>
+                                                  courseInformationPart !== "",
+                                              )
+                                              .join(" · ");
+                                            return courseInformation !== ""
+                                              ? html`
+                                                  <div
+                                                    css="${css`
+                                                      font-size: var(
+                                                        --font-size--2-5
+                                                      );
+                                                      line-height: var(
+                                                        --font-size--2-5--line-height
+                                                      );
+                                                    `}"
+                                                  >
+                                                    $${courseInformation}
+                                                  </div>
+                                                `
+                                              : html``;
+                                          })()}
+                                        </a>
+                                      `,
+                                    )}
                                 </div>
                               `},
                             });
