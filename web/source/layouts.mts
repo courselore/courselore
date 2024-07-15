@@ -12,6 +12,7 @@ export type ApplicationLayouts = {
       request,
       response,
       head,
+      hamburger,
       body,
     }: {
       request: serverTypes.Request<
@@ -24,6 +25,7 @@ export type ApplicationLayouts = {
       >;
       response: serverTypes.Response;
       head: HTML;
+      hamburger?: boolean;
       body: HTML;
     }) => HTML;
   };
@@ -293,7 +295,13 @@ export default async (application: Application): Promise<void> => {
     import remarkStringify from "remark-stringify";
   `;
 
-  application.layouts.main = ({ request, response, head, body }) => html`
+  application.layouts.main = ({
+    request,
+    response,
+    hamburger = false,
+    head,
+    body,
+  }) => html`
     <!doctype html>
     <html
       css="${request.state.user === undefined ||
@@ -387,24 +395,28 @@ export default async (application: Application): Promise<void> => {
                   gap: var(--space--4);
                 `}"
               >
-                <button
-                  key="hamburger"
-                  class="button button--square button--icon button--transparent"
-                  css="${css`
-                    font-size: var(--font-size--5);
-                    line-height: var(--space--0);
-                    @media (min-width: 900px) {
-                      display: none;
-                    }
-                  `}"
-                  javascript="${javascript`
-                    this.onclick = () => {
-                      document.querySelector('[key="main"]').classList.add("sidebar--open");
-                    };
-                  `}"
-                >
-                  <i class="bi bi-list"></i>
-                </button>
+                $${hamburger
+                  ? html`
+                      <button
+                        key="hamburger"
+                        class="button button--square button--icon button--transparent"
+                        css="${css`
+                          font-size: var(--font-size--5);
+                          line-height: var(--space--0);
+                          @media (min-width: 900px) {
+                            display: none;
+                          }
+                        `}"
+                        javascript="${javascript`
+                          this.onclick = () => {
+                            document.querySelector('[key="main"]').classList.add("sidebar--open");
+                          };
+                        `}"
+                      >
+                        <i class="bi bi-list"></i>
+                      </button>
+                    `
+                  : html``}
                 <a
                   key="logo"
                   href="https://${application.configuration.hostname}"

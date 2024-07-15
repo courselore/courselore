@@ -122,6 +122,7 @@ export default async (application: Application): Promise<void> => {
               ${request.state.courseConversation.title} · Courselore
             </title>
           `,
+          hamburger: true,
           body: html`
             <div
               key="main"
