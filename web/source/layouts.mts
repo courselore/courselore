@@ -325,6 +325,25 @@ export default async (application: Application): Promise<void> => {
           />
           $${head}
         </head>
+        <body
+          css="${css`
+            font-family: "Public Sans Variable", var(--font-family--sans-serif);
+            font-size: var(--font-size--3-5);
+            line-height: var(--font-size--3-5--line-height);
+            color: light-dark(var(--color--black), var(--color--white));
+            background-color: light-dark(
+              var(--color--white),
+              var(--color--black)
+            );
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+          `}"
+          javascript="${javascript`
+            javascript.liveConnection(${request.id}, { reload: ${application.configuration.environment === "development"} });
+          `}"
+        ></body>
       </html>
     `,
   };
