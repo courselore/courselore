@@ -117,9 +117,11 @@ export default async (application: Application): Promise<void> => {
         application.layouts.main({
           request,
           response,
-          head: html`<title>
-            ${request.state.courseConversation.title} · Courselore
-          </title>`,
+          head: html`
+            <title>
+              ${request.state.courseConversation.title} · Courselore
+            </title>
+          `,
           body: html`
             <div
               key="courseParticipationColor ${request.state.courseParticipation
