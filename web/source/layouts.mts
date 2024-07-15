@@ -477,12 +477,35 @@ export default async (application: Application): Promise<void> => {
                                 >
                                   ${request.state.course.name}
                                 </div>
-                                <div class="text--secondary">
-                                  ${request.state.course.year ?? ""} ·
-                                  ${request.state.course.term ?? ""}<br />
-                                  ${request.state.course.code ?? ""} ·
-                                  ${request.state.course.institution ?? ""}
-                                </div>
+                                $${(() => {
+                                  const courseInformation = [
+                                    [
+                                      request.state.course.year,
+                                      request.state.course.term,
+                                    ],
+                                    [
+                                      request.state.course.code,
+                                      request.state.course.institution,
+                                    ],
+                                  ]
+                                    .map((line) =>
+                                      line
+                                        .filter(
+                                          (segment) =>
+                                            typeof segment === "string",
+                                        )
+                                        .join(" · "),
+                                    )
+                                    .filter((part) => part !== "")
+                                    .join(html`<br />`);
+                                  return courseInformation !== ""
+                                    ? html`
+                                        <div class="text--secondary">
+                                          $${courseInformation}
+                                        </div>
+                                      `
+                                    : html``;
+                                })()}
                                 <hr />
                               `},
                             });
