@@ -293,6 +293,39 @@ export default async (application: Application): Promise<void> => {
   `;
 
   application.layouts = {
-    main: ({ request, response, head, body }) => html``,
+    main: ({ request, response, head, body }) => html`
+      <!doctype html>
+      <html
+        css="${request.state.user === undefined ||
+        request.state.user.darkMode === "system"
+          ? css`
+              color-scheme: light dark;
+            `
+          : request.state.user.darkMode === "light"
+            ? css`
+                color-scheme: light;
+              `
+            : request.state.user.darkMode === "dark"
+              ? css`
+                  color-scheme: dark;
+                `
+              : css``}"
+      >
+        <head>
+          <meta
+            name="description"
+            content="Communication Platform for Education"
+          />
+          <meta name="version" content="${application.version}" />
+          <link rel="stylesheet" href="/${caddy.staticFiles["index.css"]}" />
+          <script src="/${caddy.staticFiles["index.mjs"]}"></script>
+          <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, maximum-scale=1"
+          />
+          $${head}
+        </head>
+      </html>
+    `,
   };
 };
