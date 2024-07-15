@@ -220,6 +220,11 @@ export default async (application: Application): Promise<void> => {
           }
         `,
       )}
+      &.button--dropdown-menu {
+        font-weight: 400;
+        border: none;
+        border-radius: calc(var(--border-radius--1) - var(--border-width--1));
+      }
     }
 
     .tippy-box {
@@ -490,7 +495,7 @@ export default async (application: Application): Promise<void> => {
                                       new RegExp("^/courses/[0-9]+/settings$"),
                                     ) === null
                                       ? "button--blue"
-                                      : ""}"
+                                      : ""} button--dropdown-menu"
                                   >
                                     Conversations
                                   </a>
@@ -502,7 +507,7 @@ export default async (application: Application): Promise<void> => {
                                       new RegExp("^/courses/[0-9]+/settings$"),
                                     ) !== null
                                       ? "button--blue"
-                                      : ""}"
+                                      : ""} button--dropdown-menu"
                                   >
                                     Course settings
                                   </a>
