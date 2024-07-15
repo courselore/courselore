@@ -1,6 +1,6 @@
 import * as serverTypes from "@radically-straightforward/server";
 import sql from "@radically-straightforward/sqlite";
-import html from "@radically-straightforward/html";
+import html, { HTML } from "@radically-straightforward/html";
 import css from "@radically-straightforward/css";
 import javascript from "@radically-straightforward/javascript";
 import * as caddy from "@radically-straightforward/caddy";
@@ -55,6 +55,14 @@ export type ApplicationUsers = {
         };
       };
     };
+  };
+  partials: {
+    user: (
+      user:
+        | Application["types"]["states"]["User"]["user"]
+        | "anonymous"
+        | "formerParticipant",
+    ) => HTML;
   };
 };
 
@@ -221,4 +229,6 @@ export default async (application: Application): Promise<void> => {
       response.redirect();
     },
   });
+
+  application.partials.user = (user) => html``;
 };
