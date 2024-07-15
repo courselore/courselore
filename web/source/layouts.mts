@@ -310,6 +310,9 @@ export default async (application: Application): Promise<void> => {
                   color-scheme: dark;
                 `
               : css``}"
+        javascript="${javascript`
+          javascript.liveConnection(${request.id}, { reload: ${application.configuration.environment === "development"} });
+        `}"
       >
         <head>
           <meta
@@ -339,9 +342,6 @@ export default async (application: Application): Promise<void> => {
             inset: 0;
             display: flex;
             flex-direction: column;
-          `}"
-          javascript="${javascript`
-            javascript.liveConnection(${request.id}, { reload: ${application.configuration.environment === "development"} });
           `}"
         >
           $${body}
