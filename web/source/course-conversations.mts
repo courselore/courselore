@@ -983,10 +983,37 @@ export default async (application: Application): Promise<void> => {
                                   <div
                                     key="courseConversation--main--title"
                                     css="${css`
-                                      font-weight: 600;
+                                      display: flex;
+                                      align-items: baseline;
+                                      gap: var(--space--2);
                                     `}"
                                   >
-                                    Example of a conversation
+                                    <div
+                                      key="courseConversation--main--title--title"
+                                      css="${css`
+                                        flex: 1;
+                                        font-weight: 600;
+                                      `}"
+                                    >
+                                      Example of a conversation
+                                    </div>
+                                    <div
+                                      key="courseConversation--main--title--id"
+                                      css="${css`
+                                        font-size: var(--font-size--3);
+                                        line-height: var(
+                                          --font-size--3--line-height
+                                        );
+                                        color: light-dark(
+                                          var(--color--slate--400),
+                                          var(--color--slate--600)
+                                        );
+                                      `}"
+                                    >
+                                      #${String(
+                                        1 + Math.floor(Math.random() * 100),
+                                      )}
+                                    </div>
                                   </div>
                                   <div
                                     key="courseConversation--main--details"
