@@ -343,7 +343,9 @@ export default async (application: Application): Promise<void> => {
           javascript="${javascript`
             javascript.liveConnection(${request.id}, { reload: ${application.configuration.environment === "development"} });
           `}"
-        ></body>
+        >
+          $${body}
+        </body>
       </html>
     `,
   };
