@@ -801,157 +801,162 @@ export default async (application: Application): Promise<void> => {
                               > This course has been archived on
                               <span
                                 javascript="${javascript`
-                                this.textContent = javascript.localizeDate(${request.state.course.archivedAt});
-                              `}"
+                                  this.textContent = javascript.localizeDate(${request.state.course.archivedAt});
+                                `}"
                               ></span>
                               and is now read-only.
                             </div>
                           `
                         : html``}
-                      <div
-                        css="${css`
-                          display: flex;
-                          gap: var(--space--4);
-                        `}"
-                      >
-                        <div
-                          key="courseConversation--header--title"
-                          css="${css`
-                            flex: 1;
-                          `}"
-                        >
+                      $${(() => {
+                        return html`
                           <div
-                            key="courseConversation--header--title--show"
-                            css="${css`
-                              font-size: var(--font-size--4);
-                              line-height: var(--font-size--4--line-height);
-                              font-weight: 700;
-                            `}"
-                          >
-                            ${request.state.courseConversation.title}
-                          </div>
-                          <form
-                            key="courseConversation--header--title--edit"
-                            method="PATCH"
-                            action="https://${application.configuration
-                              .hostname}/courses/${request.state.course
-                              .externalId}/conversations/${request.state
-                              .courseConversation.externalId}"
-                            novalidate
-                            hidden
                             css="${css`
                               display: flex;
-                              gap: var(--space--2);
-                              align-items: center;
-                              margin-bottom: var(--space--2);
+                              gap: var(--space--4);
                             `}"
                           >
-                            <input
-                              name="title"
-                              value="${request.state.courseConversation.title}"
-                              class="input--text"
+                            <div
+                              key="courseConversation--header--title"
                               css="${css`
                                 flex: 1;
                               `}"
-                            />
-                            <button
-                              class="button button--square button--icon button--transparent"
-                              css="${css`
-                                font-size: var(--font-size--4);
-                                line-height: var(--space--0);
-                              `}"
                             >
-                              <i class="bi bi-check"></i>
-                            </button>
-                            <button
-                              type="reset"
-                              class="button button--square button--icon button--transparent"
-                              css="${css`
-                                font-size: var(--font-size--4);
-                                line-height: var(--space--0);
-                              `}"
-                              javascript="${javascript`
-                                this.onclick = () => {
-                                  this.closest('[key="courseConversation--header"]').querySelector('[key="courseConversation--header--title--show"]').hidden = false;
-                                  this.closest('[key="courseConversation--header"]').querySelector('[key="courseConversation--header--title--edit"]').hidden = true;
-                                };
-                              `}"
-                            >
-                              <i class="bi bi-x"></i>
-                            </button>
-                          </form>
-                        </div>
-                        <div>
-                          <button
-                            key="courseConversation--header--menu"
-                            class="text--secondary button button--square button--icon button--transparent"
-                            css="${css`
-                              font-size: var(--font-size--4);
-                              line-height: var(--space--0);
-                              margin-top: var(--space--0);
-                            `}"
-                            javascript="${javascript`
-                              javascript.tippy({
-                                event,
-                                element: this,
-                                placement: "bottom-end",
-                                interactive: true,
-                                trigger: "click",
-                                content: ${html`
-                                  <div
-                                    css="${css`
-                                      display: flex;
-                                      flex-direction: column;
-                                      gap: var(--space--2);
-                                    `}"
-                                  >
-                                    <button
-                                      class="button button--rectangle button--transparent button--dropdown-menu"
-                                      javascript="${javascript`
-                                        this.onclick = async () => {
-                                          await navigator.clipboard.writeText(${`https://${application.configuration.hostname}/courses/${request.state.course.externalId}/conversations/${request.state.courseConversation.externalId}`});
-                                          javascript.tippy({
-                                            element: this,
-                                            elementProperty: "copiedTippy",
-                                            trigger: "manual",
-                                            content: "Copied",
-                                          }).show();
-                                          await utilities.sleep(1000);
-                                          this.copiedTippy.hide();
-                                        };
-                                      `}"
-                                    >
-                                      Copy conversation permanent link
-                                    </button>
-                                    $${request.state.course.archivedAt ===
-                                      null &&
-                                    request.state.courseParticipation
-                                      .courseRole === "courseStaff"
-                                      ? html`
-                                          <button
-                                            class="button button--rectangle button--transparent button--dropdown-menu"
-                                            javascript="${javascript`
-                                              this.onclick = () => {
-                                                this.closest('[key="courseConversation--header"]').querySelector('[key="courseConversation--header--title--show"]').hidden = true;
-                                                this.closest('[key="courseConversation--header"]').querySelector('[key="courseConversation--header--title--edit"]').hidden = false;
-                                                Tippy.hideAll();
-                                                this.closest('[key="courseConversation--header"]').querySelector('[key="courseConversation--header--title--edit"] [name="title"]').focus();
-                                              };
-                                            `}"
-                                          >
-                                            Edit conversation title
-                                          </button>
-                                        `
-                                      : html``}
-                                  </div>
-                                `},
-                              });
-                            `}"
-                          >
-                            <i class="bi bi-three-dots-vertical"></i>
-                          </button>
-                        </div>
-                      </div>
+                              <div
+                                key="courseConversation--header--title--show"
+                                css="${css`
+                                  font-size: var(--font-size--4);
+                                  line-height: var(--font-size--4--line-height);
+                                  font-weight: 700;
+                                `}"
+                              >
+                                ${request.state.courseConversation.title}
+                              </div>
+                              <form
+                                key="courseConversation--header--title--edit"
+                                method="PATCH"
+                                action="https://${application.configuration
+                                  .hostname}/courses/${request.state.course
+                                  .externalId}/conversations/${request.state
+                                  .courseConversation.externalId}"
+                                novalidate
+                                hidden
+                                css="${css`
+                                  display: flex;
+                                  gap: var(--space--2);
+                                  align-items: center;
+                                  margin-bottom: var(--space--2);
+                                `}"
+                              >
+                                <input
+                                  name="title"
+                                  value="${request.state.courseConversation
+                                    .title}"
+                                  class="input--text"
+                                  css="${css`
+                                    flex: 1;
+                                  `}"
+                                />
+                                <button
+                                  class="button button--square button--icon button--transparent"
+                                  css="${css`
+                                    font-size: var(--font-size--4);
+                                    line-height: var(--space--0);
+                                  `}"
+                                >
+                                  <i class="bi bi-check"></i>
+                                </button>
+                                <button
+                                  type="reset"
+                                  class="button button--square button--icon button--transparent"
+                                  css="${css`
+                                    font-size: var(--font-size--4);
+                                    line-height: var(--space--0);
+                                  `}"
+                                  javascript="${javascript`
+                                    this.onclick = () => {
+                                      this.closest('[key="courseConversation--header"]').querySelector('[key="courseConversation--header--title--show"]').hidden = false;
+                                      this.closest('[key="courseConversation--header"]').querySelector('[key="courseConversation--header--title--edit"]').hidden = true;
+                                    };
+                                  `}"
+                                >
+                                  <i class="bi bi-x"></i>
+                                </button>
+                              </form>
+                            </div>
+                            <div>
+                              <button
+                                key="courseConversation--header--menu"
+                                class="text--secondary button button--square button--icon button--transparent"
+                                css="${css`
+                                  font-size: var(--font-size--4);
+                                  line-height: var(--space--0);
+                                  margin-top: var(--space--0);
+                                `}"
+                                javascript="${javascript`
+                                  javascript.tippy({
+                                    event,
+                                    element: this,
+                                    placement: "bottom-end",
+                                    interactive: true,
+                                    trigger: "click",
+                                    content: ${html`
+                                      <div
+                                        css="${css`
+                                          display: flex;
+                                          flex-direction: column;
+                                          gap: var(--space--2);
+                                        `}"
+                                      >
+                                        <button
+                                          class="button button--rectangle button--transparent button--dropdown-menu"
+                                          javascript="${javascript`
+                                            this.onclick = async () => {
+                                              await navigator.clipboard.writeText(${`https://${application.configuration.hostname}/courses/${request.state.course.externalId}/conversations/${request.state.courseConversation.externalId}`});
+                                              javascript.tippy({
+                                                element: this,
+                                                elementProperty: "copiedTippy",
+                                                trigger: "manual",
+                                                content: "Copied",
+                                              }).show();
+                                              await utilities.sleep(1000);
+                                              this.copiedTippy.hide();
+                                            };
+                                          `}"
+                                        >
+                                          Copy conversation permanent link
+                                        </button>
+                                        $${request.state.course.archivedAt ===
+                                          null &&
+                                        request.state.courseParticipation
+                                          .courseRole === "courseStaff"
+                                          ? html`
+                                              <button
+                                                class="button button--rectangle button--transparent button--dropdown-menu"
+                                                javascript="${javascript`
+                                                  this.onclick = () => {
+                                                    this.closest('[key="courseConversation--header"]').querySelector('[key="courseConversation--header--title--show"]').hidden = true;
+                                                    this.closest('[key="courseConversation--header"]').querySelector('[key="courseConversation--header--title--edit"]').hidden = false;
+                                                    Tippy.hideAll();
+                                                    this.closest('[key="courseConversation--header"]').querySelector('[key="courseConversation--header--title--edit"] [name="title"]').focus();
+                                                  };
+                                                `}"
+                                              >
+                                                Edit conversation title
+                                              </button>
+                                            `
+                                          : html``}
+                                      </div>
+                                    `},
+                                  });
+                                `}"
+                              >
+                                <i class="bi bi-three-dots-vertical"></i>
+                              </button>
+                            </div>
+                          </div>
+                        `;
+                      })()}
                       <div
                         class="text--secondary"
                         css="${css`
