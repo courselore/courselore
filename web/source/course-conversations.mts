@@ -131,36 +131,6 @@ export default async (application: Application): Promise<void> => {
                 display: flex;
               `}"
             >
-              <button
-                key="sidebar--underlay"
-                css="${css`
-                  background-color: light-dark(
-                    var(--color--black),
-                    var(--color--white)
-                  );
-                  position: absolute;
-                  inset: 0;
-                  opacity: var(--opacity--0);
-                  cursor: pointer;
-                  pointer-events: none;
-                  transition-property: var(--transition-property--opacity);
-                  transition-duration: var(--transition-duration--200);
-                  transition-timing-function: var(
-                    --transition-timing-function--ease-in-out
-                  );
-                  @media (max-width: 899px) {
-                    [key="main"].sidebar--open & {
-                      opacity: var(--opacity--30);
-                      pointer-events: auto;
-                    }
-                  }
-                `}"
-                javascript="${javascript`
-                  this.onclick = () => {
-                    document.querySelector('[key="main"]').classList.remove("sidebar--open");
-                  };
-                `}"
-              ></button>
               <div
                 key="sidebar /courses/${request.state.course.externalId}"
                 style="--width: ${String(request.state.user.sidebarWidth)}px;"
@@ -180,6 +150,7 @@ export default async (application: Application): Promise<void> => {
                     position: absolute;
                     inset: 0;
                     right: var(--space--14);
+                    z-index: 100;
                     max-width: var(--space--112);
                     transform: translateX(-101%);
                     transition-property: var(--transition-property--transform);
@@ -645,6 +616,37 @@ export default async (application: Application): Promise<void> => {
                   )}
                 </div>
               </div>
+              <button
+                key="sidebar--underlay"
+                css="${css`
+                  background-color: light-dark(
+                    var(--color--black),
+                    var(--color--white)
+                  );
+                  position: absolute;
+                  inset: 0;
+                  z-index: 99;
+                  opacity: var(--opacity--0);
+                  cursor: pointer;
+                  pointer-events: none;
+                  transition-property: var(--transition-property--opacity);
+                  transition-duration: var(--transition-duration--200);
+                  transition-timing-function: var(
+                    --transition-timing-function--ease-in-out
+                  );
+                  @media (max-width: 899px) {
+                    [key="main"].sidebar--open & {
+                      opacity: var(--opacity--30);
+                      pointer-events: auto;
+                    }
+                  }
+                `}"
+                javascript="${javascript`
+                  this.onclick = () => {
+                    document.querySelector('[key="main"]').classList.remove("sidebar--open");
+                  };
+                `}"
+              ></button>
               <div
                 key="sidebar--separator"
                 css="${css`
