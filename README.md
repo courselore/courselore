@@ -1,6 +1,6 @@
 # Courselore
 
-**Communication Platform for Education**
+**Communication platform for education**
 
 **[Hosted Installation](https://courselore.org)** ·
 **[Meta Courselore](https://meta.courselore.org/)** ·

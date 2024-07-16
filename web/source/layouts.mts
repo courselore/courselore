@@ -336,7 +336,7 @@ export default async (application: Application): Promise<void> => {
       <head>
         <meta
           name="description"
-          content="Communication Platform for Education"
+          content="Communication platform for education"
         />
         <meta name="version" content="${application.version}" />
         <link rel="stylesheet" href="/${caddy.staticFiles["index.css"]}" />
