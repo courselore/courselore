@@ -809,6 +809,20 @@ export default async (application: Application): Promise<void> => {
                           `
                         : html``}
                       $${(() => {
+                        const mayEditCourseConversationTitle =
+                          request.state.course.archivedAt === null &&
+                          (request.state.courseParticipation.courseRole ===
+                            "courseStaff" ||
+                            application.database.get(
+                              sql`
+                                select true
+                                from "courseConversationMessages"
+                                where
+                                  "courseConversation" = ${request.state.courseConversation.id} and
+                                  "createdByCourseParticipation" = ${request.state.courseParticipation.id} and
+                                  "externalId" = '1';
+                              `,
+                            ) !== undefined);
                         return html`
                           <div
                             css="${css`
@@ -832,57 +846,63 @@ export default async (application: Application): Promise<void> => {
                               >
                                 ${request.state.courseConversation.title}
                               </div>
-                              <form
-                                key="courseConversation--header--title--edit"
-                                method="PATCH"
-                                action="https://${application.configuration
-                                  .hostname}/courses/${request.state.course
-                                  .externalId}/conversations/${request.state
-                                  .courseConversation.externalId}"
-                                novalidate
-                                hidden
-                                css="${css`
-                                  display: flex;
-                                  gap: var(--space--2);
-                                  align-items: center;
-                                  margin-bottom: var(--space--2);
-                                `}"
-                              >
-                                <input
-                                  name="title"
-                                  value="${request.state.courseConversation
-                                    .title}"
-                                  class="input--text"
-                                  css="${css`
-                                    flex: 1;
-                                  `}"
-                                />
-                                <button
-                                  class="button button--square button--icon button--transparent"
-                                  css="${css`
-                                    font-size: var(--font-size--4);
-                                    line-height: var(--space--0);
-                                  `}"
-                                >
-                                  <i class="bi bi-check"></i>
-                                </button>
-                                <button
-                                  type="reset"
-                                  class="button button--square button--icon button--transparent"
-                                  css="${css`
-                                    font-size: var(--font-size--4);
-                                    line-height: var(--space--0);
-                                  `}"
-                                  javascript="${javascript`
-                                    this.onclick = () => {
-                                      this.closest('[key="courseConversation--header"]').querySelector('[key="courseConversation--header--title--show"]').hidden = false;
-                                      this.closest('[key="courseConversation--header"]').querySelector('[key="courseConversation--header--title--edit"]').hidden = true;
-                                    };
-                                  `}"
-                                >
-                                  <i class="bi bi-x"></i>
-                                </button>
-                              </form>
+                              $${mayEditCourseConversationTitle
+                                ? html`
+                                    <form
+                                      key="courseConversation--header--title--edit"
+                                      method="PATCH"
+                                      action="https://${application
+                                        .configuration
+                                        .hostname}/courses/${request.state
+                                        .course
+                                        .externalId}/conversations/${request
+                                        .state.courseConversation.externalId}"
+                                      novalidate
+                                      hidden
+                                      css="${css`
+                                        display: flex;
+                                        gap: var(--space--2);
+                                        align-items: center;
+                                        margin-bottom: var(--space--2);
+                                      `}"
+                                    >
+                                      <input
+                                        name="title"
+                                        value="${request.state
+                                          .courseConversation.title}"
+                                        class="input--text"
+                                        css="${css`
+                                          flex: 1;
+                                        `}"
+                                      />
+                                      <button
+                                        class="button button--square button--icon button--transparent"
+                                        css="${css`
+                                          font-size: var(--font-size--4);
+                                          line-height: var(--space--0);
+                                        `}"
+                                      >
+                                        <i class="bi bi-check"></i>
+                                      </button>
+                                      <button
+                                        type="reset"
+                                        class="button button--square button--icon button--transparent"
+                                        css="${css`
+                                          font-size: var(--font-size--4);
+                                          line-height: var(--space--0);
+                                        `}"
+                                        javascript="${javascript`
+                                          this.onclick = () => {
+                                            this.closest('[key="courseConversation--header"]').querySelector('[key="courseConversation--header--title--show"]').hidden = false;
+                                            this.closest('[key="courseConversation--header"]').querySelector('[key="courseConversation--header--title--edit"]').hidden = true;
+                                          };
+                                        `}"
+                                      >
+                                        <i class="bi bi-x"></i>
+                                      </button>
+                                    </form>
+                                  `
+                                : html``}
                             </div>
                             <div>
                               <button
@@ -926,10 +946,7 @@ export default async (application: Application): Promise<void> => {
                                         >
                                           Copy conversation permanent link
                                         </button>
-                                        $${request.state.course.archivedAt ===
-                                          null &&
-                                        request.state.courseParticipation
-                                          .courseRole === "courseStaff"
+                                        $${mayEditCourseConversationTitle
                                           ? html`
                                               <button
                                                 class="button button--rectangle button--transparent button--dropdown-menu"
