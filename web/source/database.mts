@@ -3415,7 +3415,7 @@ export default async (application: Application): Promise<void> => {
                             "contentSearch"
                           )
                           values (
-                            ${courseConversationMessageExternalId},
+                            ${String(courseConversationMessageExternalId)},
                             ${courseConversation.id},
                             ${new Date(Date.now() - Math.floor((course.courseConversationsNextExternalId - courseConversationExternalId + Math.random() * 0.5) * 5 * 60 * 60 * 1000)).toISOString()},
                             ${Math.random() < 0.05 ? new Date(Date.now() - Math.floor(24 * 5 * 60 * 60 * 1000)).toISOString() : null},
