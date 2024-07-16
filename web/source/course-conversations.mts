@@ -717,7 +717,9 @@ export default async (application: Application): Promise<void> => {
                 ></div>
               </div>
               <div
-                key="main--main--scrolling"
+                key="main--main--scroll /courses/${request.state.course
+                  .externalId}/conversations/${request.state.courseConversation
+                  .externalId}"
                 css="${css`
                   flex: 1;
                   overflow: auto;
@@ -1335,7 +1337,7 @@ export default async (application: Application): Promise<void> => {
                                       `}"
                                       javascript="${javascript`
                                         if (${!courseConversationMessageView}) {
-                                          this.closest('[key="main--main--scrolling"]').courseConversationMessageViewsIntersectionObserver.observe(this);
+                                          this.closest('[key~="main--main--scroll"]').courseConversationMessageViewsIntersectionObserver.observe(this);
                                           this.courseConversationMessageId = ${courseConversationMessage.externalId};
                                         }
                                       `}"
