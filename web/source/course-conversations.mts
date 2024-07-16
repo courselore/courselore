@@ -125,11 +125,10 @@ export default async (application: Application): Promise<void> => {
           hamburger: true,
           body: html`
             <div
-              key="main"
               css="${css`
-                flex: 1;
+                width: 100%;
+                height: 100%;
                 display: flex;
-                min-height: 0;
               `}"
             >
               <button

@@ -736,7 +736,15 @@ export default async (application: Application): Promise<void> => {
               `
             : html``}
         </div>
-        $${body}
+        <div
+          key="main"
+          css="${css`
+            flex: 1;
+            min-height: 0;
+          `}"
+        >
+          $${body}
+        </div>
       </body>
     </html>
   `;
