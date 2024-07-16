@@ -181,31 +181,35 @@ export default async (application: Application): Promise<void> => {
                     gap: var(--space--4);
                   `}"
                 >
-                  <a
-                    key="new-conversation"
-                    href="https://${application.configuration
-                      .hostname}/courses/${request.state.course
-                      .externalId}/conversations/new"
-                    class="button button--square button--blue"
-                    css="${css`
-                      font-size: var(--font-size--7-5);
-                      line-height: var(--space--0);
-                      font-weight: 700;
-                      height: 100%;
-                      display: flex;
-                      justify-content: center;
-                      align-items: center;
-                    `}"
-                    javascript="${javascript`
-                      javascript.tippy({
-                        event,
-                        element: this,
-                        content: "New conversation",
-                      });
-                    `}"
-                  >
-                    +
-                  </a>
+                  $${request.state.course.archivedAt === null
+                    ? html`
+                        <a
+                          key="new-conversation"
+                          href="https://${application.configuration
+                            .hostname}/courses/${request.state.course
+                            .externalId}/conversations/new"
+                          class="button button--square button--blue"
+                          css="${css`
+                            font-size: var(--font-size--7-5);
+                            line-height: var(--space--0);
+                            font-weight: 700;
+                            height: 100%;
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                          `}"
+                          javascript="${javascript`
+                            javascript.tippy({
+                              event,
+                              element: this,
+                              content: "New conversation",
+                            });
+                          `}"
+                        >
+                          +
+                        </a>
+                      `
+                    : html``}
                   <div
                     key="search-and-filter"
                     class="input--text"
@@ -896,19 +900,26 @@ export default async (application: Application): Promise<void> => {
                                     >
                                       Copy conversation permanent link
                                     </button>
-                                    <button
-                                      class="button button--rectangle button--transparent button--dropdown-menu"
-                                      javascript="${javascript`
-                                        this.onclick = () => {
-                                          this.closest('[key="courseConversation--header"]').querySelector('[key="courseConversation--header--title--show"]').hidden = true;
-                                          this.closest('[key="courseConversation--header"]').querySelector('[key="courseConversation--header--title--edit"]').hidden = false;
-                                          Tippy.hideAll();
-                                          this.closest('[key="courseConversation--header"]').querySelector('[key="courseConversation--header--title--edit"] [name="title"]').focus();
-                                        };
-                                      `}"
-                                    >
-                                      Edit conversation title
-                                    </button>
+                                    $${request.state.course.archivedAt ===
+                                      null &&
+                                    request.state.courseParticipation
+                                      .courseRole === "courseStaff"
+                                      ? html`
+                                          <button
+                                            class="button button--rectangle button--transparent button--dropdown-menu"
+                                            javascript="${javascript`
+                                              this.onclick = () => {
+                                                this.closest('[key="courseConversation--header"]').querySelector('[key="courseConversation--header--title--show"]').hidden = true;
+                                                this.closest('[key="courseConversation--header"]').querySelector('[key="courseConversation--header--title--edit"]').hidden = false;
+                                                Tippy.hideAll();
+                                                this.closest('[key="courseConversation--header"]').querySelector('[key="courseConversation--header--title--edit"] [name="title"]').focus();
+                                              };
+                                            `}"
+                                          >
+                                            Edit conversation title
+                                          </button>
+                                        `
+                                      : html``}
                                   </div>
                                 `},
                               });
