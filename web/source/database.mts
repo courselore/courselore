@@ -2736,7 +2736,7 @@ export default async (application: Application): Promise<void> => {
           ) strict;
           create index "index_courseParticipations_mostRecentlyVisitedCourseConversation" on "courseParticipations" ("mostRecentlyVisitedCourseConversation");
 
-          create table "courseConversationTags" (
+          create table "courseConversationsTags" (
             "id" integer primary key autoincrement,
             "externalId" text not null unique,
             "course" integer not null references "courses",
@@ -2744,7 +2744,7 @@ export default async (application: Application): Promise<void> => {
             "name" text not null,
             "courseStaff" integer not null
           ) strict;
-          create index "index_courseConversationTags_course" on "courseConversationTags" ("course");
+          create index "index_courseConversationsTags_course" on "courseConversationsTags" ("course");
           
           create table "courseConversations" (
             "id" integer primary key autoincrement,
@@ -2803,8 +2803,8 @@ export default async (application: Application): Promise<void> => {
           create table "courseConversationTaggings" (
             "id" integer primary key autoincrement,
             "courseConversation" integer not null references "courseConversations",
-            "courseConversationTag" integer not null references "courseConversationTags",
-            unique ("courseConversation", "courseConversationTag")
+            "courseConversationsTag" integer not null references "courseConversationsTags",
+            unique ("courseConversation", "courseConversationsTag")
           ) strict;
           
           create table "courseConversationMessageDrafts" (
@@ -3249,7 +3249,7 @@ export default async (application: Application): Promise<void> => {
               )!,
           );
           const courseParticipation = courseParticipations.shift()!;
-          const courseConversationTags = [
+          const courseConversationsTags = [
             { name: "Assignment 1" },
             { name: "Assignment 2" },
             { name: "Assignment 3" },
@@ -3259,13 +3259,13 @@ export default async (application: Application): Promise<void> => {
             { name: "Change for next year", courseStaff: true },
             { name: "Duplicate question", courseStaff: true },
           ].map(
-            (courseConversationTag, courseConversationTagIndex) =>
+            (courseConversationsTag, courseConversationsTagIndex) =>
               database.get<{ id: number }>(
                 sql`
-                  select * from "courseConversationTags" where "id" = ${
+                  select * from "courseConversationsTags" where "id" = ${
                     database.run(
                       sql`
-                        insert into "courseConversationTags" (
+                        insert into "courseConversationsTags" (
                           "externalId",
                           "course",
                           "order",
@@ -3275,9 +3275,9 @@ export default async (application: Application): Promise<void> => {
                         values (
                           ${cryptoRandomString({ length: 10, type: "numeric" })},
                           ${course.id},
-                          ${courseConversationTagIndex},
-                          ${courseConversationTag.name},
-                          ${Number(courseConversationTag.courseStaff ?? false)}
+                          ${courseConversationsTagIndex},
+                          ${courseConversationsTag.name},
+                          ${Number(courseConversationsTag.courseStaff ?? false)}
                         );
                       `,
                     ).lastInsertRowid
@@ -3363,8 +3363,8 @@ export default async (application: Application): Promise<void> => {
                   );
                 `,
               );
-            const courseConversationTagsForCourseConversationTaggings = [
-              ...courseConversationTags,
+            const courseConversationsTagsForCourseConversationTaggings = [
+              ...courseConversationsTags,
             ];
             const courseConversationTaggingsCount =
               1 + Math.floor(Math.random() * 4);
@@ -3377,11 +3377,11 @@ export default async (application: Application): Promise<void> => {
                 sql`
                   insert into "courseConversationTaggings" (
                     "courseConversation",
-                    "courseConversationTag"
+                    "courseConversationsTag"
                   )
                   values (
                     ${courseConversation.id},
-                    ${courseConversationTagsForCourseConversationTaggings.splice(Math.floor(Math.random() * courseConversationTagsForCourseConversationTaggings.length), 1)[0].id}
+                    ${courseConversationsTagsForCourseConversationTaggings.splice(Math.floor(Math.random() * courseConversationsTagsForCourseConversationTaggings.length), 1)[0].id}
                   );
                 `,
               );
