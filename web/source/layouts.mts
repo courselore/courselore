@@ -222,6 +222,7 @@ export default async (application: Application): Promise<void> => {
       )}
       &.button--dropdown-menu {
         font-weight: 400;
+        width: calc(var(--space--2) + 100% + var(--space--2));
         border: none;
         border-radius: calc(var(--border-radius--1) - var(--border-width--1));
       }
