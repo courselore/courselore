@@ -661,6 +661,24 @@ export default async (application: Application): Promise<void> => {
                                   gap: var(--space--2);
                                 `}"
                               >
+                                <div>
+                                  <div>${request.state.user.name}</div>
+                                  <div
+                                    css="${css`
+                                      font-size: var(--font-size--3);
+                                      line-height: var(
+                                        --font-size--3--line-height
+                                      );
+                                      color: light-dark(
+                                        var(--color--slate--500),
+                                        var(--color--slate--500)
+                                      );
+                                    `}"
+                                  >
+                                    ${request.state.user.email}
+                                  </div>
+                                </div>
+                                <hr class="separator" />
                                 $${request.state.user.systemRole ===
                                 "systemAdministrator"
                                   ? html`
