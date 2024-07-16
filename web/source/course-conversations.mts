@@ -1,6 +1,6 @@
 import * as serverTypes from "@radically-straightforward/server";
 import sql from "@radically-straightforward/sqlite";
-import html from "@radically-straightforward/html";
+import html, { HTML } from "@radically-straightforward/html";
 import css from "@radically-straightforward/css";
 import javascript from "@radically-straightforward/javascript";
 import * as caddy from "@radically-straightforward/caddy";
@@ -114,7 +114,7 @@ export default async (application: Application): Promise<void> => {
         return;
 
       response.end(
-        application.layouts.base({
+        courseConversationLayout({
           request,
           response,
           head: html`
@@ -122,7 +122,6 @@ export default async (application: Application): Promise<void> => {
               ${request.state.courseConversation.title} · Courselore
             </title>
           `,
-          hamburger: true,
           body: html`
             <div
               css="${css`
@@ -1688,4 +1687,29 @@ export default async (application: Application): Promise<void> => {
       );
     },
   });
+
+  const courseConversationLayout = ({
+    request,
+    response,
+    head,
+    body,
+  }: {
+    request: serverTypes.Request<
+      {},
+      {},
+      {},
+      {},
+      Application["types"]["states"]["CourseConversation"]
+    >;
+    response: serverTypes.Response;
+    head: HTML;
+    body: HTML;
+  }): HTML =>
+    application.layouts.base({
+      request,
+      response,
+      head,
+      hamburger: true,
+      body: html``,
+    });
 };
