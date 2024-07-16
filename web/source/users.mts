@@ -62,7 +62,7 @@ export type ApplicationUsers = {
       size,
     }: {
       user: Application["types"]["states"]["User"]["user"];
-      size?: number;
+      size?: 6 | 9;
     }) => HTML;
   };
 };
@@ -243,7 +243,6 @@ export default async (application: Application): Promise<void> => {
         --border-color--dark: var(--color--${user.color}--900);
       "
       css="${css`
-        font-size: var(--font-size--3);
         line-height: var(--space--0);
         font-weight: 800;
         color: light-dark(var(--color--light), var(--color--dark));
@@ -260,10 +259,17 @@ export default async (application: Application): Promise<void> => {
         align-items: center;
       `} ${size === 6
         ? css`
+            font-size: var(--font-size--3);
             width: var(--space--6);
             height: var(--space--6);
           `
-        : css``}"
+        : size === 9
+          ? css`
+              font-size: var(--font-size--3-5);
+              width: var(--space--9);
+              height: var(--space--9);
+            `
+          : css``}"
     >
       ${(() => {
         const nameParts = user.name

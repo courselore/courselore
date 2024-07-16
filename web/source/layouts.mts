@@ -671,6 +671,7 @@ export default async (application: Application): Promise<void> => {
                                   <div>
                                     $${application.partials.user({
                                       user: request.state.user,
+                                      size: 9,
                                     })}
                                   </div>
                                   <div>
