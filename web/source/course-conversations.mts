@@ -809,7 +809,7 @@ export default async (application: Application): Promise<void> => {
                           `
                         : html``}
                       $${(() => {
-                        const mayEditCourseConversationTitle =
+                        const mayEditCourseConversation =
                           request.state.course.archivedAt === null &&
                           (request.state.courseParticipation.courseRole ===
                             "courseStaff" ||
@@ -846,7 +846,7 @@ export default async (application: Application): Promise<void> => {
                               >
                                 ${request.state.courseConversation.title}
                               </div>
-                              $${mayEditCourseConversationTitle
+                              $${mayEditCourseConversation
                                 ? html`
                                     <form
                                       key="courseConversation--header--title--edit"
@@ -946,7 +946,7 @@ export default async (application: Application): Promise<void> => {
                                         >
                                           Copy conversation permanent link
                                         </button>
-                                        $${mayEditCourseConversationTitle
+                                        $${mayEditCourseConversation
                                           ? html`
                                               <button
                                                 class="button button--rectangle button--transparent button--dropdown-menu"
@@ -972,121 +972,123 @@ export default async (application: Application): Promise<void> => {
                               </button>
                             </div>
                           </div>
+                          <div
+                            class="text--secondary"
+                            css="${css`
+                              display: flex;
+                              flex-direction: column;
+                              gap: var(--space--2);
+                            `}"
+                          >
+                            <div
+                              css="${css`
+                                display: flex;
+                                flex-wrap: wrap;
+                                column-gap: var(--space--4);
+                                row-gap: var(--space--2);
+                              `}"
+                            >
+                              <button
+                                class="button button--rectangle button--transparent"
+                              >
+                                ${request.state.courseConversation
+                                  .courseConversationType ===
+                                "courseConversationNote"
+                                  ? "Note"
+                                  : request.state.courseConversation
+                                        .courseConversationType ===
+                                      "courseConversationQuestion"
+                                    ? "Question"
+                                    : (() => {
+                                        throw new Error();
+                                      })()} <i class="bi bi-chevron-down"></i>
+                              </button>
+                              $${request.state.courseConversation
+                                .courseConversationType ===
+                              "courseConversationQuestion"
+                                ? html`
+                                    <button
+                                      class="button button--rectangle button--transparent"
+                                    >
+                                      ${request.state.courseConversation
+                                        .questionResolved === Number(true)
+                                        ? "Resolved"
+                                        : "Unresolved"} <i
+                                        class="bi bi-chevron-down"
+                                      ></i>
+                                    </button>
+                                  `
+                                : html``}
+                              <button
+                                class="button button--rectangle button--transparent"
+                              >
+                                ${request.state.courseConversation
+                                  .courseConversationParticipations ===
+                                "courseStudent"
+                                  ? "Students"
+                                  : request.state.courseConversation
+                                        .courseConversationParticipations ===
+                                      "courseStaff"
+                                    ? "Course staff"
+                                    : request.state.courseConversation
+                                          .courseConversationParticipations ===
+                                        "courseConversationParticipations"
+                                      ? "Selected people"
+                                      : (() => {
+                                          throw new Error();
+                                        })()} <i class="bi bi-chevron-down"></i>
+                              </button>
+                              <button
+                                class="button button--rectangle button--transparent"
+                              >
+                                ${request.state.courseConversation.pinned ===
+                                Number(true)
+                                  ? "Pinned"
+                                  : "Unpinned"} <i
+                                  class="bi bi-chevron-down"
+                                ></i>
+                              </button>
+                            </div>
+                            <div
+                              css="${css`
+                                display: flex;
+                                flex-wrap: wrap;
+                                column-gap: var(--space--4);
+                                row-gap: var(--space--2);
+                              `}"
+                            >
+                              <button
+                                class="button button--rectangle button--transparent"
+                              >
+                                Tags <i class="bi bi-chevron-down"></i>
+                              </button>
+                              $${request.state.courseConversationTags.map(
+                                (courseConversationTag) =>
+                                  application.database.get(
+                                    sql`
+                                select true
+                                from "courseConversationTaggings"
+                                where
+                                  "courseConversation" = ${request.state.courseConversation!.id} and
+                                  "courseConversationTag" = ${courseConversationTag.id};
+                              `,
+                                  ) !== undefined
+                                    ? html`
+                                        <div
+                                          key="courseConversationTag ${courseConversationTag.externalId}"
+                                          css="${css`
+                                            font-weight: 400;
+                                          `}"
+                                        >
+                                          ${courseConversationTag.name}
+                                        </div>
+                                      `
+                                    : html``,
+                              )}
+                            </div>
+                          </div>
                         `;
                       })()}
-                      <div
-                        class="text--secondary"
-                        css="${css`
-                          display: flex;
-                          flex-direction: column;
-                          gap: var(--space--2);
-                        `}"
-                      >
-                        <div
-                          css="${css`
-                            display: flex;
-                            flex-wrap: wrap;
-                            column-gap: var(--space--4);
-                            row-gap: var(--space--2);
-                          `}"
-                        >
-                          <button
-                            class="button button--rectangle button--transparent"
-                          >
-                            ${request.state.courseConversation
-                              .courseConversationType ===
-                            "courseConversationNote"
-                              ? "Note"
-                              : request.state.courseConversation
-                                    .courseConversationType ===
-                                  "courseConversationQuestion"
-                                ? "Question"
-                                : (() => {
-                                    throw new Error();
-                                  })()} <i class="bi bi-chevron-down"></i>
-                          </button>
-                          $${request.state.courseConversation
-                            .courseConversationType ===
-                          "courseConversationQuestion"
-                            ? html`
-                                <button
-                                  class="button button--rectangle button--transparent"
-                                >
-                                  ${request.state.courseConversation
-                                    .questionResolved === Number(true)
-                                    ? "Resolved"
-                                    : "Unresolved"} <i
-                                    class="bi bi-chevron-down"
-                                  ></i>
-                                </button>
-                              `
-                            : html``}
-                          <button
-                            class="button button--rectangle button--transparent"
-                          >
-                            ${request.state.courseConversation
-                              .courseConversationParticipations ===
-                            "courseStudent"
-                              ? "Students"
-                              : request.state.courseConversation
-                                    .courseConversationParticipations ===
-                                  "courseStaff"
-                                ? "Course staff"
-                                : request.state.courseConversation
-                                      .courseConversationParticipations ===
-                                    "courseConversationParticipations"
-                                  ? "Selected people"
-                                  : (() => {
-                                      throw new Error();
-                                    })()} <i class="bi bi-chevron-down"></i>
-                          </button>
-                          <button
-                            class="button button--rectangle button--transparent"
-                          >
-                            ${request.state.courseConversation.pinned ===
-                            Number(true)
-                              ? "Pinned"
-                              : "Unpinned"} <i class="bi bi-chevron-down"></i>
-                          </button>
-                        </div>
-                        <div
-                          css="${css`
-                            display: flex;
-                            flex-wrap: wrap;
-                            column-gap: var(--space--4);
-                            row-gap: var(--space--2);
-                          `}"
-                        >
-                          <button
-                            class="button button--rectangle button--transparent"
-                          >
-                            Tags <i class="bi bi-chevron-down"></i>
-                          </button>
-                          $${request.state.courseConversationTags.map(
-                            (courseConversationTag) =>
-                              application.database.get(
-                                sql`
-                                  select true
-                                  from "courseConversationTaggings"
-                                  where
-                                    "courseConversation" = ${request.state.courseConversation!.id} and
-                                    "courseConversationTag" = ${courseConversationTag.id};
-                                `,
-                              ) !== undefined
-                                ? html`
-                                    <div
-                                      key="courseConversationTag ${courseConversationTag.externalId}"
-                                      css="${css`
-                                        font-weight: 400;
-                                      `}"
-                                    >
-                                      ${courseConversationTag.name}
-                                    </div>
-                                  `
-                                : html``,
-                          )}
-                        </div>
-                      </div>
                     </div>
                     <div
                       key="courseConversationMessages"
