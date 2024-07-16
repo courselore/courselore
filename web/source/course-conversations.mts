@@ -878,7 +878,7 @@ export default async (application: Application): Promise<void> => {
                                       <button
                                         class="button button--square button--icon button--transparent"
                                         css="${css`
-                                          font-size: var(--font-size--4);
+                                          font-size: var(--font-size--5);
                                           line-height: var(--space--0);
                                         `}"
                                       >
@@ -888,7 +888,7 @@ export default async (application: Application): Promise<void> => {
                                         type="reset"
                                         class="button button--square button--icon button--transparent"
                                         css="${css`
-                                          font-size: var(--font-size--4);
+                                          font-size: var(--font-size--5);
                                           line-height: var(--space--0);
                                         `}"
                                         javascript="${javascript`
@@ -963,6 +963,83 @@ export default async (application: Application): Promise<void> => {
                                               </button>
                                             `
                                           : html``}
+                                        $${(() => {
+                                          const courses =
+                                            application.database.all<{
+                                              externalId: string;
+                                              name: string;
+                                            }>(
+                                              sql`
+                                                select
+                                                  "courses"."externalId" as "externalId",
+                                                  "courses"."name" as "name"
+                                                from "courses"
+                                                join "courseParticipations" on
+                                                  "courses"."id" = "courseParticipations"."course" and
+                                                  "courseParticipations"."user" = ${request.state.user.id}
+                                                where
+                                                  "courses"."id" != ${request.state.course.id} and
+                                                  "courses"."archivedAt" is null
+                                                order by "courseParticipations"."id" desc;
+                                              `,
+                                            );
+                                          return courses.length > 0
+                                            ? html`
+                                                <button
+                                                  class="button button--rectangle button--transparent button--dropdown-menu"
+                                                  javascript="${javascript`
+                                                    javascript.tippy({
+                                                      event,
+                                                      element: this,
+                                                      placement: "bottom-end",
+                                                      interactive: true,
+                                                      trigger: "click",
+                                                      content: ${html`
+                                                        <div
+                                                          css="${css`
+                                                            display: flex;
+                                                            flex-direction: column;
+                                                            gap: var(
+                                                              --space--2
+                                                            );
+                                                          `}"
+                                                        >
+                                                          $${courses.map(
+                                                            (course) => html`
+                                                              <a
+                                                                href="https://${application
+                                                                  .configuration
+                                                                  .hostname}/courses/${course.externalId}/conversations/new?${new URLSearchParams(
+                                                                  {
+                                                                    "reuse.course":
+                                                                      request
+                                                                        .state
+                                                                        .course!
+                                                                        .externalId,
+                                                                    "reuse.courseConversation":
+                                                                      request
+                                                                        .state
+                                                                        .courseConversation!
+                                                                        .externalId,
+                                                                  },
+                                                                ).toString()}"
+                                                                class="button button--rectangle button--transparent button--dropdown-menu"
+                                                              >
+                                                                ${course.name}
+                                                              </a>
+                                                            `,
+                                                          )}
+                                                        </div>
+                                                      `},
+                                                    });
+                                                  `}"
+                                                >
+                                                  Reuse conversation in another
+                                                  course
+                                                </button>
+                                              `
+                                            : html``;
+                                        })()}
                                       </div>
                                     `},
                                   });
