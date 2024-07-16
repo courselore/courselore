@@ -785,6 +785,29 @@ export default async (application: Application): Promise<void> => {
                         gap: var(--space--1);
                       `}"
                     >
+                      $${typeof request.state.course.archivedAt === "string"
+                        ? html`
+                            <div
+                              key="courseConversation--archived"
+                              class="text--secondary"
+                              css="${css`
+                                color: light-dark(
+                                  var(--color--red--500),
+                                  var(--color--red--500)
+                                );
+                              `}"
+                            >
+                              <i class="bi bi-exclamation-triangle-fill"></i
+                              > This course has been archived on
+                              <span
+                                javascript="${javascript`
+                                this.textContent = javascript.localizeDate(${request.state.course.archivedAt});
+                              `}"
+                              ></span>
+                              and is now read-only.
+                            </div>
+                          `
+                        : html``}
                       <div
                         css="${css`
                           display: flex;
