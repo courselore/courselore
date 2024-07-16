@@ -757,12 +757,9 @@ export default async (application: Application): Promise<void> => {
                   key="main--main"
                   css="${css`
                     max-width: var(--space--168);
+                    padding: var(--space--2) var(--space--4);
                     @media (max-width: 899px) {
                       margin: var(--space--0) auto;
-                      padding: var(--space--2) var(--space--4);
-                    }
-                    @media (min-width: 900px) {
-                      padding: var(--space--3) var(--space--6);
                     }
                   `}"
                 >
