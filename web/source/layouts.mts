@@ -662,21 +662,33 @@ export default async (application: Application): Promise<void> => {
                                   gap: var(--space--2);
                                 `}"
                               >
-                                <div>
-                                  <div>${request.state.user.name}</div>
-                                  <div
-                                    css="${css`
-                                      font-size: var(--font-size--3);
-                                      line-height: var(
-                                        --font-size--3--line-height
-                                      );
-                                      color: light-dark(
-                                        var(--color--slate--500),
-                                        var(--color--slate--500)
-                                      );
-                                    `}"
-                                  >
-                                    ${request.state.user.email}
+                                <div
+                                  css="${css`
+                                    display: flex;
+                                    gap: var(--space--2);
+                                  `}"
+                                >
+                                  <div>
+                                    $${application.partials.user({
+                                      user: request.state.user,
+                                    })}
+                                  </div>
+                                  <div>
+                                    <div>${request.state.user.name}</div>
+                                    <div
+                                      css="${css`
+                                        font-size: var(--font-size--3);
+                                        line-height: var(
+                                          --font-size--3--line-height
+                                        );
+                                        color: light-dark(
+                                          var(--color--slate--500),
+                                          var(--color--slate--500)
+                                        );
+                                      `}"
+                                    >
+                                      ${request.state.user.email}
+                                    </div>
                                   </div>
                                 </div>
                                 <hr class="separator" />
