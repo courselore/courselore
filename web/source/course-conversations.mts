@@ -807,6 +807,43 @@ export default async (application: Application): Promise<void> => {
                               line-height: var(--space--0);
                               margin-top: var(--space--0);
                             `}"
+                            javascript="${javascript`
+                              javascript.tippy({
+                                event,
+                                element: this,
+                                placement: "bottom-end",
+                                interactive: true,
+                                trigger: "click",
+                                content: ${html`
+                                  <div
+                                    css="${css`
+                                      display: flex;
+                                      flex-direction: column;
+                                      gap: var(--space--2);
+                                    `}"
+                                  >
+                                    <button
+                                      class="button button--rectangle button--transparent button--dropdown-menu"
+                                      javascript="${javascript`
+                                        this.onclick = async () => {
+                                          await navigator.clipboard.writeText(${`https://${application.configuration.hostname}/courses/${request.state.course.externalId}/conversations/${request.state.courseConversation.externalId}`});
+                                          javascript.tippy({
+                                            element: this,
+                                            elementProperty: "copiedTippy",
+                                            trigger: "manual",
+                                            content: "Copied",
+                                          }).show();
+                                          await utilities.sleep(1000);
+                                          this.copiedTippy.hide();
+                                        };
+                                      `}"
+                                    >
+                                      Copy conversation permanent link
+                                    </button>
+                                  </div>
+                                `},
+                              });
+                            `}"
                           >
                             <i class="bi bi-three-dots-vertical"></i>
                           </button>
