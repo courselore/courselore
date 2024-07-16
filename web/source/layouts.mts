@@ -544,6 +544,7 @@ export default async (application: Application): Promise<void> => {
                                     .map(
                                       (course) => html`
                                         <a
+                                          key="course-selector ${course.externalId}"
                                           href="https://${application
                                             .configuration
                                             .hostname}/courses/${course.externalId}"
@@ -563,10 +564,17 @@ export default async (application: Application): Promise<void> => {
                                                 ? html`<span
                                                     css="${css`
                                                       font-weight: 700;
-                                                      color: light-dark(
-                                                        var(--color--red--500),
-                                                        var(--color--red--500)
-                                                      );
+                                                      [key~="course-selector"]:not(
+                                                          .button--blue
+                                                        )
+                                                        & {
+                                                        color: light-dark(
+                                                          var(
+                                                            --color--red--500
+                                                          ),
+                                                          var(--color--red--500)
+                                                        );
+                                                      }
                                                     `}"
                                                     >Archived</span
                                                   >`
@@ -586,11 +594,24 @@ export default async (application: Application): Promise<void> => {
                                                   <div
                                                     css="${css`
                                                       font-size: var(
-                                                        --font-size--2-5
+                                                        --font-size--3
                                                       );
                                                       line-height: var(
-                                                        --font-size--2-5--line-height
+                                                        --font-size--3--line-height
                                                       );
+                                                      [key~="course-selector"]:not(
+                                                          .button--blue
+                                                        )
+                                                        & {
+                                                        color: light-dark(
+                                                          var(
+                                                            --color--slate--500
+                                                          ),
+                                                          var(
+                                                            --color--slate--500
+                                                          )
+                                                        );
+                                                      }
                                                     `}"
                                                   >
                                                     $${courseInformation}
