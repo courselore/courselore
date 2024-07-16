@@ -1499,176 +1499,184 @@ export default async (application: Application): Promise<void> => {
                           `,
                         )}
                     </div>
-                    <div key="courseConversationMessage/new">
-                      <form
-                        novalidate
-                        css="${css`
-                          display: flex;
-                          flex-direction: column;
-                          gap: var(--space--2);
-                        `}"
-                      >
-                        <div
-                          key="contentEditor"
-                          class="input--text"
-                          css="${css`
-                            padding: var(--space--0);
-                            display: flex;
-                            flex-direction: column;
-                          `}"
-                        >
-                          <div
-                            key="contentEditor--menu"
-                            class="text--secondary"
-                            css="${css`
-                              font-size: var(--font-size--3-5);
-                              line-height: var(--font-size--3-5--line-height);
-                              padding: var(--space--1-5) var(--space--2);
-                              border-bottom: var(--border-width--1) solid
-                                light-dark(
-                                  var(--color--slate--200),
-                                  var(--color--slate--800)
-                                );
-                              display: flex;
-                              flex-wrap: wrap;
-                              gap: var(--space--2);
-                            `}"
-                          >
-                            <button
-                              class="button button--square button--icon button--transparent"
-                              javascript="${javascript`
-                                javascript.tippy({
-                                  event,
-                                  element: this,
-                                  content: "Bold",
-                                });
-                              `}"
-                            >
-                              <i class="bi bi-type-bold"></i>
-                            </button>
-                            <button
-                              class="button button--square button--icon button--transparent"
-                              javascript="${javascript`
-                                javascript.tippy({
-                                  event,
-                                  element: this,
-                                  content: "Link",
-                                });
-                              `}"
-                            >
-                              <i class="bi bi-link"></i>
-                            </button>
-                            <button
-                              class="button button--square button--icon button--transparent"
-                              javascript="${javascript`
-                                javascript.tippy({
-                                  event,
-                                  element: this,
-                                  content: "Image",
-                                });
-                              `}"
-                            >
-                              <i class="bi bi-image"></i>
-                            </button>
-                            <button
-                              class="button button--square button--icon button--transparent"
-                              javascript="${javascript`
-                                javascript.tippy({
-                                  event,
-                                  element: this,
-                                  content: "Code block",
-                                });
-                              `}"
-                            >
-                              <i class="bi bi-code"></i>
-                            </button>
-                            <button
-                              class="button button--square button--icon button--transparent"
-                              javascript="${javascript`
-                                javascript.tippy({
-                                  event,
-                                  element: this,
-                                  content: "Mathematics block",
-                                });
-                              `}"
-                            >
-                              <i class="bi bi-calculator"></i>
-                            </button>
-                            <button
-                              class="button button--square button--icon button--transparent"
-                              javascript="${javascript`
-                                javascript.tippy({
-                                  event,
-                                  element: this,
-                                  content: "Poll",
-                                });
-                              `}"
-                            >
-                              <i class="bi bi-card-checklist"></i>
-                            </button>
-                            <div
+                    $${request.state.course.archivedAt === null
+                      ? html`
+                          <div key="courseConversationMessage/new">
+                            <form
+                              novalidate
                               css="${css`
-                                flex: 1;
-                              `}"
-                            ></div>
-                            <button
-                              class="button button--square button--icon button--transparent"
-                              javascript="${javascript`
-                                javascript.tippy({
-                                  event,
-                                  element: this,
-                                  content: "Preview",
-                                });
+                                display: flex;
+                                flex-direction: column;
+                                gap: var(--space--2);
                               `}"
                             >
-                              <i class="bi bi-eyeglasses"></i>
-                            </button>
-                            <button
-                              class="button button--square button--icon button--transparent"
-                              javascript="${javascript`
-                                javascript.tippy({
-                                  event,
-                                  element: this,
-                                  content: "Menu",
-                                });
-                              `}"
-                            >
-                              <i class="bi bi-three-dots-vertical"></i>
-                            </button>
+                              <div
+                                key="contentEditor"
+                                class="input--text"
+                                css="${css`
+                                  padding: var(--space--0);
+                                  display: flex;
+                                  flex-direction: column;
+                                `}"
+                              >
+                                <div
+                                  key="contentEditor--menu"
+                                  class="text--secondary"
+                                  css="${css`
+                                    font-size: var(--font-size--3-5);
+                                    line-height: var(
+                                      --font-size--3-5--line-height
+                                    );
+                                    padding: var(--space--1-5) var(--space--2);
+                                    border-bottom: var(--border-width--1) solid
+                                      light-dark(
+                                        var(--color--slate--200),
+                                        var(--color--slate--800)
+                                      );
+                                    display: flex;
+                                    flex-wrap: wrap;
+                                    gap: var(--space--2);
+                                  `}"
+                                >
+                                  <button
+                                    class="button button--square button--icon button--transparent"
+                                    javascript="${javascript`
+                                      javascript.tippy({
+                                        event,
+                                        element: this,
+                                        content: "Bold",
+                                      });
+                                    `}"
+                                  >
+                                    <i class="bi bi-type-bold"></i>
+                                  </button>
+                                  <button
+                                    class="button button--square button--icon button--transparent"
+                                    javascript="${javascript`
+                                      javascript.tippy({
+                                        event,
+                                        element: this,
+                                        content: "Link",
+                                      });
+                                    `}"
+                                  >
+                                    <i class="bi bi-link"></i>
+                                  </button>
+                                  <button
+                                    class="button button--square button--icon button--transparent"
+                                    javascript="${javascript`
+                                      javascript.tippy({
+                                        event,
+                                        element: this,
+                                        content: "Image",
+                                      });
+                                    `}"
+                                  >
+                                    <i class="bi bi-image"></i>
+                                  </button>
+                                  <button
+                                    class="button button--square button--icon button--transparent"
+                                    javascript="${javascript`
+                                      javascript.tippy({
+                                        event,
+                                        element: this,
+                                        content: "Code block",
+                                      });
+                                    `}"
+                                  >
+                                    <i class="bi bi-code"></i>
+                                  </button>
+                                  <button
+                                    class="button button--square button--icon button--transparent"
+                                    javascript="${javascript`
+                                      javascript.tippy({
+                                        event,
+                                        element: this,
+                                        content: "Mathematics block",
+                                      });
+                                    `}"
+                                  >
+                                    <i class="bi bi-calculator"></i>
+                                  </button>
+                                  <button
+                                    class="button button--square button--icon button--transparent"
+                                    javascript="${javascript`
+                                      javascript.tippy({
+                                        event,
+                                        element: this,
+                                        content: "Poll",
+                                      });
+                                    `}"
+                                  >
+                                    <i class="bi bi-card-checklist"></i>
+                                  </button>
+                                  <div
+                                    css="${css`
+                                      flex: 1;
+                                    `}"
+                                  ></div>
+                                  <button
+                                    class="button button--square button--icon button--transparent"
+                                    javascript="${javascript`
+                                      javascript.tippy({
+                                        event,
+                                        element: this,
+                                        content: "Preview",
+                                      });
+                                    `}"
+                                  >
+                                    <i class="bi bi-eyeglasses"></i>
+                                  </button>
+                                  <button
+                                    class="button button--square button--icon button--transparent"
+                                    javascript="${javascript`
+                                      javascript.tippy({
+                                        event,
+                                        element: this,
+                                        content: "Menu",
+                                      });
+                                    `}"
+                                  >
+                                    <i class="bi bi-three-dots-vertical"></i>
+                                  </button>
+                                </div>
+                                <textarea
+                                  key="contentEditor--textarea"
+                                  css="${css`
+                                    font-family: "JetBrains Mono Variable",
+                                      var(--font-family--sans-serif);
+                                    height: var(--space--44);
+                                    padding: var(--space--1) var(--space--2);
+                                  `}"
+                                ></textarea>
+                              </div>
+                              <div
+                                class="text--secondary"
+                                css="${css`
+                                  display: flex;
+                                  gap: var(--space--4);
+                                  align-items: baseline;
+                                `}"
+                              >
+                                <button
+                                  class="button button--rectangle button--blue"
+                                >
+                                  Send
+                                </button>
+                                <label
+                                  class="button button--rectangle button--transparent"
+                                >
+                                  <input
+                                    type="checkbox"
+                                    name="anonymous"
+                                    class="input--checkbox"
+                                  />  Anonymous to other students
+                                </label>
+                              </div>
+                            </form>
                           </div>
-                          <textarea
-                            key="contentEditor--textarea"
-                            css="${css`
-                              font-family: "JetBrains Mono Variable",
-                                var(--font-family--sans-serif);
-                              height: var(--space--44);
-                              padding: var(--space--1) var(--space--2);
-                            `}"
-                          ></textarea>
-                        </div>
-                        <div
-                          class="text--secondary"
-                          css="${css`
-                            display: flex;
-                            gap: var(--space--4);
-                            align-items: baseline;
-                          `}"
-                        >
-                          <button class="button button--rectangle button--blue">
-                            Send
-                          </button>
-                          <label
-                            class="button button--rectangle button--transparent"
-                          >
-                            <input
-                              type="checkbox"
-                              name="anonymous"
-                              class="input--checkbox"
-                            />  Anonymous to other students
-                          </label>
-                        </div>
-                      </form>
-                    </div>
+                        `
+                      : html``}
                   </div>
                 </div>
               </div>
