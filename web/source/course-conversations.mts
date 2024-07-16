@@ -1040,6 +1040,60 @@ export default async (application: Application): Promise<void> => {
                                               `
                                             : html``;
                                         })()}
+                                        $${mayEditCourseConversation &&
+                                        request.state.courseParticipation
+                                          .courseRole === "courseStaff"
+                                          ? html`
+                                              <button
+                                                class="button button--rectangle button--transparent button--dropdown-menu"
+                                                javascript="${javascript`
+                                                  javascript.tippy({
+                                                    event,
+                                                    element: this,
+                                                    placement: "bottom-end",
+                                                    interactive: true,
+                                                    trigger: "click",
+                                                    theme: "red",
+                                                    content: ${html`
+                                                      <form
+                                                        method="DELETE"
+                                                        action="https://${application
+                                                          .configuration
+                                                          .hostname}/courses/${request
+                                                          .state.course
+                                                          .externalId}/conversations/${request
+                                                          .state
+                                                          .courseConversation
+                                                          .externalId}"
+                                                        css="${css`
+                                                          display: flex;
+                                                          flex-direction: column;
+                                                          gap: var(--space--2);
+                                                        `}"
+                                                      >
+                                                        <div>
+                                                          <i
+                                                            class="bi bi-exclamation-triangle-fill"
+                                                          ></i
+                                                          > This action cannot
+                                                          be reverted.
+                                                        </div>
+                                                        <div>
+                                                          <button
+                                                            class="button button--rectangle button--red"
+                                                          >
+                                                            Delete conversation
+                                                          </button>
+                                                        </div>
+                                                      </form>
+                                                    `},
+                                                  });
+                                                `}"
+                                              >
+                                                Delete conversation
+                                              </button>
+                                            `
+                                          : html``}
                                       </div>
                                     `},
                                   });
