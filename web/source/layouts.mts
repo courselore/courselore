@@ -675,7 +675,13 @@ export default async (application: Application): Promise<void> => {
                                     })}
                                   </div>
                                   <div>
-                                    <div>${request.state.user.name}</div>
+                                    <div
+                                      css="${css`
+                                        font-weight: 600;
+                                      `}"
+                                    >
+                                      ${request.state.user.name}
+                                    </div>
                                     <div
                                       css="${css`
                                         font-size: var(--font-size--3);
