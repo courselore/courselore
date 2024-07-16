@@ -3325,8 +3325,8 @@ export default async (application: Application): Promise<void> => {
                         ${courseConversationTitle},
                         ${
                           courseConversationExternalId === 1
-                            ? 1
-                            : 1 + Math.floor(Math.random() * 15)
+                            ? 2
+                            : 2 + Math.floor(Math.random() * 15)
                         }
                       );
                     `,
