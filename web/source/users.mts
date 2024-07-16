@@ -231,54 +231,87 @@ export default async (application: Application): Promise<void> => {
     },
   });
 
-  application.partials.user = ({ user, size = 6 }) => html`
-    <div
-      key="user--avatar/${user.externalId}"
-      style="
-        --color--light: var(--color--${user.color}--800);
-        --color--dark: var(--color--${user.color}--200);
-        --background-color--light: var(--color--${user.color}--200);
-        --background-color--dark: var(--color--${user.color}--800);
-        --border-color--light: var(--color--${user.color}--300);
-        --border-color--dark: var(--color--${user.color}--900);
-      "
-      css="${css`
-        line-height: var(--space--0);
-        font-weight: 800;
-        color: light-dark(var(--color--light), var(--color--dark));
-        background-color: light-dark(
-          var(--background-color--light),
-          var(--background-color--dark)
-        );
-        border: var(--border-width--1) solid
-          light-dark(var(--border-color--light), var(--border-color--dark));
-        border-radius: var(--border-radius--1);
-        overflow: hidden;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-      `} ${size === 6
-        ? css`
-            font-size: var(--font-size--3);
-            width: var(--space--6);
-            height: var(--space--6);
-          `
-        : size === 9
-          ? css`
-              font-size: var(--font-size--3-5);
-              width: var(--space--9);
-              height: var(--space--9);
-            `
-          : css``}"
-    >
-      ${(() => {
-        const nameParts = user.name
-          .split(/\s+/)
-          .filter((namePart) => namePart !== "");
-        return nameParts.length < 2
-          ? user.name.trim()[0]
-          : nameParts.at(0)![0] + nameParts.at(-1)![0];
-      })()}
-    </div>
-  `;
+  application.partials.user = ({ user, size = 6 }) =>
+    typeof user.avatar === "string"
+      ? html`
+          <img
+            key="user--avatar/${user.externalId}"
+            src="${user.avatar}"
+            css="${css`
+              background-color: light-dark(
+                var(--color--white),
+                var(--color--white)
+              );
+              border-radius: var(--border-radius--1);
+              display: block;
+            `} ${size === 6
+              ? css`
+                  width: var(--space--6);
+                  height: var(--space--6);
+                `
+              : size === 9
+                ? css`
+                    width: var(--space--9);
+                    height: var(--space--9);
+                  `
+                : (() => {
+                    throw new Error();
+                  })()}"
+          />
+        `
+      : html`
+          <div
+            key="user--avatar/${user.externalId}"
+            style="
+              --color--light: var(--color--${user.color}--800);
+              --color--dark: var(--color--${user.color}--200);
+              --background-color--light: var(--color--${user.color}--200);
+              --background-color--dark: var(--color--${user.color}--800);
+              --border-color--light: var(--color--${user.color}--300);
+              --border-color--dark: var(--color--${user.color}--900);
+            "
+            css="${css`
+              line-height: var(--space--0);
+              font-weight: 800;
+              color: light-dark(var(--color--light), var(--color--dark));
+              background-color: light-dark(
+                var(--background-color--light),
+                var(--background-color--dark)
+              );
+              border: var(--border-width--1) solid
+                light-dark(
+                  var(--border-color--light),
+                  var(--border-color--dark)
+                );
+              border-radius: var(--border-radius--1);
+              overflow: hidden;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+            `} ${size === 6
+              ? css`
+                  font-size: var(--font-size--3);
+                  width: var(--space--6);
+                  height: var(--space--6);
+                `
+              : size === 9
+                ? css`
+                    font-size: var(--font-size--3-5);
+                    width: var(--space--9);
+                    height: var(--space--9);
+                  `
+                : (() => {
+                    throw new Error();
+                  })()}"
+          >
+            ${(() => {
+              const nameParts = user.name
+                .split(/\s+/)
+                .filter((namePart) => namePart !== "");
+              return nameParts.length < 2
+                ? user.name.trim()[0]
+                : nameParts.at(0)![0] + nameParts.at(-1)![0];
+            })()}
+          </div>
+        `;
 };
