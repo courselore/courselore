@@ -294,7 +294,7 @@ export default async (application: Application): Promise<void> => {
   javascript`
     import * as javascript from "@radically-straightforward/javascript/static/index.mjs";
     import * as utilities from "@radically-straightforward/utilities";
-    import * as tippy from "tippy.js";
+    import * as Tippy from "tippy.js";
     import Mousetrap from "mousetrap";
     import scrollIntoViewIfNeeded from "scroll-into-view-if-needed";
     import textareaCaret from "textarea-caret";

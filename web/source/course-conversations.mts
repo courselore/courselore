@@ -791,12 +791,68 @@ export default async (application: Application): Promise<void> => {
                           key="courseConversation--header--title"
                           css="${css`
                             flex: 1;
-                            font-size: var(--font-size--4);
-                            line-height: var(--font-size--4--line-height);
-                            font-weight: 700;
                           `}"
                         >
-                          ${request.state.courseConversation.title}
+                          <div
+                            key="courseConversation--header--title--show"
+                            css="${css`
+                              font-size: var(--font-size--4);
+                              line-height: var(--font-size--4--line-height);
+                              font-weight: 700;
+                            `}"
+                          >
+                            ${request.state.courseConversation.title}
+                          </div>
+                          <form
+                            key="courseConversation--header--title--edit"
+                            method="PATCH"
+                            action="https://${application.configuration
+                              .hostname}/courses/${request.state.course
+                              .externalId}/conversations/${request.state
+                              .courseConversation.externalId}"
+                            novalidate
+                            hidden
+                            css="${css`
+                              display: flex;
+                              gap: var(--space--2);
+                              align-items: center;
+                              margin-bottom: var(--space--2);
+                            `}"
+                          >
+                            <input
+                              name="title"
+                              value="${request.state.courseConversation.title}"
+                              class="input--text"
+                              css="${css`
+                                flex: 1;
+                              `}"
+                            />
+                            <button
+                              class="button button--square button--icon button--transparent"
+                              css="${css`
+                                font-size: var(--font-size--4);
+                                line-height: var(--space--0);
+                              `}"
+                            >
+                              <i class="bi bi-check"></i>
+                            </button>
+                            <button
+                              type="reset"
+                              class="button button--square button--icon button--transparent"
+                              css="${css`
+                                font-size: var(--font-size--4);
+                                line-height: var(--space--0);
+                              `}"
+                              javascript="${javascript`
+                                this.onclick = () => {
+                                  this.closest('[key="courseConversation--header"]').querySelector('[key="courseConversation--header--title--show"]').hidden = false;
+                                  this.closest('[key="courseConversation--header"]').querySelector('[key="courseConversation--header--title--edit"]').hidden = true;
+                                };
+                              `}"
+                            >
+                              <i class="bi bi-x"></i>
+                            </button>
+                          </form>
                         </div>
                         <div>
                           <button
@@ -839,6 +895,19 @@ export default async (application: Application): Promise<void> => {
                                       `}"
                                     >
                                       Copy conversation permanent link
+                                    </button>
+                                    <button
+                                      class="button button--rectangle button--transparent button--dropdown-menu"
+                                      javascript="${javascript`
+                                        this.onclick = () => {
+                                          this.closest('[key="courseConversation--header"]').querySelector('[key="courseConversation--header--title--show"]').hidden = true;
+                                          this.closest('[key="courseConversation--header"]').querySelector('[key="courseConversation--header--title--edit"]').hidden = false;
+                                          Tippy.hideAll();
+                                          this.closest('[key="courseConversation--header"]').querySelector('[key="courseConversation--header--title--edit"] [name="title"]').focus();
+                                        };
+                                      `}"
+                                    >
+                                      Edit conversation title
                                     </button>
                                   </div>
                                 `},
