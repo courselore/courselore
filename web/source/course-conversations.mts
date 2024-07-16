@@ -114,7 +114,7 @@ export default async (application: Application): Promise<void> => {
         return;
 
       response.end(
-        application.layouts.main({
+        application.layouts.base({
           request,
           response,
           head: html`

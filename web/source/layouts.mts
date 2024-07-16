@@ -8,7 +8,7 @@ import { Application } from "./index.mjs";
 
 export type ApplicationLayouts = {
   layouts: {
-    main: ({
+    base: ({
       request,
       response,
       head,
@@ -306,7 +306,7 @@ export default async (application: Application): Promise<void> => {
     import remarkStringify from "remark-stringify";
   `;
 
-  application.layouts.main = ({
+  application.layouts.base = ({
     request,
     response,
     hamburger = false,
