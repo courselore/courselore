@@ -112,9 +112,8 @@ export default async (application: Application): Promise<void> => {
         request.state.courseConversation === undefined
       )
         return;
-
       response.end(
-        courseConversationLayout({
+        courseConversationsLayout({
           request,
           response,
           head: html`
@@ -128,7 +127,7 @@ export default async (application: Application): Promise<void> => {
     },
   });
 
-  const courseConversationLayout = ({
+  const courseConversationsLayout = ({
     request,
     response,
     head,
@@ -144,8 +143,16 @@ export default async (application: Application): Promise<void> => {
     response: serverTypes.Response;
     head: HTML;
     body: HTML;
-  }): HTML =>
-    application.layouts.base({
+  }): HTML => {
+    if (
+      request.state.user === undefined ||
+      request.state.course === undefined ||
+      request.state.courseParticipation === undefined ||
+      request.state.courseConversationTags === undefined ||
+      request.state.courseConversation === undefined
+    )
+      throw new Error();
+    return application.layouts.base({
       request,
       response,
       head,
@@ -1678,4 +1685,5 @@ export default async (application: Application): Promise<void> => {
         </div>
       `,
     });
+  };
 };
