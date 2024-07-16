@@ -200,7 +200,7 @@ export default async (application: Application): Promise<void> => {
                       javascript.tippy({
                         event,
                         element: this,
-                        content: "New Conversation",
+                        content: "New conversation",
                       });
                     `}"
                   >
@@ -266,6 +266,7 @@ export default async (application: Application): Promise<void> => {
                 <div
                   key="courseConversations"
                   css="${css`
+                    flex: 1;
                     overflow: auto;
                     display: flex;
                     flex-direction: column;
