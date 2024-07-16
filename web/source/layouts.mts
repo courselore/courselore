@@ -646,6 +646,63 @@ export default async (application: Application): Promise<void> => {
                       <button
                         key="user"
                         class="button button--square button--transparent"
+                        javascript="${javascript`
+                          javascript.tippy({
+                            event,
+                            element: this,
+                            placement: "bottom-end",
+                            interactive: true,
+                            trigger: "click",
+                            content: ${html`
+                              <div
+                                css="${css`
+                                  display: flex;
+                                  flex-direction: column;
+                                  gap: var(--space--2);
+                                `}"
+                              >
+                                $${request.state.user.systemRole ===
+                                "systemAdministrator"
+                                  ? html`
+                                      <a
+                                        href="https://${application
+                                          .configuration.hostname}/system"
+                                        class="button button--rectangle button--transparent ${request.URL.pathname.match(
+                                          new RegExp("^/system$"),
+                                        ) !== null
+                                          ? "button--blue"
+                                          : ""} button--dropdown-menu"
+                                      >
+                                        System settings
+                                      </a>
+                                    `
+                                  : html``}
+                                <a
+                                  href="https://${application.configuration
+                                    .hostname}/settings"
+                                  class="button button--rectangle button--transparent ${request.URL.pathname.match(
+                                    new RegExp("^/settings$"),
+                                  ) !== null
+                                    ? "button--blue"
+                                    : ""} button--dropdown-menu"
+                                >
+                                  User settings
+                                </a>
+                                <form
+                                  method="DELETE"
+                                  action="https://${application.configuration
+                                    .hostname}/session"
+                                >
+                                  <button
+                                    class="button button--rectangle button--transparent button--dropdown-menu"
+                                  >
+                                    Sign out
+                                  </button>
+                                </form>
+                              </div>
+                            `},
+                          });
+                        `}"
                       >
                         $${application.partials.user({
                           user: request.state.user,
