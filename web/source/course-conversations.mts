@@ -156,10 +156,10 @@ export default async (application: Application): Promise<void> => {
                   }
                 `}"
                 javascript="${javascript`
-                    this.onclick = () => {
-                      document.querySelector('[key="main"]').classList.remove("sidebar--open");
-                    };
-                  `}"
+                  this.onclick = () => {
+                    document.querySelector('[key="main"]').classList.remove("sidebar--open");
+                  };
+                `}"
               ></button>
               <div
                 key="sidebar /courses/${request.state.course.externalId}"
@@ -226,12 +226,12 @@ export default async (application: Application): Promise<void> => {
                       align-items: center;
                     `}"
                     javascript="${javascript`
-                        javascript.tippy({
-                          event,
-                          element: this,
-                          content: "New Conversation",
-                        });
-                      `}"
+                      javascript.tippy({
+                        event,
+                        element: this,
+                        content: "New Conversation",
+                      });
+                    `}"
                   >
                     +
                   </a>
@@ -262,15 +262,15 @@ export default async (application: Application): Promise<void> => {
                         padding: var(--space--1) var(--space--2);
                       `}"
                       javascript="${javascript`
-                          javascript.tippy({
-                            event,
-                            element: this,
-                            content: "Search",
-                          });
-                          this.onclick = () => {
-                            this.closest('[key="search-and-filter"]').querySelector('[name="conversations.search"]').focus();
-                          };
-                        `}"
+                        javascript.tippy({
+                          event,
+                          element: this,
+                          content: "Search",
+                        });
+                        this.onclick = () => {
+                          this.closest('[key="search-and-filter"]').querySelector('[name="conversations.search"]').focus();
+                        };
+                      `}"
                     >
                       <i class="bi bi-search"></i>
                     </button>
@@ -281,12 +281,12 @@ export default async (application: Application): Promise<void> => {
                         padding: var(--space--1) var(--space--2);
                       `}"
                       javascript="${javascript`
-                          javascript.tippy({
-                            event,
-                            element: this,
-                            content: "Filter",
-                          });
-                        `}"
+                        javascript.tippy({
+                          event,
+                          element: this,
+                          content: "Filter",
+                        });
+                      `}"
                     >
                       <i class="bi bi-filter"></i>
                     </button>
@@ -461,13 +461,13 @@ export default async (application: Application): Promise<void> => {
                                   <div
                                     key="user--avatar"
                                     style="
-                                        --color--light: var(--color--pink--800);
-                                        --color--dark: var(--color--pink--200);
-                                        --background-color--light: var(--color--pink--200);
-                                        --background-color--dark: var(--color--pink--800);
-                                        --border-color--light: var(--color--pink--300);
-                                        --border-color--dark: var(--color--pink--900);
-                                      "
+                                      --color--light: var(--color--pink--800);
+                                      --color--dark: var(--color--pink--200);
+                                      --background-color--light: var(--color--pink--200);
+                                      --background-color--dark: var(--color--pink--800);
+                                      --border-color--light: var(--color--pink--300);
+                                      --border-color--dark: var(--color--pink--900);
+                                    "
                                     css="${css`
                                       font-size: var(--font-size--3);
                                       line-height: var(--space--0);
@@ -677,36 +677,36 @@ export default async (application: Application): Promise<void> => {
                     }
                   `}"
                   javascript="${javascript`
-                      this.onpointerdown = (event) => {
-                        if (event.button !== 0) return;
-                        this.classList.add("active");
-                        document.querySelector("body").classList.add("noninteractive");
-                        document.querySelector("body").style.cursor = "col-resize";
-                        document.onpointermove = (event) => {
-                          this.closest('[key="main"]').querySelector('[key~="sidebar"]').style.setProperty("--width", String(Math.min(Math.max(Math.floor(event.clientX), 60 * 4), 112 * 4)) + "px");
-                        };
-                        document.onpointerup = () => {
-                          this.classList.remove("active");
-                          document.querySelector("body").classList.remove("noninteractive");
-                          document.querySelector("body").style.cursor = "";
-                          document.onpointermove = undefined;
-                          document.onpointerup = undefined;
-                          updateSidebarWidth();
-                        };
+                    this.onpointerdown = (event) => {
+                      if (event.button !== 0) return;
+                      this.classList.add("active");
+                      document.querySelector("body").classList.add("noninteractive");
+                      document.querySelector("body").style.cursor = "col-resize";
+                      document.onpointermove = (event) => {
+                        this.closest('[key="main"]').querySelector('[key~="sidebar"]').style.setProperty("--width", String(Math.min(Math.max(Math.floor(event.clientX), 60 * 4), 112 * 4)) + "px");
                       };
-                      this.ondblclick = (event) => {
-                        this.closest('[key="main"]').querySelector('[key~="sidebar"]').style.setProperty("--width", String(80 * 4) +"px");
+                      document.onpointerup = () => {
+                        this.classList.remove("active");
+                        document.querySelector("body").classList.remove("noninteractive");
+                        document.querySelector("body").style.cursor = "";
+                        document.onpointermove = undefined;
+                        document.onpointerup = undefined;
                         updateSidebarWidth();
                       };
-                      const updateSidebarWidth = utilities.foregroundJob(async () => {
-                        await fetch(${`https://${application.configuration.hostname}/settings`}, {
-                          redirect: "manual",
-                          method: "PATCH",
-                          headers: { "CSRF-Protection": "true" },
-                          body: new URLSearchParams({ sidebarWidth: this.closest('[key="main"]').querySelector('[key~="sidebar"]').style.getPropertyValue("--width").slice(0, -"px".length) }),
-                        });
+                    };
+                    this.ondblclick = (event) => {
+                      this.closest('[key="main"]').querySelector('[key~="sidebar"]').style.setProperty("--width", String(80 * 4) +"px");
+                      updateSidebarWidth();
+                    };
+                    const updateSidebarWidth = utilities.foregroundJob(async () => {
+                      await fetch(${`https://${application.configuration.hostname}/settings`}, {
+                        redirect: "manual",
+                        method: "PATCH",
+                        headers: { "CSRF-Protection": "true" },
+                        body: new URLSearchParams({ sidebarWidth: this.closest('[key="main"]').querySelector('[key~="sidebar"]').style.getPropertyValue("--width").slice(0, -"px".length) }),
                       });
-                    `}"
+                    });
+                  `}"
                 ></div>
               </div>
               <div
@@ -716,38 +716,38 @@ export default async (application: Application): Promise<void> => {
                   overflow: auto;
                 `}"
                 javascript="${javascript`
-                    // TODO: If conversation page.
-                    this.readIntersectionObserver?.disconnect();
-                    this.readIntersectionObserver = new IntersectionObserver((entries) => {
-                      for (const entry of entries) {
-                        if (entry.intersectionRatio !== 1) continue;
-                        readIntersectionObserverForegroundJobCourseConversationMessageIds.add(entry.target.courseConversationMessageId);
-                        this.readIntersectionObserver.unobserve(entry.target);
-                        setTimeout(() => {
-                          entry.target.classList.remove("unread");
-                        }, 1000);
-                      }
-                      readIntersectionObserverForegroundJob();
-                    }, {
-                      root: this,
-                      threshold: 1,
+                  // TODO: If conversation page.
+                  this.readIntersectionObserver?.disconnect();
+                  this.readIntersectionObserver = new IntersectionObserver((entries) => {
+                    for (const entry of entries) {
+                      if (entry.intersectionRatio !== 1) continue;
+                      readIntersectionObserverForegroundJobCourseConversationMessageIds.add(entry.target.courseConversationMessageId);
+                      this.readIntersectionObserver.unobserve(entry.target);
+                      setTimeout(() => {
+                        entry.target.classList.remove("unread");
+                      }, 1000);
+                    }
+                    readIntersectionObserverForegroundJob();
+                  }, {
+                    root: this,
+                    threshold: 1,
+                  });
+                  const readIntersectionObserverForegroundJob = utilities.foregroundJob(async () => {
+                    if (readIntersectionObserverForegroundJobCourseConversationMessageIds.size === 0) return;
+                    const body = new URLSearchParams([...readIntersectionObserverForegroundJobCourseConversationMessageIds].map(courseConversationMessageId => ["courseConversationMessageIds[]", courseConversationMessageId]));
+                    readIntersectionObserverForegroundJobCourseConversationMessageIds.clear();
+                    await fetch(${`https://${application.configuration.hostname}/courses/${
+                      request.state.course!.externalId
+                    }/conversations/${
+                      request.state.courseConversation!.externalId
+                    }/messages/readings`}, {
+                      method: "POST",
+                      headers: { "CSRF-Protection": "true" },
+                      body,
                     });
-                    const readIntersectionObserverForegroundJob = utilities.foregroundJob(async () => {
-                      if (readIntersectionObserverForegroundJobCourseConversationMessageIds.size === 0) return;
-                      const body = new URLSearchParams([...readIntersectionObserverForegroundJobCourseConversationMessageIds].map(courseConversationMessageId => ["courseConversationMessageIds[]", courseConversationMessageId]));
-                      readIntersectionObserverForegroundJobCourseConversationMessageIds.clear();
-                      await fetch(${`https://${application.configuration.hostname}/courses/${
-                        request.state.course!.externalId
-                      }/conversations/${
-                        request.state.courseConversation!.externalId
-                      }/messages/readings`}, {
-                        method: "POST",
-                        headers: { "CSRF-Protection": "true" },
-                        body,
-                      });
-                    });
-                    const readIntersectionObserverForegroundJobCourseConversationMessageIds = new Set();
-                  `}"
+                  });
+                  const readIntersectionObserverForegroundJobCourseConversationMessageIds = new Set();
+                `}"
               >
                 <div
                   key="main--main"
@@ -902,12 +902,12 @@ export default async (application: Application): Promise<void> => {
                             (courseConversationTag) =>
                               application.database.get(
                                 sql`
-                                    select true
-                                    from "courseConversationTaggings"
-                                    where
-                                      "courseConversation" = ${request.state.courseConversation!.id} and
-                                      "courseConversationTag" = ${courseConversationTag.id};
-                                  `,
+                                  select true
+                                  from "courseConversationTaggings"
+                                  where
+                                    "courseConversation" = ${request.state.courseConversation!.id} and
+                                    "courseConversationTag" = ${courseConversationTag.id};
+                                `,
                               ) !== undefined
                                 ? html`
                                     <div
@@ -950,30 +950,30 @@ export default async (application: Application): Promise<void> => {
                           contentSearch: string;
                         }>(
                           sql`
-                              select
-                                "id",
-                                "externalId",
-                                "createdAt",
-                                "updatedAt",
-                                "createdByCourseParticipation",
-                                "courseConversationMessageType",
-                                "anonymous",
-                                "contentSource",
-                                "contentPreprocessed",
-                                "contentSearch"
-                              from "courseConversationMessages"
-                              where
-                                "courseConversation" = ${request.state.courseConversation.id} $${
-                                  request.state.courseParticipation
-                                    .courseRole !== "courseStaff"
-                                    ? sql`
-                                        and
-                                        "courseConversationMessageType" != 'courseConversationMessageCourseStaffWhisper'
-                                      `
-                                    : sql``
-                                }
-                              order by "id" asc;
-                            `,
+                            select
+                              "id",
+                              "externalId",
+                              "createdAt",
+                              "updatedAt",
+                              "createdByCourseParticipation",
+                              "courseConversationMessageType",
+                              "anonymous",
+                              "contentSource",
+                              "contentPreprocessed",
+                              "contentSearch"
+                            from "courseConversationMessages"
+                            where
+                              "courseConversation" = ${request.state.courseConversation.id} $${
+                                request.state.courseParticipation.courseRole !==
+                                "courseStaff"
+                                  ? sql`
+                                      and
+                                      "courseConversationMessageType" != 'courseConversationMessageCourseStaffWhisper'
+                                    `
+                                  : sql``
+                              }
+                            order by "id" asc;
+                          `,
                         )
                         .map(
                           (courseConversationMessage) => html`
@@ -993,12 +993,12 @@ export default async (application: Application): Promise<void> => {
                                 const unread =
                                   application.database.get(
                                     sql`
-                                        select true
-                                        from "courseConversationMessageViews"
-                                        where
-                                          "courseConversationMessage" = ${courseConversationMessage.id} and
-                                          "courseParticipation" = ${request.state.courseParticipation!.id};
-                                      `,
+                                      select true
+                                      from "courseConversationMessageViews"
+                                      where
+                                        "courseConversationMessage" = ${courseConversationMessage.id} and
+                                        "courseParticipation" = ${request.state.courseParticipation!.id};
+                                    `,
                                   ) === undefined;
                                 return html`
                                   <div
@@ -1035,11 +1035,11 @@ export default async (application: Application): Promise<void> => {
                                         }
                                       `}"
                                       javascript="${javascript`
-                                          if (${unread}) {
-                                            this.closest('[key="main--main--scrolling"]').readIntersectionObserver.observe(this);
-                                            this.courseConversationMessageId = ${courseConversationMessage.externalId};
-                                          }
-                                        `}"
+                                        if (${unread}) {
+                                          this.closest('[key="main--main--scrolling"]').readIntersectionObserver.observe(this);
+                                          this.courseConversationMessageId = ${courseConversationMessage.externalId};
+                                        }
+                                      `}"
                                     ></div>
                                   </div>
                                 `;
@@ -1048,13 +1048,13 @@ export default async (application: Application): Promise<void> => {
                                 <div
                                   key="user--avatar"
                                   style="
-                                        --color--light: var(--color--pink--800);
-                                        --color--dark: var(--color--pink--200);
-                                        --background-color--light: var(--color--pink--200);
-                                        --background-color--dark: var(--color--pink--800);
-                                        --border-color--light: var(--color--pink--300);
-                                        --border-color--dark: var(--color--pink--900);
-                                      "
+                                      --color--light: var(--color--pink--800);
+                                      --color--dark: var(--color--pink--200);
+                                      --background-color--light: var(--color--pink--200);
+                                      --background-color--dark: var(--color--pink--800);
+                                      --border-color--light: var(--color--pink--300);
+                                      --border-color--dark: var(--color--pink--900);
+                                    "
                                   css="${css`
                                     font-size: var(--font-size--3-5);
                                     line-height: var(--space--0);
@@ -1238,72 +1238,72 @@ export default async (application: Application): Promise<void> => {
                             <button
                               class="button button--square button--icon button--transparent"
                               javascript="${javascript`
-                                  javascript.tippy({
-                                    event,
-                                    element: this,
-                                    content: "Bold",
-                                  });
-                                `}"
+                                javascript.tippy({
+                                  event,
+                                  element: this,
+                                  content: "Bold",
+                                });
+                              `}"
                             >
                               <i class="bi bi-type-bold"></i>
                             </button>
                             <button
                               class="button button--square button--icon button--transparent"
                               javascript="${javascript`
-                                  javascript.tippy({
-                                    event,
-                                    element: this,
-                                    content: "Link",
-                                  });
-                                `}"
+                                javascript.tippy({
+                                  event,
+                                  element: this,
+                                  content: "Link",
+                                });
+                              `}"
                             >
                               <i class="bi bi-link"></i>
                             </button>
                             <button
                               class="button button--square button--icon button--transparent"
                               javascript="${javascript`
-                                  javascript.tippy({
-                                    event,
-                                    element: this,
-                                    content: "Image",
-                                  });
-                                `}"
+                                javascript.tippy({
+                                  event,
+                                  element: this,
+                                  content: "Image",
+                                });
+                              `}"
                             >
                               <i class="bi bi-image"></i>
                             </button>
                             <button
                               class="button button--square button--icon button--transparent"
                               javascript="${javascript`
-                                  javascript.tippy({
-                                    event,
-                                    element: this,
-                                    content: "Code block",
-                                  });
-                                `}"
+                                javascript.tippy({
+                                  event,
+                                  element: this,
+                                  content: "Code block",
+                                });
+                              `}"
                             >
                               <i class="bi bi-code"></i>
                             </button>
                             <button
                               class="button button--square button--icon button--transparent"
                               javascript="${javascript`
-                                  javascript.tippy({
-                                    event,
-                                    element: this,
-                                    content: "Mathematics block",
-                                  });
-                                `}"
+                                javascript.tippy({
+                                  event,
+                                  element: this,
+                                  content: "Mathematics block",
+                                });
+                              `}"
                             >
                               <i class="bi bi-calculator"></i>
                             </button>
                             <button
                               class="button button--square button--icon button--transparent"
                               javascript="${javascript`
-                                  javascript.tippy({
-                                    event,
-                                    element: this,
-                                    content: "Poll",
-                                  });
-                                `}"
+                                javascript.tippy({
+                                  event,
+                                  element: this,
+                                  content: "Poll",
+                                });
+                              `}"
                             >
                               <i class="bi bi-card-checklist"></i>
                             </button>
@@ -1315,24 +1315,24 @@ export default async (application: Application): Promise<void> => {
                             <button
                               class="button button--square button--icon button--transparent"
                               javascript="${javascript`
-                                  javascript.tippy({
-                                    event,
-                                    element: this,
-                                    content: "Preview",
-                                  });
-                                `}"
+                                javascript.tippy({
+                                  event,
+                                  element: this,
+                                  content: "Preview",
+                                });
+                              `}"
                             >
                               <i class="bi bi-eyeglasses"></i>
                             </button>
                             <button
                               class="button button--square button--icon button--transparent"
                               javascript="${javascript`
-                                  javascript.tippy({
-                                    event,
-                                    element: this,
-                                    content: "Menu",
-                                  });
-                                `}"
+                                javascript.tippy({
+                                  event,
+                                  element: this,
+                                  content: "Menu",
+                                });
+                              `}"
                             >
                               <i class="bi bi-three-dots-vertical"></i>
                             </button>
