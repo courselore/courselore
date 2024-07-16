@@ -52,7 +52,7 @@ export type ApplicationCourses = {
             | "rose";
           mostRecentlyVisitedCourseConversation: number | null;
         };
-        courseConversationTags: {
+        courseConversationsTags: {
           id: number;
           externalId: string;
           name: string;
@@ -156,7 +156,7 @@ export default async (application: Application): Promise<void> => {
         `,
       );
       if (request.state.courseParticipation === undefined) return;
-      request.state.courseConversationTags = application.database.all<{
+      request.state.courseConversationsTags = application.database.all<{
         id: number;
         externalId: string;
         name: string;
@@ -164,7 +164,7 @@ export default async (application: Application): Promise<void> => {
       }>(
         sql`
           select "id", "externalId", "name", "courseStaff"
-          from "courseConversationTags"
+          from "courseConversationsTags"
           where
             "course" = ${request.state.course.id} $${
               request.state.courseParticipation.courseRole !== "courseStaff"

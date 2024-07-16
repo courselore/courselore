@@ -49,7 +49,7 @@ export default async (application: Application): Promise<void> => {
       if (
         request.state.course === undefined ||
         request.state.courseParticipation === undefined ||
-        request.state.courseConversationTags === undefined
+        request.state.courseConversationsTags === undefined
       )
         return;
       request.state.courseConversation = application.database.get<{
@@ -108,7 +108,7 @@ export default async (application: Application): Promise<void> => {
         request.state.user === undefined ||
         request.state.course === undefined ||
         request.state.courseParticipation === undefined ||
-        request.state.courseConversationTags === undefined ||
+        request.state.courseConversationsTags === undefined ||
         request.state.courseConversation === undefined
       )
         return;
@@ -148,7 +148,7 @@ export default async (application: Application): Promise<void> => {
       request.state.user === undefined ||
       request.state.course === undefined ||
       request.state.courseParticipation === undefined ||
-      request.state.courseConversationTags === undefined ||
+      request.state.courseConversationsTags === undefined ||
       request.state.courseConversation === undefined
     )
       throw new Error();
@@ -1200,25 +1200,25 @@ export default async (application: Application): Promise<void> => {
                           >
                             Tags <i class="bi bi-chevron-down"></i>
                           </button>
-                          $${request.state.courseConversationTags.map(
-                            (courseConversationTag) =>
+                          $${request.state.courseConversationsTags.map(
+                            (courseConversationsTag) =>
                               application.database.get(
                                 sql`
-                            select true
-                            from "courseConversationTaggings"
-                            where
-                              "courseConversation" = ${request.state.courseConversation!.id} and
-                              "courseConversationTag" = ${courseConversationTag.id};
-                          `,
+                                  select true
+                                  from "courseConversationTaggings"
+                                  where
+                                    "courseConversation" = ${request.state.courseConversation!.id} and
+                                    "courseConversationsTag" = ${courseConversationsTag.id};
+                                `,
                               ) !== undefined
                                 ? html`
                                     <div
-                                      key="courseConversationTag ${courseConversationTag.externalId}"
+                                      key="courseConversationsTag ${courseConversationsTag.externalId}"
                                       css="${css`
                                         font-weight: 400;
                                       `}"
                                     >
-                                      ${courseConversationTag.name}
+                                      ${courseConversationsTag.name}
                                     </div>
                                   `
                                 : html``,
