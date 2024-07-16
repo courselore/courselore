@@ -391,366 +391,351 @@ export default async (application: Application): Promise<void> => {
                     );
                 `}"
               ></div>
-              <div
-                key="header"
-                css="${css`
-                  padding: var(--space--2) var(--space--4);
-                  border-bottom: var(--border-width--1) solid
-                    light-dark(
-                      var(--color--slate--200),
-                      var(--color--slate--800)
-                    );
-                  display: flex;
-                  align-items: center;
-                  gap: var(--space--4);
-                `}"
-              >
-                $${hamburger
-                  ? html`
-                      <button
-                        key="hamburger"
-                        class="button button--square button--icon button--transparent"
-                        css="${css`
-                          font-size: var(--font-size--5);
-                          line-height: var(--space--0);
-                          @media (min-width: 900px) {
-                            display: none;
-                          }
-                        `}"
-                        javascript="${javascript`
-                          this.onclick = () => {
-                            document.querySelector('[key="main"]').classList.add("sidebar--open");
-                          };
-                        `}"
-                      >
-                        <i class="bi bi-list"></i>
-                      </button>
-                    `
-                  : html``}
-                <a
-                  key="logo"
-                  href="https://${application.configuration.hostname}"
-                  class="button button--rectangle button--transparent"
+            `
+          : html``}
+        <div
+          key="header"
+          css="${css`
+            padding: var(--space--2) var(--space--4);
+            border-bottom: var(--border-width--1) solid
+              light-dark(var(--color--slate--200), var(--color--slate--800));
+            display: flex;
+            align-items: center;
+            gap: var(--space--4);
+          `}"
+        >
+          $${hamburger
+            ? html`
+                <button
+                  key="hamburger"
+                  class="button button--square button--icon button--transparent"
                   css="${css`
-                    display: flex;
-                    gap: var(--space--1);
-                    align-items: center;
+                    font-size: var(--font-size--5);
+                    line-height: var(--space--0);
+                    @media (min-width: 900px) {
+                      display: none;
+                    }
+                  `}"
+                  javascript="${javascript`
+                    this.onclick = () => {
+                      document.querySelector('[key="main"]').classList.add("sidebar--open");
+                    };
                   `}"
                 >
-                  <svg width="24" height="24" viewBox="0 0 24 24">
-                    <path
-                      d="M 3 3 L 9 9 L 3 9 L 9 3 L 3 15 L 9 21 L 9 15 L 3 21 L 15 15 L 21 21 L 21 15 L 15 21 L 21 9 L 15 3 L 21 3 L 15 9 Z"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                  </svg>
-                  <div
+                  <i class="bi bi-list"></i>
+                </button>
+              `
+            : html``}
+          <a
+            key="logo"
+            href="https://${application.configuration.hostname}"
+            class="button button--rectangle button--transparent"
+            css="${css`
+              display: flex;
+              gap: var(--space--1);
+              align-items: center;
+            `}"
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24">
+              <path
+                d="M 3 3 L 9 9 L 3 9 L 9 3 L 3 15 L 9 21 L 9 15 L 3 21 L 15 15 L 21 21 L 21 15 L 15 21 L 21 9 L 15 3 L 21 3 L 15 9 Z"
+                fill="none"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+            <div
+              css="${css`
+                font-weight: 700;
+                font-size: var(--font-size--4);
+                line-height: var(--font-size--4--line-height);
+              `}"
+            >
+              Courselore
+            </div>
+          </a>
+          <div
+            key="course"
+            css="${css`
+              flex: 1;
+              min-width: var(--space--0);
+            `}"
+          >
+            $${request.state.user !== undefined &&
+            request.state.course !== undefined
+              ? html`
+                  <button
+                    class="button button--rectangle button--transparent"
                     css="${css`
-                      font-weight: 700;
-                      font-size: var(--font-size--4);
-                      line-height: var(--font-size--4--line-height);
+                      max-width: 100%;
+                      display: flex;
+                      gap: var(--space--1);
+                      align-items: center;
                     `}"
-                  >
-                    Courselore
-                  </div>
-                </a>
-                <div
-                  key="course"
-                  css="${css`
-                    flex: 1;
-                    min-width: var(--space--0);
-                  `}"
-                >
-                  $${request.state.user !== undefined &&
-                  request.state.course !== undefined
-                    ? html`
-                        <button
-                          class="button button--rectangle button--transparent"
-                          css="${css`
-                            max-width: 100%;
-                            display: flex;
-                            gap: var(--space--1);
-                            align-items: center;
-                          `}"
-                          javascript="${javascript`
-                            javascript.tippy({
-                              event,
-                              element: this,
-                              placement: "bottom-start",
-                              interactive: true,
-                              trigger: "click",
-                              content: ${html`
-                                <div
-                                  css="${css`
-                                    display: flex;
-                                    flex-direction: column;
-                                    gap: var(--space--2);
-                                  `}"
-                                >
+                    javascript="${javascript`
+                      javascript.tippy({
+                        event,
+                        element: this,
+                        placement: "bottom-start",
+                        interactive: true,
+                        trigger: "click",
+                        content: ${html`
+                          <div
+                            css="${css`
+                              display: flex;
+                              flex-direction: column;
+                              gap: var(--space--2);
+                            `}"
+                          >
+                            <a
+                              href="https://${application.configuration
+                                .hostname}/courses/${request.state.course
+                                .externalId}/"
+                              class="button button--rectangle button--transparent ${request.URL.pathname.match(
+                                new RegExp("^/courses/[0-9]+/settings$"),
+                              ) === null
+                                ? "button--blue"
+                                : ""} button--dropdown-menu"
+                            >
+                              Conversations
+                            </a>
+                            <a
+                              href="https://${application.configuration
+                                .hostname}/courses/${request.state.course
+                                .externalId}/settings"
+                              class="button button--rectangle button--transparent ${request.URL.pathname.match(
+                                new RegExp("^/courses/[0-9]+/settings$"),
+                              ) !== null
+                                ? "button--blue"
+                                : ""} button--dropdown-menu"
+                            >
+                              Course settings
+                            </a>
+                            <hr class="separator" />
+                            $${application.database
+                              .all<{
+                                externalId: string;
+                                name: string;
+                                year: string | null;
+                                term: string | null;
+                                code: string | null;
+                                institution: string | null;
+                                archivedAt: string | null;
+                              }>(
+                                sql`
+                                  select
+                                    "courses"."externalId",
+                                    "courses"."name",
+                                    "courses"."year",
+                                    "courses"."term",
+                                    "courses"."code",
+                                    "courses"."institution",
+                                    "courses"."archivedAt"
+                                  from "courses"
+                                  join "courseParticipations" on
+                                    "courses"."id" = "courseParticipations"."course" and
+                                    "courseParticipations"."user" = ${request.state.user.id}
+                                  order by
+                                    "courses"."archivedAt" is not null,
+                                    "courseParticipations"."id" desc;
+                                `,
+                              )
+                              .map(
+                                (course) => html`
                                   <a
+                                    key="course-selector ${course.externalId}"
                                     href="https://${application.configuration
-                                      .hostname}/courses/${request.state.course
-                                      .externalId}/"
+                                      .hostname}/courses/${course.externalId}"
                                     class="button button--rectangle button--transparent ${request.URL.pathname.match(
-                                      new RegExp("^/courses/[0-9]+/settings$"),
-                                    ) === null
-                                      ? "button--blue"
-                                      : ""} button--dropdown-menu"
-                                  >
-                                    Conversations
-                                  </a>
-                                  <a
-                                    href="https://${application.configuration
-                                      .hostname}/courses/${request.state.course
-                                      .externalId}/settings"
-                                    class="button button--rectangle button--transparent ${request.URL.pathname.match(
-                                      new RegExp("^/courses/[0-9]+/settings$"),
+                                      new RegExp(
+                                        `^/courses/${course.externalId}/`,
+                                      ),
                                     ) !== null
                                       ? "button--blue"
                                       : ""} button--dropdown-menu"
                                   >
-                                    Course settings
+                                    <div>${course.name}</div>
+                                    $${(() => {
+                                      const courseInformation = [
+                                        typeof course.archivedAt === "string"
+                                          ? html`<span
+                                              css="${css`
+                                                font-weight: 700;
+                                                [key~="course-selector"]:not(
+                                                    .button--blue
+                                                  )
+                                                  & {
+                                                  color: light-dark(
+                                                    var(--color--red--500),
+                                                    var(--color--red--500)
+                                                  );
+                                                }
+                                              `}"
+                                              >Archived</span
+                                            >`
+                                          : html``,
+                                        html`${course.year ?? ""}`,
+                                        html`${course.term ?? ""}`,
+                                        html`${course.code ?? ""}`,
+                                        html`${course.institution ?? ""}`,
+                                      ]
+                                        .filter(
+                                          (courseInformationPart) =>
+                                            courseInformationPart !== "",
+                                        )
+                                        .join(" · ");
+                                      return courseInformation !== ""
+                                        ? html`
+                                            <div
+                                              css="${css`
+                                                font-size: var(--font-size--3);
+                                                line-height: var(
+                                                  --font-size--3--line-height
+                                                );
+                                                [key~="course-selector"]:not(
+                                                    .button--blue
+                                                  )
+                                                  & {
+                                                  color: light-dark(
+                                                    var(--color--slate--500),
+                                                    var(--color--slate--500)
+                                                  );
+                                                }
+                                              `}"
+                                            >
+                                              $${courseInformation}
+                                            </div>
+                                          `
+                                        : html``;
+                                    })()}
                                   </a>
-                                  <hr class="separator" />
-                                  $${application.database
-                                    .all<{
-                                      externalId: string;
-                                      name: string;
-                                      year: string | null;
-                                      term: string | null;
-                                      code: string | null;
-                                      institution: string | null;
-                                      archivedAt: string | null;
-                                    }>(
-                                      sql`
-                                        select
-                                          "courses"."externalId",
-                                          "courses"."name",
-                                          "courses"."year",
-                                          "courses"."term",
-                                          "courses"."code",
-                                          "courses"."institution",
-                                          "courses"."archivedAt"
-                                        from "courses"
-                                        join "courseParticipations" on
-                                          "courses"."id" = "courseParticipations"."course" and
-                                          "courseParticipations"."user" = ${request.state.user.id}
-                                        order by
-                                          "courses"."archivedAt" is not null,
-                                          "courseParticipations"."id" desc;
-                                      `,
-                                    )
-                                    .map(
-                                      (course) => html`
-                                        <a
-                                          key="course-selector ${course.externalId}"
-                                          href="https://${application
-                                            .configuration
-                                            .hostname}/courses/${course.externalId}"
-                                          class="button button--rectangle button--transparent ${request.URL.pathname.match(
-                                            new RegExp(
-                                              `^/courses/${course.externalId}/`,
-                                            ),
-                                          ) !== null
-                                            ? "button--blue"
-                                            : ""} button--dropdown-menu"
-                                        >
-                                          <div>${course.name}</div>
-                                          $${(() => {
-                                            const courseInformation = [
-                                              typeof course.archivedAt ===
-                                              "string"
-                                                ? html`<span
-                                                    css="${css`
-                                                      font-weight: 700;
-                                                      [key~="course-selector"]:not(
-                                                          .button--blue
-                                                        )
-                                                        & {
-                                                        color: light-dark(
-                                                          var(
-                                                            --color--red--500
-                                                          ),
-                                                          var(--color--red--500)
-                                                        );
-                                                      }
-                                                    `}"
-                                                    >Archived</span
-                                                  >`
-                                                : html``,
-                                              html`${course.year ?? ""}`,
-                                              html`${course.term ?? ""}`,
-                                              html`${course.code ?? ""}`,
-                                              html`${course.institution ?? ""}`,
-                                            ]
-                                              .filter(
-                                                (courseInformationPart) =>
-                                                  courseInformationPart !== "",
-                                              )
-                                              .join(" · ");
-                                            return courseInformation !== ""
-                                              ? html`
-                                                  <div
-                                                    css="${css`
-                                                      font-size: var(
-                                                        --font-size--3
-                                                      );
-                                                      line-height: var(
-                                                        --font-size--3--line-height
-                                                      );
-                                                      [key~="course-selector"]:not(
-                                                          .button--blue
-                                                        )
-                                                        & {
-                                                        color: light-dark(
-                                                          var(
-                                                            --color--slate--500
-                                                          ),
-                                                          var(
-                                                            --color--slate--500
-                                                          )
-                                                        );
-                                                      }
-                                                    `}"
-                                                  >
-                                                    $${courseInformation}
-                                                  </div>
-                                                `
-                                              : html``;
-                                          })()}
-                                        </a>
-                                      `,
-                                    )}
-                                </div>
-                              `},
-                            });
+                                `,
+                              )}
+                          </div>
+                        `},
+                      });
+                    `}"
+                  >
+                    <div
+                      css="${css`
+                        white-space: nowrap;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                      `}"
+                    >
+                      ${request.state.course.name}
+                    </div>
+                    <i class="bi bi-chevron-down"></i>
+                  </button>
+                `
+              : html``}
+          </div>
+          $${request.state.user !== undefined
+            ? html`
+                <button
+                  key="user"
+                  class="button button--square button--transparent"
+                  javascript="${javascript`
+                    javascript.tippy({
+                      event,
+                      element: this,
+                      placement: "bottom-end",
+                      interactive: true,
+                      trigger: "click",
+                      content: ${html`
+                        <div
+                          css="${css`
+                            display: flex;
+                            flex-direction: column;
+                            gap: var(--space--2);
                           `}"
                         >
                           <div
                             css="${css`
-                              white-space: nowrap;
-                              overflow: hidden;
-                              text-overflow: ellipsis;
+                              display: flex;
+                              gap: var(--space--2);
                             `}"
                           >
-                            ${request.state.course.name}
-                          </div>
-                          <i class="bi bi-chevron-down"></i>
-                        </button>
-                      `
-                    : html``}
-                </div>
-                $${request.state.user !== undefined
-                  ? html`
-                      <button
-                        key="user"
-                        class="button button--square button--transparent"
-                        javascript="${javascript`
-                          javascript.tippy({
-                            event,
-                            element: this,
-                            placement: "bottom-end",
-                            interactive: true,
-                            trigger: "click",
-                            content: ${html`
+                            <div>
+                              $${application.partials.user({
+                                user: request.state.user,
+                                size: 9,
+                              })}
+                            </div>
+                            <div>
                               <div
                                 css="${css`
-                                  display: flex;
-                                  flex-direction: column;
-                                  gap: var(--space--2);
+                                  font-weight: 600;
                                 `}"
                               >
-                                <div
-                                  css="${css`
-                                    display: flex;
-                                    gap: var(--space--2);
-                                  `}"
-                                >
-                                  <div>
-                                    $${application.partials.user({
-                                      user: request.state.user,
-                                      size: 9,
-                                    })}
-                                  </div>
-                                  <div>
-                                    <div
-                                      css="${css`
-                                        font-weight: 600;
-                                      `}"
-                                    >
-                                      ${request.state.user.name}
-                                    </div>
-                                    <div
-                                      css="${css`
-                                        font-size: var(--font-size--3);
-                                        line-height: var(
-                                          --font-size--3--line-height
-                                        );
-                                        color: light-dark(
-                                          var(--color--slate--500),
-                                          var(--color--slate--500)
-                                        );
-                                      `}"
-                                    >
-                                      ${request.state.user.email}
-                                    </div>
-                                  </div>
-                                </div>
-                                <hr class="separator" />
-                                $${request.state.user.systemRole ===
-                                "systemAdministrator"
-                                  ? html`
-                                      <a
-                                        href="https://${application
-                                          .configuration.hostname}/system"
-                                        class="button button--rectangle button--transparent ${request.URL.pathname.match(
-                                          new RegExp("^/system$"),
-                                        ) !== null
-                                          ? "button--blue"
-                                          : ""} button--dropdown-menu"
-                                      >
-                                        System settings
-                                      </a>
-                                    `
-                                  : html``}
+                                ${request.state.user.name}
+                              </div>
+                              <div
+                                css="${css`
+                                  font-size: var(--font-size--3);
+                                  line-height: var(--font-size--3--line-height);
+                                  color: light-dark(
+                                    var(--color--slate--500),
+                                    var(--color--slate--500)
+                                  );
+                                `}"
+                              >
+                                ${request.state.user.email}
+                              </div>
+                            </div>
+                          </div>
+                          <hr class="separator" />
+                          $${request.state.user.systemRole ===
+                          "systemAdministrator"
+                            ? html`
                                 <a
                                   href="https://${application.configuration
-                                    .hostname}/settings"
+                                    .hostname}/system"
                                   class="button button--rectangle button--transparent ${request.URL.pathname.match(
-                                    new RegExp("^/settings$"),
+                                    new RegExp("^/system$"),
                                   ) !== null
                                     ? "button--blue"
                                     : ""} button--dropdown-menu"
                                 >
-                                  User settings
+                                  System settings
                                 </a>
-                                <form
-                                  method="DELETE"
-                                  action="https://${application.configuration
-                                    .hostname}/session"
-                                >
-                                  <button
-                                    class="button button--rectangle button--transparent button--dropdown-menu"
-                                  >
-                                    Sign out
-                                  </button>
-                                </form>
-                              </div>
-                            `},
-                          });
-                        `}"
-                      >
-                        $${application.partials.user({
-                          user: request.state.user,
-                        })}
-                      </button>
-                    `
-                  : html``}
-              </div>
-            `
-          : html``}
+                              `
+                            : html``}
+                          <a
+                            href="https://${application.configuration
+                              .hostname}/settings"
+                            class="button button--rectangle button--transparent ${request.URL.pathname.match(
+                              new RegExp("^/settings$"),
+                            ) !== null
+                              ? "button--blue"
+                              : ""} button--dropdown-menu"
+                          >
+                            User settings
+                          </a>
+                          <form
+                            method="DELETE"
+                            action="https://${application.configuration
+                              .hostname}/session"
+                          >
+                            <button
+                              class="button button--rectangle button--transparent button--dropdown-menu"
+                            >
+                              Sign out
+                            </button>
+                          </form>
+                        </div>
+                      `},
+                    });
+                  `}"
+                >
+                  $${application.partials.user({
+                    user: request.state.user,
+                  })}
+                </button>
+              `
+            : html``}
+        </div>
         $${body}
       </body>
     </html>
