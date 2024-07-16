@@ -353,7 +353,7 @@ export default async (application: Application): Promise<void> => {
                             ${label}
                           </div>
                           <div
-                            key="unread"
+                            key="courseConversationMessageViews"
                             css="${css`
                               background-color: light-dark(
                                 var(--color--blue--500),
@@ -573,7 +573,7 @@ export default async (application: Application): Promise<void> => {
                                   </div>
                                 </div>
                                 <div
-                                  key="courseConversation--unread"
+                                  key="courseConversation--side-decoration"
                                   css="${css`
                                     display: flex;
                                     justify-content: center;
@@ -581,7 +581,7 @@ export default async (application: Application): Promise<void> => {
                                   `}"
                                 >
                                   <div
-                                    key="unread"
+                                    key="courseConversationMessageViews"
                                     css="${css`
                                       background-color: light-dark(
                                         var(--color--blue--500),
@@ -720,36 +720,37 @@ export default async (application: Application): Promise<void> => {
                 `}"
                 javascript="${javascript`
                   // TODO: If conversation page.
-                  this.readIntersectionObserver?.disconnect();
-                  this.readIntersectionObserver = new IntersectionObserver((entries) => {
+                  // TODO: Prevent leaking intersection observer.
+                  this.courseConversationMessageViewsIntersectionObserver?.disconnect();
+                  this.courseConversationMessageViewsIntersectionObserver = new IntersectionObserver((entries) => {
                     for (const entry of entries) {
                       if (entry.intersectionRatio !== 1) continue;
-                      readIntersectionObserverForegroundJobCourseConversationMessageIds.add(entry.target.courseConversationMessageId);
-                      this.readIntersectionObserver.unobserve(entry.target);
+                      conversationMessageIds.add(entry.target.courseConversationMessageId);
+                      this.courseConversationMessageViewsIntersectionObserver.unobserve(entry.target);
                       setTimeout(() => {
-                        entry.target.classList.remove("unread");
+                        entry.target.classList.add("viewed");
                       }, 1000);
                     }
-                    readIntersectionObserverForegroundJob();
+                    updateCourseConversationMessageViews();
                   }, {
                     root: this,
                     threshold: 1,
                   });
-                  const readIntersectionObserverForegroundJob = utilities.foregroundJob(async () => {
-                    if (readIntersectionObserverForegroundJobCourseConversationMessageIds.size === 0) return;
-                    const body = new URLSearchParams([...readIntersectionObserverForegroundJobCourseConversationMessageIds].map(courseConversationMessageId => ["courseConversationMessageIds[]", courseConversationMessageId]));
-                    readIntersectionObserverForegroundJobCourseConversationMessageIds.clear();
+                  const updateCourseConversationMessageViews = utilities.foregroundJob(async () => {
+                    if (conversationMessageIds.size === 0) return;
+                    const body = new URLSearchParams([...conversationMessageIds].map(courseConversationMessageId => ["courseConversationMessageIds[]", courseConversationMessageId]));
+                    conversationMessageIds.clear();
                     await fetch(${`https://${application.configuration.hostname}/courses/${
                       request.state.course!.externalId
                     }/conversations/${
                       request.state.courseConversation!.externalId
-                    }/messages/readings`}, {
+                    }/messages/views`}, {
                       method: "POST",
                       headers: { "CSRF-Protection": "true" },
                       body,
                     });
                   });
-                  const readIntersectionObserverForegroundJobCourseConversationMessageIds = new Set();
+                  const conversationMessageIds = new Set();
                 `}"
               >
                 <div
@@ -993,7 +994,7 @@ export default async (application: Application): Promise<void> => {
                               `}"
                             >
                               $${(() => {
-                                const unread =
+                                const courseConversationMessageView =
                                   application.database.get(
                                     sql`
                                       select true
@@ -1002,7 +1003,7 @@ export default async (application: Application): Promise<void> => {
                                         "courseConversationMessage" = ${courseConversationMessage.id} and
                                         "courseParticipation" = ${request.state.courseParticipation!.id};
                                     `,
-                                  ) === undefined;
+                                  ) !== undefined;
                                 return html`
                                   <div
                                     css="${css`
@@ -1012,8 +1013,10 @@ export default async (application: Application): Promise<void> => {
                                     `}"
                                   >
                                     <div
-                                      key="unread"
-                                      class="${unread ? "unread" : ""}"
+                                      key="courseConversationMessageView"
+                                      class="${courseConversationMessageView
+                                        ? "viewed"
+                                        : ""}"
                                       css="${css`
                                         background-color: light-dark(
                                           var(--color--blue--500),
@@ -1033,13 +1036,13 @@ export default async (application: Application): Promise<void> => {
                                         transition-timing-function: var(
                                           --transition-timing-function--ease-in-out
                                         );
-                                        &:not(.unread) {
+                                        &.viewed {
                                           opacity: var(--opacity--0);
                                         }
                                       `}"
                                       javascript="${javascript`
-                                        if (${unread}) {
-                                          this.closest('[key="main--main--scrolling"]').readIntersectionObserver.observe(this);
+                                        if (${!courseConversationMessageView}) {
+                                          this.closest('[key="main--main--scrolling"]').courseConversationMessageViewsIntersectionObserver.observe(this);
                                           this.courseConversationMessageId = ${courseConversationMessage.externalId};
                                         }
                                       `}"

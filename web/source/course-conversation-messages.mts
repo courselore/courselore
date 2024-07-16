@@ -9,7 +9,7 @@ export default async (application: Application): Promise<void> => {
   application.server?.push({
     method: "POST",
     pathname: new RegExp(
-      "^/courses/(?<courseId>[0-9]+)/conversations/(?<courseConversationId>[0-9]+)/messages/readings$",
+      "^/courses/(?<courseId>[0-9]+)/conversations/(?<courseConversationId>[0-9]+)/messages/views$",
     ),
     handler: (
       request: serverTypes.Request<
