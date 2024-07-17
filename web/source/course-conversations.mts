@@ -121,7 +121,900 @@ export default async (application: Application): Promise<void> => {
               ${request.state.courseConversation.title} · Courselore
             </title>
           `,
-          body: html``,
+          body: html`
+            <div
+              key="courseConversation /courses/${request.state.course
+                .externalId}/conversations/${request.state.courseConversation
+                .externalId}"
+              css="${css`
+                display: flex;
+                flex-direction: column;
+                gap: var(--space--4);
+              `}"
+            >
+              <div
+                key="courseConversation--header"
+                css="${css`
+                  display: flex;
+                  flex-direction: column;
+                  gap: var(--space--1);
+                `}"
+              >
+                $${typeof request.state.course.archivedAt === "string"
+                  ? html`
+                      <div
+                        key="courseConversation--archived"
+                        class="text--secondary"
+                        css="${css`
+                          color: light-dark(
+                            var(--color--red--500),
+                            var(--color--red--500)
+                          );
+                        `}"
+                      >
+                        <i class="bi bi-exclamation-triangle-fill"></i> This
+                        course has been archived on
+                        <span
+                          javascript="${javascript`
+                        this.textContent = javascript.localizeDate(${request.state.course.archivedAt});
+                      `}"
+                        ></span>
+                        and is now read-only.
+                      </div>
+                    `
+                  : html``}
+                $${(() => {
+                  const mayEditCourseConversation =
+                    request.state.course.archivedAt === null &&
+                    (request.state.courseParticipation.courseRole ===
+                      "courseStaff" ||
+                      application.database.get(
+                        sql`
+                      select true
+                      from "courseConversationMessages"
+                      where
+                        "courseConversation" = ${request.state.courseConversation.id} and
+                        "createdByCourseParticipation" = ${request.state.courseParticipation.id} and
+                        "externalId" = '1';
+                    `,
+                      ) !== undefined);
+                  return html`
+                    <div
+                      css="${css`
+                        display: flex;
+                        gap: var(--space--4);
+                      `}"
+                    >
+                      <div
+                        key="courseConversation--header--title"
+                        css="${css`
+                          flex: 1;
+                        `}"
+                      >
+                        <div
+                          key="courseConversation--header--title--show"
+                          css="${css`
+                            font-size: var(--font-size--4);
+                            line-height: var(--font-size--4--line-height);
+                            font-weight: 700;
+                          `}"
+                        >
+                          ${request.state.courseConversation.title}
+                        </div>
+                        $${mayEditCourseConversation
+                          ? html`
+                              <form
+                                key="courseConversation--header--title--edit"
+                                method="PATCH"
+                                action="https://${application.configuration
+                                  .hostname}/courses/${request.state.course
+                                  .externalId}/conversations/${request.state
+                                  .courseConversation.externalId}"
+                                novalidate
+                                hidden
+                                css="${css`
+                                  display: flex;
+                                  gap: var(--space--2);
+                                  align-items: center;
+                                  margin-bottom: var(--space--2);
+                                `}"
+                              >
+                                <input
+                                  name="title"
+                                  value="${request.state.courseConversation
+                                    .title}"
+                                  class="input--text"
+                                  css="${css`
+                                    flex: 1;
+                                  `}"
+                                />
+                                <button
+                                  class="button button--square button--icon button--transparent"
+                                  css="${css`
+                                    font-size: var(--font-size--5);
+                                    line-height: var(--space--0);
+                                  `}"
+                                >
+                                  <i class="bi bi-check"></i>
+                                </button>
+                                <button
+                                  type="reset"
+                                  class="button button--square button--icon button--transparent"
+                                  css="${css`
+                                    font-size: var(--font-size--5);
+                                    line-height: var(--space--0);
+                                  `}"
+                                  javascript="${javascript`
+                                this.onclick = () => {
+                                  this.closest('[key="courseConversation--header"]').querySelector('[key="courseConversation--header--title--show"]').hidden = false;
+                                  this.closest('[key="courseConversation--header"]').querySelector('[key="courseConversation--header--title--edit"]').hidden = true;
+                                };
+                              `}"
+                                >
+                                  <i class="bi bi-x"></i>
+                                </button>
+                              </form>
+                            `
+                          : html``}
+                      </div>
+                      <div>
+                        <button
+                          key="courseConversation--header--menu"
+                          class="text--secondary button button--square button--icon button--transparent"
+                          css="${css`
+                            font-size: var(--font-size--4);
+                            line-height: var(--space--0);
+                            margin-top: var(--space--0);
+                          `}"
+                          javascript="${javascript`
+                        javascript.tippy({
+                          event,
+                          element: this,
+                          placement: "bottom-end",
+                          interactive: true,
+                          trigger: "click",
+                          content: ${html`
+                            <div
+                              css="${css`
+                                display: flex;
+                                flex-direction: column;
+                                gap: var(--space--2);
+                              `}"
+                            >
+                              <button
+                                class="button button--rectangle button--transparent button--dropdown-menu"
+                                javascript="${javascript`
+                                  this.onclick = async () => {
+                                    await navigator.clipboard.writeText(${`https://${application.configuration.hostname}/courses/${request.state.course.externalId}/conversations/${request.state.courseConversation.externalId}`});
+                                    javascript.tippy({
+                                      element: this,
+                                      elementProperty: "copiedTippy",
+                                      trigger: "manual",
+                                      content: "Copied",
+                                    }).show();
+                                    await utilities.sleep(1000);
+                                    this.copiedTippy.hide();
+                                  };
+                                `}"
+                              >
+                                Copy conversation permanent link
+                              </button>
+                              $${mayEditCourseConversation
+                                ? html`
+                                    <button
+                                      class="button button--rectangle button--transparent button--dropdown-menu"
+                                      javascript="${javascript`
+                                        this.onclick = () => {
+                                          this.closest('[key="courseConversation--header"]').querySelector('[key="courseConversation--header--title--show"]').hidden = true;
+                                          this.closest('[key="courseConversation--header"]').querySelector('[key="courseConversation--header--title--edit"]').hidden = false;
+                                          Tippy.hideAll();
+                                          this.closest('[key="courseConversation--header"]').querySelector('[key="courseConversation--header--title--edit"] [name="title"]').focus();
+                                        };
+                                      `}"
+                                    >
+                                      Edit conversation title
+                                    </button>
+                                  `
+                                : html``}
+                              $${(() => {
+                                const courses = application.database.all<{
+                                  externalId: string;
+                                  name: string;
+                                }>(
+                                  sql`
+                                      select
+                                        "courses"."externalId" as "externalId",
+                                        "courses"."name" as "name"
+                                      from "courses"
+                                      join "courseParticipations" on
+                                        "courses"."id" = "courseParticipations"."course" and
+                                        "courseParticipations"."user" = ${request.state.user.id}
+                                      where
+                                        "courses"."id" != ${request.state.course.id} and
+                                        "courses"."archivedAt" is null
+                                      order by "courseParticipations"."id" desc;
+                                    `,
+                                );
+                                return courses.length > 0
+                                  ? html`
+                                      <button
+                                        class="button button--rectangle button--transparent button--dropdown-menu"
+                                        javascript="${javascript`
+                                          javascript.tippy({
+                                            event,
+                                            element: this,
+                                            placement: "bottom-end",
+                                            interactive: true,
+                                            trigger: "click",
+                                            content: ${html`
+                                              <div
+                                                css="${css`
+                                                  display: flex;
+                                                  flex-direction: column;
+                                                  gap: var(--space--2);
+                                                `}"
+                                              >
+                                                $${courses.map(
+                                                  (course) => html`
+                                                    <a
+                                                      href="https://${application
+                                                        .configuration
+                                                        .hostname}/courses/${course.externalId}/conversations/new?${new URLSearchParams(
+                                                        {
+                                                          "reuse.course":
+                                                            request.state
+                                                              .course!
+                                                              .externalId,
+                                                          "reuse.courseConversation":
+                                                            request.state
+                                                              .courseConversation!
+                                                              .externalId,
+                                                        },
+                                                      ).toString()}"
+                                                      class="button button--rectangle button--transparent button--dropdown-menu"
+                                                    >
+                                                      ${course.name}
+                                                    </a>
+                                                  `,
+                                                )}
+                                              </div>
+                                            `},
+                                          });
+                                        `}"
+                                      >
+                                        Reuse conversation in another course
+                                      </button>
+                                    `
+                                  : html``;
+                              })()}
+                              $${mayEditCourseConversation &&
+                              request.state.courseParticipation.courseRole ===
+                                "courseStaff"
+                                ? html`
+                                    <button
+                                      class="button button--rectangle button--transparent button--dropdown-menu"
+                                      javascript="${javascript`
+                                        javascript.tippy({
+                                          event,
+                                          element: this,
+                                          placement: "bottom-end",
+                                          interactive: true,
+                                          trigger: "click",
+                                          theme: "red",
+                                          content: ${html`
+                                            <form
+                                              method="DELETE"
+                                              action="https://${application
+                                                .configuration
+                                                .hostname}/courses/${request
+                                                .state.course
+                                                .externalId}/conversations/${request
+                                                .state.courseConversation
+                                                .externalId}"
+                                              css="${css`
+                                                display: flex;
+                                                flex-direction: column;
+                                                gap: var(--space--2);
+                                              `}"
+                                            >
+                                              <div>
+                                                <i
+                                                  class="bi bi-exclamation-triangle-fill"
+                                                ></i
+                                                > This action cannot be
+                                                reverted.
+                                              </div>
+                                              <div>
+                                                <button
+                                                  class="button button--rectangle button--red"
+                                                >
+                                                  Delete conversation
+                                                </button>
+                                              </div>
+                                            </form>
+                                          `},
+                                        });
+                                      `}"
+                                    >
+                                      Delete conversation
+                                    </button>
+                                  `
+                                : html``}
+                            </div>
+                          `},
+                        });
+                      `}"
+                        >
+                          <i class="bi bi-three-dots-vertical"></i>
+                        </button>
+                      </div>
+                    </div>
+                    <div
+                      class="text--secondary"
+                      css="${css`
+                        display: flex;
+                        flex-direction: column;
+                        gap: var(--space--2);
+                      `}"
+                    >
+                      <div
+                        css="${css`
+                          display: flex;
+                          flex-wrap: wrap;
+                          column-gap: var(--space--4);
+                          row-gap: var(--space--2);
+                        `}"
+                      >
+                        <button
+                          class="button button--rectangle button--transparent"
+                        >
+                          ${request.state.courseConversation
+                            .courseConversationType === "courseConversationNote"
+                            ? "Note"
+                            : request.state.courseConversation
+                                  .courseConversationType ===
+                                "courseConversationQuestion"
+                              ? "Question"
+                              : (() => {
+                                  throw new Error();
+                                })()} <i class="bi bi-chevron-down"></i>
+                        </button>
+                        $${request.state.courseConversation
+                          .courseConversationType ===
+                        "courseConversationQuestion"
+                          ? html`
+                              <button
+                                class="button button--rectangle button--transparent"
+                              >
+                                ${request.state.courseConversation
+                                  .questionResolved === Number(true)
+                                  ? "Resolved"
+                                  : "Unresolved"} <i
+                                  class="bi bi-chevron-down"
+                                ></i>
+                              </button>
+                            `
+                          : html``}
+                        <button
+                          class="button button--rectangle button--transparent"
+                        >
+                          ${request.state.courseConversation
+                            .courseConversationParticipations ===
+                          "courseStudent"
+                            ? "Students"
+                            : request.state.courseConversation
+                                  .courseConversationParticipations ===
+                                "courseStaff"
+                              ? "Course staff"
+                              : request.state.courseConversation
+                                    .courseConversationParticipations ===
+                                  "courseConversationParticipations"
+                                ? "Selected people"
+                                : (() => {
+                                    throw new Error();
+                                  })()} <i class="bi bi-chevron-down"></i>
+                        </button>
+                        <button
+                          class="button button--rectangle button--transparent"
+                        >
+                          ${request.state.courseConversation.pinned ===
+                          Number(true)
+                            ? "Pinned"
+                            : "Unpinned"} <i class="bi bi-chevron-down"></i>
+                        </button>
+                      </div>
+                      <div
+                        css="${css`
+                          display: flex;
+                          flex-wrap: wrap;
+                          column-gap: var(--space--4);
+                          row-gap: var(--space--2);
+                        `}"
+                      >
+                        <button
+                          class="button button--rectangle button--transparent"
+                        >
+                          Tags <i class="bi bi-chevron-down"></i>
+                        </button>
+                        $${request.state.courseConversationsTags.map(
+                          (courseConversationsTag) =>
+                            application.database.get(
+                              sql`
+                            select true
+                            from "courseConversationTaggings"
+                            where
+                              "courseConversation" = ${request.state.courseConversation!.id} and
+                              "courseConversationsTag" = ${courseConversationsTag.id};
+                          `,
+                            ) !== undefined
+                              ? html`
+                                  <div
+                                    key="courseConversationsTag ${courseConversationsTag.externalId}"
+                                    css="${css`
+                                      font-weight: 400;
+                                    `}"
+                                  >
+                                    ${courseConversationsTag.name}
+                                  </div>
+                                `
+                              : html``,
+                        )}
+                      </div>
+                    </div>
+                  `;
+                })()}
+              </div>
+              <div
+                key="courseConversationMessages"
+                css="${css`
+                  display: flex;
+                  flex-direction: column;
+                  gap: var(--space--4);
+                `}"
+              >
+                $${application.database
+                  .all<{
+                    id: number;
+                    externalId: string;
+                    createdAt: string;
+                    updatedAt: string | null;
+                    createdByCourseParticipation: number | null;
+                    courseConversationMessageType:
+                      | "courseConversationMessageMessage"
+                      | "courseConversationMessageAnswer"
+                      | "courseConversationMessageFollowUpQuestion"
+                      | "courseConversationMessageCourseStaffWhisper";
+                    anonymous: number;
+                    contentSource: string;
+                    contentPreprocessed: string;
+                    contentSearch: string;
+                  }>(
+                    sql`
+                  select
+                    "id",
+                    "externalId",
+                    "createdAt",
+                    "updatedAt",
+                    "createdByCourseParticipation",
+                    "courseConversationMessageType",
+                    "anonymous",
+                    "contentSource",
+                    "contentPreprocessed",
+                    "contentSearch"
+                  from "courseConversationMessages"
+                  where
+                    "courseConversation" = ${request.state.courseConversation.id} $${
+                      request.state.courseParticipation.courseRole !==
+                      "courseStaff"
+                        ? sql`
+                            and
+                            "courseConversationMessageType" != 'courseConversationMessageCourseStaffWhisper'
+                          `
+                        : sql``
+                    }
+                  order by "id" asc;
+                `,
+                  )
+                  .map(
+                    (courseConversationMessage) => html`
+                      <div
+                        key="courseConversationMessage /courses/${request.state
+                          .course!.externalId}/conversations/${request.state
+                          .courseConversation!
+                          .externalId}/messages/${courseConversationMessage.externalId}"
+                        css="${css`
+                          position: relative;
+                          display: flex;
+                          gap: var(--space--2);
+                        `}"
+                      >
+                        $${(() => {
+                          const courseConversationMessageView =
+                            application.database.get(
+                              sql`
+                            select true
+                            from "courseConversationMessageViews"
+                            where
+                              "courseConversationMessage" = ${courseConversationMessage.id} and
+                              "courseParticipation" = ${request.state.courseParticipation!.id};
+                          `,
+                            ) !== undefined;
+                          return html`
+                            <div
+                              css="${css`
+                                position: absolute;
+                                margin-left: var(--space---2-5);
+                                margin-top: var(--space--4);
+                              `}"
+                            >
+                              <div
+                                key="courseConversationMessageView"
+                                class="${courseConversationMessageView
+                                  ? "viewed"
+                                  : ""}"
+                                css="${css`
+                                  background-color: light-dark(
+                                    var(--color--blue--500),
+                                    var(--color--blue--500)
+                                  );
+                                  width: var(--space--1-5);
+                                  height: var(--space--1-5);
+                                  border-radius: var(--border-radius--circle);
+                                  transition-property: var(
+                                    --transition-property--opacity
+                                  );
+                                  transition-duration: var(
+                                    --transition-duration--150
+                                  );
+                                  transition-timing-function: var(
+                                    --transition-timing-function--ease-in-out
+                                  );
+                                  &.viewed {
+                                    opacity: var(--opacity--0);
+                                  }
+                                `}"
+                                javascript="${javascript`
+                              if (${!courseConversationMessageView}) {
+                                this.closest('[key~="main--main--scroll"]').courseConversationMessageViewsIntersectionObserver.observe(this);
+                                this.courseConversationMessageId = ${courseConversationMessage.externalId};
+                              }
+                            `}"
+                              ></div>
+                            </div>
+                          `;
+                        })()}
+                        <div key="courseConversationMessage--createdBy">
+                          <div
+                            key="user--avatar"
+                            style="
+                            --color--light: var(--color--pink--800);
+                            --color--dark: var(--color--pink--200);
+                            --background-color--light: var(--color--pink--200);
+                            --background-color--dark: var(--color--pink--800);
+                            --border-color--light: var(--color--pink--300);
+                            --border-color--dark: var(--color--pink--900);
+                          "
+                            css="${css`
+                              font-size: var(--font-size--3-5);
+                              line-height: var(--space--0);
+                              letter-spacing: var(--letter-spacing--1);
+                              font-weight: 800;
+                              color: light-dark(
+                                var(--color--light),
+                                var(--color--dark)
+                              );
+                              background-color: light-dark(
+                                var(--background-color--light),
+                                var(--background-color--dark)
+                              );
+                              width: var(--space--9);
+                              height: var(--space--9);
+                              border: var(--border-width--1) solid
+                                light-dark(
+                                  var(--border-color--light),
+                                  var(--border-color--dark)
+                                );
+                              border-radius: var(--border-radius--1);
+                              overflow: hidden;
+                              display: flex;
+                              justify-content: center;
+                              align-items: center;
+                            `}"
+                          >
+                            AW
+                          </div>
+                        </div>
+                        <div
+                          key="courseConversationMessage--main"
+                          css="${css`
+                            flex: 1;
+                            display: flex;
+                            flex-direction: column;
+                            gap: var(--space--1);
+                          `}"
+                        >
+                          <div
+                            key="courseConversationMessage--header"
+                            class="text--secondary"
+                            css="${css`
+                              display: flex;
+                              gap: var(--space--2);
+                            `}"
+                          >
+                            <div
+                              css="${css`
+                                flex: 1;
+                              `}"
+                            >
+                              <span
+                                css="${css`
+                                  font-weight: 700;
+                                `}"
+                                >Abigail Wall</span
+                              ><span
+                                css="${css`
+                                  font-weight: 400;
+                                `}"
+                                > ·
+                                <span
+                                  css="${css`
+                                    display: inline-block;
+                                  `}"
+                                  >2024-03-02</span
+                                > $${courseConversationMessage.courseConversationMessageType ===
+                                "courseConversationMessageMessage"
+                                  ? html``
+                                  : courseConversationMessage.courseConversationMessageType ===
+                                      "courseConversationMessageAnswer"
+                                    ? html`·
+                                        <span
+                                          css="${css`
+                                            font-weight: 700;
+                                            color: light-dark(
+                                              var(--color--green--500),
+                                              var(--color--green--500)
+                                            );
+                                          `}"
+                                          >Answer</span
+                                        >`
+                                    : courseConversationMessage.courseConversationMessageType ===
+                                        "courseConversationMessageFollowUpQuestion"
+                                      ? html`·
+                                          <span
+                                            css="${css`
+                                              font-weight: 700;
+                                              color: light-dark(
+                                                var(--color--red--500),
+                                                var(--color--red--500)
+                                              );
+                                            `}"
+                                            >Follow-up question</span
+                                          >`
+                                      : courseConversationMessage.courseConversationMessageType ===
+                                          "courseConversationMessageCourseStaffWhisper"
+                                        ? html`·
+                                            <span
+                                              css="${css`
+                                                font-weight: 700;
+                                                color: light-dark(
+                                                  var(--color--blue--500),
+                                                  var(--color--blue--500)
+                                                );
+                                              `}"
+                                              >Course staff whisper</span
+                                            >`
+                                        : (() => {
+                                            throw new Error();
+                                          })()}</span
+                              >
+                            </div>
+                            <div>
+                              <button
+                                key="courseConversation--header--menu"
+                                class="button button--square button--icon button--transparent"
+                                css="${css`
+                                  margin-right: var(--space---0-5);
+                                `}"
+                              >
+                                <i class="bi bi-three-dots-vertical"></i>
+                              </button>
+                            </div>
+                          </div>
+                          <div key="courseConversationMessage--content">
+                            ${courseConversationMessage.contentSource}
+                          </div>
+                          <div
+                            key="courseConversationMessage--footer"
+                            class="text--secondary"
+                          >
+                            <button
+                              key="courseConversation--footer--like"
+                              class="button button--rectangle button--transparent"
+                            >
+                              <i class="bi bi-hand-thumbs-up"></i> Like
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    `,
+                  )}
+              </div>
+              $${request.state.course.archivedAt === null
+                ? html`
+                    <div key="courseConversationMessage/new">
+                      <form
+                        novalidate
+                        css="${css`
+                          display: flex;
+                          flex-direction: column;
+                          gap: var(--space--2);
+                        `}"
+                      >
+                        <div
+                          key="contentEditor"
+                          class="input--text"
+                          css="${css`
+                            padding: var(--space--0);
+                            display: flex;
+                            flex-direction: column;
+                          `}"
+                        >
+                          <div
+                            key="contentEditor--menu"
+                            class="text--secondary"
+                            css="${css`
+                              font-size: var(--font-size--3-5);
+                              line-height: var(--font-size--3-5--line-height);
+                              padding: var(--space--1-5) var(--space--2);
+                              border-bottom: var(--border-width--1) solid
+                                light-dark(
+                                  var(--color--slate--200),
+                                  var(--color--slate--800)
+                                );
+                              display: flex;
+                              flex-wrap: wrap;
+                              gap: var(--space--2);
+                            `}"
+                          >
+                            <button
+                              class="button button--square button--icon button--transparent"
+                              javascript="${javascript`
+                            javascript.tippy({
+                              event,
+                              element: this,
+                              content: "Bold",
+                            });
+                          `}"
+                            >
+                              <i class="bi bi-type-bold"></i>
+                            </button>
+                            <button
+                              class="button button--square button--icon button--transparent"
+                              javascript="${javascript`
+                            javascript.tippy({
+                              event,
+                              element: this,
+                              content: "Link",
+                            });
+                          `}"
+                            >
+                              <i class="bi bi-link"></i>
+                            </button>
+                            <button
+                              class="button button--square button--icon button--transparent"
+                              javascript="${javascript`
+                            javascript.tippy({
+                              event,
+                              element: this,
+                              content: "Image",
+                            });
+                          `}"
+                            >
+                              <i class="bi bi-image"></i>
+                            </button>
+                            <button
+                              class="button button--square button--icon button--transparent"
+                              javascript="${javascript`
+                            javascript.tippy({
+                              event,
+                              element: this,
+                              content: "Code block",
+                            });
+                          `}"
+                            >
+                              <i class="bi bi-code"></i>
+                            </button>
+                            <button
+                              class="button button--square button--icon button--transparent"
+                              javascript="${javascript`
+                            javascript.tippy({
+                              event,
+                              element: this,
+                              content: "Mathematics block",
+                            });
+                          `}"
+                            >
+                              <i class="bi bi-calculator"></i>
+                            </button>
+                            <button
+                              class="button button--square button--icon button--transparent"
+                              javascript="${javascript`
+                            javascript.tippy({
+                              event,
+                              element: this,
+                              content: "Poll",
+                            });
+                          `}"
+                            >
+                              <i class="bi bi-card-checklist"></i>
+                            </button>
+                            <div
+                              css="${css`
+                                flex: 1;
+                              `}"
+                            ></div>
+                            <button
+                              class="button button--square button--icon button--transparent"
+                              javascript="${javascript`
+                            javascript.tippy({
+                              event,
+                              element: this,
+                              content: "Preview",
+                            });
+                          `}"
+                            >
+                              <i class="bi bi-eyeglasses"></i>
+                            </button>
+                            <button
+                              class="button button--square button--icon button--transparent"
+                              javascript="${javascript`
+                            javascript.tippy({
+                              event,
+                              element: this,
+                              content: "Menu",
+                            });
+                          `}"
+                            >
+                              <i class="bi bi-three-dots-vertical"></i>
+                            </button>
+                          </div>
+                          <textarea
+                            key="contentEditor--textarea"
+                            css="${css`
+                              font-family: "JetBrains Mono Variable",
+                                var(--font-family--sans-serif);
+                              height: var(--space--44);
+                              padding: var(--space--1) var(--space--2);
+                            `}"
+                          ></textarea>
+                        </div>
+                        <div
+                          class="text--secondary"
+                          css="${css`
+                            display: flex;
+                            gap: var(--space--4);
+                            align-items: baseline;
+                          `}"
+                        >
+                          <button class="button button--rectangle button--blue">
+                            Send
+                          </button>
+                          <label
+                            class="button button--rectangle button--transparent"
+                          >
+                            <input
+                              type="checkbox"
+                              name="anonymous"
+                              class="input--checkbox"
+                            />  Anonymous to other students
+                          </label>
+                        </div>
+                      </form>
+                    </div>
+                  `
+                : html``}
+            </div>
+          `,
         }),
       );
     },
@@ -784,902 +1677,7 @@ export default async (application: Application): Promise<void> => {
                 }
               `}"
             >
-              <div
-                key="courseConversation /courses/${request.state.course
-                  .externalId}/conversations/${request.state.courseConversation
-                  .externalId}"
-                css="${css`
-                  display: flex;
-                  flex-direction: column;
-                  gap: var(--space--4);
-                `}"
-              >
-                <div
-                  key="courseConversation--header"
-                  css="${css`
-                    display: flex;
-                    flex-direction: column;
-                    gap: var(--space--1);
-                  `}"
-                >
-                  $${typeof request.state.course.archivedAt === "string"
-                    ? html`
-                        <div
-                          key="courseConversation--archived"
-                          class="text--secondary"
-                          css="${css`
-                            color: light-dark(
-                              var(--color--red--500),
-                              var(--color--red--500)
-                            );
-                          `}"
-                        >
-                          <i class="bi bi-exclamation-triangle-fill"></i> This
-                          course has been archived on
-                          <span
-                            javascript="${javascript`
-                              this.textContent = javascript.localizeDate(${request.state.course.archivedAt});
-                            `}"
-                          ></span>
-                          and is now read-only.
-                        </div>
-                      `
-                    : html``}
-                  $${(() => {
-                    const mayEditCourseConversation =
-                      request.state.course.archivedAt === null &&
-                      (request.state.courseParticipation.courseRole ===
-                        "courseStaff" ||
-                        application.database.get(
-                          sql`
-                            select true
-                            from "courseConversationMessages"
-                            where
-                              "courseConversation" = ${request.state.courseConversation.id} and
-                              "createdByCourseParticipation" = ${request.state.courseParticipation.id} and
-                              "externalId" = '1';
-                          `,
-                        ) !== undefined);
-                    return html`
-                      <div
-                        css="${css`
-                          display: flex;
-                          gap: var(--space--4);
-                        `}"
-                      >
-                        <div
-                          key="courseConversation--header--title"
-                          css="${css`
-                            flex: 1;
-                          `}"
-                        >
-                          <div
-                            key="courseConversation--header--title--show"
-                            css="${css`
-                              font-size: var(--font-size--4);
-                              line-height: var(--font-size--4--line-height);
-                              font-weight: 700;
-                            `}"
-                          >
-                            ${request.state.courseConversation.title}
-                          </div>
-                          $${mayEditCourseConversation
-                            ? html`
-                                <form
-                                  key="courseConversation--header--title--edit"
-                                  method="PATCH"
-                                  action="https://${application.configuration
-                                    .hostname}/courses/${request.state.course
-                                    .externalId}/conversations/${request.state
-                                    .courseConversation.externalId}"
-                                  novalidate
-                                  hidden
-                                  css="${css`
-                                    display: flex;
-                                    gap: var(--space--2);
-                                    align-items: center;
-                                    margin-bottom: var(--space--2);
-                                  `}"
-                                >
-                                  <input
-                                    name="title"
-                                    value="${request.state.courseConversation
-                                      .title}"
-                                    class="input--text"
-                                    css="${css`
-                                      flex: 1;
-                                    `}"
-                                  />
-                                  <button
-                                    class="button button--square button--icon button--transparent"
-                                    css="${css`
-                                      font-size: var(--font-size--5);
-                                      line-height: var(--space--0);
-                                    `}"
-                                  >
-                                    <i class="bi bi-check"></i>
-                                  </button>
-                                  <button
-                                    type="reset"
-                                    class="button button--square button--icon button--transparent"
-                                    css="${css`
-                                      font-size: var(--font-size--5);
-                                      line-height: var(--space--0);
-                                    `}"
-                                    javascript="${javascript`
-                                      this.onclick = () => {
-                                        this.closest('[key="courseConversation--header"]').querySelector('[key="courseConversation--header--title--show"]').hidden = false;
-                                        this.closest('[key="courseConversation--header"]').querySelector('[key="courseConversation--header--title--edit"]').hidden = true;
-                                      };
-                                    `}"
-                                  >
-                                    <i class="bi bi-x"></i>
-                                  </button>
-                                </form>
-                              `
-                            : html``}
-                        </div>
-                        <div>
-                          <button
-                            key="courseConversation--header--menu"
-                            class="text--secondary button button--square button--icon button--transparent"
-                            css="${css`
-                              font-size: var(--font-size--4);
-                              line-height: var(--space--0);
-                              margin-top: var(--space--0);
-                            `}"
-                            javascript="${javascript`
-                              javascript.tippy({
-                                event,
-                                element: this,
-                                placement: "bottom-end",
-                                interactive: true,
-                                trigger: "click",
-                                content: ${html`
-                                  <div
-                                    css="${css`
-                                      display: flex;
-                                      flex-direction: column;
-                                      gap: var(--space--2);
-                                    `}"
-                                  >
-                                    <button
-                                      class="button button--rectangle button--transparent button--dropdown-menu"
-                                      javascript="${javascript`
-                                        this.onclick = async () => {
-                                          await navigator.clipboard.writeText(${`https://${application.configuration.hostname}/courses/${request.state.course.externalId}/conversations/${request.state.courseConversation.externalId}`});
-                                          javascript.tippy({
-                                            element: this,
-                                            elementProperty: "copiedTippy",
-                                            trigger: "manual",
-                                            content: "Copied",
-                                          }).show();
-                                          await utilities.sleep(1000);
-                                          this.copiedTippy.hide();
-                                        };
-                                      `}"
-                                    >
-                                      Copy conversation permanent link
-                                    </button>
-                                    $${mayEditCourseConversation
-                                      ? html`
-                                          <button
-                                            class="button button--rectangle button--transparent button--dropdown-menu"
-                                            javascript="${javascript`
-                                              this.onclick = () => {
-                                                this.closest('[key="courseConversation--header"]').querySelector('[key="courseConversation--header--title--show"]').hidden = true;
-                                                this.closest('[key="courseConversation--header"]').querySelector('[key="courseConversation--header--title--edit"]').hidden = false;
-                                                Tippy.hideAll();
-                                                this.closest('[key="courseConversation--header"]').querySelector('[key="courseConversation--header--title--edit"] [name="title"]').focus();
-                                              };
-                                            `}"
-                                          >
-                                            Edit conversation title
-                                          </button>
-                                        `
-                                      : html``}
-                                    $${(() => {
-                                      const courses = application.database.all<{
-                                        externalId: string;
-                                        name: string;
-                                      }>(
-                                        sql`
-                                            select
-                                              "courses"."externalId" as "externalId",
-                                              "courses"."name" as "name"
-                                            from "courses"
-                                            join "courseParticipations" on
-                                              "courses"."id" = "courseParticipations"."course" and
-                                              "courseParticipations"."user" = ${request.state.user.id}
-                                            where
-                                              "courses"."id" != ${request.state.course.id} and
-                                              "courses"."archivedAt" is null
-                                            order by "courseParticipations"."id" desc;
-                                          `,
-                                      );
-                                      return courses.length > 0
-                                        ? html`
-                                            <button
-                                              class="button button--rectangle button--transparent button--dropdown-menu"
-                                              javascript="${javascript`
-                                                javascript.tippy({
-                                                  event,
-                                                  element: this,
-                                                  placement: "bottom-end",
-                                                  interactive: true,
-                                                  trigger: "click",
-                                                  content: ${html`
-                                                    <div
-                                                      css="${css`
-                                                        display: flex;
-                                                        flex-direction: column;
-                                                        gap: var(--space--2);
-                                                      `}"
-                                                    >
-                                                      $${courses.map(
-                                                        (course) => html`
-                                                          <a
-                                                            href="https://${application
-                                                              .configuration
-                                                              .hostname}/courses/${course.externalId}/conversations/new?${new URLSearchParams(
-                                                              {
-                                                                "reuse.course":
-                                                                  request.state
-                                                                    .course!
-                                                                    .externalId,
-                                                                "reuse.courseConversation":
-                                                                  request.state
-                                                                    .courseConversation!
-                                                                    .externalId,
-                                                              },
-                                                            ).toString()}"
-                                                            class="button button--rectangle button--transparent button--dropdown-menu"
-                                                          >
-                                                            ${course.name}
-                                                          </a>
-                                                        `,
-                                                      )}
-                                                    </div>
-                                                  `},
-                                                });
-                                              `}"
-                                            >
-                                              Reuse conversation in another
-                                              course
-                                            </button>
-                                          `
-                                        : html``;
-                                    })()}
-                                    $${mayEditCourseConversation &&
-                                    request.state.courseParticipation
-                                      .courseRole === "courseStaff"
-                                      ? html`
-                                          <button
-                                            class="button button--rectangle button--transparent button--dropdown-menu"
-                                            javascript="${javascript`
-                                              javascript.tippy({
-                                                event,
-                                                element: this,
-                                                placement: "bottom-end",
-                                                interactive: true,
-                                                trigger: "click",
-                                                theme: "red",
-                                                content: ${html`
-                                                  <form
-                                                    method="DELETE"
-                                                    action="https://${application
-                                                      .configuration
-                                                      .hostname}/courses/${request
-                                                      .state.course
-                                                      .externalId}/conversations/${request
-                                                      .state.courseConversation
-                                                      .externalId}"
-                                                    css="${css`
-                                                      display: flex;
-                                                      flex-direction: column;
-                                                      gap: var(--space--2);
-                                                    `}"
-                                                  >
-                                                    <div>
-                                                      <i
-                                                        class="bi bi-exclamation-triangle-fill"
-                                                      ></i
-                                                      > This action cannot be
-                                                      reverted.
-                                                    </div>
-                                                    <div>
-                                                      <button
-                                                        class="button button--rectangle button--red"
-                                                      >
-                                                        Delete conversation
-                                                      </button>
-                                                    </div>
-                                                  </form>
-                                                `},
-                                              });
-                                            `}"
-                                          >
-                                            Delete conversation
-                                          </button>
-                                        `
-                                      : html``}
-                                  </div>
-                                `},
-                              });
-                            `}"
-                          >
-                            <i class="bi bi-three-dots-vertical"></i>
-                          </button>
-                        </div>
-                      </div>
-                      <div
-                        class="text--secondary"
-                        css="${css`
-                          display: flex;
-                          flex-direction: column;
-                          gap: var(--space--2);
-                        `}"
-                      >
-                        <div
-                          css="${css`
-                            display: flex;
-                            flex-wrap: wrap;
-                            column-gap: var(--space--4);
-                            row-gap: var(--space--2);
-                          `}"
-                        >
-                          <button
-                            class="button button--rectangle button--transparent"
-                          >
-                            ${request.state.courseConversation
-                              .courseConversationType ===
-                            "courseConversationNote"
-                              ? "Note"
-                              : request.state.courseConversation
-                                    .courseConversationType ===
-                                  "courseConversationQuestion"
-                                ? "Question"
-                                : (() => {
-                                    throw new Error();
-                                  })()} <i class="bi bi-chevron-down"></i>
-                          </button>
-                          $${request.state.courseConversation
-                            .courseConversationType ===
-                          "courseConversationQuestion"
-                            ? html`
-                                <button
-                                  class="button button--rectangle button--transparent"
-                                >
-                                  ${request.state.courseConversation
-                                    .questionResolved === Number(true)
-                                    ? "Resolved"
-                                    : "Unresolved"} <i
-                                    class="bi bi-chevron-down"
-                                  ></i>
-                                </button>
-                              `
-                            : html``}
-                          <button
-                            class="button button--rectangle button--transparent"
-                          >
-                            ${request.state.courseConversation
-                              .courseConversationParticipations ===
-                            "courseStudent"
-                              ? "Students"
-                              : request.state.courseConversation
-                                    .courseConversationParticipations ===
-                                  "courseStaff"
-                                ? "Course staff"
-                                : request.state.courseConversation
-                                      .courseConversationParticipations ===
-                                    "courseConversationParticipations"
-                                  ? "Selected people"
-                                  : (() => {
-                                      throw new Error();
-                                    })()} <i class="bi bi-chevron-down"></i>
-                          </button>
-                          <button
-                            class="button button--rectangle button--transparent"
-                          >
-                            ${request.state.courseConversation.pinned ===
-                            Number(true)
-                              ? "Pinned"
-                              : "Unpinned"} <i class="bi bi-chevron-down"></i>
-                          </button>
-                        </div>
-                        <div
-                          css="${css`
-                            display: flex;
-                            flex-wrap: wrap;
-                            column-gap: var(--space--4);
-                            row-gap: var(--space--2);
-                          `}"
-                        >
-                          <button
-                            class="button button--rectangle button--transparent"
-                          >
-                            Tags <i class="bi bi-chevron-down"></i>
-                          </button>
-                          $${request.state.courseConversationsTags.map(
-                            (courseConversationsTag) =>
-                              application.database.get(
-                                sql`
-                                  select true
-                                  from "courseConversationTaggings"
-                                  where
-                                    "courseConversation" = ${request.state.courseConversation!.id} and
-                                    "courseConversationsTag" = ${courseConversationsTag.id};
-                                `,
-                              ) !== undefined
-                                ? html`
-                                    <div
-                                      key="courseConversationsTag ${courseConversationsTag.externalId}"
-                                      css="${css`
-                                        font-weight: 400;
-                                      `}"
-                                    >
-                                      ${courseConversationsTag.name}
-                                    </div>
-                                  `
-                                : html``,
-                          )}
-                        </div>
-                      </div>
-                    `;
-                  })()}
-                </div>
-                <div
-                  key="courseConversationMessages"
-                  css="${css`
-                    display: flex;
-                    flex-direction: column;
-                    gap: var(--space--4);
-                  `}"
-                >
-                  $${application.database
-                    .all<{
-                      id: number;
-                      externalId: string;
-                      createdAt: string;
-                      updatedAt: string | null;
-                      createdByCourseParticipation: number | null;
-                      courseConversationMessageType:
-                        | "courseConversationMessageMessage"
-                        | "courseConversationMessageAnswer"
-                        | "courseConversationMessageFollowUpQuestion"
-                        | "courseConversationMessageCourseStaffWhisper";
-                      anonymous: number;
-                      contentSource: string;
-                      contentPreprocessed: string;
-                      contentSearch: string;
-                    }>(
-                      sql`
-                        select
-                          "id",
-                          "externalId",
-                          "createdAt",
-                          "updatedAt",
-                          "createdByCourseParticipation",
-                          "courseConversationMessageType",
-                          "anonymous",
-                          "contentSource",
-                          "contentPreprocessed",
-                          "contentSearch"
-                        from "courseConversationMessages"
-                        where
-                          "courseConversation" = ${request.state.courseConversation.id} $${
-                            request.state.courseParticipation.courseRole !==
-                            "courseStaff"
-                              ? sql`
-                                  and
-                                  "courseConversationMessageType" != 'courseConversationMessageCourseStaffWhisper'
-                                `
-                              : sql``
-                          }
-                        order by "id" asc;
-                      `,
-                    )
-                    .map(
-                      (courseConversationMessage) => html`
-                        <div
-                          key="courseConversationMessage /courses/${request
-                            .state.course!.externalId}/conversations/${request
-                            .state.courseConversation!
-                            .externalId}/messages/${courseConversationMessage.externalId}"
-                          css="${css`
-                            position: relative;
-                            display: flex;
-                            gap: var(--space--2);
-                          `}"
-                        >
-                          $${(() => {
-                            const courseConversationMessageView =
-                              application.database.get(
-                                sql`
-                                  select true
-                                  from "courseConversationMessageViews"
-                                  where
-                                    "courseConversationMessage" = ${courseConversationMessage.id} and
-                                    "courseParticipation" = ${request.state.courseParticipation!.id};
-                                `,
-                              ) !== undefined;
-                            return html`
-                              <div
-                                css="${css`
-                                  position: absolute;
-                                  margin-left: var(--space---2-5);
-                                  margin-top: var(--space--4);
-                                `}"
-                              >
-                                <div
-                                  key="courseConversationMessageView"
-                                  class="${courseConversationMessageView
-                                    ? "viewed"
-                                    : ""}"
-                                  css="${css`
-                                    background-color: light-dark(
-                                      var(--color--blue--500),
-                                      var(--color--blue--500)
-                                    );
-                                    width: var(--space--1-5);
-                                    height: var(--space--1-5);
-                                    border-radius: var(--border-radius--circle);
-                                    transition-property: var(
-                                      --transition-property--opacity
-                                    );
-                                    transition-duration: var(
-                                      --transition-duration--150
-                                    );
-                                    transition-timing-function: var(
-                                      --transition-timing-function--ease-in-out
-                                    );
-                                    &.viewed {
-                                      opacity: var(--opacity--0);
-                                    }
-                                  `}"
-                                  javascript="${javascript`
-                                    if (${!courseConversationMessageView}) {
-                                      this.closest('[key~="main--main--scroll"]').courseConversationMessageViewsIntersectionObserver.observe(this);
-                                      this.courseConversationMessageId = ${courseConversationMessage.externalId};
-                                    }
-                                  `}"
-                                ></div>
-                              </div>
-                            `;
-                          })()}
-                          <div key="courseConversationMessage--createdBy">
-                            <div
-                              key="user--avatar"
-                              style="
-                                  --color--light: var(--color--pink--800);
-                                  --color--dark: var(--color--pink--200);
-                                  --background-color--light: var(--color--pink--200);
-                                  --background-color--dark: var(--color--pink--800);
-                                  --border-color--light: var(--color--pink--300);
-                                  --border-color--dark: var(--color--pink--900);
-                                "
-                              css="${css`
-                                font-size: var(--font-size--3-5);
-                                line-height: var(--space--0);
-                                letter-spacing: var(--letter-spacing--1);
-                                font-weight: 800;
-                                color: light-dark(
-                                  var(--color--light),
-                                  var(--color--dark)
-                                );
-                                background-color: light-dark(
-                                  var(--background-color--light),
-                                  var(--background-color--dark)
-                                );
-                                width: var(--space--9);
-                                height: var(--space--9);
-                                border: var(--border-width--1) solid
-                                  light-dark(
-                                    var(--border-color--light),
-                                    var(--border-color--dark)
-                                  );
-                                border-radius: var(--border-radius--1);
-                                overflow: hidden;
-                                display: flex;
-                                justify-content: center;
-                                align-items: center;
-                              `}"
-                            >
-                              AW
-                            </div>
-                          </div>
-                          <div
-                            key="courseConversationMessage--main"
-                            css="${css`
-                              flex: 1;
-                              display: flex;
-                              flex-direction: column;
-                              gap: var(--space--1);
-                            `}"
-                          >
-                            <div
-                              key="courseConversationMessage--header"
-                              class="text--secondary"
-                              css="${css`
-                                display: flex;
-                                gap: var(--space--2);
-                              `}"
-                            >
-                              <div
-                                css="${css`
-                                  flex: 1;
-                                `}"
-                              >
-                                <span
-                                  css="${css`
-                                    font-weight: 700;
-                                  `}"
-                                  >Abigail Wall</span
-                                ><span
-                                  css="${css`
-                                    font-weight: 400;
-                                  `}"
-                                  > ·
-                                  <span
-                                    css="${css`
-                                      display: inline-block;
-                                    `}"
-                                    >2024-03-02</span
-                                  > $${courseConversationMessage.courseConversationMessageType ===
-                                  "courseConversationMessageMessage"
-                                    ? html``
-                                    : courseConversationMessage.courseConversationMessageType ===
-                                        "courseConversationMessageAnswer"
-                                      ? html`·
-                                          <span
-                                            css="${css`
-                                              font-weight: 700;
-                                              color: light-dark(
-                                                var(--color--green--500),
-                                                var(--color--green--500)
-                                              );
-                                            `}"
-                                            >Answer</span
-                                          >`
-                                      : courseConversationMessage.courseConversationMessageType ===
-                                          "courseConversationMessageFollowUpQuestion"
-                                        ? html`·
-                                            <span
-                                              css="${css`
-                                                font-weight: 700;
-                                                color: light-dark(
-                                                  var(--color--red--500),
-                                                  var(--color--red--500)
-                                                );
-                                              `}"
-                                              >Follow-up question</span
-                                            >`
-                                        : courseConversationMessage.courseConversationMessageType ===
-                                            "courseConversationMessageCourseStaffWhisper"
-                                          ? html`·
-                                              <span
-                                                css="${css`
-                                                  font-weight: 700;
-                                                  color: light-dark(
-                                                    var(--color--blue--500),
-                                                    var(--color--blue--500)
-                                                  );
-                                                `}"
-                                                >Course staff whisper</span
-                                              >`
-                                          : (() => {
-                                              throw new Error();
-                                            })()}</span
-                                >
-                              </div>
-                              <div>
-                                <button
-                                  key="courseConversation--header--menu"
-                                  class="button button--square button--icon button--transparent"
-                                  css="${css`
-                                    margin-right: var(--space---0-5);
-                                  `}"
-                                >
-                                  <i class="bi bi-three-dots-vertical"></i>
-                                </button>
-                              </div>
-                            </div>
-                            <div key="courseConversationMessage--content">
-                              ${courseConversationMessage.contentSource}
-                            </div>
-                            <div
-                              key="courseConversationMessage--footer"
-                              class="text--secondary"
-                            >
-                              <button
-                                key="courseConversation--footer--like"
-                                class="button button--rectangle button--transparent"
-                              >
-                                <i class="bi bi-hand-thumbs-up"></i> Like
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-                      `,
-                    )}
-                </div>
-                $${request.state.course.archivedAt === null
-                  ? html`
-                      <div key="courseConversationMessage/new">
-                        <form
-                          novalidate
-                          css="${css`
-                            display: flex;
-                            flex-direction: column;
-                            gap: var(--space--2);
-                          `}"
-                        >
-                          <div
-                            key="contentEditor"
-                            class="input--text"
-                            css="${css`
-                              padding: var(--space--0);
-                              display: flex;
-                              flex-direction: column;
-                            `}"
-                          >
-                            <div
-                              key="contentEditor--menu"
-                              class="text--secondary"
-                              css="${css`
-                                font-size: var(--font-size--3-5);
-                                line-height: var(--font-size--3-5--line-height);
-                                padding: var(--space--1-5) var(--space--2);
-                                border-bottom: var(--border-width--1) solid
-                                  light-dark(
-                                    var(--color--slate--200),
-                                    var(--color--slate--800)
-                                  );
-                                display: flex;
-                                flex-wrap: wrap;
-                                gap: var(--space--2);
-                              `}"
-                            >
-                              <button
-                                class="button button--square button--icon button--transparent"
-                                javascript="${javascript`
-                                  javascript.tippy({
-                                    event,
-                                    element: this,
-                                    content: "Bold",
-                                  });
-                                `}"
-                              >
-                                <i class="bi bi-type-bold"></i>
-                              </button>
-                              <button
-                                class="button button--square button--icon button--transparent"
-                                javascript="${javascript`
-                                  javascript.tippy({
-                                    event,
-                                    element: this,
-                                    content: "Link",
-                                  });
-                                `}"
-                              >
-                                <i class="bi bi-link"></i>
-                              </button>
-                              <button
-                                class="button button--square button--icon button--transparent"
-                                javascript="${javascript`
-                                  javascript.tippy({
-                                    event,
-                                    element: this,
-                                    content: "Image",
-                                  });
-                                `}"
-                              >
-                                <i class="bi bi-image"></i>
-                              </button>
-                              <button
-                                class="button button--square button--icon button--transparent"
-                                javascript="${javascript`
-                                  javascript.tippy({
-                                    event,
-                                    element: this,
-                                    content: "Code block",
-                                  });
-                                `}"
-                              >
-                                <i class="bi bi-code"></i>
-                              </button>
-                              <button
-                                class="button button--square button--icon button--transparent"
-                                javascript="${javascript`
-                                  javascript.tippy({
-                                    event,
-                                    element: this,
-                                    content: "Mathematics block",
-                                  });
-                                `}"
-                              >
-                                <i class="bi bi-calculator"></i>
-                              </button>
-                              <button
-                                class="button button--square button--icon button--transparent"
-                                javascript="${javascript`
-                                  javascript.tippy({
-                                    event,
-                                    element: this,
-                                    content: "Poll",
-                                  });
-                                `}"
-                              >
-                                <i class="bi bi-card-checklist"></i>
-                              </button>
-                              <div
-                                css="${css`
-                                  flex: 1;
-                                `}"
-                              ></div>
-                              <button
-                                class="button button--square button--icon button--transparent"
-                                javascript="${javascript`
-                                  javascript.tippy({
-                                    event,
-                                    element: this,
-                                    content: "Preview",
-                                  });
-                                `}"
-                              >
-                                <i class="bi bi-eyeglasses"></i>
-                              </button>
-                              <button
-                                class="button button--square button--icon button--transparent"
-                                javascript="${javascript`
-                                  javascript.tippy({
-                                    event,
-                                    element: this,
-                                    content: "Menu",
-                                  });
-                                `}"
-                              >
-                                <i class="bi bi-three-dots-vertical"></i>
-                              </button>
-                            </div>
-                            <textarea
-                              key="contentEditor--textarea"
-                              css="${css`
-                                font-family: "JetBrains Mono Variable",
-                                  var(--font-family--sans-serif);
-                                height: var(--space--44);
-                                padding: var(--space--1) var(--space--2);
-                              `}"
-                            ></textarea>
-                          </div>
-                          <div
-                            class="text--secondary"
-                            css="${css`
-                              display: flex;
-                              gap: var(--space--4);
-                              align-items: baseline;
-                            `}"
-                          >
-                            <button
-                              class="button button--rectangle button--blue"
-                            >
-                              Send
-                            </button>
-                            <label
-                              class="button button--rectangle button--transparent"
-                            >
-                              <input
-                                type="checkbox"
-                                name="anonymous"
-                                class="input--checkbox"
-                              />  Anonymous to other students
-                            </label>
-                          </div>
-                        </form>
-                      </div>
-                    `
-                  : html``}
-              </div>
+              $${body}
             </div>
           </div>
         </div>
