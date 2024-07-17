@@ -1311,7 +1311,7 @@ export default async (application: Application): Promise<void> => {
                           `}"
                         >
                           <div
-                            key="courseConversationMessage--header"
+                            key="courseConversationMessage--main--header"
                             class="text--secondary"
                             css="${css`
                               display: flex;
@@ -1388,15 +1388,15 @@ export default async (application: Application): Promise<void> => {
                               </button>
                             </div>
                           </div>
-                          <div key="courseConversationMessage--content">
+                          <div key="courseConversationMessage--main--content">
                             ${courseConversationMessage.contentSource}
                           </div>
                           <div
-                            key="courseConversationMessage--footer"
+                            key="courseConversationMessage--main--footer"
                             class="text--secondary"
                           >
                             <button
-                              key="courseConversation--footer--like"
+                              key="courseConversation--main--footer--like"
                               class="button button--rectangle button--transparent"
                             >
                               <i class="bi bi-hand-thumbs-up"></i> Like
