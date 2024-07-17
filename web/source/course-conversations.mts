@@ -465,20 +465,110 @@ export default async (application: Application): Promise<void> => {
                           row-gap: var(--space--2);
                         `}"
                       >
-                        <button
-                          class="button button--rectangle button--transparent"
-                        >
-                          ${request.state.courseConversation
-                            .courseConversationType === "courseConversationNote"
-                            ? "Note"
-                            : request.state.courseConversation
+                        $${mayEditCourseConversation
+                          ? html`
+                              <button
+                                class="button button--rectangle button--transparent"
+                                javascript="${javascript`
+                                  javascript.tippy({
+                                    event,
+                                    element: this,
+                                    placement: "bottom-start",
+                                    interactive: true,
+                                    trigger: "click",
+                                    content: ${html`
+                                      <div
+                                        css="${css`
+                                          display: flex;
+                                          flex-direction: column;
+                                          gap: var(--space--2);
+                                        `}"
+                                      >
+                                        <form
+                                          method="PATCH"
+                                          action="https://${application
+                                            .configuration
+                                            .hostname}/courses/${request.state
+                                            .course
+                                            .externalId}/conversations/${request
+                                            .state.courseConversation
+                                            .externalId}"
+                                        >
+                                          <input
+                                            type="hidden"
+                                            name="courseConversationType"
+                                            value="courseConversationNote"
+                                          />
+                                          <button
+                                            class="button button--rectangle button--transparent $${request
+                                              .state.courseConversation
+                                              .courseConversationType ===
+                                            "courseConversationNote"
+                                              ? "button--blue"
+                                              : ""} button--dropdown-menu"
+                                          >
+                                            Note
+                                          </button>
+                                        </form>
+                                        <form
+                                          method="PATCH"
+                                          action="https://${application
+                                            .configuration
+                                            .hostname}/courses/${request.state
+                                            .course
+                                            .externalId}/conversations/${request
+                                            .state.courseConversation
+                                            .externalId}"
+                                        >
+                                          <input
+                                            type="hidden"
+                                            name="courseConversationType"
+                                            value="courseConversationQuestion"
+                                          />
+                                          <button
+                                            class="button button--rectangle button--transparent $${request
+                                              .state.courseConversation
+                                              .courseConversationType ===
+                                            "courseConversationQuestion"
+                                              ? "button--blue"
+                                              : ""} button--dropdown-menu"
+                                          >
+                                            Question
+                                          </button>
+                                        </form>
+                                      </div>
+                                    `},
+                                  });
+                                `}"
+                              >
+                                ${request.state.courseConversation
                                   .courseConversationType ===
-                                "courseConversationQuestion"
-                              ? "Question"
-                              : (() => {
-                                  throw new Error();
-                                })()} <i class="bi bi-chevron-down"></i>
-                        </button>
+                                "courseConversationNote"
+                                  ? "Note"
+                                  : request.state.courseConversation
+                                        .courseConversationType ===
+                                      "courseConversationQuestion"
+                                    ? "Question"
+                                    : (() => {
+                                        throw new Error();
+                                      })()} <i class="bi bi-chevron-down"></i>
+                              </button>
+                            `
+                          : html`
+                              <div>
+                                ${request.state.courseConversation
+                                  .courseConversationType ===
+                                "courseConversationNote"
+                                  ? "Note"
+                                  : request.state.courseConversation
+                                        .courseConversationType ===
+                                      "courseConversationQuestion"
+                                    ? "Question"
+                                    : (() => {
+                                        throw new Error();
+                                      })()}
+                              </div>
+                            `}
                         $${request.state.courseConversation
                           .courseConversationType ===
                         "courseConversationQuestion"
