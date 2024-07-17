@@ -1290,7 +1290,7 @@ export default async (application: Application): Promise<void> => {
                         })()}
                         <div key="courseConversationMessage--createdBy">
                           $${application.partials.user({
-                            user: "TODO",
+                            user: createdByUser ?? "formerCourseParticipation",
                             size: 9,
                           })}
                         </div>

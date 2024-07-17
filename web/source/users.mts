@@ -61,7 +61,10 @@ export type ApplicationUsers = {
       user,
       size,
     }: {
-      user: Application["types"]["states"]["User"]["user"];
+      user:
+        | Application["types"]["states"]["User"]["user"]
+        | "formerCourseParticipation"
+        | "anonymous";
       size?: 6 | 9;
     }) => HTML;
   };
@@ -232,7 +235,7 @@ export default async (application: Application): Promise<void> => {
   });
 
   application.partials.user = ({ user, size = 6 }) =>
-    typeof user.avatar === "string"
+    typeof user === "object" && typeof user.avatar === "string"
       ? html`
           <img
             key="user--avatar/${user.externalId}"
@@ -261,14 +264,64 @@ export default async (application: Application): Promise<void> => {
         `
       : html`
           <div
-            key="user--avatar/${user.externalId}"
+            key="user--avatar/${typeof user === "object"
+              ? user.externalId
+              : user}"
             style="
-              --color--light: var(--color--${user.color}--800);
-              --color--dark: var(--color--${user.color}--200);
-              --background-color--light: var(--color--${user.color}--200);
-              --background-color--dark: var(--color--${user.color}--800);
-              --border-color--light: var(--color--${user.color}--300);
-              --border-color--dark: var(--color--${user.color}--900);
+              --color--light: var(--color--${typeof user === "object"
+              ? user.color
+              : user === "formerCourseParticipation"
+                ? "red"
+                : user === "anonymous"
+                  ? "blue"
+                  : (() => {
+                      throw new Error();
+                    })()}--800);
+              --color--dark: var(--color--${typeof user === "object"
+              ? user.color
+              : user === "formerCourseParticipation"
+                ? "red"
+                : user === "anonymous"
+                  ? "blue"
+                  : (() => {
+                      throw new Error();
+                    })()}--200);
+              --background-color--light: var(--color--${typeof user === "object"
+              ? user.color
+              : user === "formerCourseParticipation"
+                ? "red"
+                : user === "anonymous"
+                  ? "blue"
+                  : (() => {
+                      throw new Error();
+                    })()}--200);
+              --background-color--dark: var(--color--${typeof user === "object"
+              ? user.color
+              : user === "formerCourseParticipation"
+                ? "red"
+                : user === "anonymous"
+                  ? "blue"
+                  : (() => {
+                      throw new Error();
+                    })()}--800);
+              --border-color--light: var(--color--${typeof user === "object"
+              ? user.color
+              : user === "formerCourseParticipation"
+                ? "red"
+                : user === "anonymous"
+                  ? "blue"
+                  : (() => {
+                      throw new Error();
+                    })()}--300);
+              --border-color--dark: var(--color--${typeof user === "object"
+              ? user.color
+              : user === "formerCourseParticipation"
+                ? "red"
+                : user === "anonymous"
+                  ? "blue"
+                  : (() => {
+                      throw new Error();
+                    })()}--900);
             "
             css="${css`
               line-height: var(--space--0);
@@ -304,13 +357,20 @@ export default async (application: Application): Promise<void> => {
                     throw new Error();
                   })()}"
           >
-            ${(() => {
-              const nameParts = user.name
-                .split(/\s+/)
-                .filter((namePart) => namePart !== "");
-              return nameParts.length < 2
-                ? user.name.trim()[0]
-                : nameParts.at(0)![0] + nameParts.at(-1)![0];
+            $${(() => {
+              if (typeof user === "object") {
+                const nameParts = user.name
+                  .split(/\s+/)
+                  .filter((namePart) => namePart !== "");
+                return html`${nameParts.length < 2
+                  ? user.name.trim()[0]
+                  : nameParts.at(0)![0] + nameParts.at(-1)![0]}`;
+              }
+              if (user === "formerCourseParticipation")
+                return html`<i class="bi bi-person-fill"></i>`;
+              if (user === "anonymous")
+                return html`<i class="bi bi-emoji-sunglasses"></i>`;
+              throw new Error();
             })()}
           </div>
         `;
