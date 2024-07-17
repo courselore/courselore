@@ -677,24 +677,145 @@ export default async (application: Application): Promise<void> => {
                                 </div>
                               `
                           : html``}
-                        <button
-                          class="button button--rectangle button--transparent"
-                        >
-                          ${request.state.courseConversation
-                            .courseConversationParticipations === "everyone"
-                            ? "Students"
-                            : request.state.courseConversation
+                        $${mayEditCourseConversation
+                          ? html`
+                              <button
+                                class="button button--rectangle button--transparent"
+                                javascript="${javascript`
+                                    javascript.tippy({
+                                      event,
+                                      element: this,
+                                      placement: "bottom-start",
+                                      interactive: true,
+                                      trigger: "click",
+                                      content: ${html`
+                                        <div
+                                          css="${css`
+                                            display: flex;
+                                            flex-direction: column;
+                                            gap: var(--space--2);
+                                          `}"
+                                        >
+                                          <form
+                                            method="PATCH"
+                                            action="https://${application
+                                              .configuration
+                                              .hostname}/courses/${request.state
+                                              .course
+                                              .externalId}/conversations/${request
+                                              .state.courseConversation
+                                              .externalId}"
+                                          >
+                                            <input
+                                              type="hidden"
+                                              name="courseConversationParticipations"
+                                              value="everyone"
+                                            />
+                                            <button
+                                              class="button button--rectangle button--transparent $${request
+                                                .state.courseConversation
+                                                .courseConversationParticipations ===
+                                              "everyone"
+                                                ? "button--blue"
+                                                : ""} button--dropdown-menu"
+                                            >
+                                              Everyone
+                                            </button>
+                                          </form>
+                                          <form
+                                            method="PATCH"
+                                            action="https://${application
+                                              .configuration
+                                              .hostname}/courses/${request.state
+                                              .course
+                                              .externalId}/conversations/${request
+                                              .state.courseConversation
+                                              .externalId}"
+                                          >
+                                            <input
+                                              type="hidden"
+                                              name="courseConversationParticipations"
+                                              value="courseStaff"
+                                            />
+                                            <button
+                                              class="button button--rectangle button--transparent $${request
+                                                .state.courseConversation
+                                                .courseConversationParticipations ===
+                                              "courseStaff"
+                                                ? "button--blue"
+                                                : ""} button--dropdown-menu"
+                                            >
+                                              Course staff and selected course
+                                              participants
+                                            </button>
+                                          </form>
+                                          <form
+                                            method="PATCH"
+                                            action="https://${application
+                                              .configuration
+                                              .hostname}/courses/${request.state
+                                              .course
+                                              .externalId}/conversations/${request
+                                              .state.courseConversation
+                                              .externalId}"
+                                          >
+                                            <input
+                                              type="hidden"
+                                              name="courseConversationParticipations"
+                                              value="courseConversationParticipations"
+                                            />
+                                            <button
+                                              class="button button--rectangle button--transparent $${request
+                                                .state.courseConversation
+                                                .courseConversationParticipations ===
+                                              "courseConversationParticipations"
+                                                ? "button--blue"
+                                                : ""} button--dropdown-menu"
+                                            >
+                                              Selected course participants
+                                            </button>
+                                          </form>
+                                        </div>
+                                      `},
+                                    });
+                                  `}"
+                              >
+                                ${request.state.courseConversation
                                   .courseConversationParticipations ===
-                                "courseStaff"
-                              ? "Course staff"
-                              : request.state.courseConversation
-                                    .courseConversationParticipations ===
-                                  "courseConversationParticipations"
-                                ? "Selected people"
-                                : (() => {
-                                    throw new Error();
-                                  })()} <i class="bi bi-chevron-down"></i>
-                        </button>
+                                "everyone"
+                                  ? "Everyone"
+                                  : request.state.courseConversation
+                                        .courseConversationParticipations ===
+                                      "courseStaff"
+                                    ? "Course staff and selected course participants"
+                                    : request.state.courseConversation
+                                          .courseConversationParticipations ===
+                                        "courseConversationParticipations"
+                                      ? "Selected course participants"
+                                      : (() => {
+                                          throw new Error();
+                                        })()} <i class="bi bi-chevron-down"></i>
+                              </button>
+                            `
+                          : html`
+                              <div>
+                                ${request.state.courseConversation
+                                  .courseConversationParticipations ===
+                                "everyone"
+                                  ? "Everyone"
+                                  : request.state.courseConversation
+                                        .courseConversationParticipations ===
+                                      "courseStaff"
+                                    ? "Course staff and selected course participants"
+                                    : request.state.courseConversation
+                                          .courseConversationParticipations ===
+                                        "courseConversationParticipations"
+                                      ? "Selected course participants"
+                                      : (() => {
+                                          throw new Error();
+                                        })()}
+                              </div>
+                            `}
                         <button
                           class="button button--rectangle button--transparent"
                         >
