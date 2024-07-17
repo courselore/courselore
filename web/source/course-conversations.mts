@@ -571,6 +571,39 @@ export default async (application: Application): Promise<void> => {
                   flex-direction: column;
                   gap: var(--space--4);
                 `}"
+                javascript="${javascript`
+                  // TODO: Prevent leaking intersection observer.
+                  this.courseConversationMessageViewsIntersectionObserver?.disconnect();
+                  this.courseConversationMessageViewsIntersectionObserver = new IntersectionObserver((entries) => {
+                    for (const entry of entries) {
+                      if (entry.intersectionRatio !== 1) continue;
+                      conversationMessageIds.add(entry.target.courseConversationMessageId);
+                      this.courseConversationMessageViewsIntersectionObserver.unobserve(entry.target);
+                      setTimeout(() => {
+                        entry.target.classList.add("viewed");
+                      }, 1000);
+                    }
+                    updateCourseConversationMessageViews();
+                  }, {
+                    root: this.closest('[key="main--main"]'),
+                    threshold: 1,
+                  });
+                  const updateCourseConversationMessageViews = utilities.foregroundJob(async () => {
+                    if (conversationMessageIds.size === 0) return;
+                    const body = new URLSearchParams([...conversationMessageIds].map(courseConversationMessageId => ["courseConversationMessageIds[]", courseConversationMessageId]));
+                    conversationMessageIds.clear();
+                    await fetch(${`https://${application.configuration.hostname}/courses/${
+                      request.state.course!.externalId
+                    }/conversations/${
+                      request.state.courseConversation!.externalId
+                    }/messages/views`}, {
+                      method: "POST",
+                      headers: { "CSRF-Protection": "true" },
+                      body,
+                    });
+                  });
+                  const conversationMessageIds = new Set();
+                `}"
               >
                 $${application.database
                   .all<{
@@ -675,7 +708,7 @@ export default async (application: Application): Promise<void> => {
                                 `}"
                                 javascript="${javascript`
                                   if (${!courseConversationMessageView}) {
-                                    this.closest('[key~="main--main"]').courseConversationMessageViewsIntersectionObserver.observe(this);
+                                    this.closest('[key="courseConversationMessages"]').courseConversationMessageViewsIntersectionObserver.observe(this);
                                     this.courseConversationMessageId = ${courseConversationMessage.externalId};
                                   }
                                 `}"
