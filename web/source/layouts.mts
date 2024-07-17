@@ -48,6 +48,35 @@ export default async (application: Application): Promise<void> => {
       color: light-dark(var(--color--slate--600), var(--color--slate--400));
     }
 
+    ${[
+      "red",
+      "orange",
+      "amber",
+      "yellow",
+      "lime",
+      "green",
+      "emerald",
+      "teal",
+      "cyan",
+      "sky",
+      "blue",
+      "indigo",
+      "violet",
+      "purple",
+      "fuchsia",
+      "pink",
+      "rose",
+    ].map(
+      (color) => css`
+        .text--${color} {
+          color: light-dark(
+            var(--color--${color}--500),
+            var(--color--${color}--500)
+          );
+        }
+      `,
+    )}
+
     .separator {
       border-top: var(--border-width--1) solid
         light-dark(var(--color--slate--200), var(--color--slate--800));

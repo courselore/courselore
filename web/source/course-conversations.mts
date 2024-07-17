@@ -572,18 +572,116 @@ export default async (application: Application): Promise<void> => {
                         $${request.state.courseConversation
                           .courseConversationType ===
                         "courseConversationQuestion"
-                          ? html`
-                              <button
-                                class="button button--rectangle button--transparent"
-                              >
-                                ${request.state.courseConversation
-                                  .questionResolved === Number(true)
-                                  ? "Resolved"
-                                  : "Unresolved"} <i
-                                  class="bi bi-chevron-down"
-                                ></i>
-                              </button>
-                            `
+                          ? mayEditCourseConversation &&
+                            request.state.courseParticipation.courseRole ===
+                              "courseStaff"
+                            ? html`
+                                <button
+                                  class="${!Boolean(
+                                    request.state.courseConversation
+                                      .questionResolved,
+                                  )
+                                    ? "text--red"
+                                    : ""} button button--rectangle button--transparent"
+                                  javascript="${javascript`
+                                    javascript.tippy({
+                                      event,
+                                      element: this,
+                                      placement: "bottom-start",
+                                      interactive: true,
+                                      trigger: "click",
+                                      content: ${html`
+                                        <div
+                                          css="${css`
+                                            display: flex;
+                                            flex-direction: column;
+                                            gap: var(--space--2);
+                                          `}"
+                                        >
+                                          <form
+                                            method="PATCH"
+                                            action="https://${application
+                                              .configuration
+                                              .hostname}/courses/${request.state
+                                              .course
+                                              .externalId}/conversations/${request
+                                              .state.courseConversation
+                                              .externalId}"
+                                          >
+                                            <input
+                                              type="hidden"
+                                              name="questionResolved"
+                                              value="false"
+                                            />
+                                            <button
+                                              class="button button--rectangle button--transparent $${Boolean(
+                                                request.state.courseConversation
+                                                  .questionResolved,
+                                              ) === false
+                                                ? "button--blue"
+                                                : ""} button--dropdown-menu"
+                                            >
+                                              Unresolved
+                                            </button>
+                                          </form>
+                                          <form
+                                            method="PATCH"
+                                            action="https://${application
+                                              .configuration
+                                              .hostname}/courses/${request.state
+                                              .course
+                                              .externalId}/conversations/${request
+                                              .state.courseConversation
+                                              .externalId}"
+                                          >
+                                            <input
+                                              type="hidden"
+                                              name="questionResolved"
+                                              value="true"
+                                            />
+                                            <button
+                                              class="button button--rectangle button--transparent $${Boolean(
+                                                request.state.courseConversation
+                                                  .questionResolved,
+                                              ) === true
+                                                ? "button--blue"
+                                                : ""} button--dropdown-menu"
+                                            >
+                                              Resolved
+                                            </button>
+                                          </form>
+                                        </div>
+                                      `},
+                                    });
+                                  `}"
+                                >
+                                  ${Boolean(
+                                    request.state.courseConversation
+                                      .questionResolved,
+                                  )
+                                    ? "Resolved"
+                                    : "Unresolved"} <i
+                                    class="bi bi-chevron-down"
+                                  ></i>
+                                </button>
+                              `
+                            : html`
+                                <div
+                                  class="${!Boolean(
+                                    request.state.courseConversation
+                                      .questionResolved,
+                                  )
+                                    ? "text--red"
+                                    : ""}"
+                                >
+                                  ${Boolean(
+                                    request.state.courseConversation
+                                      .questionResolved,
+                                  )
+                                    ? "Resolved"
+                                    : "Unresolved"}
+                                </div>
+                              `
                           : html``}
                         <button
                           class="button button--rectangle button--transparent"
@@ -607,8 +705,7 @@ export default async (application: Application): Promise<void> => {
                         <button
                           class="button button--rectangle button--transparent"
                         >
-                          ${request.state.courseConversation.pinned ===
-                          Number(true)
+                          ${Boolean(request.state.courseConversation.pinned)
                             ? "Pinned"
                             : "Unpinned"} <i class="bi bi-chevron-down"></i>
                         </button>
