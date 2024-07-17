@@ -421,6 +421,14 @@ export default async (application: Application): Promise<void> => {
                                                   <div>
                                                     <button
                                                       class="button button--rectangle button--red"
+                                                      css="${css`
+                                                        font-size: var(
+                                                          --font-size--3
+                                                        );
+                                                        line-height: var(
+                                                          --font-size--3--line-height
+                                                        );
+                                                      `}"
                                                     >
                                                       Delete conversation
                                                     </button>
@@ -980,6 +988,12 @@ export default async (application: Application): Promise<void> => {
                                       <div>
                                         <button
                                           class="button button--rectangle button--blue"
+                                          css="${css`
+                                            font-size: var(--font-size--3);
+                                            line-height: var(
+                                              --font-size--3--line-height
+                                            );
+                                          `}"
                                         >
                                           Update tags
                                         </button>
