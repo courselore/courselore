@@ -1294,6 +1294,8 @@ export default async (application: Application): Promise<void> => {
                             user:
                               request.state.courseParticipation!.courseRole !==
                                 "courseStaff" &&
+                              request.state.courseParticipation!.id !==
+                                courseConversationMessage.createdByCourseParticipation &&
                               Boolean(courseConversationMessage.anonymous)
                                 ? "anonymous"
                                 : (createdByUser ??
@@ -1327,7 +1329,14 @@ export default async (application: Application): Promise<void> => {
                                 css="${css`
                                   font-weight: 700;
                                 `}"
-                                >Abigail Wall</span
+                                >${request.state.courseParticipation!
+                                  .courseRole !== "courseStaff" &&
+                                request.state.courseParticipation!.id !==
+                                  courseConversationMessage.createdByCourseParticipation &&
+                                Boolean(courseConversationMessage.anonymous)
+                                  ? "Anonymous"
+                                  : (createdByUser?.name ??
+                                    "Former course participant")}</span
                               ><span
                                 css="${css`
                                   font-weight: 400;
