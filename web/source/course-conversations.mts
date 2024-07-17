@@ -140,29 +140,6 @@ export default async (application: Application): Promise<void> => {
                   gap: var(--space--1);
                 `}"
               >
-                $${typeof request.state.course.archivedAt === "string"
-                  ? html`
-                      <div
-                        key="courseConversation--archived"
-                        class="text--secondary"
-                        css="${css`
-                          color: light-dark(
-                            var(--color--red--500),
-                            var(--color--red--500)
-                          );
-                        `}"
-                      >
-                        <i class="bi bi-exclamation-triangle-fill"></i> This
-                        course has been archived on
-                        <span
-                          javascript="${javascript`
-                        this.textContent = javascript.localizeDate(${request.state.course.archivedAt});
-                      `}"
-                        ></span>
-                        and is now read-only.
-                      </div>
-                    `
-                  : html``}
                 $${(() => {
                   const mayEditCourseConversation =
                     request.state.course.archivedAt === null &&
@@ -170,15 +147,38 @@ export default async (application: Application): Promise<void> => {
                       "courseStaff" ||
                       application.database.get(
                         sql`
-                      select true
-                      from "courseConversationMessages"
-                      where
-                        "courseConversation" = ${request.state.courseConversation.id} and
-                        "createdByCourseParticipation" = ${request.state.courseParticipation.id} and
-                        "externalId" = '1';
-                    `,
+                          select true
+                          from "courseConversationMessages"
+                          where
+                            "courseConversation" = ${request.state.courseConversation.id} and
+                            "createdByCourseParticipation" = ${request.state.courseParticipation.id} and
+                            "externalId" = '1';
+                        `,
                       ) !== undefined);
                   return html`
+                    $${typeof request.state.course.archivedAt === "string"
+                      ? html`
+                          <div
+                            key="courseConversation--archived"
+                            class="text--secondary"
+                            css="${css`
+                              color: light-dark(
+                                var(--color--red--500),
+                                var(--color--red--500)
+                              );
+                            `}"
+                          >
+                            <i class="bi bi-exclamation-triangle-fill"></i> This
+                            course has been archived on
+                            <span
+                              javascript="${javascript`
+                                this.textContent = javascript.localizeDate(${request.state.course.archivedAt});
+                              `}"
+                            ></span>
+                            and is now read-only.
+                          </div>
+                        `
+                      : html``}
                     <div
                       css="${css`
                         display: flex;
@@ -245,11 +245,11 @@ export default async (application: Application): Promise<void> => {
                                     line-height: var(--space--0);
                                   `}"
                                   javascript="${javascript`
-                                this.onclick = () => {
-                                  this.closest('[key="courseConversation--header"]').querySelector('[key="courseConversation--header--title--show"]').hidden = false;
-                                  this.closest('[key="courseConversation--header"]').querySelector('[key="courseConversation--header--title--edit"]').hidden = true;
-                                };
-                              `}"
+                                    this.onclick = () => {
+                                      this.closest('[key="courseConversation--header"]').querySelector('[key="courseConversation--header--title--show"]').hidden = false;
+                                      this.closest('[key="courseConversation--header"]').querySelector('[key="courseConversation--header--title--edit"]').hidden = true;
+                                    };
+                                  `}"
                                 >
                                   <i class="bi bi-x"></i>
                                 </button>
@@ -267,183 +267,183 @@ export default async (application: Application): Promise<void> => {
                             margin-top: var(--space--0);
                           `}"
                           javascript="${javascript`
-                        javascript.tippy({
-                          event,
-                          element: this,
-                          placement: "bottom-end",
-                          interactive: true,
-                          trigger: "click",
-                          content: ${html`
-                            <div
-                              css="${css`
-                                display: flex;
-                                flex-direction: column;
-                                gap: var(--space--2);
-                              `}"
-                            >
-                              <button
-                                class="button button--rectangle button--transparent button--dropdown-menu"
-                                javascript="${javascript`
-                                  this.onclick = async () => {
-                                    await navigator.clipboard.writeText(${`https://${application.configuration.hostname}/courses/${request.state.course.externalId}/conversations/${request.state.courseConversation.externalId}`});
-                                    javascript.tippy({
-                                      element: this,
-                                      elementProperty: "copiedTippy",
-                                      trigger: "manual",
-                                      content: "Copied",
-                                    }).show();
-                                    await utilities.sleep(1000);
-                                    this.copiedTippy.hide();
-                                  };
-                                `}"
-                              >
-                                Copy conversation permanent link
-                              </button>
-                              $${mayEditCourseConversation
-                                ? html`
-                                    <button
-                                      class="button button--rectangle button--transparent button--dropdown-menu"
-                                      javascript="${javascript`
-                                        this.onclick = () => {
-                                          this.closest('[key="courseConversation--header"]').querySelector('[key="courseConversation--header--title--show"]').hidden = true;
-                                          this.closest('[key="courseConversation--header"]').querySelector('[key="courseConversation--header--title--edit"]').hidden = false;
-                                          Tippy.hideAll();
-                                          this.closest('[key="courseConversation--header"]').querySelector('[key="courseConversation--header--title--edit"] [name="title"]').focus();
-                                        };
-                                      `}"
-                                    >
-                                      Edit conversation title
-                                    </button>
-                                  `
-                                : html``}
-                              $${(() => {
-                                const courses = application.database.all<{
-                                  externalId: string;
-                                  name: string;
-                                }>(
-                                  sql`
-                                      select
-                                        "courses"."externalId" as "externalId",
-                                        "courses"."name" as "name"
-                                      from "courses"
-                                      join "courseParticipations" on
-                                        "courses"."id" = "courseParticipations"."course" and
-                                        "courseParticipations"."user" = ${request.state.user.id}
-                                      where
-                                        "courses"."id" != ${request.state.course.id} and
-                                        "courses"."archivedAt" is null
-                                      order by "courseParticipations"."id" desc;
-                                    `,
-                                );
-                                return courses.length > 0
-                                  ? html`
-                                      <button
-                                        class="button button--rectangle button--transparent button--dropdown-menu"
-                                        javascript="${javascript`
-                                          javascript.tippy({
-                                            event,
-                                            element: this,
-                                            placement: "bottom-end",
-                                            interactive: true,
-                                            trigger: "click",
-                                            content: ${html`
-                                              <div
-                                                css="${css`
-                                                  display: flex;
-                                                  flex-direction: column;
-                                                  gap: var(--space--2);
-                                                `}"
-                                              >
-                                                $${courses.map(
-                                                  (course) => html`
-                                                    <a
-                                                      href="https://${application
-                                                        .configuration
-                                                        .hostname}/courses/${course.externalId}/conversations/new?${new URLSearchParams(
-                                                        {
-                                                          "reuse.course":
-                                                            request.state
-                                                              .course!
-                                                              .externalId,
-                                                          "reuse.courseConversation":
-                                                            request.state
-                                                              .courseConversation!
-                                                              .externalId,
-                                                        },
-                                                      ).toString()}"
-                                                      class="button button--rectangle button--transparent button--dropdown-menu"
-                                                    >
-                                                      ${course.name}
-                                                    </a>
-                                                  `,
-                                                )}
-                                              </div>
-                                            `},
-                                          });
-                                        `}"
-                                      >
-                                        Reuse conversation in another course
-                                      </button>
-                                    `
-                                  : html``;
-                              })()}
-                              $${mayEditCourseConversation &&
-                              request.state.courseParticipation.courseRole ===
-                                "courseStaff"
-                                ? html`
-                                    <button
-                                      class="button button--rectangle button--transparent button--dropdown-menu"
-                                      javascript="${javascript`
+                            javascript.tippy({
+                              event,
+                              element: this,
+                              placement: "bottom-end",
+                              interactive: true,
+                              trigger: "click",
+                              content: ${html`
+                                <div
+                                  css="${css`
+                                    display: flex;
+                                    flex-direction: column;
+                                    gap: var(--space--2);
+                                  `}"
+                                >
+                                  <button
+                                    class="button button--rectangle button--transparent button--dropdown-menu"
+                                    javascript="${javascript`
+                                      this.onclick = async () => {
+                                        await navigator.clipboard.writeText(${`https://${application.configuration.hostname}/courses/${request.state.course.externalId}/conversations/${request.state.courseConversation.externalId}`});
                                         javascript.tippy({
-                                          event,
                                           element: this,
-                                          placement: "bottom-end",
-                                          interactive: true,
-                                          trigger: "click",
-                                          theme: "red",
-                                          content: ${html`
-                                            <form
-                                              method="DELETE"
-                                              action="https://${application
-                                                .configuration
-                                                .hostname}/courses/${request
-                                                .state.course
-                                                .externalId}/conversations/${request
-                                                .state.courseConversation
-                                                .externalId}"
-                                              css="${css`
-                                                display: flex;
-                                                flex-direction: column;
-                                                gap: var(--space--2);
-                                              `}"
-                                            >
-                                              <div>
-                                                <i
-                                                  class="bi bi-exclamation-triangle-fill"
-                                                ></i
-                                                > This action cannot be
-                                                reverted.
-                                              </div>
-                                              <div>
-                                                <button
-                                                  class="button button--rectangle button--red"
+                                          elementProperty: "copiedTippy",
+                                          trigger: "manual",
+                                          content: "Copied",
+                                        }).show();
+                                        await utilities.sleep(1000);
+                                        this.copiedTippy.hide();
+                                      };
+                                    `}"
+                                  >
+                                    Copy conversation permanent link
+                                  </button>
+                                  $${mayEditCourseConversation
+                                    ? html`
+                                        <button
+                                          class="button button--rectangle button--transparent button--dropdown-menu"
+                                          javascript="${javascript`
+                                            this.onclick = () => {
+                                              this.closest('[key="courseConversation--header"]').querySelector('[key="courseConversation--header--title--show"]').hidden = true;
+                                              this.closest('[key="courseConversation--header"]').querySelector('[key="courseConversation--header--title--edit"]').hidden = false;
+                                              Tippy.hideAll();
+                                              this.closest('[key="courseConversation--header"]').querySelector('[key="courseConversation--header--title--edit"] [name="title"]').focus();
+                                            };
+                                          `}"
+                                        >
+                                          Edit conversation title
+                                        </button>
+                                      `
+                                    : html``}
+                                  $${(() => {
+                                    const courses = application.database.all<{
+                                      externalId: string;
+                                      name: string;
+                                    }>(
+                                      sql`
+                                        select
+                                          "courses"."externalId" as "externalId",
+                                          "courses"."name" as "name"
+                                        from "courses"
+                                        join "courseParticipations" on
+                                          "courses"."id" = "courseParticipations"."course" and
+                                          "courseParticipations"."user" = ${request.state.user.id}
+                                        where
+                                          "courses"."id" != ${request.state.course.id} and
+                                          "courses"."archivedAt" is null
+                                        order by "courseParticipations"."id" desc;
+                                      `,
+                                    );
+                                    return courses.length > 0
+                                      ? html`
+                                          <button
+                                            class="button button--rectangle button--transparent button--dropdown-menu"
+                                            javascript="${javascript`
+                                              javascript.tippy({
+                                                event,
+                                                element: this,
+                                                placement: "bottom-end",
+                                                interactive: true,
+                                                trigger: "click",
+                                                content: ${html`
+                                                  <div
+                                                    css="${css`
+                                                      display: flex;
+                                                      flex-direction: column;
+                                                      gap: var(--space--2);
+                                                    `}"
+                                                  >
+                                                    $${courses.map(
+                                                      (course) => html`
+                                                        <a
+                                                          href="https://${application
+                                                            .configuration
+                                                            .hostname}/courses/${course.externalId}/conversations/new?${new URLSearchParams(
+                                                            {
+                                                              "reuse.course":
+                                                                request.state
+                                                                  .course!
+                                                                  .externalId,
+                                                              "reuse.courseConversation":
+                                                                request.state
+                                                                  .courseConversation!
+                                                                  .externalId,
+                                                            },
+                                                          ).toString()}"
+                                                          class="button button--rectangle button--transparent button--dropdown-menu"
+                                                        >
+                                                          ${course.name}
+                                                        </a>
+                                                      `,
+                                                    )}
+                                                  </div>
+                                                `},
+                                              });
+                                            `}"
+                                          >
+                                            Reuse conversation in another course
+                                          </button>
+                                        `
+                                      : html``;
+                                  })()}
+                                  $${mayEditCourseConversation &&
+                                  request.state.courseParticipation
+                                    .courseRole === "courseStaff"
+                                    ? html`
+                                        <button
+                                          class="button button--rectangle button--transparent button--dropdown-menu"
+                                          javascript="${javascript`
+                                            javascript.tippy({
+                                              event,
+                                              element: this,
+                                              placement: "bottom-end",
+                                              interactive: true,
+                                              trigger: "click",
+                                              theme: "red",
+                                              content: ${html`
+                                                <form
+                                                  method="DELETE"
+                                                  action="https://${application
+                                                    .configuration
+                                                    .hostname}/courses/${request
+                                                    .state.course
+                                                    .externalId}/conversations/${request
+                                                    .state.courseConversation
+                                                    .externalId}"
+                                                  css="${css`
+                                                    display: flex;
+                                                    flex-direction: column;
+                                                    gap: var(--space--2);
+                                                  `}"
                                                 >
-                                                  Delete conversation
-                                                </button>
-                                              </div>
-                                            </form>
-                                          `},
-                                        });
-                                      `}"
-                                    >
-                                      Delete conversation
-                                    </button>
-                                  `
-                                : html``}
-                            </div>
-                          `},
-                        });
-                      `}"
+                                                  <div>
+                                                    <i
+                                                      class="bi bi-exclamation-triangle-fill"
+                                                    ></i
+                                                    > This action cannot be
+                                                    reverted.
+                                                  </div>
+                                                  <div>
+                                                    <button
+                                                      class="button button--rectangle button--red"
+                                                    >
+                                                      Delete conversation
+                                                    </button>
+                                                  </div>
+                                                </form>
+                                              `},
+                                            });
+                                          `}"
+                                        >
+                                          Delete conversation
+                                        </button>
+                                      `
+                                    : html``}
+                                </div>
+                              `},
+                            });
+                          `}"
                         >
                           <i class="bi bi-three-dots-vertical"></i>
                         </button>
@@ -540,12 +540,12 @@ export default async (application: Application): Promise<void> => {
                           (courseConversationsTag) =>
                             application.database.get(
                               sql`
-                            select true
-                            from "courseConversationTaggings"
-                            where
-                              "courseConversation" = ${request.state.courseConversation!.id} and
-                              "courseConversationsTag" = ${courseConversationsTag.id};
-                          `,
+                                select true
+                                from "courseConversationTaggings"
+                                where
+                                  "courseConversation" = ${request.state.courseConversation!.id} and
+                                  "courseConversationsTag" = ${courseConversationsTag.id};
+                              `,
                             ) !== undefined
                               ? html`
                                   <div
@@ -590,30 +590,30 @@ export default async (application: Application): Promise<void> => {
                     contentSearch: string;
                   }>(
                     sql`
-                  select
-                    "id",
-                    "externalId",
-                    "createdAt",
-                    "updatedAt",
-                    "createdByCourseParticipation",
-                    "courseConversationMessageType",
-                    "anonymous",
-                    "contentSource",
-                    "contentPreprocessed",
-                    "contentSearch"
-                  from "courseConversationMessages"
-                  where
-                    "courseConversation" = ${request.state.courseConversation.id} $${
-                      request.state.courseParticipation.courseRole !==
-                      "courseStaff"
-                        ? sql`
-                            and
-                            "courseConversationMessageType" != 'courseConversationMessageCourseStaffWhisper'
-                          `
-                        : sql``
-                    }
-                  order by "id" asc;
-                `,
+                      select
+                        "id",
+                        "externalId",
+                        "createdAt",
+                        "updatedAt",
+                        "createdByCourseParticipation",
+                        "courseConversationMessageType",
+                        "anonymous",
+                        "contentSource",
+                        "contentPreprocessed",
+                        "contentSearch"
+                      from "courseConversationMessages"
+                      where
+                        "courseConversation" = ${request.state.courseConversation.id} $${
+                          request.state.courseParticipation.courseRole !==
+                          "courseStaff"
+                            ? sql`
+                                and
+                                "courseConversationMessageType" != 'courseConversationMessageCourseStaffWhisper'
+                              `
+                            : sql``
+                        }
+                      order by "id" asc;
+                    `,
                   )
                   .map(
                     (courseConversationMessage) => html`
@@ -632,12 +632,12 @@ export default async (application: Application): Promise<void> => {
                           const courseConversationMessageView =
                             application.database.get(
                               sql`
-                            select true
-                            from "courseConversationMessageViews"
-                            where
-                              "courseConversationMessage" = ${courseConversationMessage.id} and
-                              "courseParticipation" = ${request.state.courseParticipation!.id};
-                          `,
+                                select true
+                                from "courseConversationMessageViews"
+                                where
+                                  "courseConversationMessage" = ${courseConversationMessage.id} and
+                                  "courseParticipation" = ${request.state.courseParticipation!.id};
+                              `,
                             ) !== undefined;
                           return html`
                             <div
@@ -674,11 +674,11 @@ export default async (application: Application): Promise<void> => {
                                   }
                                 `}"
                                 javascript="${javascript`
-                              if (${!courseConversationMessageView}) {
-                                this.closest('[key~="main--main--scroll"]').courseConversationMessageViewsIntersectionObserver.observe(this);
-                                this.courseConversationMessageId = ${courseConversationMessage.externalId};
-                              }
-                            `}"
+                                  if (${!courseConversationMessageView}) {
+                                    this.closest('[key~="main--main"]').courseConversationMessageViewsIntersectionObserver.observe(this);
+                                    this.courseConversationMessageId = ${courseConversationMessage.externalId};
+                                  }
+                                `}"
                               ></div>
                             </div>
                           `;
@@ -687,13 +687,13 @@ export default async (application: Application): Promise<void> => {
                           <div
                             key="user--avatar"
                             style="
-                            --color--light: var(--color--pink--800);
-                            --color--dark: var(--color--pink--200);
-                            --background-color--light: var(--color--pink--200);
-                            --background-color--dark: var(--color--pink--800);
-                            --border-color--light: var(--color--pink--300);
-                            --border-color--dark: var(--color--pink--900);
-                          "
+                                --color--light: var(--color--pink--800);
+                                --color--dark: var(--color--pink--200);
+                                --background-color--light: var(--color--pink--200);
+                                --background-color--dark: var(--color--pink--800);
+                                --border-color--light: var(--color--pink--300);
+                                --border-color--dark: var(--color--pink--900);
+                              "
                             css="${css`
                               font-size: var(--font-size--3-5);
                               line-height: var(--space--0);
@@ -879,72 +879,72 @@ export default async (application: Application): Promise<void> => {
                             <button
                               class="button button--square button--icon button--transparent"
                               javascript="${javascript`
-                            javascript.tippy({
-                              event,
-                              element: this,
-                              content: "Bold",
-                            });
-                          `}"
+                                javascript.tippy({
+                                  event,
+                                  element: this,
+                                  content: "Bold",
+                                });
+                              `}"
                             >
                               <i class="bi bi-type-bold"></i>
                             </button>
                             <button
                               class="button button--square button--icon button--transparent"
                               javascript="${javascript`
-                            javascript.tippy({
-                              event,
-                              element: this,
-                              content: "Link",
-                            });
-                          `}"
+                                javascript.tippy({
+                                  event,
+                                  element: this,
+                                  content: "Link",
+                                });
+                              `}"
                             >
                               <i class="bi bi-link"></i>
                             </button>
                             <button
                               class="button button--square button--icon button--transparent"
                               javascript="${javascript`
-                            javascript.tippy({
-                              event,
-                              element: this,
-                              content: "Image",
-                            });
-                          `}"
+                                javascript.tippy({
+                                  event,
+                                  element: this,
+                                  content: "Image",
+                                });
+                              `}"
                             >
                               <i class="bi bi-image"></i>
                             </button>
                             <button
                               class="button button--square button--icon button--transparent"
                               javascript="${javascript`
-                            javascript.tippy({
-                              event,
-                              element: this,
-                              content: "Code block",
-                            });
-                          `}"
+                                javascript.tippy({
+                                  event,
+                                  element: this,
+                                  content: "Code block",
+                                });
+                              `}"
                             >
                               <i class="bi bi-code"></i>
                             </button>
                             <button
                               class="button button--square button--icon button--transparent"
                               javascript="${javascript`
-                            javascript.tippy({
-                              event,
-                              element: this,
-                              content: "Mathematics block",
-                            });
-                          `}"
+                                javascript.tippy({
+                                  event,
+                                  element: this,
+                                  content: "Mathematics block",
+                                });
+                              `}"
                             >
                               <i class="bi bi-calculator"></i>
                             </button>
                             <button
                               class="button button--square button--icon button--transparent"
                               javascript="${javascript`
-                            javascript.tippy({
-                              event,
-                              element: this,
-                              content: "Poll",
-                            });
-                          `}"
+                                javascript.tippy({
+                                  event,
+                                  element: this,
+                                  content: "Poll",
+                                });
+                              `}"
                             >
                               <i class="bi bi-card-checklist"></i>
                             </button>
@@ -956,24 +956,24 @@ export default async (application: Application): Promise<void> => {
                             <button
                               class="button button--square button--icon button--transparent"
                               javascript="${javascript`
-                            javascript.tippy({
-                              event,
-                              element: this,
-                              content: "Preview",
-                            });
-                          `}"
+                                javascript.tippy({
+                                  event,
+                                  element: this,
+                                  content: "Preview",
+                                });
+                              `}"
                             >
                               <i class="bi bi-eyeglasses"></i>
                             </button>
                             <button
                               class="button button--square button--icon button--transparent"
                               javascript="${javascript`
-                            javascript.tippy({
-                              event,
-                              element: this,
-                              content: "Menu",
-                            });
-                          `}"
+                                javascript.tippy({
+                                  event,
+                                  element: this,
+                                  content: "Menu",
+                                });
+                              `}"
                             >
                               <i class="bi bi-three-dots-vertical"></i>
                             </button>
@@ -1031,7 +1031,7 @@ export default async (application: Application): Promise<void> => {
       {},
       {},
       {},
-      Application["types"]["states"]["CourseConversation"]
+      Application["types"]["states"]["Course"]
     >;
     response: serverTypes.Response;
     head: HTML;
@@ -1624,48 +1624,13 @@ export default async (application: Application): Promise<void> => {
             ></div>
           </div>
           <div
-            key="main--main--scroll ${request.URL.pathname}"
+            key="main--main ${request.URL.pathname}"
             css="${css`
               flex: 1;
               overflow: auto;
             `}"
-            javascript="${javascript`
-              // TODO: If conversation page.
-              // TODO: Prevent leaking intersection observer.
-              this.courseConversationMessageViewsIntersectionObserver?.disconnect();
-              this.courseConversationMessageViewsIntersectionObserver = new IntersectionObserver((entries) => {
-                for (const entry of entries) {
-                  if (entry.intersectionRatio !== 1) continue;
-                  conversationMessageIds.add(entry.target.courseConversationMessageId);
-                  this.courseConversationMessageViewsIntersectionObserver.unobserve(entry.target);
-                  setTimeout(() => {
-                    entry.target.classList.add("viewed");
-                  }, 1000);
-                }
-                updateCourseConversationMessageViews();
-              }, {
-                root: this,
-                threshold: 1,
-              });
-              const updateCourseConversationMessageViews = utilities.foregroundJob(async () => {
-                if (conversationMessageIds.size === 0) return;
-                const body = new URLSearchParams([...conversationMessageIds].map(courseConversationMessageId => ["courseConversationMessageIds[]", courseConversationMessageId]));
-                conversationMessageIds.clear();
-                await fetch(${`https://${application.configuration.hostname}/courses/${
-                  request.state.course!.externalId
-                }/conversations/${
-                  request.state.courseConversation!.externalId
-                }/messages/views`}, {
-                  method: "POST",
-                  headers: { "CSRF-Protection": "true" },
-                  body,
-                });
-              });
-              const conversationMessageIds = new Set();
-            `}"
           >
             <div
-              key="main--main"
               css="${css`
                 max-width: var(--space--168);
                 padding: var(--space--2) var(--space--4);
