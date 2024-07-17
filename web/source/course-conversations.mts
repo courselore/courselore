@@ -1041,8 +1041,7 @@ export default async (application: Application): Promise<void> => {
       request.state.user === undefined ||
       request.state.course === undefined ||
       request.state.courseParticipation === undefined ||
-      request.state.courseConversationsTags === undefined ||
-      request.state.courseConversation === undefined
+      request.state.courseConversationsTags === undefined
     )
       throw new Error();
     return application.layouts.base({
@@ -1625,9 +1624,7 @@ export default async (application: Application): Promise<void> => {
             ></div>
           </div>
           <div
-            key="main--main--scroll /courses/${request.state.course
-              .externalId}/conversations/${request.state.courseConversation
-              .externalId}"
+            key="main--main--scroll ${request.URL.pathname}"
             css="${css`
               flex: 1;
               overflow: auto;
