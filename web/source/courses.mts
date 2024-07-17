@@ -170,7 +170,7 @@ export default async (application: Application): Promise<void> => {
               request.state.courseParticipation.courseRole !== "courseStaff"
                 ? sql`
                     and
-                    "courseStaff" = ${Number(true)}
+                    "courseStaff" = ${Number(false)}
                   `
                 : sql``
             }
