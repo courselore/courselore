@@ -907,43 +907,117 @@ export default async (application: Application): Promise<void> => {
                             ? html`<div>Pinned</div>`
                             : html``}
                       </div>
-                      <div
-                        css="${css`
-                          display: flex;
-                          flex-wrap: wrap;
-                          column-gap: var(--space--4);
-                          row-gap: var(--space--2);
-                        `}"
-                      >
-                        <button
-                          class="button button--rectangle button--transparent"
-                        >
-                          Tags <i class="bi bi-chevron-down"></i>
-                        </button>
-                        $${request.state.courseConversationsTags.map(
-                          (courseConversationsTag) =>
-                            application.database.get(
-                              sql`
-                                select true
-                                from "courseConversationTaggings"
-                                where
-                                  "courseConversation" = ${request.state.courseConversation!.id} and
-                                  "courseConversationsTag" = ${courseConversationsTag.id};
-                              `,
-                            ) !== undefined
-                              ? html`
-                                  <div
-                                    key="courseConversationsTag ${courseConversationsTag.externalId}"
-                                    css="${css`
-                                      font-weight: 400;
-                                    `}"
-                                  >
-                                    ${courseConversationsTag.name}
-                                  </div>
-                                `
-                              : html``,
-                        )}
-                      </div>
+                      $${(() => {
+                        let courseConversationsTagsHTML = html``;
+                        const courseConversationsTagsWithTagging =
+                          request.state.courseConversationsTags.filter(
+                            (courseConversationsTag) =>
+                              application.database.get(
+                                sql`
+                                  select true
+                                  from "courseConversationTaggings"
+                                  where
+                                    "courseConversation" = ${request.state.courseConversation!.id} and
+                                    "courseConversationsTag" = ${courseConversationsTag.id};
+                                `,
+                              ) !== undefined,
+                          );
+                        if (
+                          mayEditCourseConversation &&
+                          request.state.courseConversationsTags.length > 0
+                        )
+                          courseConversationsTagsHTML += html`
+                            <button
+                              class="button button--rectangle button--transparent"
+                              javascript="${javascript`
+                                javascript.tippy({
+                                  event,
+                                  element: this,
+                                  placement: "bottom-start",
+                                  interactive: true,
+                                  trigger: "click",
+                                  content: ${html`
+                                    <form
+                                      method="PUT"
+                                      action="https://${application
+                                        .configuration
+                                        .hostname}/courses/${request.state
+                                        .course
+                                        .externalId}/conversations/${request
+                                        .state.courseConversation
+                                        .externalId}/taggings"
+                                      novalidate
+                                      css="${css`
+                                        display: flex;
+                                        flex-direction: column;
+                                        gap: var(--space--2);
+                                      `}"
+                                    >
+                                      $${request.state.courseConversationsTags.map(
+                                        (courseConversationsTag) => html`
+                                          <label
+                                            class="button button--rectangle button--transparent button--dropdown-menu"
+                                          >
+                                            <input
+                                              type="checkbox"
+                                              name="tags[]"
+                                              value="${courseConversationsTag.externalId}"
+                                              required
+                                              $${courseConversationsTagsWithTagging.some(
+                                                (
+                                                  courseConversationsTagWithTagging,
+                                                ) =>
+                                                  courseConversationsTag.id ===
+                                                  courseConversationsTagWithTagging.id,
+                                              )
+                                                ? html`checked`
+                                                : html``}
+                                              class="input--checkbox"
+                                            />  ${courseConversationsTag.name}
+                                          </label>
+                                        `,
+                                      )}
+                                      <div>
+                                        <button
+                                          class="button button--rectangle button--blue"
+                                        >
+                                          Update tags
+                                        </button>
+                                      </div>
+                                    </form>
+                                  `},
+                                });
+                              `}"
+                            >
+                              Tags <i class="bi bi-chevron-down"></i>
+                            </button>
+                          `;
+                        for (const courseConversationsTag of courseConversationsTagsWithTagging)
+                          courseConversationsTagsHTML += html`
+                            <div
+                              key="courseConversationsTag ${courseConversationsTag.externalId}"
+                              css="${css`
+                                font-weight: 400;
+                              `}"
+                            >
+                              ${courseConversationsTag.name}
+                            </div>
+                          `;
+                        return courseConversationsTagsHTML !== html``
+                          ? html`
+                              <div
+                                css="${css`
+                                  display: flex;
+                                  flex-wrap: wrap;
+                                  column-gap: var(--space--4);
+                                  row-gap: var(--space--2);
+                                `}"
+                              >
+                                $${courseConversationsTagsHTML}
+                              </div>
+                            `
+                          : html``;
+                      })()}
                     </div>
                   `;
                 })()}
