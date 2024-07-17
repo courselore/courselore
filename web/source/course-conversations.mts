@@ -160,13 +160,7 @@ export default async (application: Application): Promise<void> => {
                       ? html`
                           <div
                             key="courseConversation--archived"
-                            class="text--secondary"
-                            css="${css`
-                              color: light-dark(
-                                var(--color--red--500),
-                                var(--color--red--500)
-                              );
-                            `}"
+                            class="text--secondary text--red"
                           >
                             <i class="bi bi-exclamation-triangle-fill"></i> This
                             course has been archived on
@@ -988,12 +982,9 @@ export default async (application: Application): Promise<void> => {
                                       "courseConversationMessageAnswer"
                                     ? html`·
                                         <span
+                                          class="text--green"
                                           css="${css`
                                             font-weight: 700;
-                                            color: light-dark(
-                                              var(--color--green--500),
-                                              var(--color--green--500)
-                                            );
                                           `}"
                                           >Answer</span
                                         >`
@@ -1001,12 +992,9 @@ export default async (application: Application): Promise<void> => {
                                         "courseConversationMessageFollowUpQuestion"
                                       ? html`·
                                           <span
+                                            class="text--red"
                                             css="${css`
                                               font-weight: 700;
-                                              color: light-dark(
-                                                var(--color--red--500),
-                                                var(--color--red--500)
-                                              );
                                             `}"
                                             >Follow-up question</span
                                           >`
@@ -1014,12 +1002,9 @@ export default async (application: Application): Promise<void> => {
                                           "courseConversationMessageCourseStaffWhisper"
                                         ? html`·
                                             <span
+                                              class="text--blue"
                                               css="${css`
                                                 font-weight: 700;
-                                                color: light-dark(
-                                                  var(--color--blue--500),
-                                                  var(--color--blue--500)
-                                                );
                                               `}"
                                               >Course staff whisper</span
                                             >`
@@ -1668,13 +1653,7 @@ export default async (application: Application): Promise<void> => {
                                 >
                                 <br />
                                 $${Math.random() < 0.5
-                                  ? html`<span
-                                      css="${css`
-                                        color: light-dark(
-                                          var(--color--red--600),
-                                          var(--color--red--400)
-                                        );
-                                      `}"
+                                  ? html`<span class="text--red"
                                       >Question · Unresolved</span
                                     >`
                                   : Math.random() < 0.5
