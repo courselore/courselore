@@ -1124,8 +1124,104 @@ export default async (application: Application): Promise<void> => {
                       order by "id" asc;
                     `,
                   )
-                  .map(
-                    (courseConversationMessage) => html`
+                  .map((courseConversationMessage) => {
+                    const createdByCourseParticipation =
+                      typeof courseConversationMessage.createdByCourseParticipation ===
+                      "number"
+                        ? application.database.get<{
+                            user: number;
+                            courseRole: "courseStaff" | "courseStudent";
+                          }>(
+                            sql`
+                              select
+                                "user",
+                                "courseRole"
+                              from "courseParticipations"
+                              where
+                                "id" = ${courseConversationMessage.createdByCourseParticipation};
+                            `,
+                          )
+                        : undefined;
+                    const createdByUser =
+                      createdByCourseParticipation !== undefined
+                        ? application.database.get<{
+                            id: number;
+                            externalId: string;
+                            createdAt: string;
+                            name: string;
+                            nameSearch: string;
+                            email: string;
+                            emailVerificationNonce: string | null;
+                            emailVerificationCreatedAt: string | null;
+                            emailVerified: number;
+                            password: string | null;
+                            passwordResetNonce: string | null;
+                            passwordResetCreatedAt: string | null;
+                            color:
+                              | "red"
+                              | "orange"
+                              | "amber"
+                              | "yellow"
+                              | "lime"
+                              | "green"
+                              | "emerald"
+                              | "teal"
+                              | "cyan"
+                              | "sky"
+                              | "blue"
+                              | "indigo"
+                              | "violet"
+                              | "purple"
+                              | "fuchsia"
+                              | "pink"
+                              | "rose";
+                            avatar: string | null;
+                            systemRole:
+                              | "systemAdministrator"
+                              | "systemStaff"
+                              | "systemUser";
+                            lastSeenOnlineAt: string;
+                            darkMode: "system" | "light" | "dark";
+                            sidebarWidth: number;
+                            emailNotificationsForAllMessages: number;
+                            emailNotificationsForMessagesIncludingMentions: number;
+                            emailNotificationsForMessagesInConversationsYouStarted: number;
+                            emailNotificationsForMessagesInConversationsInWhichYouParticipated: number;
+                            anonymous: number;
+                            mostRecentlyVisitedCourse: number | null;
+                          }>(
+                            sql`
+                              select
+                                "id",
+                                "externalId",
+                                "createdAt",
+                                "name",
+                                "nameSearch",
+                                "email",
+                                "emailVerificationNonce",
+                                "emailVerificationCreatedAt",
+                                "emailVerified",
+                                "password",
+                                "passwordResetNonce",
+                                "passwordResetCreatedAt",
+                                "color",
+                                "avatar",
+                                "systemRole",
+                                "lastSeenOnlineAt",
+                                "darkMode",
+                                "sidebarWidth",
+                                "emailNotificationsForAllMessages",
+                                "emailNotificationsForMessagesIncludingMentions",
+                                "emailNotificationsForMessagesInConversationsYouStarted",
+                                "emailNotificationsForMessagesInConversationsInWhichYouParticipated",
+                                "anonymous",
+                                "mostRecentlyVisitedCourse"
+                              from "users"
+                              where "id" = ${createdByCourseParticipation.user};
+                            `,
+                          )
+                        : undefined;
+                    return html`
                       <div
                         key="courseConversationMessage /courses/${request.state
                           .course!.externalId}/conversations/${request.state
@@ -1193,45 +1289,10 @@ export default async (application: Application): Promise<void> => {
                           `;
                         })()}
                         <div key="courseConversationMessage--createdBy">
-                          <div
-                            key="user--avatar"
-                            style="
-                                --color--light: var(--color--pink--800);
-                                --color--dark: var(--color--pink--200);
-                                --background-color--light: var(--color--pink--200);
-                                --background-color--dark: var(--color--pink--800);
-                                --border-color--light: var(--color--pink--300);
-                                --border-color--dark: var(--color--pink--900);
-                              "
-                            css="${css`
-                              font-size: var(--font-size--3-5);
-                              line-height: var(--space--0);
-                              letter-spacing: var(--letter-spacing--1);
-                              font-weight: 800;
-                              color: light-dark(
-                                var(--color--light),
-                                var(--color--dark)
-                              );
-                              background-color: light-dark(
-                                var(--background-color--light),
-                                var(--background-color--dark)
-                              );
-                              width: var(--space--9);
-                              height: var(--space--9);
-                              border: var(--border-width--1) solid
-                                light-dark(
-                                  var(--border-color--light),
-                                  var(--border-color--dark)
-                                );
-                              border-radius: var(--border-radius--1);
-                              overflow: hidden;
-                              display: flex;
-                              justify-content: center;
-                              align-items: center;
-                            `}"
-                          >
-                            AW
-                          </div>
+                          $${application.partials.user({
+                            user: "TODO",
+                            size: 9,
+                          })}
                         </div>
                         <div
                           key="courseConversationMessage--main"
@@ -1336,8 +1397,8 @@ export default async (application: Application): Promise<void> => {
                           </div>
                         </div>
                       </div>
-                    `,
-                  )}
+                    `;
+                  })}
               </div>
               $${request.state.course.archivedAt === null
                 ? html`
