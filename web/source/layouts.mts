@@ -258,6 +258,7 @@ export default async (application: Application): Promise<void> => {
     }
 
     .tippy-box {
+      font-weight: 400;
       color: light-dark(var(--color--black), var(--color--white));
       background-color: light-dark(
         var(--color--slate--50),
