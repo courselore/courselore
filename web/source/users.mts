@@ -342,17 +342,31 @@ export default async (application: Application): Promise<void> => {
               justify-content: center;
               align-items: center;
             `} ${size === 6
-              ? css`
-                  font-size: var(--font-size--3);
+              ? `${
+                  typeof user === "object"
+                    ? css`
+                        font-size: var(--font-size--3);
+                      `
+                    : css`
+                        font-size: var(--font-size--4);
+                      `
+                } ${css`
                   width: var(--space--6);
                   height: var(--space--6);
-                `
+                `}`
               : size === 9
-                ? css`
-                    font-size: var(--font-size--3-5);
+                ? `${
+                    typeof user === "object"
+                      ? css`
+                          font-size: var(--font-size--3-5);
+                        `
+                      : css`
+                          font-size: var(--font-size--7-5);
+                        `
+                  } ${css`
                     width: var(--space--9);
                     height: var(--space--9);
-                  `
+                  `}`
                 : (() => {
                     throw new Error();
                   })()}"
