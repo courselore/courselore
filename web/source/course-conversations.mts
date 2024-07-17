@@ -18,7 +18,7 @@ export type ApplicationCourseConversation = {
             | "courseConversationQuestion";
           questionResolved: number;
           courseConversationParticipations:
-            | "courseStudent"
+            | "everyone"
             | "courseStaff"
             | "courseConversationParticipations";
           pinned: number;
@@ -60,7 +60,7 @@ export default async (application: Application): Promise<void> => {
           | "courseConversationQuestion";
         questionResolved: number;
         courseConversationParticipations:
-          | "courseStudent"
+          | "everyone"
           | "courseStaff"
           | "courseConversationParticipations";
         pinned: number;
@@ -681,8 +681,7 @@ export default async (application: Application): Promise<void> => {
                           class="button button--rectangle button--transparent"
                         >
                           ${request.state.courseConversation
-                            .courseConversationParticipations ===
-                          "courseStudent"
+                            .courseConversationParticipations === "everyone"
                             ? "Students"
                             : request.state.courseConversation
                                   .courseConversationParticipations ===
