@@ -992,6 +992,10 @@ export default async (application: Application): Promise<void> => {
                               Tags <i class="bi bi-chevron-down"></i>
                             </button>
                           `;
+                        else if (courseConversationsTagsWithTagging.length > 0)
+                          courseConversationsTagsHTML += html`
+                            <div>Tags</div>
+                          `;
                         for (const courseConversationsTag of courseConversationsTagsWithTagging)
                           courseConversationsTagsHTML += html`
                             <div
