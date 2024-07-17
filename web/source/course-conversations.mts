@@ -571,10 +571,10 @@ export default async (application: Application): Promise<void> => {
                               "courseStaff"
                             ? html`
                                 <button
-                                  class="${!Boolean(
+                                  class="${Boolean(
                                     request.state.courseConversation
                                       .questionResolved,
-                                  )
+                                  ) === false
                                     ? "text--red"
                                     : ""} button button--rectangle button--transparent"
                                   javascript="${javascript`
@@ -661,10 +661,10 @@ export default async (application: Application): Promise<void> => {
                               `
                             : html`
                                 <div
-                                  class="${!Boolean(
+                                  class="${Boolean(
                                     request.state.courseConversation
                                       .questionResolved,
-                                  )
+                                  ) === false
                                     ? "text--red"
                                     : ""}"
                                 >
@@ -816,13 +816,96 @@ export default async (application: Application): Promise<void> => {
                                         })()}
                               </div>
                             `}
-                        <button
-                          class="button button--rectangle button--transparent"
-                        >
-                          ${Boolean(request.state.courseConversation.pinned)
-                            ? "Pinned"
-                            : "Unpinned"} <i class="bi bi-chevron-down"></i>
-                        </button>
+                        $${mayEditCourseConversation &&
+                        request.state.courseParticipation.courseRole ===
+                          "courseStaff"
+                          ? html`
+                              <button
+                                class="button button--rectangle button--transparent"
+                                javascript="${javascript`
+                                  javascript.tippy({
+                                    event,
+                                    element: this,
+                                    placement: "bottom-start",
+                                    interactive: true,
+                                    trigger: "click",
+                                    content: ${html`
+                                      <div
+                                        css="${css`
+                                          display: flex;
+                                          flex-direction: column;
+                                          gap: var(--space--2);
+                                        `}"
+                                      >
+                                        <form
+                                          method="PATCH"
+                                          action="https://${application
+                                            .configuration
+                                            .hostname}/courses/${request.state
+                                            .course
+                                            .externalId}/conversations/${request
+                                            .state.courseConversation
+                                            .externalId}"
+                                        >
+                                          <input
+                                            type="hidden"
+                                            name="pinned"
+                                            value="false"
+                                          />
+                                          <button
+                                            class="button button--rectangle button--transparent $${Boolean(
+                                              request.state.courseConversation
+                                                .pinned,
+                                            ) === false
+                                              ? "button--blue"
+                                              : ""} button--dropdown-menu"
+                                          >
+                                            Unpinned
+                                          </button>
+                                        </form>
+                                        <form
+                                          method="PATCH"
+                                          action="https://${application
+                                            .configuration
+                                            .hostname}/courses/${request.state
+                                            .course
+                                            .externalId}/conversations/${request
+                                            .state.courseConversation
+                                            .externalId}"
+                                        >
+                                          <input
+                                            type="hidden"
+                                            name="pinned"
+                                            value="true"
+                                          />
+                                          <button
+                                            class="button button--rectangle button--transparent $${Boolean(
+                                              request.state.courseConversation
+                                                .pinned,
+                                            ) === true
+                                              ? "button--blue"
+                                              : ""} button--dropdown-menu"
+                                          >
+                                            Pinned
+                                          </button>
+                                        </form>
+                                      </div>
+                                    `},
+                                  });
+                                `}"
+                              >
+                                ${Boolean(
+                                  request.state.courseConversation.pinned,
+                                )
+                                  ? "Pinned"
+                                  : "Unpinned"} <i
+                                  class="bi bi-chevron-down"
+                                ></i>
+                              </button>
+                            `
+                          : Boolean(request.state.courseConversation.pinned)
+                            ? html`<div>Pinned</div>`
+                            : html``}
                       </div>
                       <div
                         css="${css`
