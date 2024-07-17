@@ -1246,6 +1246,7 @@ export default async (application: Application): Promise<void> => {
                             ) !== undefined;
                           return html`
                             <div
+                              key="courseConversationMessage--courseConversationMessageView"
                               css="${css`
                                 position: absolute;
                                 margin-left: var(--space---2-5);
@@ -1290,7 +1291,13 @@ export default async (application: Application): Promise<void> => {
                         })()}
                         <div key="courseConversationMessage--createdBy">
                           $${application.partials.user({
-                            user: createdByUser ?? "formerCourseParticipation",
+                            user:
+                              request.state.courseParticipation!.courseRole !==
+                                "courseStaff" &&
+                              Boolean(courseConversationMessage.anonymous)
+                                ? "anonymous"
+                                : (createdByUser ??
+                                  "formerCourseParticipation"),
                             size: 9,
                           })}
                         </div>

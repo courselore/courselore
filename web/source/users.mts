@@ -361,7 +361,7 @@ export default async (application: Application): Promise<void> => {
                           font-size: var(--font-size--3-5);
                         `
                       : css`
-                          font-size: var(--font-size--7-5);
+                          font-size: var(--font-size--6);
                         `
                   } ${css`
                     width: var(--space--9);
