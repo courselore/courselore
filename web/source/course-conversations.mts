@@ -1350,14 +1350,14 @@ export default async (application: Application): Promise<void> => {
                                 `}"
                                 >$${courseConversationMessageCreatedByCourseParticipation?.courseRole ===
                                 "courseStaff"
-                                  ? html` (Course staff)`
+                                  ? html` (course staff)`
                                   : html``}$${(request.state
                                   .courseParticipation!.courseRole ===
                                   "courseStaff" ||
                                   request.state.courseParticipation!.id ===
                                     courseConversationMessage.createdByCourseParticipation) &&
                                 Boolean(courseConversationMessage.anonymous)
-                                  ? html` (Anonymous to other students)`
+                                  ? html` (anonymous to other students)`
                                   : html``} ·
                                 <time
                                   datetime="${courseConversationMessage.createdAt}"
@@ -1367,7 +1367,7 @@ export default async (application: Application): Promise<void> => {
                                 ></time
                                 >$${typeof courseConversationMessage.updatedAt ===
                                 "string"
-                                  ? html` (Updated
+                                  ? html` (updated
                                       <time
                                         datetime="${courseConversationMessage.updatedAt}"
                                         javascript="${javascript`
@@ -1398,7 +1398,7 @@ export default async (application: Application): Promise<void> => {
                                               where "courseConversationMessageLikes"."courseConversationMessage" = ${courseConversationMessage.id};
                                             `,
                                           ) !== undefined
-                                            ? html` (Liked by course staff)`
+                                            ? html` (liked by course staff)`
                                             : html``}</span
                                         ></span
                                       >`
@@ -1425,7 +1425,7 @@ export default async (application: Application): Promise<void> => {
                                                 `}"
                                                 >Course staff whisper</span
                                               >
-                                              (Hidden from students)</span
+                                              (hidden from students)</span
                                             ></span
                                           >`
                                         : (() => {
@@ -2073,7 +2073,7 @@ export default async (application: Application): Promise<void> => {
                                                       `}"
                                                       >${courseConversationMessageViewCourseParticipation?.courseRole ===
                                                       "courseStaff"
-                                                        ? " (Course staff)"
+                                                        ? " (course staff)"
                                                         : ""}</span
                                                     >
                                                   </div>
@@ -2280,7 +2280,7 @@ export default async (application: Application): Promise<void> => {
                                                             `}"
                                                             >${courseConversationMessageViewCourseParticipation?.courseRole ===
                                                             "courseStaff"
-                                                              ? " (Course staff)"
+                                                              ? " (course staff)"
                                                               : ""} ·
                                                             <time
                                                               datetime="${courseConversationMessageView.createdAt}"
