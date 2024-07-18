@@ -1474,6 +1474,16 @@ export default async (application: Application): Promise<void> => {
                                         >
                                           Copy message permanent link
                                         </button>
+                                        <button
+                                          class="button button--rectangle button--transparent button--dropdown-menu"
+                                          javascript="${javascript`
+                                            this.onclick = async () => {
+                                              alert("TODO");
+                                            };
+                                          `}"
+                                        >
+                                          Reply
+                                        </button>
                                         $${mayEditCourseConversationMessage
                                           ? html`
                                               <button
