@@ -1639,6 +1639,116 @@ export default async (application: Application): Promise<void> => {
                                             `
                                           : html``}
                                         $${mayEditCourseConversationMessage &&
+                                        request.state.courseConversation!
+                                          .courseConversationType ===
+                                          "courseConversationQuestion" &&
+                                        courseConversationMessage.courseConversationMessageType !==
+                                          "courseConversationMessageCourseStaffWhisper" &&
+                                        courseConversationMessage.externalId !==
+                                          "1"
+                                          ? html`
+                                              <button
+                                                class="button button--rectangle button--transparent button--dropdown-menu"
+                                                javascript="${javascript`
+                                                  javascript.tippy({
+                                                    event,
+                                                    element: this,
+                                                    placement: "bottom-end",
+                                                    interactive: true,
+                                                    trigger: "click",
+                                                    content: ${html`
+                                                      <div
+                                                        css="${css`
+                                                          display: flex;
+                                                          flex-direction: column;
+                                                          gap: var(--space--2);
+                                                        `}"
+                                                      >
+                                                        <form
+                                                          method="PATCH"
+                                                          action="https://${application
+                                                            .configuration
+                                                            .hostname}/courses/${request
+                                                            .state.course!
+                                                            .externalId}/conversations/${request
+                                                            .state
+                                                            .courseConversation!
+                                                            .externalId}/messages/${courseConversationMessage.externalId}"
+                                                        >
+                                                          <input
+                                                            type="hidden"
+                                                            name="courseConversationMessageType"
+                                                            value="courseConversationMessageMessage"
+                                                          />
+                                                          <button
+                                                            class="button button--rectangle button--transparent $${courseConversationMessage.courseConversationMessageType ===
+                                                            "courseConversationMessageMessage"
+                                                              ? "button--blue"
+                                                              : ""} button--dropdown-menu"
+                                                          >
+                                                            Message
+                                                          </button>
+                                                        </form>
+                                                        <form
+                                                          method="PATCH"
+                                                          action="https://${application
+                                                            .configuration
+                                                            .hostname}/courses/${request
+                                                            .state.course!
+                                                            .externalId}/conversations/${request
+                                                            .state
+                                                            .courseConversation!
+                                                            .externalId}/messages/${courseConversationMessage.externalId}"
+                                                        >
+                                                          <input
+                                                            type="hidden"
+                                                            name="courseConversationMessageType"
+                                                            value="courseConversationMessageAnswer"
+                                                          />
+                                                          <button
+                                                            class="button button--rectangle button--transparent $${courseConversationMessage.courseConversationMessageType ===
+                                                            "courseConversationMessageAnswer"
+                                                              ? "button--blue"
+                                                              : ""} button--dropdown-menu"
+                                                          >
+                                                            Answer
+                                                          </button>
+                                                        </form>
+                                                        <form
+                                                          method="PATCH"
+                                                          action="https://${application
+                                                            .configuration
+                                                            .hostname}/courses/${request
+                                                            .state.course!
+                                                            .externalId}/conversations/${request
+                                                            .state
+                                                            .courseConversation!
+                                                            .externalId}/messages/${courseConversationMessage.externalId}"
+                                                        >
+                                                          <input
+                                                            type="hidden"
+                                                            name="courseConversationMessageType"
+                                                            value="courseConversationMessageFollowUpQuestion"
+                                                          />
+                                                          <button
+                                                            class="button button--rectangle button--transparent $${courseConversationMessage.courseConversationMessageType ===
+                                                            "courseConversationMessageFollowUpQuestion"
+                                                              ? "button--blue"
+                                                              : ""} button--dropdown-menu"
+                                                          >
+                                                            Follow-up question
+                                                          </button>
+                                                        </form>
+                                                      </div>
+                                                    `},
+                                                  });
+                                                `}"
+                                              >
+                                                Change message type
+                                              </button>
+                                            `
+                                          : html``}
+                                        $${mayEditCourseConversationMessage &&
                                         request.state.courseParticipation!
                                           .courseRole === "courseStaff" &&
                                         courseConversationMessage.externalId !==
