@@ -1836,24 +1836,21 @@ export default async (application: Application): Promise<void> => {
                           >
                             ${courseConversationMessage.contentSource}
                           </div>
-                          <div
-                            key="courseConversationMessage--main--content--edit"
-                            hidden
-                          >
-                            TODO
-                          </div>
-                          <div
-                            key="courseConversationMessage--main--footer"
-                            class="text--secondary"
-                            css="${css`
-                              display: flex;
-                              flex-wrap: wrap;
-                              column-gap: var(--space--4);
-                              row-gap: var(--space--2);
-                            `}"
-                          >
-                            $${request.state.course!.archivedAt === null
-                              ? application.database.get(
+                          $${mayEditCourseConversationMessage
+                            ? html`
+                                <div
+                                  key="courseConversationMessage--main--content--edit"
+                                  hidden
+                                >
+                                  TODO
+                                </div>
+                              `
+                            : html``}
+                          $${(() => {
+                            let courseConversationMessageMainFooterHTML = html``;
+                            if (request.state.course!.archivedAt === null)
+                              courseConversationMessageMainFooterHTML +=
+                                application.database.get(
                                   sql`
                                     select true
                                     from "courseConversationMessageLikes"
@@ -1862,73 +1859,86 @@ export default async (application: Application): Promise<void> => {
                                       "courseParticipation" = ${request.state.courseParticipation!.id};
                                   `,
                                 ) === undefined
-                                ? html`
-                                    <form
-                                      method="POST"
-                                      action="https://${application
-                                        .configuration
-                                        .hostname}/courses/${request.state
-                                        .course!
-                                        .externalId}/conversations/${request
-                                        .state.courseConversation!
-                                        .externalId}/messages/${courseConversationMessage.externalId}/likes"
-                                    >
-                                      <button
-                                        key="courseConversationMessage--main--footer--like"
-                                        class="button button--rectangle button--transparent"
+                                  ? html`
+                                      <form
+                                        method="POST"
+                                        action="https://${application
+                                          .configuration
+                                          .hostname}/courses/${request.state
+                                          .course!
+                                          .externalId}/conversations/${request
+                                          .state.courseConversation!
+                                          .externalId}/messages/${courseConversationMessage.externalId}/likes"
                                       >
-                                        Like
-                                      </button>
-                                    </form>
-                                  `
-                                : html`
-                                    <form
-                                      method="POST"
-                                      action="https://${application
-                                        .configuration
-                                        .hostname}/courses/${request.state
-                                        .course!
-                                        .externalId}/conversations/${request
-                                        .state.courseConversation!
-                                        .externalId}/messages/${courseConversationMessage.externalId}/likes"
-                                    >
-                                      <button
-                                        key="courseConversationMessage--main--footer--like"
-                                        class="text--blue button button--rectangle button--transparent"
+                                        <button
+                                          key="courseConversationMessage--main--footer--like"
+                                          class="button button--rectangle button--transparent"
+                                        >
+                                          Like
+                                        </button>
+                                      </form>
+                                    `
+                                  : html`
+                                      <form
+                                        method="POST"
+                                        action="https://${application
+                                          .configuration
+                                          .hostname}/courses/${request.state
+                                          .course!
+                                          .externalId}/conversations/${request
+                                          .state.courseConversation!
+                                          .externalId}/messages/${courseConversationMessage.externalId}/likes"
                                       >
-                                        Liked
-                                      </button>
-                                    </form>
-                                  `
-                              : html``}
-                            $${(() => {
-                              const courseConversationMessageLikes =
-                                application.database.all(
-                                  sql`
-                                    select "courseParticipation"
-                                    from "courseConversationMessageLikes"
-                                    where "courseConversationMessage" = ${courseConversationMessage.id}
-                                    order by "id" asc;
-                                  `,
-                                );
-                              return courseConversationMessageLikes.length > 0
-                                ? html`
-                                    <button
-                                      key="courseConversationMessage--main--footer--likes"
-                                      class="button button--rectangle button--transparent"
-                                    >
-                                      ${String(
-                                        courseConversationMessageLikes.length,
-                                      )}
-                                      like${courseConversationMessageLikes.length >
-                                      1
-                                        ? "s"
-                                        : ""} <i class="bi bi-chevron-down"></i>
-                                    </button>
-                                  `
-                                : html``;
-                            })()}
-                          </div>
+                                        <button
+                                          key="courseConversationMessage--main--footer--like"
+                                          class="text--blue button button--rectangle button--transparent"
+                                        >
+                                          Liked
+                                        </button>
+                                      </form>
+                                    `;
+                            const courseConversationMessageLikes =
+                              application.database.all(
+                                sql`
+                                  select "courseParticipation"
+                                  from "courseConversationMessageLikes"
+                                  where "courseConversationMessage" = ${courseConversationMessage.id}
+                                  order by "id" asc;
+                                `,
+                              );
+                            if (courseConversationMessageLikes.length > 0)
+                              courseConversationMessageMainFooterHTML += html`
+                                <button
+                                  key="courseConversationMessage--main--footer--likes"
+                                  class="button button--rectangle button--transparent"
+                                >
+                                  ${String(
+                                    courseConversationMessageLikes.length,
+                                  )}
+                                  like${courseConversationMessageLikes.length >
+                                  1
+                                    ? "s"
+                                    : ""} <i class="bi bi-chevron-down"></i>
+                                </button>
+                              `;
+                            return courseConversationMessageMainFooterHTML !==
+                              html``
+                              ? html`
+                                  <div
+                                    key="courseConversationMessage--main--footer"
+                                    class="text--secondary"
+                                    css="${css`
+                                      display: flex;
+                                      flex-wrap: wrap;
+                                      column-gap: var(--space--4);
+                                      row-gap: var(--space--2);
+                                    `}"
+                                  >
+                                    $${courseConversationMessageMainFooterHTML}
+                                  </div>
+                                `
+                              : html``;
+                          })()}
                         </div>
                       </div>
                     `;
