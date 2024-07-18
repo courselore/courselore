@@ -163,12 +163,13 @@ export default async (application: Application): Promise<void> => {
                             class="text--secondary text--red"
                           >
                             <i class="bi bi-exclamation-triangle-fill"></i> This
-                            course has been archived on
-                            <span
+                            course has been archived
+                            <time
+                              datetime="${request.state.course.archivedAt}"
                               javascript="${javascript`
-                                this.textContent = javascript.localizeDate(${request.state.course.archivedAt});
+                                javascript.relativizeDateTimeElement(this, { preposition: true });
                               `}"
-                            ></span>
+                            ></time>
                             and is now read-only.
                           </div>
                         `
@@ -1143,8 +1144,7 @@ export default async (application: Application): Promise<void> => {
                                 "user",
                                 "courseRole"
                               from "courseParticipations"
-                              where
-                                "id" = ${courseConversationMessage.createdByCourseParticipation};
+                              where "id" = ${courseConversationMessage.createdByCourseParticipation};
                             `,
                           )
                         : undefined;
@@ -1327,195 +1327,110 @@ export default async (application: Application): Promise<void> => {
                             `}"
                           >
                             <div
+                              key="courseConversationMessage--main--header--byline"
                               css="${css`
                                 flex: 1;
                               `}"
                             >
-                              $${mayEditCourseConversationMessage &&
-                              createdByCourseParticipation?.courseRole ===
-                                "courseStudent"
-                                ? html`
-                                    <button
-                                      class="button button--rectangle button--transparent"
-                                      css="${css`
-                                        font-weight: 700;
-                                      `}"
-                                      javascript="${javascript`
-                                        javascript.tippy({
-                                          event,
-                                          element: this,
-                                          placement: "bottom-end",
-                                          interactive: true,
-                                          trigger: "click",
-                                          content: ${html`
-                                            <div
-                                              css="${css`
-                                                display: flex;
-                                                flex-direction: column;
-                                                gap: var(--space--2);
-                                              `}"
-                                            >
-                                              <button
-                                                class="button button--rectangle button--transparent button--dropdown-menu"
-                                                javascript="${javascript`
-                                                  javascript.tippy({
-                                                    event,
-                                                    element: this,
-                                                    placement: "bottom-start",
-                                                    interactive: true,
-                                                    trigger: "click",
-                                                    theme: "red",
-                                                    content: ${html`
-                                                      <form
-                                                        method="PATCH"
-                                                        action="https://${application
-                                                          .configuration
-                                                          .hostname}/courses/${request
-                                                          .state.course!
-                                                          .externalId}/conversations/${request
-                                                          .state
-                                                          .courseConversation!
-                                                          .externalId}/messages/${courseConversationMessage.externalId}"
-                                                        css="${css`
-                                                          display: flex;
-                                                          flex-direction: column;
-                                                          gap: var(--space--2);
-                                                        `}"
-                                                      >
-                                                        <input
-                                                          type="hidden"
-                                                          name="anonymous"
-                                                          value="false"
-                                                        />
-                                                        <div>
-                                                          <i
-                                                            class="bi bi-exclamation-triangle-fill"
-                                                          ></i
-                                                          > The author of this
-                                                          message will become
-                                                          visible to other
-                                                          students.
-                                                        </div>
-                                                        <div>
-                                                          <button
-                                                            class="button button--rectangle button--red"
-                                                            css="${css`
-                                                              font-size: var(
-                                                                --font-size--3
-                                                              );
-                                                              line-height: var(
-                                                                --font-size--3--line-height
-                                                              );
-                                                            `}"
-                                                          >
-                                                            Set as not anonymous
-                                                          </button>
-                                                        </div>
-                                                      </form>
-                                                    `},
-                                                  });
-                                                `}"
-                                              >
-                                                ${createdByUser!.name}
-                                              </button>
-                                              <form
-                                                method="PATCH"
-                                                action="https://${application
-                                                  .configuration
-                                                  .hostname}/courses/${request
-                                                  .state.course!
-                                                  .externalId}/conversations/${request
-                                                  .state.courseConversation!
-                                                  .externalId}/messages/${courseConversationMessage.externalId}"
-                                              >
-                                                <input
-                                                  type="hidden"
-                                                  name="anonymous"
-                                                  value="true"
-                                                />
-                                                <button
-                                                  class="button button--rectangle button--transparent $${Boolean(
-                                                    courseConversationMessage.anonymous,
-                                                  ) === true
-                                                    ? "button--blue"
-                                                    : ""} button--dropdown-menu"
-                                                >
-                                                  Anonymous to other students
-                                                </button>
-                                              </form>
-                                            </div>
-                                          `},
-                                        });
-                                      `}"
-                                    >
-                                      ${createdByUser!.name} <i
-                                        class="bi bi-chevron-down"
-                                      ></i>
-                                    </button>
-                                  `
-                                : html`<span
-                                    css="${css`
-                                      font-weight: 700;
-                                    `}"
-                                    >${request.state.courseParticipation!
-                                      .courseRole !== "courseStaff" &&
-                                    request.state.courseParticipation!.id !==
-                                      courseConversationMessage.createdByCourseParticipation &&
-                                    Boolean(courseConversationMessage.anonymous)
-                                      ? "Anonymous"
-                                      : (createdByUser?.name ??
-                                        "Former course participant")}</span
-                                  >`}<span
+                              <span
+                                css="${css`
+                                  font-weight: 700;
+                                `}"
+                                >${request.state.courseParticipation!
+                                  .courseRole !== "courseStaff" &&
+                                request.state.courseParticipation!.id !==
+                                  courseConversationMessage.createdByCourseParticipation &&
+                                Boolean(courseConversationMessage.anonymous)
+                                  ? "Anonymous"
+                                  : (createdByUser?.name ??
+                                    "Former course participant")}</span
+                              ><span
                                 css="${css`
                                   font-weight: 400;
                                 `}"
-                                > ·
-                                <span
-                                  css="${css`
-                                    display: inline-block;
+                                >$${(request.state.courseParticipation!
+                                  .courseRole === "courseStaff" ||
+                                  request.state.courseParticipation!.id ===
+                                    courseConversationMessage.createdByCourseParticipation) &&
+                                Boolean(courseConversationMessage.anonymous)
+                                  ? html` (Anonymous to other students)`
+                                  : html``} ·
+                                <time
+                                  datetime="${courseConversationMessage.createdAt}"
+                                  javascript="${javascript`
+                                    javascript.relativizeDateTimeElement(this, { preposition: true });
                                   `}"
-                                  >2024-03-02</span
-                                > $${courseConversationMessage.courseConversationMessageType ===
+                                ></time
+                                >$${typeof courseConversationMessage.updatedAt ===
+                                "string"
+                                  ? html` (Updated
+                                      <time
+                                        datetime="${courseConversationMessage.updatedAt}"
+                                        javascript="${javascript`
+                                          javascript.relativizeDateTimeElement(this, { preposition: true });
+                                        `}"
+                                      ></time
+                                      >)`
+                                  : html``}$${courseConversationMessage.courseConversationMessageType ===
                                 "courseConversationMessageMessage"
                                   ? html``
                                   : courseConversationMessage.courseConversationMessageType ===
                                       "courseConversationMessageAnswer"
-                                    ? html`·
-                                        <span
-                                          class="text--green"
-                                          css="${css`
-                                            font-weight: 700;
-                                          `}"
-                                          >Answer</span
-                                        >`
+                                    ? html`<span
+                                        > ·
+                                        <span class="text--green"
+                                          ><span
+                                            css="${css`
+                                              font-weight: 700;
+                                            `}"
+                                            >Answer</span
+                                          >$${application.database.get(
+                                            sql`
+                                              select true
+                                              from "courseConversationMessageLikes"
+                                              join "courseParticipations" on
+                                                "courseConversationMessageLikes"."courseParticipation" = "courseParticipations"."id" and
+                                                "courseParticipations"."courseRole" = 'courseStaff'
+                                              where "courseConversationMessageLikes"."courseConversationMessage" = ${courseConversationMessage.id};
+                                            `,
+                                          ) !== undefined
+                                            ? html` (Liked by course staff)`
+                                            : html``}</span
+                                        ></span
+                                      >`
                                     : courseConversationMessage.courseConversationMessageType ===
                                         "courseConversationMessageFollowUpQuestion"
-                                      ? html`·
+                                      ? html`<span
+                                          > ·
                                           <span
                                             class="text--red"
                                             css="${css`
                                               font-weight: 700;
                                             `}"
                                             >Follow-up question</span
-                                          >`
+                                          ></span
+                                        >`
                                       : courseConversationMessage.courseConversationMessageType ===
                                           "courseConversationMessageCourseStaffWhisper"
-                                        ? html`·
+                                        ? html`<span
+                                            > ·
                                             <span
                                               class="text--blue"
                                               css="${css`
                                                 font-weight: 700;
                                               `}"
                                               >Course staff whisper</span
-                                            >`
+                                            ></span
+                                          >`
                                         : (() => {
                                             throw new Error();
                                           })()}</span
                               >
                             </div>
-                            <div>
+                            <div
+                              key="courseConversationMessage--main--header--menu"
+                            >
                               <button
-                                key="courseConversation--header--menu"
                                 class="button button--square button--icon button--transparent"
                                 css="${css`
                                   margin-right: var(--space---0-5);
