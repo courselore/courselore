@@ -3466,7 +3466,7 @@ export default async (application: Application): Promise<void> => {
                     )
                     values (
                       ${courseConversationMessage.id},
-                      ${courseParticipationsForCourseConversationMessageLikes.splice(Math.floor(Math.random() * courseParticipationsForCourseConversationMessageLikes.length), 1)[0].id}
+                      ${Math.random() < 0.9 ? courseParticipationsForCourseConversationMessageLikes.splice(Math.floor(Math.random() * courseParticipationsForCourseConversationMessageLikes.length), 1)[0].id : null}
                     );
                   `,
                 );
