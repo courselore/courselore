@@ -1915,7 +1915,7 @@ export default async (application: Application): Promise<void> => {
                                   ${String(
                                     courseConversationMessageLikes.length,
                                   )}
-                                  like${courseConversationMessageLikes.length >
+                                  like${courseConversationMessageLikes.length !==
                                   1
                                     ? "s"
                                     : ""} <i class="bi bi-chevron-down"></i>
@@ -2113,7 +2113,7 @@ export default async (application: Application): Promise<void> => {
                                   ${String(
                                     courseConversationMessageViews.length,
                                   )}
-                                  view${courseConversationMessageViews.length >
+                                  view${courseConversationMessageViews.length !==
                                   1
                                     ? "s"
                                     : ""} <i class="bi bi-chevron-down"></i>
