@@ -584,7 +584,7 @@ export default async (application: Application): Promise<void> => {
                                       .questionResolved,
                                   ) === false
                                     ? "text--red"
-                                    : ""} button button--rectangle button--transparent"
+                                    : "text--green"} button button--rectangle button--transparent"
                                   javascript="${javascript`
                                     javascript.tippy({
                                       event,
@@ -674,7 +674,7 @@ export default async (application: Application): Promise<void> => {
                                       .questionResolved,
                                   ) === false
                                     ? "text--red"
-                                    : ""}"
+                                    : "text--green"}"
                                 >
                                   ${Boolean(
                                     request.state.courseConversation
@@ -1362,7 +1362,7 @@ export default async (application: Application): Promise<void> => {
                                 <time
                                   datetime="${courseConversationMessage.createdAt}"
                                   javascript="${javascript`
-                                    javascript.relativizeDateTimeElement(this);
+                                    javascript.relativizeDateTimeElement(this, { capitalize: true });
                                   `}"
                                 ></time
                                 >$${typeof courseConversationMessage.updatedAt ===
