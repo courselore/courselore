@@ -1846,12 +1846,49 @@ export default async (application: Application): Promise<void> => {
                             key="courseConversationMessage--main--footer"
                             class="text--secondary"
                           >
-                            <button
-                              key="courseConversation--main--footer--like"
-                              class="button button--rectangle button--transparent"
-                            >
-                              <i class="bi bi-hand-thumbs-up"></i> Like
-                            </button>
+                            $${application.database.get(
+                              sql`
+                                select true
+                                from "courseConversationMessageLikes"
+                                where
+                                  "courseConversationMessage" = ${courseConversationMessage.id} and
+                                  "courseParticipation" = ${request.state.courseParticipation!.id};
+                              `,
+                            ) === undefined
+                              ? html`
+                                  <form
+                                    method="POST"
+                                    action="https://${application.configuration
+                                      .hostname}/courses/${request.state.course!
+                                      .externalId}/conversations/${request.state
+                                      .courseConversation!
+                                      .externalId}/messages/${courseConversationMessage.externalId}/likes"
+                                  >
+                                    <button
+                                      key="courseConversationMessage--main--footer--like"
+                                      class="button button--rectangle button--transparent"
+                                    >
+                                      Like
+                                    </button>
+                                  </form>
+                                `
+                              : html`
+                                  <form
+                                    method="POST"
+                                    action="https://${application.configuration
+                                      .hostname}/courses/${request.state.course!
+                                      .externalId}/conversations/${request.state
+                                      .courseConversation!
+                                      .externalId}/messages/${courseConversationMessage.externalId}/likes"
+                                  >
+                                    <button
+                                      key="courseConversationMessage--main--footer--like"
+                                      class="text--blue button button--rectangle button--transparent"
+                                    >
+                                      Liked
+                                    </button>
+                                  </form>
+                                `}
                           </div>
                         </div>
                       </div>
