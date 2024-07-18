@@ -2900,7 +2900,7 @@ export default async (application: Application): Promise<void> => {
             "id" integer primary key autoincrement,
             "createdAt" text not null,
             "courseConversationMessage" integer not null references "courseConversationMessages",
-            "courseParticipation" integer not null references "courseParticipations",
+            "courseParticipation" integer null references "courseParticipations",
             unique ("courseConversationMessage", "courseParticipation")
           ) strict;
           

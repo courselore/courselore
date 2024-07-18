@@ -1898,7 +1898,7 @@ export default async (application: Application): Promise<void> => {
                                       </form>
                                     `;
                             const courseConversationMessageLikes =
-                              application.database.all(
+                              application.database.all<{}>(
                                 sql`
                                   select "courseParticipation"
                                   from "courseConversationMessageLikes"
@@ -1921,6 +1921,205 @@ export default async (application: Application): Promise<void> => {
                                     : ""} <i class="bi bi-chevron-down"></i>
                                 </button>
                               `;
+                            if (
+                              request.state.courseParticipation!.courseRole ===
+                              "courseStaff"
+                            ) {
+                              const courseConversationMessageViews =
+                                application.database.all<{
+                                  createdAt: string;
+                                  courseParticipation: number | null;
+                                }>(
+                                  sql`
+                                    select "createdAt", "courseParticipation"
+                                    from "courseConversationMessageViews"
+                                    where "courseConversationMessage" = ${courseConversationMessage.id}
+                                    order by "id" asc;
+                                  `,
+                                );
+                              courseConversationMessageMainFooterHTML += html`
+                                <button
+                                  key="courseConversationMessage--main--footer--views"
+                                  class="button button--rectangle button--transparent"
+                                  javascript="${javascript`
+                                    javascript.tippy({
+                                      event,
+                                      element: this,
+                                      placement: "top-start",
+                                      interactive: true,
+                                      trigger: "click",
+                                      content: ${html`
+                                        <div
+                                          css="${css`
+                                            display: flex;
+                                            flex-direction: column;
+                                            gap: var(--space--2);
+                                          `}"
+                                        >
+                                          $${courseConversationMessageViews.map(
+                                            (courseConversationMessageView) => {
+                                              const courseConversationMessageViewCourseParticipation =
+                                                typeof courseConversationMessage.createdByCourseParticipation ===
+                                                "number"
+                                                  ? application.database.get<{
+                                                      user: number;
+                                                      courseRole:
+                                                        | "courseStaff"
+                                                        | "courseStudent";
+                                                    }>(
+                                                      sql`
+                                                        select
+                                                          "user",
+                                                          "courseRole"
+                                                        from "courseParticipations"
+                                                        where "id" = ${courseConversationMessageView.courseParticipation};
+                                                      `,
+                                                    )
+                                                  : undefined;
+                                              const courseConversationMessageViewUser =
+                                                courseConversationMessageViewCourseParticipation !==
+                                                undefined
+                                                  ? application.database.get<{
+                                                      id: number;
+                                                      externalId: string;
+                                                      createdAt: string;
+                                                      name: string;
+                                                      nameSearch: string;
+                                                      email: string;
+                                                      emailVerificationNonce:
+                                                        | string
+                                                        | null;
+                                                      emailVerificationCreatedAt:
+                                                        | string
+                                                        | null;
+                                                      emailVerified: number;
+                                                      password: string | null;
+                                                      passwordResetNonce:
+                                                        | string
+                                                        | null;
+                                                      passwordResetCreatedAt:
+                                                        | string
+                                                        | null;
+                                                      color:
+                                                        | "red"
+                                                        | "orange"
+                                                        | "amber"
+                                                        | "yellow"
+                                                        | "lime"
+                                                        | "green"
+                                                        | "emerald"
+                                                        | "teal"
+                                                        | "cyan"
+                                                        | "sky"
+                                                        | "blue"
+                                                        | "indigo"
+                                                        | "violet"
+                                                        | "purple"
+                                                        | "fuchsia"
+                                                        | "pink"
+                                                        | "rose";
+                                                      avatar: string | null;
+                                                      systemRole:
+                                                        | "systemAdministrator"
+                                                        | "systemStaff"
+                                                        | "systemUser";
+                                                      lastSeenOnlineAt: string;
+                                                      darkMode:
+                                                        | "system"
+                                                        | "light"
+                                                        | "dark";
+                                                      sidebarWidth: number;
+                                                      emailNotificationsForAllMessages: number;
+                                                      emailNotificationsForMessagesIncludingMentions: number;
+                                                      emailNotificationsForMessagesInConversationsYouStarted: number;
+                                                      emailNotificationsForMessagesInConversationsInWhichYouParticipated: number;
+                                                      anonymous: number;
+                                                      mostRecentlyVisitedCourse:
+                                                        | number
+                                                        | null;
+                                                    }>(
+                                                      sql`
+                                                        select
+                                                          "id",
+                                                          "externalId",
+                                                          "createdAt",
+                                                          "name",
+                                                          "nameSearch",
+                                                          "email",
+                                                          "emailVerificationNonce",
+                                                          "emailVerificationCreatedAt",
+                                                          "emailVerified",
+                                                          "password",
+                                                          "passwordResetNonce",
+                                                          "passwordResetCreatedAt",
+                                                          "color",
+                                                          "avatar",
+                                                          "systemRole",
+                                                          "lastSeenOnlineAt",
+                                                          "darkMode",
+                                                          "sidebarWidth",
+                                                          "emailNotificationsForAllMessages",
+                                                          "emailNotificationsForMessagesIncludingMentions",
+                                                          "emailNotificationsForMessagesInConversationsYouStarted",
+                                                          "emailNotificationsForMessagesInConversationsInWhichYouParticipated",
+                                                          "anonymous",
+                                                          "mostRecentlyVisitedCourse"
+                                                        from "users"
+                                                        where "id" = ${courseConversationMessageViewCourseParticipation.user};
+                                                      `,
+                                                    )
+                                                  : undefined;
+                                              return html`
+                                                <div
+                                                  css="${css`
+                                                    display: flex;
+                                                    gap: var(--space--2);
+                                                    align-items: baseline;
+                                                  `}"
+                                                >
+                                                  $${application.partials.user({
+                                                    user:
+                                                      courseConversationMessageViewUser ??
+                                                      "formerCourseParticipation",
+                                                  })}
+                                                  <div>
+                                                    ${courseConversationMessageViewUser?.name ??
+                                                    "Former course participant"}<span
+                                                      class="text--secondary"
+                                                      css="${css`
+                                                        font-weight: 400;
+                                                      `}"
+                                                      >${courseConversationMessageViewCourseParticipation?.courseRole ===
+                                                      "courseStaff"
+                                                        ? " (Course staff)"
+                                                        : ""} ·
+                                                      <time
+                                                        datetime="${courseConversationMessageView.createdAt}"
+                                                        javascript="${javascript`
+                                                          javascript.relativizeDateTimeElement(this, { preposition: true });
+                                                        `}"
+                                                      ></time
+                                                    ></span>
+                                                  </div>
+                                                </div>
+                                              `;
+                                            },
+                                          )}
+                                        </div>
+                                      `},
+                                    });
+                                  `}"
+                                >
+                                  ${String(
+                                    courseConversationMessageViews.length,
+                                  )}
+                                  view${courseConversationMessageViews.length >
+                                  1
+                                    ? "s"
+                                    : ""} <i class="bi bi-chevron-down"></i>
+                                </button>
+                              `;
+                            }
                             return courseConversationMessageMainFooterHTML !==
                               html``
                               ? html`
