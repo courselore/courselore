@@ -1131,7 +1131,7 @@ export default async (application: Application): Promise<void> => {
                         "courseStaff" ||
                         request.state.courseParticipation!.id ===
                           courseConversationMessage.createdByCourseParticipation);
-                    const createdByCourseParticipation =
+                    const courseConversationMessageCreatedByCourseParticipation =
                       typeof courseConversationMessage.createdByCourseParticipation ===
                       "number"
                         ? application.database.get<{
@@ -1147,8 +1147,9 @@ export default async (application: Application): Promise<void> => {
                             `,
                           )
                         : undefined;
-                    const createdByUser =
-                      createdByCourseParticipation !== undefined
+                    const courseConversationMessageCreatedByUser =
+                      courseConversationMessageCreatedByCourseParticipation !==
+                      undefined
                         ? application.database.get<{
                             id: number;
                             externalId: string;
@@ -1222,7 +1223,7 @@ export default async (application: Application): Promise<void> => {
                                 "anonymous",
                                 "mostRecentlyVisitedCourse"
                               from "users"
-                              where "id" = ${createdByCourseParticipation.user};
+                              where "id" = ${courseConversationMessageCreatedByCourseParticipation.user};
                             `,
                           )
                         : undefined;
@@ -1303,7 +1304,7 @@ export default async (application: Application): Promise<void> => {
                                 courseConversationMessage.createdByCourseParticipation &&
                               Boolean(courseConversationMessage.anonymous)
                                 ? "anonymous"
-                                : (createdByUser ??
+                                : (courseConversationMessageCreatedByUser ??
                                   "formerCourseParticipation"),
                             size: 9,
                           })}
@@ -1341,7 +1342,7 @@ export default async (application: Application): Promise<void> => {
                                   courseConversationMessage.createdByCourseParticipation &&
                                 Boolean(courseConversationMessage.anonymous)
                                   ? "Anonymous"
-                                  : (createdByUser?.name ??
+                                  : (courseConversationMessageCreatedByUser?.name ??
                                     "Former course participant")}</span
                               ><span
                                 css="${css`
@@ -1484,6 +1485,138 @@ export default async (application: Application): Promise<void> => {
                                                 `}"
                                               >
                                                 Edit message
+                                              </button>
+                                            `
+                                          : html``}
+                                        $${(request.state.courseParticipation!
+                                          .courseRole === "courseStaff" ||
+                                          request.state.courseParticipation!
+                                            .id ===
+                                            courseConversationMessage.createdByCourseParticipation) &&
+                                        courseConversationMessageCreatedByCourseParticipation?.courseRole ===
+                                          "courseStudent"
+                                          ? html`
+                                              <button
+                                                class="button button--rectangle button--transparent button--dropdown-menu"
+                                                javascript="${javascript`
+                                                  javascript.tippy({
+                                                    event,
+                                                    element: this,
+                                                    placement: "bottom-end",
+                                                    interactive: true,
+                                                    trigger: "click",
+                                                    content: ${html`
+                                                      <div
+                                                        css="${css`
+                                                          display: flex;
+                                                          flex-direction: column;
+                                                          gap: var(--space--2);
+                                                        `}"
+                                                      >
+                                                        <button
+                                                          class="button button--rectangle button--transparent button--dropdown-menu"
+                                                          javascript="${javascript`
+                                                            javascript.tippy({
+                                                              event,
+                                                              element: this,
+                                                              placement: "bottom-end",
+                                                              interactive: true,
+                                                              trigger: "click",
+                                                              theme: "red",
+                                                              content: ${html`
+                                                                <form
+                                                                  method="PATCH"
+                                                                  action="https://${application
+                                                                    .configuration
+                                                                    .hostname}/courses/${request
+                                                                    .state
+                                                                    .course!
+                                                                    .externalId}/conversations/${request
+                                                                    .state
+                                                                    .courseConversation!
+                                                                    .externalId}/messages/${courseConversationMessage.externalId}"
+                                                                  css="${css`
+                                                                    display: flex;
+                                                                    flex-direction: column;
+                                                                    gap: var(
+                                                                      --space--2
+                                                                    );
+                                                                  `}"
+                                                                >
+                                                                  <input
+                                                                    type="hidden"
+                                                                    name="anonymous"
+                                                                    value="false"
+                                                                  />
+                                                                  <div>
+                                                                    <i
+                                                                      class="bi bi-exclamation-triangle-fill"
+                                                                    ></i
+                                                                    > The author
+                                                                    of this
+                                                                    message will
+                                                                    become
+                                                                    visible to
+                                                                    other
+                                                                    students.
+                                                                  </div>
+                                                                  <div>
+                                                                    <button
+                                                                      class="button button--rectangle button--red"
+                                                                      css="${css`
+                                                                        font-size: var(
+                                                                          --font-size--3
+                                                                        );
+                                                                        line-height: var(
+                                                                          --font-size--3--line-height
+                                                                        );
+                                                                      `}"
+                                                                    >
+                                                                      Set as not
+                                                                      anonymous
+                                                                    </button>
+                                                                  </div>
+                                                                </form>
+                                                              `},
+                                                            });
+                                                          `}"
+                                                        >
+                                                          ${courseConversationMessageCreatedByUser!
+                                                            .name}
+                                                        </button>
+                                                        <form
+                                                          method="PATCH"
+                                                          action="https://${application
+                                                            .configuration
+                                                            .hostname}/courses/${request
+                                                            .state.course!
+                                                            .externalId}/conversations/${request
+                                                            .state
+                                                            .courseConversation!
+                                                            .externalId}/messages/${courseConversationMessage.externalId}"
+                                                        >
+                                                          <input
+                                                            type="hidden"
+                                                            name="anonymous"
+                                                            value="true"
+                                                          />
+                                                          <button
+                                                            class="button button--rectangle button--transparent $${Boolean(
+                                                              courseConversationMessage.anonymous,
+                                                            ) === true
+                                                              ? "button--blue"
+                                                              : ""} button--dropdown-menu"
+                                                          >
+                                                            Anonymous to other
+                                                            students
+                                                          </button>
+                                                        </form>
+                                                      </div>
+                                                    `},
+                                                  });
+                                                `}"
+                                              >
+                                                Change anonymity
                                               </button>
                                             `
                                           : html``}
