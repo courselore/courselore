@@ -1474,16 +1474,21 @@ export default async (application: Application): Promise<void> => {
                                         >
                                           Copy message permanent link
                                         </button>
-                                        <button
-                                          class="button button--rectangle button--transparent button--dropdown-menu"
-                                          javascript="${javascript`
-                                            this.onclick = async () => {
-                                              alert("TODO");
-                                            };
-                                          `}"
-                                        >
-                                          Reply
-                                        </button>
+                                        $${request.state.course!.archivedAt ===
+                                        null
+                                          ? html`
+                                              <button
+                                                class="button button--rectangle button--transparent button--dropdown-menu"
+                                                javascript="${javascript`
+                                                  this.onclick = async () => {
+                                                    alert("TODO");
+                                                  };
+                                                `}"
+                                              >
+                                                Reply
+                                              </button>
+                                            `
+                                          : html``}
                                         $${mayEditCourseConversationMessage
                                           ? html`
                                               <button
