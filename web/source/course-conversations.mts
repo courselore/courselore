@@ -1414,12 +1414,14 @@ export default async (application: Application): Promise<void> => {
                                           "courseConversationMessageCourseStaffWhisper"
                                         ? html`<span
                                             > ·
-                                            <span
-                                              class="text--blue"
-                                              css="${css`
-                                                font-weight: 700;
-                                              `}"
-                                              >Course staff whisper</span
+                                            <span class="text--blue"
+                                              ><span
+                                                css="${css`
+                                                  font-weight: 700;
+                                                `}"
+                                                >Course staff whisper</span
+                                              >
+                                              (Hidden from students)</span
                                             ></span
                                           >`
                                         : (() => {
