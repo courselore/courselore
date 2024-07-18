@@ -1477,6 +1477,7 @@ export default async (application: Application): Promise<void> => {
                                                   this.onclick = () => {
                                                     this.closest('[key="courseConversationMessage--main"]').querySelector('[key="courseConversationMessage--main--content--show"]').hidden = true;
                                                     this.closest('[key="courseConversationMessage--main"]').querySelector('[key="courseConversationMessage--main--content--edit"]').hidden = false;
+                                                    this.closest('[key="courseConversationMessage--main"]').querySelector('[key="courseConversationMessage--main--footer"]').hidden = true;
                                                     Tippy.hideAll();
                                                     this.closest('[key="courseConversationMessage--main"]').querySelector('[key="courseConversationMessage--main--content--edit"] [name="TODO"]').focus();
                                                   };
