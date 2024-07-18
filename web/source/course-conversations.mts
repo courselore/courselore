@@ -1492,11 +1492,7 @@ export default async (application: Application): Promise<void> => {
                                               </button>
                                             `
                                           : html``}
-                                        $${(request.state.courseParticipation!
-                                          .courseRole === "courseStaff" ||
-                                          request.state.courseParticipation!
-                                            .id ===
-                                            courseConversationMessage.createdByCourseParticipation) &&
+                                        $${mayEditCourseConversationMessage &&
                                         courseConversationMessageCreatedByCourseParticipation?.courseRole ===
                                           "courseStudent"
                                           ? html`
