@@ -1534,7 +1534,6 @@ export default async (application: Application): Promise<void> => {
                                                             gap: var(
                                                               --space--2
                                                             );
-                                                            align-items: baseline;
                                                           `}"
                                                           javascript="${javascript`
                                                             javascript.tippy({
@@ -1607,7 +1606,13 @@ export default async (application: Application): Promise<void> => {
                                                               user: courseConversationMessageCreatedByUser!,
                                                             },
                                                           )}
-                                                          <div>
+                                                          <div
+                                                            css="${css`
+                                                              margin-top: var(
+                                                                --space--0-5
+                                                              );
+                                                            `}"
+                                                          >
                                                             ${courseConversationMessageCreatedByUser!
                                                               .name}
                                                           </div>
@@ -2046,7 +2051,6 @@ export default async (application: Application): Promise<void> => {
                                                   css="${css`
                                                     display: flex;
                                                     gap: var(--space--2);
-                                                    align-items: baseline;
                                                   `}"
                                                 >
                                                   $${application.partials.user({
@@ -2054,7 +2058,13 @@ export default async (application: Application): Promise<void> => {
                                                       courseConversationMessageViewUser ??
                                                       "formerCourseParticipation",
                                                   })}
-                                                  <div>
+                                                  <div
+                                                    css="${css`
+                                                      margin-top: var(
+                                                        --space--0-5
+                                                      );
+                                                    `}"
+                                                  >
                                                     ${courseConversationMessageViewUser?.name ??
                                                     "Former course participant"}<span
                                                       class="text--secondary"
@@ -2246,7 +2256,6 @@ export default async (application: Application): Promise<void> => {
                                                         css="${css`
                                                           display: flex;
                                                           gap: var(--space--2);
-                                                          align-items: baseline;
                                                         `}"
                                                       >
                                                         $${application.partials.user(
@@ -2256,7 +2265,13 @@ export default async (application: Application): Promise<void> => {
                                                               "formerCourseParticipation",
                                                           },
                                                         )}
-                                                        <div>
+                                                        <div
+                                                          css="${css`
+                                                            margin-top: var(
+                                                              --space--0-5
+                                                            );
+                                                          `}"
+                                                        >
                                                           ${courseConversationMessageViewUser?.name ??
                                                           "Former course participant"}<span
                                                             class="text--secondary"
