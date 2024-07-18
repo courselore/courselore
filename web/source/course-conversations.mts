@@ -1362,7 +1362,7 @@ export default async (application: Application): Promise<void> => {
                                 <time
                                   datetime="${courseConversationMessage.createdAt}"
                                   javascript="${javascript`
-                                    javascript.relativizeDateTimeElement(this, { preposition: true });
+                                    javascript.relativizeDateTimeElement(this);
                                   `}"
                                 ></time
                                 >$${typeof courseConversationMessage.updatedAt ===
@@ -2285,7 +2285,7 @@ export default async (application: Application): Promise<void> => {
                                                             <time
                                                               datetime="${courseConversationMessageView.createdAt}"
                                                               javascript="${javascript`
-                                                                javascript.relativizeDateTimeElement(this, { preposition: true });
+                                                                javascript.relativizeDateTimeElement(this, { preposition: true, capitalize: true });
                                                               `}"
                                                             ></time
                                                           ></span>
