@@ -1348,8 +1348,12 @@ export default async (application: Application): Promise<void> => {
                                 css="${css`
                                   font-weight: 400;
                                 `}"
-                                >$${(request.state.courseParticipation!
-                                  .courseRole === "courseStaff" ||
+                                >$${courseConversationMessageCreatedByCourseParticipation?.courseRole ===
+                                "courseStaff"
+                                  ? html` (Course staff)`
+                                  : html``}$${(request.state
+                                  .courseParticipation!.courseRole ===
+                                  "courseStaff" ||
                                   request.state.courseParticipation!.id ===
                                     courseConversationMessage.createdByCourseParticipation) &&
                                 Boolean(courseConversationMessage.anonymous)
@@ -1515,6 +1519,13 @@ export default async (application: Application): Promise<void> => {
                                                       >
                                                         <button
                                                           class="button button--rectangle button--transparent button--dropdown-menu"
+                                                          css="${css`
+                                                            display: flex;
+                                                            gap: var(
+                                                              --space--2
+                                                            );
+                                                            align-items: baseline;
+                                                          `}"
                                                           javascript="${javascript`
                                                             javascript.tippy({
                                                               event,
@@ -1581,8 +1592,15 @@ export default async (application: Application): Promise<void> => {
                                                             });
                                                           `}"
                                                         >
-                                                          ${courseConversationMessageCreatedByUser!
-                                                            .name}
+                                                          $${application.partials.user(
+                                                            {
+                                                              user: courseConversationMessageCreatedByUser!,
+                                                            },
+                                                          )}
+                                                          <div>
+                                                            ${courseConversationMessageCreatedByUser!
+                                                              .name}
+                                                          </div>
                                                         </button>
                                                         <form
                                                           method="PATCH"
