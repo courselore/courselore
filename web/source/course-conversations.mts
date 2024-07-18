@@ -252,9 +252,8 @@ export default async (application: Application): Promise<void> => {
                             `
                           : html``}
                       </div>
-                      <div>
+                      <div key="courseConversation--header--menu">
                         <button
-                          key="courseConversation--header--menu"
                           class="text--secondary button button--square button--icon button--transparent"
                           css="${css`
                             font-size: var(--font-size--4);
