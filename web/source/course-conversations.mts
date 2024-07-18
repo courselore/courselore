@@ -1514,7 +1514,11 @@ export default async (application: Application): Promise<void> => {
                                                         `}"
                                                       >
                                                         <button
-                                                          class="button button--rectangle button--transparent button--dropdown-menu"
+                                                          class="button button--rectangle button--transparent $${Boolean(
+                                                            courseConversationMessage.anonymous,
+                                                          ) === false
+                                                            ? "button--blue"
+                                                            : ""} button--dropdown-menu"
                                                           css="${css`
                                                             display: flex;
                                                             gap: var(
