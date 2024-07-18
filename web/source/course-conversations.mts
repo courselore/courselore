@@ -1436,6 +1436,124 @@ export default async (application: Application): Promise<void> => {
                                 css="${css`
                                   margin-right: var(--space---0-5);
                                 `}"
+                                javascript="${javascript`
+                                  javascript.tippy({
+                                    event,
+                                    element: this,
+                                    placement: "bottom-end",
+                                    interactive: true,
+                                    trigger: "click",
+                                    content: ${html`
+                                      <div
+                                        css="${css`
+                                          display: flex;
+                                          flex-direction: column;
+                                          gap: var(--space--2);
+                                        `}"
+                                      >
+                                        <button
+                                          class="button button--rectangle button--transparent button--dropdown-menu"
+                                          javascript="${javascript`
+                                            this.onclick = async () => {
+                                              await navigator.clipboard.writeText(${`https://${application.configuration.hostname}/courses/${request.state.course!.externalId}/conversations/${request.state.courseConversation!.externalId}?${new URLSearchParams({ message: courseConversationMessage.externalId }).toString()}`});
+                                              javascript.tippy({
+                                                element: this,
+                                                elementProperty: "copiedTippy",
+                                                trigger: "manual",
+                                                content: "Copied",
+                                              }).show();
+                                              await utilities.sleep(1000);
+                                              this.copiedTippy.hide();
+                                            };
+                                          `}"
+                                        >
+                                          Copy message permanent link
+                                        </button>
+                                        $${mayEditCourseConversationMessage
+                                          ? html`
+                                              <button
+                                                class="button button--rectangle button--transparent button--dropdown-menu"
+                                                javascript="${javascript`
+                                                  this.onclick = () => {
+                                                    this.closest('[key="courseConversationMessage--main"]').querySelector('[key="courseConversationMessage--main--content--show"]').hidden = true;
+                                                    this.closest('[key="courseConversationMessage--main"]').querySelector('[key="courseConversationMessage--main--content--edit"]').hidden = false;
+                                                    Tippy.hideAll();
+                                                    this.closest('[key="courseConversationMessage--main"]').querySelector('[key="courseConversationMessage--main--content--edit"] [name="TODO"]').focus();
+                                                  };
+                                                `}"
+                                              >
+                                                Edit message
+                                              </button>
+                                            `
+                                          : html``}
+                                        $${mayEditCourseConversationMessage &&
+                                        request.state.courseParticipation!
+                                          .courseRole === "courseStaff" &&
+                                        courseConversationMessage.externalId !==
+                                          "1"
+                                          ? html`
+                                              <button
+                                                class="button button--rectangle button--transparent button--dropdown-menu"
+                                                javascript="${javascript`
+                                                  javascript.tippy({
+                                                    event,
+                                                    element: this,
+                                                    placement: "bottom-end",
+                                                    interactive: true,
+                                                    trigger: "click",
+                                                    theme: "red",
+                                                    content: ${html`
+                                                      <form
+                                                        method="DELETE"
+                                                        action="https://${application
+                                                          .configuration
+                                                          .hostname}/courses/${request
+                                                          .state.course!
+                                                          .externalId}/conversations/${request
+                                                          .state
+                                                          .courseConversation!
+                                                          .externalId}/messages/${courseConversationMessage.externalId}"
+                                                        css="${css`
+                                                          display: flex;
+                                                          flex-direction: column;
+                                                          gap: var(--space--2);
+                                                        `}"
+                                                      >
+                                                        <div>
+                                                          <i
+                                                            class="bi bi-exclamation-triangle-fill"
+                                                          ></i
+                                                          > This action cannot
+                                                          be reverted.
+                                                        </div>
+                                                        <div>
+                                                          <button
+                                                            class="button button--rectangle button--red"
+                                                            css="${css`
+                                                              font-size: var(
+                                                                --font-size--3
+                                                              );
+                                                              line-height: var(
+                                                                --font-size--3--line-height
+                                                              );
+                                                            `}"
+                                                          >
+                                                            Delete message
+                                                          </button>
+                                                        </div>
+                                                      </form>
+                                                    `},
+                                                  });
+                                                `}"
+                                              >
+                                                Delete message
+                                              </button>
+                                            `
+                                          : html``}
+                                      </div>
+                                    `},
+                                  });
+                                `}"
                               >
                                 <i class="bi bi-three-dots-vertical"></i>
                               </button>
@@ -1448,6 +1566,7 @@ export default async (application: Application): Promise<void> => {
                           </div>
                           <div
                             key="courseConversationMessage--main--content--edit"
+                            hidden
                           >
                             TODO
                           </div>
@@ -1458,124 +1577,6 @@ export default async (application: Application): Promise<void> => {
                             <button
                               key="courseConversation--main--footer--like"
                               class="button button--rectangle button--transparent"
-                              javascript="${javascript`
-                                javascript.tippy({
-                                  event,
-                                  element: this,
-                                  placement: "bottom-end",
-                                  interactive: true,
-                                  trigger: "click",
-                                  content: ${html`
-                                    <div
-                                      css="${css`
-                                        display: flex;
-                                        flex-direction: column;
-                                        gap: var(--space--2);
-                                      `}"
-                                    >
-                                      <button
-                                        class="button button--rectangle button--transparent button--dropdown-menu"
-                                        javascript="${javascript`
-                                          this.onclick = async () => {
-                                            await navigator.clipboard.writeText(${`https://${application.configuration.hostname}/courses/${request.state.course!.externalId}/conversations/${request.state.courseConversation!.externalId}?${new URLSearchParams({ message: courseConversationMessage.externalId }).toString()}`});
-                                            javascript.tippy({
-                                              element: this,
-                                              elementProperty: "copiedTippy",
-                                              trigger: "manual",
-                                              content: "Copied",
-                                            }).show();
-                                            await utilities.sleep(1000);
-                                            this.copiedTippy.hide();
-                                          };
-                                        `}"
-                                      >
-                                        Copy message permanent link
-                                      </button>
-                                      $${mayEditCourseConversationMessage
-                                        ? html`
-                                            <button
-                                              class="button button--rectangle button--transparent button--dropdown-menu"
-                                              javascript="${javascript`
-                                                this.onclick = () => {
-                                                  this.closest('[key="courseConversationMessage--main"]').querySelector('[key="courseConversationMessage--main--content--show"]').hidden = true;
-                                                  this.closest('[key="courseConversationMessage--main"]').querySelector('[key="courseConversationMessage--main--content--edit"]').hidden = false;
-                                                  Tippy.hideAll();
-                                                  this.closest('[key="courseConversationMessage--main"]').querySelector('[key="courseConversationMessage--main--content--edit"] [name="TODO"]').focus();
-                                                };
-                                              `}"
-                                            >
-                                              Edit message
-                                            </button>
-                                          `
-                                        : html``}
-                                      $${mayEditCourseConversationMessage &&
-                                      request.state.courseParticipation!
-                                        .courseRole === "courseStaff" &&
-                                      courseConversationMessage.externalId !==
-                                        "1"
-                                        ? html`
-                                            <button
-                                              class="button button--rectangle button--transparent button--dropdown-menu"
-                                              javascript="${javascript`
-                                                javascript.tippy({
-                                                  event,
-                                                  element: this,
-                                                  placement: "bottom-end",
-                                                  interactive: true,
-                                                  trigger: "click",
-                                                  theme: "red",
-                                                  content: ${html`
-                                                    <form
-                                                      method="DELETE"
-                                                      action="https://${application
-                                                        .configuration
-                                                        .hostname}/courses/${request
-                                                        .state.course!
-                                                        .externalId}/conversations/${request
-                                                        .state
-                                                        .courseConversation!
-                                                        .externalId}/messages/${courseConversationMessage.externalId}"
-                                                      css="${css`
-                                                        display: flex;
-                                                        flex-direction: column;
-                                                        gap: var(--space--2);
-                                                      `}"
-                                                    >
-                                                      <div>
-                                                        <i
-                                                          class="bi bi-exclamation-triangle-fill"
-                                                        ></i
-                                                        > This action cannot be
-                                                        reverted.
-                                                      </div>
-                                                      <div>
-                                                        <button
-                                                          class="button button--rectangle button--red"
-                                                          css="${css`
-                                                            font-size: var(
-                                                              --font-size--3
-                                                            );
-                                                            line-height: var(
-                                                              --font-size--3--line-height
-                                                            );
-                                                          `}"
-                                                        >
-                                                          Delete message
-                                                        </button>
-                                                      </div>
-                                                    </form>
-                                                  `},
-                                                });
-                                              `}"
-                                            >
-                                              Delete message
-                                            </button>
-                                          `
-                                        : html``}
-                                    </div>
-                                  `},
-                                });
-                              `}"
                             >
                               <i class="bi bi-hand-thumbs-up"></i> Like
                             </button>
