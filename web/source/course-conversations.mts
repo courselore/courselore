@@ -1890,7 +1890,7 @@ export default async (application: Application): Promise<void> => {
                                     `
                                   : html`
                                       <form
-                                        method="POST"
+                                        method="DELETE"
                                         action="https://${application
                                           .configuration
                                           .hostname}/courses/${request.state
@@ -1941,7 +1941,7 @@ export default async (application: Application): Promise<void> => {
                                           $${courseConversationMessageLikes.map(
                                             (courseConversationMessageLike) => {
                                               const courseConversationMessageViewCourseParticipation =
-                                                typeof courseConversationMessage.createdByCourseParticipation ===
+                                                typeof courseConversationMessageLike.courseParticipation ===
                                                 "number"
                                                   ? application.database.get<{
                                                       user: number;
@@ -2142,7 +2142,7 @@ export default async (application: Application): Promise<void> => {
                                                     courseConversationMessageView,
                                                   ) => {
                                                     const courseConversationMessageViewCourseParticipation =
-                                                      typeof courseConversationMessage.createdByCourseParticipation ===
+                                                      typeof courseConversationMessageView.courseParticipation ===
                                                       "number"
                                                         ? application.database.get<{
                                                             user: number;
