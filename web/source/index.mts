@@ -17,6 +17,9 @@ import courseConversations, {
   ApplicationCourseConversation,
 } from "./course-conversations.mjs";
 import courseConversationMessages from "./course-conversation-messages.mjs";
+import courseConversationMessageContent, {
+  ApplicationCourseConversationMessageContent,
+} from "./course-conversation-message-content.mjs";
 
 export type Application = {
   version: string;
@@ -45,7 +48,8 @@ export type Application = {
   ApplicationLayouts &
   ApplicationUsers &
   ApplicationCourses &
-  ApplicationCourseConversation;
+  ApplicationCourseConversation &
+  ApplicationCourseConversationMessageContent;
 const application = {} as Application;
 application.version = "9.0.0";
 application.commandLineArguments = util.parseArgs({
@@ -115,6 +119,7 @@ await users(application);
 await courses(application);
 await courseConversations(application);
 await courseConversationMessages(application);
+await courseConversationMessageContent(application);
 
 // TODO
 if (application.commandLineArguments.values.type === "backgroundJob")
