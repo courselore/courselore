@@ -264,8 +264,6 @@ export default async (application: Application): Promise<void> => {
         var(--color--slate--50),
         var(--color--slate--950)
       );
-      max-height: var(--space--72);
-      overflow: auto;
       border: var(--border-width--1) solid
         light-dark(var(--color--slate--400), var(--color--slate--600));
       border-radius: var(--border-radius--1);
