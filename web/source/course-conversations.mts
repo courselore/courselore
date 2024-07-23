@@ -1388,7 +1388,9 @@ export default async (application: Application): Promise<void> => {
                                               font-weight: 700;
                                             `}"
                                             >Answer</span
-                                          >$${application.database.get(
+                                          >$${courseConversationMessageCreatedByCourseParticipation?.courseRole ===
+                                            "courseStudent" &&
+                                          application.database.get(
                                             sql`
                                               select true
                                               from "courseConversationMessageLikes"
