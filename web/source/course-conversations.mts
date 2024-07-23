@@ -391,10 +391,10 @@ export default async (application: Application): Promise<void> => {
                                             javascript.tippy({
                                               event,
                                               element: this,
+                                              theme: "red",
                                               placement: "bottom-end",
                                               interactive: true,
                                               trigger: "click",
-                                              theme: "red",
                                               content: ${html`
                                                 <form
                                                   method="DELETE"
@@ -1546,10 +1546,10 @@ export default async (application: Application): Promise<void> => {
                                                             javascript.tippy({
                                                               event,
                                                               element: this,
+                                                              theme: "red",
                                                               placement: "bottom-end",
                                                               interactive: true,
                                                               trigger: "click",
-                                                              theme: "red",
                                                               content: ${html`
                                                                 <form
                                                                   method="PATCH"
@@ -1782,10 +1782,10 @@ export default async (application: Application): Promise<void> => {
                                                   javascript.tippy({
                                                     event,
                                                     element: this,
+                                                    theme: "red",
                                                     placement: "bottom-end",
                                                     interactive: true,
                                                     trigger: "click",
-                                                    theme: "red",
                                                     content: ${html`
                                                       <form
                                                         method="DELETE"
@@ -1929,6 +1929,7 @@ export default async (application: Application): Promise<void> => {
                                     javascript.tippy({
                                       event,
                                       element: this,
+                                      theme: "max-height",
                                       placement: "top-start",
                                       interactive: true,
                                       trigger: "click",

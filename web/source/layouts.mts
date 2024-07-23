@@ -268,6 +268,10 @@ export default async (application: Application): Promise<void> => {
         light-dark(var(--color--slate--400), var(--color--slate--600));
       border-radius: var(--border-radius--1);
       box-shadow: var(--box-shadow--4);
+      &[data-theme~="max-height"] {
+        max-height: var(--space--60);
+        overflow: auto;
+      }
       &[data-theme~="error"] {
         color: light-dark(var(--color--red--800), var(--color--red--200));
         background-color: light-dark(
