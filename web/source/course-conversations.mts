@@ -1056,7 +1056,7 @@ export default async (application: Application): Promise<void> => {
                       conversationMessageIds.add(entry.target.courseConversationMessageId);
                       this.courseConversationMessageViewsIntersectionObserver.unobserve(entry.target);
                       setTimeout(() => {
-                        entry.target.classList.add("viewed");
+                        entry.target.querySelector('[key="courseConversationMessageView"]').classList.add("viewed");
                       }, 1000);
                     }
                     updateCourseConversationMessageViews();
@@ -1258,40 +1258,16 @@ export default async (application: Application): Promise<void> => {
                                 margin-left: var(--space---2-5);
                                 margin-top: var(--space--4);
                               `}"
+                              javascript="${javascript`
+                                if (${!courseConversationMessageView}) {
+                                  this.closest('[key="courseConversationMessages"]').courseConversationMessageViewsIntersectionObserver.observe(this);
+                                  this.courseConversationMessageId = ${courseConversationMessage.externalId};
+                                }
+                              `}"
                             >
-                              <div
-                                key="courseConversationMessageView"
-                                class="${courseConversationMessageView
-                                  ? "viewed"
-                                  : ""}"
-                                css="${css`
-                                  background-color: light-dark(
-                                    var(--color--blue--500),
-                                    var(--color--blue--500)
-                                  );
-                                  width: var(--space--1-5);
-                                  height: var(--space--1-5);
-                                  border-radius: var(--border-radius--circle);
-                                  transition-property: var(
-                                    --transition-property--opacity
-                                  );
-                                  transition-duration: var(
-                                    --transition-duration--150
-                                  );
-                                  transition-timing-function: var(
-                                    --transition-timing-function--ease-in-out
-                                  );
-                                  &.viewed {
-                                    opacity: var(--opacity--0);
-                                  }
-                                `}"
-                                javascript="${javascript`
-                                  if (${!courseConversationMessageView}) {
-                                    this.closest('[key="courseConversationMessages"]').courseConversationMessageViewsIntersectionObserver.observe(this);
-                                    this.courseConversationMessageId = ${courseConversationMessage.externalId};
-                                  }
-                                `}"
-                              ></div>
+                              $${courseConversationMessageViewPartial(
+                                courseConversationMessageView,
+                              )}
                             </div>
                           `;
                         })()}
@@ -3114,4 +3090,28 @@ export default async (application: Application): Promise<void> => {
       `,
     });
   };
+
+  const courseConversationMessageViewPartial = (viewed: boolean): HTML => html`
+    <div
+      key="courseConversationMessageView"
+      class="${viewed ? "viewed" : ""}"
+      css="${css`
+        background-color: light-dark(
+          var(--color--blue--500),
+          var(--color--blue--500)
+        );
+        width: var(--space--1-5);
+        height: var(--space--1-5);
+        border-radius: var(--border-radius--circle);
+        transition-property: var(--transition-property--opacity);
+        transition-duration: var(--transition-duration--150);
+        transition-timing-function: var(
+          --transition-timing-function--ease-in-out
+        );
+        &.viewed {
+          opacity: var(--opacity--0);
+        }
+      `}"
+    ></div>
+  `;
 };
