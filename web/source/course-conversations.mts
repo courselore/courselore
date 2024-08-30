@@ -2619,29 +2619,9 @@ export default async (application: Application): Promise<void> => {
                       >
                         ${label}
                       </div>
-                      <div
-                        key="courseConversationMessageViews"
-                        css="${css`
-                          background-color: light-dark(
-                            var(--color--blue--500),
-                            var(--color--blue--500)
-                          );
-                          width: var(--space--1-5);
-                          height: var(--space--1-5);
-                          border-radius: var(--border-radius--circle);
-                          transition-property: var(
-                            --transition-property--opacity
-                          );
-                          transition-duration: var(--transition-duration--150);
-                          transition-timing-function: var(
-                            --transition-timing-function--ease-in-out
-                          );
-                        `} ${index % 3 === 0 || index % 5 === 0
-                          ? css`
-                              opacity: var(--opacity--0);
-                            `
-                          : css``}"
-                      ></div>
+                      $${courseConversationMessageViewPartial(
+                        index % 3 === 0 || index % 5 === 0,
+                      )}
                     </summary>
                     <div
                       css="${css`
@@ -2800,31 +2780,9 @@ export default async (application: Application): Promise<void> => {
                                 align-items: center;
                               `}"
                             >
-                              <div
-                                key="courseConversationMessageViews"
-                                css="${css`
-                                  background-color: light-dark(
-                                    var(--color--blue--500),
-                                    var(--color--blue--500)
-                                  );
-                                  width: var(--space--1-5);
-                                  height: var(--space--1-5);
-                                  border-radius: var(--border-radius--circle);
-                                  transition-property: var(
-                                    --transition-property--opacity
-                                  );
-                                  transition-duration: var(
-                                    --transition-duration--150
-                                  );
-                                  transition-timing-function: var(
-                                    --transition-timing-function--ease-in-out
-                                  );
-                                `} ${index % 3 === 0 || index % 5 === 0
-                                  ? css`
-                                      opacity: var(--opacity--0);
-                                    `
-                                  : css``}"
-                              ></div>
+                              $${courseConversationMessageViewPartial(
+                                index % 3 === 0 || index % 5 === 0,
+                              )}
                             </div>
                           </a>
                         `,
