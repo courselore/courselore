@@ -2,27 +2,11 @@ import path from "node:path";
 import fs from "node:fs/promises";
 import readline from "node:readline/promises";
 import sql, { Database } from "@radically-straightforward/sqlite";
-import html from "@radically-straightforward/html";
-import * as htmlUtilities from "@radically-straightforward/html";
 import * as utilities from "@radically-straightforward/utilities";
 import { dedent as markdown } from "@radically-straightforward/utilities";
 import * as examples from "@radically-straightforward/examples";
 import cryptoRandomString from "crypto-random-string";
 import argon2 from "argon2";
-import { unified } from "unified";
-import remarkParse from "remark-parse";
-import remarkGfm from "remark-gfm";
-import remarkMath from "remark-math";
-import remarkRehype from "remark-rehype";
-import rehypeRaw from "rehype-raw";
-import rehypeSanitize from "rehype-sanitize";
-import rehypeKatex from "rehype-katex";
-import * as shiki from "shiki";
-import rehypeParse from "rehype-parse";
-import { visit as unistUtilVisit } from "unist-util-visit";
-import { toString as hastUtilToString } from "hast-util-to-string";
-import rehypeStringify from "rehype-stringify";
-import { DOMParser } from "linkedom";
 import sharp from "sharp";
 import forge from "node-forge";
 import { Application } from "./index.mjs";
@@ -2142,204 +2126,11 @@ export default async (application: Application): Promise<void> => {
         `,
       );
 
-      const contentPreprocessed = await (async () => {
-        const unifiedProcessor = unified()
-          .use(remarkParse)
-          .use(remarkGfm, { singleTilde: false })
-          .use(remarkMath)
-          .use(remarkRehype, { allowDangerousHtml: true })
-          .use(rehypeRaw)
-          .use(rehypeSanitize, {
-            strip: ["script"],
-            clobberPrefix: "UNUSED",
-            clobber: [],
-            ancestors: {
-              li: ["ul", "ol"],
-              thead: ["table"],
-              tbody: ["table"],
-              tfoot: ["table"],
-              tr: ["table"],
-              th: ["table"],
-              td: ["table"],
-              summary: ["details"],
-            },
-            protocols: {
-              href: ["http", "https", "mailto"],
-              src: ["http", "https"],
-            },
-            tagNames: [
-              "h1",
-              "h2",
-              "h3",
-              "h4",
-              "h5",
-              "h6",
-              "hr",
-              "p",
-              "strong",
-              "em",
-              "u",
-              "a",
-              "span",
-              "code",
-              "ins",
-              "del",
-              "sup",
-              "sub",
-              "br",
-              "img",
-              "video",
-              "courselore-poll",
-              "ul",
-              "ol",
-              "li",
-              "input",
-              "blockquote",
-              "table",
-              "thead",
-              "tbody",
-              "tfoot",
-              "tr",
-              "th",
-              "td",
-              "details",
-              "summary",
-              "div",
-              "pre",
-            ],
-            attributes: {
-              a: ["href", "id"],
-              img: ["src", "alt", "width"],
-              video: ["src"],
-              "courselore-poll": ["reference"],
-              li: ["id"],
-              input: [["type", "checkbox"], ["disabled", "true"], "checked"],
-              th: [["align", "left", "center", "right"]],
-              td: [["align", "left", "center", "right"]],
-              div: [["className", "math-display"]],
-              span: [["className", "math-inline"]],
-              code: [["className", /^language-/]],
-              "*": [],
-            },
-            required: {
-              input: { type: "checkbox", disabled: true },
-              div: { className: "math-display" },
-              span: { className: "math-inline" },
-            },
-          })
-          .use(rehypeKatex, { maxSize: 25, maxExpand: 10, output: "html" })
-          .use(
-            await (async () => {
-              const shikiHighlighter = await shiki.createHighlighter({
-                langs: Object.keys(shiki.bundledLanguages),
-                themes: ["light-plus", "dark-plus"],
-              });
-              const rehypeParseProcessor = unified().use(rehypeParse, {
-                fragment: true,
-              });
-
-              return () => (tree: any) => {
-                unistUtilVisit(tree, (node, index, parent) => {
-                  if (
-                    node.type !== "element" ||
-                    node.tagName !== "pre" ||
-                    node.children.length !== 1 ||
-                    node.children[0].type !== "element" ||
-                    node.children[0].tagName !== "code" ||
-                    node.children[0].properties === undefined ||
-                    !Array.isArray(node.children[0].properties.className) ||
-                    node.children[0].properties.className.length !== 1 ||
-                    typeof node.children[0].properties.className[0] !==
-                      "string" ||
-                    !node.children[0].properties.className[0].startsWith(
-                      "language-",
-                    ) ||
-                    index === undefined ||
-                    parent === undefined
-                  )
-                    return;
-
-                  const code = hastUtilToString(node).slice(0, -1);
-                  const language =
-                    node.children[0].properties.className[0].slice(
-                      "language-".length,
-                    );
-
-                  const highlightedCode = (() => {
-                    try {
-                      return rehypeParseProcessor
-                        .parse(html`
-                          <div>
-                            <div class="light">
-                              $${shikiHighlighter.codeToHtml(code, {
-                                lang: language,
-                                theme: "light-plus",
-                              })}
-                            </div>
-                            <div class="dark">
-                              $${shikiHighlighter.codeToHtml(code, {
-                                lang: language,
-                                theme: "dark-plus",
-                              })}
-                            </div>
-                          </div>
-                        `)
-                        .children.find((child) => child.type === "element");
-                    } catch (error: any) {
-                      utilities.log(
-                        "ERROR IN SYNTAX HIGHLIGHTER",
-                        String(error),
-                        error?.stack,
-                      );
-                    }
-                  })();
-                  if (highlightedCode === undefined) return;
-                  highlightedCode.position = node.position;
-                  parent.children[index] = highlightedCode;
-                });
-              };
-            })(),
-          )
-          .use(() => (tree: any) => {
-            unistUtilVisit(tree, (node) => {
-              if (
-                node.type === "element" &&
-                node.properties !== undefined &&
-                node.position !== undefined
-              )
-                node.properties.dataPosition = JSON.stringify(node.position);
-            });
-          })
-          .use(rehypeStringify as any);
-
-        return (contentSource: string) => {
-          const contentElement = new DOMParser()
-            .parseFromString(
-              html`
-                <div>
-                  $${unifiedProcessor
-                    .processSync(
-                      contentSource.replace(
-                        htmlUtilities.invalidXMLCharacters,
-                        "",
-                      ),
-                    )
-                    .toString()}
-                </div>
-              `,
-              "text/html",
-            )
-            .querySelector("div");
-
-          const contentPreprocessed = contentElement.innerHTML;
-
-          for (const element of contentElement.querySelectorAll(".dark"))
-            element.remove();
-          const contentSearch = contentElement.textContent!;
-
-          return { contentPreprocessed, contentSearch };
-        };
-      })();
+      const contentPreprocessed: any = () => {
+        throw new Error(
+          "This migration doesn’t support Courselore 9.0.0 and newer. Please upgrade to Courselore 8.0.0 and then to a newer version.",
+        );
+      };
 
       for (const message of database.all<{
         id: number;
