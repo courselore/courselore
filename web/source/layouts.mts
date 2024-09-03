@@ -329,10 +329,6 @@ export default async (application: Application): Promise<void> => {
     import * as javascript from "@radically-straightforward/javascript/static/index.mjs";
     import * as utilities from "@radically-straightforward/utilities";
     import * as Tippy from "tippy.js";
-    import Mousetrap from "mousetrap";
-    import scrollIntoViewIfNeeded from "scroll-into-view-if-needed";
-    import textareaCaret from "textarea-caret";
-    import textFieldEdit from "text-field-edit";
     import { unified } from "unified";
     import rehypeParse from "rehype-parse";
     import rehypeRemark from "rehype-remark";
