@@ -126,7 +126,7 @@ if (application.commandLineArguments.values.type === "backgroundJob")
   setInterval(() => {}, 1000);
 
 if (application.commandLineArguments.values.type === undefined) {
-  for (const port of application.configuration.ports) {
+  for (const port of application.internalConfiguration.ports) {
     node.childProcessKeepAlive(() =>
       childProcess.spawn(
         process.argv[0],
