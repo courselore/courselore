@@ -2736,14 +2736,17 @@ export default async (application: Application): Promise<void> => {
           );
         `,
       );
-
       // TODO
-      // <courselore-poll reference=""> -> <courselore-poll id="">
-      // @everyone, @course-staff, @students -> @everyone, @staff, @students
-      // messages%5BmessageReference%5D -> message
-      // re-preprocess all content, because syntax highlighting has changed
-      //   remove re-process from code above, first because it became obsolete, and second because it imports and hard-codes a bunch of stuff (though the hard-coding may continue being the way to go, because the rest of the application hasn’t been imported yet, and because we want the database migrations to be self-contained)
-
+      // - `<courselore-poll reference="">` → `<courselore-poll id="">` ?
+      // - `@everyone`, `@course-staff`, `@students` → `@everyone`, `@staff`, `@students` ?
+      // - `messages%5BmessageReference%5D` → `message` !
+      // - Re-preprocess content
+      //   - Syntax highlighting has changed, particularly on the treatment of dark mode
+      //   - Address the re-processing that happened in a previous migration above.
+      //     - Right now it throws an error (search for `8.0.0`).
+      //     - Right now the migrations are self-contained, they don’t need the application code at all. This is enforced by the fact that the database is `import`ed before the rest of the application.
+      //     - But perhaps this is a bad constraint to add? We could use the helper function that processes the content, instead of copying-and-pasting. Yes, the database migrations won’t be independent of the application anymore, but they’ll be leaner.
+      //     - We could just `import` the database last, because `import`ing the rest of the application doesn’t need the database.
       if (application.configuration.environment !== "development")
         throw new Error("TODO: Migration");
 
