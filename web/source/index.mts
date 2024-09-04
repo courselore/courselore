@@ -6,7 +6,6 @@ import childProcess from "node:child_process";
 import server from "@radically-straightforward/server";
 import * as utilities from "@radically-straightforward/utilities";
 import * as node from "@radically-straightforward/node";
-import caddyfile from "@radically-straightforward/caddy";
 import * as caddy from "@radically-straightforward/caddy";
 import * as argon2 from "argon2";
 import database, { ApplicationDatabase } from "./database.mjs";
@@ -32,12 +31,14 @@ export type Application = {
   };
   configuration: {
     hostname: string;
-    systemAdministratorEmail: string;
+    systemAdministratorEmail: string | undefined;
     dataDirectory: string;
     environment: "production" | "development";
-    hstsPreload: boolean;
-    extraCaddyfile: string;
-    tunnel: boolean;
+    hstsPreload?: boolean;
+    extraCaddyfile?: string;
+    tunnel?: boolean;
+  };
+  internalConfiguration: {
     ports: number[];
     argon2: argon2.Options;
   };
@@ -65,13 +66,12 @@ application.configuration = (
 application.configuration.dataDirectory ??= path.resolve("./data/");
 await fs.mkdir(application.configuration.dataDirectory, { recursive: true });
 application.configuration.environment ??= "production";
-application.configuration.hstsPreload ??= false;
-application.configuration.extraCaddyfile ??= caddyfile``;
-application.configuration.ports = Array.from(
+application.internalConfiguration = {} as Application["internalConfiguration"];
+application.internalConfiguration.ports = Array.from(
   { length: os.availableParallelism() },
   (value, index) => 18000 + index,
 );
-application.configuration.argon2 = {
+application.internalConfiguration.argon2 = {
   type: argon2.argon2id,
   memoryCost: 12288,
   timeCost: 3,
@@ -170,8 +170,9 @@ if (application.commandLineArguments.values.type === undefined) {
   }
   caddy.start({
     ...application.configuration,
+    ...application.internalConfiguration,
     untrustedStaticFilesRoots: [
-      `/files/* "${path.join(process.cwd(), "data")}"`,
+      `/files/* "${application.configuration.dataDirectory}"`,
     ],
   });
 }
