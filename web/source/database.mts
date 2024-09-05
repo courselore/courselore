@@ -2778,7 +2778,10 @@ export default async (application: Application): Promise<void> => {
       if (application.configuration.environment === "development") {
         const examplesTextModel = JSON.parse(
           await fs.readFile(
-            new URL("../models/text-examples/model.json", import.meta.url),
+            path.join(
+              import.meta.dirname,
+              "../models/text-examples/model.json",
+            ),
             "utf-8",
           ),
         );
