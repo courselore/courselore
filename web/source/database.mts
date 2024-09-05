@@ -2126,11 +2126,12 @@ export default async (application: Application): Promise<void> => {
         `,
       );
 
-      const contentPreprocessed: any = () => {
-        throw new Error(
-          "This migration doesn’t support Courselore 9.0.0 and newer. Please upgrade to Courselore 8.0.0 and then to a newer version.",
-        );
-      };
+      const contentPreprocessed = (contentSource: string) => ({
+        contentPreprocessed:
+          "This became obsolete in version 9.0.0, because it re-processes the content.",
+        contentSearch:
+          "This became obsolete in version 9.0.0, because it re-processes the content.",
+      });
 
       for (const message of database.all<{
         id: number;
@@ -2742,11 +2743,9 @@ export default async (application: Application): Promise<void> => {
       // - `messages%5BmessageReference%5D` → `message` !
       // - Re-preprocess content
       //   - Syntax highlighting has changed, particularly on the treatment of dark mode
-      //   - Address the re-processing that happened in a previous migration above.
-      //     - Right now it throws an error (search for `8.0.0`).
-      //     - Right now the migrations are self-contained, they don’t need the application code at all. This is enforced by the fact that the database is `import`ed before the rest of the application.
-      //     - But perhaps this is a bad constraint to add? We could use the helper function that processes the content, instead of copying-and-pasting. Yes, the database migrations won’t be independent of the application anymore, but they’ll be leaner.
-      //     - We could just `import` the database last, because `import`ing the rest of the application doesn’t need the database.
+      //   - Right now the migrations are self-contained, they don’t need the application code at all. This is enforced by the fact that the database is `import`ed before the rest of the application.
+      //   - But perhaps this is a bad constraint to add? We could use the helper function that processes the content, instead of copying-and-pasting. Yes, the database migrations won’t be independent of the application anymore, but they’ll be leaner.
+      //   - We could just `import` the database last, because `import`ing the rest of the application doesn’t need the database.
       if (application.configuration.environment !== "development")
         throw new Error("TODO: Migration");
 
