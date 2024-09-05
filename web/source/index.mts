@@ -35,8 +35,8 @@ export type Application = {
     dataDirectory: string;
     environment: "production" | "development";
     hstsPreload?: boolean;
-    extraCaddyfile?: string;
     tunnel?: boolean;
+    extraCaddyfile?: string;
   };
   internalConfiguration: {
     ports: number[];
@@ -175,4 +175,27 @@ if (application.commandLineArguments.values.type === undefined) {
       `/files/* "${application.configuration.dataDirectory}"`,
     ],
   });
+  if (application.configuration.environment === "development") {
+    utilities.log(
+      "MAILDEV",
+      `https://${application.configuration.hostname}:8000`,
+    );
+    node.childProcessKeepAlive(() =>
+      childProcess.spawn(
+        "npx",
+        [
+          "maildev",
+          "--ip",
+          "127.0.0.1",
+          "--web",
+          "9000",
+          "--smtp",
+          "9001",
+          "--mail-directory",
+          path.join(application.configuration.dataDirectory, "emails"),
+        ],
+        { stdio: "ignore" },
+      ),
+    );
+  }
 }
