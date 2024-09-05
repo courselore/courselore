@@ -2775,7 +2775,7 @@ export default async (application: Application): Promise<void> => {
       );
 
       if (application.configuration.environment === "development") {
-        const examplesTextModel = JSON.parse(
+        const textExamples = JSON.parse(
           await fs.readFile(
             path.join(
               import.meta.dirname,
@@ -3088,7 +3088,7 @@ export default async (application: Application): Promise<void> => {
             courseConversationExternalId++
           ) {
             const courseConversationTitle = examples.text({
-              model: examplesTextModel,
+              model: textExamples,
               length: 0,
             });
             const courseConversation = database.get<{
@@ -3188,7 +3188,7 @@ export default async (application: Application): Promise<void> => {
               courseConversationMessageExternalId++
             ) {
               const courseConversationMessageContentSource = examples.text({
-                model: examplesTextModel,
+                model: textExamples,
                 length: 1 + Math.floor(Math.random() * 5),
               });
               const courseConversationMessage = database.get<{
@@ -3304,7 +3304,7 @@ export default async (application: Application): Promise<void> => {
                       courseConversationMessagePollOptionIndex,
                     ) => {
                       const courseConversationMessagePollOptionContentSource =
-                        examples.text({ model: examplesTextModel, length: 0 });
+                        examples.text({ model: textExamples, length: 0 });
                       return database.get<{ id: number }>(
                         sql`
                         select * from "courseConversationMessagePollOptions" where "id" = ${
@@ -3400,39 +3400,39 @@ export default async (application: Application): Promise<void> => {
                     ${markdown`
                         # Headings
 
-                        ${examples.text({ model: examplesTextModel, length: 1 + Math.floor(Math.random() * 7) })}
+                        ${examples.text({ model: textExamples, length: 1 + Math.floor(Math.random() * 7) })}
 
                         # Heading 1
 
-                        ${examples.text({ model: examplesTextModel, length: 1 + Math.floor(Math.random() * 7) })}
+                        ${examples.text({ model: textExamples, length: 1 + Math.floor(Math.random() * 7) })}
 
                         ## Heading 2
 
-                        ${examples.text({ model: examplesTextModel, length: 1 + Math.floor(Math.random() * 7) })}
+                        ${examples.text({ model: textExamples, length: 1 + Math.floor(Math.random() * 7) })}
 
                         ### Heading 3
 
-                        ${examples.text({ model: examplesTextModel, length: 1 + Math.floor(Math.random() * 7) })}
+                        ${examples.text({ model: textExamples, length: 1 + Math.floor(Math.random() * 7) })}
 
                         #### Heading 4
 
-                        ${examples.text({ model: examplesTextModel, length: 1 + Math.floor(Math.random() * 7) })}
+                        ${examples.text({ model: textExamples, length: 1 + Math.floor(Math.random() * 7) })}
 
                         ##### Heading 5
 
-                        ${examples.text({ model: examplesTextModel, length: 1 + Math.floor(Math.random() * 7) })}
+                        ${examples.text({ model: textExamples, length: 1 + Math.floor(Math.random() * 7) })}
 
                         ###### Heading 6
 
-                        ${examples.text({ model: examplesTextModel, length: 1 + Math.floor(Math.random() * 7) })}
+                        ${examples.text({ model: textExamples, length: 1 + Math.floor(Math.random() * 7) })}
 
                         # Separator
 
-                        ${examples.text({ model: examplesTextModel, length: 1 + Math.floor(Math.random() * 7) })}
+                        ${examples.text({ model: textExamples, length: 1 + Math.floor(Math.random() * 7) })}
 
                         ---
 
-                        ${examples.text({ model: examplesTextModel, length: 1 + Math.floor(Math.random() * 7) })}
+                        ${examples.text({ model: textExamples, length: 1 + Math.floor(Math.random() * 7) })}
 
                         # Inline
 
@@ -3477,7 +3477,7 @@ export default async (application: Application): Promise<void> => {
 
                         ---
 
-                        ${Array.from({ length: 3 + Math.floor(Math.random() * 4) }, () => `- ${examples.text({ model: examplesTextModel, length: 1 + Math.floor(Math.random() * 7) }).replaceAll("\n\n", "\n\n  ")}`)}
+                        ${Array.from({ length: 3 + Math.floor(Math.random() * 4) }, () => `- ${examples.text({ model: textExamples, length: 1 + Math.floor(Math.random() * 7) }).replaceAll("\n\n", "\n\n  ")}`)}
 
                         ---
 
@@ -3487,7 +3487,7 @@ export default async (application: Application): Promise<void> => {
 
                         ---
 
-                        ${Array.from({ length: 3 + Math.floor(Math.random() * 4) }, (listItemValue, listItemIndex) => `${listItemIndex + 1}. ${examples.text({ model: examplesTextModel, length: 1 + Math.floor(Math.random() * 7) }).replaceAll("\n\n", "\n\n   ")}`)}
+                        ${Array.from({ length: 3 + Math.floor(Math.random() * 4) }, (listItemValue, listItemIndex) => `${listItemIndex + 1}. ${examples.text({ model: textExamples, length: 1 + Math.floor(Math.random() * 7) }).replaceAll("\n\n", "\n\n   ")}`)}
 
                         ---
 
@@ -3497,13 +3497,13 @@ export default async (application: Application): Promise<void> => {
 
                         ---
 
-                        ${Array.from({ length: 3 + Math.floor(Math.random() * 4) }, () => `- [${Math.random() < 0.5 ? " " : "x"}] ${examples.text({ model: examplesTextModel, length: 1 + Math.floor(Math.random() * 7) }).replaceAll("\n\n", "\n\n  ")}`)}
+                        ${Array.from({ length: 3 + Math.floor(Math.random() * 4) }, () => `- [${Math.random() < 0.5 ? " " : "x"}] ${examples.text({ model: textExamples, length: 1 + Math.floor(Math.random() * 7) }).replaceAll("\n\n", "\n\n  ")}`)}
 
                         # Blockquote
 
                         ${examples
                           .text({
-                            model: examplesTextModel,
+                            model: textExamples,
                             length: 1 + Math.floor(Math.random() * 7),
                           })
                           .split("\n")
@@ -3527,13 +3527,13 @@ export default async (application: Application): Promise<void> => {
                         <details>
                         <summary>Example of details with summary</summary>
 
-                        ${examples.text({ model: examplesTextModel, length: 1 + Math.floor(Math.random() * 7) })}
+                        ${examples.text({ model: textExamples, length: 1 + Math.floor(Math.random() * 7) })}
 
                         </details>
 
                         <details>
 
-                        ${examples.text({ model: examplesTextModel, length: 1 + Math.floor(Math.random() * 7) })}
+                        ${examples.text({ model: textExamples, length: 1 + Math.floor(Math.random() * 7) })}
 
                         </details>
 
@@ -3541,9 +3541,9 @@ export default async (application: Application): Promise<void> => {
 
                         Footnote[^1] and another.[^2]
 
-                        [^1]: ${examples.text({ model: examplesTextModel, length: 1 })})}
+                        [^1]: ${examples.text({ model: textExamples, length: 1 })})}
 
-                        [^2]: ${examples.text({ model: examplesTextModel, length: 1 })})}
+                        [^2]: ${examples.text({ model: textExamples, length: 1 })})}
 
                         # Cross-Site Scripting
 
