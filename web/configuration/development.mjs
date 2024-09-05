@@ -8,5 +8,8 @@ export default {
     ${os.hostname()}:8000 {
       reverse_proxy localhost:9000
     }
+    ${os.hostname()}:8001 {
+      reverse_proxy localhost:9001
+    }
   `,
 };
