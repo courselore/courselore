@@ -2747,6 +2747,7 @@ export default async (application: Application): Promise<void> => {
       //   - Right now the migrations are self-contained, they don’t need the application code at all. This is enforced by the fact that the database is `import`ed before the rest of the application.
       //   - But perhaps this is a bad constraint to add? We could use the helper function that processes the content, instead of copying-and-pasting. Yes, the database migrations won’t be independent of the application anymore, but they’ll be leaner.
       //   - We could just `import` the database last, because `import`ing the rest of the application doesn’t need the database.
+      // - Password argon2 verification changed `memoryCost` from 15 to 20 MiB, verify that things still work with old passwords
       if (application.configuration.environment !== "development")
         throw new Error("TODO: Migration");
 
