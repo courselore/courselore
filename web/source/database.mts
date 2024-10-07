@@ -2739,6 +2739,7 @@ export default async (application: Application): Promise<void> => {
       );
       // TODO
       // - `<courselore-poll reference="">` → `<courselore-poll id="">` ?
+      // - Remove hard-coded `hostname` in avatars, course conversation message attachments, course conversation message links, and so forth
       // - `@everyone`, `@course-staff`, `@students` → `@everyone`, `@staff`, `@students` ?
       // - `messages%5BmessageReference%5D` → `message` !
       // - Re-preprocess content
