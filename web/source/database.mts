@@ -2127,10 +2127,8 @@ export default async (application: Application): Promise<void> => {
       );
 
       const contentPreprocessed = (contentSource: string) => ({
-        contentPreprocessed:
-          "This became obsolete in version 9.0.0, because it re-processes the content.",
-        contentSearch:
-          "This became obsolete in version 9.0.0, because it re-processes the content.",
+        contentPreprocessed: "This became obsolete in version 9.0.0.",
+        contentSearch: "This became obsolete in version 9.0.0.",
       });
 
       for (const message of database.all<{
