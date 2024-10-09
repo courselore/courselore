@@ -45,7 +45,7 @@ export default async (application: Application): Promise<void> => {
               select "id"
               from "courseConversationMessages"
               where
-                "externalId" = ${courseConversationMessageId} and
+                "publicId" = ${courseConversationMessageId} and
                 "courseConversation" = ${request.state.courseConversation!.id} $${
                   request.state.courseParticipation!.courseRole !==
                   "courseStaff"

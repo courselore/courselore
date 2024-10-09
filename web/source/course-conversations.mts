@@ -12,7 +12,7 @@ export type ApplicationCourseConversation = {
       CourseConversation: Application["types"]["states"]["Course"] & {
         courseConversation: {
           id: number;
-          externalId: string;
+          publicId: string;
           courseConversationType:
             | "courseConversationNote"
             | "courseConversationQuestion";
@@ -24,7 +24,7 @@ export type ApplicationCourseConversation = {
           pinned: number;
           title: string;
           titleSearch: string;
-          courseConversationMessagesNextExternalId: number;
+          courseConversationMessagesNextpublicId: number;
         };
       };
     };
@@ -54,7 +54,7 @@ export default async (application: Application): Promise<void> => {
         return;
       request.state.courseConversation = application.database.get<{
         id: number;
-        externalId: string;
+        publicId: string;
         courseConversationType:
           | "courseConversationNote"
           | "courseConversationQuestion";
@@ -66,23 +66,23 @@ export default async (application: Application): Promise<void> => {
         pinned: number;
         title: string;
         titleSearch: string;
-        courseConversationMessagesNextExternalId: number;
+        courseConversationMessagesNextpublicId: number;
       }>(
         sql`
           select 
             "id",
-            "externalId",
+            "publicId",
             "courseConversationType",
             "questionResolved",
             "courseConversationParticipations",
             "pinned",
             "title",
             "titleSearch",
-            "courseConversationMessagesNextExternalId"
+            "courseConversationMessagesNextpublicId"
           from "courseConversations"
           where
             "course" = ${request.state.course.id} and
-            "externalId" = ${request.pathname.courseConversationId}
+            "publicId" = ${request.pathname.courseConversationId}
         `,
       );
       if (request.state.courseConversation === undefined) return;
@@ -124,8 +124,8 @@ export default async (application: Application): Promise<void> => {
           body: html`
             <div
               key="courseConversation /courses/${request.state.course
-                .externalId}/conversations/${request.state.courseConversation
-                .externalId}"
+                .publicId}/conversations/${request.state.courseConversation
+                .publicId}"
               css="${css`
                 display: flex;
                 flex-direction: column;
@@ -152,7 +152,7 @@ export default async (application: Application): Promise<void> => {
                           where
                             "courseConversation" = ${request.state.courseConversation.id} and
                             "createdByCourseParticipation" = ${request.state.courseParticipation.id} and
-                            "externalId" = '1';
+                            "publicId" = '1';
                         `,
                       ) !== undefined);
                   return html`
@@ -203,8 +203,8 @@ export default async (application: Application): Promise<void> => {
                                 method="PATCH"
                                 action="https://${application.configuration
                                   .hostname}/courses/${request.state.course
-                                  .externalId}/conversations/${request.state
-                                  .courseConversation.externalId}"
+                                  .publicId}/conversations/${request.state
+                                  .courseConversation.publicId}"
                                 novalidate
                                 hidden
                                 css="${css`
@@ -279,7 +279,7 @@ export default async (application: Application): Promise<void> => {
                                     class="button button--rectangle button--transparent button--dropdown-menu"
                                     javascript="${javascript`
                                       this.onclick = async () => {
-                                        await navigator.clipboard.writeText(${`https://${application.configuration.hostname}/courses/${request.state.course.externalId}/conversations/${request.state.courseConversation.externalId}`});
+                                        await navigator.clipboard.writeText(${`https://${application.configuration.hostname}/courses/${request.state.course.publicId}/conversations/${request.state.courseConversation.publicId}`});
                                         javascript.tippy({
                                           element: this,
                                           elementProperty: "copiedTippy",
@@ -312,12 +312,12 @@ export default async (application: Application): Promise<void> => {
                                     : html``}
                                   $${(() => {
                                     const courses = application.database.all<{
-                                      externalId: string;
+                                      publicId: string;
                                       name: string;
                                     }>(
                                       sql`
                                         select
-                                          "courses"."externalId" as "externalId",
+                                          "courses"."publicId" as "publicId",
                                           "courses"."name" as "name"
                                         from "courses"
                                         join "courseParticipations" on
@@ -353,16 +353,16 @@ export default async (application: Application): Promise<void> => {
                                                         <a
                                                           href="https://${application
                                                             .configuration
-                                                            .hostname}/courses/${course.externalId}/conversations/new?${new URLSearchParams(
+                                                            .hostname}/courses/${course.publicId}/conversations/new?${new URLSearchParams(
                                                             {
                                                               "reuse.course":
                                                                 request.state
                                                                   .course!
-                                                                  .externalId,
+                                                                  .publicId,
                                                               "reuse.courseConversation":
                                                                 request.state
                                                                   .courseConversation!
-                                                                  .externalId,
+                                                                  .publicId,
                                                             },
                                                           ).toString()}"
                                                           class="button button--rectangle button--transparent button--dropdown-menu"
@@ -402,9 +402,9 @@ export default async (application: Application): Promise<void> => {
                                                     .configuration
                                                     .hostname}/courses/${request
                                                     .state.course
-                                                    .externalId}/conversations/${request
+                                                    .publicId}/conversations/${request
                                                     .state.courseConversation
-                                                    .externalId}"
+                                                    .publicId}"
                                                   css="${css`
                                                     display: flex;
                                                     flex-direction: column;
@@ -492,9 +492,9 @@ export default async (application: Application): Promise<void> => {
                                             .configuration
                                             .hostname}/courses/${request.state
                                             .course
-                                            .externalId}/conversations/${request
+                                            .publicId}/conversations/${request
                                             .state.courseConversation
-                                            .externalId}"
+                                            .publicId}"
                                         >
                                           <input
                                             type="hidden"
@@ -518,9 +518,9 @@ export default async (application: Application): Promise<void> => {
                                             .configuration
                                             .hostname}/courses/${request.state
                                             .course
-                                            .externalId}/conversations/${request
+                                            .publicId}/conversations/${request
                                             .state.courseConversation
-                                            .externalId}"
+                                            .publicId}"
                                         >
                                           <input
                                             type="hidden"
@@ -606,9 +606,9 @@ export default async (application: Application): Promise<void> => {
                                               .configuration
                                               .hostname}/courses/${request.state
                                               .course
-                                              .externalId}/conversations/${request
+                                              .publicId}/conversations/${request
                                               .state.courseConversation
-                                              .externalId}"
+                                              .publicId}"
                                           >
                                             <input
                                               type="hidden"
@@ -632,9 +632,9 @@ export default async (application: Application): Promise<void> => {
                                               .configuration
                                               .hostname}/courses/${request.state
                                               .course
-                                              .externalId}/conversations/${request
+                                              .publicId}/conversations/${request
                                               .state.courseConversation
-                                              .externalId}"
+                                              .publicId}"
                                           >
                                             <input
                                               type="hidden"
@@ -710,9 +710,9 @@ export default async (application: Application): Promise<void> => {
                                               .configuration
                                               .hostname}/courses/${request.state
                                               .course
-                                              .externalId}/conversations/${request
+                                              .publicId}/conversations/${request
                                               .state.courseConversation
-                                              .externalId}"
+                                              .publicId}"
                                           >
                                             <input
                                               type="hidden"
@@ -736,9 +736,9 @@ export default async (application: Application): Promise<void> => {
                                               .configuration
                                               .hostname}/courses/${request.state
                                               .course
-                                              .externalId}/conversations/${request
+                                              .publicId}/conversations/${request
                                               .state.courseConversation
-                                              .externalId}"
+                                              .publicId}"
                                           >
                                             <input
                                               type="hidden"
@@ -763,9 +763,9 @@ export default async (application: Application): Promise<void> => {
                                               .configuration
                                               .hostname}/courses/${request.state
                                               .course
-                                              .externalId}/conversations/${request
+                                              .publicId}/conversations/${request
                                               .state.courseConversation
-                                              .externalId}"
+                                              .publicId}"
                                           >
                                             <input
                                               type="hidden"
@@ -851,9 +851,9 @@ export default async (application: Application): Promise<void> => {
                                             .configuration
                                             .hostname}/courses/${request.state
                                             .course
-                                            .externalId}/conversations/${request
+                                            .publicId}/conversations/${request
                                             .state.courseConversation
-                                            .externalId}"
+                                            .publicId}"
                                         >
                                           <input
                                             type="hidden"
@@ -877,9 +877,9 @@ export default async (application: Application): Promise<void> => {
                                             .configuration
                                             .hostname}/courses/${request.state
                                             .course
-                                            .externalId}/conversations/${request
+                                            .publicId}/conversations/${request
                                             .state.courseConversation
-                                            .externalId}"
+                                            .publicId}"
                                         >
                                           <input
                                             type="hidden"
@@ -951,9 +951,9 @@ export default async (application: Application): Promise<void> => {
                                         .configuration
                                         .hostname}/courses/${request.state
                                         .course
-                                        .externalId}/conversations/${request
+                                        .publicId}/conversations/${request
                                         .state.courseConversation
-                                        .externalId}/taggings"
+                                        .publicId}/taggings"
                                       novalidate
                                       css="${css`
                                         display: flex;
@@ -969,7 +969,7 @@ export default async (application: Application): Promise<void> => {
                                             <input
                                               type="checkbox"
                                               name="tags[]"
-                                              value="${courseConversationsTag.externalId}"
+                                              value="${courseConversationsTag.publicId}"
                                               required
                                               $${courseConversationsTagsWithTagging.some(
                                                 (
@@ -1013,7 +1013,7 @@ export default async (application: Application): Promise<void> => {
                         for (const courseConversationsTag of courseConversationsTagsWithTagging)
                           courseConversationsTagsHTML += html`
                             <div
-                              key="courseConversationsTag ${courseConversationsTag.externalId}"
+                              key="courseConversationsTag ${courseConversationsTag.publicId}"
                               css="${css`
                                 font-weight: 400;
                               `}"
@@ -1069,9 +1069,9 @@ export default async (application: Application): Promise<void> => {
                     const body = new URLSearchParams([...conversationMessageIds].map(courseConversationMessageId => ["courseConversationMessageIds[]", courseConversationMessageId]));
                     conversationMessageIds.clear();
                     await fetch(${`https://${application.configuration.hostname}/courses/${
-                      request.state.course!.externalId
+                      request.state.course!.publicId
                     }/conversations/${
-                      request.state.courseConversation!.externalId
+                      request.state.courseConversation!.publicId
                     }/messages/views`}, {
                       method: "POST",
                       headers: { "CSRF-Protection": "true" },
@@ -1084,7 +1084,7 @@ export default async (application: Application): Promise<void> => {
                 $${application.database
                   .all<{
                     id: number;
-                    externalId: string;
+                    publicId: string;
                     createdAt: string;
                     updatedAt: string | null;
                     createdByCourseParticipation: number | null;
@@ -1101,7 +1101,7 @@ export default async (application: Application): Promise<void> => {
                     sql`
                       select
                         "id",
-                        "externalId",
+                        "publicId",
                         "createdAt",
                         "updatedAt",
                         "createdByCourseParticipation",
@@ -1152,7 +1152,7 @@ export default async (application: Application): Promise<void> => {
                       undefined
                         ? application.database.get<{
                             id: number;
-                            externalId: string;
+                            publicId: string;
                             createdAt: string;
                             name: string;
                             nameSearch: string;
@@ -1199,7 +1199,7 @@ export default async (application: Application): Promise<void> => {
                             sql`
                               select
                                 "id",
-                                "externalId",
+                                "publicId",
                                 "createdAt",
                                 "name",
                                 "nameSearch",
@@ -1230,9 +1230,9 @@ export default async (application: Application): Promise<void> => {
                     return html`
                       <div
                         key="courseConversationMessage /courses/${request.state
-                          .course!.externalId}/conversations/${request.state
+                          .course!.publicId}/conversations/${request.state
                           .courseConversation!
-                          .externalId}/messages/${courseConversationMessage.externalId}"
+                          .publicId}/messages/${courseConversationMessage.publicId}"
                         css="${css`
                           position: relative;
                           display: flex;
@@ -1261,7 +1261,7 @@ export default async (application: Application): Promise<void> => {
                               javascript="${javascript`
                                 if (${!courseConversationMessageView}) {
                                   this.closest('[key="courseConversationMessages"]').courseConversationMessageViewsIntersectionObserver.observe(this);
-                                  this.courseConversationMessageId = ${courseConversationMessage.externalId};
+                                  this.courseConversationMessageId = ${courseConversationMessage.publicId};
                                 }
                               `}"
                             >
@@ -1438,7 +1438,7 @@ export default async (application: Application): Promise<void> => {
                                           class="button button--rectangle button--transparent button--dropdown-menu"
                                           javascript="${javascript`
                                             this.onclick = async () => {
-                                              await navigator.clipboard.writeText(${`https://${application.configuration.hostname}/courses/${request.state.course!.externalId}/conversations/${request.state.courseConversation!.externalId}?${new URLSearchParams({ message: courseConversationMessage.externalId }).toString()}`});
+                                              await navigator.clipboard.writeText(${`https://${application.configuration.hostname}/courses/${request.state.course!.publicId}/conversations/${request.state.courseConversation!.publicId}?${new URLSearchParams({ message: courseConversationMessage.publicId }).toString()}`});
                                               javascript.tippy({
                                                 element: this,
                                                 elementProperty: "copiedTippy",
@@ -1534,10 +1534,10 @@ export default async (application: Application): Promise<void> => {
                                                                     .hostname}/courses/${request
                                                                     .state
                                                                     .course!
-                                                                    .externalId}/conversations/${request
+                                                                    .publicId}/conversations/${request
                                                                     .state
                                                                     .courseConversation!
-                                                                    .externalId}/messages/${courseConversationMessage.externalId}"
+                                                                    .publicId}/messages/${courseConversationMessage.publicId}"
                                                                   css="${css`
                                                                     display: flex;
                                                                     flex-direction: column;
@@ -1606,10 +1606,10 @@ export default async (application: Application): Promise<void> => {
                                                             .configuration
                                                             .hostname}/courses/${request
                                                             .state.course!
-                                                            .externalId}/conversations/${request
+                                                            .publicId}/conversations/${request
                                                             .state
                                                             .courseConversation!
-                                                            .externalId}/messages/${courseConversationMessage.externalId}"
+                                                            .publicId}/messages/${courseConversationMessage.publicId}"
                                                         >
                                                           <input
                                                             type="hidden"
@@ -1642,7 +1642,7 @@ export default async (application: Application): Promise<void> => {
                                           "courseConversationQuestion" &&
                                         courseConversationMessage.courseConversationMessageType !==
                                           "courseConversationMessageCourseStaffWhisper" &&
-                                        courseConversationMessage.externalId !==
+                                        courseConversationMessage.publicId !==
                                           "1"
                                           ? html`
                                               <button
@@ -1668,10 +1668,10 @@ export default async (application: Application): Promise<void> => {
                                                             .configuration
                                                             .hostname}/courses/${request
                                                             .state.course!
-                                                            .externalId}/conversations/${request
+                                                            .publicId}/conversations/${request
                                                             .state
                                                             .courseConversation!
-                                                            .externalId}/messages/${courseConversationMessage.externalId}"
+                                                            .publicId}/messages/${courseConversationMessage.publicId}"
                                                         >
                                                           <input
                                                             type="hidden"
@@ -1693,10 +1693,10 @@ export default async (application: Application): Promise<void> => {
                                                             .configuration
                                                             .hostname}/courses/${request
                                                             .state.course!
-                                                            .externalId}/conversations/${request
+                                                            .publicId}/conversations/${request
                                                             .state
                                                             .courseConversation!
-                                                            .externalId}/messages/${courseConversationMessage.externalId}"
+                                                            .publicId}/messages/${courseConversationMessage.publicId}"
                                                         >
                                                           <input
                                                             type="hidden"
@@ -1718,10 +1718,10 @@ export default async (application: Application): Promise<void> => {
                                                             .configuration
                                                             .hostname}/courses/${request
                                                             .state.course!
-                                                            .externalId}/conversations/${request
+                                                            .publicId}/conversations/${request
                                                             .state
                                                             .courseConversation!
-                                                            .externalId}/messages/${courseConversationMessage.externalId}"
+                                                            .publicId}/messages/${courseConversationMessage.publicId}"
                                                         >
                                                           <input
                                                             type="hidden"
@@ -1749,7 +1749,7 @@ export default async (application: Application): Promise<void> => {
                                         $${mayEditCourseConversationMessage &&
                                         request.state.courseParticipation!
                                           .courseRole === "courseStaff" &&
-                                        courseConversationMessage.externalId !==
+                                        courseConversationMessage.publicId !==
                                           "1"
                                           ? html`
                                               <button
@@ -1769,10 +1769,10 @@ export default async (application: Application): Promise<void> => {
                                                           .configuration
                                                           .hostname}/courses/${request
                                                           .state.course!
-                                                          .externalId}/conversations/${request
+                                                          .publicId}/conversations/${request
                                                           .state
                                                           .courseConversation!
-                                                          .externalId}/messages/${courseConversationMessage.externalId}"
+                                                          .publicId}/messages/${courseConversationMessage.publicId}"
                                                         css="${css`
                                                           display: flex;
                                                           flex-direction: column;
@@ -1854,9 +1854,9 @@ export default async (application: Application): Promise<void> => {
                                           .configuration
                                           .hostname}/courses/${request.state
                                           .course!
-                                          .externalId}/conversations/${request
+                                          .publicId}/conversations/${request
                                           .state.courseConversation!
-                                          .externalId}/messages/${courseConversationMessage.externalId}/likes"
+                                          .publicId}/messages/${courseConversationMessage.publicId}/likes"
                                       >
                                         <button
                                           key="courseConversationMessage--main--footer--like"
@@ -1873,9 +1873,9 @@ export default async (application: Application): Promise<void> => {
                                           .configuration
                                           .hostname}/courses/${request.state
                                           .course!
-                                          .externalId}/conversations/${request
+                                          .publicId}/conversations/${request
                                           .state.courseConversation!
-                                          .externalId}/messages/${courseConversationMessage.externalId}/likes"
+                                          .publicId}/messages/${courseConversationMessage.publicId}/likes"
                                       >
                                         <button
                                           key="courseConversationMessage--main--footer--like"
@@ -1942,7 +1942,7 @@ export default async (application: Application): Promise<void> => {
                                                 undefined
                                                   ? application.database.get<{
                                                       id: number;
-                                                      externalId: string;
+                                                      publicId: string;
                                                       createdAt: string;
                                                       name: string;
                                                       nameSearch: string;
@@ -2002,7 +2002,7 @@ export default async (application: Application): Promise<void> => {
                                                       sql`
                                                         select
                                                           "id",
-                                                          "externalId",
+                                                          "publicId",
                                                           "createdAt",
                                                           "name",
                                                           "nameSearch",
@@ -2143,7 +2143,7 @@ export default async (application: Application): Promise<void> => {
                                                       undefined
                                                         ? application.database.get<{
                                                             id: number;
-                                                            externalId: string;
+                                                            publicId: string;
                                                             createdAt: string;
                                                             name: string;
                                                             nameSearch: string;
@@ -2207,7 +2207,7 @@ export default async (application: Application): Promise<void> => {
                                                             sql`
                                                               select
                                                                 "id",
-                                                                "externalId",
+                                                                "publicId",
                                                                 "createdAt",
                                                                 "name",
                                                                 "nameSearch",
@@ -2407,7 +2407,7 @@ export default async (application: Application): Promise<void> => {
           `}"
         >
           <div
-            key="sidebar /courses/${request.state.course.externalId}"
+            key="sidebar /courses/${request.state.course.publicId}"
             style="--width: ${String(request.state.user.sidebarWidth)}px;"
             css="${css`
               border-right: var(--border-width--1) solid
@@ -2456,7 +2456,7 @@ export default async (application: Application): Promise<void> => {
                       key="new-conversation"
                       href="https://${application.configuration
                         .hostname}/courses/${request.state.course
-                        .externalId}/conversations/new"
+                        .publicId}/conversations/new"
                       class="button button--square button--blue"
                       css="${css`
                         font-size: var(--font-size--7-5);
@@ -2634,12 +2634,12 @@ export default async (application: Application): Promise<void> => {
                         (value, index) => html`
                           <a
                             key="courseConversation /courses/${request.state
-                              .course!.externalId}/conversations/${String(
+                              .course!.publicId}/conversations/${String(
                               index,
                             )}"
                             href="https://${application.configuration
                               .hostname}/courses/${request.state.course!
-                              .externalId}/conversations/${String(index)}"
+                              .publicId}/conversations/${String(index)}"
                             css="${css`
                               padding: var(--space--2) var(--space--4);
                               border-bottom: var(--border-width--1) solid

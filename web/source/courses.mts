@@ -12,7 +12,7 @@ export type ApplicationCourses = {
       Course: Application["types"]["states"]["User"] & {
         course: {
           id: number;
-          externalId: string;
+          publicId: string;
           createdAt: string;
           name: string;
           year: string | null;
@@ -25,11 +25,11 @@ export type ApplicationCourses = {
           invitationLinkCourseStudentsActive: number;
           courseStudentsMayCreatePolls: number;
           archivedAt: string | null;
-          courseConversationsNextExternalId: number;
+          courseConversationsNextpublicId: number;
         };
         courseParticipation: {
           id: number;
-          externalId: string;
+          publicId: string;
           createdAt: string;
           courseRole: "courseStaff" | "courseStudent";
           color:
@@ -54,7 +54,7 @@ export type ApplicationCourses = {
         };
         courseConversationsTags: {
           id: number;
-          externalId: string;
+          publicId: string;
           name: string;
           courseStaff: number;
         }[];
@@ -79,7 +79,7 @@ export default async (application: Application): Promise<void> => {
       if (request.state.user === undefined) return;
       request.state.course = application.database.get<{
         id: number;
-        externalId: string;
+        publicId: string;
         createdAt: string;
         name: string;
         year: string | null;
@@ -92,12 +92,12 @@ export default async (application: Application): Promise<void> => {
         invitationLinkCourseStudentsActive: number;
         courseStudentsMayCreatePolls: number;
         archivedAt: string | null;
-        courseConversationsNextExternalId: number;
+        courseConversationsNextpublicId: number;
       }>(
         sql`
           select
             "id",
-            "externalId",
+            "publicId",
             "createdAt",
             "name",
             "year",
@@ -110,15 +110,15 @@ export default async (application: Application): Promise<void> => {
             "invitationLinkCourseStudentsActive",
             "courseStudentsMayCreatePolls",
             "archivedAt",
-            "courseConversationsNextExternalId"
+            "courseConversationsNextpublicId"
           from "courses"
-          where "externalId" = ${request.pathname.courseId};
+          where "publicId" = ${request.pathname.courseId};
         `,
       );
       if (request.state.course === undefined) return;
       request.state.courseParticipation = application.database.get<{
         id: number;
-        externalId: string;
+        publicId: string;
         createdAt: string;
         courseRole: "courseStaff" | "courseStudent";
         color:
@@ -144,7 +144,7 @@ export default async (application: Application): Promise<void> => {
         sql`
           select
             "id",
-            "externalId",
+            "publicId",
             "createdAt",
             "courseRole",
             "color",
@@ -158,12 +158,12 @@ export default async (application: Application): Promise<void> => {
       if (request.state.courseParticipation === undefined) return;
       request.state.courseConversationsTags = application.database.all<{
         id: number;
-        externalId: string;
+        publicId: string;
         name: string;
         courseStaff: number;
       }>(
         sql`
-          select "id", "externalId", "name", "courseStaff"
+          select "id", "publicId", "name", "courseStaff"
           from "courseConversationsTags"
           where
             "course" = ${request.state.course.id} $${
@@ -199,10 +199,10 @@ export default async (application: Application): Promise<void> => {
       )
         return;
       const courseConversation = application.database.get<{
-        externalId: number;
+        publicId: number;
       }>(
         sql`
-          select "externalId"
+          select "publicId"
           from "courseConversations"
           $${
             typeof request.state.courseParticipation
@@ -223,7 +223,7 @@ export default async (application: Application): Promise<void> => {
       );
       if (courseConversation === undefined) return;
       response.redirect(
-        `/courses/${request.state.course.externalId}/conversations/${courseConversation.externalId}`,
+        `/courses/${request.state.course.publicId}/conversations/${courseConversation.publicId}`,
       );
     },
   });

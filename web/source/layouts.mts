@@ -521,7 +521,7 @@ export default async (application: Application): Promise<void> => {
                             <a
                               href="https://${application.configuration
                                 .hostname}/courses/${request.state.course
-                                .externalId}/"
+                                .publicId}/"
                               class="button button--rectangle button--transparent ${request.URL.pathname.match(
                                 new RegExp("^/courses/[0-9]+/settings$"),
                               ) === null
@@ -533,7 +533,7 @@ export default async (application: Application): Promise<void> => {
                             <a
                               href="https://${application.configuration
                                 .hostname}/courses/${request.state.course
-                                .externalId}/settings"
+                                .publicId}/settings"
                               class="button button--rectangle button--transparent ${request.URL.pathname.match(
                                 new RegExp("^/courses/[0-9]+/settings$"),
                               ) !== null
@@ -545,7 +545,7 @@ export default async (application: Application): Promise<void> => {
                             <hr class="separator" />
                             $${application.database
                               .all<{
-                                externalId: string;
+                                publicId: string;
                                 name: string;
                                 year: string | null;
                                 term: string | null;
@@ -555,7 +555,7 @@ export default async (application: Application): Promise<void> => {
                               }>(
                                 sql`
                                   select
-                                    "courses"."externalId",
+                                    "courses"."publicId",
                                     "courses"."name",
                                     "courses"."year",
                                     "courses"."term",
@@ -574,12 +574,12 @@ export default async (application: Application): Promise<void> => {
                               .map(
                                 (course) => html`
                                   <a
-                                    key="course-selector ${course.externalId}"
+                                    key="course-selector ${course.publicId}"
                                     href="https://${application.configuration
-                                      .hostname}/courses/${course.externalId}"
+                                      .hostname}/courses/${course.publicId}"
                                     class="button button--rectangle button--transparent ${request.URL.pathname.match(
                                       new RegExp(
-                                        `^/courses/${course.externalId}/`,
+                                        `^/courses/${course.publicId}/`,
                                       ),
                                     ) !== null
                                       ? "button--blue"

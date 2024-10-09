@@ -12,7 +12,7 @@ export type ApplicationUsers = {
       User: {
         user: {
           id: number;
-          externalId: string;
+          publicId: string;
           createdAt: string;
           name: string;
           nameSearch: string;
@@ -84,7 +84,7 @@ export default async (application: Application): Promise<void> => {
     ) => {
       request.state.user = application.database.get<{
         id: number;
-        externalId: string;
+        publicId: string;
         createdAt: string;
         name: string;
         nameSearch: string;
@@ -128,7 +128,7 @@ export default async (application: Application): Promise<void> => {
         sql`
           select
             "id",
-            "externalId",
+            "publicId",
             "createdAt",
             "name",
             "nameSearch",
@@ -175,10 +175,10 @@ export default async (application: Application): Promise<void> => {
     ) => {
       if (request.state.user === undefined) return;
       const course = application.database.get<{
-        externalId: number;
+        publicId: number;
       }>(
         sql`
-          select "externalId"
+          select "publicId"
           from "courses"
           where "id" = ${
             request.state.user.mostRecentlyVisitedCourse ??
@@ -197,7 +197,7 @@ export default async (application: Application): Promise<void> => {
         `,
       );
       if (course === undefined) return;
-      response.redirect(`/courses/${course.externalId}`);
+      response.redirect(`/courses/${course.publicId}`);
     },
   });
 
@@ -238,7 +238,7 @@ export default async (application: Application): Promise<void> => {
     typeof user === "object" && typeof user.avatar === "string"
       ? html`
           <img
-            key="user--avatar/${user.externalId}"
+            key="user--avatar/${user.publicId}"
             src="${user.avatar}"
             css="${css`
               background-color: light-dark(
@@ -265,7 +265,7 @@ export default async (application: Application): Promise<void> => {
       : html`
           <div
             key="user--avatar/${typeof user === "object"
-              ? user.externalId
+              ? user.publicId
               : user}"
             style="
               --color--light: var(--color--${typeof user === "object"
