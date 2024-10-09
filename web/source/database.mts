@@ -2786,7 +2786,7 @@ export default async (application: Application): Promise<void> => {
         );
         const userPassword = await argon2.hash(
           "courselore",
-          application.internalConfiguration.argon2,
+          application.privateConfiguration.argon2,
         );
         const users = Array.from({ length: 151 }, (value, userIndex) => {
           const userName = examples.name();

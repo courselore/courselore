@@ -38,7 +38,7 @@ export type Application = {
     tunnel?: boolean;
     extraCaddyfile?: string;
   };
-  internalConfiguration: {
+  privateConfiguration: {
     ports: number[];
     argon2: argon2.Options;
   };
@@ -66,12 +66,12 @@ application.configuration = (
 application.configuration.dataDirectory ??= path.resolve("./data/");
 await fs.mkdir(application.configuration.dataDirectory, { recursive: true });
 application.configuration.environment ??= "production";
-application.internalConfiguration = {} as Application["internalConfiguration"];
-application.internalConfiguration.ports = Array.from(
+application.privateConfiguration = {} as Application["privateConfiguration"];
+application.privateConfiguration.ports = Array.from(
   { length: os.availableParallelism() },
   (value, index) => 18000 + index,
 );
-application.internalConfiguration.argon2 = {
+application.privateConfiguration.argon2 = {
   type: argon2.argon2id,
   memoryCost: 12288,
   timeCost: 3,
@@ -126,7 +126,7 @@ if (application.commandLineArguments.values.type === "backgroundJob")
   setInterval(() => {}, 1000);
 
 if (application.commandLineArguments.values.type === undefined) {
-  for (const port of application.internalConfiguration.ports) {
+  for (const port of application.privateConfiguration.ports) {
     node.childProcessKeepAlive(() =>
       childProcess.spawn(
         process.argv[0],
@@ -172,7 +172,7 @@ if (application.commandLineArguments.values.type === undefined) {
   }
   caddy.start({
     ...application.configuration,
-    ...application.internalConfiguration,
+    ...application.privateConfiguration,
     untrustedStaticFilesRoots: [
       `/files/* "${application.configuration.dataDirectory}"`,
     ],
