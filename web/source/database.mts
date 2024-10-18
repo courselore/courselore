@@ -2433,8 +2433,8 @@ export default async (application: Application): Promise<void> => {
             "password" text null,
             "passwordResetNonce" text null unique,
             "passwordResetCreatedAt" text null,
-            "color" text not null,
-            "avatar" text null,
+            "avatarColor" text not null,
+            "avatarImage" text null,
             "systemRole" text not null,
             "lastSeenOnlineAt" text not null,
             "darkMode" text not null,
@@ -2450,8 +2450,7 @@ export default async (application: Application): Promise<void> => {
           create virtual table "search_users_nameSearch" using fts5(
             content = "users",
             content_rowid = "id",
-            "nameSearch",
-            tokenize = 'porter'
+            "nameSearch"
           );
           create trigger "search_users_nameSearch_insert" after insert on "users" begin
             insert into "search_users_nameSearch" ("rowid", "nameSearch") values ("new"."id", "new"."nameSearch");
@@ -2472,8 +2471,8 @@ export default async (application: Application): Promise<void> => {
             "samlSessionIndex" text null,
             "samlNameID" text null
           ) strict;
-          create index "index_userSessions_createdAt" on "userSessions" ("createdAt");
           create index "index_userSessions_user" on "userSessions" ("user");
+          create index "index_userSessions_createdAt" on "userSessions" ("createdAt");
           
           create table "userSessionsSamlCache" (
             "id" integer primary key autoincrement,
@@ -2492,13 +2491,13 @@ export default async (application: Application): Promise<void> => {
             "term" text null,
             "code" text null,
             "institution" text null,
-            "invitationLinkCourseStaffToken" text not null,
-            "invitationLinkCourseStaffActive" integer not null,
-            "invitationLinkCourseStudentsToken" text not null,
+            "invitationLinkCourseInstructorsToken" text not null unique,
+            "invitationLinkCourseInstructorsActive" integer not null,
+            "invitationLinkCourseStudentsToken" text not null unique,
             "invitationLinkCourseStudentsActive" integer not null,
             "courseStudentsMayCreatePolls" integer not null,
-            "archivedAt" text null,
-            "courseConversationsNextpublicId" integer not null
+            "state" text not null,
+            "courseConversationsNextPublicId" integer not null
           ) strict;
           
           create table "courseInvitationEmails" (
@@ -2509,8 +2508,8 @@ export default async (application: Application): Promise<void> => {
             "email" text not null,
             "courseRole" text not null
           ) strict;
-          create index "index_courseInvitationEmails_createdAt" on "courseInvitationEmails" ("createdAt");
           create index "index_courseInvitationEmails_course" on "courseInvitationEmails" ("course");
+          create index "index_courseInvitationEmails_createdAt" on "courseInvitationEmails" ("createdAt");
           create index "index_courseInvitationEmails_email" on "courseInvitationEmails" ("email");
           
           create table "courseParticipations" (
@@ -2520,7 +2519,7 @@ export default async (application: Application): Promise<void> => {
             "course" integer not null references "courses",
             "createdAt" text not null,
             "courseRole" text not null,
-            "color" text not null,
+            "decorationColor" text not null,
             "mostRecentlyVisitedCourseConversation" integer null references "courseConversations",
             unique ("user", "course")
           ) strict;
@@ -2532,7 +2531,7 @@ export default async (application: Application): Promise<void> => {
             "course" integer not null references "courses",
             "order" integer not null,
             "name" text not null,
-            "courseStaff" integer not null
+            "privateToCourseInstructors" integer not null
           ) strict;
           create index "index_courseConversationsTags_course" on "courseConversationsTags" ("course");
           
@@ -2546,7 +2545,6 @@ export default async (application: Application): Promise<void> => {
             "pinned" integer not null,
             "title" text not null,
             "titleSearch" text not null,
-            "courseConversationMessagesNextpublicId" integer not null,
             unique ("publicId", "course")
           ) strict;
           create index "index_courseConversations_courseConversationType" on "courseConversations" ("courseConversationType");
@@ -2555,8 +2553,7 @@ export default async (application: Application): Promise<void> => {
           create virtual table "search_courseConversations_publicId" using fts5(
             content = "courseConversations",
             content_rowid = "id",
-            "publicId",
-            tokenize = 'porter'
+            "publicId"
           );
           create trigger "search_courseConversations_publicId_insert" after insert on "courseConversations" begin
             insert into "search_courseConversations_publicId" ("rowid", "publicId") values ("new"."id", "new"."publicId");
@@ -2570,8 +2567,7 @@ export default async (application: Application): Promise<void> => {
           create virtual table "search_courseConversations_titleSearch" using fts5(
             content = "courseConversations",
             content_rowid = "id",
-            "titleSearch",
-            tokenize = 'porter'
+            "titleSearch"
           );
           create trigger "search_courseConversations_titleSearch_insert" after insert on "courseConversations" begin
             insert into "search_courseConversations_titleSearch" ("rowid", "titleSearch") values ("new"."id", "new"."titleSearch");
@@ -2601,46 +2597,29 @@ export default async (application: Application): Promise<void> => {
             "id" integer primary key autoincrement,
             "courseConversation" integer not null references "courseConversations",
             "createdByCourseParticipation" integer not null references "courseParticipations",
-            "contentSource" text not null,
+            "content" text not null,
             unique ("courseConversation", "createdByCourseParticipation")
           ) strict;
           
           create table "courseConversationMessages" (
             "id" integer primary key autoincrement,
-            "publicId" text not null,
+            "publicId" text not null unique,
             "courseConversation" integer not null references "courseConversations",
             "createdAt" text not null,
             "updatedAt" text null,
             "createdByCourseParticipation" integer null references "courseParticipations",
             "courseConversationMessageType" text not null,
             "anonymous" integer not null,
-            "contentSource" text not null,
-            "contentPreprocessed" text not null,
-            "contentSearch" text not null,
-            unique ("publicId", "courseConversation")
+            "content" text not null,
+            "contentSearch" text not null
           ) strict;
+          create index "index_courseConversationMessages_courseConversation" on "courseConversationMessages" ("courseConversation");
           create index "index_courseConversationMessages_createdByCourseParticipation" on "courseConversationMessages" ("createdByCourseParticipation");
           create index "index_courseConversationMessages_courseConversationMessageType" on "courseConversationMessages" ("courseConversationMessageType");
-          create virtual table "search_courseConversationMessages_publicId" using fts5(
-            content = "courseConversationMessages",
-            content_rowid = "id",
-            "publicId",
-            tokenize = 'porter'
-          );
-          create trigger "search_courseConversationMessages_publicId_insert" after insert on "courseConversationMessages" begin
-            insert into "search_courseConversationMessages_publicId" ("rowid", "publicId") values ("new"."id", "new"."publicId");
-          end;
-          create trigger "search_courseConversationMessages_publicId_update" after update on "courseConversationMessages" begin
-            update "search_courseConversationMessages_publicId" set "publicId" = "new"."publicId" where "rowid" = "old"."id";
-          end;
-          create trigger "search_courseConversationMessages_publicId_delete" after delete on "courseConversationMessages" begin
-            delete from "search_courseConversationMessages_publicId" where "rowid" = "old"."id";
-          end;
           create virtual table "search_courseConversationMessages_contentSearch" using fts5(
             content = "courseConversationMessages",
             content_rowid = "id",
-            "contentSearch",
-            tokenize = 'porter'
+            "contentSearch"
           );
           create trigger "search_courseConversationMessages_contentSearch_insert" after insert on "courseConversationMessages" begin
             insert into "search_courseConversationMessages_contentSearch" ("rowid", "contentSearch") values ("new"."id", "new"."contentSearch");
@@ -2658,8 +2637,9 @@ export default async (application: Application): Promise<void> => {
             "course" integer not null references "courses",
             "createdByCourseParticipation" integer null references "courseParticipations",
             "multipleChoices" integer not null,
-            "closed" integer not null
+            "state" text not null
           ) strict;
+          create index "index_courseConversationMessagePolls_course" on "courseConversationMessagePolls" ("course");
           create index "index_courseConversationMessagePolls_createdByCourseParticipation" on "courseConversationMessagePolls" ("createdByCourseParticipation");
           
           create table "courseConversationMessagePollOptions" (
@@ -2667,8 +2647,7 @@ export default async (application: Application): Promise<void> => {
             "publicId" text not null unique,
             "courseConversationMessagePoll" integer not null references "courseConversationMessagePolls",
             "order" integer not null,
-            "contentSource" text not null,
-            "contentPreprocessed" text not null
+            "content" text not null
           ) strict;
           create index "index_courseConversationMessagePollOptions_courseConversationMessagePoll" on "courseConversationMessagePollOptions" ("courseConversationMessagePoll");
           
@@ -2894,12 +2873,12 @@ export default async (application: Application): Promise<void> => {
             term: new Date().getMonth() < 6 ? "Spring" : "Fall",
             code: "EN.601.426/626",
             courseRole: "courseStaff",
-            courseConversationsNextpublicId: 31,
+            courseConversationsNextPublicId: 31,
           },
         ]) {
           const course = database.get<{
             id: number;
-            courseConversationsNextpublicId: number;
+            courseConversationsNextPublicId: number;
           }>(
             sql`
               select * from "courses" where "id" = ${
@@ -2919,7 +2898,7 @@ export default async (application: Application): Promise<void> => {
                       "invitationLinkCourseStudentsActive",
                       "courseStudentsMayCreatePolls",
                       "archivedAt",
-                      "courseConversationsNextpublicId"
+                      "courseConversationsNextPublicId"
                     )
                     values (
                       ${cryptoRandomString({ length: 10, type: "numeric" })},
@@ -2935,7 +2914,7 @@ export default async (application: Application): Promise<void> => {
                       ${Number(Math.random() < 0.8)},
                       ${Number(Math.random() < 0.8)},
                       ${courseData.archivedAt},
-                      ${courseData.courseConversationsNextpublicId ?? 4}
+                      ${courseData.courseConversationsNextPublicId ?? 4}
                     );
                   `,
                 ).lastInsertRowid
@@ -3083,8 +3062,7 @@ export default async (application: Application): Promise<void> => {
           );
           for (
             let courseConversationpublicId = 1;
-            courseConversationpublicId <
-            course.courseConversationsNextpublicId;
+            courseConversationpublicId < course.courseConversationsNextPublicId;
             courseConversationpublicId++
           ) {
             const courseConversationTitle = examples.text({
@@ -3093,7 +3071,7 @@ export default async (application: Application): Promise<void> => {
             });
             const courseConversation = database.get<{
               id: number;
-              courseConversationMessagesNextpublicId: number;
+              courseConversationMessagesNextPublicId: number;
             }>(
               sql`
                 select * from "courseConversations" where "id" = ${
@@ -3108,7 +3086,7 @@ export default async (application: Application): Promise<void> => {
                         "pinned",
                         "title",
                         "titleSearch",
-                        "courseConversationMessagesNextpublicId"
+                        "courseConversationMessagesNextPublicId"
                       )
                       values (
                         ${String(courseConversationpublicId)},
@@ -3184,7 +3162,7 @@ export default async (application: Application): Promise<void> => {
             for (
               let courseConversationMessagepublicId = 1;
               courseConversationMessagepublicId <
-              courseConversation.courseConversationMessagesNextpublicId;
+              courseConversation.courseConversationMessagesNextPublicId;
               courseConversationMessagepublicId++
             ) {
               const courseConversationMessageContentSource = examples.text({
@@ -3213,7 +3191,7 @@ export default async (application: Application): Promise<void> => {
                           values (
                             ${String(courseConversationMessagepublicId)},
                             ${courseConversation.id},
-                            ${new Date(Date.now() - Math.floor((course.courseConversationsNextpublicId - courseConversationpublicId + Math.random() * 0.5) * 5 * 60 * 60 * 1000)).toISOString()},
+                            ${new Date(Date.now() - Math.floor((course.courseConversationsNextPublicId - courseConversationpublicId + Math.random() * 0.5) * 5 * 60 * 60 * 1000)).toISOString()},
                             ${Math.random() < 0.05 ? new Date(Date.now() - Math.floor(24 * 5 * 60 * 60 * 1000)).toISOString() : null},
                             ${Math.random() < 0.9 ? courseParticipations[Math.floor(Math.random() * courseParticipations.length)].id : null},
                             ${
