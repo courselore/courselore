@@ -2761,87 +2761,110 @@ export default async (application: Application): Promise<void> => {
           "courselore",
           application.privateConfiguration.argon2,
         );
-        const users = Array.from({ length: 151 }, (value, userIndex) => {
-          const userName = examples.name();
-          return database.get<{
-            id: number;
-            email: string;
-          }>(
-            sql`
-              select * from "users" where "id" = ${
-                database.run(
-                  sql`
-                    insert into "users" (
-                      "publicId",
-                      "createdAt",
-                      "name",
-                      "nameSearch",
-                      "email",
-                      "emailVerified",
-                      "password",
-                      "color",
-                      "avatar",
-                      "systemRole",
-                      "lastSeenOnlineAt",
-                      "darkMode",
-                      "sidebarWidth",
-                      "emailNotificationsForAllMessages",
-                      "emailNotificationsForMessagesIncludingMentions",
-                      "emailNotificationsForMessagesInConversationsYouStarted",
-                      "emailNotificationsForMessagesInConversationsInWhichYouParticipated",
-                      "anonymous"
-                    )
-                    values (
-                      ${cryptoRandomString({ length: 20, type: "numeric" })},
-                      ${new Date(Date.now() - Math.floor(Math.random() * 24 * 60 * 60 * 1000)).toISOString()},
-                      ${userName},
-                      ${userName},
-                      ${`${userIndex === 0 ? "administrator" : `${userName.replaceAll(/[^A-Za-z]/g, "-").toLowerCase()}--${cryptoRandomString({ length: 3, type: "numeric" })}`}@courselore.org`},
-                      ${Number(true)},
-                      ${userPassword},
-                      ${
-                        [
-                          "red",
-                          "orange",
-                          "amber",
-                          "yellow",
-                          "lime",
-                          "green",
-                          "emerald",
-                          "teal",
-                          "cyan",
-                          "sky",
-                          "blue",
-                          "indigo",
-                          "violet",
-                          "purple",
-                          "fuchsia",
-                          "pink",
-                          "rose",
-                        ][Math.floor(Math.random() * 17)]
-                      },
-                      ${
-                        Math.random() < 0.1
-                          ? `https://${application.configuration.hostname}/node_modules/@radically-straightforward/examples/avatars/webp/${Math.floor(Math.random() * 263)}.webp`
-                          : null
-                      },
-                      ${userIndex === 0 || Math.random() < 0.05 ? "systemAdministrator" : Math.random() < 0.2 ? "systemStaff" : "systemUser"},
-                      ${new Date(Date.now() - Math.floor(Math.random() * 24 * 60 * 60 * 1000)).toISOString()},
-                      ${"system"},
-                      ${80 * 4},
-                      ${Number(Math.random() < 0.1)},
-                      ${Number(Math.random() < 0.9)},
-                      ${Number(Math.random() < 0.9)},
-                      ${Number(Math.random() < 0.9)},
-                      ${Number(Math.random() < 0.8)}
-                    );
-                  `,
-                ).lastInsertRowid
-              };
-        `,
-          )!;
-        });
-        const user = users.shift()!;
+        const [user, ...users] = Array.from(
+          { length: 151 },
+          (value, userIndex) => {
+            const userName = examples.name();
+            return database.get<{
+              id: number;
+              email: string;
+            }>(
+              sql`
+                select * from "users" where "id" = ${
+                  database.run(
+                    sql`
+                      insert into "users" (
+                        "publicId",
+                        "createdAt",
+                        "name",
+                        "nameSearch",
+                        "email",
+                        "emailVerificationEmail",
+                        "emailVerificationNonce",
+                        "emailVerificationCreatedAt",
+                        "emailVerified",
+                        "password",
+                        "passwordResetNonce",
+                        "passwordResetCreatedAt",
+                        "oneTimePasswordEnabled",
+                        "oneTimePasswordSecret",
+                        "oneTimePasswordBackupCodes",
+                        "avatarColor",
+                        "avatarImage",
+                        "systemRole",
+                        "lastSeenOnlineAt",
+                        "darkMode",
+                        "sidebarWidth",
+                        "emailNotificationsForAllMessages",
+                        "emailNotificationsForMessagesIncludingMentions",
+                        "emailNotificationsForMessagesInConversationsYouStarted",
+                        "emailNotificationsForMessagesInConversationsInWhichYouParticipated",
+                        "anonymous",
+                        "mostRecentlyVisitedCourse"
+                      )
+                      values (
+                        ${cryptoRandomString({ length: 20, type: "numeric" })},
+                        ${new Date(Date.now() - Math.floor(Math.random() * 24 * 60 * 60 * 1000)).toISOString()},
+                        ${userName},
+                        ${utilities
+                          .tokenize(userName)
+                          .map((tokenWithPosition) => tokenWithPosition.token)
+                          .join(" ")},
+                        ${`${userIndex === 0 ? "administrator" : `${userName.replaceAll(/[^A-Za-z]/g, "-").toLowerCase()}--${cryptoRandomString({ length: 3, type: "numeric" })}`}@courselore.org`},
+                        ${null},
+                        ${null},
+                        ${null},
+                        ${Number(true)},
+                        ${userPassword},
+                        ${null},
+                        ${null},
+                        ${Number(false)},
+                        ${null},
+                        ${null},
+                        ${
+                          [
+                            "red",
+                            "orange",
+                            "amber",
+                            "yellow",
+                            "lime",
+                            "green",
+                            "emerald",
+                            "teal",
+                            "cyan",
+                            "sky",
+                            "blue",
+                            "indigo",
+                            "violet",
+                            "purple",
+                            "fuchsia",
+                            "pink",
+                            "rose",
+                          ][Math.floor(Math.random() * 17)]
+                        },
+                        ${
+                          Math.random() < 0.1
+                            ? `/node_modules/@radically-straightforward/examples/avatars/webp/${Math.floor(Math.random() * 263)}.webp`
+                            : null
+                        },
+                        ${userIndex === 0 || Math.random() < 0.05 ? "systemAdministrator" : Math.random() < 0.2 ? "systemStaff" : "systemUser"},
+                        ${new Date(Date.now() - Math.floor(Math.random() * 24 * 60 * 60 * 1000)).toISOString()},
+                        ${"system"},
+                        ${80 * 4},
+                        ${Number(Math.random() < 0.1)},
+                        ${Number(Math.random() < 0.9)},
+                        ${Number(Math.random() < 0.9)},
+                        ${Number(Math.random() < 0.9)},
+                        ${Number(Math.random() < 0.8)},
+                        ${null}
+                      );
+                    `,
+                  ).lastInsertRowid
+                };
+          `,
+            )!;
+          },
+        );
         for (const courseData of [
           {
             name: "Principles of Programming Languages",
