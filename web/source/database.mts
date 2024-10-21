@@ -2491,16 +2491,13 @@ export default async (application: Application): Promise<void> => {
             "publicId" text not null unique,
             "createdAt" text not null,
             "name" text not null,
-            "year" text null,
-            "term" text null,
-            "code" text null,
-            "institution" text null,
+            "information" text null,
             "invitationLinkCourseInstructorsEnabled" integer not null,
             "invitationLinkCourseInstructorsToken" text not null unique,
             "invitationLinkCourseStudentsEnabled" integer not null,
             "invitationLinkCourseStudentsToken" text not null unique,
             "courseConversationsRequiresTagging" integer not null,
-            "courseStudentsAnonymityLevel" text not null,
+            "courseStudentsAnonymityAllowed" text not null,
             "courseStudentsMayHavePrivateCourseConversations" integer not null,
             "courseStudentsMayAttachImages" integer not null,
             "courseStudentsMayCreatePolls" integer not null,
@@ -2617,7 +2614,7 @@ export default async (application: Application): Promise<void> => {
             "updatedAt" text null,
             "createdByCourseParticipation" integer null references "courseParticipations",
             "courseConversationMessageType" text not null,
-            "anonymous" integer not null,
+            "anonymity" text not null,
             "content" text not null,
             "contentSearch" text not null
           ) strict;
@@ -2666,13 +2663,6 @@ export default async (application: Application): Promise<void> => {
             unique ("courseConversationMessagePollOption", "courseParticipation")
           ) strict;
           
-          create table "courseConversationMessageEmailNotificationDeliveries" (
-            "id" integer primary key autoincrement,
-            "courseConversationMessage" integer not null references "courseConversationMessages",
-            "courseParticipation" integer not null references "courseParticipations",
-            unique ("courseConversationMessage", "courseParticipation")
-          ) strict;
-          
           create table "courseConversationMessageViews" (
             "id" integer primary key autoincrement,
             "createdAt" text not null,
@@ -2685,6 +2675,13 @@ export default async (application: Application): Promise<void> => {
             "id" integer primary key autoincrement,
             "courseConversationMessage" integer not null references "courseConversationMessages",
             "courseParticipation" integer null references "courseParticipations",
+            unique ("courseConversationMessage", "courseParticipation")
+          ) strict;
+          
+          create table "courseConversationMessageEmailNotificationDeliveries" (
+            "id" integer primary key autoincrement,
+            "courseConversationMessage" integer not null references "courseConversationMessages",
+            "courseParticipation" integer not null references "courseParticipations",
             unique ("courseConversationMessage", "courseParticipation")
           ) strict;
         `,
