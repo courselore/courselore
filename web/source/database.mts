@@ -2868,28 +2868,21 @@ export default async (application: Application): Promise<void> => {
         for (const courseData of [
           {
             name: "Principles of Programming Languages",
-            year: String(
+            information: `${String(
               new Date(Date.now() - 365 * 24 * 60 * 60 * 1000).getFullYear(),
-            ),
-            term: "Spring",
-            code: "EN.601.426/626",
-            archivedAt: new Date(
-              Date.now() - 200 * 24 * 60 * 60 * 1000,
-            ).toISOString(),
-            courseRole: "courseStaff",
+            )} / Spring / EN.601.426/626`,
+            state: "archived",
+            courseRole: "courseInstructor",
           },
           {
             name: "Full-Stack JavaScript",
-            year: String(new Date().getFullYear()),
-            term: "Spring",
+            information: `${String(new Date().getFullYear())} / Spring`,
             courseRole: "courseStudent",
           },
           {
             name: "Principles of Programming Languages",
-            year: String(new Date().getFullYear()),
-            term: new Date().getMonth() < 6 ? "Spring" : "Fall",
-            code: "EN.601.426/626",
-            courseRole: "courseStaff",
+            information: `${String(new Date().getFullYear())} / ${new Date().getMonth() < 6 ? "Spring" : "Fall"} / EN.601.426/626`,
+            courseRole: "courseInstructor",
             courseConversationsNextPublicId: 31,
           },
         ]) {
@@ -2905,32 +2898,34 @@ export default async (application: Application): Promise<void> => {
                       "publicId",
                       "createdAt",
                       "name",
-                      "year",
-                      "term",
-                      "code",
-                      "institution",
-                      "invitationLinkCourseStaffToken",
-                      "invitationLinkCourseStaffActive",
+                      "information",
+                      "invitationLinkCourseInstructorsEnabled",
+                      "invitationLinkCourseInstructorsToken",
+                      "invitationLinkCourseStudentsEnabled",
                       "invitationLinkCourseStudentsToken",
-                      "invitationLinkCourseStudentsActive",
+                      "courseConversationsRequiresTagging",
+                      "courseStudentsAnonymityAllowed",
+                      "courseStudentsMayHavePrivateCourseConversations",
+                      "courseStudentsMayAttachImages",
                       "courseStudentsMayCreatePolls",
-                      "archivedAt",
+                      "state",
                       "courseConversationsNextPublicId"
                     )
                     values (
                       ${cryptoRandomString({ length: 10, type: "numeric" })},
                       ${new Date(Date.now() - Math.floor(Math.random() * 365 * 24 * 60 * 60 * 1000)).toISOString()},
                       ${courseData.name},
-                      ${courseData.year},
-                      ${courseData.term},
-                      ${courseData.code},
-                      ${Math.random() < 0.5 ? "Johns Hopkins University" : null},
-                      ${cryptoRandomString({ length: 20, type: "numeric" })},
+                      ${courseData.information},
                       ${Number(Math.random() < 0.2)},
                       ${cryptoRandomString({ length: 20, type: "numeric" })},
                       ${Number(Math.random() < 0.8)},
+                      ${cryptoRandomString({ length: 20, type: "numeric" })},
                       ${Number(Math.random() < 0.8)},
-                      ${courseData.archivedAt},
+                      ${Math.random() < 0.1 ? "courseInstructors" : Math.random() < 0.8 ? "courseStudents" : "none"},
+                      ${Number(Math.random() < 0.8)},
+                      ${Number(Math.random() < 0.8)},
+                      ${Number(Math.random() < 0.8)},
+                      ${courseData.state ?? "active"},
                       ${courseData.courseConversationsNextPublicId ?? 4}
                     );
                   `,
@@ -2974,11 +2969,11 @@ export default async (application: Application): Promise<void> => {
                           1,
                         )[0].email
                   },
-                  ${Math.random() < 0.5 ? "courseStaff" : "courseStudent"}
+                  ${Math.random() < 0.5 ? "courseInstructor" : "courseStudent"}
                 );
               `,
             );
-          const courseParticipations = [
+          const [courseParticipation, ...courseParticipations] = [
             user,
             ...Array.from(
               { length: 60 + Math.floor(Math.random() * 50) },
@@ -3004,14 +2999,15 @@ export default async (application: Application): Promise<void> => {
                           "course",
                           "createdAt",
                           "courseRole",
-                          "color"
+                          "decorationColor",
+                          "mostRecentlyVisitedCourseConversation"
                         )
                         values (
                           ${cryptoRandomString({ length: 10, type: "numeric" })},
                           ${user.id},
                           ${course.id},
                           ${new Date(Date.now() - Math.floor(Math.random() * 100 * 24 * 60 * 60 * 1000)).toISOString()},
-                          ${userIndex === 0 ? courseData.courseRole : Math.random() < 0.15 ? "courseStaff" : "courseStudent"},
+                          ${userIndex === 0 ? courseData.courseRole : Math.random() < 0.15 ? "courseInstructor" : "courseStudent"},
                           ${
                             [
                               "red",
@@ -3032,7 +3028,8 @@ export default async (application: Application): Promise<void> => {
                               "pink",
                               "rose",
                             ][Math.floor(Math.random() * 17)]
-                          }
+                          },
+                          ${null}
                         );
                       `,
                     ).lastInsertRowid
@@ -3040,7 +3037,6 @@ export default async (application: Application): Promise<void> => {
                 `,
               )!,
           );
-          const courseParticipation = courseParticipations.shift()!;
           const courseConversationsTags = [
             { name: "Assignment 1" },
             { name: "Assignment 2" },
@@ -3048,8 +3044,8 @@ export default async (application: Application): Promise<void> => {
             { name: "Assignment 4" },
             { name: "Assignment 5" },
             { name: "Assignment 6" },
-            { name: "Change for next year", courseStaff: true },
-            { name: "Duplicate question", courseStaff: true },
+            { name: "Change for next year", privateToCourseInstructors: true },
+            { name: "Duplicate question", privateToCourseInstructors: true },
           ].map(
             (courseConversationsTag, courseConversationsTagIndex) =>
               database.get<{ id: number }>(
@@ -3062,14 +3058,14 @@ export default async (application: Application): Promise<void> => {
                           "course",
                           "order",
                           "name",
-                          "courseStaff"
+                          "privateToCourseInstructors"
                         )
                         values (
                           ${cryptoRandomString({ length: 10, type: "numeric" })},
                           ${course.id},
                           ${courseConversationsTagIndex},
                           ${courseConversationsTag.name},
-                          ${Number(courseConversationsTag.courseStaff ?? false)}
+                          ${Number(courseConversationsTag.privateToCourseInstructors ?? false)}
                         );
                       `,
                     ).lastInsertRowid
@@ -3078,18 +3074,15 @@ export default async (application: Application): Promise<void> => {
               )!,
           );
           for (
-            let courseConversationpublicId = 1;
-            courseConversationpublicId < course.courseConversationsNextPublicId;
-            courseConversationpublicId++
+            let courseConversationPublicId = 1;
+            courseConversationPublicId < course.courseConversationsNextPublicId;
+            courseConversationPublicId++
           ) {
             const courseConversationTitle = examples.text({
               model: textExamples,
               length: 0,
             });
-            const courseConversation = database.get<{
-              id: number;
-              courseConversationMessagesNextPublicId: number;
-            }>(
+            const courseConversation = database.get<{ id: number }>(
               sql`
                 select * from "courseConversations" where "id" = ${
                   database.run(
@@ -3106,16 +3099,16 @@ export default async (application: Application): Promise<void> => {
                         "courseConversationMessagesNextPublicId"
                       )
                       values (
-                        ${String(courseConversationpublicId)},
+                        ${String(courseConversationPublicId)},
                         ${course.id},
                         ${Math.random() < 0.3 ? "courseConversationNote" : "courseConversationQuestion"},
                         ${Number(Math.random() < 0.5)},
-                        ${courseConversationpublicId === 1 || Math.random() < 0.3 ? "everyone" : Math.random() < 0.8 ? "courseStaff" : "courseConversationParticipations"},
-                        ${Number(courseConversationpublicId !== 1 && Math.random() < 0.1)},
+                        ${courseConversationPublicId === 1 || Math.random() < 0.3 ? "everyone" : Math.random() < 0.8 ? "courseStaff" : "courseConversationParticipations"},
+                        ${Number(courseConversationPublicId !== 1 && Math.random() < 0.1)},
                         ${courseConversationTitle},
                         ${courseConversationTitle},
                         ${
-                          courseConversationpublicId === 1
+                          courseConversationPublicId === 1
                             ? 2
                             : 2 + Math.floor(Math.random() * 15)
                         }
@@ -3208,7 +3201,7 @@ export default async (application: Application): Promise<void> => {
                           values (
                             ${String(courseConversationMessagepublicId)},
                             ${courseConversation.id},
-                            ${new Date(Date.now() - Math.floor((course.courseConversationsNextPublicId - courseConversationpublicId + Math.random() * 0.5) * 5 * 60 * 60 * 1000)).toISOString()},
+                            ${new Date(Date.now() - Math.floor((course.courseConversationsNextPublicId - courseConversationPublicId + Math.random() * 0.5) * 5 * 60 * 60 * 1000)).toISOString()},
                             ${Math.random() < 0.05 ? new Date(Date.now() - Math.floor(24 * 5 * 60 * 60 * 1000)).toISOString() : null},
                             ${Math.random() < 0.9 ? courseParticipations[Math.floor(Math.random() * courseParticipations.length)].id : null},
                             ${
@@ -3262,7 +3255,7 @@ export default async (application: Application): Promise<void> => {
                   `,
                 );
             }
-            if (courseConversationpublicId === 1) {
+            if (courseConversationPublicId === 1) {
               const courseConversationMessagePolls = [false, true].map(
                 (courseConversationMessagePollMultipleChoices) => {
                   const courseConversationMessagePoll = database.get<{
