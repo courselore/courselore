@@ -2427,9 +2427,9 @@ export default async (application: Application): Promise<void> => {
             "name" text not null,
             "nameSearch" text not null,
             "email" text not null unique,
+            "emailVerificationEmail" text null,
             "emailVerificationNonce" text null unique,
             "emailVerificationCreatedAt" text null,
-            "emailVerificationEmail" text null,
             "emailVerified" integer not null,
             "password" text null,
             "passwordResetNonce" text null unique,
@@ -2447,7 +2447,7 @@ export default async (application: Application): Promise<void> => {
             "emailNotificationsForMessagesIncludingMentions" integer not null,
             "emailNotificationsForMessagesInConversationsYouStarted" integer not null,
             "emailNotificationsForMessagesInConversationsInWhichYouParticipated" integer not null,
-            "anonymous" integer not null,
+            "anonymous" text not null,
             "mostRecentlyVisitedCourse" integer null references "courses"
           ) strict;
           create index "index_users_mostRecentlyVisitedCourse" on "users" ("mostRecentlyVisitedCourse");
@@ -2495,16 +2495,16 @@ export default async (application: Application): Promise<void> => {
             "term" text null,
             "code" text null,
             "institution" text null,
+            "invitationLinkCourseInstructorsEnabled" integer not null,
             "invitationLinkCourseInstructorsToken" text not null unique,
-            "invitationLinkCourseInstructorsActive" integer not null,
+            "invitationLinkCourseStudentsEnabled" integer not null,
             "invitationLinkCourseStudentsToken" text not null unique,
-            "invitationLinkCourseStudentsActive" integer not null,
-            "courseStudentsMayCreatePolls" integer not null,
-            "state" text not null,
             "courseConversationsRequiresTagging" integer not null,
+            "courseStudentsAnonymityLevel" text not null,
             "courseStudentsMayHavePrivateCourseConversations" integer not null,
             "courseStudentsMayAttachImages" integer not null,
-            "anonymityType" text not null,
+            "courseStudentsMayCreatePolls" integer not null,
+            "state" text not null,
             "courseConversationsNextPublicId" integer not null
           ) strict;
           
