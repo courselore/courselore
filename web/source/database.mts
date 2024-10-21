@@ -2501,7 +2501,7 @@ export default async (application: Application): Promise<void> => {
             "courseStudentsMayHavePrivateCourseConversations" integer not null,
             "courseStudentsMayAttachImages" integer not null,
             "courseStudentsMayCreatePolls" integer not null,
-            "state" text not null,
+            "courseState" text not null,
             "courseConversationsNextPublicId" integer not null
           ) strict;
           
@@ -2642,7 +2642,7 @@ export default async (application: Application): Promise<void> => {
             "course" integer not null references "courses",
             "createdByCourseParticipation" integer null references "courseParticipations",
             "multipleChoices" integer not null,
-            "state" text not null
+            "courseConversationMessagePollState" text not null
           ) strict;
           create index "index_courseConversationMessagePolls_course" on "courseConversationMessagePolls" ("course");
           create index "index_courseConversationMessagePolls_createdByCourseParticipation" on "courseConversationMessagePolls" ("createdByCourseParticipation");
@@ -2871,7 +2871,7 @@ export default async (application: Application): Promise<void> => {
             information: `${String(
               new Date(Date.now() - 365 * 24 * 60 * 60 * 1000).getFullYear(),
             )} / Spring / EN.601.426/626`,
-            state: "archived",
+            courseState: "archived",
             courseRole: "courseInstructor",
           },
           {
@@ -2908,7 +2908,7 @@ export default async (application: Application): Promise<void> => {
                       "courseStudentsMayHavePrivateCourseConversations",
                       "courseStudentsMayAttachImages",
                       "courseStudentsMayCreatePolls",
-                      "state",
+                      "courseState",
                       "courseConversationsNextPublicId"
                     )
                     values (
@@ -2925,7 +2925,7 @@ export default async (application: Application): Promise<void> => {
                       ${Number(Math.random() < 0.8)},
                       ${Number(Math.random() < 0.8)},
                       ${Number(Math.random() < 0.8)},
-                      ${courseData.state ?? "active"},
+                      ${courseData.courseState ?? "courseActive"},
                       ${courseData.courseConversationsNextPublicId ?? 4}
                     );
                   `,
@@ -3095,23 +3095,20 @@ export default async (application: Application): Promise<void> => {
                         "courseConversationParticipations",
                         "pinned",
                         "title",
-                        "titleSearch",
-                        "courseConversationMessagesNextPublicId"
+                        "titleSearch"
                       )
                       values (
                         ${String(courseConversationPublicId)},
                         ${course.id},
                         ${Math.random() < 0.3 ? "courseConversationNote" : "courseConversationQuestion"},
                         ${Number(Math.random() < 0.5)},
-                        ${courseConversationPublicId === 1 || Math.random() < 0.3 ? "everyone" : Math.random() < 0.8 ? "courseStaff" : "courseConversationParticipations"},
+                        ${courseConversationPublicId === 1 || Math.random() < 0.3 ? "everyone" : Math.random() < 0.8 ? "courseInstructors" : "courseConversationParticipations"},
                         ${Number(courseConversationPublicId !== 1 && Math.random() < 0.1)},
                         ${courseConversationTitle},
-                        ${courseConversationTitle},
-                        ${
-                          courseConversationPublicId === 1
-                            ? 2
-                            : 2 + Math.floor(Math.random() * 15)
-                        }
+                        ${utilities
+                          .tokenize(courseConversationTitle)
+                          .map((tokenWithPosition) => tokenWithPosition.token)
+                          .join(" ")}
                       );
                     `,
                   ).lastInsertRowid
@@ -3169,11 +3166,15 @@ export default async (application: Application): Promise<void> => {
                   );
                 `,
               );
+            const courseConversationMessagesCount =
+              courseConversationPublicId === 1
+                ? 2
+                : 2 + Math.floor(Math.random() * 15);
             for (
-              let courseConversationMessagepublicId = 1;
-              courseConversationMessagepublicId <
-              courseConversation.courseConversationMessagesNextPublicId;
-              courseConversationMessagepublicId++
+              let courseConversationMessagePublicId = 1;
+              courseConversationMessagePublicId <
+              courseConversationMessagesCount;
+              courseConversationMessagePublicId++
             ) {
               const courseConversationMessageContentSource = examples.text({
                 model: textExamples,
@@ -3199,13 +3200,13 @@ export default async (application: Application): Promise<void> => {
                             "contentSearch"
                           )
                           values (
-                            ${String(courseConversationMessagepublicId)},
+                            ${String(courseConversationMessagePublicId)},
                             ${courseConversation.id},
                             ${new Date(Date.now() - Math.floor((course.courseConversationsNextPublicId - courseConversationPublicId + Math.random() * 0.5) * 5 * 60 * 60 * 1000)).toISOString()},
                             ${Math.random() < 0.05 ? new Date(Date.now() - Math.floor(24 * 5 * 60 * 60 * 1000)).toISOString() : null},
                             ${Math.random() < 0.9 ? courseParticipations[Math.floor(Math.random() * courseParticipations.length)].id : null},
                             ${
-                              courseConversationMessagepublicId === 1 ||
+                              courseConversationMessagePublicId === 1 ||
                               Math.random() < 0.6
                                 ? "courseConversationMessageMessage"
                                 : Math.random() < 0.5
