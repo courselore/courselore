@@ -2429,10 +2429,14 @@ export default async (application: Application): Promise<void> => {
             "email" text not null unique,
             "emailVerificationNonce" text null unique,
             "emailVerificationCreatedAt" text null,
+            "emailVerificationEmail" text null,
             "emailVerified" integer not null,
             "password" text null,
             "passwordResetNonce" text null unique,
             "passwordResetCreatedAt" text null,
+            "oneTimePasswordEnabled" integer not null,
+            "oneTimePasswordSecret" text null,
+            "oneTimePasswordBackupCodes" text null,
             "avatarColor" text not null,
             "avatarImage" text null,
             "systemRole" text not null,
@@ -2497,6 +2501,10 @@ export default async (application: Application): Promise<void> => {
             "invitationLinkCourseStudentsActive" integer not null,
             "courseStudentsMayCreatePolls" integer not null,
             "state" text not null,
+            "courseConversationsRequiresTagging" integer not null,
+            "courseStudentsMayHavePrivateCourseConversations" integer not null,
+            "courseStudentsMayAttachImages" integer not null,
+            "anonymityType" text not null,
             "courseConversationsNextPublicId" integer not null
           ) strict;
           
