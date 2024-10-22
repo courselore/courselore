@@ -32,7 +32,7 @@ export type ApplicationCourses = {
           publicId: string;
           createdAt: string;
           courseRole: "courseStaff" | "courseStudent";
-          color:
+          decorationColor:
             | "red"
             | "orange"
             | "amber"
@@ -121,7 +121,7 @@ export default async (application: Application): Promise<void> => {
         publicId: string;
         createdAt: string;
         courseRole: "courseStaff" | "courseStudent";
-        color:
+        decorationColor:
           | "red"
           | "orange"
           | "amber"
@@ -147,7 +147,7 @@ export default async (application: Application): Promise<void> => {
             "publicId",
             "createdAt",
             "courseRole",
-            "color",
+            "decorationColor",
             "mostRecentlyVisitedCourseConversation"
           from "courseParticipations"
           where

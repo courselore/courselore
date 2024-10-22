@@ -397,16 +397,16 @@ export default async (application: Application): Promise<void> => {
           ? html`
               <div
                 key="courseParticipationColor ${request.state
-                  .courseParticipation.color}"
+                  .courseParticipation.decorationColor}"
                 style="
                   --background-color--light: var(--color--${request.state
-                  .courseParticipation.color}--500);
+                  .courseParticipation.decorationColor}--500);
                   --background-color--dark: var(--color--${request.state
-                  .courseParticipation.color}--500);
+                  .courseParticipation.decorationColor}--500);
                   --border-color--light: var(--color--${request.state
-                  .courseParticipation.color}--600);
+                  .courseParticipation.decorationColor}--600);
                   --border-color--dark: var(--color--${request.state
-                  .courseParticipation.color}--600);
+                  .courseParticipation.decorationColor}--600);
                 "
                 css="${css`
                   background-color: light-dark(
