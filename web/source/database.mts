@@ -3235,15 +3235,15 @@ export default async (application: Application): Promise<void> => {
                   };
                 `,
               )!;
+              const courseParticipationsForCourseConversationMessageLikes = [
+                ...courseParticipations,
+              ];
               const courseConversationMessageLikesCount =
                 Math.random() < 0.6
                   ? 0
                   : Math.random() < 0.8
                     ? Math.floor(Math.random() * 3)
                     : Math.floor(Math.random() * 30);
-              const courseParticipationsForCourseConversationMessageLikes = [
-                ...courseParticipations,
-              ];
               for (
                 let courseConversationMessageLikeIndex = 0;
                 courseConversationMessageLikeIndex <
@@ -3279,14 +3279,14 @@ export default async (application: Application): Promise<void> => {
                             "course",
                             "createdByCourseParticipation",
                             "multipleChoices",
-                            "closed"
+                            "courseConversationMessagePollState"
                           )
                           values (
                             ${cryptoRandomString({ length: 20, type: "numeric" })},
                             ${course.id},
                             ${courseParticipation.id},
                             ${Number(courseConversationMessagePollMultipleChoices)},
-                            ${Number(Math.random() < 0.5)}
+                            ${Math.random() < 0.5 ? "closed" : "open"}
                           );
                         `,
                       ).lastInsertRowid
@@ -3310,15 +3310,13 @@ export default async (application: Application): Promise<void> => {
                                 "publicId",
                                 "courseConversationMessagePoll",
                                 "order",
-                                "contentSource",
-                                "contentPreprocessed"
+                                "content"
                               )
                               values (
                                 ${cryptoRandomString({ length: 20, type: "numeric" })},
                                 ${courseConversationMessagePoll.id},
                                 ${courseConversationMessagePollOptionIndex},
-                                ${courseConversationMessagePollOptionContentSource},
-                                ${`<p>${courseConversationMessagePollOptionContentSource}</p>`}
+                                ${courseConversationMessagePollOptionContentSource}
                               );
                             `,
                           ).lastInsertRowid
@@ -3327,12 +3325,12 @@ export default async (application: Application): Promise<void> => {
                       )!;
                     },
                   );
+                  const courseParticipationsForCourseConversationMessagePollOptionVotes =
+                    [...courseParticipations];
                   const courseConversationMessagePollOptionVotesCount =
                     Math.random() < 0.5
                       ? 3 + Math.floor(Math.random() * 5)
                       : 30 + Math.floor(Math.random() * 10);
-                  const courseParticipationsForCourseConversationMessagePollOptionVotes =
-                    [...courseParticipations];
                   for (
                     let courseConversationMessagePollOptionVoteIndex = 0;
                     courseConversationMessagePollOptionVoteIndex <
@@ -3388,7 +3386,7 @@ export default async (application: Application): Promise<void> => {
                   insert into "courseConversationMessageDrafts" (
                     "courseConversation",
                     "createdByCourseParticipation",
-                    "contentSource"
+                    "content"
                   )
                   values (
                     ${courseConversation.id},
