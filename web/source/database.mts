@@ -9,6 +9,7 @@ import cryptoRandomString from "crypto-random-string";
 import argon2 from "argon2";
 import sharp from "sharp";
 import forge from "node-forge";
+import natural from "natural";
 import { Application } from "./index.mjs";
 
 export type ApplicationDatabase = {
@@ -2761,6 +2762,11 @@ export default async (application: Application): Promise<void> => {
           "courselore",
           application.privateConfiguration.argon2,
         );
+        const stopWords = new Set(
+          natural.stopwords.map((stopWord) =>
+            utilities.normalizeToken(stopWord),
+          ),
+        );
         const [user, ...users] = Array.from(
           { length: 151 },
           (value, userIndex) => {
@@ -3003,7 +3009,7 @@ export default async (application: Application): Promise<void> => {
                           "mostRecentlyVisitedCourseConversation"
                         )
                         values (
-                          ${cryptoRandomString({ length: 10, type: "numeric" })},
+                          ${cryptoRandomString({ length: 20, type: "numeric" })},
                           ${user.id},
                           ${course.id},
                           ${new Date(Date.now() - Math.floor(Math.random() * 100 * 24 * 60 * 60 * 1000)).toISOString()},
@@ -3061,7 +3067,7 @@ export default async (application: Application): Promise<void> => {
                           "privateToCourseInstructors"
                         )
                         values (
-                          ${cryptoRandomString({ length: 10, type: "numeric" })},
+                          ${cryptoRandomString({ length: 20, type: "numeric" })},
                           ${course.id},
                           ${courseConversationsTagIndex},
                           ${courseConversationsTag.name},
@@ -3168,15 +3174,14 @@ export default async (application: Application): Promise<void> => {
               );
             const courseConversationMessagesCount =
               courseConversationPublicId === 1
-                ? 2
-                : 2 + Math.floor(Math.random() * 15);
+                ? 1
+                : 1 + Math.floor(Math.random() * 15);
             for (
-              let courseConversationMessagePublicId = 1;
-              courseConversationMessagePublicId <
-              courseConversationMessagesCount;
-              courseConversationMessagePublicId++
+              let courseConversationMessageIndex = 0;
+              courseConversationMessageIndex < courseConversationMessagesCount;
+              courseConversationMessageIndex++
             ) {
-              const courseConversationMessageContentSource = examples.text({
+              const courseConversationMessageContent = examples.text({
                 model: textExamples,
                 length: 1 + Math.floor(Math.random() * 5),
               });
@@ -3184,49 +3189,51 @@ export default async (application: Application): Promise<void> => {
                 id: number;
               }>(
                 sql`
-                    select * from "courseConversationMessages" where "id" = ${
-                      database.run(
-                        sql`
-                          insert into "courseConversationMessages" (
-                            "publicId",
-                            "courseConversation",
-                            "createdAt",
-                            "updatedAt",
-                            "createdByCourseParticipation",
-                            "courseConversationMessageType",
-                            "anonymous",
-                            "contentSource",
-                            "contentPreprocessed",
-                            "contentSearch"
-                          )
-                          values (
-                            ${String(courseConversationMessagePublicId)},
-                            ${courseConversation.id},
-                            ${new Date(Date.now() - Math.floor((course.courseConversationsNextPublicId - courseConversationPublicId + Math.random() * 0.5) * 5 * 60 * 60 * 1000)).toISOString()},
-                            ${Math.random() < 0.05 ? new Date(Date.now() - Math.floor(24 * 5 * 60 * 60 * 1000)).toISOString() : null},
-                            ${Math.random() < 0.9 ? courseParticipations[Math.floor(Math.random() * courseParticipations.length)].id : null},
-                            ${
-                              courseConversationMessagePublicId === 1 ||
-                              Math.random() < 0.6
-                                ? "courseConversationMessageMessage"
+                  select * from "courseConversationMessages" where "id" = ${
+                    database.run(
+                      sql`
+                        insert into "courseConversationMessages" (
+                          "publicId",
+                          "courseConversation",
+                          "createdAt",
+                          "updatedAt",
+                          "createdByCourseParticipation",
+                          "courseConversationMessageType",
+                          "anonymity",
+                          "content",
+                          "contentSearch"
+                        )
+                        values (
+                          ${cryptoRandomString({ length: 20, type: "numeric" })},
+                          ${courseConversation.id},
+                          ${new Date(Date.now() - Math.floor((course.courseConversationsNextPublicId - courseConversationPublicId + Math.random() * 0.5) * 5 * 60 * 60 * 1000)).toISOString()},
+                          ${Math.random() < 0.05 ? new Date(Date.now() - Math.floor(24 * 5 * 60 * 60 * 1000)).toISOString() : null},
+                          ${Math.random() < 0.9 ? courseParticipations[Math.floor(Math.random() * courseParticipations.length)].id : null},
+                          ${
+                            courseConversationMessageIndex === 1 ||
+                            Math.random() < 0.6
+                              ? "courseConversationMessageMessage"
+                              : Math.random() < 0.5
+                                ? "courseConversationMessageAnswer"
                                 : Math.random() < 0.5
-                                  ? "courseConversationMessageAnswer"
-                                  : Math.random() < 0.5
-                                    ? "courseConversationMessageFollowUpQuestion"
-                                    : "courseConversationMessageCourseStaffWhisper"
-                            },
-                            ${Number(Math.random() < 0.7)},
-                            ${courseConversationMessageContentSource},
-                            ${courseConversationMessageContentSource
-                              .split("\n\n")
-                              .map((paragraph) => `<p>${paragraph}</p>`)
-                              .join("\n\n")},
-                            ${courseConversationMessageContentSource}
-                          );
-                        `,
-                      ).lastInsertRowid
-                    };
-                  `,
+                                  ? "courseConversationMessageFollowUpQuestion"
+                                  : "courseConversationMessageCourseInstructorWhisper"
+                          },
+                          ${Math.random() < 0.05 ? "courseInstructors" : Math.random() < 0.7 ? "courseStudents" : "none"},
+                          ${courseConversationMessageContent},
+                          ${utilities
+                            .tokenize(courseConversationMessageContent, {
+                              stopWords,
+                              stem: (token) =>
+                                natural.PorterStemmer.stem(token),
+                            })
+                            .map((tokenWithPosition) => tokenWithPosition.token)
+                            .join(" ")}
+                        );
+                      `,
+                    ).lastInsertRowid
+                  };
+                `,
               )!;
               const courseConversationMessageLikesCount =
                 Math.random() < 0.6
