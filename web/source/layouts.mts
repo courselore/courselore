@@ -396,7 +396,7 @@ export default async (application: Application): Promise<void> => {
         $${request.state.courseParticipation !== undefined
           ? html`
               <div
-                key="courseParticipationDecoration ${request.state
+                key="courseParticipation--decoration ${request.state
                   .courseParticipation.decorationColor}"
                 style="
                   --background-color--light: var(--color--${request.state
@@ -437,7 +437,7 @@ export default async (application: Application): Promise<void> => {
           $${hamburger
             ? html`
                 <button
-                  key="hamburger"
+                  key="header--hamburger"
                   class="button button--square button--icon button--transparent"
                   css="${css`
                     font-size: var(--font-size--5);
