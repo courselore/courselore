@@ -3176,6 +3176,9 @@ export default async (application: Application): Promise<void> => {
               courseConversationPublicId === 1
                 ? 1
                 : 1 + Math.floor(Math.random() * 15);
+            let courseConversationMessageForCourseConversationMessageDraft: {
+              publicId: string;
+            };
             for (
               let courseConversationMessageIndex = 0;
               courseConversationMessageIndex < courseConversationMessagesCount;
@@ -3187,6 +3190,7 @@ export default async (application: Application): Promise<void> => {
               });
               const courseConversationMessage = database.get<{
                 id: number;
+                publicId: string;
               }>(
                 sql`
                   select * from "courseConversationMessages" where "id" = ${
@@ -3235,6 +3239,8 @@ export default async (application: Application): Promise<void> => {
                   };
                 `,
               )!;
+              courseConversationMessageForCourseConversationMessageDraft =
+                courseConversationMessage;
               const courseParticipationsForCourseConversationMessageLikes = [
                 ...courseParticipations,
               ];
@@ -3648,19 +3654,19 @@ export default async (application: Application): Promise<void> => {
                         application.configuration.hostname
                       }/courses/${course.id}/conversations/14981039481>
 
-                      Message self: #1/2
+                      Message self: **this can only be tested after submitting the message, collecting its identifier, and editing the message itself**
 
-                      Message other: #2/1
+                      Message other: #1/${courseConversationMessageForCourseConversationMessageDraft!.publicId}
 
-                      Message non-existent: #1/100
+                      Message non-existent: #1/9999
 
                       Message permanent link turned reference: <https://${
                         application.configuration.hostname
-                      }/courses/${course.id}/conversations/1?message=1>
+                      }/courses/${course.id}/conversations/1?message=${courseConversationMessageForCourseConversationMessageDraft!.publicId}>
 
                       Message non-existent permanent link turned reference: <https://${
                         application.configuration.hostname
-                      }/courses/${course.id}/conversations/1?message=100>
+                      }/courses/${course.id}/conversations/1?message=9999>
                     `}
                   );
                 `,
