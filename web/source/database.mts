@@ -3392,276 +3392,276 @@ export default async (application: Application): Promise<void> => {
                     ${courseConversation.id},
                     ${courseParticipation.id},
                     ${markdown`
-                        # Headings
+                      # Headings
 
-                        ${examples.text({ model: textExamples, length: 1 + Math.floor(Math.random() * 7) })}
+                      ${examples.text({ model: textExamples, length: 1 + Math.floor(Math.random() * 7) })}
 
-                        # Heading 1
+                      # Heading 1
 
-                        ${examples.text({ model: textExamples, length: 1 + Math.floor(Math.random() * 7) })}
+                      ${examples.text({ model: textExamples, length: 1 + Math.floor(Math.random() * 7) })}
 
-                        ## Heading 2
+                      ## Heading 2
 
-                        ${examples.text({ model: textExamples, length: 1 + Math.floor(Math.random() * 7) })}
+                      ${examples.text({ model: textExamples, length: 1 + Math.floor(Math.random() * 7) })}
 
-                        ### Heading 3
+                      ### Heading 3
 
-                        ${examples.text({ model: textExamples, length: 1 + Math.floor(Math.random() * 7) })}
+                      ${examples.text({ model: textExamples, length: 1 + Math.floor(Math.random() * 7) })}
 
-                        #### Heading 4
+                      #### Heading 4
 
-                        ${examples.text({ model: textExamples, length: 1 + Math.floor(Math.random() * 7) })}
+                      ${examples.text({ model: textExamples, length: 1 + Math.floor(Math.random() * 7) })}
 
-                        ##### Heading 5
+                      ##### Heading 5
 
-                        ${examples.text({ model: textExamples, length: 1 + Math.floor(Math.random() * 7) })}
+                      ${examples.text({ model: textExamples, length: 1 + Math.floor(Math.random() * 7) })}
 
-                        ###### Heading 6
+                      ###### Heading 6
 
-                        ${examples.text({ model: textExamples, length: 1 + Math.floor(Math.random() * 7) })}
+                      ${examples.text({ model: textExamples, length: 1 + Math.floor(Math.random() * 7) })}
 
-                        # Separator
+                      # Separator
 
-                        ${examples.text({ model: textExamples, length: 1 + Math.floor(Math.random() * 7) })}
+                      ${examples.text({ model: textExamples, length: 1 + Math.floor(Math.random() * 7) })}
 
-                        ---
+                      ---
 
-                        ${examples.text({ model: textExamples, length: 1 + Math.floor(Math.random() * 7) })}
+                      ${examples.text({ model: textExamples, length: 1 + Math.floor(Math.random() * 7) })}
 
-                        # Inline
+                      # Inline
 
-                        **Bold**, _italics_, <u>underline</u>, ~~strikethrough~~, [link](https://courselore.org), www.example.com, https://example.com, contact@example.com, $E=mc^2$, \`code\`, <ins>insertion</ins>, ~~deletion~~ (~one tilde~), <sup>superscript</sup>, <sub>subscript</sub>, and a line  
-                        break.
+                      **Bold**, _italics_, <u>underline</u>, ~~strikethrough~~, [link](https://courselore.org), www.example.com, https://example.com, contact@example.com, $E=mc^2$, \`code\`, <ins>insertion</ins>, ~~deletion~~ (~one tilde~), <sup>superscript</sup>, <sub>subscript</sub>, and a line  
+                      break.
 
-                        # Image
+                      # Image
 
-                        ![Image](https://${
-                          application.configuration.hostname
-                        }/node_modules/@radically-straightforward/examples/avatars/webp/1.webp)
+                      ![Image](https://${
+                        application.configuration.hostname
+                      }/node_modules/@radically-straightforward/examples/avatars/webp/1.webp)
 
-                        # Animated GIF
+                      # Animated GIF
 
-                        [<video src="https://${
-                          application.configuration.hostname
-                        }/development/video-example.mp4"></video>](https://${
-                          application.configuration.hostname
-                        }/development/video-example.mp4)
+                      [<video src="https://${
+                        application.configuration.hostname
+                      }/development/video-example.mp4"></video>](https://${
+                        application.configuration.hostname
+                      }/development/video-example.mp4)
 
-                        # Video
+                      # Video
 
-                        <video src="https://${
-                          application.configuration.hostname
-                        }/development/video-example.mp4"></video>
+                      <video src="https://${
+                        application.configuration.hostname
+                      }/development/video-example.mp4"></video>
 
-                        # Image/Video Proxy
+                      # Image/Video Proxy
 
-                        ![Proxied image](https://interactive-examples.mdn.mozilla.net/media/cc0-images/grapefruit-slice-332-332.jpg)
+                      ![Proxied image](https://interactive-examples.mdn.mozilla.net/media/cc0-images/grapefruit-slice-332-332.jpg)
 
-                        <video src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4"></video>
+                      <video src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4"></video>
 
-                        # Polls
+                      # Polls
 
-                        ${courseConversationMessagePolls.map((courseConversationMessagePoll) => markdown`<courselore-poll id="${courseConversationMessagePoll.id}"></courselore-poll>`).join("\n\n")}
+                      ${courseConversationMessagePolls.map((courseConversationMessagePoll) => markdown`<courselore-poll id="${courseConversationMessagePoll.id}"></courselore-poll>`).join("\n\n")}
 
-                        # Lists
+                      # Lists
 
-                        - Banana
-                        - Pyjamas
-                        - Phone
+                      - Banana
+                      - Pyjamas
+                      - Phone
 
-                        ---
+                      ---
 
-                        ${Array.from({ length: 3 + Math.floor(Math.random() * 4) }, () => `- ${examples.text({ model: textExamples, length: 1 + Math.floor(Math.random() * 7) }).replaceAll("\n\n", "\n\n  ")}`)}
+                      ${Array.from({ length: 3 + Math.floor(Math.random() * 4) }, () => `- ${examples.text({ model: textExamples, length: 1 + Math.floor(Math.random() * 7) }).replaceAll("\n\n", "\n\n  ")}`)}
 
-                        ---
+                      ---
 
-                        1. Banana
-                        2. Pyjamas
-                        3. Phone
+                      1. Banana
+                      2. Pyjamas
+                      3. Phone
 
-                        ---
+                      ---
 
-                        ${Array.from({ length: 3 + Math.floor(Math.random() * 4) }, (listItemValue, listItemIndex) => `${listItemIndex + 1}. ${examples.text({ model: textExamples, length: 1 + Math.floor(Math.random() * 7) }).replaceAll("\n\n", "\n\n   ")}`)}
+                      ${Array.from({ length: 3 + Math.floor(Math.random() * 4) }, (listItemValue, listItemIndex) => `${listItemIndex + 1}. ${examples.text({ model: textExamples, length: 1 + Math.floor(Math.random() * 7) }).replaceAll("\n\n", "\n\n   ")}`)}
 
-                        ---
+                      ---
 
-                        - [ ] Banana
-                        - [x] Pyjamas
-                        - [ ] Phone
+                      - [ ] Banana
+                      - [x] Pyjamas
+                      - [ ] Phone
 
-                        ---
+                      ---
 
-                        ${Array.from({ length: 3 + Math.floor(Math.random() * 4) }, () => `- [${Math.random() < 0.5 ? " " : "x"}] ${examples.text({ model: textExamples, length: 1 + Math.floor(Math.random() * 7) }).replaceAll("\n\n", "\n\n  ")}`)}
+                      ${Array.from({ length: 3 + Math.floor(Math.random() * 4) }, () => `- [${Math.random() < 0.5 ? " " : "x"}] ${examples.text({ model: textExamples, length: 1 + Math.floor(Math.random() * 7) }).replaceAll("\n\n", "\n\n  ")}`)}
 
-                        # Blockquote
+                      # Blockquote
 
-                        ${examples
-                          .text({
-                            model: textExamples,
-                            length: 1 + Math.floor(Math.random() * 7),
-                          })
-                          .split("\n")
-                          .map((paragraph) => `> ${paragraph}`)
-                          .join("\n")}
+                      ${examples
+                        .text({
+                          model: textExamples,
+                          length: 1 + Math.floor(Math.random() * 7),
+                        })
+                        .split("\n")
+                        .map((paragraph) => `> ${paragraph}`)
+                        .join("\n")}
 
-                        # Table
+                      # Table
 
-                        | Left-aligned | Center-aligned | Right-aligned |
-                        | :---         |     :---:      |          ---: |
-                        | git status   | git status     | git status    |
-                        | git diff     | git diff       | git diff      |
+                      | Left-aligned | Center-aligned | Right-aligned |
+                      | :---         |     :---:      |          ---: |
+                      | git status   | git status     | git status    |
+                      | git diff     | git diff       | git diff      |
 
-                        | Left-aligned | Center-aligned | Right-aligned | Left-aligned | Center-aligned | Right-aligned | Left-aligned | Center-aligned | Right-aligned |
-                        | :---         |     :---:      |          ---: | :---         |     :---:      |          ---: | :---         |     :---:      |          ---: |
-                        | git status   | git status     | git status    | git status   | git status     | git status    | git status   | git status     | git status    |
-                        | git diff     | git diff       | git diff      | git diff     | git diff       | git diff      | git diff     | git diff       | git diff      |
+                      | Left-aligned | Center-aligned | Right-aligned | Left-aligned | Center-aligned | Right-aligned | Left-aligned | Center-aligned | Right-aligned |
+                      | :---         |     :---:      |          ---: | :---         |     :---:      |          ---: | :---         |     :---:      |          ---: |
+                      | git status   | git status     | git status    | git status   | git status     | git status    | git status   | git status     | git status    |
+                      | git diff     | git diff       | git diff      | git diff     | git diff       | git diff      | git diff     | git diff       | git diff      |
 
-                        # Details
+                      # Details
 
-                        <details>
-                        <summary>Example of details with summary</summary>
+                      <details>
+                      <summary>Example of details with summary</summary>
 
-                        ${examples.text({ model: textExamples, length: 1 + Math.floor(Math.random() * 7) })}
+                      ${examples.text({ model: textExamples, length: 1 + Math.floor(Math.random() * 7) })}
 
-                        </details>
+                      </details>
 
-                        <details>
+                      <details>
 
-                        ${examples.text({ model: textExamples, length: 1 + Math.floor(Math.random() * 7) })}
+                      ${examples.text({ model: textExamples, length: 1 + Math.floor(Math.random() * 7) })}
 
-                        </details>
+                      </details>
 
-                        # Footnotes
+                      # Footnotes
 
-                        Footnote[^1] and another.[^2]
+                      Footnote[^1] and another.[^2]
 
-                        [^1]: ${examples.text({ model: textExamples, length: 1 })})}
+                      [^1]: ${examples.text({ model: textExamples, length: 1 })})}
 
-                        [^2]: ${examples.text({ model: textExamples, length: 1 })})}
+                      [^2]: ${examples.text({ model: textExamples, length: 1 })})}
 
-                        # Cross-Site Scripting
+                      # Cross-Site Scripting
 
-                        👍<script>document.write("💩");</script>🙌
+                      👍<script>document.write("💩");</script>🙌
 
-                        # Mathematics
+                      # Mathematics
 
-                        $\\displaystyle \\frac{1}{\\Bigl(\\sqrt{\\phi \\sqrt{5}}-\\phi\\Bigr) e^{\\frac25 \\pi}} = 1+\\frac{e^{-2\\pi}} {1+\\frac{e^{-4\\pi}} {1+\\frac{e^{-6\\pi}} {1+\\frac{e^{-8\\pi}} {1+\\cdots} } } }$
+                      $\\displaystyle \\frac{1}{\\Bigl(\\sqrt{\\phi \\sqrt{5}}-\\phi\\Bigr) e^{\\frac25 \\pi}} = 1+\\frac{e^{-2\\pi}} {1+\\frac{e^{-4\\pi}} {1+\\frac{e^{-6\\pi}} {1+\\frac{e^{-8\\pi}} {1+\\cdots} } } }$
 
-                        Lift($L$) can be determined by Lift Coefficient ($C_L$) like the following
-                        equation.
+                      Lift($L$) can be determined by Lift Coefficient ($C_L$) like the following
+                      equation.
 
-                        $$
-                        L = \\frac{1}{2} \\rho v^2 S C_L
-                        $$
+                      $$
+                      L = \\frac{1}{2} \\rho v^2 S C_L
+                      $$
 
-                        A raw dollar sign: \\$
+                      A raw dollar sign: \\$
 
-                        $$
-                        \\invalidMacro
-                        $$
+                      $$
+                      \\invalidMacro
+                      $$
 
-                        Prevent large width/height visual affronts:
+                      Prevent large width/height visual affronts:
 
-                        $$
-                        \\rule{500em}{500em}
-                        $$
+                      $$
+                      \\rule{500em}{500em}
+                      $$
 
-                        # Syntax Highlighting
+                      # Syntax Highlighting
 
-                        \`\`\`javascript
-                        for (let orderIndex = 2; orderIndex <= order; orderIndex++) {
-                          const upperLeft = [];
-                          const lowerLeft = [];
-                          const lowerRight = [];
-                          const upperRight = [];
-                          for (const [x, y] of points) {
-                            upperLeft.push([y / 2, x / 2]);
-                            lowerLeft.push([x / 2, y / 2 + 1 / 2]);
-                            lowerRight.push([x / 2 + 1 / 2, y / 2 + 1 / 2]);
-                            upperRight.push([(1 - y) / 2 + 1 / 2, (1 - x) / 2]);
-                          }
-                          points = [...upperLeft, ...lowerLeft, ...lowerRight, ...upperRight];
+                      \`\`\`javascript
+                      for (let orderIndex = 2; orderIndex <= order; orderIndex++) {
+                        const upperLeft = [];
+                        const lowerLeft = [];
+                        const lowerRight = [];
+                        const upperRight = [];
+                        for (const [x, y] of points) {
+                          upperLeft.push([y / 2, x / 2]);
+                          lowerLeft.push([x / 2, y / 2 + 1 / 2]);
+                          lowerRight.push([x / 2 + 1 / 2, y / 2 + 1 / 2]);
+                          upperRight.push([(1 - y) / 2 + 1 / 2, (1 - x) / 2]);
                         }
-                        \`\`\`
+                        points = [...upperLeft, ...lowerLeft, ...lowerRight, ...upperRight];
+                      }
+                      \`\`\`
 
-                        \`\`\`
-                        L          TE
-                        A       A
-                        C    V
-                        R A
-                        DOU
-                        LOU
-                        REUSE
-                        QUE TU
-                        PORTES
-                        ET QUI T'
-                        ORNE O CI
-                        VILISÉ
-                        OTE-  TU VEUX
-                        LA    BIEN
-                        SI      RESPI
-                            RER       - Apollinaire
-                        \`\`\`
+                      \`\`\`
+                      L          TE
+                      A       A
+                      C    V
+                      R A
+                      DOU
+                      LOU
+                      REUSE
+                      QUE TU
+                      PORTES
+                      ET QUI T'
+                      ORNE O CI
+                      VILISÉ
+                      OTE-  TU VEUX
+                      LA    BIEN
+                      SI      RESPI
+                          RER       - Apollinaire
+                      \`\`\`
 
-                        <pre>
-                        L          TE
-                        A       A
-                        C    V
-                        R A
-                        DOU
-                        LOU
-                        REUSE
-                        QUE TU
-                        PORTES
-                        ET QUI T'
-                        ORNE O CI
-                        VILISÉ
-                        OTE-  TU VEUX
-                        LA    BIEN
-                        SI      RESPI
-                            RER       - Apollinaire
-                        </pre>
+                      <pre>
+                      L          TE
+                      A       A
+                      C    V
+                      R A
+                      DOU
+                      LOU
+                      REUSE
+                      QUE TU
+                      PORTES
+                      ET QUI T'
+                      ORNE O CI
+                      VILISÉ
+                      OTE-  TU VEUX
+                      LA    BIEN
+                      SI      RESPI
+                          RER       - Apollinaire
+                      </pre>
 
-                        # \`@mentions\`
+                      # \`@mentions\`
 
-                        Self: @${courseParticipation.id}
+                      Self: @${courseParticipation.id}
 
-                        Other: @${courseParticipations[Math.floor(Math.random() * courseParticipations.length)].id}
+                      Other: @${courseParticipations[Math.floor(Math.random() * courseParticipations.length)].id}
 
-                        Non-existent: @1571024857
+                      Non-existent: @1571024857
 
-                        Course roles: @all, @course-staff, @course-students
+                      Course roles: @all, @course-staff, @course-students
 
-                        # \`#references\`
+                      # \`#references\`
 
-                        Conversation self: #1
+                      Conversation self: #1
 
-                        Conversation other: #2
+                      Conversation other: #2
 
-                        Conversation non-existent: #14981039481
+                      Conversation non-existent: #14981039481
 
-                        Conversation permanent link turned reference: <https://${
-                          application.configuration.hostname
-                        }/courses/${course.id}/conversations/1>
+                      Conversation permanent link turned reference: <https://${
+                        application.configuration.hostname
+                      }/courses/${course.id}/conversations/1>
 
-                        Conversation non-existent permanent link turned reference: <https://${
-                          application.configuration.hostname
-                        }/courses/${course.id}/conversations/14981039481>
+                      Conversation non-existent permanent link turned reference: <https://${
+                        application.configuration.hostname
+                      }/courses/${course.id}/conversations/14981039481>
 
-                        Message self: #1/2
+                      Message self: #1/2
 
-                        Message other: #2/1
+                      Message other: #2/1
 
-                        Message non-existent: #1/100
+                      Message non-existent: #1/100
 
-                        Message permanent link turned reference: <https://${
-                          application.configuration.hostname
-                        }/courses/${course.id}/conversations/1?message=1>
+                      Message permanent link turned reference: <https://${
+                        application.configuration.hostname
+                      }/courses/${course.id}/conversations/1?message=1>
 
-                        Message non-existent permanent link turned reference: <https://${
-                          application.configuration.hostname
-                        }/courses/${course.id}/conversations/1?message=100>
-                      `}
+                      Message non-existent permanent link turned reference: <https://${
+                        application.configuration.hostname
+                      }/courses/${course.id}/conversations/1?message=100>
+                    `}
                   );
                 `,
               );
