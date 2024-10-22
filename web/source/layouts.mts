@@ -396,7 +396,7 @@ export default async (application: Application): Promise<void> => {
         $${request.state.courseParticipation !== undefined
           ? html`
               <div
-                key="courseParticipationColor ${request.state
+                key="courseParticipationDecoration ${request.state
                   .courseParticipation.decorationColor}"
                 style="
                   --background-color--light: var(--color--${request.state
