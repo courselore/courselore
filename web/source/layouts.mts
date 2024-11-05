@@ -339,8 +339,8 @@ export default async (application: Application): Promise<void> => {
   application.layouts.base = ({
     request,
     response,
-    hamburger = false,
     head,
+    hamburger = false,
     body,
   }) => html`
     <!doctype html>
@@ -448,7 +448,7 @@ export default async (application: Application): Promise<void> => {
                   `}"
                   javascript="${javascript`
                     this.onclick = () => {
-                      document.querySelector('[key="main"]').classList.add("sidebar--open");
+                      javascript.stateAdd(document.querySelector('[key="main"]'), "sidebar--open");
                     };
                   `}"
                 >
@@ -457,8 +457,8 @@ export default async (application: Application): Promise<void> => {
               `
             : html``}
           <a
-            key="logo"
-            href="https://${application.configuration.hostname}"
+            key="header--logo"
+            href="/"
             class="button button--rectangle button--transparent"
             css="${css`
               display: flex;
