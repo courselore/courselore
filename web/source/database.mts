@@ -2877,7 +2877,7 @@ export default async (application: Application): Promise<void> => {
             information: `${String(
               new Date(Date.now() - 365 * 24 * 60 * 60 * 1000).getFullYear(),
             )} / Spring / EN.601.426/626`,
-            courseState: "archived",
+            courseState: "courseArchived",
             courseRole: "courseInstructor",
           },
           {
