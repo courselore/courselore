@@ -2497,7 +2497,7 @@ export default async (application: Application): Promise<void> => {
             "invitationLinkCourseInstructorsToken" text not null unique,
             "invitationLinkCourseStudentsEnabled" integer not null,
             "invitationLinkCourseStudentsToken" text not null unique,
-            "courseConversationsRequiresTagging" integer not null,
+            "courseConversationRequiresTagging" integer not null,
             "courseStudentsAnonymityAllowed" text not null,
             "courseStudentsMayHavePrivateCourseConversations" integer not null,
             "courseStudentsMayAttachImages" integer not null,
@@ -2537,7 +2537,7 @@ export default async (application: Application): Promise<void> => {
             "course" integer not null references "courses",
             "order" integer not null,
             "name" text not null,
-            "privateToCourseInstructors" integer not null
+            "privateToCourseParticipationRoleInstructors" integer not null
           ) strict;
           create index "index_courseConversationsTags_course" on "courseConversationsTags" ("course");
           
@@ -2909,7 +2909,7 @@ export default async (application: Application): Promise<void> => {
                       "invitationLinkCourseInstructorsToken",
                       "invitationLinkCourseStudentsEnabled",
                       "invitationLinkCourseStudentsToken",
-                      "courseConversationsRequiresTagging",
+                      "courseConversationRequiresTagging",
                       "courseStudentsAnonymityAllowed",
                       "courseStudentsMayHavePrivateCourseConversations",
                       "courseStudentsMayAttachImages",
@@ -3050,8 +3050,14 @@ export default async (application: Application): Promise<void> => {
             { name: "Assignment 4" },
             { name: "Assignment 5" },
             { name: "Assignment 6" },
-            { name: "Change for next year", privateToCourseInstructors: true },
-            { name: "Duplicate question", privateToCourseInstructors: true },
+            {
+              name: "Change for next year",
+              privateToCourseParticipationRoleInstructors: true,
+            },
+            {
+              name: "Duplicate question",
+              privateToCourseParticipationRoleInstructors: true,
+            },
           ].map(
             (courseConversationsTag, courseConversationsTagIndex) =>
               database.get<{ id: number }>(
@@ -3064,14 +3070,14 @@ export default async (application: Application): Promise<void> => {
                           "course",
                           "order",
                           "name",
-                          "privateToCourseInstructors"
+                          "privateToCourseParticipationRoleInstructors"
                         )
                         values (
                           ${cryptoRandomString({ length: 20, type: "numeric" })},
                           ${course.id},
                           ${courseConversationsTagIndex},
                           ${courseConversationsTag.name},
-                          ${Number(courseConversationsTag.privateToCourseInstructors ?? false)}
+                          ${Number(courseConversationsTag.privateToCourseParticipationRoleInstructors ?? false)}
                         );
                       `,
                     ).lastInsertRowid
