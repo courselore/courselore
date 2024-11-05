@@ -2418,7 +2418,7 @@ export default async (application: Application): Promise<void> => {
             "id" integer primary key autoincrement,
             "privateKey" text not null,
             "certificate" text not null,
-            "userSystemRolesWhoMayCreateCourses" text not null
+            "userRolesWhoMayCreateCourses" text not null
           ) strict;
           
           create table "users" (
@@ -2440,7 +2440,7 @@ export default async (application: Application): Promise<void> => {
             "oneTimePasswordBackupCodes" text null,
             "avatarColor" text not null,
             "avatarImage" text null,
-            "systemRole" text not null,
+            "userRole" text not null,
             "lastSeenOnlineAt" text not null,
             "darkMode" text not null,
             "sidebarWidth" integer not null,
@@ -2512,7 +2512,7 @@ export default async (application: Application): Promise<void> => {
             "course" integer not null references "courses",
             "createdAt" text not null,
             "email" text not null,
-            "courseRole" text not null
+            "courseParticipationRole" text not null
           ) strict;
           create index "index_courseInvitationEmails_course" on "courseInvitationEmails" ("course");
           create index "index_courseInvitationEmails_createdAt" on "courseInvitationEmails" ("createdAt");
@@ -2524,7 +2524,7 @@ export default async (application: Application): Promise<void> => {
             "user" integer not null references "users",
             "course" integer not null references "courses",
             "createdAt" text not null,
-            "courseRole" text not null,
+            "courseParticipationRole" text not null,
             "decorationColor" text not null,
             "mostRecentlyVisitedCourseConversation" integer null references "courseConversations",
             unique ("user", "course")
@@ -2691,7 +2691,7 @@ export default async (application: Application): Promise<void> => {
       const administrationOptions = database.get<{
         privateKey: string;
         certificate: string;
-        userSystemRolesWhoMayCreateCourses:
+        userRolesWhoMayCreateCourses:
           | "all"
           | "staff-and-administrators"
           | "administrators";
@@ -2705,7 +2705,7 @@ export default async (application: Application): Promise<void> => {
           insert into "systemOptions" (
             "privateKey",
             "certificate",
-            "userSystemRolesWhoMayCreateCourses"
+            "userRolesWhoMayCreateCourses"
           )
           values (
             ${administrationOptions.privateKey},
@@ -2715,7 +2715,7 @@ export default async (application: Application): Promise<void> => {
                 all: "systemUser",
                 "staff-and-administrators": "systemStaff",
                 administrators: "systemAdministrator",
-              }[administrationOptions.userSystemRolesWhoMayCreateCourses]
+              }[administrationOptions.userRolesWhoMayCreateCourses]
             }
           );
         `,
@@ -2797,7 +2797,7 @@ export default async (application: Application): Promise<void> => {
                         "oneTimePasswordBackupCodes",
                         "avatarColor",
                         "avatarImage",
-                        "systemRole",
+                        "userRole",
                         "lastSeenOnlineAt",
                         "darkMode",
                         "sidebarWidth",
@@ -2878,17 +2878,17 @@ export default async (application: Application): Promise<void> => {
               new Date(Date.now() - 365 * 24 * 60 * 60 * 1000).getFullYear(),
             )} / Spring / EN.601.426/626`,
             courseState: "courseArchived",
-            courseRole: "courseInstructor",
+            courseParticipationRole: "courseParticipationRoleInstructor",
           },
           {
             name: "Full-Stack JavaScript",
             information: `${String(new Date().getFullYear())} / Spring`,
-            courseRole: "courseStudent",
+            courseParticipationRole: "courseParticipationRoleStudent",
           },
           {
             name: "Principles of Programming Languages",
             information: `${String(new Date().getFullYear())} / ${new Date().getMonth() < 6 ? "Spring" : "Fall"} / EN.601.426/626`,
-            courseRole: "courseInstructor",
+            courseParticipationRole: "courseParticipationRoleInstructor",
             courseConversationsNextPublicId: 31,
           },
         ]) {
@@ -2955,7 +2955,7 @@ export default async (application: Application): Promise<void> => {
                   "course",
                   "createdAt",
                   "email",
-                  "courseRole"
+                  "courseParticipationRole"
                 )
                 values (
                   ${cryptoRandomString({ length: 20, type: "numeric" })},
@@ -3004,7 +3004,7 @@ export default async (application: Application): Promise<void> => {
                           "user",
                           "course",
                           "createdAt",
-                          "courseRole",
+                          "courseParticipationRole",
                           "decorationColor",
                           "mostRecentlyVisitedCourseConversation"
                         )
@@ -3013,7 +3013,7 @@ export default async (application: Application): Promise<void> => {
                           ${user.id},
                           ${course.id},
                           ${new Date(Date.now() - Math.floor(Math.random() * 100 * 24 * 60 * 60 * 1000)).toISOString()},
-                          ${userIndex === 0 ? courseData.courseRole : Math.random() < 0.15 ? "courseInstructor" : "courseStudent"},
+                          ${userIndex === 0 ? courseData.courseParticipationRole : Math.random() < 0.15 ? "courseInstructor" : "courseStudent"},
                           ${
                             [
                               "red",
