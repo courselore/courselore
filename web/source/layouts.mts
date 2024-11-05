@@ -486,7 +486,7 @@ export default async (application: Application): Promise<void> => {
             </div>
           </a>
           <div
-            key="course"
+            key="header--course"
             css="${css`
               flex: 1;
               min-width: var(--space--0);
@@ -519,9 +519,7 @@ export default async (application: Application): Promise<void> => {
                             `}"
                           >
                             <a
-                              href="https://${application.configuration
-                                .hostname}/courses/${request.state.course
-                                .publicId}/"
+                              href="/courses/${request.state.course.publicId}/"
                               class="button button--rectangle button--transparent ${request.URL.pathname.match(
                                 new RegExp("^/courses/[0-9]+/settings$"),
                               ) === null
@@ -531,8 +529,7 @@ export default async (application: Application): Promise<void> => {
                               Conversations
                             </a>
                             <a
-                              href="https://${application.configuration
-                                .hostname}/courses/${request.state.course
+                              href="/courses/${request.state.course
                                 .publicId}/settings"
                               class="button button--rectangle button--transparent ${request.URL.pathname.match(
                                 new RegExp("^/courses/[0-9]+/settings$"),
@@ -547,11 +544,8 @@ export default async (application: Application): Promise<void> => {
                               .all<{
                                 publicId: string;
                                 name: string;
-                                year: string | null;
-                                term: string | null;
-                                code: string | null;
-                                institution: string | null;
-                                archivedAt: string | null;
+                                information: string | null;
+                                courseState: "courseActive" | "courseArchived";
                               }>(
                                 sql`
                                   select
