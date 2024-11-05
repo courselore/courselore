@@ -2448,7 +2448,7 @@ export default async (application: Application): Promise<void> => {
             "emailNotificationsForMessagesIncludingMentions" integer not null,
             "emailNotificationsForMessagesInConversationsYouStarted" integer not null,
             "emailNotificationsForMessagesInConversationsInWhichYouParticipated" integer not null,
-            "anonymous" text not null,
+            "userAnonymityPreferred" text not null,
             "mostRecentlyVisitedCourse" integer null references "courses"
           ) strict;
           create index "index_users_mostRecentlyVisitedCourse" on "users" ("mostRecentlyVisitedCourse");
@@ -2615,7 +2615,7 @@ export default async (application: Application): Promise<void> => {
             "updatedAt" text null,
             "createdByCourseParticipation" integer null references "courseParticipations",
             "courseConversationMessageType" text not null,
-            "anonymity" text not null,
+            "courseConversationMessageAnonymity" text not null,
             "content" text not null,
             "contentSearch" text not null
           ) strict;
@@ -2712,9 +2712,9 @@ export default async (application: Application): Promise<void> => {
             ${administrationOptions.certificate},
             ${
               {
-                all: "systemUser",
-                "staff-and-administrators": "systemStaff",
-                administrators: "systemAdministrator",
+                all: "userRoleUser",
+                "staff-and-administrators": "userRoleStaff",
+                administrators: "userRoleSystemAdministrator",
               }[administrationOptions.userRolesWhoMayCreateCourses]
             }
           );
@@ -2805,7 +2805,7 @@ export default async (application: Application): Promise<void> => {
                         "emailNotificationsForMessagesIncludingMentions",
                         "emailNotificationsForMessagesInConversationsYouStarted",
                         "emailNotificationsForMessagesInConversationsInWhichYouParticipated",
-                        "anonymous",
+                        "userAnonymityPreferred",
                         "mostRecentlyVisitedCourse"
                       )
                       values (
@@ -2853,15 +2853,15 @@ export default async (application: Application): Promise<void> => {
                             ? `/node_modules/@radically-straightforward/examples/avatars/webp/${Math.floor(Math.random() * 263)}.webp`
                             : null
                         },
-                        ${userIndex === 0 || Math.random() < 0.05 ? "systemAdministrator" : Math.random() < 0.2 ? "systemStaff" : "systemUser"},
+                        ${userIndex === 0 || Math.random() < 0.05 ? "userRoleSystemAdministrator" : Math.random() < 0.2 ? "userRoleStaff" : "userRoleUser"},
                         ${new Date(Date.now() - Math.floor(Math.random() * 24 * 60 * 60 * 1000)).toISOString()},
-                        ${"system"},
+                        ${"userDarkModeSystem"},
                         ${80 * 4},
                         ${Number(Math.random() < 0.1)},
                         ${Number(Math.random() < 0.9)},
                         ${Number(Math.random() < 0.9)},
                         ${Number(Math.random() < 0.9)},
-                        ${Number(Math.random() < 0.8)},
+                        ${Math.random() < 0.8 ? "userAnonymityPreferredNone" : Math.random() < 0.8 ? "userAnonymityPreferredOtherCourseParticipationRoleStudents" : "userAnonymityPreferredCourseParticipationRoleInstructors"},
                         ${null}
                       );
                     `,
@@ -2927,7 +2927,7 @@ export default async (application: Application): Promise<void> => {
                       ${Number(Math.random() < 0.8)},
                       ${cryptoRandomString({ length: 20, type: "numeric" })},
                       ${Number(Math.random() < 0.8)},
-                      ${Math.random() < 0.1 ? "courseInstructors" : Math.random() < 0.8 ? "courseStudents" : "none"},
+                      ${Math.random() < 0.1 ? "courseStudentsAnonymityAllowedNone" : Math.random() < 0.8 ? "courseStudentsAnonymityAllowedOtherCourseParticipationRoleStudents" : "courseStudentsAnonymityAllowedCourseParticipationRoleInstructors"},
                       ${Number(Math.random() < 0.8)},
                       ${Number(Math.random() < 0.8)},
                       ${Number(Math.random() < 0.8)},
@@ -3209,7 +3209,7 @@ export default async (application: Application): Promise<void> => {
                           "updatedAt",
                           "createdByCourseParticipation",
                           "courseConversationMessageType",
-                          "anonymity",
+                          "courseConversationMessageAnonymity",
                           "content",
                           "contentSearch"
                         )
@@ -3229,7 +3229,7 @@ export default async (application: Application): Promise<void> => {
                                   ? "courseConversationMessageFollowUpQuestion"
                                   : "courseConversationMessageCourseInstructorWhisper"
                           },
-                          ${Math.random() < 0.05 ? "courseInstructors" : Math.random() < 0.7 ? "courseStudents" : "none"},
+                          ${Math.random() < 0.5 ? "courseConversationMessageAnonymityNone" : Math.random() < 0.9 ? "courseConversationMessageAnonymityOtherCourseParticipationRoleStudents" : "courseConversationMessageAnonymityCourseParticipationRoleInstructors"},
                           ${courseConversationMessageContent},
                           ${utilities
                             .tokenize(courseConversationMessageContent, {
