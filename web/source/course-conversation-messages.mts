@@ -47,8 +47,8 @@ export default async (application: Application): Promise<void> => {
               where
                 "publicId" = ${courseConversationMessageId} and
                 "courseConversation" = ${request.state.courseConversation!.id} $${
-                  request.state.courseParticipation!.courseRole !==
-                  "courseStaff"
+                  request.state.courseParticipation!.courseParticipationRole !==
+                  "courseParticipationRoleInstructor"
                     ? sql`
                         and
                         "courseConversationMessageType" != 'courseConversationMessageCourseStaffWhisper'

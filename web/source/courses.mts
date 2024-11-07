@@ -15,23 +15,26 @@ export type ApplicationCourses = {
           publicId: string;
           createdAt: string;
           name: string;
-          year: string | null;
-          term: string | null;
-          institution: string | null;
-          code: string | null;
-          invitationLinkCourseStaffToken: string;
-          invitationLinkCourseStaffActive: number;
-          invitationLinkCourseStudentsToken: string;
-          invitationLinkCourseStudentsActive: number;
-          courseStudentsMayCreatePolls: number;
-          archivedAt: string | null;
-          courseConversationsNextpublicId: number;
+          information: string | null;
+          invitationLinkCourseParticipationRoleInstructorsEnabled: number;
+          invitationLinkCourseParticipationRoleInstructorsToken: string;
+          invitationLinkCourseParticipationRoleStudentsEnabled: number;
+          invitationLinkCourseParticipationRoleStudentsToken: string;
+          courseConversationRequiresTagging: number;
+          courseParticipationRoleStudentsAnonymityAllowed: number;
+          courseParticipationRoleStudentsMayHavePrivateCourseConversations: number;
+          courseParticipationRoleStudentsMayAttachImages: number;
+          courseParticipationRoleStudentsMayCreatePolls: number;
+          courseState: "courseStateActive" | "courseStateArchived";
+          courseConversationsNextPublicId: number;
         };
         courseParticipation: {
           id: number;
           publicId: string;
           createdAt: string;
-          courseRole: "courseStaff" | "courseStudent";
+          courseParticipationRole:
+            | "courseParticipationRoleInstructor"
+            | "courseParticipationRoleStudent";
           decorationColor:
             | "red"
             | "orange"
@@ -167,7 +170,8 @@ export default async (application: Application): Promise<void> => {
           from "courseConversationsTags"
           where
             "course" = ${request.state.course.id} $${
-              request.state.courseParticipation.courseRole !== "courseStaff"
+              request.state.courseParticipation.courseParticipationRole !==
+              "courseParticipationRoleInstructor"
                 ? sql`
                     and
                     "courseStaff" = ${Number(false)}

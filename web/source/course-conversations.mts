@@ -143,8 +143,9 @@ export default async (application: Application): Promise<void> => {
                 $${(() => {
                   const mayEditCourseConversation =
                     request.state.course.archivedAt === null &&
-                    (request.state.courseParticipation.courseRole ===
-                      "courseStaff" ||
+                    (request.state.courseParticipation
+                      .courseParticipationRole ===
+                      "courseParticipationRoleInstructor" ||
                       application.database.get(
                         sql`
                           select true
@@ -380,7 +381,8 @@ export default async (application: Application): Promise<void> => {
                                   })()}
                                   $${mayEditCourseConversation &&
                                   request.state.courseParticipation
-                                    .courseRole === "courseStaff"
+                                    .courseParticipationRole ===
+                                    "courseParticipationRoleInstructor"
                                     ? html`
                                         <button
                                           class="button button--rectangle button--transparent button--dropdown-menu"
@@ -564,8 +566,9 @@ export default async (application: Application): Promise<void> => {
                           .courseConversationType ===
                         "courseConversationQuestion"
                           ? mayEditCourseConversation &&
-                            request.state.courseParticipation.courseRole ===
-                              "courseStaff"
+                            request.state.courseParticipation
+                              .courseParticipationRole ===
+                              "courseParticipationRoleInstructor"
                             ? html`
                                 <button
                                   class="${Boolean(
@@ -804,8 +807,9 @@ export default async (application: Application): Promise<void> => {
                               </div>
                             `}
                         $${mayEditCourseConversation &&
-                        request.state.courseParticipation.courseRole ===
-                          "courseStaff"
+                        request.state.courseParticipation
+                          .courseParticipationRole ===
+                          "courseParticipationRoleInstructor"
                           ? html`
                               <button
                                 class="button button--rectangle button--transparent"
@@ -1082,8 +1086,9 @@ export default async (application: Application): Promise<void> => {
                       from "courseConversationMessages"
                       where
                         "courseConversation" = ${request.state.courseConversation.id} $${
-                          request.state.courseParticipation.courseRole !==
-                          "courseStaff"
+                          request.state.courseParticipation
+                            .courseParticipationRole !==
+                          "courseParticipationRoleInstructor"
                             ? sql`
                                 and
                                 "courseConversationMessageType" != 'courseConversationMessageCourseStaffWhisper'
@@ -1096,8 +1101,9 @@ export default async (application: Application): Promise<void> => {
                   .map((courseConversationMessage) => {
                     const mayEditCourseConversationMessage =
                       request.state.course!.archivedAt === null &&
-                      (request.state.courseParticipation!.courseRole ===
-                        "courseStaff" ||
+                      (request.state.courseParticipation!
+                        .courseParticipationRole ===
+                        "courseParticipationRoleInstructor" ||
                         request.state.courseParticipation!.id ===
                           courseConversationMessage.createdByCourseParticipation);
                     const courseConversationMessageCreatedByCourseParticipation =
@@ -1243,8 +1249,9 @@ export default async (application: Application): Promise<void> => {
                         <div key="courseConversationMessage--createdBy">
                           $${application.partials.userAvatar({
                             user:
-                              request.state.courseParticipation!.courseRole !==
-                                "courseStaff" &&
+                              request.state.courseParticipation!
+                                .courseParticipationRole !==
+                                "courseParticipationRoleInstructor" &&
                               request.state.courseParticipation!.id !==
                                 courseConversationMessage.createdByCourseParticipation &&
                               Boolean(courseConversationMessage.anonymous)
@@ -1282,7 +1289,8 @@ export default async (application: Application): Promise<void> => {
                                   font-weight: 700;
                                 `}"
                                 >${request.state.courseParticipation!
-                                  .courseRole !== "courseStaff" &&
+                                  .courseParticipationRole !==
+                                  "courseParticipationRoleInstructor" &&
                                 request.state.courseParticipation!.id !==
                                   courseConversationMessage.createdByCourseParticipation &&
                                 Boolean(courseConversationMessage.anonymous)
@@ -1297,8 +1305,9 @@ export default async (application: Application): Promise<void> => {
                                 "courseStaff"
                                   ? html` (course staff)`
                                   : html``}$${(request.state
-                                  .courseParticipation!.courseRole ===
-                                  "courseStaff" ||
+                                  .courseParticipation!
+                                  .courseParticipationRole ===
+                                  "courseParticipationRoleInstructor" ||
                                   request.state.courseParticipation!.id ===
                                     courseConversationMessage.createdByCourseParticipation) &&
                                 Boolean(courseConversationMessage.anonymous)
@@ -1707,7 +1716,8 @@ export default async (application: Application): Promise<void> => {
                                           : html``}
                                         $${mayEditCourseConversationMessage &&
                                         request.state.courseParticipation!
-                                          .courseRole === "courseStaff" &&
+                                          .courseParticipationRole ===
+                                          "courseParticipationRoleInstructor" &&
                                         courseConversationMessage.publicId !==
                                           "1"
                                           ? html`
@@ -2033,8 +2043,9 @@ export default async (application: Application): Promise<void> => {
                                 </button>
                               `;
                             if (
-                              request.state.courseParticipation!.courseRole ===
-                              "courseStaff"
+                              request.state.courseParticipation!
+                                .courseParticipationRole ===
+                              "courseParticipationRoleInstructor"
                             ) {
                               const courseConversationMessageViews =
                                 application.database.all<{
