@@ -3447,23 +3447,15 @@ export default async (application: Application): Promise<void> => {
 
                       # Image
 
-                      ![Image](https://${
-                        application.configuration.hostname
-                      }/node_modules/@radically-straightforward/examples/avatars/webp/1.webp)
+                      ![Image](/node_modules/@radically-straightforward/examples/avatars/webp/1.webp)
 
                       # Animated GIF
 
-                      [<video src="https://${
-                        application.configuration.hostname
-                      }/development/video-example.mp4"></video>](https://${
-                        application.configuration.hostname
-                      }/development/video-example.mp4)
+                      [<video src="/development--video-example.mp4"></video>](/development--video-example.mp4)
 
                       # Video
 
-                      <video src="https://${
-                        application.configuration.hostname
-                      }/development/video-example.mp4"></video>
+                      <video src="/development--video-example.mp4"></video>
 
                       # Image/Video Proxy
 

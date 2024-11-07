@@ -201,8 +201,7 @@ export default async (application: Application): Promise<void> => {
                               <form
                                 key="courseConversation--header--title--edit"
                                 method="PATCH"
-                                action="https://${application.configuration
-                                  .hostname}/courses/${request.state.course
+                                action="/courses/${request.state.course
                                   .publicId}/conversations/${request.state
                                   .courseConversation.publicId}"
                                 novalidate
@@ -351,9 +350,7 @@ export default async (application: Application): Promise<void> => {
                                                     $${courses.map(
                                                       (course) => html`
                                                         <a
-                                                          href="https://${application
-                                                            .configuration
-                                                            .hostname}/courses/${course.publicId}/conversations/new?${new URLSearchParams(
+                                                          href="/courses/${course.publicId}/conversations/new?${new URLSearchParams(
                                                             {
                                                               "reuse.course":
                                                                 request.state
@@ -398,9 +395,7 @@ export default async (application: Application): Promise<void> => {
                                               content: ${html`
                                                 <form
                                                   method="DELETE"
-                                                  action="https://${application
-                                                    .configuration
-                                                    .hostname}/courses/${request
+                                                  action="/courses/${request
                                                     .state.course
                                                     .publicId}/conversations/${request
                                                     .state.courseConversation
@@ -488,13 +483,10 @@ export default async (application: Application): Promise<void> => {
                                       >
                                         <form
                                           method="PATCH"
-                                          action="https://${application
-                                            .configuration
-                                            .hostname}/courses/${request.state
+                                          action="/courses/${request.state
                                             .course
                                             .publicId}/conversations/${request
-                                            .state.courseConversation
-                                            .publicId}"
+                                            .state.courseConversation.publicId}"
                                         >
                                           <input
                                             type="hidden"
@@ -514,13 +506,10 @@ export default async (application: Application): Promise<void> => {
                                         </form>
                                         <form
                                           method="PATCH"
-                                          action="https://${application
-                                            .configuration
-                                            .hostname}/courses/${request.state
+                                          action="/courses/${request.state
                                             .course
                                             .publicId}/conversations/${request
-                                            .state.courseConversation
-                                            .publicId}"
+                                            .state.courseConversation.publicId}"
                                         >
                                           <input
                                             type="hidden"
@@ -602,9 +591,7 @@ export default async (application: Application): Promise<void> => {
                                         >
                                           <form
                                             method="PATCH"
-                                            action="https://${application
-                                              .configuration
-                                              .hostname}/courses/${request.state
+                                            action="/courses/${request.state
                                               .course
                                               .publicId}/conversations/${request
                                               .state.courseConversation
@@ -628,9 +615,7 @@ export default async (application: Application): Promise<void> => {
                                           </form>
                                           <form
                                             method="PATCH"
-                                            action="https://${application
-                                              .configuration
-                                              .hostname}/courses/${request.state
+                                            action="/courses/${request.state
                                               .course
                                               .publicId}/conversations/${request
                                               .state.courseConversation
@@ -706,9 +691,7 @@ export default async (application: Application): Promise<void> => {
                                         >
                                           <form
                                             method="PATCH"
-                                            action="https://${application
-                                              .configuration
-                                              .hostname}/courses/${request.state
+                                            action="/courses/${request.state
                                               .course
                                               .publicId}/conversations/${request
                                               .state.courseConversation
@@ -732,9 +715,7 @@ export default async (application: Application): Promise<void> => {
                                           </form>
                                           <form
                                             method="PATCH"
-                                            action="https://${application
-                                              .configuration
-                                              .hostname}/courses/${request.state
+                                            action="/courses/${request.state
                                               .course
                                               .publicId}/conversations/${request
                                               .state.courseConversation
@@ -759,9 +740,7 @@ export default async (application: Application): Promise<void> => {
                                           </form>
                                           <form
                                             method="PATCH"
-                                            action="https://${application
-                                              .configuration
-                                              .hostname}/courses/${request.state
+                                            action="/courses/${request.state
                                               .course
                                               .publicId}/conversations/${request
                                               .state.courseConversation
@@ -847,13 +826,10 @@ export default async (application: Application): Promise<void> => {
                                       >
                                         <form
                                           method="PATCH"
-                                          action="https://${application
-                                            .configuration
-                                            .hostname}/courses/${request.state
+                                          action="/courses/${request.state
                                             .course
                                             .publicId}/conversations/${request
-                                            .state.courseConversation
-                                            .publicId}"
+                                            .state.courseConversation.publicId}"
                                         >
                                           <input
                                             type="hidden"
@@ -873,13 +849,10 @@ export default async (application: Application): Promise<void> => {
                                         </form>
                                         <form
                                           method="PATCH"
-                                          action="https://${application
-                                            .configuration
-                                            .hostname}/courses/${request.state
+                                          action="/courses/${request.state
                                             .course
                                             .publicId}/conversations/${request
-                                            .state.courseConversation
-                                            .publicId}"
+                                            .state.courseConversation.publicId}"
                                         >
                                           <input
                                             type="hidden"
@@ -947,13 +920,9 @@ export default async (application: Application): Promise<void> => {
                                   content: ${html`
                                     <form
                                       method="PUT"
-                                      action="https://${application
-                                        .configuration
-                                        .hostname}/courses/${request.state
-                                        .course
-                                        .publicId}/conversations/${request
-                                        .state.courseConversation
-                                        .publicId}/taggings"
+                                      action="/courses/${request.state.course
+                                        .publicId}/conversations/${request.state
+                                        .courseConversation.publicId}/taggings"
                                       novalidate
                                       css="${css`
                                         display: flex;
@@ -1068,7 +1037,7 @@ export default async (application: Application): Promise<void> => {
                     if (conversationMessageIds.size === 0) return;
                     const body = new URLSearchParams([...conversationMessageIds].map(courseConversationMessageId => ["courseConversationMessageIds[]", courseConversationMessageId]));
                     conversationMessageIds.clear();
-                    await fetch(${`https://${application.configuration.hostname}/courses/${
+                    await fetch(${`/courses/${
                       request.state.course!.publicId
                     }/conversations/${
                       request.state.courseConversation!.publicId
@@ -1529,9 +1498,7 @@ export default async (application: Application): Promise<void> => {
                                                               content: ${html`
                                                                 <form
                                                                   method="PATCH"
-                                                                  action="https://${application
-                                                                    .configuration
-                                                                    .hostname}/courses/${request
+                                                                  action="/courses/${request
                                                                     .state
                                                                     .course!
                                                                     .publicId}/conversations/${request
@@ -1602,9 +1569,7 @@ export default async (application: Application): Promise<void> => {
                                                         </button>
                                                         <form
                                                           method="PATCH"
-                                                          action="https://${application
-                                                            .configuration
-                                                            .hostname}/courses/${request
+                                                          action="/courses/${request
                                                             .state.course!
                                                             .publicId}/conversations/${request
                                                             .state
@@ -1664,9 +1629,7 @@ export default async (application: Application): Promise<void> => {
                                                       >
                                                         <form
                                                           method="PATCH"
-                                                          action="https://${application
-                                                            .configuration
-                                                            .hostname}/courses/${request
+                                                          action="/courses/${request
                                                             .state.course!
                                                             .publicId}/conversations/${request
                                                             .state
@@ -1689,9 +1652,7 @@ export default async (application: Application): Promise<void> => {
                                                         </form>
                                                         <form
                                                           method="PATCH"
-                                                          action="https://${application
-                                                            .configuration
-                                                            .hostname}/courses/${request
+                                                          action="/courses/${request
                                                             .state.course!
                                                             .publicId}/conversations/${request
                                                             .state
@@ -1714,9 +1675,7 @@ export default async (application: Application): Promise<void> => {
                                                         </form>
                                                         <form
                                                           method="PATCH"
-                                                          action="https://${application
-                                                            .configuration
-                                                            .hostname}/courses/${request
+                                                          action="/courses/${request
                                                             .state.course!
                                                             .publicId}/conversations/${request
                                                             .state
@@ -1765,9 +1724,7 @@ export default async (application: Application): Promise<void> => {
                                                     content: ${html`
                                                       <form
                                                         method="DELETE"
-                                                        action="https://${application
-                                                          .configuration
-                                                          .hostname}/courses/${request
+                                                        action="/courses/${request
                                                           .state.course!
                                                           .publicId}/conversations/${request
                                                           .state
@@ -1850,10 +1807,7 @@ export default async (application: Application): Promise<void> => {
                                   ? html`
                                       <form
                                         method="POST"
-                                        action="https://${application
-                                          .configuration
-                                          .hostname}/courses/${request.state
-                                          .course!
+                                        action="/courses/${request.state.course!
                                           .publicId}/conversations/${request
                                           .state.courseConversation!
                                           .publicId}/messages/${courseConversationMessage.publicId}/likes"
@@ -1869,10 +1823,7 @@ export default async (application: Application): Promise<void> => {
                                   : html`
                                       <form
                                         method="DELETE"
-                                        action="https://${application
-                                          .configuration
-                                          .hostname}/courses/${request.state
-                                          .course!
+                                        action="/courses/${request.state.course!
                                           .publicId}/conversations/${request
                                           .state.courseConversation!
                                           .publicId}/messages/${courseConversationMessage.publicId}/likes"
@@ -2454,8 +2405,7 @@ export default async (application: Application): Promise<void> => {
                 ? html`
                     <a
                       key="new-conversation"
-                      href="https://${application.configuration
-                        .hostname}/courses/${request.state.course
+                      href="/courses/${request.state.course
                         .publicId}/conversations/new"
                       class="button button--square button--blue"
                       css="${css`
@@ -2634,11 +2584,8 @@ export default async (application: Application): Promise<void> => {
                         (value, index) => html`
                           <a
                             key="courseConversation /courses/${request.state
-                              .course!.publicId}/conversations/${String(
-                              index,
-                            )}"
-                            href="https://${application.configuration
-                              .hostname}/courses/${request.state.course!
+                              .course!.publicId}/conversations/${String(index)}"
+                            href="/courses/${request.state.course!
                               .publicId}/conversations/${String(index)}"
                             css="${css`
                               padding: var(--space--2) var(--space--4);
@@ -2878,7 +2825,7 @@ export default async (application: Application): Promise<void> => {
                   updateSidebarWidth();
                 };
                 const updateSidebarWidth = utilities.foregroundJob(async () => {
-                  await fetch(${`https://${application.configuration.hostname}/settings`}, {
+                  await fetch(${`/settings`}, {
                     redirect: "manual",
                     method: "PATCH",
                     headers: { "CSRF-Protection": "true" },

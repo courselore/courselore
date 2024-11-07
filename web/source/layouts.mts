@@ -569,8 +569,7 @@ export default async (application: Application): Promise<void> => {
                                 (course) => html`
                                   <a
                                     key="course-selector ${course.publicId}"
-                                    href="https://${application.configuration
-                                      .hostname}/courses/${course.publicId}"
+                                    href="/courses/${course.publicId}"
                                     class="button button--rectangle button--transparent ${request.URL.pathname.match(
                                       new RegExp(
                                         `^/courses/${course.publicId}/`,
@@ -714,8 +713,7 @@ export default async (application: Application): Promise<void> => {
                           "systemAdministrator"
                             ? html`
                                 <a
-                                  href="https://${application.configuration
-                                    .hostname}/system"
+                                  href="/system"
                                   class="button button--rectangle button--transparent ${request.URL.pathname.match(
                                     new RegExp("^/system$"),
                                   ) !== null
@@ -727,8 +725,7 @@ export default async (application: Application): Promise<void> => {
                               `
                             : html``}
                           <a
-                            href="https://${application.configuration
-                              .hostname}/settings"
+                            href="/settings"
                             class="button button--rectangle button--transparent ${request.URL.pathname.match(
                               new RegExp("^/settings$"),
                             ) !== null
@@ -737,11 +734,7 @@ export default async (application: Application): Promise<void> => {
                           >
                             User settings
                           </a>
-                          <form
-                            method="DELETE"
-                            action="https://${application.configuration
-                              .hostname}/session"
-                          >
+                          <form method="DELETE" action="/session">
                             <button
                               class="button button--rectangle button--transparent button--dropdown-menu"
                             >
