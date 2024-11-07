@@ -76,6 +76,8 @@ export type ApplicationUsers = {
     }: {
       user:
         | {
+            publicId: string;
+            name: string;
             avatarColor:
               | "red"
               | "orange"
@@ -300,16 +302,20 @@ export default async (application: Application): Promise<void> => {
     },
   });
 
+  // TODO: Decorations
+  // - `userRole` on upper left
+  // - `courseParticipationRole` no upper right
+  // - Online indicator on lower right
   application.partials.userAvatar = ({
     user,
     courseParticipation = undefined,
     size = 6,
   }) =>
-    typeof user === "object" && typeof user.avatar === "string"
+    typeof user === "object" && typeof user.avatarImage === "string"
       ? html`
           <img
             key="user--avatar/${user.publicId}"
-            src="${user.avatar}"
+            src="${user.avatarImage}"
             css="${css`
               background-color: light-dark(
                 var(--color--white),
@@ -339,7 +345,7 @@ export default async (application: Application): Promise<void> => {
               : user}"
             style="
               --color--light: var(--color--${typeof user === "object"
-              ? user.color
+              ? user.avatarColor
               : user === "courseParticipationDeleted"
                 ? "red"
                 : user === "anonymous"
@@ -348,7 +354,7 @@ export default async (application: Application): Promise<void> => {
                       throw new Error();
                     })()}--800);
               --color--dark: var(--color--${typeof user === "object"
-              ? user.color
+              ? user.avatarColor
               : user === "courseParticipationDeleted"
                 ? "red"
                 : user === "anonymous"
@@ -357,7 +363,7 @@ export default async (application: Application): Promise<void> => {
                       throw new Error();
                     })()}--200);
               --background-color--light: var(--color--${typeof user === "object"
-              ? user.color
+              ? user.avatarColor
               : user === "courseParticipationDeleted"
                 ? "red"
                 : user === "anonymous"
@@ -366,7 +372,7 @@ export default async (application: Application): Promise<void> => {
                       throw new Error();
                     })()}--200);
               --background-color--dark: var(--color--${typeof user === "object"
-              ? user.color
+              ? user.avatarColor
               : user === "courseParticipationDeleted"
                 ? "red"
                 : user === "anonymous"
@@ -375,7 +381,7 @@ export default async (application: Application): Promise<void> => {
                       throw new Error();
                     })()}--800);
               --border-color--light: var(--color--${typeof user === "object"
-              ? user.color
+              ? user.avatarColor
               : user === "courseParticipationDeleted"
                 ? "red"
                 : user === "anonymous"
@@ -384,7 +390,7 @@ export default async (application: Application): Promise<void> => {
                       throw new Error();
                     })()}--300);
               --border-color--dark: var(--color--${typeof user === "object"
-              ? user.color
+              ? user.avatarColor
               : user === "courseParticipationDeleted"
                 ? "red"
                 : user === "anonymous"
