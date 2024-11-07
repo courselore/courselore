@@ -2493,15 +2493,15 @@ export default async (application: Application): Promise<void> => {
             "createdAt" text not null,
             "name" text not null,
             "information" text null,
-            "invitationLinkCourseInstructorsEnabled" integer not null,
-            "invitationLinkCourseInstructorsToken" text not null unique,
-            "invitationLinkCourseStudentsEnabled" integer not null,
-            "invitationLinkCourseStudentsToken" text not null unique,
+            "invitationLinkCourseParticipationRoleInstructorsEnabled" integer not null,
+            "invitationLinkCourseParticipationRoleInstructorsToken" text not null unique,
+            "invitationLinkCourseParticipationRoleStudentsEnabled" integer not null,
+            "invitationLinkCourseParticipationRoleStudentsToken" text not null unique,
             "courseConversationRequiresTagging" integer not null,
-            "courseStudentsAnonymityAllowed" text not null,
-            "courseStudentsMayHavePrivateCourseConversations" integer not null,
-            "courseStudentsMayAttachImages" integer not null,
-            "courseStudentsMayCreatePolls" integer not null,
+            "courseParticipationRoleStudentsAnonymityAllowed" text not null,
+            "courseParticipationRoleStudentsMayHavePrivateCourseConversations" integer not null,
+            "courseParticipationRoleStudentsMayAttachImages" integer not null,
+            "courseParticipationRoleStudentsMayCreatePolls" integer not null,
             "courseState" text not null,
             "courseConversationsNextPublicId" integer not null
           ) strict;
@@ -2905,15 +2905,15 @@ export default async (application: Application): Promise<void> => {
                       "createdAt",
                       "name",
                       "information",
-                      "invitationLinkCourseInstructorsEnabled",
-                      "invitationLinkCourseInstructorsToken",
-                      "invitationLinkCourseStudentsEnabled",
-                      "invitationLinkCourseStudentsToken",
+                      "invitationLinkCourseParticipationRoleInstructorsEnabled",
+                      "invitationLinkCourseParticipationRoleInstructorsToken",
+                      "invitationLinkCourseParticipationRoleStudentsEnabled",
+                      "invitationLinkCourseParticipationRoleStudentsToken",
                       "courseConversationRequiresTagging",
-                      "courseStudentsAnonymityAllowed",
-                      "courseStudentsMayHavePrivateCourseConversations",
-                      "courseStudentsMayAttachImages",
-                      "courseStudentsMayCreatePolls",
+                      "courseParticipationRoleStudentsAnonymityAllowed",
+                      "courseParticipationRoleStudentsMayHavePrivateCourseConversations",
+                      "courseParticipationRoleStudentsMayAttachImages",
+                      "courseParticipationRoleStudentsMayCreatePolls",
                       "courseState",
                       "courseConversationsNextPublicId"
                     )
@@ -2927,7 +2927,7 @@ export default async (application: Application): Promise<void> => {
                       ${Number(Math.random() < 0.8)},
                       ${cryptoRandomString({ length: 20, type: "numeric" })},
                       ${Number(Math.random() < 0.8)},
-                      ${Math.random() < 0.1 ? "courseStudentsAnonymityAllowedNone" : Math.random() < 0.8 ? "courseStudentsAnonymityAllowedOtherCourseParticipationRoleStudents" : "courseStudentsAnonymityAllowedCourseParticipationRoleInstructors"},
+                      ${Math.random() < 0.1 ? "courseParticipationRoleStudentsAnonymityAllowedNone" : Math.random() < 0.8 ? "courseParticipationRoleStudentsAnonymityAllowedOtherCourseParticipationRoleStudents" : "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleInstructors"},
                       ${Number(Math.random() < 0.8)},
                       ${Number(Math.random() < 0.8)},
                       ${Number(Math.random() < 0.8)},
@@ -2975,7 +2975,7 @@ export default async (application: Application): Promise<void> => {
                           1,
                         )[0].email
                   },
-                  ${Math.random() < 0.5 ? "courseInstructor" : "courseStudent"}
+                  ${Math.random() < 0.5 ? "courseParticipationRoleInstructor" : "courseParticipationRoleStudent"}
                 );
               `,
             );
@@ -3013,7 +3013,7 @@ export default async (application: Application): Promise<void> => {
                           ${user.id},
                           ${course.id},
                           ${new Date(Date.now() - Math.floor(Math.random() * 100 * 24 * 60 * 60 * 1000)).toISOString()},
-                          ${userIndex === 0 ? courseData.courseParticipationRole : Math.random() < 0.15 ? "courseInstructor" : "courseStudent"},
+                          ${userIndex === 0 ? courseData.courseParticipationRole : Math.random() < 0.15 ? "courseParticipationRoleInstructor" : "courseParticipationRoleStudent"},
                           ${
                             [
                               "red",
@@ -3114,7 +3114,7 @@ export default async (application: Application): Promise<void> => {
                         ${course.id},
                         ${Math.random() < 0.3 ? "courseConversationNote" : "courseConversationQuestion"},
                         ${Number(Math.random() < 0.5)},
-                        ${courseConversationPublicId === 1 || Math.random() < 0.3 ? "everyone" : Math.random() < 0.8 ? "courseInstructors" : "courseConversationParticipations"},
+                        ${courseConversationPublicId === 1 || Math.random() < 0.3 ? "everyone" : Math.random() < 0.8 ? "courseParticipationRoleInstructors" : "courseConversationParticipations"},
                         ${Number(courseConversationPublicId !== 1 && Math.random() < 0.1)},
                         ${courseConversationTitle},
                         ${utilities
@@ -3227,7 +3227,7 @@ export default async (application: Application): Promise<void> => {
                                 ? "courseConversationMessageAnswer"
                                 : Math.random() < 0.5
                                   ? "courseConversationMessageFollowUpQuestion"
-                                  : "courseConversationMessageCourseInstructorWhisper"
+                                  : "courseConversationMessageCourseParticipationRoleInstructorWhisper"
                           },
                           ${Math.random() < 0.5 ? "courseConversationMessageAnonymityNone" : Math.random() < 0.9 ? "courseConversationMessageAnonymityOtherCourseParticipationRoleStudents" : "courseConversationMessageAnonymityCourseParticipationRoleInstructors"},
                           ${courseConversationMessageContent},
@@ -3642,7 +3642,7 @@ export default async (application: Application): Promise<void> => {
 
                       Non-existent: @1571024857
 
-                      Course roles: @all, @course-staff, @course-students
+                      Course roles: @everyone, @instructors, @students
 
                       # \`#references\`
 
