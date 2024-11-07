@@ -545,23 +545,22 @@ export default async (application: Application): Promise<void> => {
                                 publicId: string;
                                 name: string;
                                 information: string | null;
-                                courseState: "courseActive" | "courseArchived";
+                                courseState:
+                                  | "courseStateActive"
+                                  | "courseStateArchived";
                               }>(
                                 sql`
                                   select
                                     "courses"."publicId",
                                     "courses"."name",
-                                    "courses"."year",
-                                    "courses"."term",
-                                    "courses"."code",
-                                    "courses"."institution",
-                                    "courses"."archivedAt"
+                                    "courses"."information",
+                                    "courses"."courseState"
                                   from "courses"
                                   join "courseParticipations" on
                                     "courses"."id" = "courseParticipations"."course" and
                                     "courseParticipations"."user" = ${request.state.user.id}
                                   order by
-                                    "courses"."archivedAt" is not null,
+                                    "courses"."courseState" = 'courseStateActive',
                                     "courseParticipations"."id" desc;
                                 `,
                               )
@@ -681,7 +680,7 @@ export default async (application: Application): Promise<void> => {
                             `}"
                           >
                             <div>
-                              $${application.partials.user({
+                              $${application.partials.userAvatar({
                                 user: request.state.user,
                                 size: 9,
                               })}
@@ -746,7 +745,7 @@ export default async (application: Application): Promise<void> => {
                     });
                   `}"
                 >
-                  $${application.partials.user({
+                  $${application.partials.userAvatar({
                     user: request.state.user,
                   })}
                 </button>

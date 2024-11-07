@@ -1241,7 +1241,7 @@ export default async (application: Application): Promise<void> => {
                           `;
                         })()}
                         <div key="courseConversationMessage--createdBy">
-                          $${application.partials.user({
+                          $${application.partials.userAvatar({
                             user:
                               request.state.courseParticipation!.courseRole !==
                                 "courseStaff" &&
@@ -1250,7 +1250,7 @@ export default async (application: Application): Promise<void> => {
                               Boolean(courseConversationMessage.anonymous)
                                 ? "anonymous"
                                 : (courseConversationMessageCreatedByUser ??
-                                  "formerCourseParticipation"),
+                                  "courseParticipationDeleted"),
                             size: 9,
                           })}
                         </div>
@@ -1551,7 +1551,7 @@ export default async (application: Application): Promise<void> => {
                                                             });
                                                           `}"
                                                         >
-                                                          $${application.partials.user(
+                                                          $${application.partials.userAvatar(
                                                             {
                                                               user: courseConversationMessageCreatedByUser!,
                                                             },
@@ -1988,11 +1988,13 @@ export default async (application: Application): Promise<void> => {
                                                     gap: var(--space--2);
                                                   `}"
                                                 >
-                                                  $${application.partials.user({
-                                                    user:
-                                                      courseConversationMessageViewUser ??
-                                                      "formerCourseParticipation",
-                                                  })}
+                                                  $${application.partials.userAvatar(
+                                                    {
+                                                      user:
+                                                        courseConversationMessageViewUser ??
+                                                        "courseParticipationDeleted",
+                                                    },
+                                                  )}
                                                   <div
                                                     css="${css`
                                                       margin-top: var(
@@ -2193,11 +2195,11 @@ export default async (application: Application): Promise<void> => {
                                                           gap: var(--space--2);
                                                         `}"
                                                       >
-                                                        $${application.partials.user(
+                                                        $${application.partials.userAvatar(
                                                           {
                                                             user:
                                                               courseConversationMessageViewUser ??
-                                                              "formerCourseParticipation",
+                                                              "courseParticipationDeleted",
                                                           },
                                                         )}
                                                         <div
@@ -2622,8 +2624,8 @@ export default async (application: Application): Promise<void> => {
                             `}"
                           >
                             <div key="courseConversation--user">
-                              $${application.partials.user({
-                                user: "formerCourseParticipation",
+                              $${application.partials.userAvatar({
+                                user: "courseParticipationDeleted",
                               })}
                             </div>
                             <div

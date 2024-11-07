@@ -15,15 +15,18 @@ export type ApplicationUsers = {
           publicId: string;
           createdAt: string;
           name: string;
-          nameSearch: string;
           email: string;
+          emailVerificationEmail: string | null;
           emailVerificationNonce: string | null;
           emailVerificationCreatedAt: string | null;
           emailVerified: number;
           password: string | null;
           passwordResetNonce: string | null;
           passwordResetCreatedAt: string | null;
-          color:
+          oneTimePasswordEnabled: number;
+          oneTimePasswordSecret: string | null;
+          oneTimePasswordBackupCodes: string | null;
+          avatarColor:
             | "red"
             | "orange"
             | "amber"
@@ -41,30 +44,70 @@ export type ApplicationUsers = {
             | "fuchsia"
             | "pink"
             | "rose";
-          avatar: string | null;
-          systemRole: "systemAdministrator" | "systemStaff" | "systemUser";
+          avatarImage: string | null;
+          userRole:
+            | "userRoleSystemAdministrator"
+            | "userRoleStaff"
+            | "userRoleUser";
           lastSeenOnlineAt: string;
-          darkMode: "system" | "light" | "dark";
+          darkMode:
+            | "userDarkModeSystem"
+            | "userDarkModeLight"
+            | "userDarkModeDark";
           sidebarWidth: number;
           emailNotificationsForAllMessages: number;
           emailNotificationsForMessagesIncludingMentions: number;
           emailNotificationsForMessagesInConversationsYouStarted: number;
           emailNotificationsForMessagesInConversationsInWhichYouParticipated: number;
-          anonymous: number;
+          userAnonymityPreferred:
+            | "userAnonymityPreferredNone"
+            | "userAnonymityPreferredOtherCourseParticipationRoleStudents"
+            | "userAnonymityPreferredCourseParticipationRoleInstructors";
           mostRecentlyVisitedCourse: number | null;
         };
       };
     };
   };
   partials: {
-    user: ({
+    userAvatar: ({
       user,
+      courseParticipation,
       size,
     }: {
       user:
-        | Application["types"]["states"]["User"]["user"]
-        | "formerCourseParticipation"
+        | {
+            avatarColor:
+              | "red"
+              | "orange"
+              | "amber"
+              | "yellow"
+              | "lime"
+              | "green"
+              | "emerald"
+              | "teal"
+              | "cyan"
+              | "sky"
+              | "blue"
+              | "indigo"
+              | "violet"
+              | "purple"
+              | "fuchsia"
+              | "pink"
+              | "rose";
+            avatarImage: string | null;
+            userRole:
+              | "userRoleSystemAdministrator"
+              | "userRoleStaff"
+              | "userRoleUser";
+            lastSeenOnlineAt: string;
+          }
+        | "courseParticipationDeleted"
         | "anonymous";
+      courseParticipation?: {
+        courseParticipationRole:
+          | "courseParticipationRoleInstructor"
+          | "courseParticipationRoleStudent";
+      };
       size?: 6 | 9;
     }) => HTML;
   };
@@ -82,20 +125,24 @@ export default async (application: Application): Promise<void> => {
       >,
       response,
     ) => {
+      // TODO
       request.state.user = application.database.get<{
         id: number;
         publicId: string;
         createdAt: string;
         name: string;
-        nameSearch: string;
         email: string;
+        emailVerificationEmail: string | null;
         emailVerificationNonce: string | null;
         emailVerificationCreatedAt: string | null;
         emailVerified: number;
         password: string | null;
         passwordResetNonce: string | null;
         passwordResetCreatedAt: string | null;
-        color:
+        oneTimePasswordEnabled: number;
+        oneTimePasswordSecret: string | null;
+        oneTimePasswordBackupCodes: string | null;
+        avatarColor:
           | "red"
           | "orange"
           | "amber"
@@ -113,16 +160,25 @@ export default async (application: Application): Promise<void> => {
           | "fuchsia"
           | "pink"
           | "rose";
-        avatar: string | null;
-        systemRole: "systemAdministrator" | "systemStaff" | "systemUser";
+        avatarImage: string | null;
+        userRole:
+          | "userRoleSystemAdministrator"
+          | "userRoleStaff"
+          | "userRoleUser";
         lastSeenOnlineAt: string;
-        darkMode: "system" | "light" | "dark";
+        darkMode:
+          | "userDarkModeSystem"
+          | "userDarkModeLight"
+          | "userDarkModeDark";
         sidebarWidth: number;
         emailNotificationsForAllMessages: number;
         emailNotificationsForMessagesIncludingMentions: number;
         emailNotificationsForMessagesInConversationsYouStarted: number;
         emailNotificationsForMessagesInConversationsInWhichYouParticipated: number;
-        anonymous: number;
+        userAnonymityPreferred:
+          | "userAnonymityPreferredNone"
+          | "userAnonymityPreferredOtherCourseParticipationRoleStudents"
+          | "userAnonymityPreferredCourseParticipationRoleInstructors";
         mostRecentlyVisitedCourse: number | null;
       }>(
         sql`
@@ -131,17 +187,20 @@ export default async (application: Application): Promise<void> => {
             "publicId",
             "createdAt",
             "name",
-            "nameSearch",
             "email",
+            "emailVerificationEmail",
             "emailVerificationNonce",
             "emailVerificationCreatedAt",
             "emailVerified",
             "password",
             "passwordResetNonce",
             "passwordResetCreatedAt",
-            "color",
-            "avatar",
-            "systemRole",
+            "oneTimePasswordEnabled",
+            "oneTimePasswordSecret",
+            "oneTimePasswordBackupCodes",
+            "avatarColor",
+            "avatarImage",
+            "userRole",
             "lastSeenOnlineAt",
             "darkMode",
             "sidebarWidth",
@@ -149,17 +208,16 @@ export default async (application: Application): Promise<void> => {
             "emailNotificationsForMessagesIncludingMentions",
             "emailNotificationsForMessagesInConversationsYouStarted",
             "emailNotificationsForMessagesInConversationsInWhichYouParticipated",
-            "anonymous",
+            "userAnonymityPreferred",
             "mostRecentlyVisitedCourse"
           from "users"
-          where
-            "id" = ${1} and
-            "emailVerified" = ${Number(true)};
+          where "id" = ${1};
         `,
       );
     },
   });
 
+  // TODO
   application.server?.push({
     method: "GET",
     pathname: "/",
@@ -173,7 +231,11 @@ export default async (application: Application): Promise<void> => {
       >,
       response,
     ) => {
-      if (request.state.user === undefined) return;
+      if (
+        request.state.user === undefined ||
+        !Boolean(request.state.user.emailVerified)
+      )
+        return;
       const course = application.database.get<{
         publicId: number;
       }>(
@@ -214,7 +276,11 @@ export default async (application: Application): Promise<void> => {
       >,
       response,
     ) => {
-      if (request.state.user === undefined) return;
+      if (
+        request.state.user === undefined ||
+        !Boolean(request.state.user.emailVerified)
+      )
+        return;
       if (typeof request.body.sidebarWidth === "string")
         if (
           request.body.sidebarWidth.match(/^[0-9]+$/) === null ||
@@ -234,7 +300,11 @@ export default async (application: Application): Promise<void> => {
     },
   });
 
-  application.partials.user = ({ user, size = 6 }) =>
+  application.partials.userAvatar = ({
+    user,
+    courseParticipation = undefined,
+    size = 6,
+  }) =>
     typeof user === "object" && typeof user.avatar === "string"
       ? html`
           <img
@@ -270,7 +340,7 @@ export default async (application: Application): Promise<void> => {
             style="
               --color--light: var(--color--${typeof user === "object"
               ? user.color
-              : user === "formerCourseParticipation"
+              : user === "courseParticipationDeleted"
                 ? "red"
                 : user === "anonymous"
                   ? "blue"
@@ -279,7 +349,7 @@ export default async (application: Application): Promise<void> => {
                     })()}--800);
               --color--dark: var(--color--${typeof user === "object"
               ? user.color
-              : user === "formerCourseParticipation"
+              : user === "courseParticipationDeleted"
                 ? "red"
                 : user === "anonymous"
                   ? "blue"
@@ -288,7 +358,7 @@ export default async (application: Application): Promise<void> => {
                     })()}--200);
               --background-color--light: var(--color--${typeof user === "object"
               ? user.color
-              : user === "formerCourseParticipation"
+              : user === "courseParticipationDeleted"
                 ? "red"
                 : user === "anonymous"
                   ? "blue"
@@ -297,7 +367,7 @@ export default async (application: Application): Promise<void> => {
                     })()}--200);
               --background-color--dark: var(--color--${typeof user === "object"
               ? user.color
-              : user === "formerCourseParticipation"
+              : user === "courseParticipationDeleted"
                 ? "red"
                 : user === "anonymous"
                   ? "blue"
@@ -306,7 +376,7 @@ export default async (application: Application): Promise<void> => {
                     })()}--800);
               --border-color--light: var(--color--${typeof user === "object"
               ? user.color
-              : user === "formerCourseParticipation"
+              : user === "courseParticipationDeleted"
                 ? "red"
                 : user === "anonymous"
                   ? "blue"
@@ -315,7 +385,7 @@ export default async (application: Application): Promise<void> => {
                     })()}--300);
               --border-color--dark: var(--color--${typeof user === "object"
               ? user.color
-              : user === "formerCourseParticipation"
+              : user === "courseParticipationDeleted"
                 ? "red"
                 : user === "anonymous"
                   ? "blue"
@@ -380,7 +450,7 @@ export default async (application: Application): Promise<void> => {
                   ? user.name.trim()[0]
                   : nameParts.at(0)![0] + nameParts.at(-1)![0]}`;
               }
-              if (user === "formerCourseParticipation")
+              if (user === "courseParticipationDeleted")
                 return html`<i class="bi bi-person-fill"></i>`;
               if (user === "anonymous")
                 return html`<i class="bi bi-emoji-sunglasses"></i>`;
