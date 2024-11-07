@@ -2877,7 +2877,7 @@ export default async (application: Application): Promise<void> => {
             information: `${String(
               new Date(Date.now() - 365 * 24 * 60 * 60 * 1000).getFullYear(),
             )} / Spring / EN.601.426/626`,
-            courseState: "courseArchived",
+            courseState: "courseStateArchived",
             courseParticipationRole: "courseParticipationRoleInstructor",
           },
           {
@@ -2931,7 +2931,7 @@ export default async (application: Application): Promise<void> => {
                       ${Number(Math.random() < 0.8)},
                       ${Number(Math.random() < 0.8)},
                       ${Number(Math.random() < 0.8)},
-                      ${courseData.courseState ?? "courseActive"},
+                      ${courseData.courseState ?? "courseStateActive"},
                       ${courseData.courseConversationsNextPublicId ?? 4}
                     );
                   `,
@@ -3112,9 +3112,9 @@ export default async (application: Application): Promise<void> => {
                       values (
                         ${String(courseConversationPublicId)},
                         ${course.id},
-                        ${Math.random() < 0.3 ? "courseConversationNote" : "courseConversationQuestion"},
+                        ${Math.random() < 0.3 ? "courseConversationTypeNote" : "courseConversationTypeQuestion"},
                         ${Number(Math.random() < 0.5)},
-                        ${courseConversationPublicId === 1 || Math.random() < 0.3 ? "everyone" : Math.random() < 0.8 ? "courseParticipationRoleInstructors" : "courseConversationParticipations"},
+                        ${courseConversationPublicId === 1 || Math.random() < 0.3 ? "courseConversationParticipationsEveryone" : Math.random() < 0.8 ? "courseConversationParticipationsCourseParticipationRoleInstructors" : "courseConversationParticipationsCourseConversationParticipations"},
                         ${Number(courseConversationPublicId !== 1 && Math.random() < 0.1)},
                         ${courseConversationTitle},
                         ${utilities
@@ -3222,12 +3222,12 @@ export default async (application: Application): Promise<void> => {
                           ${
                             courseConversationMessageIndex === 1 ||
                             Math.random() < 0.6
-                              ? "courseConversationMessageMessage"
+                              ? "courseConversationMessageTypeMessage"
                               : Math.random() < 0.5
-                                ? "courseConversationMessageAnswer"
+                                ? "courseConversationMessageTypeAnswer"
                                 : Math.random() < 0.5
-                                  ? "courseConversationMessageFollowUpQuestion"
-                                  : "courseConversationMessageCourseParticipationRoleInstructorWhisper"
+                                  ? "courseConversationMessageTypeFollowUpQuestion"
+                                  : "courseConversationMessageTypeCourseParticipationRoleInstructorWhisper"
                           },
                           ${Math.random() < 0.5 ? "courseConversationMessageAnonymityNone" : Math.random() < 0.9 ? "courseConversationMessageAnonymityOtherCourseParticipationRoleStudents" : "courseConversationMessageAnonymityCourseParticipationRoleInstructors"},
                           ${courseConversationMessageContent},
@@ -3298,7 +3298,7 @@ export default async (application: Application): Promise<void> => {
                             ${course.id},
                             ${courseParticipation.id},
                             ${Number(courseConversationMessagePollMultipleChoices)},
-                            ${Math.random() < 0.5 ? "closed" : "open"}
+                            ${Math.random() < 0.5 ? "courseConversationMessagePollStateClosed" : "courseConversationMessagePollStateOpen"}
                           );
                         `,
                       ).lastInsertRowid
