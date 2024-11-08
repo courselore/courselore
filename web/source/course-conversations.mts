@@ -320,18 +320,20 @@ export default async (application: Application): Promise<void> => {
                                     const courses = application.database.all<{
                                       publicId: string;
                                       name: string;
+                                      information: string | null;
                                     }>(
                                       sql`
                                         select
                                           "courses"."publicId" as "publicId",
-                                          "courses"."name" as "name"
+                                          "courses"."name" as "name",
+                                          "courses"."information" as "information"
                                         from "courses"
                                         join "courseParticipations" on
                                           "courses"."id" = "courseParticipations"."course" and
                                           "courseParticipations"."user" = ${request.state.user.id}
                                         where
                                           "courses"."id" != ${request.state.course.id} and
-                                          "courses"."archivedAt" is null
+                                          "courses"."courseState" = 'courseStateActive'
                                         order by "courseParticipations"."id" desc;
                                       `,
                                     );
@@ -372,6 +374,16 @@ export default async (application: Application): Promise<void> => {
                                                           class="button button--rectangle button--transparent button--dropdown-menu"
                                                         >
                                                           ${course.name}
+                                                          $${typeof course.information ===
+                                                          "string"
+                                                            ? html`
+                                                                <span
+                                                                  class="text--secondary"
+                                                                >
+                                                                  (${course.information})
+                                                                </span>
+                                                              `
+                                                            : html``}
                                                         </a>
                                                       `,
                                                     )}
@@ -499,13 +511,13 @@ export default async (application: Application): Promise<void> => {
                                           <input
                                             type="hidden"
                                             name="courseConversationType"
-                                            value="courseConversationNote"
+                                            value="courseConversationTypeNote"
                                           />
                                           <button
                                             class="button button--rectangle button--transparent $${request
                                               .state.courseConversation
                                               .courseConversationType ===
-                                            "courseConversationNote"
+                                            "courseConversationTypeNote"
                                               ? "button--blue"
                                               : ""} button--dropdown-menu"
                                           >
@@ -522,13 +534,13 @@ export default async (application: Application): Promise<void> => {
                                           <input
                                             type="hidden"
                                             name="courseConversationType"
-                                            value="courseConversationQuestion"
+                                            value="courseConversationTypeQuestion"
                                           />
                                           <button
                                             class="button button--rectangle button--transparent $${request
                                               .state.courseConversation
                                               .courseConversationType ===
-                                            "courseConversationQuestion"
+                                            "courseConversationTypeQuestion"
                                               ? "button--blue"
                                               : ""} button--dropdown-menu"
                                           >
@@ -542,11 +554,11 @@ export default async (application: Application): Promise<void> => {
                               >
                                 ${request.state.courseConversation
                                   .courseConversationType ===
-                                "courseConversationNote"
+                                "courseConversationTypeNote"
                                   ? "Note"
                                   : request.state.courseConversation
                                         .courseConversationType ===
-                                      "courseConversationQuestion"
+                                      "courseConversationTypeQuestion"
                                     ? "Question"
                                     : (() => {
                                         throw new Error();
@@ -557,11 +569,11 @@ export default async (application: Application): Promise<void> => {
                               <div>
                                 ${request.state.courseConversation
                                   .courseConversationType ===
-                                "courseConversationNote"
+                                "courseConversationTypeNote"
                                   ? "Note"
                                   : request.state.courseConversation
                                         .courseConversationType ===
-                                      "courseConversationQuestion"
+                                      "courseConversationTypeQuestion"
                                     ? "Question"
                                     : (() => {
                                         throw new Error();
@@ -570,7 +582,7 @@ export default async (application: Application): Promise<void> => {
                             `}
                         $${request.state.courseConversation
                           .courseConversationType ===
-                        "courseConversationQuestion"
+                        "courseConversationTypeQuestion"
                           ? mayEditCourseConversation &&
                             request.state.courseParticipation
                               .courseParticipationRole ===
@@ -654,9 +666,9 @@ export default async (application: Application): Promise<void> => {
                                   ${Boolean(
                                     request.state.courseConversation
                                       .questionResolved,
-                                  )
-                                    ? "Resolved"
-                                    : "Unresolved"} <i
+                                  ) === false
+                                    ? "Unresolved"
+                                    : "Resolved"} <i
                                     class="bi bi-chevron-down"
                                   ></i>
                                 </button>
@@ -673,9 +685,9 @@ export default async (application: Application): Promise<void> => {
                                   ${Boolean(
                                     request.state.courseConversation
                                       .questionResolved,
-                                  )
-                                    ? "Resolved"
-                                    : "Unresolved"}
+                                  ) === false
+                                    ? "Unresolved"
+                                    : "Resolved"}
                                 </div>
                               `
                           : html``}
@@ -684,109 +696,105 @@ export default async (application: Application): Promise<void> => {
                               <button
                                 class="button button--rectangle button--transparent"
                                 javascript="${javascript`
-                                    javascript.tippy({
-                                      event,
-                                      element: this,
-                                      placement: "bottom-start",
-                                      interactive: true,
-                                      trigger: "click",
-                                      content: ${html`
-                                        <div
-                                          css="${css`
-                                            display: flex;
-                                            flex-direction: column;
-                                            gap: var(--space--2);
-                                          `}"
+                                  javascript.tippy({
+                                    event,
+                                    element: this,
+                                    placement: "bottom-start",
+                                    interactive: true,
+                                    trigger: "click",
+                                    content: ${html`
+                                      <div
+                                        css="${css`
+                                          display: flex;
+                                          flex-direction: column;
+                                          gap: var(--space--2);
+                                        `}"
+                                      >
+                                        <form
+                                          method="PATCH"
+                                          action="/courses/${request.state
+                                            .course
+                                            .publicId}/conversations/${request
+                                            .state.courseConversation.publicId}"
                                         >
-                                          <form
-                                            method="PATCH"
-                                            action="/courses/${request.state
-                                              .course
-                                              .publicId}/conversations/${request
+                                          <input
+                                            type="hidden"
+                                            name="courseConversationParticipations"
+                                            value="courseConversationParticipationsEveryone"
+                                          />
+                                          <button
+                                            class="button button--rectangle button--transparent $${request
                                               .state.courseConversation
-                                              .publicId}"
+                                              .courseConversationParticipations ===
+                                            "courseConversationParticipationsEveryone"
+                                              ? "button--blue"
+                                              : ""} button--dropdown-menu"
                                           >
-                                            <input
-                                              type="hidden"
-                                              name="courseConversationParticipations"
-                                              value="everyone"
-                                            />
-                                            <button
-                                              class="button button--rectangle button--transparent $${request
-                                                .state.courseConversation
-                                                .courseConversationParticipations ===
-                                              "everyone"
-                                                ? "button--blue"
-                                                : ""} button--dropdown-menu"
-                                            >
-                                              Everyone
-                                            </button>
-                                          </form>
-                                          <form
-                                            method="PATCH"
-                                            action="/courses/${request.state
-                                              .course
-                                              .publicId}/conversations/${request
+                                            Everyone
+                                          </button>
+                                        </form>
+                                        <form
+                                          method="PATCH"
+                                          action="/courses/${request.state
+                                            .course
+                                            .publicId}/conversations/${request
+                                            .state.courseConversation.publicId}"
+                                        >
+                                          <input
+                                            type="hidden"
+                                            name="courseConversationParticipations"
+                                            value="courseConversationParticipationsCourseParticipationRoleInstructors"
+                                          />
+                                          <button
+                                            class="button button--rectangle button--transparent $${request
                                               .state.courseConversation
-                                              .publicId}"
+                                              .courseConversationParticipations ===
+                                            "courseConversationParticipationsCourseParticipationRoleInstructors"
+                                              ? "button--blue"
+                                              : ""} button--dropdown-menu"
                                           >
-                                            <input
-                                              type="hidden"
-                                              name="courseConversationParticipations"
-                                              value="courseStaff"
-                                            />
-                                            <button
-                                              class="button button--rectangle button--transparent $${request
-                                                .state.courseConversation
-                                                .courseConversationParticipations ===
-                                              "courseStaff"
-                                                ? "button--blue"
-                                                : ""} button--dropdown-menu"
-                                            >
-                                              Course staff and selected course
-                                              participants
-                                            </button>
-                                          </form>
-                                          <form
-                                            method="PATCH"
-                                            action="/courses/${request.state
-                                              .course
-                                              .publicId}/conversations/${request
+                                            Instructors and selected students
+                                          </button>
+                                        </form>
+                                        <form
+                                          method="PATCH"
+                                          action="/courses/${request.state
+                                            .course
+                                            .publicId}/conversations/${request
+                                            .state.courseConversation.publicId}"
+                                        >
+                                          <input
+                                            type="hidden"
+                                            name="courseConversationParticipations"
+                                            value="courseConversationParticipationsCourseConversationParticipations"
+                                          />
+                                          <button
+                                            class="button button--rectangle button--transparent $${request
                                               .state.courseConversation
-                                              .publicId}"
+                                              .courseConversationParticipations ===
+                                            "courseConversationParticipationsCourseConversationParticipations"
+                                              ? "button--blue"
+                                              : ""} button--dropdown-menu"
                                           >
-                                            <input
-                                              type="hidden"
-                                              name="courseConversationParticipations"
-                                              value="courseConversationParticipations"
-                                            />
-                                            <button
-                                              class="button button--rectangle button--transparent $${request
-                                                .state.courseConversation
-                                                .courseConversationParticipations ===
-                                              "courseConversationParticipations"
-                                                ? "button--blue"
-                                                : ""} button--dropdown-menu"
-                                            >
-                                              Selected course participants
-                                            </button>
-                                          </form>
-                                        </div>
-                                      `},
-                                    });
-                                  `}"
+                                            Selected course participants
+                                          </button>
+                                        </form>
+                                      </div>
+                                    `},
+                                  });
+                                `}"
                               >
                                 ${request.state.courseConversation
                                   .courseConversationParticipations ===
-                                "everyone"
+                                "courseConversationParticipationsEveryone"
                                   ? "Everyone"
                                   : request.state.courseConversation
                                         .courseConversationParticipations ===
-                                      "courseStaff"
-                                    ? "Course staff and selected course participants"
+                                      "courseConversationParticipationsCourseParticipationRoleInstructors"
+                                    ? "Instructors and selected students"
                                     : request.state.courseConversation
                                           .courseConversationParticipations ===
-                                        "courseConversationParticipations"
+                                        "courseConversationParticipationsCourseConversationParticipations"
                                       ? "Selected course participants"
                                       : (() => {
                                           throw new Error();
@@ -797,15 +805,15 @@ export default async (application: Application): Promise<void> => {
                               <div>
                                 ${request.state.courseConversation
                                   .courseConversationParticipations ===
-                                "everyone"
+                                "courseConversationParticipationsEveryone"
                                   ? "Everyone"
                                   : request.state.courseConversation
                                         .courseConversationParticipations ===
-                                      "courseStaff"
-                                    ? "Course staff and selected course participants"
+                                      "courseConversationParticipationsCourseParticipationRoleInstructors"
+                                    ? "Instructors and selected students"
                                     : request.state.courseConversation
                                           .courseConversationParticipations ===
-                                        "courseConversationParticipations"
+                                        "courseConversationParticipationsCourseConversationParticipations"
                                       ? "Selected course participants"
                                       : (() => {
                                           throw new Error();
@@ -887,11 +895,9 @@ export default async (application: Application): Promise<void> => {
                               >
                                 ${Boolean(
                                   request.state.courseConversation.pinned,
-                                )
-                                  ? "Pinned"
-                                  : "Unpinned"} <i
-                                  class="bi bi-chevron-down"
-                                ></i>
+                                ) === false
+                                  ? "Unpinned"
+                                  : "Pinned"} <i class="bi bi-chevron-down"></i>
                               </button>
                             `
                           : Boolean(request.state.courseConversation.pinned)
@@ -1032,7 +1038,7 @@ export default async (application: Application): Promise<void> => {
                   this.courseConversationMessageViewsIntersectionObserver = new IntersectionObserver((entries) => {
                     for (const entry of entries) {
                       if (entry.intersectionRatio !== 1) continue;
-                      conversationMessageIds.add(entry.target.courseConversationMessageId);
+                      courseConversationMessagePublicIds.add(entry.target.courseConversationMessagePublicId);
                       this.courseConversationMessageViewsIntersectionObserver.unobserve(entry.target);
                       setTimeout(() => {
                         entry.target.querySelector('[key="courseConversationMessageView"]').classList.add("viewed");
@@ -1044,9 +1050,9 @@ export default async (application: Application): Promise<void> => {
                     threshold: 1,
                   });
                   const updateCourseConversationMessageViews = utilities.foregroundJob(async () => {
-                    if (conversationMessageIds.size === 0) return;
-                    const body = new URLSearchParams([...conversationMessageIds].map(courseConversationMessageId => ["courseConversationMessageIds[]", courseConversationMessageId]));
-                    conversationMessageIds.clear();
+                    if (courseConversationMessagePublicIds.size === 0) return;
+                    const body = new URLSearchParams([...courseConversationMessagePublicIds].map(courseConversationMessagePublicId => ["courseCourseConversationMessagePublicIds[]", courseConversationMessagePublicId]));
+                    courseConversationMessagePublicIds.clear();
                     await fetch(${`/courses/${
                       request.state.course!.publicId
                     }/conversations/${
@@ -1057,7 +1063,7 @@ export default async (application: Application): Promise<void> => {
                       body,
                     });
                   });
-                  const conversationMessageIds = new Set();
+                  const courseConversationMessagePublicIds = new Set();
                 `}"
               >
                 $${application.database
@@ -1068,14 +1074,15 @@ export default async (application: Application): Promise<void> => {
                     updatedAt: string | null;
                     createdByCourseParticipation: number | null;
                     courseConversationMessageType:
-                      | "courseConversationMessageMessage"
-                      | "courseConversationMessageAnswer"
-                      | "courseConversationMessageFollowUpQuestion"
-                      | "courseConversationMessageCourseStaffWhisper";
-                    anonymous: number;
-                    contentSource: string;
-                    contentPreprocessed: string;
-                    contentSearch: string;
+                      | "courseConversationMessageTypeMessage"
+                      | "courseConversationMessageTypeAnswer"
+                      | "courseConversationMessageTypeFollowUpQuestion"
+                      | "courseConversationMessageTypeCourseParticipationRoleInstructorWhisper";
+                    courseConversationMessageAnonymity:
+                      | "courseConversationMessageAnonymityNone"
+                      | "courseConversationMessageAnonymityOtherCourseParticipationRoleStudents"
+                      | "courseConversationMessageAnonymityCourseParticipationRoleInstructors";
+                    content: string;
                   }>(
                     sql`
                       select
@@ -1085,10 +1092,8 @@ export default async (application: Application): Promise<void> => {
                         "updatedAt",
                         "createdByCourseParticipation",
                         "courseConversationMessageType",
-                        "anonymous",
-                        "contentSource",
-                        "contentPreprocessed",
-                        "contentSearch"
+                        "courseConversationMessageAnonymity",
+                        "content"
                       from "courseConversationMessages"
                       where
                         "courseConversation" = ${request.state.courseConversation.id} $${
@@ -1097,7 +1102,7 @@ export default async (application: Application): Promise<void> => {
                           "courseParticipationRoleInstructor"
                             ? sql`
                                 and
-                                "courseConversationMessageType" != 'courseConversationMessageCourseStaffWhisper'
+                                "courseConversationMessageType" != 'courseConversationMessageTypeCourseParticipationRoleInstructorWhisper'
                               `
                             : sql``
                         }
@@ -1106,7 +1111,8 @@ export default async (application: Application): Promise<void> => {
                   )
                   .map((courseConversationMessage) => {
                     const mayEditCourseConversationMessage =
-                      request.state.course!.archivedAt === null &&
+                      request.state.course!.courseState ===
+                        "courseStateActive" &&
                       (request.state.courseParticipation!
                         .courseParticipationRole ===
                         "courseParticipationRoleInstructor" ||
@@ -1117,12 +1123,14 @@ export default async (application: Application): Promise<void> => {
                       "number"
                         ? application.database.get<{
                             user: number;
-                            courseRole: "courseStaff" | "courseStudent";
+                            courseParticipationRole:
+                              | "courseParticipationRoleInstructor"
+                              | "courseParticipationRoleStudent";
                           }>(
                             sql`
                               select
                                 "user",
-                                "courseRole"
+                                "courseParticipationRole"
                               from "courseParticipations"
                               where "id" = ${courseConversationMessage.createdByCourseParticipation};
                             `,
@@ -1132,19 +1140,9 @@ export default async (application: Application): Promise<void> => {
                       courseConversationMessageCreatedByCourseParticipation !==
                       undefined
                         ? application.database.get<{
-                            id: number;
                             publicId: string;
-                            createdAt: string;
                             name: string;
-                            nameSearch: string;
-                            email: string;
-                            emailVerificationNonce: string | null;
-                            emailVerificationCreatedAt: string | null;
-                            emailVerified: number;
-                            password: string | null;
-                            passwordResetNonce: string | null;
-                            passwordResetCreatedAt: string | null;
-                            color:
+                            avatarColor:
                               | "red"
                               | "orange"
                               | "amber"
@@ -1162,47 +1160,21 @@ export default async (application: Application): Promise<void> => {
                               | "fuchsia"
                               | "pink"
                               | "rose";
-                            avatar: string | null;
-                            systemRole:
-                              | "systemAdministrator"
-                              | "systemStaff"
-                              | "systemUser";
+                            avatarImage: string | null;
+                            userRole:
+                              | "userRoleSystemAdministrator"
+                              | "userRoleStaff"
+                              | "userRoleUser";
                             lastSeenOnlineAt: string;
-                            darkMode: "system" | "light" | "dark";
-                            sidebarWidth: number;
-                            emailNotificationsForAllMessages: number;
-                            emailNotificationsForMessagesIncludingMentions: number;
-                            emailNotificationsForMessagesInConversationsYouStarted: number;
-                            emailNotificationsForMessagesInConversationsInWhichYouParticipated: number;
-                            anonymous: number;
-                            mostRecentlyVisitedCourse: number | null;
                           }>(
                             sql`
                               select
-                                "id",
                                 "publicId",
-                                "createdAt",
                                 "name",
-                                "nameSearch",
-                                "email",
-                                "emailVerificationNonce",
-                                "emailVerificationCreatedAt",
-                                "emailVerified",
-                                "password",
-                                "passwordResetNonce",
-                                "passwordResetCreatedAt",
-                                "color",
-                                "avatar",
-                                "systemRole",
-                                "lastSeenOnlineAt",
-                                "darkMode",
-                                "sidebarWidth",
-                                "emailNotificationsForAllMessages",
-                                "emailNotificationsForMessagesIncludingMentions",
-                                "emailNotificationsForMessagesInConversationsYouStarted",
-                                "emailNotificationsForMessagesInConversationsInWhichYouParticipated",
-                                "anonymous",
-                                "mostRecentlyVisitedCourse"
+                                "avatarColor",
+                                "avatarImage",
+                                "userRole",
+                                "lastSeenOnlineAt"
                               from "users"
                               where "id" = ${courseConversationMessageCreatedByCourseParticipation.user};
                             `,
@@ -1242,7 +1214,7 @@ export default async (application: Application): Promise<void> => {
                               javascript="${javascript`
                                 if (${!courseConversationMessageView}) {
                                   this.closest('[key="courseConversationMessages"]').courseConversationMessageViewsIntersectionObserver.observe(this);
-                                  this.courseConversationMessageId = ${courseConversationMessage.publicId};
+                                  this.courseConversationMessagePublicId = ${courseConversationMessage.publicId};
                                 }
                               `}"
                             >
@@ -1255,15 +1227,20 @@ export default async (application: Application): Promise<void> => {
                         <div key="courseConversationMessage--createdBy">
                           $${application.partials.userAvatar({
                             user:
-                              request.state.courseParticipation!
-                                .courseParticipationRole !==
-                                "courseParticipationRoleInstructor" &&
-                              request.state.courseParticipation!.id !==
-                                courseConversationMessage.createdByCourseParticipation &&
-                              Boolean(courseConversationMessage.anonymous)
+                              courseConversationMessage.courseConversationMessageAnonymity ===
+                                "courseConversationMessageAnonymityCourseParticipationRoleInstructors" ||
+                              (courseConversationMessage.courseConversationMessageAnonymity ===
+                                "courseConversationMessageAnonymityOtherCourseParticipationRoleStudents" &&
+                                request.state.courseParticipation!
+                                  .courseParticipationRole ===
+                                  "courseParticipationRoleStudent" &&
+                                request.state.courseParticipation!.id !==
+                                  courseConversationMessage.createdByCourseParticipation)
                                 ? "anonymous"
                                 : (courseConversationMessageCreatedByUser ??
                                   "courseParticipationDeleted"),
+                            courseParticipation:
+                              courseConversationMessageCreatedByCourseParticipation,
                             size: 9,
                           })}
                         </div>
@@ -1294,29 +1271,32 @@ export default async (application: Application): Promise<void> => {
                                 css="${css`
                                   font-weight: 700;
                                 `}"
-                                >${request.state.courseParticipation!
-                                  .courseParticipationRole !==
-                                  "courseParticipationRoleInstructor" &&
-                                request.state.courseParticipation!.id !==
-                                  courseConversationMessage.createdByCourseParticipation &&
-                                Boolean(courseConversationMessage.anonymous)
+                                >${courseConversationMessage.courseConversationMessageAnonymity ===
+                                  "courseConversationMessageAnonymityCourseParticipationRoleInstructors" ||
+                                (courseConversationMessage.courseConversationMessageAnonymity ===
+                                  "courseConversationMessageAnonymityOtherCourseParticipationRoleStudents" &&
+                                  request.state.courseParticipation!
+                                    .courseParticipationRole ===
+                                    "courseParticipationRoleStudent" &&
+                                  request.state.courseParticipation!.id !==
+                                    courseConversationMessage.createdByCourseParticipation)
                                   ? "Anonymous"
                                   : (courseConversationMessageCreatedByUser?.name ??
-                                    "Former course participant")}</span
+                                    "Deleted course participant")}</span
                               ><span
                                 css="${css`
                                   font-weight: 400;
                                 `}"
-                                >$${courseConversationMessageCreatedByCourseParticipation?.courseRole ===
-                                "courseStaff"
+                                >$${courseConversationMessageCreatedByCourseParticipation?.courseParticipationRole ===
+                                "courseParticipationRoleInstructor"
                                   ? html` (course staff)`
-                                  : html``}$${(request.state
-                                  .courseParticipation!
+                                  : html``}$${courseConversationMessage.courseConversationMessageAnonymity ===
+                                  "courseConversationMessageAnonymityOtherCourseParticipationRoleStudents" &&
+                                (request.state.courseParticipation!
                                   .courseParticipationRole ===
                                   "courseParticipationRoleInstructor" ||
                                   request.state.courseParticipation!.id ===
-                                    courseConversationMessage.createdByCourseParticipation) &&
-                                Boolean(courseConversationMessage.anonymous)
+                                    courseConversationMessage.createdByCourseParticipation)
                                   ? html` (anonymous to other students)`
                                   : html``} ·
                                 <time
@@ -1336,10 +1316,10 @@ export default async (application: Application): Promise<void> => {
                                       ></time
                                       >)`
                                   : html``}$${courseConversationMessage.courseConversationMessageType ===
-                                "courseConversationMessageMessage"
+                                "courseConversationMessageTypeMessage"
                                   ? html``
                                   : courseConversationMessage.courseConversationMessageType ===
-                                      "courseConversationMessageAnswer"
+                                      "courseConversationMessageTypeAnswer"
                                     ? html`<span
                                         > ·
                                         <span class="text--green"
@@ -1348,24 +1328,24 @@ export default async (application: Application): Promise<void> => {
                                               font-weight: 700;
                                             `}"
                                             >Answer</span
-                                          >$${courseConversationMessageCreatedByCourseParticipation?.courseRole ===
-                                            "courseStudent" &&
+                                          >$${courseConversationMessageCreatedByCourseParticipation?.courseParticipationRole ===
+                                            "courseParticipationRoleStudent" &&
                                           application.database.get(
                                             sql`
                                               select true
                                               from "courseConversationMessageLikes"
                                               join "courseParticipations" on
                                                 "courseConversationMessageLikes"."courseParticipation" = "courseParticipations"."id" and
-                                                "courseParticipations"."courseRole" = 'courseStaff'
+                                                "courseParticipations"."courseParticipationRole" = 'courseParticipationRoleInstructor'
                                               where "courseConversationMessageLikes"."courseConversationMessage" = ${courseConversationMessage.id};
                                             `,
                                           ) !== undefined
-                                            ? html` (liked by course staff)`
+                                            ? html` (liked by instructor)`
                                             : html``}</span
                                         ></span
                                       >`
                                     : courseConversationMessage.courseConversationMessageType ===
-                                        "courseConversationMessageFollowUpQuestion"
+                                        "courseConversationMessageTypeFollowUpQuestion"
                                       ? html`<span
                                           > ·
                                           <span
@@ -1377,7 +1357,7 @@ export default async (application: Application): Promise<void> => {
                                           ></span
                                         >`
                                       : courseConversationMessage.courseConversationMessageType ===
-                                          "courseConversationMessageCourseStaffWhisper"
+                                          "courseConversationMessageTypeCourseParticipationRoleInstructorWhisper"
                                         ? html`<span
                                             > ·
                                             <span class="text--blue"
@@ -1385,7 +1365,7 @@ export default async (application: Application): Promise<void> => {
                                                 css="${css`
                                                   font-weight: 700;
                                                 `}"
-                                                >Course staff whisper</span
+                                                >Instructor whisper</span
                                               >
                                               (hidden from students)</span
                                             ></span
@@ -1470,8 +1450,8 @@ export default async (application: Application): Promise<void> => {
                                             `
                                           : html``}
                                         $${mayEditCourseConversationMessage &&
-                                        courseConversationMessageCreatedByCourseParticipation?.courseRole ===
-                                          "courseStudent"
+                                        courseConversationMessageCreatedByCourseParticipation?.courseParticipationRole ===
+                                          "courseParticipationRoleStudent"
                                           ? html`
                                               <button
                                                 class="button button--rectangle button--transparent button--dropdown-menu"
@@ -1482,133 +1462,7 @@ export default async (application: Application): Promise<void> => {
                                                     placement: "bottom-end",
                                                     interactive: true,
                                                     trigger: "click",
-                                                    content: ${html`
-                                                      <div
-                                                        css="${css`
-                                                          display: flex;
-                                                          flex-direction: column;
-                                                          gap: var(--space--2);
-                                                        `}"
-                                                      >
-                                                        <button
-                                                          class="button button--rectangle button--transparent $${Boolean(
-                                                            courseConversationMessage.anonymous,
-                                                          ) === false
-                                                            ? "button--blue"
-                                                            : ""} button--dropdown-menu"
-                                                          css="${css`
-                                                            display: flex;
-                                                            gap: var(
-                                                              --space--2
-                                                            );
-                                                          `}"
-                                                          javascript="${javascript`
-                                                            javascript.tippy({
-                                                              event,
-                                                              element: this,
-                                                              theme: "red",
-                                                              placement: "bottom-end",
-                                                              interactive: true,
-                                                              trigger: "click",
-                                                              content: ${html`
-                                                                <form
-                                                                  method="PATCH"
-                                                                  action="/courses/${request
-                                                                    .state
-                                                                    .course!
-                                                                    .publicId}/conversations/${request
-                                                                    .state
-                                                                    .courseConversation!
-                                                                    .publicId}/messages/${courseConversationMessage.publicId}"
-                                                                  css="${css`
-                                                                    display: flex;
-                                                                    flex-direction: column;
-                                                                    gap: var(
-                                                                      --space--2
-                                                                    );
-                                                                  `}"
-                                                                >
-                                                                  <input
-                                                                    type="hidden"
-                                                                    name="anonymous"
-                                                                    value="false"
-                                                                  />
-                                                                  <div>
-                                                                    <i
-                                                                      class="bi bi-exclamation-triangle-fill"
-                                                                    ></i
-                                                                    > The author
-                                                                    of this
-                                                                    message will
-                                                                    become
-                                                                    visible to
-                                                                    other
-                                                                    students.
-                                                                  </div>
-                                                                  <div>
-                                                                    <button
-                                                                      class="button button--rectangle button--red"
-                                                                      css="${css`
-                                                                        font-size: var(
-                                                                          --font-size--3
-                                                                        );
-                                                                        line-height: var(
-                                                                          --font-size--3--line-height
-                                                                        );
-                                                                      `}"
-                                                                    >
-                                                                      Set as not
-                                                                      anonymous
-                                                                    </button>
-                                                                  </div>
-                                                                </form>
-                                                              `},
-                                                            });
-                                                          `}"
-                                                        >
-                                                          $${application.partials.userAvatar(
-                                                            {
-                                                              user: courseConversationMessageCreatedByUser!,
-                                                            },
-                                                          )}
-                                                          <div
-                                                            css="${css`
-                                                              margin-top: var(
-                                                                --space--0-5
-                                                              );
-                                                            `}"
-                                                          >
-                                                            ${courseConversationMessageCreatedByUser!
-                                                              .name}
-                                                          </div>
-                                                        </button>
-                                                        <form
-                                                          method="PATCH"
-                                                          action="/courses/${request
-                                                            .state.course!
-                                                            .publicId}/conversations/${request
-                                                            .state
-                                                            .courseConversation!
-                                                            .publicId}/messages/${courseConversationMessage.publicId}"
-                                                        >
-                                                          <input
-                                                            type="hidden"
-                                                            name="anonymous"
-                                                            value="true"
-                                                          />
-                                                          <button
-                                                            class="button button--rectangle button--transparent $${Boolean(
-                                                              courseConversationMessage.anonymous,
-                                                            ) === true
-                                                              ? "button--blue"
-                                                              : ""} button--dropdown-menu"
-                                                          >
-                                                            Anonymous to other
-                                                            students
-                                                          </button>
-                                                        </form>
-                                                      </div>
-                                                    `},
+                                                    content: ${html` TODO `},
                                                   });
                                                 `}"
                                               >
@@ -1619,9 +1473,9 @@ export default async (application: Application): Promise<void> => {
                                         $${mayEditCourseConversationMessage &&
                                         request.state.courseConversation!
                                           .courseConversationType ===
-                                          "courseConversationQuestion" &&
+                                          "courseConversationTypeQuestion" &&
                                         courseConversationMessage.courseConversationMessageType !==
-                                          "courseConversationMessageCourseStaffWhisper" &&
+                                          "courseConversationMessageTypeCourseParticipationRoleInstructorWhisper" &&
                                         courseConversationMessage.publicId !==
                                           "1"
                                           ? html`
