@@ -34,11 +34,11 @@ export type ApplicationCourseConversation = {
 export default async (application: Application): Promise<void> => {
   application.server?.push({
     pathname: new RegExp(
-      "^/courses/(?<courseId>[0-9]+)/conversations/(?<courseConversationId>[0-9]+)(?:$|/)",
+      "^/courses/(?<coursePublicId>[0-9]+)/conversations/(?<courseConversationPublicId>[0-9]+)(?:$|/)",
     ),
     handler: (
       request: serverTypes.Request<
-        { courseConversationId: string },
+        { courseConversationPublicId: string },
         {},
         {},
         {},
@@ -82,7 +82,7 @@ export default async (application: Application): Promise<void> => {
           from "courseConversations"
           where
             "course" = ${request.state.course.id} and
-            "publicId" = ${request.pathname.courseConversationId}
+            "publicId" = ${request.pathname.courseConversationPublicId}
         `,
       );
       if (request.state.courseConversation === undefined) return;
@@ -92,7 +92,7 @@ export default async (application: Application): Promise<void> => {
   application.server?.push({
     method: "GET",
     pathname: new RegExp(
-      "^/courses/(?<courseId>[0-9]+)/conversations/(?<courseConversationId>[0-9]+)$",
+      "^/courses/(?<coursePublicId>[0-9]+)/conversations/(?<courseConversationPublicId>[0-9]+)$",
     ),
     handler: (
       request: serverTypes.Request<

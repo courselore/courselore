@@ -68,10 +68,10 @@ export type ApplicationCourses = {
 
 export default async (application: Application): Promise<void> => {
   application.server?.push({
-    pathname: new RegExp("^/courses/(?<courseId>[0-9]+)(?:$|/)"),
+    pathname: new RegExp("^/courses/(?<coursePublicId>[0-9]+)(?:$|/)"),
     handler: (
       request: serverTypes.Request<
-        { courseId: string },
+        { coursePublicId: string },
         {},
         {},
         {},
@@ -85,17 +85,18 @@ export default async (application: Application): Promise<void> => {
         publicId: string;
         createdAt: string;
         name: string;
-        year: string | null;
-        term: string | null;
-        institution: string | null;
-        code: string | null;
-        invitationLinkCourseStaffToken: string;
-        invitationLinkCourseStaffActive: number;
-        invitationLinkCourseStudentsToken: string;
-        invitationLinkCourseStudentsActive: number;
-        courseStudentsMayCreatePolls: number;
-        archivedAt: string | null;
-        courseConversationsNextpublicId: number;
+        information: string | null;
+        invitationLinkCourseParticipationRoleInstructorsEnabled: number;
+        invitationLinkCourseParticipationRoleInstructorsToken: string;
+        invitationLinkCourseParticipationRoleStudentsEnabled: number;
+        invitationLinkCourseParticipationRoleStudentsToken: string;
+        courseConversationRequiresTagging: number;
+        courseParticipationRoleStudentsAnonymityAllowed: number;
+        courseParticipationRoleStudentsMayHavePrivateCourseConversations: number;
+        courseParticipationRoleStudentsMayAttachImages: number;
+        courseParticipationRoleStudentsMayCreatePolls: number;
+        courseState: "courseStateActive" | "courseStateArchived";
+        courseConversationsNextPublicId: number;
       }>(
         sql`
           select
@@ -103,19 +104,20 @@ export default async (application: Application): Promise<void> => {
             "publicId",
             "createdAt",
             "name",
-            "year",
-            "term",
-            "institution",
-            "code",
-            "invitationLinkCourseStaffToken",
-            "invitationLinkCourseStaffActive",
-            "invitationLinkCourseStudentsToken",
-            "invitationLinkCourseStudentsActive",
-            "courseStudentsMayCreatePolls",
-            "archivedAt",
-            "courseConversationsNextpublicId"
+            "information",
+            "invitationLinkCourseParticipationRoleInstructorsEnabled",
+            "invitationLinkCourseParticipationRoleInstructorsToken",
+            "invitationLinkCourseParticipationRoleStudentsEnabled",
+            "invitationLinkCourseParticipationRoleStudentsToken",
+            "courseConversationRequiresTagging",
+            "courseParticipationRoleStudentsAnonymityAllowed",
+            "courseParticipationRoleStudentsMayHavePrivateCourseConversations",
+            "courseParticipationRoleStudentsMayAttachImages",
+            "courseParticipationRoleStudentsMayCreatePolls",
+            "courseState",
+            "courseConversationsNextPublicId"
           from "courses"
-          where "publicId" = ${request.pathname.courseId};
+          where "publicId" = ${request.pathname.coursePublicId};
         `,
       );
       if (request.state.course === undefined) return;
@@ -123,7 +125,9 @@ export default async (application: Application): Promise<void> => {
         id: number;
         publicId: string;
         createdAt: string;
-        courseRole: "courseStaff" | "courseStudent";
+        courseParticipationRole:
+          | "courseParticipationRoleInstructor"
+          | "courseParticipationRoleStudent";
         decorationColor:
           | "red"
           | "orange"
@@ -149,7 +153,7 @@ export default async (application: Application): Promise<void> => {
             "id",
             "publicId",
             "createdAt",
-            "courseRole",
+            "courseParticipationRole",
             "decorationColor",
             "mostRecentlyVisitedCourseConversation"
           from "courseParticipations"
@@ -163,10 +167,14 @@ export default async (application: Application): Promise<void> => {
         id: number;
         publicId: string;
         name: string;
-        courseStaff: number;
+        privateToCourseParticipationRoleInstructors: number;
       }>(
         sql`
-          select "id", "publicId", "name", "courseStaff"
+          select
+            "id",
+            "publicId",
+            "name",
+            "privateToCourseParticipationRoleInstructors"
           from "courseConversationsTags"
           where
             "course" = ${request.state.course.id} $${
@@ -174,11 +182,11 @@ export default async (application: Application): Promise<void> => {
               "courseParticipationRoleInstructor"
                 ? sql`
                     and
-                    "courseStaff" = ${Number(false)}
+                    "privateToCourseParticipationRoleInstructors" = ${Number(false)}
                   `
                 : sql``
             }
-          order by "order";
+          order by "order" asc;
         `,
       );
     },
@@ -186,7 +194,7 @@ export default async (application: Application): Promise<void> => {
 
   application.server?.push({
     method: "GET",
-    pathname: new RegExp("^/courses/(?<courseId>[0-9]+)$"),
+    pathname: new RegExp("^/courses/(?<coursePublicId>[0-9]+)$"),
     handler: (
       request: serverTypes.Request<
         {},
