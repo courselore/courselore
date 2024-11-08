@@ -226,7 +226,27 @@ export default async (application: Application): Promise<void> => {
                   }
                 `
               : sql`
-                  where "course" = ${request.state.course.id} -- TODO: "courseConversationParticipations"
+                  where
+                    "course" = ${request.state.course.id} and (
+                      "courseConversationParticipations" = 'courseConversationParticipationsEveryone'
+                      $${
+                        request.state.courseParticipation
+                          .courseParticipationRole ===
+                        "courseParticipationRoleInstructor"
+                          ? sql`
+                              or
+                              "courseConversationParticipations" = 'courseConversationParticipationsCourseParticipationRoleInstructors'
+                            `
+                          : sql``
+                      }
+                      or (
+                        select true
+                        from "courseConversationParticipations"
+                        where
+                          "courseConversations"."id" = "courseConversationParticipations"."courseConversation" and
+                          "courseParticipation" = ${request.state.courseParticipation.id}
+                      )
+                    )
                   order by "id" desc
                   limit 1
                 `
