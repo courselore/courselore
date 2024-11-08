@@ -152,36 +152,32 @@ export default async (application: Application): Promise<void> => {
               >
                 $${(() => {
                   const mayEditCourseConversation =
-                    request.state.course.archivedAt === null &&
+                    request.state.course.courseState === "courseStateActive" &&
                     (request.state.courseParticipation
                       .courseParticipationRole ===
                       "courseParticipationRoleInstructor" ||
-                      application.database.get(
-                        sql`
-                          select true
-                          from "courseConversationMessages"
-                          where
-                            "courseConversation" = ${request.state.courseConversation.id} and
-                            "createdByCourseParticipation" = ${request.state.courseParticipation.id} and
-                            "publicId" = '1';
-                        `,
-                      ) !== undefined);
+                      request.state.courseParticipation.id ===
+                        application.database.get<{
+                          createdByCourseParticipation: number;
+                        }>(
+                          sql`
+                            select "createdByCourseParticipation"
+                            from "courseConversationMessages"
+                            where "courseConversation" = ${request.state.courseConversation.id}
+                            order by "id" asc
+                            limit 1;
+                          `,
+                        )!.createdByCourseParticipation);
                   return html`
-                    $${typeof request.state.course.archivedAt === "string"
+                    $${request.state.course.courseState ===
+                    "courseStateArchived"
                       ? html`
                           <div
                             key="courseConversation--archived"
                             class="text--secondary text--red"
                           >
                             <i class="bi bi-exclamation-triangle-fill"></i> This
-                            course has been archived
-                            <time
-                              datetime="${request.state.course.archivedAt}"
-                              javascript="${javascript`
-                                javascript.relativizeDateTimeElement(this, { preposition: true });
-                              `}"
-                            ></time>
-                            and is now read-only.
+                            course is archived and is now read-only.
                           </div>
                         `
                       : html``}
@@ -2424,7 +2420,7 @@ export default async (application: Application): Promise<void> => {
                 gap: var(--space--4);
               `}"
             >
-              $${request.state.course.archivedAt === null
+              $${request.state.course.courseState === "courseStateActive"
                 ? html`
                     <a
                       key="new-conversation"
@@ -2790,7 +2786,7 @@ export default async (application: Application): Promise<void> => {
             `}"
             javascript="${javascript`
               this.onclick = () => {
-                document.querySelector('[key="main"]').classList.remove("sidebar--open");
+                javascript.stateRemove(document.querySelector('[key="main"]'), "sidebar--open");
               };
             `}"
           ></button>
