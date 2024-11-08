@@ -2814,7 +2814,7 @@ export default async (application: Application): Promise<void> => {
                   --transition-timing-function--ease-in-out
                 );
                 &:hover,
-                &.active {
+                [state~="active"] {
                   background-color: light-dark(
                     var(--color--blue--500),
                     var(--color--blue--500)
@@ -2824,15 +2824,15 @@ export default async (application: Application): Promise<void> => {
               javascript="${javascript`
                 this.onpointerdown = (event) => {
                   if (event.button !== 0) return;
-                  this.classList.add("active");
-                  document.querySelector("body").classList.add("noninteractive");
+                  javascript.stateAdd(this, "active");
+                  javascript.stateAdd(document.querySelector("body"), "noninteractive");
                   document.querySelector("body").style.cursor = "col-resize";
                   document.onpointermove = (event) => {
                     this.closest('[key="main"]').querySelector('[key~="sidebar"]').style.setProperty("--width", String(Math.min(Math.max(Math.floor(event.clientX), 60 * 4), 112 * 4)) + "px");
                   };
                   document.onpointerup = () => {
-                    this.classList.remove("active");
-                    document.querySelector("body").classList.remove("noninteractive");
+                    javascript.stateRemove(this, "active");
+                    javascript.stateRemove(document.querySelector("body"), "noninteractive");
                     document.querySelector("body").style.cursor = "";
                     document.onpointermove = undefined;
                     document.onpointerup = undefined;
