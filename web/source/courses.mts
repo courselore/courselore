@@ -79,11 +79,7 @@ export default async (application: Application): Promise<void> => {
       >,
       response,
     ) => {
-      if (
-        request.state.user === undefined ||
-        !Boolean(request.state.user.emailVerified)
-      )
-        return;
+      if (request.state.user === undefined) return;
       request.state.course = application.database.get<{
         id: number;
         publicId: string;

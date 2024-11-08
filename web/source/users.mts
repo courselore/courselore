@@ -3,7 +3,6 @@ import sql from "@radically-straightforward/sqlite";
 import html, { HTML } from "@radically-straightforward/html";
 import css from "@radically-straightforward/css";
 import javascript from "@radically-straightforward/javascript";
-import * as caddy from "@radically-straightforward/caddy";
 import { Application } from "./index.mjs";
 
 export type ApplicationUsers = {
@@ -233,11 +232,7 @@ export default async (application: Application): Promise<void> => {
       >,
       response,
     ) => {
-      if (
-        request.state.user === undefined ||
-        !Boolean(request.state.user.emailVerified)
-      )
-        return;
+      if (request.state.user === undefined) return;
       const course = application.database.get<{
         publicId: number;
       }>(
@@ -278,11 +273,7 @@ export default async (application: Application): Promise<void> => {
       >,
       response,
     ) => {
-      if (
-        request.state.user === undefined ||
-        !Boolean(request.state.user.emailVerified)
-      )
-        return;
+      if (request.state.user === undefined) return;
       if (typeof request.body.sidebarWidth === "string")
         if (
           request.body.sidebarWidth.match(/^[0-9]+$/) === null ||
