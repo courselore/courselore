@@ -177,7 +177,7 @@ export default async (application: Application): Promise<void> => {
                             class="text--secondary text--red"
                           >
                             <i class="bi bi-exclamation-triangle-fill"></i> This
-                            course is archived and is now read-only.
+                            course is archived (read-only).
                           </div>
                         `
                       : html``}
