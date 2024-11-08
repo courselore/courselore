@@ -3,7 +3,6 @@ import sql from "@radically-straightforward/sqlite";
 import html, { HTML } from "@radically-straightforward/html";
 import css from "@radically-straightforward/css";
 import javascript from "@radically-straightforward/javascript";
-import * as caddy from "@radically-straightforward/caddy";
 import { Application } from "./index.mjs";
 
 export type ApplicationCourseConversationMessageContent = {

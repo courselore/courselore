@@ -3,7 +3,6 @@ import sql from "@radically-straightforward/sqlite";
 import html, { HTML } from "@radically-straightforward/html";
 import css from "@radically-straightforward/css";
 import javascript from "@radically-straightforward/javascript";
-import * as caddy from "@radically-straightforward/caddy";
 import { Application } from "./index.mjs";
 
 export type ApplicationCourseConversation = {
@@ -14,17 +13,15 @@ export type ApplicationCourseConversation = {
           id: number;
           publicId: string;
           courseConversationType:
-            | "courseConversationNote"
-            | "courseConversationQuestion";
+            | "courseConversationTypeNote"
+            | "courseConversationTypeQuestion";
           questionResolved: number;
           courseConversationParticipations:
-            | "everyone"
-            | "courseStaff"
-            | "courseConversationParticipations";
+            | "courseConversationParticipationsEveryone"
+            | "courseConversationParticipationsCourseParticipationRoleInstructors"
+            | "courseConversationParticipationsCourseConversationParticipations";
           pinned: number;
           title: string;
-          titleSearch: string;
-          courseConversationMessagesNextpublicId: number;
         };
       };
     };
@@ -56,17 +53,15 @@ export default async (application: Application): Promise<void> => {
         id: number;
         publicId: string;
         courseConversationType:
-          | "courseConversationNote"
-          | "courseConversationQuestion";
+          | "courseConversationTypeNote"
+          | "courseConversationTypeQuestion";
         questionResolved: number;
         courseConversationParticipations:
-          | "everyone"
-          | "courseStaff"
-          | "courseConversationParticipations";
+          | "courseConversationParticipationsEveryone"
+          | "courseConversationParticipationsCourseParticipationRoleInstructors"
+          | "courseConversationParticipationsCourseConversationParticipations";
         pinned: number;
         title: string;
-        titleSearch: string;
-        courseConversationMessagesNextpublicId: number;
       }>(
         sql`
           select 
@@ -76,13 +71,29 @@ export default async (application: Application): Promise<void> => {
             "questionResolved",
             "courseConversationParticipations",
             "pinned",
-            "title",
-            "titleSearch",
-            "courseConversationMessagesNextpublicId"
+            "title"
           from "courseConversations"
           where
             "course" = ${request.state.course.id} and
-            "publicId" = ${request.pathname.courseConversationPublicId}
+            "publicId" = ${request.pathname.courseConversationPublicId} and (
+              "courseConversationParticipations" = 'courseConversationParticipationsEveryone'
+              $${
+                request.state.courseParticipation.courseParticipationRole ===
+                "courseParticipationRoleInstructor"
+                  ? sql`
+                      or
+                      "courseConversationParticipations" = 'courseConversationParticipationsCourseParticipationRoleInstructors'
+                    `
+                  : sql``
+              }
+              or (
+                select true
+                from "courseConversationParticipations"
+                where
+                  "courseConversations"."id" = "courseConversationParticipations"."courseConversation" and
+                  "courseConversationParticipations"."courseParticipation" = ${request.state.courseParticipation.id}
+              )
+            );
         `,
       );
       if (request.state.courseConversation === undefined) return;

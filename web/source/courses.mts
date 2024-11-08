@@ -3,7 +3,6 @@ import sql from "@radically-straightforward/sqlite";
 import html from "@radically-straightforward/html";
 import css from "@radically-straightforward/css";
 import javascript from "@radically-straightforward/javascript";
-import * as caddy from "@radically-straightforward/caddy";
 import { Application } from "./index.mjs";
 
 export type ApplicationCourses = {
@@ -244,7 +243,7 @@ export default async (application: Application): Promise<void> => {
                         from "courseConversationParticipations"
                         where
                           "courseConversations"."id" = "courseConversationParticipations"."courseConversation" and
-                          "courseParticipation" = ${request.state.courseParticipation.id}
+                          "courseConversationParticipations"."courseParticipation" = ${request.state.courseParticipation.id}
                       )
                     )
                   order by "id" desc
