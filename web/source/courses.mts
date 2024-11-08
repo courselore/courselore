@@ -59,7 +59,7 @@ export type ApplicationCourses = {
           id: number;
           publicId: string;
           name: string;
-          courseStaff: number;
+          privateToCourseParticipationRoleInstructors: number;
         }[];
       };
     };
@@ -79,7 +79,11 @@ export default async (application: Application): Promise<void> => {
       >,
       response,
     ) => {
-      if (request.state.user === undefined) return;
+      if (
+        request.state.user === undefined ||
+        !Boolean(request.state.user.emailVerified)
+      )
+        return;
       request.state.course = application.database.get<{
         id: number;
         publicId: string;
