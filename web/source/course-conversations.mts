@@ -45,8 +45,7 @@ export default async (application: Application): Promise<void> => {
     ) => {
       if (
         request.state.course === undefined ||
-        request.state.courseParticipation === undefined ||
-        request.state.courseConversationsTags === undefined
+        request.state.courseParticipation === undefined
       )
         return;
       request.state.courseConversation = application.database.get<{
