@@ -2603,6 +2603,7 @@ export default async (application: Application): Promise<void> => {
             "id" integer primary key autoincrement,
             "courseConversation" integer not null references "courseConversations",
             "createdByCourseParticipation" integer not null references "courseParticipations",
+            "createdAt" text not null,
             "content" text not null,
             unique ("courseConversation", "createdByCourseParticipation")
           ) strict;
@@ -3398,11 +3399,13 @@ export default async (application: Application): Promise<void> => {
                   insert into "courseConversationMessageDrafts" (
                     "courseConversation",
                     "createdByCourseParticipation",
+                    "createdAt",
                     "content"
                   )
                   values (
                     ${courseConversation.id},
                     ${courseParticipation.id},
+                    ${new Date().toISOString()},
                     ${markdown`
                       # Headings
 

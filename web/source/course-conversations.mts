@@ -1066,212 +1066,181 @@ export default async (application: Application): Promise<void> => {
                   const courseConversationMessagePublicIds = new Set();
                 `}"
               >
-                $${application.database
-                  .all<{
-                    id: number;
-                    publicId: string;
-                    createdAt: string;
-                    updatedAt: string | null;
-                    createdByCourseParticipation: number | null;
-                    courseConversationMessageType:
-                      | "courseConversationMessageTypeMessage"
-                      | "courseConversationMessageTypeAnswer"
-                      | "courseConversationMessageTypeFollowUpQuestion"
-                      | "courseConversationMessageTypeCourseParticipationRoleInstructorWhisper";
-                    courseConversationMessageAnonymity:
-                      | "courseConversationMessageAnonymityNone"
-                      | "courseConversationMessageAnonymityOtherCourseParticipationRoleStudents"
-                      | "courseConversationMessageAnonymityCourseParticipationRoleInstructors";
-                    content: string;
-                  }>(
-                    sql`
-                      select
-                        "id",
-                        "publicId",
-                        "createdAt",
-                        "updatedAt",
-                        "createdByCourseParticipation",
-                        "courseConversationMessageType",
-                        "courseConversationMessageAnonymity",
-                        "content"
-                      from "courseConversationMessages"
-                      where
-                        "courseConversation" = ${request.state.courseConversation.id} $${
-                          request.state.courseParticipation
-                            .courseParticipationRole !==
-                          "courseParticipationRoleInstructor"
-                            ? sql`
-                                and
-                                "courseConversationMessageType" != 'courseConversationMessageTypeCourseParticipationRoleInstructorWhisper'
-                              `
-                            : sql``
-                        }
-                      order by "id" asc;
-                    `,
-                  )
-                  .map((courseConversationMessage) => {
-                    const mayEditCourseConversationMessage =
-                      request.state.course!.courseState ===
-                        "courseStateActive" &&
-                      (request.state.courseParticipation!
-                        .courseParticipationRole ===
-                        "courseParticipationRoleInstructor" ||
-                        request.state.courseParticipation!.id ===
-                          courseConversationMessage.createdByCourseParticipation);
-                    const courseConversationMessageCreatedByCourseParticipation =
-                      typeof courseConversationMessage.createdByCourseParticipation ===
-                      "number"
-                        ? application.database.get<{
-                            user: number;
-                            courseParticipationRole:
-                              | "courseParticipationRoleInstructor"
-                              | "courseParticipationRoleStudent";
-                          }>(
-                            sql`
-                              select
-                                "user",
-                                "courseParticipationRole"
-                              from "courseParticipations"
-                              where "id" = ${courseConversationMessage.createdByCourseParticipation};
-                            `,
-                          )
-                        : undefined;
-                    const courseConversationMessageCreatedByUser =
-                      courseConversationMessageCreatedByCourseParticipation !==
-                      undefined
-                        ? application.database.get<{
-                            publicId: string;
-                            name: string;
-                            avatarColor:
-                              | "red"
-                              | "orange"
-                              | "amber"
-                              | "yellow"
-                              | "lime"
-                              | "green"
-                              | "emerald"
-                              | "teal"
-                              | "cyan"
-                              | "sky"
-                              | "blue"
-                              | "indigo"
-                              | "violet"
-                              | "purple"
-                              | "fuchsia"
-                              | "pink"
-                              | "rose";
-                            avatarImage: string | null;
-                            userRole:
-                              | "userRoleSystemAdministrator"
-                              | "userRoleStaff"
-                              | "userRoleUser";
-                            lastSeenOnlineAt: string;
-                          }>(
-                            sql`
-                              select
-                                "publicId",
-                                "name",
-                                "avatarColor",
-                                "avatarImage",
-                                "userRole",
-                                "lastSeenOnlineAt"
-                              from "users"
-                              where "id" = ${courseConversationMessageCreatedByCourseParticipation.user};
-                            `,
-                          )
-                        : undefined;
-                    return html`
-                      <div
-                        key="courseConversationMessage /courses/${request.state
-                          .course!.publicId}/conversations/${request.state
-                          .courseConversation!
-                          .publicId}/messages/${courseConversationMessage.publicId}"
-                        css="${css`
-                          position: relative;
-                          display: flex;
-                          gap: var(--space--2);
-                        `}"
-                      >
-                        $${(() => {
-                          const courseConversationMessageView =
-                            application.database.get(
+                $${(() => {
+                  const firstCourseConversationMessage =
+                    application.database.get<{ id: number }>(
+                      sql`
+                        select "id"
+                        from "courseConversationMessages"
+                        where "courseConversation" = ${request.state.courseConversation.id}
+                        order by "id" asc
+                        limit 1;
+                      `,
+                    );
+                  if (firstCourseConversationMessage === undefined)
+                    throw new Error();
+                  return application.database
+                    .all<{
+                      id: number;
+                      publicId: string;
+                      createdAt: string;
+                      updatedAt: string | null;
+                      createdByCourseParticipation: number | null;
+                      courseConversationMessageType:
+                        | "courseConversationMessageTypeMessage"
+                        | "courseConversationMessageTypeAnswer"
+                        | "courseConversationMessageTypeFollowUpQuestion"
+                        | "courseConversationMessageTypeCourseParticipationRoleInstructorWhisper";
+                      courseConversationMessageAnonymity:
+                        | "courseConversationMessageAnonymityNone"
+                        | "courseConversationMessageAnonymityOtherCourseParticipationRoleStudents"
+                        | "courseConversationMessageAnonymityCourseParticipationRoleInstructors";
+                      content: string;
+                    }>(
+                      sql`
+                        select
+                          "id",
+                          "publicId",
+                          "createdAt",
+                          "updatedAt",
+                          "createdByCourseParticipation",
+                          "courseConversationMessageType",
+                          "courseConversationMessageAnonymity",
+                          "content"
+                        from "courseConversationMessages"
+                        where
+                          "courseConversation" = ${request.state.courseConversation.id} $${
+                            request.state.courseParticipation
+                              .courseParticipationRole !==
+                            "courseParticipationRoleInstructor"
+                              ? sql`
+                                  and
+                                  "courseConversationMessageType" != 'courseConversationMessageTypeCourseParticipationRoleInstructorWhisper'
+                                `
+                              : sql``
+                          }
+                        order by "id" asc;
+                      `,
+                    )
+                    .map((courseConversationMessage) => {
+                      const mayEditCourseConversationMessage =
+                        request.state.course!.courseState ===
+                          "courseStateActive" &&
+                        (request.state.courseParticipation!
+                          .courseParticipationRole ===
+                          "courseParticipationRoleInstructor" ||
+                          request.state.courseParticipation!.id ===
+                            courseConversationMessage.createdByCourseParticipation);
+                      const courseConversationMessageCreatedByCourseParticipation =
+                        typeof courseConversationMessage.createdByCourseParticipation ===
+                        "number"
+                          ? application.database.get<{
+                              user: number;
+                              courseParticipationRole:
+                                | "courseParticipationRoleInstructor"
+                                | "courseParticipationRoleStudent";
+                            }>(
                               sql`
-                                select true
-                                from "courseConversationMessageViews"
-                                where
-                                  "courseConversationMessage" = ${courseConversationMessage.id} and
-                                  "courseParticipation" = ${request.state.courseParticipation!.id};
+                                select
+                                  "user",
+                                  "courseParticipationRole"
+                                from "courseParticipations"
+                                where "id" = ${courseConversationMessage.createdByCourseParticipation};
                               `,
-                            ) !== undefined;
-                          return html`
-                            <div
-                              key="courseConversationMessage--courseConversationMessageView"
-                              css="${css`
-                                position: absolute;
-                                margin-left: var(--space---2-5);
-                                margin-top: var(--space--4);
-                              `}"
-                              javascript="${javascript`
-                                if (${!courseConversationMessageView}) {
-                                  this.closest('[key="courseConversationMessages"]').courseConversationMessageViewsIntersectionObserver.observe(this);
-                                  this.courseConversationMessagePublicId = ${courseConversationMessage.publicId};
-                                }
-                              `}"
-                            >
-                              $${courseConversationMessageViewPartial(
-                                courseConversationMessageView,
-                              )}
-                            </div>
-                          `;
-                        })()}
-                        <div key="courseConversationMessage--createdBy">
-                          $${application.partials.userAvatar({
-                            user:
-                              courseConversationMessage.courseConversationMessageAnonymity ===
-                                "courseConversationMessageAnonymityCourseParticipationRoleInstructors" ||
-                              (courseConversationMessage.courseConversationMessageAnonymity ===
-                                "courseConversationMessageAnonymityOtherCourseParticipationRoleStudents" &&
-                                request.state.courseParticipation!
-                                  .courseParticipationRole ===
-                                  "courseParticipationRoleStudent" &&
-                                request.state.courseParticipation!.id !==
-                                  courseConversationMessage.createdByCourseParticipation)
-                                ? "anonymous"
-                                : (courseConversationMessageCreatedByUser ??
-                                  "courseParticipationDeleted"),
-                            courseParticipation:
-                              courseConversationMessageCreatedByCourseParticipation,
-                            size: 9,
-                          })}
-                        </div>
+                            )
+                          : undefined;
+                      const courseConversationMessageCreatedByUser =
+                        courseConversationMessageCreatedByCourseParticipation !==
+                        undefined
+                          ? application.database.get<{
+                              publicId: string;
+                              name: string;
+                              avatarColor:
+                                | "red"
+                                | "orange"
+                                | "amber"
+                                | "yellow"
+                                | "lime"
+                                | "green"
+                                | "emerald"
+                                | "teal"
+                                | "cyan"
+                                | "sky"
+                                | "blue"
+                                | "indigo"
+                                | "violet"
+                                | "purple"
+                                | "fuchsia"
+                                | "pink"
+                                | "rose";
+                              avatarImage: string | null;
+                              userRole:
+                                | "userRoleSystemAdministrator"
+                                | "userRoleStaff"
+                                | "userRoleUser";
+                              lastSeenOnlineAt: string;
+                            }>(
+                              sql`
+                                select
+                                  "publicId",
+                                  "name",
+                                  "avatarColor",
+                                  "avatarImage",
+                                  "userRole",
+                                  "lastSeenOnlineAt"
+                                from "users"
+                                where "id" = ${courseConversationMessageCreatedByCourseParticipation.user};
+                              `,
+                            )
+                          : undefined;
+                      return html`
                         <div
-                          key="courseConversationMessage--main"
+                          key="courseConversationMessage /courses/${request
+                            .state.course!.publicId}/conversations/${request
+                            .state.courseConversation!
+                            .publicId}/messages/${courseConversationMessage.publicId}"
                           css="${css`
-                            flex: 1;
+                            position: relative;
                             display: flex;
-                            flex-direction: column;
-                            gap: var(--space--1);
+                            gap: var(--space--2);
                           `}"
                         >
-                          <div
-                            key="courseConversationMessage--main--header"
-                            class="text--secondary"
-                            css="${css`
-                              display: flex;
-                              gap: var(--space--2);
-                            `}"
-                          >
-                            <div
-                              key="courseConversationMessage--main--header--byline"
-                              css="${css`
-                                flex: 1;
-                              `}"
-                            >
-                              <span
+                          $${(() => {
+                            const courseConversationMessageView =
+                              application.database.get(
+                                sql`
+                                  select true
+                                  from "courseConversationMessageViews"
+                                  where
+                                    "courseConversationMessage" = ${courseConversationMessage.id} and
+                                    "courseParticipation" = ${request.state.courseParticipation!.id};
+                                `,
+                              ) !== undefined;
+                            return html`
+                              <div
+                                key="courseConversationMessage--courseConversationMessageView"
                                 css="${css`
-                                  font-weight: 700;
+                                  position: absolute;
+                                  margin-left: var(--space---2-5);
+                                  margin-top: var(--space--4);
                                 `}"
-                                >${courseConversationMessage.courseConversationMessageAnonymity ===
+                                javascript="${javascript`
+                                  if (${!courseConversationMessageView}) {
+                                    this.closest('[key="courseConversationMessages"]').courseConversationMessageViewsIntersectionObserver.observe(this);
+                                    this.courseConversationMessagePublicId = ${courseConversationMessage.publicId};
+                                  }
+                                `}"
+                              >
+                                $${courseConversationMessageViewPartial(
+                                  courseConversationMessageView,
+                                )}
+                              </div>
+                            `;
+                          })()}
+                          <div key="courseConversationMessage--createdBy">
+                            $${application.partials.userAvatar({
+                              user:
+                                courseConversationMessage.courseConversationMessageAnonymity ===
                                   "courseConversationMessageAnonymityCourseParticipationRoleInstructors" ||
                                 (courseConversationMessage.courseConversationMessageAnonymity ===
                                   "courseConversationMessageAnonymityOtherCourseParticipationRoleStudents" &&
@@ -1280,454 +1249,158 @@ export default async (application: Application): Promise<void> => {
                                     "courseParticipationRoleStudent" &&
                                   request.state.courseParticipation!.id !==
                                     courseConversationMessage.createdByCourseParticipation)
-                                  ? "Anonymous"
-                                  : (courseConversationMessageCreatedByUser?.name ??
-                                    "Deleted course participant")}</span
-                              ><span
+                                  ? "anonymous"
+                                  : (courseConversationMessageCreatedByUser ??
+                                    "courseParticipationDeleted"),
+                              courseParticipation:
+                                courseConversationMessageCreatedByCourseParticipation,
+                              size: 9,
+                            })}
+                          </div>
+                          <div
+                            key="courseConversationMessage--main"
+                            css="${css`
+                              flex: 1;
+                              display: flex;
+                              flex-direction: column;
+                              gap: var(--space--1);
+                            `}"
+                          >
+                            <div
+                              key="courseConversationMessage--main--header"
+                              class="text--secondary"
+                              css="${css`
+                                display: flex;
+                                gap: var(--space--2);
+                              `}"
+                            >
+                              <div
+                                key="courseConversationMessage--main--header--byline"
                                 css="${css`
-                                  font-weight: 400;
+                                  flex: 1;
                                 `}"
-                                >$${courseConversationMessageCreatedByCourseParticipation?.courseParticipationRole ===
-                                "courseParticipationRoleInstructor"
-                                  ? html` (course staff)`
-                                  : html``}$${courseConversationMessage.courseConversationMessageAnonymity ===
-                                  "courseConversationMessageAnonymityOtherCourseParticipationRoleStudents" &&
-                                (request.state.courseParticipation!
-                                  .courseParticipationRole ===
-                                  "courseParticipationRoleInstructor" ||
-                                  request.state.courseParticipation!.id ===
-                                    courseConversationMessage.createdByCourseParticipation)
-                                  ? html` (anonymous to other students)`
-                                  : html``} ·
-                                <time
-                                  datetime="${courseConversationMessage.createdAt}"
-                                  javascript="${javascript`
-                                    javascript.relativizeDateTimeElement(this, { capitalize: true });
+                              >
+                                <span
+                                  css="${css`
+                                    font-weight: 700;
                                   `}"
-                                ></time
-                                >$${typeof courseConversationMessage.updatedAt ===
-                                "string"
-                                  ? html` (updated
-                                      <time
-                                        datetime="${courseConversationMessage.updatedAt}"
-                                        javascript="${javascript`
-                                          javascript.relativizeDateTimeElement(this, { preposition: true });
-                                        `}"
-                                      ></time
-                                      >)`
-                                  : html``}$${courseConversationMessage.courseConversationMessageType ===
-                                "courseConversationMessageTypeMessage"
-                                  ? html``
-                                  : courseConversationMessage.courseConversationMessageType ===
-                                      "courseConversationMessageTypeAnswer"
-                                    ? html`<span
-                                        > ·
-                                        <span class="text--green"
-                                          ><span
-                                            css="${css`
-                                              font-weight: 700;
-                                            `}"
-                                            >Answer</span
-                                          >$${courseConversationMessageCreatedByCourseParticipation?.courseParticipationRole ===
-                                            "courseParticipationRoleStudent" &&
-                                          application.database.get(
-                                            sql`
-                                              select true
-                                              from "courseConversationMessageLikes"
-                                              join "courseParticipations" on
-                                                "courseConversationMessageLikes"."courseParticipation" = "courseParticipations"."id" and
-                                                "courseParticipations"."courseParticipationRole" = 'courseParticipationRoleInstructor'
-                                              where "courseConversationMessageLikes"."courseConversationMessage" = ${courseConversationMessage.id};
-                                            `,
-                                          ) !== undefined
-                                            ? html` (liked by instructor)`
-                                            : html``}</span
-                                        ></span
-                                      >`
+                                  >${courseConversationMessage.courseConversationMessageAnonymity ===
+                                    "courseConversationMessageAnonymityCourseParticipationRoleInstructors" ||
+                                  (courseConversationMessage.courseConversationMessageAnonymity ===
+                                    "courseConversationMessageAnonymityOtherCourseParticipationRoleStudents" &&
+                                    request.state.courseParticipation!
+                                      .courseParticipationRole ===
+                                      "courseParticipationRoleStudent" &&
+                                    request.state.courseParticipation!.id !==
+                                      courseConversationMessage.createdByCourseParticipation)
+                                    ? "Anonymous"
+                                    : (courseConversationMessageCreatedByUser?.name ??
+                                      "Deleted course participant")}</span
+                                ><span
+                                  css="${css`
+                                    font-weight: 400;
+                                  `}"
+                                  >$${courseConversationMessageCreatedByCourseParticipation?.courseParticipationRole ===
+                                  "courseParticipationRoleInstructor"
+                                    ? html` (instructor)`
+                                    : html``}$${courseConversationMessage.courseConversationMessageAnonymity ===
+                                    "courseConversationMessageAnonymityOtherCourseParticipationRoleStudents" &&
+                                  (request.state.courseParticipation!
+                                    .courseParticipationRole ===
+                                    "courseParticipationRoleInstructor" ||
+                                    request.state.courseParticipation!.id ===
+                                      courseConversationMessage.createdByCourseParticipation)
+                                    ? html` (anonymous to other students)`
+                                    : html``} ·
+                                  <time
+                                    datetime="${courseConversationMessage.createdAt}"
+                                    javascript="${javascript`
+                                      javascript.relativizeDateTimeElement(this, { capitalize: true });
+                                    `}"
+                                  ></time
+                                  >$${typeof courseConversationMessage.updatedAt ===
+                                  "string"
+                                    ? html` (updated
+                                        <time
+                                          datetime="${courseConversationMessage.updatedAt}"
+                                          javascript="${javascript`
+                                            javascript.relativizeDateTimeElement(this, { preposition: true });
+                                          `}"
+                                        ></time
+                                        >)`
+                                    : html``}$${courseConversationMessage.courseConversationMessageType ===
+                                  "courseConversationMessageTypeMessage"
+                                    ? html``
                                     : courseConversationMessage.courseConversationMessageType ===
-                                        "courseConversationMessageTypeFollowUpQuestion"
+                                        "courseConversationMessageTypeAnswer"
                                       ? html`<span
                                           > ·
-                                          <span
-                                            class="text--red"
-                                            css="${css`
-                                              font-weight: 700;
-                                            `}"
-                                            >Follow-up question</span
+                                          <span class="text--green"
+                                            ><span
+                                              css="${css`
+                                                font-weight: 700;
+                                              `}"
+                                              >Answer</span
+                                            >$${courseConversationMessageCreatedByCourseParticipation?.courseParticipationRole ===
+                                              "courseParticipationRoleStudent" &&
+                                            application.database.get(
+                                              sql`
+                                                select true
+                                                from "courseConversationMessageLikes"
+                                                join "courseParticipations" on
+                                                  "courseConversationMessageLikes"."courseParticipation" = "courseParticipations"."id" and
+                                                  "courseParticipations"."courseParticipationRole" = 'courseParticipationRoleInstructor'
+                                                where "courseConversationMessageLikes"."courseConversationMessage" = ${courseConversationMessage.id};
+                                              `,
+                                            ) !== undefined
+                                              ? html` (liked by instructor)`
+                                              : html``}</span
                                           ></span
                                         >`
                                       : courseConversationMessage.courseConversationMessageType ===
-                                          "courseConversationMessageTypeCourseParticipationRoleInstructorWhisper"
+                                          "courseConversationMessageTypeFollowUpQuestion"
                                         ? html`<span
                                             > ·
-                                            <span class="text--blue"
-                                              ><span
-                                                css="${css`
-                                                  font-weight: 700;
-                                                `}"
-                                                >Instructor whisper</span
-                                              >
-                                              (hidden from students)</span
+                                            <span
+                                              class="text--red"
+                                              css="${css`
+                                                font-weight: 700;
+                                              `}"
+                                              >Follow-up question</span
                                             ></span
                                           >`
-                                        : (() => {
-                                            throw new Error();
-                                          })()}</span
-                              >
-                            </div>
-                            <div
-                              key="courseConversationMessage--main--header--menu"
-                            >
-                              <button
-                                class="button button--square button--icon button--transparent"
-                                css="${css`
-                                  margin-right: var(--space---0-5);
-                                `}"
-                                javascript="${javascript`
-                                  javascript.tippy({
-                                    event,
-                                    element: this,
-                                    placement: "bottom-end",
-                                    interactive: true,
-                                    trigger: "click",
-                                    content: ${html`
-                                      <div
-                                        css="${css`
-                                          display: flex;
-                                          flex-direction: column;
-                                          gap: var(--space--2);
-                                        `}"
-                                      >
-                                        <button
-                                          class="button button--rectangle button--transparent button--dropdown-menu"
-                                          javascript="${javascript`
-                                            this.onclick = async () => {
-                                              await navigator.clipboard.writeText(${`https://${application.configuration.hostname}/courses/${request.state.course!.publicId}/conversations/${request.state.courseConversation!.publicId}?${new URLSearchParams({ message: courseConversationMessage.publicId }).toString()}`});
-                                              javascript.tippy({
-                                                element: this,
-                                                elementProperty: "copiedTippy",
-                                                trigger: "manual",
-                                                content: "Copied",
-                                              }).show();
-                                              await utilities.sleep(1000);
-                                              this.copiedTippy.hide();
-                                            };
-                                          `}"
-                                        >
-                                          Copy message permanent link
-                                        </button>
-                                        $${request.state.course!.archivedAt ===
-                                        null
-                                          ? html`
-                                              <button
-                                                class="button button--rectangle button--transparent button--dropdown-menu"
-                                                javascript="${javascript`
-                                                  this.onclick = async () => {
-                                                    alert("TODO");
-                                                  };
-                                                `}"
-                                              >
-                                                Reply
-                                              </button>
-                                            `
-                                          : html``}
-                                        $${mayEditCourseConversationMessage
-                                          ? html`
-                                              <button
-                                                class="button button--rectangle button--transparent button--dropdown-menu"
-                                                javascript="${javascript`
-                                                  this.onclick = () => {
-                                                    this.closest('[key="courseConversationMessage--main"]').querySelector('[key="courseConversationMessage--main--content--show"]').hidden = true;
-                                                    this.closest('[key="courseConversationMessage--main"]').querySelector('[key="courseConversationMessage--main--content--edit"]').hidden = false;
-                                                    this.closest('[key="courseConversationMessage--main"]').querySelector('[key="courseConversationMessage--main--footer"]').hidden = true;
-                                                    Tippy.hideAll();
-                                                    this.closest('[key="courseConversationMessage--main"]').querySelector('[key="courseConversationMessage--main--content--edit"] [name="TODO"]').focus();
-                                                  };
-                                                `}"
-                                              >
-                                                Edit message
-                                              </button>
-                                            `
-                                          : html``}
-                                        $${mayEditCourseConversationMessage &&
-                                        courseConversationMessageCreatedByCourseParticipation?.courseParticipationRole ===
-                                          "courseParticipationRoleStudent"
-                                          ? html`
-                                              <button
-                                                class="button button--rectangle button--transparent button--dropdown-menu"
-                                                javascript="${javascript`
-                                                  javascript.tippy({
-                                                    event,
-                                                    element: this,
-                                                    placement: "bottom-end",
-                                                    interactive: true,
-                                                    trigger: "click",
-                                                    content: ${html` TODO `},
-                                                  });
-                                                `}"
-                                              >
-                                                Change anonymity
-                                              </button>
-                                            `
-                                          : html``}
-                                        $${mayEditCourseConversationMessage &&
-                                        request.state.courseConversation!
-                                          .courseConversationType ===
-                                          "courseConversationTypeQuestion" &&
-                                        courseConversationMessage.courseConversationMessageType !==
-                                          "courseConversationMessageTypeCourseParticipationRoleInstructorWhisper" &&
-                                        courseConversationMessage.publicId !==
-                                          "1"
-                                          ? html`
-                                              <button
-                                                class="button button--rectangle button--transparent button--dropdown-menu"
-                                                javascript="${javascript`
-                                                  javascript.tippy({
-                                                    event,
-                                                    element: this,
-                                                    placement: "bottom-end",
-                                                    interactive: true,
-                                                    trigger: "click",
-                                                    content: ${html`
-                                                      <div
-                                                        css="${css`
-                                                          display: flex;
-                                                          flex-direction: column;
-                                                          gap: var(--space--2);
-                                                        `}"
-                                                      >
-                                                        <form
-                                                          method="PATCH"
-                                                          action="/courses/${request
-                                                            .state.course!
-                                                            .publicId}/conversations/${request
-                                                            .state
-                                                            .courseConversation!
-                                                            .publicId}/messages/${courseConversationMessage.publicId}"
-                                                        >
-                                                          <input
-                                                            type="hidden"
-                                                            name="courseConversationMessageType"
-                                                            value="courseConversationMessageMessage"
-                                                          />
-                                                          <button
-                                                            class="button button--rectangle button--transparent $${courseConversationMessage.courseConversationMessageType ===
-                                                            "courseConversationMessageMessage"
-                                                              ? "button--blue"
-                                                              : ""} button--dropdown-menu"
-                                                          >
-                                                            Message
-                                                          </button>
-                                                        </form>
-                                                        <form
-                                                          method="PATCH"
-                                                          action="/courses/${request
-                                                            .state.course!
-                                                            .publicId}/conversations/${request
-                                                            .state
-                                                            .courseConversation!
-                                                            .publicId}/messages/${courseConversationMessage.publicId}"
-                                                        >
-                                                          <input
-                                                            type="hidden"
-                                                            name="courseConversationMessageType"
-                                                            value="courseConversationMessageAnswer"
-                                                          />
-                                                          <button
-                                                            class="button button--rectangle button--transparent $${courseConversationMessage.courseConversationMessageType ===
-                                                            "courseConversationMessageAnswer"
-                                                              ? "button--blue"
-                                                              : ""} button--dropdown-menu"
-                                                          >
-                                                            Answer
-                                                          </button>
-                                                        </form>
-                                                        <form
-                                                          method="PATCH"
-                                                          action="/courses/${request
-                                                            .state.course!
-                                                            .publicId}/conversations/${request
-                                                            .state
-                                                            .courseConversation!
-                                                            .publicId}/messages/${courseConversationMessage.publicId}"
-                                                        >
-                                                          <input
-                                                            type="hidden"
-                                                            name="courseConversationMessageType"
-                                                            value="courseConversationMessageFollowUpQuestion"
-                                                          />
-                                                          <button
-                                                            class="button button--rectangle button--transparent $${courseConversationMessage.courseConversationMessageType ===
-                                                            "courseConversationMessageFollowUpQuestion"
-                                                              ? "button--blue"
-                                                              : ""} button--dropdown-menu"
-                                                          >
-                                                            Follow-up question
-                                                          </button>
-                                                        </form>
-                                                      </div>
-                                                    `},
-                                                  });
-                                                `}"
-                                              >
-                                                Change message type
-                                              </button>
-                                            `
-                                          : html``}
-                                        $${mayEditCourseConversationMessage &&
-                                        request.state.courseParticipation!
-                                          .courseParticipationRole ===
-                                          "courseParticipationRoleInstructor" &&
-                                        courseConversationMessage.publicId !==
-                                          "1"
-                                          ? html`
-                                              <button
-                                                class="button button--rectangle button--transparent button--dropdown-menu"
-                                                javascript="${javascript`
-                                                  javascript.tippy({
-                                                    event,
-                                                    element: this,
-                                                    theme: "red",
-                                                    placement: "bottom-end",
-                                                    interactive: true,
-                                                    trigger: "click",
-                                                    content: ${html`
-                                                      <form
-                                                        method="DELETE"
-                                                        action="/courses/${request
-                                                          .state.course!
-                                                          .publicId}/conversations/${request
-                                                          .state
-                                                          .courseConversation!
-                                                          .publicId}/messages/${courseConversationMessage.publicId}"
-                                                        css="${css`
-                                                          display: flex;
-                                                          flex-direction: column;
-                                                          gap: var(--space--2);
-                                                        `}"
-                                                      >
-                                                        <div>
-                                                          <i
-                                                            class="bi bi-exclamation-triangle-fill"
-                                                          ></i
-                                                          > This action cannot
-                                                          be reverted.
-                                                        </div>
-                                                        <div>
-                                                          <button
-                                                            class="button button--rectangle button--red"
-                                                            css="${css`
-                                                              font-size: var(
-                                                                --font-size--3
-                                                              );
-                                                              line-height: var(
-                                                                --font-size--3--line-height
-                                                              );
-                                                            `}"
-                                                          >
-                                                            Delete message
-                                                          </button>
-                                                        </div>
-                                                      </form>
-                                                    `},
-                                                  });
-                                                `}"
-                                              >
-                                                Delete message
-                                              </button>
-                                            `
-                                          : html``}
-                                      </div>
-                                    `},
-                                  });
-                                `}"
-                              >
-                                <i class="bi bi-three-dots-vertical"></i>
-                              </button>
-                            </div>
-                          </div>
-                          <div
-                            key="courseConversationMessage--main--content--show"
-                          >
-                            ${courseConversationMessage.contentSource}
-                          </div>
-                          $${mayEditCourseConversationMessage
-                            ? html`
-                                <div
-                                  key="courseConversationMessage--main--content--edit"
-                                  hidden
+                                        : courseConversationMessage.courseConversationMessageType ===
+                                            "courseConversationMessageTypeCourseParticipationRoleInstructorWhisper"
+                                          ? html`<span
+                                              > ·
+                                              <span class="text--blue"
+                                                ><span
+                                                  css="${css`
+                                                    font-weight: 700;
+                                                  `}"
+                                                  >Instructor whisper</span
+                                                >
+                                                (hidden from students)</span
+                                              ></span
+                                            >`
+                                          : (() => {
+                                              throw new Error();
+                                            })()}</span
                                 >
-                                  TODO
-                                </div>
-                              `
-                            : html``}
-                          $${(() => {
-                            let courseConversationMessageMainFooterHTML = html``;
-                            if (request.state.course!.archivedAt === null)
-                              courseConversationMessageMainFooterHTML +=
-                                application.database.get(
-                                  sql`
-                                    select true
-                                    from "courseConversationMessageLikes"
-                                    where
-                                      "courseConversationMessage" = ${courseConversationMessage.id} and
-                                      "courseParticipation" = ${request.state.courseParticipation!.id};
-                                  `,
-                                ) === undefined
-                                  ? html`
-                                      <form
-                                        method="POST"
-                                        action="/courses/${request.state.course!
-                                          .publicId}/conversations/${request
-                                          .state.courseConversation!
-                                          .publicId}/messages/${courseConversationMessage.publicId}/likes"
-                                      >
-                                        <button
-                                          key="courseConversationMessage--main--footer--like"
-                                          class="button button--rectangle button--transparent"
-                                        >
-                                          Like
-                                        </button>
-                                      </form>
-                                    `
-                                  : html`
-                                      <form
-                                        method="DELETE"
-                                        action="/courses/${request.state.course!
-                                          .publicId}/conversations/${request
-                                          .state.courseConversation!
-                                          .publicId}/messages/${courseConversationMessage.publicId}/likes"
-                                      >
-                                        <button
-                                          key="courseConversationMessage--main--footer--like"
-                                          class="text--blue button button--rectangle button--transparent"
-                                        >
-                                          Liked
-                                        </button>
-                                      </form>
-                                    `;
-                            const courseConversationMessageLikes =
-                              application.database.all<{
-                                courseParticipation: number | null;
-                              }>(
-                                sql`
-                                  select "courseParticipation"
-                                  from "courseConversationMessageLikes"
-                                  where "courseConversationMessage" = ${courseConversationMessage.id}
-                                  order by "id" asc;
-                                `,
-                              );
-                            if (courseConversationMessageLikes.length > 0)
-                              courseConversationMessageMainFooterHTML += html`
+                              </div>
+                              <div
+                                key="courseConversationMessage--main--header--menu"
+                              >
                                 <button
-                                  key="courseConversationMessage--main--footer--likes"
-                                  class="button button--rectangle button--transparent"
+                                  class="button button--square button--icon button--transparent"
+                                  css="${css`
+                                    margin-right: var(--space---0-5);
+                                  `}"
                                   javascript="${javascript`
                                     javascript.tippy({
                                       event,
                                       element: this,
-                                      theme: "max-height",
-                                      placement: "top-start",
+                                      placement: "bottom-end",
                                       interactive: true,
                                       trigger: "click",
                                       content: ${html`
@@ -1738,416 +1411,672 @@ export default async (application: Application): Promise<void> => {
                                             gap: var(--space--2);
                                           `}"
                                         >
-                                          $${courseConversationMessageLikes.map(
-                                            (courseConversationMessageLike) => {
-                                              const courseConversationMessageViewCourseParticipation =
-                                                typeof courseConversationMessageLike.courseParticipation ===
-                                                "number"
-                                                  ? application.database.get<{
-                                                      user: number;
-                                                      courseRole:
-                                                        | "courseStaff"
-                                                        | "courseStudent";
-                                                    }>(
-                                                      sql`
-                                                        select
-                                                          "user",
-                                                          "courseRole"
-                                                        from "courseParticipations"
-                                                        where "id" = ${courseConversationMessageLike.courseParticipation};
-                                                      `,
-                                                    )
-                                                  : undefined;
-                                              const courseConversationMessageViewUser =
-                                                courseConversationMessageViewCourseParticipation !==
-                                                undefined
-                                                  ? application.database.get<{
-                                                      id: number;
-                                                      publicId: string;
-                                                      createdAt: string;
-                                                      name: string;
-                                                      nameSearch: string;
-                                                      email: string;
-                                                      emailVerificationNonce:
-                                                        | string
-                                                        | null;
-                                                      emailVerificationCreatedAt:
-                                                        | string
-                                                        | null;
-                                                      emailVerified: number;
-                                                      password: string | null;
-                                                      passwordResetNonce:
-                                                        | string
-                                                        | null;
-                                                      passwordResetCreatedAt:
-                                                        | string
-                                                        | null;
-                                                      color:
-                                                        | "red"
-                                                        | "orange"
-                                                        | "amber"
-                                                        | "yellow"
-                                                        | "lime"
-                                                        | "green"
-                                                        | "emerald"
-                                                        | "teal"
-                                                        | "cyan"
-                                                        | "sky"
-                                                        | "blue"
-                                                        | "indigo"
-                                                        | "violet"
-                                                        | "purple"
-                                                        | "fuchsia"
-                                                        | "pink"
-                                                        | "rose";
-                                                      avatar: string | null;
-                                                      systemRole:
-                                                        | "systemAdministrator"
-                                                        | "systemStaff"
-                                                        | "systemUser";
-                                                      lastSeenOnlineAt: string;
-                                                      darkMode:
-                                                        | "system"
-                                                        | "light"
-                                                        | "dark";
-                                                      sidebarWidth: number;
-                                                      emailNotificationsForAllMessages: number;
-                                                      emailNotificationsForMessagesIncludingMentions: number;
-                                                      emailNotificationsForMessagesInConversationsYouStarted: number;
-                                                      emailNotificationsForMessagesInConversationsInWhichYouParticipated: number;
-                                                      anonymous: number;
-                                                      mostRecentlyVisitedCourse:
-                                                        | number
-                                                        | null;
-                                                    }>(
-                                                      sql`
-                                                        select
-                                                          "id",
-                                                          "publicId",
-                                                          "createdAt",
-                                                          "name",
-                                                          "nameSearch",
-                                                          "email",
-                                                          "emailVerificationNonce",
-                                                          "emailVerificationCreatedAt",
-                                                          "emailVerified",
-                                                          "password",
-                                                          "passwordResetNonce",
-                                                          "passwordResetCreatedAt",
-                                                          "color",
-                                                          "avatar",
-                                                          "systemRole",
-                                                          "lastSeenOnlineAt",
-                                                          "darkMode",
-                                                          "sidebarWidth",
-                                                          "emailNotificationsForAllMessages",
-                                                          "emailNotificationsForMessagesIncludingMentions",
-                                                          "emailNotificationsForMessagesInConversationsYouStarted",
-                                                          "emailNotificationsForMessagesInConversationsInWhichYouParticipated",
-                                                          "anonymous",
-                                                          "mostRecentlyVisitedCourse"
-                                                        from "users"
-                                                        where "id" = ${courseConversationMessageViewCourseParticipation.user};
-                                                      `,
-                                                    )
-                                                  : undefined;
-                                              return html`
-                                                <div
-                                                  css="${css`
-                                                    display: flex;
-                                                    gap: var(--space--2);
+                                          <button
+                                            class="button button--rectangle button--transparent button--dropdown-menu"
+                                            javascript="${javascript`
+                                              this.onclick = async () => {
+                                                await navigator.clipboard.writeText(${`https://${application.configuration.hostname}/courses/${request.state.course!.publicId}/conversations/${request.state.courseConversation!.publicId}?${new URLSearchParams({ message: courseConversationMessage.publicId }).toString()}`});
+                                                javascript.tippy({
+                                                  element: this,
+                                                  elementProperty: "copiedTippy",
+                                                  trigger: "manual",
+                                                  content: "Copied",
+                                                }).show();
+                                                await utilities.sleep(1000);
+                                                this.copiedTippy.hide();
+                                              };
+                                            `}"
+                                          >
+                                            Copy message permanent link
+                                          </button>
+                                          $${request.state.course!
+                                            .courseState === "courseStateActive"
+                                            ? html`
+                                                <button
+                                                  class="button button--rectangle button--transparent button--dropdown-menu"
+                                                  javascript="${javascript`
+                                                    this.onclick = async () => {
+                                                      alert("TODO");
+                                                    };
                                                   `}"
                                                 >
-                                                  $${application.partials.userAvatar(
-                                                    {
-                                                      user:
-                                                        courseConversationMessageViewUser ??
-                                                        "courseParticipationDeleted",
-                                                    },
-                                                  )}
-                                                  <div
-                                                    css="${css`
-                                                      margin-top: var(
-                                                        --space--0-5
-                                                      );
-                                                    `}"
-                                                  >
-                                                    ${courseConversationMessageViewUser?.name ??
-                                                    "Former course participant"}<span
-                                                      class="text--secondary"
-                                                      css="${css`
-                                                        font-weight: 400;
-                                                      `}"
-                                                      >${courseConversationMessageViewCourseParticipation?.courseRole ===
-                                                      "courseStaff"
-                                                        ? " (course staff)"
-                                                        : ""}</span
-                                                    >
-                                                  </div>
-                                                </div>
-                                              `;
-                                            },
-                                          )}
+                                                  Reply
+                                                </button>
+                                              `
+                                            : html``}
+                                          $${mayEditCourseConversationMessage
+                                            ? html`
+                                                <button
+                                                  class="button button--rectangle button--transparent button--dropdown-menu"
+                                                  javascript="${javascript`
+                                                    this.onclick = () => {
+                                                      this.closest('[key="courseConversationMessage--main"]').querySelector('[key="courseConversationMessage--main--content--show"]').hidden = true;
+                                                      this.closest('[key="courseConversationMessage--main"]').querySelector('[key="courseConversationMessage--main--content--edit"]').hidden = false;
+                                                      this.closest('[key="courseConversationMessage--main"]').querySelector('[key="courseConversationMessage--main--footer"]').hidden = true;
+                                                      Tippy.hideAll();
+                                                      this.closest('[key="courseConversationMessage--main"]').querySelector('[key="courseConversationMessage--main--content--edit"] [name="TODO"]').focus();
+                                                    };
+                                                  `}"
+                                                >
+                                                  Edit message
+                                                </button>
+                                              `
+                                            : html``}
+                                          $${mayEditCourseConversationMessage &&
+                                          courseConversationMessageCreatedByCourseParticipation?.courseParticipationRole ===
+                                            "courseParticipationRoleStudent"
+                                            ? html`
+                                                <button
+                                                  class="button button--rectangle button--transparent button--dropdown-menu"
+                                                  javascript="${javascript`
+                                                    javascript.tippy({
+                                                      event,
+                                                      element: this,
+                                                      placement: "bottom-end",
+                                                      interactive: true,
+                                                      trigger: "click",
+                                                      content: ${html` TODO `},
+                                                    });
+                                                  `}"
+                                                >
+                                                  Change anonymity
+                                                </button>
+                                              `
+                                            : html``}
+                                          $${mayEditCourseConversationMessage &&
+                                          request.state.courseConversation!
+                                            .courseConversationType ===
+                                            "courseConversationTypeQuestion" &&
+                                          courseConversationMessage.courseConversationMessageType !==
+                                            "courseConversationMessageTypeCourseParticipationRoleInstructorWhisper" &&
+                                          courseConversationMessage.id !==
+                                            firstCourseConversationMessage.id
+                                            ? html`
+                                                <button
+                                                  class="button button--rectangle button--transparent button--dropdown-menu"
+                                                  javascript="${javascript`
+                                                    javascript.tippy({
+                                                      event,
+                                                      element: this,
+                                                      placement: "bottom-end",
+                                                      interactive: true,
+                                                      trigger: "click",
+                                                      content: ${html`
+                                                        <div
+                                                          css="${css`
+                                                            display: flex;
+                                                            flex-direction: column;
+                                                            gap: var(
+                                                              --space--2
+                                                            );
+                                                          `}"
+                                                        >
+                                                          <form
+                                                            method="PATCH"
+                                                            action="/courses/${request
+                                                              .state.course!
+                                                              .publicId}/conversations/${request
+                                                              .state
+                                                              .courseConversation!
+                                                              .publicId}/messages/${courseConversationMessage.publicId}"
+                                                          >
+                                                            <input
+                                                              type="hidden"
+                                                              name="courseConversationMessageType"
+                                                              value="courseConversationMessageTypeMessage"
+                                                            />
+                                                            <button
+                                                              class="button button--rectangle button--transparent $${courseConversationMessage.courseConversationMessageType ===
+                                                              "courseConversationMessageTypeMessage"
+                                                                ? "button--blue"
+                                                                : ""} button--dropdown-menu"
+                                                            >
+                                                              Message
+                                                            </button>
+                                                          </form>
+                                                          <form
+                                                            method="PATCH"
+                                                            action="/courses/${request
+                                                              .state.course!
+                                                              .publicId}/conversations/${request
+                                                              .state
+                                                              .courseConversation!
+                                                              .publicId}/messages/${courseConversationMessage.publicId}"
+                                                          >
+                                                            <input
+                                                              type="hidden"
+                                                              name="courseConversationMessageType"
+                                                              value="courseConversationMessageTypeAnswer"
+                                                            />
+                                                            <button
+                                                              class="button button--rectangle button--transparent $${courseConversationMessage.courseConversationMessageType ===
+                                                              "courseConversationMessageTypeAnswer"
+                                                                ? "button--blue"
+                                                                : ""} button--dropdown-menu"
+                                                            >
+                                                              Answer
+                                                            </button>
+                                                          </form>
+                                                          <form
+                                                            method="PATCH"
+                                                            action="/courses/${request
+                                                              .state.course!
+                                                              .publicId}/conversations/${request
+                                                              .state
+                                                              .courseConversation!
+                                                              .publicId}/messages/${courseConversationMessage.publicId}"
+                                                          >
+                                                            <input
+                                                              type="hidden"
+                                                              name="courseConversationMessageType"
+                                                              value="courseConversationMessageTypeFollowUpQuestion"
+                                                            />
+                                                            <button
+                                                              class="button button--rectangle button--transparent $${courseConversationMessage.courseConversationMessageType ===
+                                                              "courseConversationMessageTypeFollowUpQuestion"
+                                                                ? "button--blue"
+                                                                : ""} button--dropdown-menu"
+                                                            >
+                                                              Follow-up question
+                                                            </button>
+                                                          </form>
+                                                        </div>
+                                                      `},
+                                                    });
+                                                  `}"
+                                                >
+                                                  Change message type
+                                                </button>
+                                              `
+                                            : html``}
+                                          $${mayEditCourseConversationMessage &&
+                                          request.state.courseParticipation!
+                                            .courseParticipationRole ===
+                                            "courseParticipationRoleInstructor" &&
+                                          courseConversationMessage.id !==
+                                            firstCourseConversationMessage.id
+                                            ? html`
+                                                <button
+                                                  class="button button--rectangle button--transparent button--dropdown-menu"
+                                                  javascript="${javascript`
+                                                    javascript.tippy({
+                                                      event,
+                                                      element: this,
+                                                      theme: "red",
+                                                      placement: "bottom-end",
+                                                      interactive: true,
+                                                      trigger: "click",
+                                                      content: ${html`
+                                                        <form
+                                                          method="DELETE"
+                                                          action="/courses/${request
+                                                            .state.course!
+                                                            .publicId}/conversations/${request
+                                                            .state
+                                                            .courseConversation!
+                                                            .publicId}/messages/${courseConversationMessage.publicId}"
+                                                          css="${css`
+                                                            display: flex;
+                                                            flex-direction: column;
+                                                            gap: var(
+                                                              --space--2
+                                                            );
+                                                          `}"
+                                                        >
+                                                          <div>
+                                                            <i
+                                                              class="bi bi-exclamation-triangle-fill"
+                                                            ></i
+                                                            > This action cannot
+                                                            be reverted.
+                                                          </div>
+                                                          <div>
+                                                            <button
+                                                              class="button button--rectangle button--red"
+                                                              css="${css`
+                                                                font-size: var(
+                                                                  --font-size--3
+                                                                );
+                                                                line-height: var(
+                                                                  --font-size--3--line-height
+                                                                );
+                                                              `}"
+                                                            >
+                                                              Delete message
+                                                            </button>
+                                                          </div>
+                                                        </form>
+                                                      `},
+                                                    });
+                                                  `}"
+                                                >
+                                                  Delete message
+                                                </button>
+                                              `
+                                            : html``}
                                         </div>
                                       `},
                                     });
                                   `}"
                                 >
-                                  ${String(
-                                    courseConversationMessageLikes.length,
-                                  )}
-                                  like${courseConversationMessageLikes.length !==
-                                  1
-                                    ? "s"
-                                    : ""} <i class="bi bi-chevron-down"></i>
+                                  <i class="bi bi-three-dots-vertical"></i>
                                 </button>
-                              `;
-                            if (
-                              request.state.courseParticipation!
-                                .courseParticipationRole ===
-                              "courseParticipationRoleInstructor"
-                            ) {
-                              const courseConversationMessageViews =
+                              </div>
+                            </div>
+                            <div
+                              key="courseConversationMessage--main--content--show"
+                            >
+                              ${courseConversationMessage.content}
+                            </div>
+                            $${mayEditCourseConversationMessage
+                              ? html`
+                                  <div
+                                    key="courseConversationMessage--main--content--edit"
+                                    hidden
+                                  >
+                                    TODO
+                                  </div>
+                                `
+                              : html``}
+                            $${(() => {
+                              let courseConversationMessageMainFooterHTML = html``;
+                              if (
+                                request.state.course!.courseState ===
+                                "courseStateActive"
+                              )
+                                courseConversationMessageMainFooterHTML +=
+                                  application.database.get(
+                                    sql`
+                                      select true
+                                      from "courseConversationMessageLikes"
+                                      where
+                                        "courseConversationMessage" = ${courseConversationMessage.id} and
+                                        "courseParticipation" = ${request.state.courseParticipation!.id};
+                                    `,
+                                  ) === undefined
+                                    ? html`
+                                        <form
+                                          method="POST"
+                                          action="/courses/${request.state
+                                            .course!
+                                            .publicId}/conversations/${request
+                                            .state.courseConversation!
+                                            .publicId}/messages/${courseConversationMessage.publicId}/likes"
+                                        >
+                                          <button
+                                            key="courseConversationMessage--main--footer--like"
+                                            class="button button--rectangle button--transparent"
+                                          >
+                                            Like
+                                          </button>
+                                        </form>
+                                      `
+                                    : html`
+                                        <form
+                                          method="DELETE"
+                                          action="/courses/${request.state
+                                            .course!
+                                            .publicId}/conversations/${request
+                                            .state.courseConversation!
+                                            .publicId}/messages/${courseConversationMessage.publicId}/likes"
+                                        >
+                                          <button
+                                            key="courseConversationMessage--main--footer--like"
+                                            class="text--blue button button--rectangle button--transparent"
+                                          >
+                                            Liked
+                                          </button>
+                                        </form>
+                                      `;
+                              const courseConversationMessageLikes =
                                 application.database.all<{
-                                  createdAt: string;
                                   courseParticipation: number | null;
                                 }>(
                                   sql`
-                                    select "createdAt", "courseParticipation"
-                                    from "courseConversationMessageViews"
+                                    select "courseParticipation"
+                                    from "courseConversationMessageLikes"
                                     where "courseConversationMessage" = ${courseConversationMessage.id}
                                     order by "id" asc;
                                   `,
                                 );
-                              courseConversationMessageMainFooterHTML +=
-                                courseConversationMessageViews.length > 0
-                                  ? html`
-                                      <button
-                                        key="courseConversationMessage--main--footer--views"
-                                        class="button button--rectangle button--transparent"
-                                        javascript="${javascript`
-                                          javascript.tippy({
-                                            event,
-                                            element: this,
-                                            placement: "top-start",
-                                            interactive: true,
-                                            trigger: "click",
-                                            content: ${html`
-                                              <div
-                                                css="${css`
-                                                  display: flex;
-                                                  flex-direction: column;
-                                                  gap: var(--space--2);
-                                                `}"
-                                              >
-                                                $${courseConversationMessageViews.map(
-                                                  (
-                                                    courseConversationMessageView,
-                                                  ) => {
-                                                    const courseConversationMessageViewCourseParticipation =
-                                                      typeof courseConversationMessageView.courseParticipation ===
-                                                      "number"
-                                                        ? application.database.get<{
-                                                            user: number;
-                                                            courseRole:
-                                                              | "courseStaff"
-                                                              | "courseStudent";
-                                                          }>(
-                                                            sql`
-                                                              select
-                                                                "user",
-                                                                "courseRole"
-                                                              from "courseParticipations"
-                                                              where "id" = ${courseConversationMessageView.courseParticipation};
-                                                            `,
-                                                          )
-                                                        : undefined;
-                                                    const courseConversationMessageViewUser =
-                                                      courseConversationMessageViewCourseParticipation !==
-                                                      undefined
-                                                        ? application.database.get<{
-                                                            id: number;
-                                                            publicId: string;
-                                                            createdAt: string;
-                                                            name: string;
-                                                            nameSearch: string;
-                                                            email: string;
-                                                            emailVerificationNonce:
-                                                              | string
-                                                              | null;
-                                                            emailVerificationCreatedAt:
-                                                              | string
-                                                              | null;
-                                                            emailVerified: number;
-                                                            password:
-                                                              | string
-                                                              | null;
-                                                            passwordResetNonce:
-                                                              | string
-                                                              | null;
-                                                            passwordResetCreatedAt:
-                                                              | string
-                                                              | null;
-                                                            color:
-                                                              | "red"
-                                                              | "orange"
-                                                              | "amber"
-                                                              | "yellow"
-                                                              | "lime"
-                                                              | "green"
-                                                              | "emerald"
-                                                              | "teal"
-                                                              | "cyan"
-                                                              | "sky"
-                                                              | "blue"
-                                                              | "indigo"
-                                                              | "violet"
-                                                              | "purple"
-                                                              | "fuchsia"
-                                                              | "pink"
-                                                              | "rose";
-                                                            avatar:
-                                                              | string
-                                                              | null;
-                                                            systemRole:
-                                                              | "systemAdministrator"
-                                                              | "systemStaff"
-                                                              | "systemUser";
-                                                            lastSeenOnlineAt: string;
-                                                            darkMode:
-                                                              | "system"
-                                                              | "light"
-                                                              | "dark";
-                                                            sidebarWidth: number;
-                                                            emailNotificationsForAllMessages: number;
-                                                            emailNotificationsForMessagesIncludingMentions: number;
-                                                            emailNotificationsForMessagesInConversationsYouStarted: number;
-                                                            emailNotificationsForMessagesInConversationsInWhichYouParticipated: number;
-                                                            anonymous: number;
-                                                            mostRecentlyVisitedCourse:
-                                                              | number
-                                                              | null;
-                                                          }>(
-                                                            sql`
-                                                              select
-                                                                "id",
-                                                                "publicId",
-                                                                "createdAt",
-                                                                "name",
-                                                                "nameSearch",
-                                                                "email",
-                                                                "emailVerificationNonce",
-                                                                "emailVerificationCreatedAt",
-                                                                "emailVerified",
-                                                                "password",
-                                                                "passwordResetNonce",
-                                                                "passwordResetCreatedAt",
-                                                                "color",
-                                                                "avatar",
-                                                                "systemRole",
-                                                                "lastSeenOnlineAt",
-                                                                "darkMode",
-                                                                "sidebarWidth",
-                                                                "emailNotificationsForAllMessages",
-                                                                "emailNotificationsForMessagesIncludingMentions",
-                                                                "emailNotificationsForMessagesInConversationsYouStarted",
-                                                                "emailNotificationsForMessagesInConversationsInWhichYouParticipated",
-                                                                "anonymous",
-                                                                "mostRecentlyVisitedCourse"
-                                                              from "users"
-                                                              where "id" = ${courseConversationMessageViewCourseParticipation.user};
-                                                            `,
-                                                          )
-                                                        : undefined;
-                                                    return html`
-                                                      <div
+                              if (courseConversationMessageLikes.length > 0)
+                                courseConversationMessageMainFooterHTML += html`
+                                  <button
+                                    key="courseConversationMessage--main--footer--likes"
+                                    class="button button--rectangle button--transparent"
+                                    javascript="${javascript`
+                                      javascript.tippy({
+                                        event,
+                                        element: this,
+                                        theme: "max-height",
+                                        placement: "top-start",
+                                        interactive: true,
+                                        trigger: "click",
+                                        content: ${html`
+                                          <div
+                                            css="${css`
+                                              display: flex;
+                                              flex-direction: column;
+                                              gap: var(--space--2);
+                                            `}"
+                                          >
+                                            $${courseConversationMessageLikes.map(
+                                              (
+                                                courseConversationMessageLike,
+                                              ) => {
+                                                const courseConversationMessageLikeCourseParticipation =
+                                                  typeof courseConversationMessageLike.courseParticipation ===
+                                                  "number"
+                                                    ? application.database.get<{
+                                                        user: number;
+                                                        courseParticipationRole:
+                                                          | "courseParticipationRoleInstructor"
+                                                          | "courseParticipationRoleStudent";
+                                                      }>(
+                                                        sql`
+                                                          select
+                                                            "user",
+                                                            "courseParticipationRole"
+                                                          from "courseParticipations"
+                                                          where "id" = ${courseConversationMessageLike.courseParticipation};
+                                                        `,
+                                                      )
+                                                    : undefined;
+                                                const courseConversationMessageLikeUser =
+                                                  courseConversationMessageLikeCourseParticipation !==
+                                                  undefined
+                                                    ? application.database.get<{
+                                                        publicId: string;
+                                                        name: string;
+                                                        avatarColor:
+                                                          | "red"
+                                                          | "orange"
+                                                          | "amber"
+                                                          | "yellow"
+                                                          | "lime"
+                                                          | "green"
+                                                          | "emerald"
+                                                          | "teal"
+                                                          | "cyan"
+                                                          | "sky"
+                                                          | "blue"
+                                                          | "indigo"
+                                                          | "violet"
+                                                          | "purple"
+                                                          | "fuchsia"
+                                                          | "pink"
+                                                          | "rose";
+                                                        avatarImage:
+                                                          | string
+                                                          | null;
+                                                        userRole:
+                                                          | "userRoleSystemAdministrator"
+                                                          | "userRoleStaff"
+                                                          | "userRoleUser";
+                                                        lastSeenOnlineAt: string;
+                                                      }>(
+                                                        sql`
+                                                          select
+                                                            "publicId",
+                                                            "name",
+                                                            "avatarColor",
+                                                            "avatarImage",
+                                                            "userRole",
+                                                            "lastSeenOnlineAt"
+                                                          from "users"
+                                                          where "id" = ${courseConversationMessageLikeCourseParticipation.user};
+                                                        `,
+                                                      )
+                                                    : undefined;
+                                                return html`
+                                                  <div
+                                                    css="${css`
+                                                      display: flex;
+                                                      gap: var(--space--2);
+                                                    `}"
+                                                  >
+                                                    $${application.partials.userAvatar(
+                                                      {
+                                                        user:
+                                                          courseConversationMessageLikeUser ??
+                                                          "courseParticipationDeleted",
+                                                      },
+                                                    )}
+                                                    <div
+                                                      css="${css`
+                                                        margin-top: var(
+                                                          --space--0-5
+                                                        );
+                                                      `}"
+                                                    >
+                                                      ${courseConversationMessageLikeUser?.name ??
+                                                      "Deleted course participant"}<span
+                                                        class="text--secondary"
                                                         css="${css`
-                                                          display: flex;
-                                                          gap: var(--space--2);
+                                                          font-weight: 400;
                                                         `}"
+                                                        >${courseConversationMessageLikeCourseParticipation?.courseParticipationRole ===
+                                                        "courseParticipationRoleInstructor"
+                                                          ? " (instructor)"
+                                                          : ""}</span
                                                       >
-                                                        $${application.partials.userAvatar(
-                                                          {
-                                                            user:
-                                                              courseConversationMessageViewUser ??
-                                                              "courseParticipationDeleted",
-                                                          },
-                                                        )}
+                                                    </div>
+                                                  </div>
+                                                `;
+                                              },
+                                            )}
+                                          </div>
+                                        `},
+                                      });
+                                    `}"
+                                  >
+                                    ${String(
+                                      courseConversationMessageLikes.length,
+                                    )}
+                                    like${courseConversationMessageLikes.length !==
+                                    1
+                                      ? "s"
+                                      : ""} <i class="bi bi-chevron-down"></i>
+                                  </button>
+                                `;
+                              if (
+                                request.state.courseParticipation!
+                                  .courseParticipationRole ===
+                                "courseParticipationRoleInstructor"
+                              ) {
+                                const courseConversationMessageViews =
+                                  application.database.all<{
+                                    createdAt: string;
+                                    courseParticipation: number | null;
+                                  }>(
+                                    sql`
+                                      select "createdAt", "courseParticipation"
+                                      from "courseConversationMessageViews"
+                                      where "courseConversationMessage" = ${courseConversationMessage.id}
+                                      order by "id" asc;
+                                    `,
+                                  );
+                                courseConversationMessageMainFooterHTML +=
+                                  courseConversationMessageViews.length > 0
+                                    ? html`
+                                        <button
+                                          key="courseConversationMessage--main--footer--views"
+                                          class="button button--rectangle button--transparent"
+                                          javascript="${javascript`
+                                            javascript.tippy({
+                                              event,
+                                              element: this,
+                                              placement: "top-start",
+                                              interactive: true,
+                                              trigger: "click",
+                                              content: ${html`
+                                                <div
+                                                  css="${css`
+                                                    display: flex;
+                                                    flex-direction: column;
+                                                    gap: var(--space--2);
+                                                  `}"
+                                                >
+                                                  $${courseConversationMessageViews.map(
+                                                    (
+                                                      courseConversationMessageView,
+                                                    ) => {
+                                                      const courseConversationMessageViewCourseParticipation =
+                                                        typeof courseConversationMessageView.courseParticipation ===
+                                                        "number"
+                                                          ? application.database.get<{
+                                                              user: number;
+                                                              courseParticipationRole:
+                                                                | "courseParticipationRoleInstructor"
+                                                                | "courseParticipationRoleStudent";
+                                                            }>(
+                                                              sql`
+                                                                select
+                                                                  "user",
+                                                                  "courseParticipationRole"
+                                                                from "courseParticipations"
+                                                                where "id" = ${courseConversationMessageView.courseParticipation};
+                                                              `,
+                                                            )
+                                                          : undefined;
+                                                      const courseConversationMessageViewUser =
+                                                        courseConversationMessageViewCourseParticipation !==
+                                                        undefined
+                                                          ? application.database.get<{
+                                                              publicId: string;
+                                                              name: string;
+                                                              avatarColor:
+                                                                | "red"
+                                                                | "orange"
+                                                                | "amber"
+                                                                | "yellow"
+                                                                | "lime"
+                                                                | "green"
+                                                                | "emerald"
+                                                                | "teal"
+                                                                | "cyan"
+                                                                | "sky"
+                                                                | "blue"
+                                                                | "indigo"
+                                                                | "violet"
+                                                                | "purple"
+                                                                | "fuchsia"
+                                                                | "pink"
+                                                                | "rose";
+                                                              avatarImage:
+                                                                | string
+                                                                | null;
+                                                              userRole:
+                                                                | "userRoleSystemAdministrator"
+                                                                | "userRoleStaff"
+                                                                | "userRoleUser";
+                                                              lastSeenOnlineAt: string;
+                                                            }>(
+                                                              sql`
+                                                                select
+                                                                  "publicId",
+                                                                  "name",
+                                                                  "avatarColor",
+                                                                  "avatarImage",
+                                                                  "userRole",
+                                                                  "lastSeenOnlineAt"
+                                                                from "users"
+                                                                where "id" = ${courseConversationMessageViewCourseParticipation.user};
+                                                              `,
+                                                            )
+                                                          : undefined;
+                                                      return html`
                                                         <div
                                                           css="${css`
-                                                            margin-top: var(
-                                                              --space--0-5
+                                                            display: flex;
+                                                            gap: var(
+                                                              --space--2
                                                             );
                                                           `}"
                                                         >
-                                                          ${courseConversationMessageViewUser?.name ??
-                                                          "Former course participant"}<span
-                                                            class="text--secondary"
+                                                          $${application.partials.userAvatar(
+                                                            {
+                                                              user:
+                                                                courseConversationMessageViewUser ??
+                                                                "courseParticipationDeleted",
+                                                            },
+                                                          )}
+                                                          <div
                                                             css="${css`
-                                                              font-weight: 400;
+                                                              margin-top: var(
+                                                                --space--0-5
+                                                              );
                                                             `}"
-                                                            >${courseConversationMessageViewCourseParticipation?.courseRole ===
-                                                            "courseStaff"
-                                                              ? " (course staff)"
-                                                              : ""} ·
-                                                            <time
-                                                              datetime="${courseConversationMessageView.createdAt}"
-                                                              javascript="${javascript`
-                                                                javascript.relativizeDateTimeElement(this, { preposition: true, capitalize: true });
+                                                          >
+                                                            ${courseConversationMessageViewUser?.name ??
+                                                            "Deleted course participant"}<span
+                                                              class="text--secondary"
+                                                              css="${css`
+                                                                font-weight: 400;
                                                               `}"
-                                                            ></time
-                                                          ></span>
+                                                              >${courseConversationMessageViewCourseParticipation?.courseParticipationRole ===
+                                                              "courseParticipationRoleInstructor"
+                                                                ? " (instructor)"
+                                                                : ""} ·
+                                                              <time
+                                                                datetime="${courseConversationMessageView.createdAt}"
+                                                                javascript="${javascript`
+                                                                  javascript.relativizeDateTimeElement(this, { preposition: true, capitalize: true });
+                                                                `}"
+                                                              ></time
+                                                            ></span>
+                                                          </div>
                                                         </div>
-                                                      </div>
-                                                    `;
-                                                  },
-                                                )}
-                                              </div>
-                                            `},
-                                          });
-                                        `}"
-                                      >
-                                        ${String(
-                                          courseConversationMessageViews.length,
-                                        )}
-                                        view${courseConversationMessageViews.length !==
-                                        1
-                                          ? "s"
-                                          : ""} <i
-                                          class="bi bi-chevron-down"
-                                        ></i>
-                                      </button>
-                                    `
-                                  : html`
-                                      <div
-                                        key="courseConversationMessage--main--footer--views"
-                                      >
-                                        0 views
-                                      </div>
-                                    `;
-                            }
-                            return courseConversationMessageMainFooterHTML !==
-                              html``
-                              ? html`
-                                  <div
-                                    key="courseConversationMessage--main--footer"
-                                    class="text--secondary"
-                                    css="${css`
-                                      display: flex;
-                                      flex-wrap: wrap;
-                                      column-gap: var(--space--4);
-                                      row-gap: var(--space--2);
-                                    `}"
-                                  >
-                                    $${courseConversationMessageMainFooterHTML}
-                                  </div>
-                                `
-                              : html``;
-                          })()}
+                                                      `;
+                                                    },
+                                                  )}
+                                                </div>
+                                              `},
+                                            });
+                                          `}"
+                                        >
+                                          ${String(
+                                            courseConversationMessageViews.length,
+                                          )}
+                                          view${courseConversationMessageViews.length !==
+                                          1
+                                            ? "s"
+                                            : ""} <i
+                                            class="bi bi-chevron-down"
+                                          ></i>
+                                        </button>
+                                      `
+                                    : html`
+                                        <div
+                                          key="courseConversationMessage--main--footer--views"
+                                        >
+                                          0 views
+                                        </div>
+                                      `;
+                              }
+                              return courseConversationMessageMainFooterHTML !==
+                                html``
+                                ? html`
+                                    <div
+                                      key="courseConversationMessage--main--footer"
+                                      class="text--secondary"
+                                      css="${css`
+                                        display: flex;
+                                        flex-wrap: wrap;
+                                        column-gap: var(--space--4);
+                                        row-gap: var(--space--2);
+                                      `}"
+                                    >
+                                      $${courseConversationMessageMainFooterHTML}
+                                    </div>
+                                  `
+                                : html``;
+                            })()}
+                          </div>
                         </div>
-                      </div>
-                    `;
-                  })}
+                      `;
+                    });
+                })()}
               </div>
               $${request.state.course.courseState === "courseStateActive"
                 ? html`
