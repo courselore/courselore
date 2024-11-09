@@ -597,10 +597,7 @@ export default async (application: Application): Promise<void> => {
                                               >Archived</span
                                             >`
                                           : html``,
-                                        html`${course.year ?? ""}`,
-                                        html`${course.term ?? ""}`,
-                                        html`${course.code ?? ""}`,
-                                        html`${course.institution ?? ""}`,
+                                        html`${course.information ?? ""}`,
                                       ]
                                         .filter(
                                           (courseInformationPart) =>
