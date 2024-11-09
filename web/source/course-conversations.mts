@@ -623,12 +623,23 @@ export default async (application: Application): Promise<void> => {
                               "courseParticipationRoleInstructor"
                             ? html`
                                 <button
-                                  class="${Boolean(
+                                  class="button button--rectangle button--transparent"
+                                  css="${Boolean(
                                     request.state.courseConversation
                                       .questionResolved,
                                   ) === false
-                                    ? "text--red"
-                                    : "text--green"} button button--rectangle button--transparent"
+                                    ? css`
+                                        color: light-dark(
+                                          var(--color--red--500),
+                                          var(--color--red--500)
+                                        );
+                                      `
+                                    : css`
+                                        color: light-dark(
+                                          var(--color--green--500),
+                                          var(--color--green--500)
+                                        );
+                                      `}"
                                   javascript="${javascript`
                                     javascript.tippy({
                                       event,
@@ -709,12 +720,22 @@ export default async (application: Application): Promise<void> => {
                               `
                             : html`
                                 <div
-                                  class="${Boolean(
+                                  css="${Boolean(
                                     request.state.courseConversation
                                       .questionResolved,
                                   ) === false
-                                    ? "text--red"
-                                    : "text--green"}"
+                                    ? css`
+                                        color: light-dark(
+                                          var(--color--red--500),
+                                          var(--color--red--500)
+                                        );
+                                      `
+                                    : css`
+                                        color: light-dark(
+                                          var(--color--green--500),
+                                          var(--color--green--500)
+                                        );
+                                      `}"
                                 >
                                   ${Boolean(
                                     request.state.courseConversation
@@ -1375,7 +1396,13 @@ export default async (application: Application): Promise<void> => {
                                         "courseConversationMessageTypeAnswer"
                                       ? html`<span
                                           > ·
-                                          <span class="text--green"
+                                          <span
+                                            css="${css`
+                                              color: light-dark(
+                                                var(--color--green--500),
+                                                var(--color--green--500)
+                                              );
+                                            `}"
                                             ><span
                                               css="${css`
                                                 font-weight: 700;
@@ -1402,9 +1429,12 @@ export default async (application: Application): Promise<void> => {
                                         ? html`<span
                                             > ·
                                             <span
-                                              class="text--red"
                                               css="${css`
                                                 font-weight: 700;
+                                                color: light-dark(
+                                                  var(--color--red--500),
+                                                  var(--color--red--500)
+                                                );
                                               `}"
                                               >Follow-up question</span
                                             ></span
@@ -1413,7 +1443,13 @@ export default async (application: Application): Promise<void> => {
                                             "courseConversationMessageTypeCourseParticipationRoleInstructorWhisper"
                                           ? html`<span
                                               > ·
-                                              <span class="text--blue"
+                                              <span
+                                                css="${css`
+                                                  color: light-dark(
+                                                    var(--color--blue--500),
+                                                    var(--color--blue--500)
+                                                  );
+                                                `}"
                                                 ><span
                                                   css="${css`
                                                     font-weight: 700;
@@ -1762,7 +1798,13 @@ export default async (application: Application): Promise<void> => {
                                         >
                                           <button
                                             key="courseConversationMessage--main--footer--like"
-                                            class="text--blue button button--rectangle button--transparent"
+                                            class="button button--rectangle button--transparent"
+                                            css="${css`
+                                              color: light-dark(
+                                                var(--color--blue--500),
+                                                var(--color--blue--500)
+                                              );
+                                            `}"
                                           >
                                             Liked
                                           </button>
@@ -2582,7 +2624,13 @@ export default async (application: Application): Promise<void> => {
                                 >
                                 <br />
                                 $${Math.random() < 0.5
-                                  ? html`<span class="text--red"
+                                  ? html`<span
+                                      css="${css`
+                                        color: light-dark(
+                                          var(--color--red--500),
+                                          var(--color--red--500)
+                                        );
+                                      `}"
                                       >Question · Unresolved</span
                                     >`
                                   : Math.random() < 0.5
