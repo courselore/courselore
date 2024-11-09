@@ -442,7 +442,8 @@ export default async (application: Application): Promise<void> => {
             </svg>
             <div
               css="${css`
-                font-weight: 700;
+                font-family: "Roboto Serif Variable", var(--font-family--serif);
+                font-weight: 900;
                 font-size: var(--font-size--4);
                 line-height: var(--font-size--4--line-height);
               `}"
