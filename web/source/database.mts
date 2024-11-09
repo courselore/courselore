@@ -2692,7 +2692,7 @@ export default async (application: Application): Promise<void> => {
       const administrationOptions = database.get<{
         privateKey: string;
         certificate: string;
-        userRolesWhoMayCreateCourses:
+        userSystemRolesWhoMayCreateCourses:
           | "all"
           | "staff-and-administrators"
           | "administrators";
@@ -2716,7 +2716,7 @@ export default async (application: Application): Promise<void> => {
                 all: "userRoleUser",
                 "staff-and-administrators": "userRoleStaff",
                 administrators: "userRoleSystemAdministrator",
-              }[administrationOptions.userRolesWhoMayCreateCourses]
+              }[administrationOptions.userSystemRolesWhoMayCreateCourses]
             }
           );
         `,
