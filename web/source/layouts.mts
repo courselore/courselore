@@ -34,9 +34,11 @@ export type ApplicationLayouts = {
 export default async (application: Application): Promise<void> => {
   css`
     @import "@radically-straightforward/javascript/static/index.css";
-    @import "@fontsource-variable/roboto-flex";
-    @import "@fontsource-variable/roboto-serif";
-    @import "@fontsource-variable/roboto-mono";
+    @import "@fontsource-variable/roboto-flex/slnt.css";
+    @import "@fontsource-variable/roboto-serif/wght.css";
+    @import "@fontsource-variable/roboto-serif/wght-italic.css";
+    @import "@fontsource-variable/roboto-mono/wght.css";
+    @import "@fontsource-variable/roboto-mono/wght-italic.css";
     @import "bootstrap-icons/font/bootstrap-icons.css";
     @import "katex/dist/katex.css";
 
