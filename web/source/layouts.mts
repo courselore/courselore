@@ -34,10 +34,9 @@ export type ApplicationLayouts = {
 export default async (application: Application): Promise<void> => {
   css`
     @import "@radically-straightforward/javascript/static/index.css";
-    @import "@fontsource-variable/public-sans";
-    @import "@fontsource-variable/public-sans/wght-italic.css";
-    @import "@fontsource-variable/jetbrains-mono";
-    @import "@fontsource-variable/jetbrains-mono/wght-italic.css";
+    @import "@fontsource-variable/roboto-flex";
+    @import "@fontsource-variable/roboto-serif";
+    @import "@fontsource-variable/roboto-mono";
     @import "bootstrap-icons/font/bootstrap-icons.css";
     @import "katex/dist/katex.css";
 
@@ -379,7 +378,7 @@ export default async (application: Application): Promise<void> => {
       </head>
       <body
         css="${css`
-          font-family: "Public Sans Variable", var(--font-family--sans-serif);
+          font-family: "Roboto Flex Variable", var(--font-family--sans-serif);
           font-size: var(--font-size--3-5);
           line-height: var(--font-size--3-5--line-height);
           color: light-dark(var(--color--black), var(--color--white));
