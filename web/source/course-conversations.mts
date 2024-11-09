@@ -2303,7 +2303,7 @@ export default async (application: Application): Promise<void> => {
                 transition-timing-function: var(
                   --transition-timing-function--ease-in-out
                 );
-                [key="main"].sidebar--open & {
+                [key="main"][state~="sidebar--open"] & {
                   transform: translateX(0%);
                   box-shadow: var(--box-shadow--25);
                 }
@@ -2701,7 +2701,7 @@ export default async (application: Application): Promise<void> => {
                 --transition-timing-function--ease-in-out
               );
               @media (max-width: 899px) {
-                [key="main"].sidebar--open & {
+                [key="main"][state~="sidebar--open"] & {
                   opacity: var(--opacity--30);
                   pointer-events: auto;
                 }
