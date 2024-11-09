@@ -42,11 +42,6 @@ export default async (application: Application): Promise<void> => {
     @import "bootstrap-icons/font/bootstrap-icons.css";
     @import "katex/dist/katex.css";
 
-    .separator {
-      border-top: var(--border-width--1) solid
-        light-dark(var(--color--slate--200), var(--color--slate--800));
-    }
-
     .input--text {
       background-color: light-dark(
         var(--color--slate--50),
@@ -220,6 +215,11 @@ export default async (application: Application): Promise<void> => {
         border: none;
         border-radius: calc(var(--border-radius--1) - var(--border-width--1));
       }
+    }
+
+    .separator {
+      border-top: var(--border-width--1) solid
+        light-dark(var(--color--slate--200), var(--color--slate--800));
     }
 
     .tippy-box {
