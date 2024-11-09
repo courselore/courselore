@@ -2149,7 +2149,7 @@ export default async (application: Application): Promise<void> => {
                     `;
                   })}
               </div>
-              $${request.state.course.archivedAt === null
+              $${request.state.course.courseState === "courseStateActive"
                 ? html`
                     <div key="courseConversationMessage/new">
                       <form
