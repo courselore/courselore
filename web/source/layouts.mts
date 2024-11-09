@@ -705,8 +705,8 @@ export default async (application: Application): Promise<void> => {
                             </div>
                           </div>
                           <hr class="separator" />
-                          $${request.state.user.systemRole ===
-                          "systemAdministrator"
+                          $${request.state.user.userRole ===
+                          "userRoleSystemAdministrator"
                             ? html`
                                 <a
                                   href="/system"
