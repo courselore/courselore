@@ -16,7 +16,7 @@ export default async (application: Application): Promise<void> => {
         {},
         {},
         {},
-        { courseConversationMessageIds: string[] },
+        { courseConversationMessagePublicIds: string[] },
         Application["types"]["states"]["CourseConversation"]
       >,
       response,
@@ -28,16 +28,16 @@ export default async (application: Application): Promise<void> => {
       )
         return;
       if (
-        !Array.isArray(request.body.courseConversationMessageIds) ||
-        request.body.courseConversationMessageIds.some(
-          (courseConversationMessageId) =>
-            typeof courseConversationMessageId !== "string",
+        !Array.isArray(request.body.courseConversationMessagePublicIds) ||
+        request.body.courseConversationMessagePublicIds.some(
+          (courseConversationMessagePublicId) =>
+            typeof courseConversationMessagePublicId !== "string",
         )
       )
         throw "validation";
       application.database.executeTransaction(() => {
-        for (const courseConversationMessageId of request.body
-          .courseConversationMessageIds!) {
+        for (const courseConversationMessagePublicId of request.body
+          .courseConversationMessagePublicIds!) {
           const courseConversationMessage = application.database.get<{
             id: number;
           }>(
@@ -45,13 +45,13 @@ export default async (application: Application): Promise<void> => {
               select "id"
               from "courseConversationMessages"
               where
-                "publicId" = ${courseConversationMessageId} and
+                "publicId" = ${courseConversationMessagePublicId} and
                 "courseConversation" = ${request.state.courseConversation!.id} $${
                   request.state.courseParticipation!.courseParticipationRole !==
                   "courseParticipationRoleInstructor"
                     ? sql`
                         and
-                        "courseConversationMessageType" != 'courseConversationMessageCourseStaffWhisper'
+                        "courseConversationMessageType" != 'courseConversationMessageTypeCourseParticipationRoleInstructorWhisper'
                       `
                     : sql``
                 };
@@ -72,14 +72,14 @@ export default async (application: Application): Promise<void> => {
             application.database.run(
               sql`
                 insert into "courseConversationMessageViews" (
-                  "createdAt",
                   "courseConversationMessage",
-                  "courseParticipation"
+                  "courseParticipation",
+                  "createdAt"
                 )
                 values (
-                  ${new Date().toISOString()},
                   ${courseConversationMessage.id},
-                  ${request.state.courseParticipation!.id}
+                  ${request.state.courseParticipation!.id},
+                  ${new Date().toISOString()}
                 );
               `,
             );

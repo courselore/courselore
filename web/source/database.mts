@@ -2667,9 +2667,9 @@ export default async (application: Application): Promise<void> => {
           
           create table "courseConversationMessageViews" (
             "id" integer primary key autoincrement,
-            "createdAt" text not null,
             "courseConversationMessage" integer not null references "courseConversationMessages",
             "courseParticipation" integer null references "courseParticipations",
+            "createdAt" text not null,
             unique ("courseConversationMessage", "courseParticipation")
           ) strict;
           
