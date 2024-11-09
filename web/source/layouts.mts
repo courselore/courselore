@@ -346,15 +346,15 @@ export default async (application: Application): Promise<void> => {
     <!doctype html>
     <html
       css="${request.state.user === undefined ||
-      request.state.user.darkMode === "system"
+      request.state.user.darkMode === "userDarkModeSystem"
         ? css`
             color-scheme: light dark;
           `
-        : request.state.user.darkMode === "light"
+        : request.state.user.darkMode === "userDarkModeLight"
           ? css`
               color-scheme: light;
             `
-          : request.state.user.darkMode === "dark"
+          : request.state.user.darkMode === "userDarkModeDark"
             ? css`
                 color-scheme: dark;
               `
