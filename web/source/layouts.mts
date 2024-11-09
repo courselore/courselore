@@ -580,7 +580,8 @@ export default async (application: Application): Promise<void> => {
                                     <div>${course.name}</div>
                                     $${(() => {
                                       const courseInformation = [
-                                        typeof course.archivedAt === "string"
+                                        course.courseState ===
+                                        "courseStateArchived"
                                           ? html`<span
                                               css="${css`
                                                 font-weight: 700;
