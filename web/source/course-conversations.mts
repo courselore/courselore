@@ -174,7 +174,15 @@ export default async (application: Application): Promise<void> => {
                       ? html`
                           <div
                             key="courseConversation--archived"
-                            class="text--secondary text--red"
+                            css="${css`
+                              font-size: var(--font-size--3);
+                              line-height: var(--font-size--3--line-height);
+                              font-weight: 600;
+                              color: light-dark(
+                                var(--color--red--500),
+                                var(--color--red--500)
+                              );
+                            `}"
                           >
                             <i class="bi bi-exclamation-triangle-fill"></i> This
                             course is archived (read-only).
@@ -260,10 +268,14 @@ export default async (application: Application): Promise<void> => {
                       </div>
                       <div key="courseConversation--header--menu">
                         <button
-                          class="text--secondary button button--square button--icon button--transparent"
+                          class="button button--square button--icon button--transparent"
                           css="${css`
                             font-size: var(--font-size--4);
                             line-height: var(--space--0);
+                            color: light-dark(
+                              var(--color--slate--600),
+                              var(--color--slate--400)
+                            );
                             margin-top: var(--space--0);
                           `}"
                           javascript="${javascript`
@@ -378,7 +390,23 @@ export default async (application: Application): Promise<void> => {
                                                           "string"
                                                             ? html`
                                                                 <span
-                                                                  class="text--secondary"
+                                                                  css="${css`
+                                                                    font-size: var(
+                                                                      --font-size--3
+                                                                    );
+                                                                    line-height: var(
+                                                                      --font-size--3--line-height
+                                                                    );
+                                                                    font-weight: 600;
+                                                                    color: light-dark(
+                                                                      var(
+                                                                        --color--slate--600
+                                                                      ),
+                                                                      var(
+                                                                        --color--slate--400
+                                                                      )
+                                                                    );
+                                                                  `}"
                                                                 >
                                                                   (${course.information})
                                                                 </span>
@@ -467,8 +495,14 @@ export default async (application: Application): Promise<void> => {
                       </div>
                     </div>
                     <div
-                      class="text--secondary"
                       css="${css`
+                        font-size: var(--font-size--3);
+                        line-height: var(--font-size--3--line-height);
+                        font-weight: 600;
+                        color: light-dark(
+                          var(--color--slate--600),
+                          var(--color--slate--400)
+                        );
                         display: flex;
                         flex-direction: column;
                         gap: var(--space--2);
@@ -1268,8 +1302,14 @@ export default async (application: Application): Promise<void> => {
                           >
                             <div
                               key="courseConversationMessage--main--header"
-                              class="text--secondary"
                               css="${css`
+                                font-size: var(--font-size--3);
+                                line-height: var(--font-size--3--line-height);
+                                font-weight: 600;
+                                color: light-dark(
+                                  var(--color--slate--600),
+                                  var(--color--slate--400)
+                                );
                                 display: flex;
                                 gap: var(--space--2);
                               `}"
@@ -1851,9 +1891,21 @@ export default async (application: Application): Promise<void> => {
                                                     >
                                                       ${courseConversationMessageLikeUser?.name ??
                                                       "Deleted course participant"}<span
-                                                        class="text--secondary"
                                                         css="${css`
-                                                          font-weight: 400;
+                                                          font-size: var(
+                                                            --font-size--3
+                                                          );
+                                                          line-height: var(
+                                                            --font-size--3--line-height
+                                                          );
+                                                          color: light-dark(
+                                                            var(
+                                                              --color--slate--600
+                                                            ),
+                                                            var(
+                                                              --color--slate--400
+                                                            )
+                                                          );
                                                         `}"
                                                         >${courseConversationMessageLikeCourseParticipation?.courseParticipationRole ===
                                                         "courseParticipationRoleInstructor"
@@ -2010,9 +2062,21 @@ export default async (application: Application): Promise<void> => {
                                                           >
                                                             ${courseConversationMessageViewUser?.name ??
                                                             "Deleted course participant"}<span
-                                                              class="text--secondary"
                                                               css="${css`
-                                                                font-weight: 400;
+                                                                font-size: var(
+                                                                  --font-size--3
+                                                                );
+                                                                line-height: var(
+                                                                  --font-size--3--line-height
+                                                                );
+                                                                color: light-dark(
+                                                                  var(
+                                                                    --color--slate--600
+                                                                  ),
+                                                                  var(
+                                                                    --color--slate--400
+                                                                  )
+                                                                );
                                                               `}"
                                                               >${courseConversationMessageViewCourseParticipation?.courseParticipationRole ===
                                                               "courseParticipationRoleInstructor"
@@ -2059,8 +2123,16 @@ export default async (application: Application): Promise<void> => {
                                 ? html`
                                     <div
                                       key="courseConversationMessage--main--footer"
-                                      class="text--secondary"
                                       css="${css`
+                                        font-size: var(--font-size--3);
+                                        line-height: var(
+                                          --font-size--3--line-height
+                                        );
+                                        font-weight: 600;
+                                        color: light-dark(
+                                          var(--color--slate--600),
+                                          var(--color--slate--400)
+                                        );
                                         display: flex;
                                         flex-wrap: wrap;
                                         column-gap: var(--space--4);
@@ -2091,8 +2163,14 @@ export default async (application: Application): Promise<void> => {
                       >
                         $${application.partials.courseConversationMessageContentEditor()}
                         <div
-                          class="text--secondary"
                           css="${css`
+                            font-size: var(--font-size--3);
+                            line-height: var(--font-size--3--line-height);
+                            font-weight: 600;
+                            color: light-dark(
+                              var(--color--slate--600),
+                              var(--color--slate--400)
+                            );
                             display: flex;
                             gap: var(--space--4);
                             align-items: baseline;
@@ -2313,8 +2391,14 @@ export default async (application: Application): Promise<void> => {
                 (label, index) => html`
                   <details key="courseConversationsGroup ${label}">
                     <summary
-                      class="text--secondary"
                       css="${css`
+                        font-size: var(--font-size--3);
+                        line-height: var(--font-size--3--line-height);
+                        font-weight: 600;
+                        color: light-dark(
+                          var(--color--slate--600),
+                          var(--color--slate--400)
+                        );
                         background-color: light-dark(
                           var(--color--slate--50),
                           var(--color--slate--950)
@@ -2474,7 +2558,15 @@ export default async (application: Application): Promise<void> => {
                               </div>
                               <div
                                 key="courseConversation--main--details"
-                                class="text--secondary"
+                                css="${css`
+                                  font-size: var(--font-size--3);
+                                  line-height: var(--font-size--3--line-height);
+                                  font-weight: 600;
+                                  color: light-dark(
+                                    var(--color--slate--600),
+                                    var(--color--slate--400)
+                                  );
+                                `}"
                               >
                                 Abigail Wall<span
                                   css="${css`

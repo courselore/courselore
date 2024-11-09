@@ -40,13 +40,6 @@ export default async (application: Application): Promise<void> => {
     @import "bootstrap-icons/font/bootstrap-icons.css";
     @import "katex/dist/katex.css";
 
-    .text--secondary {
-      font-size: var(--font-size--3);
-      line-height: var(--font-size--3--line-height);
-      font-weight: 600;
-      color: light-dark(var(--color--slate--600), var(--color--slate--400));
-    }
-
     ${[
       "red",
       "orange",
