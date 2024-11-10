@@ -540,58 +540,100 @@ export default async (application: Application): Promise<void> => {
                                       ? "button--blue"
                                       : ""} button--dropdown-menu"
                                   >
-                                    <div>${course.name}</div>
-                                    $${(() => {
-                                      const courseInformation = [
-                                        course.courseState ===
-                                        "courseStateArchived"
-                                          ? html`<span
-                                              css="${css`
-                                                font-weight: 700;
-                                                [key~="course-selector"]:not(
-                                                    .button--blue
-                                                  )
-                                                  & {
-                                                  color: light-dark(
-                                                    var(--color--red--500),
-                                                    var(--color--red--500)
-                                                  );
-                                                }
-                                              `}"
-                                              >Archived</span
-                                            >`
-                                          : html``,
-                                        html`${course.information ?? ""}`,
-                                      ]
-                                        .filter(
-                                          (courseInformationPart) =>
-                                            courseInformationPart !== "",
-                                        )
-                                        .join(" · ");
-                                      return courseInformation !== ""
-                                        ? html`
-                                            <div
-                                              css="${css`
-                                                font-size: var(--font-size--3);
-                                                line-height: var(
-                                                  --font-size--3--line-height
-                                                );
-                                                [key~="course-selector"]:not(
-                                                    .button--blue
-                                                  )
-                                                  & {
-                                                  color: light-dark(
-                                                    var(--color--slate--500),
-                                                    var(--color--slate--500)
-                                                  );
-                                                }
-                                              `}"
-                                            >
-                                              $${courseInformation}
-                                            </div>
-                                          `
-                                        : html``;
-                                    })()}
+                                    <div
+                                      css="${css`
+                                        display: flex;
+                                        gap: var(--space--2);
+                                      `}"
+                                    >
+                                      <div
+                                        css="${css`
+                                          flex: 1;
+                                        `}"
+                                      >
+                                        <div>${course.name}</div>
+                                        $${(() => {
+                                          const courseInformation = [
+                                            course.courseState ===
+                                            "courseStateArchived"
+                                              ? html`<span
+                                                  css="${css`
+                                                    font-weight: 700;
+                                                    [key~="course-selector"]:not(
+                                                        .button--blue
+                                                      )
+                                                      & {
+                                                      color: light-dark(
+                                                        var(--color--red--500),
+                                                        var(--color--red--500)
+                                                      );
+                                                    }
+                                                  `}"
+                                                  >Archived</span
+                                                >`
+                                              : html``,
+                                            html`${course.information ?? ""}`,
+                                          ]
+                                            .filter(
+                                              (courseInformationPart) =>
+                                                courseInformationPart !== "",
+                                            )
+                                            .join(" · ");
+                                          return courseInformation !== ""
+                                            ? html`
+                                                <div
+                                                  css="${css`
+                                                    font-size: var(
+                                                      --font-size--3
+                                                    );
+                                                    line-height: var(
+                                                      --font-size--3--line-height
+                                                    );
+                                                    [key~="course-selector"]:not(
+                                                        .button--blue
+                                                      )
+                                                      & {
+                                                      color: light-dark(
+                                                        var(
+                                                          --color--slate--500
+                                                        ),
+                                                        var(--color--slate--500)
+                                                      );
+                                                    }
+                                                  `}"
+                                                >
+                                                  $${courseInformation}
+                                                </div>
+                                              `
+                                            : html``;
+                                        })()}
+                                      </div>
+                                      <div
+                                        css="${css`
+                                          display: flex;
+                                          justify-content: center;
+                                          align-items: center;
+                                        `}"
+                                      >
+                                        <div
+                                          css="${css`
+                                            font-size: var(--space--1-5);
+                                            line-height: var(--space--0);
+                                            [key~="course-selector"]:not(
+                                                .button--blue
+                                              )
+                                              & {
+                                              color: light-dark(
+                                                var(--color--blue--500),
+                                                var(--color--blue--500)
+                                              );
+                                            }
+                                          `}"
+                                        >
+                                          <i class="bi bi-circle-fill"></i>
+                                        </div>
+                                      </div>
+                                    </div>
                                   </a>
                                 `,
                               )}
