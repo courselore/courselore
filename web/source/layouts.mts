@@ -505,30 +505,49 @@ export default async (application: Application): Promise<void> => {
                             <hr class="separator" />
                             $${application.database
                               .all<{
-                                publicId: string;
-                                name: string;
-                                information: string | null;
-                                courseState:
-                                  | "courseStateActive"
-                                  | "courseStateArchived";
+                                id: number;
+                                course: number;
+                                courseParticipationRole:
+                                  | "courseParticipationRoleInstructor"
+                                  | "courseParticipationRoleStudent";
                               }>(
                                 sql`
                                   select
-                                    "courses"."publicId" as "publicId",
-                                    "courses"."name" as "name",
-                                    "courses"."information" as "information",
-                                    "courses"."courseState" as "courseState"
-                                  from "courses"
-                                  join "courseParticipations" on
-                                    "courses"."id" = "courseParticipations"."course" and
+                                    "courseParticipations"."id" as "id",
+                                    "courseParticipations"."course" as "course",
+                                    "courseParticipations"."courseParticipationRole" as "courseParticipationRole"
+                                  from "courseParticipations"
+                                  join "courses" on
+                                    "courseParticipations"."course" = "courses"."id" and
                                     "courseParticipations"."user" = ${request.state.user.id}
                                   order by
                                     "courses"."courseState" = 'courseStateActive' desc,
                                     "courseParticipations"."id" desc;
                                 `,
                               )
-                              .map(
-                                (course) => html`
+                              .map((courseParticipation) => {
+                                const course = application.database.get<{
+                                  id: number;
+                                  publicId: string;
+                                  name: string;
+                                  information: string | null;
+                                  courseState:
+                                    | "courseStateActive"
+                                    | "courseStateArchived";
+                                }>(
+                                  sql`
+                                    select
+                                      "id",
+                                      "publicId",
+                                      "name",
+                                      "information",
+                                      "courseState"
+                                    from "courses"
+                                    where "id" = ${courseParticipation.course};
+                                  `,
+                                );
+                                if (course === undefined) throw new Error();
+                                return html`
                                   <a
                                     key="course-selector ${course.publicId}"
                                     href="/courses/${course.publicId}"
@@ -628,15 +647,59 @@ export default async (application: Application): Promise<void> => {
                                                 var(--color--blue--500)
                                               );
                                             }
-                                          `}"
+                                          `} ${application.database.get(
+                                            sql`
+                                              select true
+                                              from "courseConversationMessages"
+                                              join "courseConversations" on
+                                                "courseConversationMessages"."courseConversation" = "courseConversations"."id" and
+                                                "courseConversations"."course" = ${course.id}
+                                                and (
+                                                  "courseConversations"."courseConversationParticipations" = 'courseConversationParticipationsEveryone'
+                                                  $${
+                                                    courseParticipation.courseParticipationRole ===
+                                                    "courseParticipationRoleInstructor"
+                                                      ? sql`
+                                                          or
+                                                          "courseConversationParticipations" = 'courseConversationParticipationsCourseParticipationRoleInstructors'
+                                                        `
+                                                      : sql``
+                                                  }
+                                                  or (
+                                                    select true
+                                                    from "courseConversationParticipations"
+                                                    where
+                                                      "courseConversations"."id" = "courseConversationParticipations"."courseConversation" and
+                                                      "courseConversationParticipations"."courseParticipation" = ${courseParticipation.id}
+                                                  )
+                                                )
+                                              left join "courseConversationMessageViews" on
+                                                "courseConversationMessages"."id" = "courseConversationMessageViews"."courseConversationMessage" and
+                                                "courseConversationMessageViews"."courseParticipation" = ${courseParticipation.id}
+                                              where
+                                                $${
+                                                  courseParticipation.courseParticipationRole !==
+                                                  "courseParticipationRoleInstructor"
+                                                    ? sql`
+                                                        "courseConversationMessages"."courseConversationMessageType" != 'courseConversationMessageTypeCourseParticipationRoleInstructorWhisper' and
+                                                      `
+                                                    : sql``
+                                                }
+                                                "courseConversationMessageViews"."id" is null;
+                                            `,
+                                          ) !== undefined
+                                            ? css`
+                                                visibility: hidden;
+                                              `
+                                            : css``}"
                                         >
                                           <i class="bi bi-circle-fill"></i>
                                         </div>
                                       </div>
                                     </div>
                                   </a>
-                                `,
-                              )}
+                                `;
+                              })}
                           </div>
                         `},
                       });
