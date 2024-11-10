@@ -426,6 +426,10 @@ export default async (application: Application): Promise<void> => {
             href="/"
             class="button button--rectangle button--transparent"
             css="${css`
+              font-family: "Roboto Serif Variable", var(--font-family--serif);
+              font-weight: 900;
+              font-size: var(--font-size--4);
+              line-height: var(--font-size--4--line-height);
               display: flex;
               gap: var(--space--1);
               align-items: center;
@@ -440,16 +444,7 @@ export default async (application: Application): Promise<void> => {
                 stroke-linejoin="round"
               />
             </svg>
-            <div
-              css="${css`
-                font-family: "Roboto Serif Variable", var(--font-family--serif);
-                font-weight: 900;
-                font-size: var(--font-size--4);
-                line-height: var(--font-size--4--line-height);
-              `}"
-            >
-              Courselore
-            </div>
+            <div>Courselore</div>
           </a>
           <div
             key="header--course"
@@ -464,6 +459,8 @@ export default async (application: Application): Promise<void> => {
                   <button
                     class="button button--rectangle button--transparent"
                     css="${css`
+                      font-family: "Roboto Serif Variable",
+                        var(--font-family--serif);
                       max-width: 100%;
                       display: flex;
                       gap: var(--space--1);
