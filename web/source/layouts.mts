@@ -514,16 +514,16 @@ export default async (application: Application): Promise<void> => {
                               }>(
                                 sql`
                                   select
-                                    "courses"."publicId",
-                                    "courses"."name",
-                                    "courses"."information",
-                                    "courses"."courseState"
+                                    "courses"."publicId" as "publicId",
+                                    "courses"."name" as "name",
+                                    "courses"."information" as "information",
+                                    "courses"."courseState" as "courseState"
                                   from "courses"
                                   join "courseParticipations" on
                                     "courses"."id" = "courseParticipations"."course" and
                                     "courseParticipations"."user" = ${request.state.user.id}
                                   order by
-                                    "courses"."courseState" = 'courseStateActive',
+                                    "courses"."courseState" = 'courseStateActive' desc,
                                     "courseParticipations"."id" desc;
                                 `,
                               )
