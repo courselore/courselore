@@ -455,6 +455,9 @@ export default async (application: Application): Promise<void> => {
           font-size: var(--space--1-5);
           line-height: var(--space--0);
           color: light-dark(var(--color--green--500), var(--color--green--500));
+          justify-self: end;
+          align-self: end;
+          transform: translate(40%, 40%);
           transition-property: var(--transition-property--opacity);
           transition-duration: var(--transition-duration--150);
           transition-timing-function: var(
