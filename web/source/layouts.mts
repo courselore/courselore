@@ -659,7 +659,7 @@ export default async (application: Application): Promise<void> => {
                                                 "courseParticipationRoleInstructor"
                                                   ? sql`
                                                       or
-                                                      "courseConversationParticipations" = 'courseConversationParticipationsCourseParticipationRoleInstructors'
+                                                      "courseConversations"."courseConversationParticipations" = 'courseConversationParticipationsCourseParticipationRoleInstructors'
                                                     `
                                                   : sql``
                                               }
