@@ -459,8 +459,6 @@ export default async (application: Application): Promise<void> => {
                   <button
                     class="button button--rectangle button--transparent"
                     css="${css`
-                      font-family: "Roboto Serif Variable",
-                        var(--font-family--serif);
                       max-width: 100%;
                       display: flex;
                       gap: var(--space--1);
