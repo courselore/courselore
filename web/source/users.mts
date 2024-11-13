@@ -386,8 +386,9 @@ export default async (application: Application): Promise<void> => {
                       })()}--900);
               "
               css="${css`
+                font-family: "Roboto Serif Variable", var(--font-family--serif);
                 line-height: var(--space--0);
-                font-weight: 800;
+                font-weight: 900;
                 color: light-dark(var(--color--light), var(--color--dark));
                 background-color: light-dark(
                   var(--background-color--light),
@@ -433,21 +434,28 @@ export default async (application: Application): Promise<void> => {
                       throw new Error();
                     })()}"
             >
-              $${(() => {
-                if (typeof user === "object") {
-                  const nameParts = user.name
-                    .split(/\s+/)
-                    .filter((namePart) => namePart !== "");
-                  return html`${nameParts.length < 2
-                    ? user.name.trim()[0]
-                    : nameParts.at(0)![0] + nameParts.at(-1)![0]}`;
-                }
-                if (user === "courseParticipationDeleted")
-                  return html`<i class="bi bi-person-fill"></i>`;
-                if (user === "anonymous")
-                  return html`<i class="bi bi-emoji-sunglasses"></i>`;
-                throw new Error();
-              })()}
+              $${typeof user === "object"
+                ? (() => {
+                    const nameParts = [
+                      ...user.name.matchAll(
+                        /[\p{Letter}\p{Number}\p{Private_Use}]+/gu,
+                      ),
+                    ];
+                    return html`${nameParts.length === 0
+                      ? (() => {
+                          throw new Error();
+                        })()
+                      : nameParts.length === 1
+                        ? nameParts[0][0][0]
+                        : nameParts.at(0)![0][0] + nameParts.at(-1)![0][0]}`;
+                  })()
+                : user === "courseParticipationDeleted"
+                  ? html`<i class="bi bi-person-fill"></i>`
+                  : user === "anonymous"
+                    ? html`<i class="bi bi-emoji-sunglasses"></i>`
+                    : (() => {
+                        throw new Error();
+                      })()}
             </div>
           `}
       <div
