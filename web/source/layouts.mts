@@ -556,144 +556,142 @@ export default async (application: Application): Promise<void> => {
                                     ) !== null
                                       ? "button--blue"
                                       : ""} button--dropdown-menu"
+                                    css="${css`
+                                      display: flex;
+                                      gap: var(--space--2);
+                                    `}"
                                   >
                                     <div
                                       css="${css`
-                                        display: flex;
-                                        gap: var(--space--2);
+                                        flex: 1;
                                       `}"
                                     >
                                       <div
                                         css="${css`
-                                          flex: 1;
+                                          font-weight: 500;
                                         `}"
                                       >
-                                        <div>${course.name}</div>
-                                        $${(() => {
-                                          const courseInformation = [
-                                            course.courseState ===
-                                            "courseStateArchived"
-                                              ? html`<span
-                                                  css="${css`
-                                                    font-weight: 700;
-                                                    [key~="course-selector"]:not(
-                                                        .button--blue
-                                                      )
-                                                      & {
-                                                      color: light-dark(
-                                                        var(--color--red--500),
-                                                        var(--color--red--500)
-                                                      );
-                                                    }
-                                                  `}"
-                                                  >Archived</span
-                                                >`
-                                              : html``,
-                                            html`${course.information ?? ""}`,
-                                          ]
-                                            .filter(
-                                              (courseInformationPart) =>
-                                                courseInformationPart !== "",
-                                            )
-                                            .join(" · ");
-                                          return courseInformation !== ""
-                                            ? html`
-                                                <div
-                                                  css="${css`
-                                                    font-size: var(
-                                                      --font-size--3
-                                                    );
-                                                    line-height: var(
-                                                      --font-size--3--line-height
-                                                    );
-                                                    [key~="course-selector"]:not(
-                                                        .button--blue
-                                                      )
-                                                      & {
-                                                      color: light-dark(
-                                                        var(
-                                                          --color--slate--500
-                                                        ),
-                                                        var(--color--slate--500)
-                                                      );
-                                                    }
-                                                  `}"
-                                                >
-                                                  $${courseInformation}
-                                                </div>
-                                              `
-                                            : html``;
-                                        })()}
+                                        ${course.name}
                                       </div>
-                                      <div
-                                        css="${css`
-                                          display: flex;
-                                          justify-content: center;
-                                          align-items: center;
-                                        `}"
-                                      >
-                                        <div
-                                          css="${css`
-                                            font-size: var(--space--1-5);
-                                            line-height: var(--space--0);
-                                            [key~="course-selector"]:not(
-                                                .button--blue
-                                              )
-                                              & {
-                                              color: light-dark(
-                                                var(--color--blue--500),
-                                                var(--color--blue--500)
-                                              );
-                                            }
-                                          `} ${application.database.get(
-                                            sql`
-                                              select true
-                                              from "courseConversationMessages"
-                                              join "courseConversations" on
-                                                "courseConversationMessages"."courseConversation" = "courseConversations"."id" and
-                                                "courseConversations"."course" = ${course.id}
-                                                and (
-                                                  "courseConversations"."courseConversationParticipations" = 'courseConversationParticipationsEveryone'
-                                                  $${
-                                                    courseParticipation.courseParticipationRole ===
-                                                    "courseParticipationRoleInstructor"
-                                                      ? sql`
-                                                          or
-                                                          "courseConversationParticipations" = 'courseConversationParticipationsCourseParticipationRoleInstructors'
-                                                        `
-                                                      : sql``
+                                      $${(() => {
+                                        const courseInformation = [
+                                          course.courseState ===
+                                          "courseStateArchived"
+                                            ? html`<span
+                                                css="${css`
+                                                  font-weight: 700;
+                                                  [key~="course-selector"]:not(
+                                                      .button--blue
+                                                    )
+                                                    & {
+                                                    color: light-dark(
+                                                      var(--color--red--500),
+                                                      var(--color--red--500)
+                                                    );
                                                   }
-                                                  or (
-                                                    select true
-                                                    from "courseConversationParticipations"
-                                                    where
-                                                      "courseConversations"."id" = "courseConversationParticipations"."courseConversation" and
-                                                      "courseConversationParticipations"."courseParticipation" = ${courseParticipation.id}
-                                                  )
-                                                )
-                                              left join "courseConversationMessageViews" on
-                                                "courseConversationMessages"."id" = "courseConversationMessageViews"."courseConversationMessage" and
-                                                "courseConversationMessageViews"."courseParticipation" = ${courseParticipation.id}
-                                              where
-                                                $${
-                                                  courseParticipation.courseParticipationRole !==
-                                                  "courseParticipationRoleInstructor"
-                                                    ? sql`
-                                                        "courseConversationMessages"."courseConversationMessageType" != 'courseConversationMessageTypeCourseParticipationRoleInstructorWhisper' and
-                                                      `
-                                                    : sql``
-                                                }
-                                                "courseConversationMessageViews"."id" is null;
-                                            `,
-                                          ) !== undefined
-                                            ? css`
-                                                visibility: hidden;
-                                              `
-                                            : css``}"
-                                        >
-                                          <i class="bi bi-circle-fill"></i>
-                                        </div>
-                                      </div>
+                                                `}"
+                                                >Archived</span
+                                              >`
+                                            : html``,
+                                          html`${course.information ?? ""}`,
+                                        ]
+                                          .filter(
+                                            (courseInformationPart) =>
+                                              courseInformationPart !== "",
+                                          )
+                                          .join(" · ");
+                                        return courseInformation !== html``
+                                          ? html`
+                                              <div
+                                                css="${css`
+                                                  font-size: var(
+                                                    --font-size--3
+                                                  );
+                                                  line-height: var(
+                                                    --font-size--3--line-height
+                                                  );
+                                                  [key~="course-selector"]:not(
+                                                      .button--blue
+                                                    )
+                                                    & {
+                                                    color: light-dark(
+                                                      var(--color--slate--500),
+                                                      var(--color--slate--500)
+                                                    );
+                                                  }
+                                                `}"
+                                              >
+                                                $${courseInformation}
+                                              </div>
+                                            `
+                                          : html``;
+                                      })()}
+                                    </div>
+                                    <div
+                                      css="${css`
+                                        font-size: var(--space--1-5);
+                                        line-height: var(
+                                          --font-size--3-5--line-height
+                                        );
+                                        margin-top: var(--space--px);
+                                        [key~="course-selector"]:not(
+                                            .button--blue
+                                          )
+                                          & {
+                                          color: light-dark(
+                                            var(--color--blue--500),
+                                            var(--color--blue--500)
+                                          );
+                                        }
+                                      `} ${request.state.course!.id ===
+                                        course.id ||
+                                      application.database.get(
+                                        sql`
+                                          select true
+                                          from "courseConversationMessages"
+                                          join "courseConversations" on
+                                            "courseConversationMessages"."courseConversation" = "courseConversations"."id" and
+                                            "courseConversations"."course" = ${course.id}
+                                            and (
+                                              "courseConversations"."courseConversationParticipations" = 'courseConversationParticipationsEveryone'
+                                              $${
+                                                courseParticipation.courseParticipationRole ===
+                                                "courseParticipationRoleInstructor"
+                                                  ? sql`
+                                                      or
+                                                      "courseConversationParticipations" = 'courseConversationParticipationsCourseParticipationRoleInstructors'
+                                                    `
+                                                  : sql``
+                                              }
+                                              or (
+                                                select true
+                                                from "courseConversationParticipations"
+                                                where
+                                                  "courseConversations"."id" = "courseConversationParticipations"."courseConversation" and
+                                                  "courseConversationParticipations"."courseParticipation" = ${courseParticipation.id}
+                                              )
+                                            )
+                                          left join "courseConversationMessageViews" on
+                                            "courseConversationMessages"."id" = "courseConversationMessageViews"."courseConversationMessage" and
+                                            "courseConversationMessageViews"."courseParticipation" = ${courseParticipation.id}
+                                          where
+                                            $${
+                                              courseParticipation.courseParticipationRole !==
+                                              "courseParticipationRoleInstructor"
+                                                ? sql`
+                                                    "courseConversationMessages"."courseConversationMessageType" != 'courseConversationMessageTypeCourseParticipationRoleInstructorWhisper' and
+                                                  `
+                                                : sql``
+                                            }
+                                            "courseConversationMessageViews"."id" is null;
+                                        `,
+                                      ) === undefined
+                                        ? css`
+                                            visibility: hidden;
+                                          `
+                                        : css``}"
+                                    >
+                                      <i class="bi bi-circle-fill"></i>
                                     </div>
                                   </a>
                                 `;
