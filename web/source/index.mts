@@ -178,10 +178,7 @@ if (application.commandLineArguments.values.type === undefined) {
     ],
   });
   if (application.configuration.environment === "development") {
-    utilities.log(
-      "MAILDEV",
-      `https://${application.configuration.hostname}:8000`,
-    );
+    utilities.log("MAILDEV", "http://localhost:8000");
     node.childProcessKeepAlive(() =>
       childProcess.spawn(
         "npx",
@@ -190,19 +187,16 @@ if (application.commandLineArguments.values.type === undefined) {
           "--ip",
           "127.0.0.1",
           "--web",
-          "9000",
+          "8000",
           "--smtp",
-          "9025",
+          "8025",
           "--mail-directory",
           path.join(application.configuration.dataDirectory, "emails"),
         ],
         { stdio: "ignore" },
       ),
     );
-    utilities.log(
-      "SAML-IDP",
-      `https://${application.configuration.hostname}:8001`,
-    );
+    utilities.log("SAML-IDP", "http://localhost:8001");
     node.childProcessKeepAlive(() =>
       childProcess.spawn(
         "npx",
@@ -211,7 +205,7 @@ if (application.commandLineArguments.values.type === undefined) {
           "--host",
           "localhost",
           "--port",
-          "9001",
+          "8001",
           "--key",
           path.join(
             import.meta.dirname,
