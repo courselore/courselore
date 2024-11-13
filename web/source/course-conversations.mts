@@ -1307,8 +1307,6 @@ export default async (application: Application): Promise<void> => {
                                   ? "anonymous"
                                   : (courseConversationMessageCreatedByUser ??
                                     "courseParticipationDeleted"),
-                              courseParticipation:
-                                courseConversationMessageCreatedByCourseParticipation,
                               size: 9,
                             })}
                           </div>

@@ -744,6 +744,7 @@ export default async (application: Application): Promise<void> => {
                             <div>
                               $${application.partials.userAvatar({
                                 user: request.state.user,
+                                onlineIndicator: false,
                                 size: 9,
                               })}
                             </div>
@@ -809,6 +810,7 @@ export default async (application: Application): Promise<void> => {
                 >
                   $${application.partials.userAvatar({
                     user: request.state.user,
+                    onlineIndicator: false,
                   })}
                 </button>
               `
