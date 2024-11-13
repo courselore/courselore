@@ -446,8 +446,21 @@ export default async (application: Application): Promise<void> => {
                           throw new Error();
                         })()
                       : nameParts.length === 1
-                        ? nameParts[0][0][0]
-                        : nameParts.at(0)![0][0] + nameParts.at(-1)![0][0]}`;
+                        ? [
+                            ...new Intl.Segmenter("en-US").segment(
+                              nameParts[0][0],
+                            ),
+                          ][0].segment
+                        : [
+                            ...new Intl.Segmenter("en-US").segment(
+                              nameParts.at(0)![0],
+                            ),
+                          ][0].segment +
+                          [
+                            ...new Intl.Segmenter("en-US").segment(
+                              nameParts.at(-1)![0],
+                            ),
+                          ][0].segment}`;
                   })()
                 : user === "courseParticipationDeleted"
                   ? html`<i class="bi bi-person-fill"></i>`
