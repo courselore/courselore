@@ -408,7 +408,7 @@ export default async (application: Application): Promise<void> => {
                 ? `${
                     typeof user === "object"
                       ? css`
-                          font-size: var(--font-size--3);
+                          font-size: var(--font-size--2-5);
                         `
                       : css`
                           font-size: var(--font-size--4);
