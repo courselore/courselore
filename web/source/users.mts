@@ -70,7 +70,7 @@ export type ApplicationUsers = {
   partials: {
     userAvatar: ({
       user,
-      courseParticipation,
+      onlineIndicator,
       size,
     }: {
       user:
@@ -96,19 +96,11 @@ export type ApplicationUsers = {
               | "pink"
               | "rose";
             avatarImage: string | null;
-            userRole:
-              | "userRoleSystemAdministrator"
-              | "userRoleStaff"
-              | "userRoleUser";
             lastSeenOnlineAt: string;
           }
         | "courseParticipationDeleted"
         | "anonymous";
-      courseParticipation?: {
-        courseParticipationRole:
-          | "courseParticipationRoleInstructor"
-          | "courseParticipationRoleStudent";
-      };
+      onlineIndicator?: boolean;
       size?: 6 | 9;
     }) => HTML;
   };
@@ -293,166 +285,191 @@ export default async (application: Application): Promise<void> => {
     },
   });
 
-  // TODO: Decorations
-  // - `userRole` on upper left
-  // - `courseParticipationRole` no upper right
-  // - Online indicator on lower right
   application.partials.userAvatar = ({
     user,
-    courseParticipation = undefined,
+    onlineIndicator = true,
     size = 6,
-  }) =>
-    typeof user === "object" && typeof user.avatarImage === "string"
-      ? html`
-          <img
-            key="user--avatar/${user.publicId}"
-            src="${user.avatarImage}"
-            css="${css`
-              background-color: light-dark(
-                var(--color--white),
-                var(--color--white)
-              );
-              border-radius: var(--border-radius--1);
-              display: block;
-            `} ${size === 6
-              ? css`
-                  width: var(--space--6);
-                  height: var(--space--6);
-                `
-              : size === 9
-                ? css`
-                    width: var(--space--9);
-                    height: var(--space--9);
-                  `
-                : (() => {
-                    throw new Error();
-                  })()}"
-          />
-        `
-      : html`
-          <div
-            key="user--avatar/${typeof user === "object"
-              ? user.publicId
-              : user}"
-            style="
-              --color--light: var(--color--${typeof user === "object"
-              ? user.avatarColor
-              : user === "courseParticipationDeleted"
-                ? "red"
-                : user === "anonymous"
-                  ? "blue"
-                  : (() => {
-                      throw new Error();
-                    })()}--800);
-              --color--dark: var(--color--${typeof user === "object"
-              ? user.avatarColor
-              : user === "courseParticipationDeleted"
-                ? "red"
-                : user === "anonymous"
-                  ? "blue"
-                  : (() => {
-                      throw new Error();
-                    })()}--200);
-              --background-color--light: var(--color--${typeof user === "object"
-              ? user.avatarColor
-              : user === "courseParticipationDeleted"
-                ? "red"
-                : user === "anonymous"
-                  ? "blue"
-                  : (() => {
-                      throw new Error();
-                    })()}--200);
-              --background-color--dark: var(--color--${typeof user === "object"
-              ? user.avatarColor
-              : user === "courseParticipationDeleted"
-                ? "red"
-                : user === "anonymous"
-                  ? "blue"
-                  : (() => {
-                      throw new Error();
-                    })()}--800);
-              --border-color--light: var(--color--${typeof user === "object"
-              ? user.avatarColor
-              : user === "courseParticipationDeleted"
-                ? "red"
-                : user === "anonymous"
-                  ? "blue"
-                  : (() => {
-                      throw new Error();
-                    })()}--300);
-              --border-color--dark: var(--color--${typeof user === "object"
-              ? user.avatarColor
-              : user === "courseParticipationDeleted"
-                ? "red"
-                : user === "anonymous"
-                  ? "blue"
-                  : (() => {
-                      throw new Error();
-                    })()}--900);
-            "
-            css="${css`
-              line-height: var(--space--0);
-              font-weight: 800;
-              color: light-dark(var(--color--light), var(--color--dark));
-              background-color: light-dark(
-                var(--background-color--light),
-                var(--background-color--dark)
-              );
-              border: var(--border-width--1) solid
-                light-dark(
-                  var(--border-color--light),
-                  var(--border-color--dark)
+  }) => html`
+    <div
+      key="user--avatar/${typeof user === "object" ? user.publicId : user}"
+      css="${css`
+        display: grid;
+        & > * {
+          grid-area: 1 / 1;
+        }
+      `}"
+    >
+      $${typeof user === "object" && typeof user.avatarImage === "string"
+        ? html`
+            <img
+              src="${user.avatarImage}"
+              css="${css`
+                background-color: light-dark(
+                  var(--color--white),
+                  var(--color--white)
                 );
-              border-radius: var(--border-radius--1);
-              overflow: hidden;
-              display: flex;
-              justify-content: center;
-              align-items: center;
-            `} ${size === 6
-              ? `${
-                  typeof user === "object"
-                    ? css`
-                        font-size: var(--font-size--3);
-                      `
-                    : css`
-                        font-size: var(--font-size--4);
-                      `
-                } ${css`
-                  width: var(--space--6);
-                  height: var(--space--6);
-                `}`
-              : size === 9
+                border-radius: var(--border-radius--1);
+                display: block;
+              `} ${size === 6
+                ? css`
+                    width: var(--space--6);
+                    height: var(--space--6);
+                  `
+                : size === 9
+                  ? css`
+                      width: var(--space--9);
+                      height: var(--space--9);
+                    `
+                  : (() => {
+                      throw new Error();
+                    })()}"
+            />
+          `
+        : html`
+            <div
+              style="
+                --color--light: var(--color--${typeof user === "object"
+                ? user.avatarColor
+                : user === "courseParticipationDeleted"
+                  ? "red"
+                  : user === "anonymous"
+                    ? "blue"
+                    : (() => {
+                        throw new Error();
+                      })()}--800);
+                --color--dark: var(--color--${typeof user === "object"
+                ? user.avatarColor
+                : user === "courseParticipationDeleted"
+                  ? "red"
+                  : user === "anonymous"
+                    ? "blue"
+                    : (() => {
+                        throw new Error();
+                      })()}--200);
+                --background-color--light: var(--color--${typeof user ===
+              "object"
+                ? user.avatarColor
+                : user === "courseParticipationDeleted"
+                  ? "red"
+                  : user === "anonymous"
+                    ? "blue"
+                    : (() => {
+                        throw new Error();
+                      })()}--200);
+                --background-color--dark: var(--color--${typeof user ===
+              "object"
+                ? user.avatarColor
+                : user === "courseParticipationDeleted"
+                  ? "red"
+                  : user === "anonymous"
+                    ? "blue"
+                    : (() => {
+                        throw new Error();
+                      })()}--800);
+                --border-color--light: var(--color--${typeof user === "object"
+                ? user.avatarColor
+                : user === "courseParticipationDeleted"
+                  ? "red"
+                  : user === "anonymous"
+                    ? "blue"
+                    : (() => {
+                        throw new Error();
+                      })()}--300);
+                --border-color--dark: var(--color--${typeof user === "object"
+                ? user.avatarColor
+                : user === "courseParticipationDeleted"
+                  ? "red"
+                  : user === "anonymous"
+                    ? "blue"
+                    : (() => {
+                        throw new Error();
+                      })()}--900);
+              "
+              css="${css`
+                line-height: var(--space--0);
+                font-weight: 800;
+                color: light-dark(var(--color--light), var(--color--dark));
+                background-color: light-dark(
+                  var(--background-color--light),
+                  var(--background-color--dark)
+                );
+                border: var(--border-width--1) solid
+                  light-dark(
+                    var(--border-color--light),
+                    var(--border-color--dark)
+                  );
+                border-radius: var(--border-radius--1);
+                overflow: hidden;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+              `} ${size === 6
                 ? `${
                     typeof user === "object"
                       ? css`
-                          font-size: var(--font-size--3-5);
+                          font-size: var(--font-size--3);
                         `
                       : css`
-                          font-size: var(--font-size--6);
+                          font-size: var(--font-size--4);
                         `
                   } ${css`
-                    width: var(--space--9);
-                    height: var(--space--9);
+                    width: var(--space--6);
+                    height: var(--space--6);
                   `}`
-                : (() => {
-                    throw new Error();
-                  })()}"
-          >
-            $${(() => {
-              if (typeof user === "object") {
-                const nameParts = user.name
-                  .split(/\s+/)
-                  .filter((namePart) => namePart !== "");
-                return html`${nameParts.length < 2
-                  ? user.name.trim()[0]
-                  : nameParts.at(0)![0] + nameParts.at(-1)![0]}`;
-              }
-              if (user === "courseParticipationDeleted")
-                return html`<i class="bi bi-person-fill"></i>`;
-              if (user === "anonymous")
-                return html`<i class="bi bi-emoji-sunglasses"></i>`;
-              throw new Error();
-            })()}
-          </div>
-        `;
+                : size === 9
+                  ? `${
+                      typeof user === "object"
+                        ? css`
+                            font-size: var(--font-size--3-5);
+                          `
+                        : css`
+                            font-size: var(--font-size--6);
+                          `
+                    } ${css`
+                      width: var(--space--9);
+                      height: var(--space--9);
+                    `}`
+                  : (() => {
+                      throw new Error();
+                    })()}"
+            >
+              $${(() => {
+                if (typeof user === "object") {
+                  const nameParts = user.name
+                    .split(/\s+/)
+                    .filter((namePart) => namePart !== "");
+                  return html`${nameParts.length < 2
+                    ? user.name.trim()[0]
+                    : nameParts.at(0)![0] + nameParts.at(-1)![0]}`;
+                }
+                if (user === "courseParticipationDeleted")
+                  return html`<i class="bi bi-person-fill"></i>`;
+                if (user === "anonymous")
+                  return html`<i class="bi bi-emoji-sunglasses"></i>`;
+                throw new Error();
+              })()}
+            </div>
+          `}
+      <div
+        css="${css`
+          font-size: var(--space--1-5);
+          line-height: var(--space--0);
+          color: light-dark(var(--color--green--500), var(--color--green--500));
+          transition-property: var(--transition-property--opacity);
+          transition-duration: var(--transition-duration--150);
+          transition-timing-function: var(
+            --transition-timing-function--ease-in-out
+          );
+        `} ${typeof user === "object" &&
+        user.lastSeenOnlineAt <
+          new Date(Date.now() - 5 * 60 * 1000).toISOString()
+          ? css`
+              opacity: var(--opacity--0);
+            `
+          : css``}"
+      >
+        <i class="bi bi-circle-fill"></i>
+      </div>
+    </div>
+  `;
 };
