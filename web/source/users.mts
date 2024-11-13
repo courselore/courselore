@@ -484,9 +484,10 @@ export default async (application: Application): Promise<void> => {
           transition-timing-function: var(
             --transition-timing-function--ease-in-out
           );
-        `} ${typeof user === "object" &&
-        user.lastSeenOnlineAt <
-          new Date(Date.now() - 5 * 60 * 1000).toISOString()
+        `} ${(typeof user === "object" &&
+          user.lastSeenOnlineAt <
+            new Date(Date.now() - 5 * 60 * 1000).toISOString()) ||
+        typeof user === "string"
           ? css`
               opacity: var(--opacity--0);
             `
