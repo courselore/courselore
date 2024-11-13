@@ -471,30 +471,35 @@ export default async (application: Application): Promise<void> => {
                       })()}
             </div>
           `}
-      <div
-        css="${css`
-          font-size: var(--space--1-5);
-          line-height: var(--space--0);
-          color: light-dark(var(--color--green--500), var(--color--green--500));
-          justify-self: end;
-          align-self: end;
-          transform: translate(40%, 40%);
-          transition-property: var(--transition-property--opacity);
-          transition-duration: var(--transition-duration--150);
-          transition-timing-function: var(
-            --transition-timing-function--ease-in-out
-          );
-        `} ${(typeof user === "object" &&
-          user.lastSeenOnlineAt <
-            new Date(Date.now() - 5 * 60 * 1000).toISOString()) ||
-        typeof user === "string"
-          ? css`
-              opacity: var(--opacity--0);
-            `
-          : css``}"
-      >
-        <i class="bi bi-circle-fill"></i>
-      </div>
+      $${typeof user === "object"
+        ? html`
+            <div
+              css="${css`
+                font-size: var(--space--1-5);
+                line-height: var(--space--0);
+                color: light-dark(
+                  var(--color--green--500),
+                  var(--color--green--500)
+                );
+                justify-self: end;
+                align-self: end;
+                transform: translate(40%, 40%);
+                transition-property: var(--transition-property--opacity);
+                transition-duration: var(--transition-duration--150);
+                transition-timing-function: var(
+                  --transition-timing-function--ease-in-out
+                );
+              `} ${user.lastSeenOnlineAt <
+              new Date(Date.now() - 5 * 60 * 1000).toISOString()
+                ? css`
+                    opacity: var(--opacity--0);
+                  `
+                : css``}"
+            >
+              <i class="bi bi-circle-fill"></i>
+            </div>
+          `
+        : html``}
     </div>
   `;
 };
