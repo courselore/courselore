@@ -748,16 +748,28 @@ export default async (application: Application): Promise<void> => {
                                 size: 9,
                               })}
                             </div>
-                            <div>
+                            <div
+                              css="${css`
+                                display: flex;
+                                flex-direction: column;
+                                justify-content: center;
+                              `}"
+                            >
                               <div
                                 css="${css`
-                                  font-weight: 600;
+                                  font-family: "Roboto Serif Variable",
+                                    var(--font-family--serif);
+                                  font-size: var(--font-size--3);
+                                  line-height: var(--font-size--3--line-height);
+                                  font-weight: 700;
                                 `}"
                               >
                                 ${request.state.user.name}
                               </div>
                               <div
                                 css="${css`
+                                  font-family: "Roboto Mono Variable",
+                                    var(--font-family--monospace);
                                   font-size: var(--font-size--3);
                                   line-height: var(--font-size--3--line-height);
                                   color: light-dark(
