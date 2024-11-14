@@ -2477,33 +2477,33 @@ export default async (application: Application): Promise<void> => {
                   id: number;
                 }>(
                   sql`
-                  select
-                    "id"
-                  from "courseConversations"
-                  where
-                    "course" = ${request.state.course.id} and
-                    "pinned" = true and (
-                      "courseConversationParticipations" = 'courseConversationParticipationsEveryone'
-                      $${
-                        request.state.courseParticipation
-                          .courseParticipationRole ===
-                        "courseParticipationRoleInstructor"
-                          ? sql`
-                              or
-                              "courseConversationParticipations" = 'courseConversationParticipationsCourseParticipationRoleInstructors'
-                            `
-                          : sql``
-                      }
-                      or (
-                        select true
-                        from "courseConversationParticipations"
-                        where
-                          "courseConversations"."id" = "courseConversationParticipations"."courseConversation" and
-                          "courseConversationParticipations"."courseParticipation" = ${request.state.courseParticipation.id}
+                    select
+                      "id"
+                    from "courseConversations"
+                    where
+                      "course" = ${request.state.course.id} and
+                      "pinned" = true and (
+                        "courseConversationParticipations" = 'courseConversationParticipationsEveryone'
+                        $${
+                          request.state.courseParticipation
+                            .courseParticipationRole ===
+                          "courseParticipationRoleInstructor"
+                            ? sql`
+                                or
+                                "courseConversationParticipations" = 'courseConversationParticipationsCourseParticipationRoleInstructors'
+                              `
+                            : sql``
+                        }
+                        or (
+                          select true
+                          from "courseConversationParticipations"
+                          where
+                            "courseConversations"."id" = "courseConversationParticipations"."courseConversation" and
+                            "courseConversationParticipations"."courseParticipation" = ${request.state.courseParticipation.id}
+                        )
                       )
-                    )
-                  order by "id" desc;
-                `,
+                    order by "id" desc;
+                  `,
                 );
                 if (pinnedCourseConversations.length > 0)
                   courseConversationsGroups.push({
