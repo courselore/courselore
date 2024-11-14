@@ -2510,6 +2510,59 @@ export default async (application: Application): Promise<void> => {
                     label: "Pinned",
                     courseConversations: pinnedCourseConversations,
                   });
+                const oldestCourseConversation = application.database.get<{
+                  id: number;
+                }>(
+                  sql`
+                    select "id"
+                    from "courseConversations"
+                    where
+                      "course" = ${request.state.course.id} and (
+                        "courseConversationParticipations" = 'courseConversationParticipationsEveryone'
+                        $${
+                          request.state.courseParticipation
+                            .courseParticipationRole ===
+                          "courseParticipationRoleInstructor"
+                            ? sql`
+                                or
+                                "courseConversationParticipations" = 'courseConversationParticipationsCourseParticipationRoleInstructors'
+                              `
+                            : sql``
+                        }
+                        or (
+                          select true
+                          from "courseConversationParticipations"
+                          where
+                            "courseConversations"."id" = "courseConversationParticipations"."courseConversation" and
+                            "courseConversationParticipations"."courseParticipation" = ${request.state.courseParticipation.id}
+                        )
+                      )
+                    order by "id" asc
+                    limit 1;
+                  `,
+                );
+                const oldestCourseConversationMessage =
+                  oldestCourseConversation !== undefined
+                    ? application.database.get<{ createdAt: string }>(
+                        sql`
+                          select "createdAt"
+                          from "courseConversationMessages"
+                          where
+                            "courseConversation" = ${oldestCourseConversation.id} $${
+                              request.state.courseParticipation
+                                .courseParticipationRole !==
+                              "courseParticipationRoleInstructor"
+                                ? sql`
+                                    and
+                                    "courseConversationMessageType" != 'courseConversationMessageTypeCourseParticipationRoleInstructorWhisper'
+                                  `
+                                : sql``
+                            }
+                          order by "id" asc
+                          limit 1;
+                        `,
+                      )
+                    : undefined;
                 // TODO: “This week” / previous weeks
                 return courseConversationsGroups.map(
                   (courseConversationsGroup) => html`
