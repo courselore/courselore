@@ -2736,7 +2736,7 @@ export default async (application: Application): Promise<void> => {
                   --transition-timing-function--ease-in-out
                 );
                 &:hover,
-                [state~="active"] {
+                &[state~="active"] {
                   background-color: light-dark(
                     var(--color--blue--500),
                     var(--color--blue--500)
@@ -2766,7 +2766,7 @@ export default async (application: Application): Promise<void> => {
                   updateSidebarWidth();
                 };
                 const updateSidebarWidth = utilities.foregroundJob(async () => {
-                  await fetch(${`/settings`}, {
+                  await fetch("/settings", {
                     redirect: "manual",
                     method: "PATCH",
                     headers: { "CSRF-Protection": "true" },
