@@ -463,9 +463,9 @@ export default async (application: Application): Promise<void> => {
                           ][0].segment}`;
                   })()
                 : user === "courseParticipationDeleted"
-                  ? html`<i class="bi bi-person-fill"></i>`
+                  ? html`<i class="bi bi-person-x"></i>`
                   : user === "anonymous"
-                    ? html`<i class="bi bi-emoji-sunglasses"></i>`
+                    ? html`<i class="bi bi-person"></i>`
                     : (() => {
                         throw new Error();
                       })()}
