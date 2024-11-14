@@ -2468,269 +2468,311 @@ export default async (application: Application): Promise<void> => {
                 flex-direction: column;
               `}"
             >
-              $${[
-                "Pinned",
-                "This week",
-                "2024-04-03 — 2024-04-14",
-                "2024-04-03 — 2024-04-14",
-                "2024-04-03 — 2024-04-14",
-                "2024-04-03 — 2024-04-14",
-                "2024-04-03 — 2024-04-14",
-                "2024-04-03 — 2024-04-14",
-                "2024-04-03 — 2024-04-14",
-                "2024-04-03 — 2024-04-14",
-                "2024-04-03 — 2024-04-14",
-              ].map(
-                (label, index) => html`
-                  <details key="courseConversationsGroup ${label}">
-                    <summary
-                      css="${css`
-                        font-size: var(--font-size--3);
-                        line-height: var(--font-size--3--line-height);
-                        font-weight: 600;
-                        color: light-dark(
-                          var(--color--slate--600),
-                          var(--color--slate--400)
-                        );
-                        background-color: light-dark(
-                          var(--color--slate--50),
-                          var(--color--slate--950)
-                        );
-                        padding: var(--space--1-5) var(--space--4);
-                        border-bottom: var(--border-width--1) solid
-                          light-dark(
-                            var(--color--slate--200),
-                            var(--color--slate--800)
-                          );
-                        display: flex;
-                        gap: var(--space--2);
-                        align-items: center;
-                        cursor: pointer;
-                        transition-property: var(--transition-property--colors);
-                        transition-duration: var(--transition-duration--150);
-                        transition-timing-function: var(
-                          --transition-timing-function--ease-in-out
-                        );
-                        &:hover,
-                        &:focus-within {
-                          background-color: light-dark(
-                            var(--color--slate--100),
-                            var(--color--slate--900)
-                          );
-                        }
-                        &:active {
-                          background-color: light-dark(
-                            var(--color--slate--200),
-                            var(--color--slate--800)
-                          );
-                        }
-                      `}"
+              $${(() => {
+                const courseConversationsGroups: {
+                  label: string;
+                  courseConversations: { id: number }[];
+                }[] = [];
+                const pinnedCourseConversations = application.database.all<{
+                  id: number;
+                }>(
+                  sql`
+                  select
+                    "id"
+                  from "courseConversations"
+                  where
+                    "course" = ${request.state.course.id} and
+                    "pinned" = true and (
+                      "courseConversationParticipations" = 'courseConversationParticipationsEveryone'
+                      $${
+                        request.state.courseParticipation
+                          .courseParticipationRole ===
+                        "courseParticipationRoleInstructor"
+                          ? sql`
+                              or
+                              "courseConversationParticipations" = 'courseConversationParticipationsCourseParticipationRoleInstructors'
+                            `
+                          : sql``
+                      }
+                      or (
+                        select true
+                        from "courseConversationParticipations"
+                        where
+                          "courseConversations"."id" = "courseConversationParticipations"."courseConversation" and
+                          "courseConversationParticipations"."courseParticipation" = ${request.state.courseParticipation.id}
+                      )
+                    )
+                  order by "id" desc;
+                `,
+                );
+                if (pinnedCourseConversations.length > 0)
+                  courseConversationsGroups.push({
+                    label: "Pinned",
+                    courseConversations: pinnedCourseConversations,
+                  });
+                // TODO: “This week” / previous weeks
+                return courseConversationsGroups.map(
+                  (courseConversationsGroup) => html`
+                    <details
+                      key="courseConversationsGroup ${courseConversationsGroup.label}"
                     >
-                      <i
-                        class="bi bi-chevron-right"
+                      <summary
                         css="${css`
+                          font-size: var(--font-size--3);
+                          line-height: var(--font-size--3--line-height);
+                          font-weight: 600;
+                          color: light-dark(
+                            var(--color--slate--600),
+                            var(--color--slate--400)
+                          );
+                          background-color: light-dark(
+                            var(--color--slate--50),
+                            var(--color--slate--950)
+                          );
+                          padding: var(--space--1-5) var(--space--4);
+                          border-bottom: var(--border-width--1) solid
+                            light-dark(
+                              var(--color--slate--200),
+                              var(--color--slate--800)
+                            );
+                          display: flex;
+                          gap: var(--space--2);
+                          align-items: center;
+                          cursor: pointer;
                           transition-property: var(
-                            --transition-property--transform
+                            --transition-property--colors
                           );
                           transition-duration: var(--transition-duration--150);
                           transition-timing-function: var(
                             --transition-timing-function--ease-in-out
                           );
-                          details[open] > summary > & {
-                            transform: rotate(var(--transform--rotate--90));
+                          &:hover,
+                          &:focus-within {
+                            background-color: light-dark(
+                              var(--color--slate--100),
+                              var(--color--slate--900)
+                            );
+                          }
+                          &:active {
+                            background-color: light-dark(
+                              var(--color--slate--200),
+                              var(--color--slate--800)
+                            );
                           }
                         `}"
-                      ></i>
+                      >
+                        <i
+                          class="bi bi-chevron-right"
+                          css="${css`
+                            transition-property: var(
+                              --transition-property--transform
+                            );
+                            transition-duration: var(
+                              --transition-duration--150
+                            );
+                            transition-timing-function: var(
+                              --transition-timing-function--ease-in-out
+                            );
+                            details[open] > summary > & {
+                              transform: rotate(var(--transform--rotate--90));
+                            }
+                          `}"
+                        ></i>
+                        <div
+                          css="${css`
+                            flex: 1;
+                          `}"
+                        >
+                          ${courseConversationsGroup.label}
+                        </div>
+                        $${courseConversationMessageViewPartial(false)}
+                      </summary>
                       <div
                         css="${css`
-                          flex: 1;
+                          display: flex;
+                          flex-direction: column;
                         `}"
                       >
-                        ${label}
-                      </div>
-                      $${courseConversationMessageViewPartial(
-                        index % 3 === 0 || index % 5 === 0,
-                      )}
-                    </summary>
-                    <div
-                      css="${css`
-                        display: flex;
-                        flex-direction: column;
-                      `}"
-                    >
-                      $${Array.from(
-                        { length: 1 + Math.floor(Math.random() * 4) },
-                        (value, index) => html`
-                          <a
-                            key="courseConversation /courses/${request.state
-                              .course!.publicId}/conversations/${String(index)}"
-                            href="/courses/${request.state.course!
-                              .publicId}/conversations/${String(index)}"
-                            css="${css`
-                              padding: var(--space--2) var(--space--4);
-                              border-bottom: var(--border-width--1) solid
-                                light-dark(
-                                  var(--color--slate--200),
-                                  var(--color--slate--800)
-                                );
-                              display: flex;
-                              gap: var(--space--2);
-                              cursor: pointer;
-                              transition-property: var(
-                                --transition-property--colors
-                              );
-                              transition-duration: var(
-                                --transition-duration--150
-                              );
-                              transition-timing-function: var(
-                                --transition-timing-function--ease-in-out
-                              );
-                              &:hover,
-                              &:focus-within {
-                                background-color: light-dark(
-                                  var(--color--slate--50),
-                                  var(--color--slate--950)
-                                );
-                              }
-                              &:active {
-                                background-color: light-dark(
-                                  var(--color--slate--100),
-                                  var(--color--slate--900)
-                                );
-                              }
-                            `}"
-                          >
-                            <div key="courseConversation--user">
-                              $${application.partials.userAvatar({
-                                user: "courseParticipationDeleted",
-                              })}
-                            </div>
-                            <div
-                              key="courseConversation--main"
+                        $${Array.from(
+                          { length: 1 + Math.floor(Math.random() * 4) },
+                          (value, index) => html`
+                            <a
+                              key="courseConversation /courses/${request.state
+                                .course!.publicId}/conversations/${String(
+                                index,
+                              )}"
+                              href="/courses/${request.state.course!
+                                .publicId}/conversations/${String(index)}"
                               css="${css`
-                                flex: 1;
-                                min-width: var(--space--0);
+                                padding: var(--space--2) var(--space--4);
+                                border-bottom: var(--border-width--1) solid
+                                  light-dark(
+                                    var(--color--slate--200),
+                                    var(--color--slate--800)
+                                  );
                                 display: flex;
-                                flex-direction: column;
+                                gap: var(--space--2);
+                                cursor: pointer;
+                                transition-property: var(
+                                  --transition-property--colors
+                                );
+                                transition-duration: var(
+                                  --transition-duration--150
+                                );
+                                transition-timing-function: var(
+                                  --transition-timing-function--ease-in-out
+                                );
+                                &:hover,
+                                &:focus-within {
+                                  background-color: light-dark(
+                                    var(--color--slate--50),
+                                    var(--color--slate--950)
+                                  );
+                                }
+                                &:active {
+                                  background-color: light-dark(
+                                    var(--color--slate--100),
+                                    var(--color--slate--900)
+                                  );
+                                }
                               `}"
                             >
+                              <div key="courseConversation--user">
+                                $${application.partials.userAvatar({
+                                  user: "courseParticipationDeleted",
+                                })}
+                              </div>
                               <div
-                                key="courseConversation--main--title"
+                                key="courseConversation--main"
                                 css="${css`
+                                  flex: 1;
+                                  min-width: var(--space--0);
                                   display: flex;
-                                  align-items: baseline;
-                                  gap: var(--space--2);
+                                  flex-direction: column;
                                 `}"
                               >
                                 <div
-                                  key="courseConversation--main--title--title"
+                                  key="courseConversation--main--title"
                                   css="${css`
-                                    flex: 1;
-                                    font-weight: 600;
+                                    display: flex;
+                                    align-items: baseline;
+                                    gap: var(--space--2);
                                   `}"
                                 >
-                                  Example of a conversation
+                                  <div
+                                    key="courseConversation--main--title--title"
+                                    css="${css`
+                                      flex: 1;
+                                      font-weight: 600;
+                                    `}"
+                                  >
+                                    Example of a conversation
+                                  </div>
+                                  <div
+                                    key="courseConversation--main--title--id"
+                                    css="${css`
+                                      font-size: var(--font-size--3);
+                                      line-height: var(
+                                        --font-size--3--line-height
+                                      );
+                                      color: light-dark(
+                                        var(--color--slate--400),
+                                        var(--color--slate--600)
+                                      );
+                                    `}"
+                                  >
+                                    #${String(
+                                      1 + Math.floor(Math.random() * 100),
+                                    )}
+                                  </div>
                                 </div>
                                 <div
-                                  key="courseConversation--main--title--id"
+                                  key="courseConversation--main--details"
+                                  css="${css`
+                                    font-size: var(--font-size--3);
+                                    line-height: var(
+                                      --font-size--3--line-height
+                                    );
+                                    font-weight: 600;
+                                    color: light-dark(
+                                      var(--color--slate--600),
+                                      var(--color--slate--400)
+                                    );
+                                  `}"
+                                >
+                                  Abigail Wall<span
+                                    css="${css`
+                                      font-weight: 400;
+                                    `}"
+                                    > ·
+                                    <span
+                                      css="${css`
+                                        display: inline-block;
+                                      `}"
+                                      >2024-03-02</span
+                                    ></span
+                                  >
+                                  <br />
+                                  $${Math.random() < 0.5
+                                    ? html`<span
+                                        css="${css`
+                                          color: light-dark(
+                                            var(--color--red--500),
+                                            var(--color--red--500)
+                                          );
+                                        `}"
+                                        >Question · Unresolved</span
+                                      >`
+                                    : Math.random() < 0.5
+                                      ? html`Question`
+                                      : html`Note`}<span
+                                    css="${css`
+                                      font-weight: 400;
+                                    `}"
+                                    > · Assignment 2 · Duplicate question</span
+                                  >
+                                </div>
+                                <div
+                                  key="courseConversation--main--excerpt"
                                   css="${css`
                                     font-size: var(--font-size--3);
                                     line-height: var(
                                       --font-size--3--line-height
                                     );
                                     color: light-dark(
-                                      var(--color--slate--400),
-                                      var(--color--slate--600)
+                                      var(--color--slate--500),
+                                      var(--color--slate--500)
                                     );
+                                    white-space: nowrap;
+                                    overflow: hidden;
+                                    text-overflow: ellipsis;
                                   `}"
                                 >
-                                  #${String(
-                                    1 + Math.floor(Math.random() * 100),
-                                  )}
+                                  Human is behind a closed door, emergency!
+                                  abandoned! meeooowwww!!! headbutt owner's knee
+                                  chase laser be a nyan cat,
                                 </div>
                               </div>
                               <div
-                                key="courseConversation--main--details"
+                                key="courseConversation--side-decoration"
                                 css="${css`
-                                  font-size: var(--font-size--3);
-                                  line-height: var(--font-size--3--line-height);
-                                  font-weight: 600;
-                                  color: light-dark(
-                                    var(--color--slate--600),
-                                    var(--color--slate--400)
-                                  );
+                                  display: flex;
+                                  justify-content: center;
+                                  align-items: center;
                                 `}"
                               >
-                                Abigail Wall<span
-                                  css="${css`
-                                    font-weight: 400;
-                                  `}"
-                                  > ·
-                                  <span
-                                    css="${css`
-                                      display: inline-block;
-                                    `}"
-                                    >2024-03-02</span
-                                  ></span
-                                >
-                                <br />
-                                $${Math.random() < 0.5
-                                  ? html`<span
-                                      css="${css`
-                                        color: light-dark(
-                                          var(--color--red--500),
-                                          var(--color--red--500)
-                                        );
-                                      `}"
-                                      >Question · Unresolved</span
-                                    >`
-                                  : Math.random() < 0.5
-                                    ? html`Question`
-                                    : html`Note`}<span
-                                  css="${css`
-                                    font-weight: 400;
-                                  `}"
-                                  > · Assignment 2 · Duplicate question</span
-                                >
+                                $${courseConversationMessageViewPartial(
+                                  index % 3 === 0 || index % 5 === 0,
+                                )}
                               </div>
-                              <div
-                                key="courseConversation--main--excerpt"
-                                css="${css`
-                                  font-size: var(--font-size--3);
-                                  line-height: var(--font-size--3--line-height);
-                                  color: light-dark(
-                                    var(--color--slate--500),
-                                    var(--color--slate--500)
-                                  );
-                                  white-space: nowrap;
-                                  overflow: hidden;
-                                  text-overflow: ellipsis;
-                                `}"
-                              >
-                                Human is behind a closed door, emergency!
-                                abandoned! meeooowwww!!! headbutt owner's knee
-                                chase laser be a nyan cat,
-                              </div>
-                            </div>
-                            <div
-                              key="courseConversation--side-decoration"
-                              css="${css`
-                                display: flex;
-                                justify-content: center;
-                                align-items: center;
-                              `}"
-                            >
-                              $${courseConversationMessageViewPartial(
-                                index % 3 === 0 || index % 5 === 0,
-                              )}
-                            </div>
-                          </a>
-                        `,
-                      )}
-                    </div>
-                  </details>
-                `,
-              )}
+                            </a>
+                          `,
+                        )}
+                      </div>
+                    </details>
+                  `,
+                );
+              })()}
             </div>
           </div>
           <button
