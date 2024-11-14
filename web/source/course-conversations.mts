@@ -2271,6 +2271,7 @@ export default async (application: Application): Promise<void> => {
       hamburger: true,
       body: html`
         <div
+          key="main--two-column-layout"
           css="${css`
             width: 100%;
             height: 100%;
@@ -2290,11 +2291,11 @@ export default async (application: Application): Promise<void> => {
                   var(--color--white),
                   var(--color--black)
                 );
+                max-width: var(--space--112);
                 position: absolute;
                 inset: 0;
                 right: var(--space--14);
                 z-index: 100;
-                max-width: var(--space--112);
                 transform: translateX(-101%);
                 transition-property: var(--transition-property--transform);
                 transition-duration: var(--transition-duration--200);
