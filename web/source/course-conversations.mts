@@ -2363,7 +2363,7 @@ export default async (application: Application): Promise<void> => {
               >
                 <input
                   type="text"
-                  name="conversations.search"
+                  name="search.courseConversations"
                   css="${css`
                     flex: 1;
                     min-width: var(--space--0);
@@ -2384,28 +2384,64 @@ export default async (application: Application): Promise<void> => {
                       content: "Search",
                     });
                     this.onclick = () => {
-                      this.closest('[key="sidebar--menu--search-and-filter"]').querySelector('[name="conversations.search"]').focus();
+                      this.closest('[key="sidebar--menu--search-and-filter"]').querySelector('[name="search.courseConversations"]').focus();
                     };
                   `}"
                 >
                   <i class="bi bi-search"></i>
                 </button>
-                <button
-                  key="sidebar--menu--search-and-filter--filter"
-                  class="button button--icon button--transparent"
-                  css="${css`
-                    padding: var(--space--1) var(--space--2);
-                  `}"
-                  javascript="${javascript`
-                    javascript.tippy({
-                      event,
-                      element: this,
-                      content: "Filter",
-                    });
-                  `}"
-                >
-                  <i class="bi bi-filter"></i>
-                </button>
+                $${request.state.courseConversationsTags.length > 0
+                  ? html`
+                      <button
+                        key="sidebar--menu--search-and-filter--filter"
+                        class="button button--icon button--transparent"
+                        css="${css`
+                          padding: var(--space--1) var(--space--2);
+                        `}"
+                        javascript="${javascript`
+                          javascript.tippy({
+                            event,
+                            element: this,
+                            content: "Filter",
+                          });
+                          javascript.tippy({
+                            event,
+                            element: this,
+                            elementProperty: "dropdownMenu",
+                            placement: "bottom-end",
+                            interactive: true,
+                            trigger: "click",
+                            content: ${html`
+                              <div
+                                css="${css`
+                                  display: flex;
+                                  flex-direction: column;
+                                  gap: var(--space--2);
+                                `}"
+                              >
+                                $${request.state.courseConversationsTags.map(
+                                  (courseConversationsTag) => html`
+                                    <label
+                                      class="button button--rectangle button--transparent button--dropdown-menu"
+                                    >
+                                      <input
+                                        type="checkbox"
+                                        name="filter.courseConversationsTags[]"
+                                        value="${courseConversationsTag.publicId}"
+                                        class="input--checkbox"
+                                      />  ${courseConversationsTag.name}
+                                    </label>
+                                  `,
+                                )}
+                              </div>
+                            `},
+                          });
+                        `}"
+                      >
+                        <i class="bi bi-filter"></i>
+                      </button>
+                    `
+                  : html``}
               </div>
             </div>
             <div
