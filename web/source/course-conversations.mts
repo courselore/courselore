@@ -2325,7 +2325,7 @@ export default async (application: Application): Promise<void> => {
               $${request.state.course.courseState === "courseStateActive"
                 ? html`
                     <a
-                      key="new-conversation"
+                      key="sidebar--menu--new-conversation"
                       href="/courses/${request.state.course
                         .publicId}/conversations/new"
                       class="button button--square button--blue"
