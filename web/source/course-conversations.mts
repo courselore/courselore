@@ -2302,7 +2302,7 @@ export default async (application: Application): Promise<void> => {
                 transition-timing-function: var(
                   --transition-timing-function--ease-in-out
                 );
-                [key="main"][state~="sidebar--open"] & {
+                [key="main--two-column-layout"][state~="sidebar--open"] & {
                   transform: translateX(0%);
                   box-shadow: var(--box-shadow--25);
                 }
@@ -2700,7 +2700,7 @@ export default async (application: Application): Promise<void> => {
                 --transition-timing-function--ease-in-out
               );
               @media (max-width: 899px) {
-                [key="main"][state~="sidebar--open"] & {
+                [key="main--two-column-layout"][state~="sidebar--open"] & {
                   opacity: var(--opacity--30);
                   pointer-events: auto;
                 }
@@ -2708,7 +2708,7 @@ export default async (application: Application): Promise<void> => {
             `}"
             javascript="${javascript`
               this.onclick = () => {
-                javascript.stateRemove(document.querySelector('[key="main"]'), "sidebar--open");
+                javascript.stateRemove(document.querySelector('[key="main--two-column-layout"]'), "sidebar--open");
               };
             `}"
           ></button>
@@ -2750,7 +2750,7 @@ export default async (application: Application): Promise<void> => {
                   javascript.stateAdd(document.querySelector("body"), "noninteractive");
                   document.querySelector("body").style.cursor = "col-resize";
                   document.onpointermove = (event) => {
-                    this.closest('[key="main"]').querySelector('[key~="sidebar"]').style.setProperty("--width", String(Math.min(Math.max(Math.floor(event.clientX), 60 * 4), 112 * 4)) + "px");
+                    this.closest('[key="main--two-column-layout"]').querySelector('[key~="sidebar"]').style.setProperty("--width", String(Math.min(Math.max(Math.floor(event.clientX), 60 * 4), 112 * 4)) + "px");
                   };
                   document.onpointerup = () => {
                     javascript.stateRemove(this, "active");
@@ -2762,7 +2762,7 @@ export default async (application: Application): Promise<void> => {
                   };
                 };
                 this.ondblclick = (event) => {
-                  this.closest('[key="main"]').querySelector('[key~="sidebar"]').style.setProperty("--width", String(80 * 4) +"px");
+                  this.closest('[key="main--two-column-layout"]').querySelector('[key~="sidebar"]').style.setProperty("--width", String(80 * 4) +"px");
                   updateSidebarWidth();
                 };
                 const updateSidebarWidth = utilities.foregroundJob(async () => {
@@ -2770,7 +2770,7 @@ export default async (application: Application): Promise<void> => {
                     redirect: "manual",
                     method: "PATCH",
                     headers: { "CSRF-Protection": "true" },
-                    body: new URLSearchParams({ sidebarWidth: this.closest('[key="main"]').querySelector('[key~="sidebar"]').style.getPropertyValue("--width").slice(0, -"px".length) }),
+                    body: new URLSearchParams({ sidebarWidth: this.closest('[key="main--two-column-layout"]').querySelector('[key~="sidebar"]').style.getPropertyValue("--width").slice(0, -"px".length) }),
                   });
                 });
               `}"
