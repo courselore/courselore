@@ -2319,7 +2319,7 @@ export default async (application: Application): Promise<void> => {
                   light-dark(var(--color--slate--200), var(--color--slate--800));
                 padding: var(--space--2) var(--space--4);
                 display: flex;
-                gap: var(--space--4);
+                gap: var(--space--2);
               `}"
             >
               $${request.state.course.courseState === "courseStateActive"
@@ -2328,30 +2328,31 @@ export default async (application: Application): Promise<void> => {
                       key="sidebar--menu--new-conversation"
                       href="/courses/${request.state.course
                         .publicId}/conversations/new"
-                      class="button button--square button--blue"
+                      class="button button--rectangle button--blue"
                       css="${css`
-                        font-size: var(--font-size--7-5);
-                        line-height: var(--space--0);
-                        font-weight: 700;
-                        height: 100%;
+                        font-size: var(--font-size--3);
+                        line-height: var(--font-size--3--line-height);
                         display: flex;
-                        justify-content: center;
                         align-items: center;
                       `}"
-                      javascript="${javascript`
-                        javascript.tippy({
-                          event,
-                          element: this,
-                          content: "New conversation",
-                        });
-                      `}"
                     >
-                      +
+                      New
+                      ${request.state.courseParticipation
+                        .courseParticipationRole ===
+                      "courseParticipationRoleInstructor"
+                        ? "note"
+                        : request.state.courseParticipation
+                              .courseParticipationRole ===
+                            "courseParticipationRoleStudent"
+                          ? "question"
+                          : (() => {
+                              throw new Error();
+                            })()}
                     </a>
                   `
                 : html``}
               <div
-                key="search-and-filter"
+                key="sidebar--menu--search-and-filter"
                 class="input--text"
                 css="${css`
                   flex: 1;
@@ -2371,7 +2372,7 @@ export default async (application: Application): Promise<void> => {
                   `}"
                 />
                 <button
-                  key="search"
+                  key="sidebar--menu--search-and-filter--search"
                   class="button button--icon button--transparent"
                   css="${css`
                     padding: var(--space--1) var(--space--2);
@@ -2383,14 +2384,14 @@ export default async (application: Application): Promise<void> => {
                       content: "Search",
                     });
                     this.onclick = () => {
-                      this.closest('[key="search-and-filter"]').querySelector('[name="conversations.search"]').focus();
+                      this.closest('[key="sidebar--menu--search-and-filter"]').querySelector('[name="conversations.search"]').focus();
                     };
                   `}"
                 >
                   <i class="bi bi-search"></i>
                 </button>
                 <button
-                  key="filter"
+                  key="sidebar--menu--search-and-filter--filter"
                   class="button button--icon button--transparent"
                   css="${css`
                     padding: var(--space--1) var(--space--2);
