@@ -2419,6 +2419,21 @@ export default async (application: Application): Promise<void> => {
                                   gap: var(--space--2);
                                 `}"
                               >
+                                <div
+                                  css="${css`
+                                    font-size: var(--font-size--3);
+                                    line-height: var(
+                                      --font-size--3--line-height
+                                    );
+                                    font-weight: 600;
+                                    color: light-dark(
+                                      var(--color--slate--600),
+                                      var(--color--slate--400)
+                                    );
+                                  `}"
+                                >
+                                  Tags
+                                </div>
                                 $${request.state.courseConversationsTags.map(
                                   (courseConversationsTag) => html`
                                     <label
