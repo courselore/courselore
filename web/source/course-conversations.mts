@@ -2468,16 +2468,18 @@ export default async (application: Application): Promise<void> => {
                 flex-direction: column;
               `}"
             >
-              <div key="courseConversations--to-group" hidden>
+              <div key="courseConversations--to-group">
                 $${application.database
                   .all<{
                     id: number;
                     publicId: string;
+                    title: string;
                   }>(
                     sql`
                       select
                         "id",
-                        "publicId"
+                        "publicId",
+                        "title"
                       from "courseConversations"
                       where
                         "course" = ${request.state.course.id} and (
@@ -2643,7 +2645,7 @@ export default async (application: Application): Promise<void> => {
                           `}"
                         >
                           <div
-                            key="courseConversation--main--title"
+                            key="courseConversation--main--header"
                             css="${css`
                               display: flex;
                               align-items: baseline;
@@ -2651,16 +2653,16 @@ export default async (application: Application): Promise<void> => {
                             `}"
                           >
                             <div
-                              key="courseConversation--main--title--title"
+                              key="courseConversation--main--header--title"
                               css="${css`
                                 flex: 1;
                                 font-weight: 600;
                               `}"
                             >
-                              Example of a conversation
+                              ${courseConversation.title}
                             </div>
                             <div
-                              key="courseConversation--main--title--id"
+                              key="courseConversation--main--header--publicId"
                               css="${css`
                                 font-size: var(--font-size--3);
                                 line-height: var(--font-size--3--line-height);
@@ -2670,7 +2672,7 @@ export default async (application: Application): Promise<void> => {
                                 );
                               `}"
                             >
-                              #${String(1 + Math.floor(Math.random() * 100))}
+                              #${courseConversation.publicId}
                             </div>
                           </div>
                           <div
@@ -2744,9 +2746,7 @@ export default async (application: Application): Promise<void> => {
                             align-items: center;
                           `}"
                         >
-                          $${courseConversationMessageViewPartial(
-                            index % 3 === 0 || index % 5 === 0,
-                          )}
+                          $${courseConversationMessageViewPartial(false)}
                         </div>
                       </a>
                     `;
