@@ -2509,10 +2509,15 @@ export default async (application: Application): Promise<void> => {
                     const firstCourseConversationMessage =
                       application.database.get<{
                         createdByCourseParticipation: number | null;
+                        courseConversationMessageAnonymity:
+                          | "courseConversationMessageAnonymityNone"
+                          | "courseConversationMessageAnonymityOtherCourseParticipationRoleStudents"
+                          | "courseConversationMessageAnonymityCourseParticipationRoleInstructors";
                       }>(
                         sql`
                           select
-                            "createdByCourseParticipation"
+                            "createdByCourseParticipation",
+                            "courseConversationMessageAnonymity"
                           from "courseConversationMessages"
                           where "courseConversation" = ${courseConversation.id}
                           order by "id" asc
@@ -2521,9 +2526,19 @@ export default async (application: Application): Promise<void> => {
                       );
                     if (firstCourseConversationMessage === undefined)
                       throw new Error();
+                    const firstCourseConversationMessageAnonymous =
+                      (firstCourseConversationMessage.courseConversationMessageAnonymity ===
+                        "courseConversationMessageAnonymityOtherCourseParticipationRoleStudents" &&
+                        request.state.courseParticipation!
+                          .courseParticipationRole ===
+                          "courseParticipationRoleStudent" &&
+                        firstCourseConversationMessage.createdByCourseParticipation !==
+                          request.state.courseParticipation!.id) ||
+                      firstCourseConversationMessage.courseConversationMessageAnonymity ===
+                        "courseConversationMessageAnonymityCourseParticipationRoleInstructors";
                     const firstCourseConversationMessageCreatedByCourseParticipation =
                       typeof firstCourseConversationMessage.createdByCourseParticipation ===
-                      "number"
+                        "number" && !firstCourseConversationMessageAnonymous
                         ? application.database.get<{ user: number }>(
                             sql`
                               select
@@ -2536,9 +2551,37 @@ export default async (application: Application): Promise<void> => {
                     const firstCourseConversationMessageCreatedByCourseParticipationUser =
                       typeof firstCourseConversationMessageCreatedByCourseParticipation ===
                       "object"
-                        ? application.database.get<{}>(
+                        ? application.database.get<{
+                            publicId: string;
+                            name: string;
+                            avatarColor:
+                              | "red"
+                              | "orange"
+                              | "amber"
+                              | "yellow"
+                              | "lime"
+                              | "green"
+                              | "emerald"
+                              | "teal"
+                              | "cyan"
+                              | "sky"
+                              | "blue"
+                              | "indigo"
+                              | "violet"
+                              | "purple"
+                              | "fuchsia"
+                              | "pink"
+                              | "rose";
+                            avatarImage: string | null;
+                            lastSeenOnlineAt: string;
+                          }>(
                             sql`
                               select
+                                "publicId",
+                                "name",
+                                "avatarColor",
+                                "avatarImage",
+                                "lastSeenOnlineAt"
                               from "users"
                               where "id" = ${firstCourseConversationMessageCreatedByCourseParticipation.user};
                             `,
@@ -2584,7 +2627,10 @@ export default async (application: Application): Promise<void> => {
                       >
                         <div key="courseConversation--user">
                           $${application.partials.userAvatar({
-                            user: "courseParticipationDeleted",
+                            user: firstCourseConversationMessageAnonymous
+                              ? "anonymous"
+                              : (firstCourseConversationMessageCreatedByCourseParticipationUser ??
+                                "courseParticipationDeleted"),
                           })}
                         </div>
                         <div
