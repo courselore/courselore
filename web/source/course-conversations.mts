@@ -2468,7 +2468,244 @@ export default async (application: Application): Promise<void> => {
                 flex-direction: column;
               `}"
             >
-              TODO
+              <div key="courseConversations--to-group" hidden>
+                $${application.database
+                  .all<{
+                    id: number;
+                    publicId: string;
+                  }>(
+                    sql`
+                      select
+                        "id",
+                        "publicId"
+                      from "courseConversations"
+                      where
+                        "course" = ${request.state.course.id} and (
+                          "courseConversationParticipations" = 'courseConversationParticipationsEveryone'
+                          $${
+                            request.state.courseParticipation
+                              .courseParticipationRole ===
+                            "courseParticipationRoleInstructor"
+                              ? sql`
+                                  or
+                                  "courseConversationParticipations" = 'courseConversationParticipationsCourseParticipationRoleInstructors'
+                                `
+                              : sql``
+                          }
+                          or (
+                            select true
+                            from "courseConversationParticipations"
+                            where
+                              "courseConversations"."id" = "courseConversationParticipations"."courseConversation" and
+                              "courseConversationParticipations"."courseParticipation" = ${request.state.courseParticipation.id}
+                          )
+                        )
+                      order by
+                        "pinned" = true desc,
+                        "id" desc;
+                    `,
+                  )
+                  .map((courseConversation) => {
+                    const firstCourseConversationMessage =
+                      application.database.get<{
+                        createdByCourseParticipation: number | null;
+                      }>(
+                        sql`
+                          select
+                            "createdByCourseParticipation"
+                          from "courseConversationMessages"
+                          where "courseConversation" = ${courseConversation.id}
+                          order by "id" asc
+                          limit 1;
+                        `,
+                      );
+                    if (firstCourseConversationMessage === undefined)
+                      throw new Error();
+                    const firstCourseConversationMessageCreatedByCourseParticipation =
+                      typeof firstCourseConversationMessage.createdByCourseParticipation ===
+                      "number"
+                        ? application.database.get<{ user: number }>(
+                            sql`
+                              select
+                                "user"
+                              from "courseParticipations"
+                              where "id" = ${firstCourseConversationMessage.createdByCourseParticipation};
+                            `,
+                          )
+                        : undefined;
+                    const firstCourseConversationMessageCreatedByCourseParticipationUser =
+                      typeof firstCourseConversationMessageCreatedByCourseParticipation ===
+                      "object"
+                        ? application.database.get<{}>(
+                            sql`
+                              select
+                              from "users"
+                              where "id" = ${firstCourseConversationMessageCreatedByCourseParticipation.user};
+                            `,
+                          )
+                        : undefined;
+                    return html`
+                      <a
+                        key="courseConversation /courses/${request.state.course!
+                          .publicId}/conversations/${courseConversation.publicId}"
+                        href="/courses/${request.state.course!
+                          .publicId}/conversations/${courseConversation.publicId}"
+                        css="${css`
+                          padding: var(--space--2) var(--space--4);
+                          border-bottom: var(--border-width--1) solid
+                            light-dark(
+                              var(--color--slate--200),
+                              var(--color--slate--800)
+                            );
+                          display: flex;
+                          gap: var(--space--2);
+                          cursor: pointer;
+                          transition-property: var(
+                            --transition-property--colors
+                          );
+                          transition-duration: var(--transition-duration--150);
+                          transition-timing-function: var(
+                            --transition-timing-function--ease-in-out
+                          );
+                          &:hover,
+                          &:focus-within {
+                            background-color: light-dark(
+                              var(--color--slate--50),
+                              var(--color--slate--950)
+                            );
+                          }
+                          &:active {
+                            background-color: light-dark(
+                              var(--color--slate--100),
+                              var(--color--slate--900)
+                            );
+                          }
+                        `}"
+                      >
+                        <div key="courseConversation--user">
+                          $${application.partials.userAvatar({
+                            user: "courseParticipationDeleted",
+                          })}
+                        </div>
+                        <div
+                          key="courseConversation--main"
+                          css="${css`
+                            flex: 1;
+                            min-width: var(--space--0);
+                            display: flex;
+                            flex-direction: column;
+                          `}"
+                        >
+                          <div
+                            key="courseConversation--main--title"
+                            css="${css`
+                              display: flex;
+                              align-items: baseline;
+                              gap: var(--space--2);
+                            `}"
+                          >
+                            <div
+                              key="courseConversation--main--title--title"
+                              css="${css`
+                                flex: 1;
+                                font-weight: 600;
+                              `}"
+                            >
+                              Example of a conversation
+                            </div>
+                            <div
+                              key="courseConversation--main--title--id"
+                              css="${css`
+                                font-size: var(--font-size--3);
+                                line-height: var(--font-size--3--line-height);
+                                color: light-dark(
+                                  var(--color--slate--400),
+                                  var(--color--slate--600)
+                                );
+                              `}"
+                            >
+                              #${String(1 + Math.floor(Math.random() * 100))}
+                            </div>
+                          </div>
+                          <div
+                            key="courseConversation--main--details"
+                            css="${css`
+                              font-size: var(--font-size--3);
+                              line-height: var(--font-size--3--line-height);
+                              font-weight: 600;
+                              color: light-dark(
+                                var(--color--slate--600),
+                                var(--color--slate--400)
+                              );
+                            `}"
+                          >
+                            Abigail Wall<span
+                              css="${css`
+                                font-weight: 400;
+                              `}"
+                              > ·
+                              <span
+                                css="${css`
+                                  display: inline-block;
+                                `}"
+                                >2024-03-02</span
+                              ></span
+                            >
+                            <br />
+                            $${Math.random() < 0.5
+                              ? html`<span
+                                  css="${css`
+                                    color: light-dark(
+                                      var(--color--red--500),
+                                      var(--color--red--500)
+                                    );
+                                  `}"
+                                  >Question · Unresolved</span
+                                >`
+                              : Math.random() < 0.5
+                                ? html`Question`
+                                : html`Note`}<span
+                              css="${css`
+                                font-weight: 400;
+                              `}"
+                              > · Assignment 2 · Duplicate question</span
+                            >
+                          </div>
+                          <div
+                            key="courseConversation--main--excerpt"
+                            css="${css`
+                              font-size: var(--font-size--3);
+                              line-height: var(--font-size--3--line-height);
+                              color: light-dark(
+                                var(--color--slate--500),
+                                var(--color--slate--500)
+                              );
+                              white-space: nowrap;
+                              overflow: hidden;
+                              text-overflow: ellipsis;
+                            `}"
+                          >
+                            Human is behind a closed door, emergency! abandoned!
+                            meeooowwww!!! headbutt owner's knee chase laser be a
+                            nyan cat,
+                          </div>
+                        </div>
+                        <div
+                          key="courseConversation--side-decoration"
+                          css="${css`
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                          `}"
+                        >
+                          $${courseConversationMessageViewPartial(
+                            index % 3 === 0 || index % 5 === 0,
+                          )}
+                        </div>
+                      </a>
+                    `;
+                  })}
+              </div>
             </div>
           </div>
           <button
