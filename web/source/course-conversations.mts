@@ -2667,8 +2667,6 @@ export default async (application: Application): Promise<void> => {
                           css="${css`
                             flex: 1;
                             min-width: var(--space--0);
-                            display: flex;
-                            flex-direction: column;
                           `}"
                         >
                           <div
@@ -2691,12 +2689,17 @@ export default async (application: Application): Promise<void> => {
                             <div
                               key="courseConversation--main--header--publicId"
                               css="${css`
+                                font-family: "Roboto Mono Variable",
+                                  var(--font-family--monospace);
                                 font-size: var(--font-size--3);
                                 line-height: var(--font-size--3--line-height);
-                                color: light-dark(
-                                  var(--color--slate--400),
-                                  var(--color--slate--600)
-                                );
+                                font-weight: 700;
+                                [key~="courseConversation"]:not(.selected) & {
+                                  color: light-dark(
+                                    var(--color--slate--400),
+                                    var(--color--slate--600)
+                                  );
+                                }
                               `}"
                             >
                               #${courseConversation.publicId}
