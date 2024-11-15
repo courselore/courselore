@@ -2251,7 +2251,7 @@ export default async (application: Application): Promise<void> => {
       {},
       {},
       {},
-      Application["types"]["states"]["Course"]
+      Application["types"]["states"]["CourseConversation"]
     >;
     response: serverTypes.Response;
     head: HTML;
@@ -2521,7 +2521,17 @@ export default async (application: Application): Promise<void> => {
                             "createdByCourseParticipation",
                             "courseConversationMessageAnonymity"
                           from "courseConversationMessages"
-                          where "courseConversation" = ${courseConversation.id}
+                          where
+                            "courseConversation" = ${courseConversation.id} $${
+                              request.state.courseParticipation!
+                                .courseParticipationRole !==
+                              "courseParticipationRoleInstructor"
+                                ? sql`
+                                    and
+                                    "courseConversationMessageType" != 'courseConversationMessageTypeCourseParticipationRoleInstructorWhisper'
+                                  `
+                                : sql``
+                            }
                           order by "id" asc
                           limit 1;
                         `,
@@ -2595,6 +2605,12 @@ export default async (application: Application): Promise<void> => {
                           .publicId}/conversations/${courseConversation.publicId}"
                         href="/courses/${request.state.course!
                           .publicId}/conversations/${courseConversation.publicId}"
+                        class="${typeof request.state.courseConversation ===
+                          "object" &&
+                        request.state.courseConversation.id ===
+                          courseConversation.id
+                          ? "selected"
+                          : ""}"
                         css="${css`
                           padding: var(--space--2) var(--space--4);
                           border-bottom: var(--border-width--1) solid
@@ -2625,14 +2641,25 @@ export default async (application: Application): Promise<void> => {
                               var(--color--slate--900)
                             );
                           }
+                          &.selected {
+                            color: light-dark(
+                              var(--color--white),
+                              var(--color--white)
+                            );
+                            background-color: light-dark(
+                              var(--color--blue--500),
+                              var(--color--blue--500)
+                            );
+                          }
                         `}"
                       >
-                        <div key="courseConversation--user">
+                        <div key="courseConversation--userAvatar">
                           $${application.partials.userAvatar({
                             user: firstCourseConversationMessageAnonymous
                               ? "anonymous"
                               : (firstCourseConversationMessageCreatedByCourseParticipationUser ??
                                 "courseParticipationDeleted"),
+                            size: 9,
                           })}
                         </div>
                         <div
@@ -2739,14 +2766,45 @@ export default async (application: Application): Promise<void> => {
                           </div>
                         </div>
                         <div
-                          key="courseConversation--side-decoration"
                           css="${css`
+                            font-size: var(--space--1-5);
+                            line-height: var(--space--0);
                             display: flex;
-                            justify-content: center;
                             align-items: center;
-                          `}"
+                            [key~="courseConversation"]:not(.selected) & {
+                              color: light-dark(
+                                var(--color--blue--500),
+                                var(--color--blue--500)
+                              );
+                            }
+                          `} ${request.state.courseConversation?.id ===
+                            courseConversation.id ||
+                          application.database.get(
+                            sql`
+                              select true
+                              from "courseConversationMessages"
+                              left join "courseConversationMessageViews" on
+                                "courseConversationMessages"."id" = "courseConversationMessageViews"."courseConversationMessage" and
+                                "courseConversationMessageViews"."courseParticipation" = ${request.state.courseParticipation!.id}
+                              where
+                                "courseConversationMessages"."courseConversation" = ${courseConversation.id} and $${
+                                  request.state.courseParticipation!
+                                    .courseParticipationRole !==
+                                  "courseParticipationRoleInstructor"
+                                    ? sql`
+                                        "courseConversationMessages"."courseConversationMessageType" != 'courseConversationMessageTypeCourseParticipationRoleInstructorWhisper' and
+                                      `
+                                    : sql``
+                                }
+                                "courseConversationMessageViews"."id" is null;
+                            `,
+                          ) === undefined
+                            ? css`
+                                visibility: hidden;
+                              `
+                            : css``}"
                         >
-                          $${courseConversationMessageViewPartial(false)}
+                          <i class="bi bi-circle-fill"></i>
                         </div>
                       </a>
                     `;
