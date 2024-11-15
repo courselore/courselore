@@ -2473,12 +2473,18 @@ export default async (application: Application): Promise<void> => {
                   .all<{
                     id: number;
                     publicId: string;
+                    courseConversationType:
+                      | "courseConversationTypeNote"
+                      | "courseConversationTypeQuestion";
+                    questionResolved: number;
                     title: string;
                   }>(
                     sql`
                       select
                         "id",
                         "publicId",
+                        "courseConversationType",
+                        "questionResolved",
                         "title"
                       from "courseConversations"
                       where
@@ -2767,21 +2773,97 @@ export default async (application: Application): Promise<void> => {
                               `}"
                             ></time>
                           </div>
-                          <div hidden key="courseConversation--main--details">
-                            $${Math.random() < 0.5
-                              ? html`<span
-                                  css="${css`
-                                    color: light-dark(
-                                      var(--color--red--500),
-                                      var(--color--red--500)
-                                    );
-                                  `}"
-                                  >Question · Unresolved</span
-                                >`
-                              : Math.random() < 0.5
-                                ? html`Question`
-                                : html`Note`} ·
-                            Assignment 2 · Duplicate question
+                          <div
+                            key="courseConversation--main--details"
+                            css="${css`
+                              font-size: var(--font-size--3);
+                              line-height: var(--font-size--3--line-height);
+                              [key~="courseConversation"]:not(.selected) & {
+                                color: light-dark(
+                                  var(--color--slate--600),
+                                  var(--color--slate--400)
+                                );
+                              }
+                              [key~="courseConversation"].selected & {
+                                color: light-dark(
+                                  var(--color--blue--200),
+                                  var(--color--blue--200)
+                                );
+                              }
+                            `}"
+                          >
+                            $${(() => {
+                              const details = [
+                                html`<span
+                                  css="${courseConversation.courseConversationType ===
+                                  "courseConversationTypeQuestion"
+                                    ? !Boolean(
+                                        courseConversation.questionResolved,
+                                      )
+                                      ? css`
+                                          [key~="courseConversation"]:not(
+                                              .selected
+                                            )
+                                            & {
+                                            color: light-dark(
+                                              var(--color--red--500),
+                                              var(--color--red--500)
+                                            );
+                                          }
+                                        `
+                                      : css`
+                                          [key~="courseConversation"]:not(
+                                              .selected
+                                            )
+                                            & {
+                                            color: light-dark(
+                                              var(--color--green--500),
+                                              var(--color--green--500)
+                                            );
+                                          }
+                                        `
+                                    : css``}"
+                                  ><span
+                                    css="${css`
+                                      font-weight: 600;
+                                    `}"
+                                    >${courseConversation.courseConversationType ===
+                                    "courseConversationTypeNote"
+                                      ? "Note"
+                                      : courseConversation.courseConversationType ===
+                                          "courseConversationTypeQuestion"
+                                        ? "Question"
+                                        : (() => {
+                                            throw new Error();
+                                          })()}</span
+                                  >${courseConversation.courseConversationType ===
+                                  "courseConversationTypeQuestion"
+                                    ? !Boolean(
+                                        courseConversation.questionResolved,
+                                      )
+                                      ? " (unresolved)"
+                                      : " (resolved)"
+                                    : ""}</span
+                                >`,
+                              ];
+                              for (const courseConversationsTag of request.state
+                                .courseConversationsTags!)
+                                if (
+                                  application.database.get(
+                                    sql`
+                                      select true
+                                      from "courseConversationTaggings"
+                                      where
+                                        "courseConversation" = ${courseConversation.id} and
+                                        "courseConversationsTag" = ${courseConversationsTag.id};
+                                    `,
+                                  ) !== undefined
+                                )
+                                  details.push(
+                                    html`${courseConversationsTag.name}`,
+                                  );
+                              return details.join(" · ");
+                            })()}
                           </div>
                           <div
                             hidden
