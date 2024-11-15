@@ -60,7 +60,7 @@ export type ApplicationUsers = {
           emailNotificationsForMessagesInConversationsInWhichYouParticipated: number;
           userAnonymityPreferred:
             | "userAnonymityPreferredNone"
-            | "userAnonymityPreferredOtherCourseParticipationRoleStudents"
+            | "userAnonymityPreferredCourseParticipationRoleStudents"
             | "userAnonymityPreferredCourseParticipationRoleInstructors";
           mostRecentlyVisitedCourse: number | null;
         };
@@ -170,7 +170,7 @@ export default async (application: Application): Promise<void> => {
         emailNotificationsForMessagesInConversationsInWhichYouParticipated: number;
         userAnonymityPreferred:
           | "userAnonymityPreferredNone"
-          | "userAnonymityPreferredOtherCourseParticipationRoleStudents"
+          | "userAnonymityPreferredCourseParticipationRoleStudents"
           | "userAnonymityPreferredCourseParticipationRoleInstructors";
         mostRecentlyVisitedCourse: number | null;
       }>(

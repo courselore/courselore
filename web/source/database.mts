@@ -2862,7 +2862,7 @@ export default async (application: Application): Promise<void> => {
                         ${Number(Math.random() < 0.9)},
                         ${Number(Math.random() < 0.9)},
                         ${Number(Math.random() < 0.9)},
-                        ${Math.random() < 0.8 ? "userAnonymityPreferredNone" : Math.random() < 0.8 ? "userAnonymityPreferredOtherCourseParticipationRoleStudents" : "userAnonymityPreferredCourseParticipationRoleInstructors"},
+                        ${Math.random() < 0.8 ? "userAnonymityPreferredNone" : Math.random() < 0.8 ? "userAnonymityPreferredCourseParticipationRoleStudents" : "userAnonymityPreferredCourseParticipationRoleInstructors"},
                         ${null}
                       );
                     `,
@@ -2928,7 +2928,7 @@ export default async (application: Application): Promise<void> => {
                       ${Number(Math.random() < 0.8)},
                       ${cryptoRandomString({ length: 20, type: "numeric" })},
                       ${Number(Math.random() < 0.8)},
-                      ${Math.random() < 0.1 ? "courseParticipationRoleStudentsAnonymityAllowedNone" : Math.random() < 0.8 ? "courseParticipationRoleStudentsAnonymityAllowedOtherCourseParticipationRoleStudents" : "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleInstructors"},
+                      ${Math.random() < 0.1 ? "courseParticipationRoleStudentsAnonymityAllowedNone" : Math.random() < 0.8 ? "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleStudents" : "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleInstructors"},
                       ${Number(Math.random() < 0.8)},
                       ${Number(Math.random() < 0.8)},
                       ${Number(Math.random() < 0.8)},
@@ -3230,7 +3230,7 @@ export default async (application: Application): Promise<void> => {
                                   ? "courseConversationMessageTypeFollowUpQuestion"
                                   : "courseConversationMessageTypeCourseParticipationRoleInstructorWhisper"
                           },
-                          ${Math.random() < 0.5 ? "courseConversationMessageAnonymityNone" : Math.random() < 0.9 ? "courseConversationMessageAnonymityOtherCourseParticipationRoleStudents" : "courseConversationMessageAnonymityCourseParticipationRoleInstructors"},
+                          ${Math.random() < 0.5 ? "courseConversationMessageAnonymityNone" : Math.random() < 0.9 ? "courseConversationMessageAnonymityCourseParticipationRoleStudents" : "courseConversationMessageAnonymityCourseParticipationRoleInstructors"},
                           ${courseConversationMessageContent},
                           ${utilities
                             .tokenize(courseConversationMessageContent, {

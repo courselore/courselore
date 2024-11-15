@@ -1148,7 +1148,7 @@ export default async (application: Application): Promise<void> => {
                         | "courseConversationMessageTypeCourseParticipationRoleInstructorWhisper";
                       courseConversationMessageAnonymity:
                         | "courseConversationMessageAnonymityNone"
-                        | "courseConversationMessageAnonymityOtherCourseParticipationRoleStudents"
+                        | "courseConversationMessageAnonymityCourseParticipationRoleStudents"
                         | "courseConversationMessageAnonymityCourseParticipationRoleInstructors";
                       content: string;
                     }>(
@@ -1298,7 +1298,7 @@ export default async (application: Application): Promise<void> => {
                                 courseConversationMessage.courseConversationMessageAnonymity ===
                                   "courseConversationMessageAnonymityCourseParticipationRoleInstructors" ||
                                 (courseConversationMessage.courseConversationMessageAnonymity ===
-                                  "courseConversationMessageAnonymityOtherCourseParticipationRoleStudents" &&
+                                  "courseConversationMessageAnonymityCourseParticipationRoleStudents" &&
                                   request.state.courseParticipation!
                                     .courseParticipationRole ===
                                     "courseParticipationRoleStudent" &&
@@ -1346,7 +1346,7 @@ export default async (application: Application): Promise<void> => {
                                   >${courseConversationMessage.courseConversationMessageAnonymity ===
                                     "courseConversationMessageAnonymityCourseParticipationRoleInstructors" ||
                                   (courseConversationMessage.courseConversationMessageAnonymity ===
-                                    "courseConversationMessageAnonymityOtherCourseParticipationRoleStudents" &&
+                                    "courseConversationMessageAnonymityCourseParticipationRoleStudents" &&
                                     request.state.courseParticipation!
                                       .courseParticipationRole ===
                                       "courseParticipationRoleStudent" &&
@@ -1363,7 +1363,7 @@ export default async (application: Application): Promise<void> => {
                                   "courseParticipationRoleInstructor"
                                     ? html` (instructor)`
                                     : html``}$${courseConversationMessage.courseConversationMessageAnonymity ===
-                                    "courseConversationMessageAnonymityOtherCourseParticipationRoleStudents" &&
+                                    "courseConversationMessageAnonymityCourseParticipationRoleStudents" &&
                                   (request.state.courseParticipation!
                                     .courseParticipationRole ===
                                     "courseParticipationRoleInstructor" ||
@@ -2520,7 +2520,7 @@ export default async (application: Application): Promise<void> => {
                         createdByCourseParticipation: number | null;
                         courseConversationMessageAnonymity:
                           | "courseConversationMessageAnonymityNone"
-                          | "courseConversationMessageAnonymityOtherCourseParticipationRoleStudents"
+                          | "courseConversationMessageAnonymityCourseParticipationRoleStudents"
                           | "courseConversationMessageAnonymityCourseParticipationRoleInstructors";
                       }>(
                         sql`
@@ -2550,7 +2550,7 @@ export default async (application: Application): Promise<void> => {
                       firstCourseConversationMessage.createdByCourseParticipation !==
                         request.state.courseParticipation!.id &&
                       ((firstCourseConversationMessage.courseConversationMessageAnonymity ===
-                        "courseConversationMessageAnonymityOtherCourseParticipationRoleStudents" &&
+                        "courseConversationMessageAnonymityCourseParticipationRoleStudents" &&
                         request.state.courseParticipation!
                           .courseParticipationRole ===
                           "courseParticipationRoleStudent") ||
@@ -2763,7 +2763,7 @@ export default async (application: Application): Promise<void> => {
                               ? " (instructor)"
                               : ""}${!firstCourseConversationMessageAnonymous
                               ? firstCourseConversationMessage.courseConversationMessageAnonymity ===
-                                "courseConversationMessageAnonymityOtherCourseParticipationRoleStudents"
+                                "courseConversationMessageAnonymityCourseParticipationRoleStudents"
                                 ? " (anonymous to students)"
                                 : firstCourseConversationMessage.courseConversationMessageAnonymity ===
                                     "courseConversationMessageAnonymityCourseParticipationRoleInstructors"
