@@ -2879,8 +2879,8 @@ export default async (application: Application): Promise<void> => {
                               text-overflow: ellipsis;
                               [key~="courseConversation"]:not(.selected) & {
                                 color: light-dark(
-                                  var(--color--slate--400),
-                                  var(--color--slate--600)
+                                  var(--color--slate--500),
+                                  var(--color--slate--500)
                                 );
                               }
                               [key~="courseConversation"].selected & {
