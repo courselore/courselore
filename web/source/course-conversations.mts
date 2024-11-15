@@ -2755,7 +2755,7 @@ export default async (application: Application): Promise<void> => {
                               `}"
                             ></time>
                           </div>
-                          <div hidden>
+                          <div hidden key="courseConversation--main--details">
                             $${Math.random() < 0.5
                               ? html`<span
                                   css="${css`
@@ -2777,7 +2777,7 @@ export default async (application: Application): Promise<void> => {
                           </div>
                           <div
                             hidden
-                            key="courseConversation--main--excerpt"
+                            key="courseConversation--main--firstCourseConversationMessageContent"
                             css="${css`
                               font-size: var(--font-size--3);
                               line-height: var(--font-size--3--line-height);
