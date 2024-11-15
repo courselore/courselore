@@ -589,6 +589,13 @@ export default async (application: Application): Promise<void> => {
                                                       var(--color--red--500)
                                                     );
                                                   }
+                                                  [key~="course-selector"].button--blue
+                                                    & {
+                                                    color: light-dark(
+                                                      var(--color--blue--200),
+                                                      var(--color--blue--200)
+                                                    );
+                                                  }
                                                 `}"
                                                 >Archived</span
                                               >`
@@ -619,6 +626,13 @@ export default async (application: Application): Promise<void> => {
                                                       var(--color--slate--500)
                                                     );
                                                   }
+                                                  [key~="course-selector"].button--blue
+                                                    & {
+                                                    color: light-dark(
+                                                      var(--color--blue--200),
+                                                      var(--color--blue--200)
+                                                    );
+                                                  }
                                                 `}"
                                               >
                                                 $${courseInformation}
@@ -634,15 +648,10 @@ export default async (application: Application): Promise<void> => {
                                           --font-size--3-5--line-height
                                         );
                                         margin-top: var(--space--px);
-                                        [key~="course-selector"]:not(
-                                            .button--blue
-                                          )
-                                          & {
-                                          color: light-dark(
-                                            var(--color--blue--500),
-                                            var(--color--blue--500)
-                                          );
-                                        }
+                                        color: light-dark(
+                                          var(--color--blue--500),
+                                          var(--color--blue--500)
+                                        );
                                       `} ${request.state.course!.id ===
                                         course.id ||
                                       application.database.get(

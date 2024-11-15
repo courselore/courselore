@@ -2709,6 +2709,12 @@ export default async (application: Application): Promise<void> => {
                                     var(--color--slate--600)
                                   );
                                 }
+                                [key~="courseConversation"].selected & {
+                                  color: light-dark(
+                                    var(--color--blue--300),
+                                    var(--color--blue--300)
+                                  );
+                                }
                               `}"
                             >
                               #${courseConversation.publicId}
@@ -2723,6 +2729,12 @@ export default async (application: Application): Promise<void> => {
                                 color: light-dark(
                                   var(--color--slate--600),
                                   var(--color--slate--400)
+                                );
+                              }
+                              [key~="courseConversation"].selected & {
+                                color: light-dark(
+                                  var(--color--blue--200),
+                                  var(--color--blue--200)
                                 );
                               }
                             `}"
@@ -2801,12 +2813,10 @@ export default async (application: Application): Promise<void> => {
                             line-height: var(--space--0);
                             display: flex;
                             align-items: center;
-                            [key~="courseConversation"]:not(.selected) & {
-                              color: light-dark(
-                                var(--color--blue--500),
-                                var(--color--blue--500)
-                              );
-                            }
+                            color: light-dark(
+                              var(--color--blue--500),
+                              var(--color--blue--500)
+                            );
                           `} ${request.state.courseConversation?.id ===
                             courseConversation.id ||
                           application.database.get(
