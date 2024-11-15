@@ -2547,15 +2547,15 @@ export default async (application: Application): Promise<void> => {
                     if (firstCourseConversationMessage === undefined)
                       throw new Error();
                     const firstCourseConversationMessageAnonymous =
-                      (firstCourseConversationMessage.courseConversationMessageAnonymity ===
+                      firstCourseConversationMessage.createdByCourseParticipation !==
+                        request.state.courseParticipation!.id &&
+                      ((firstCourseConversationMessage.courseConversationMessageAnonymity ===
                         "courseConversationMessageAnonymityOtherCourseParticipationRoleStudents" &&
                         request.state.courseParticipation!
                           .courseParticipationRole ===
-                          "courseParticipationRoleStudent" &&
-                        firstCourseConversationMessage.createdByCourseParticipation !==
-                          request.state.courseParticipation!.id) ||
-                      firstCourseConversationMessage.courseConversationMessageAnonymity ===
-                        "courseConversationMessageAnonymityCourseParticipationRoleInstructors";
+                          "courseParticipationRoleStudent") ||
+                        firstCourseConversationMessage.courseConversationMessageAnonymity ===
+                          "courseConversationMessageAnonymityCourseParticipationRoleInstructors");
                     const firstCourseConversationMessageCreatedByCourseParticipation =
                       typeof firstCourseConversationMessage.createdByCourseParticipation ===
                         "number" && !firstCourseConversationMessageAnonymous
@@ -2761,10 +2761,14 @@ export default async (application: Application): Promise<void> => {
                             firstCourseConversationMessageCreatedByCourseParticipation.courseParticipationRole ===
                               "courseParticipationRoleInstructor"
                               ? " (instructor)"
-                              : ""}${!firstCourseConversationMessageAnonymous &&
-                            firstCourseConversationMessage.courseConversationMessageAnonymity !==
-                              "courseConversationMessageAnonymityNone"
-                              ? " (anonymously)"
+                              : ""}${!firstCourseConversationMessageAnonymous
+                              ? firstCourseConversationMessage.courseConversationMessageAnonymity ===
+                                "courseConversationMessageAnonymityOtherCourseParticipationRoleStudents"
+                                ? " (anonymous to students)"
+                                : firstCourseConversationMessage.courseConversationMessageAnonymity ===
+                                    "courseConversationMessageAnonymityCourseParticipationRoleInstructors"
+                                  ? " (anonymous to instructors)"
+                                  : ""
                               : ""} ·
                             <time
                               datetime="${firstCourseConversationMessage.createdAt}"
