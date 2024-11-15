@@ -2780,12 +2780,8 @@ export default async (application: Application): Promise<void> => {
                                 >`
                               : Math.random() < 0.5
                                 ? html`Question`
-                                : html`Note`}<span
-                              css="${css`
-                                font-weight: 400;
-                              `}"
-                              > · Assignment 2 · Duplicate question</span
-                            >
+                                : html`Note`} ·
+                            Assignment 2 · Duplicate question
                           </div>
                           <div
                             hidden
