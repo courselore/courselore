@@ -2866,18 +2866,25 @@ export default async (application: Application): Promise<void> => {
                             })()}
                           </div>
                           <div
-                            hidden
                             key="courseConversation--main--firstCourseConversationMessageContent"
                             css="${css`
                               font-size: var(--font-size--3);
                               line-height: var(--font-size--3--line-height);
-                              color: light-dark(
-                                var(--color--slate--500),
-                                var(--color--slate--500)
-                              );
                               white-space: nowrap;
                               overflow: hidden;
                               text-overflow: ellipsis;
+                              [key~="courseConversation"]:not(.selected) & {
+                                color: light-dark(
+                                  var(--color--slate--400),
+                                  var(--color--slate--600)
+                                );
+                              }
+                              [key~="courseConversation"].selected & {
+                                color: light-dark(
+                                  var(--color--blue--300),
+                                  var(--color--blue--300)
+                                );
+                              }
                             `}"
                           >
                             Human is behind a closed door, emergency! abandoned!
