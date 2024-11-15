@@ -2510,6 +2510,7 @@ export default async (application: Application): Promise<void> => {
                   .map((courseConversation) => {
                     const firstCourseConversationMessage =
                       application.database.get<{
+                        createdAt: string;
                         createdByCourseParticipation: number | null;
                         courseConversationMessageAnonymity:
                           | "courseConversationMessageAnonymityNone"
@@ -2518,6 +2519,7 @@ export default async (application: Application): Promise<void> => {
                       }>(
                         sql`
                           select
+                            "createdAt",
                             "createdByCourseParticipation",
                             "courseConversationMessageAnonymity"
                           from "courseConversationMessages"
@@ -2551,10 +2553,17 @@ export default async (application: Application): Promise<void> => {
                     const firstCourseConversationMessageCreatedByCourseParticipation =
                       typeof firstCourseConversationMessage.createdByCourseParticipation ===
                         "number" && !firstCourseConversationMessageAnonymous
-                        ? application.database.get<{ user: number }>(
+                        ? application.database.get<{
+                            user: number;
+
+                            courseParticipationRole:
+                              | "courseParticipationRoleInstructor"
+                              | "courseParticipationRoleStudent";
+                          }>(
                             sql`
                               select
-                                "user"
+                                "user",
+                                "courseParticipationRole"
                               from "courseParticipations"
                               where "id" = ${firstCourseConversationMessage.createdByCourseParticipation};
                             `,
@@ -2706,30 +2715,47 @@ export default async (application: Application): Promise<void> => {
                             </div>
                           </div>
                           <div
-                            key="courseConversation--main--details"
+                            key="courseConversation--main--byline"
                             css="${css`
                               font-size: var(--font-size--3);
                               line-height: var(--font-size--3--line-height);
-                              font-weight: 600;
-                              color: light-dark(
-                                var(--color--slate--600),
-                                var(--color--slate--400)
-                              );
+                              [key~="courseConversation"]:not(.selected) & {
+                                color: light-dark(
+                                  var(--color--slate--600),
+                                  var(--color--slate--400)
+                                );
+                              }
                             `}"
                           >
-                            Abigail Wall<span
+                            <span
                               css="${css`
-                                font-weight: 400;
+                                font-weight: 600;
                               `}"
-                              > ·
-                              <span
-                                css="${css`
-                                  display: inline-block;
-                                `}"
-                                >2024-03-02</span
-                              ></span
-                            >
-                            <br />
+                              >${firstCourseConversationMessageAnonymous
+                                ? "Anonymous"
+                                : typeof firstCourseConversationMessageCreatedByCourseParticipationUser ===
+                                    "object"
+                                  ? firstCourseConversationMessageCreatedByCourseParticipationUser.name
+                                  : "Deleted course participant"}</span
+                            >${!firstCourseConversationMessageAnonymous &&
+                            typeof firstCourseConversationMessageCreatedByCourseParticipation ===
+                              "object" &&
+                            firstCourseConversationMessageCreatedByCourseParticipation.courseParticipationRole ===
+                              "courseParticipationRoleInstructor"
+                              ? " (instructor)"
+                              : ""}${!firstCourseConversationMessageAnonymous &&
+                            firstCourseConversationMessage.courseConversationMessageAnonymity !==
+                              "courseConversationMessageAnonymityNone"
+                              ? " (anonymously)"
+                              : ""} ·
+                            <time
+                              datetime="${firstCourseConversationMessage.createdAt}"
+                              javascript="${javascript`
+                                javascript.relativizeDateTimeElement(this, { capitalize: true });
+                              `}"
+                            ></time>
+                          </div>
+                          <div hidden>
                             $${Math.random() < 0.5
                               ? html`<span
                                   css="${css`
@@ -2750,6 +2776,7 @@ export default async (application: Application): Promise<void> => {
                             >
                           </div>
                           <div
+                            hidden
                             key="courseConversation--main--excerpt"
                             css="${css`
                               font-size: var(--font-size--3);
