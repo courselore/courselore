@@ -2793,7 +2793,7 @@ export default async (application: Application): Promise<void> => {
                             `}"
                           >
                             $${(() => {
-                              const details = [
+                              const courseConversationMainDetails = [
                                 html`<span
                                   css="${courseConversation.courseConversationType ===
                                   "courseConversationTypeQuestion"
@@ -2859,10 +2859,10 @@ export default async (application: Application): Promise<void> => {
                                     `,
                                   ) !== undefined
                                 )
-                                  details.push(
+                                  courseConversationMainDetails.push(
                                     html`${courseConversationsTag.name}`,
                                   );
-                              return details.join(" · ");
+                              return courseConversationMainDetails.join(" · ");
                             })()}
                           </div>
                           <div
