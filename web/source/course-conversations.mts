@@ -2633,6 +2633,7 @@ export default async (application: Application): Promise<void> => {
                               var(--color--slate--200),
                               var(--color--slate--800)
                             );
+                          position: relative;
                           display: flex;
                           gap: var(--space--2);
                           cursor: pointer;
@@ -2668,6 +2669,46 @@ export default async (application: Application): Promise<void> => {
                           }
                         `}"
                       >
+                        $${request.state.courseConversation?.id !==
+                          courseConversation.id &&
+                        application.database.get(
+                          sql`
+                            select true
+                            from "courseConversationMessages"
+                            left join "courseConversationMessageViews" on
+                              "courseConversationMessages"."id" = "courseConversationMessageViews"."courseConversationMessage" and
+                              "courseConversationMessageViews"."courseParticipation" = ${request.state.courseParticipation!.id}
+                            where
+                              "courseConversationMessages"."courseConversation" = ${courseConversation.id} and $${
+                                request.state.courseParticipation!
+                                  .courseParticipationRole !==
+                                "courseParticipationRoleInstructor"
+                                  ? sql`
+                                      "courseConversationMessages"."courseConversationMessageType" != 'courseConversationMessageTypeCourseParticipationRoleInstructorWhisper' and
+                                    `
+                                  : sql``
+                              }
+                              "courseConversationMessageViews"."id" is null;
+                          `,
+                        ) !== undefined
+                          ? html`
+                              <div
+                                css="${css`
+                                  font-size: var(--space--1-5);
+                                  line-height: var(--space--0);
+                                  color: light-dark(
+                                    var(--color--blue--500),
+                                    var(--color--blue--500)
+                                  );
+                                  position: absolute;
+                                  margin-left: var(--space---2-5);
+                                  margin-top: var(--space--4);
+                                `}"
+                              >
+                                <i class="bi bi-circle-fill"></i>
+                              </div>
+                            `
+                          : html``}
                         <div key="courseConversation--userAvatar">
                           $${application.partials.userAvatar({
                             user: firstCourseConversationMessageAnonymous
@@ -2895,45 +2936,6 @@ export default async (application: Application): Promise<void> => {
                             meeooowwww!!! headbutt owner's knee chase laser be a
                             nyan cat,
                           </div>
-                        </div>
-                        <div
-                          css="${css`
-                            font-size: var(--space--1-5);
-                            line-height: var(--space--0);
-                            display: flex;
-                            align-items: center;
-                            color: light-dark(
-                              var(--color--blue--500),
-                              var(--color--blue--500)
-                            );
-                          `} ${request.state.courseConversation?.id ===
-                            courseConversation.id ||
-                          application.database.get(
-                            sql`
-                              select true
-                              from "courseConversationMessages"
-                              left join "courseConversationMessageViews" on
-                                "courseConversationMessages"."id" = "courseConversationMessageViews"."courseConversationMessage" and
-                                "courseConversationMessageViews"."courseParticipation" = ${request.state.courseParticipation!.id}
-                              where
-                                "courseConversationMessages"."courseConversation" = ${courseConversation.id} and $${
-                                  request.state.courseParticipation!
-                                    .courseParticipationRole !==
-                                  "courseParticipationRoleInstructor"
-                                    ? sql`
-                                        "courseConversationMessages"."courseConversationMessageType" != 'courseConversationMessageTypeCourseParticipationRoleInstructorWhisper' and
-                                      `
-                                    : sql``
-                                }
-                                "courseConversationMessageViews"."id" is null;
-                            `,
-                          ) === undefined
-                            ? css`
-                                visibility: hidden;
-                              `
-                            : css``}"
-                        >
-                          <i class="bi bi-circle-fill"></i>
                         </div>
                       </a>
                     `;
