@@ -2468,7 +2468,7 @@ export default async (application: Application): Promise<void> => {
                 flex-direction: column;
               `}"
             >
-              <div key="courseConversations--to-group">
+              <div key="courseConversations--to-group" hidden>
                 $${application.database
                   .all<{
                     id: number;
@@ -2477,6 +2477,7 @@ export default async (application: Application): Promise<void> => {
                       | "courseConversationTypeNote"
                       | "courseConversationTypeQuestion";
                     questionResolved: number;
+                    pinned: number;
                     title: string;
                   }>(
                     sql`
@@ -2485,6 +2486,7 @@ export default async (application: Application): Promise<void> => {
                         "publicId",
                         "courseConversationType",
                         "questionResolved",
+                        "pinned",
                         "title"
                       from "courseConversations"
                       where
@@ -2670,6 +2672,108 @@ export default async (application: Application): Promise<void> => {
                             );
                           }
                         `}"
+                        javascript="${javascript`
+                          let group;
+                          if (${courseConversation.pinned}) {
+                            group = this.closest('[key="courseConversations"]').querySelector('[key~="courseConversations--group"][key~="pinned"]');
+                            if (group === null)
+                              this.closest('[key="courseConversations"]').insertAdjacentHTML("beforeend", ${html`
+                                <details
+                                  key="courseConversations--group pinned"
+                                >
+                                  <summary
+                                    css="${css`
+                                      font-size: var(--font-size--3);
+                                      line-height: var(
+                                        --font-size--3--line-height
+                                      );
+                                      font-weight: 600;
+                                      color: light-dark(
+                                        var(--color--slate--500),
+                                        var(--color--slate--500)
+                                      );
+                                      background-color: light-dark(
+                                        var(--color--slate--50),
+                                        var(--color--slate--950)
+                                      );
+                                      padding: var(--space--1-5) var(--space--4);
+                                      border-bottom: var(--border-width--1)
+                                        solid
+                                        light-dark(
+                                          var(--color--slate--200),
+                                          var(--color--slate--800)
+                                        );
+                                      position: relative;
+                                      cursor: pointer;
+                                      transition-property: var(
+                                        --transition-property--colors
+                                      );
+                                      transition-duration: var(
+                                        --transition-duration--150
+                                      );
+                                      transition-timing-function: var(
+                                        --transition-timing-function--ease-in-out
+                                      );
+                                      &:hover,
+                                      &:focus-within {
+                                        background-color: light-dark(
+                                          var(--color--slate--100),
+                                          var(--color--slate--900)
+                                        );
+                                      }
+                                      &:active {
+                                        background-color: light-dark(
+                                          var(--color--slate--200),
+                                          var(--color--slate--800)
+                                        );
+                                      }
+                                    `}"
+                                  >
+                                    <span
+                                      css="${css`
+                                        font-size: var(--space--1-5);
+                                        line-height: var(--space--0);
+                                        color: light-dark(
+                                          var(--color--blue--500),
+                                          var(--color--blue--500)
+                                        );
+                                        position: absolute;
+                                        margin-left: var(--space---2-5);
+                                        margin-top: calc(
+                                          var(--space--1) + var(--space--px)
+                                        );
+                                      `}"
+                                    >
+                                      <i class="bi bi-circle-fill"></i>
+                                    </span>
+                                    <i
+                                      class="bi bi-chevron-right"
+                                      css="${css`
+                                        transition-property: var(
+                                          --transition-property--transform
+                                        );
+                                        transition-duration: var(
+                                          --transition-duration--150
+                                        );
+                                        transition-timing-function: var(
+                                          --transition-timing-function--ease-in-out
+                                        );
+                                        [key~="courseConversations--group"][open]
+                                          & {
+                                          transform: rotate(
+                                            var(--transform--rotate--90)
+                                          );
+                                        }
+                                      `}"
+                                    ></i>
+                                    Pinned
+                                  </summary>
+                                </details>
+                              `});
+                            group = this.closest('[key="courseConversations"]').querySelector('[key~="courseConversations--group"][key~="pinned"]');
+                          }
+                          group.insertAdjacentElement("beforeend", this);
+                        `}"
                       >
                         $${request.state.courseConversation?.id !==
                           courseConversation.id &&
@@ -2747,11 +2851,9 @@ export default async (application: Application): Promise<void> => {
                             <div
                               key="courseConversation--main--header--publicId"
                               css="${css`
-                                font-family: "Roboto Mono Variable",
-                                  var(--font-family--monospace);
                                 font-size: var(--font-size--3);
                                 line-height: var(--font-size--3--line-height);
-                                font-weight: 700;
+                                font-weight: 500;
                                 [key~="courseConversation"]:not(.selected) & {
                                   color: light-dark(
                                     var(--color--slate--400),
