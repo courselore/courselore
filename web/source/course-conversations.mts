@@ -2746,9 +2746,9 @@ export default async (application: Application): Promise<void> => {
                                     >
                                       <i class="bi bi-circle-fill"></i>
                                     </span>
-                                    <i
-                                      class="bi bi-chevron-right"
+                                    <span
                                       css="${css`
+                                        display: inline-block;
                                         transition-property: var(
                                           --transition-property--transform
                                         );
@@ -2765,8 +2765,8 @@ export default async (application: Application): Promise<void> => {
                                           );
                                         }
                                       `}"
-                                    ></i>
-                                    Pinned
+                                      ><i class="bi bi-chevron-right"></i></span
+                                    >  Pinned
                                   </summary>
                                 </details>
                               `});
