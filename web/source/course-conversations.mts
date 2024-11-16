@@ -2522,12 +2522,14 @@ export default async (application: Application): Promise<void> => {
                           | "courseConversationMessageAnonymityNone"
                           | "courseConversationMessageAnonymityCourseParticipationRoleStudents"
                           | "courseConversationMessageAnonymityCourseParticipationRoleInstructors";
+                        content: string;
                       }>(
                         sql`
                           select
                             "createdAt",
                             "createdByCourseParticipation",
-                            "courseConversationMessageAnonymity"
+                            "courseConversationMessageAnonymity",
+                            "content"
                           from "courseConversationMessages"
                           where
                             "courseConversation" = ${courseConversation.id} $${
@@ -2920,8 +2922,8 @@ export default async (application: Application): Promise<void> => {
                               text-overflow: ellipsis;
                               [key~="courseConversation"]:not(.selected) & {
                                 color: light-dark(
-                                  var(--color--slate--500),
-                                  var(--color--slate--500)
+                                  var(--color--slate--400),
+                                  var(--color--slate--600)
                                 );
                               }
                               [key~="courseConversation"].selected & {
@@ -2932,9 +2934,11 @@ export default async (application: Application): Promise<void> => {
                               }
                             `}"
                           >
-                            Human is behind a closed door, emergency! abandoned!
-                            meeooowwww!!! headbutt owner's knee chase laser be a
-                            nyan cat,
+                            ${firstCourseConversationMessage.content.slice(
+                              0,
+                              200,
+                            )}
+                            TODO
                           </div>
                         </div>
                       </a>
