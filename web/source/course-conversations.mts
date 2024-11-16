@@ -2772,6 +2772,17 @@ export default async (application: Application): Promise<void> => {
                               `});
                             group = this.closest('[key="courseConversations"]').querySelector('[key~="courseConversations--group"][key~="pinned"]');
                           }
+                          else {
+                            const firstCourseConversationMessageCreatedAtWeekStart = new Date(${firstCourseConversationMessage.createdAt});
+                          firstCourseConversationMessageCreatedAtWeekStart.setHours(12, 0, 0, 0);
+                            while (firstCourseConversationMessageCreatedAtWeekStart.getDay() !== 0)
+                              firstCourseConversationMessageCreatedAtWeekStart.setDate(firstCourseConversationMessageCreatedAtWeekStart.getDate() - 1);
+                            const firstCourseConversationMessageCreatedAtWeekEnd = new Date(${firstCourseConversationMessage.createdAt});
+                            firstCourseConversationMessageCreatedAtWeekEnd.setHours(12, 0, 0, 0);
+                            while (firstCourseConversationMessageCreatedAtWeekEnd.getDay() !== 6)
+                              firstCourseConversationMessageCreatedAtWeekEnd.setDate(firstCourseConversationMessageCreatedAtWeekEnd.getDate() + 1);
+                            const firstCourseConversationMessageCreatedAtWeek = javascript.localizeDate(firstCourseConversationMessageCreatedAtWeekStart.toISOString()) + " — " + javascript.localizeDate(firstCourseConversationMessageCreatedAtWeekEnd.toISOString());
+                          }
                           group.insertAdjacentElement("beforeend", this);
                         `}"
                       >
