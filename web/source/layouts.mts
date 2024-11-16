@@ -293,6 +293,7 @@ export default async (application: Application): Promise<void> => {
   javascript`
     import * as javascript from "@radically-straightforward/javascript/static/index.mjs";
     import * as utilities from "@radically-straightforward/utilities";
+    import html from "@radically-straightforward/html";
     import * as Tippy from "tippy.js";
     import { unified } from "unified";
     import rehypeParse from "rehype-parse";

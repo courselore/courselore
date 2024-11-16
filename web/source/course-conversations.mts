@@ -2673,40 +2673,97 @@ export default async (application: Application): Promise<void> => {
                           }
                         `}"
                         javascript="${javascript`
-                          let group;
+                          let key;
+                          let label;
                           if (${courseConversation.pinned}) {
-                            group = this.closest('[key="courseConversations"]').querySelector('[key~="courseConversations--group"][key~="pinned"]');
-                            if (group === null)
-                              this.closest('[key="courseConversations"]').insertAdjacentHTML("beforeend", ${html`
-                                <details
-                                  key="courseConversations--group pinned"
-                                >
-                                  <summary
-                                    css="${css`
-                                      font-size: var(--font-size--3);
-                                      line-height: var(
-                                        --font-size--3--line-height
+                            key = "pinned";
+                            label = "Pinned";
+                          }
+                          else {
+                            const firstCourseConversationMessageCreatedAtWeekStart = new Date(${firstCourseConversationMessage.createdAt});
+                            firstCourseConversationMessageCreatedAtWeekStart.setHours(12, 0, 0, 0);
+                            while (firstCourseConversationMessageCreatedAtWeekStart.getDay() !== 0) firstCourseConversationMessageCreatedAtWeekStart.setDate(firstCourseConversationMessageCreatedAtWeekStart.getDate() - 1);
+                            const firstCourseConversationMessageCreatedAtWeekEnd = new Date(${firstCourseConversationMessage.createdAt});
+                            firstCourseConversationMessageCreatedAtWeekEnd.setHours(12, 0, 0, 0);
+                            while (firstCourseConversationMessageCreatedAtWeekEnd.getDay() !== 6) firstCourseConversationMessageCreatedAtWeekEnd.setDate(firstCourseConversationMessageCreatedAtWeekEnd.getDate() + 1);
+                            key = javascript.localizeDate(firstCourseConversationMessageCreatedAtWeekStart.toISOString());
+                            label = \`\${javascript.localizeDate(firstCourseConversationMessageCreatedAtWeekStart.toISOString())} — \${javascript.localizeDate(firstCourseConversationMessageCreatedAtWeekEnd.toISOString())}\`;
+                          }
+                          (
+                            this.closest('[key="courseConversations"]').querySelector(\`[key~="courseConversations--group"][key~="\${key}"]\`) ??
+                            this.closest('[key="courseConversations"]').insertAdjacentElement("beforeend", javascript.stringToElement(html\`
+                              <details
+                                key="courseConversations--group \${key}"
+                              >
+                                <summary
+                                  css="\${${css`
+                                    font-size: var(--font-size--3);
+                                    line-height: var(
+                                      --font-size--3--line-height
+                                    );
+                                    font-weight: 600;
+                                    color: light-dark(
+                                      var(--color--slate--500),
+                                      var(--color--slate--500)
+                                    );
+                                    background-color: light-dark(
+                                      var(--color--slate--50),
+                                      var(--color--slate--950)
+                                    );
+                                    padding: var(--space--1-5) var(--space--4);
+                                    border-bottom: var(--border-width--1) solid
+                                      light-dark(
+                                        var(--color--slate--200),
+                                        var(--color--slate--800)
                                       );
-                                      font-weight: 600;
-                                      color: light-dark(
-                                        var(--color--slate--500),
-                                        var(--color--slate--500)
-                                      );
+                                    position: relative;
+                                    cursor: pointer;
+                                    transition-property: var(
+                                      --transition-property--colors
+                                    );
+                                    transition-duration: var(
+                                      --transition-duration--150
+                                    );
+                                    transition-timing-function: var(
+                                      --transition-timing-function--ease-in-out
+                                    );
+                                    &:hover,
+                                    &:focus-within {
                                       background-color: light-dark(
-                                        var(--color--slate--50),
-                                        var(--color--slate--950)
+                                        var(--color--slate--100),
+                                        var(--color--slate--900)
                                       );
-                                      padding: var(--space--1-5) var(--space--4);
-                                      border-bottom: var(--border-width--1)
-                                        solid
-                                        light-dark(
-                                          var(--color--slate--200),
-                                          var(--color--slate--800)
-                                        );
-                                      position: relative;
-                                      cursor: pointer;
+                                    }
+                                    &:active {
+                                      background-color: light-dark(
+                                        var(--color--slate--200),
+                                        var(--color--slate--800)
+                                      );
+                                    }
+                                  `}}"
+                                >
+                                  <span
+                                    css="\${${css`
+                                      font-size: var(--space--1-5);
+                                      line-height: var(--space--0);
+                                      color: light-dark(
+                                        var(--color--blue--500),
+                                        var(--color--blue--500)
+                                      );
+                                      position: absolute;
+                                      margin-left: var(--space---2-5);
+                                      margin-top: calc(
+                                        var(--space--1) + var(--space--px)
+                                      );
+                                    `}}"
+                                  >
+                                    <i class="bi bi-circle-fill"></i>
+                                  </span>
+                                  <span
+                                    css="\${${css`
+                                      display: inline-block;
                                       transition-property: var(
-                                        --transition-property--colors
+                                        --transition-property--transform
                                       );
                                       transition-duration: var(
                                         --transition-duration--150
@@ -2714,76 +2771,19 @@ export default async (application: Application): Promise<void> => {
                                       transition-timing-function: var(
                                         --transition-timing-function--ease-in-out
                                       );
-                                      &:hover,
-                                      &:focus-within {
-                                        background-color: light-dark(
-                                          var(--color--slate--100),
-                                          var(--color--slate--900)
+                                      [key~="courseConversations--group"][open]
+                                        & {
+                                        transform: rotate(
+                                          var(--transform--rotate--90)
                                         );
                                       }
-                                      &:active {
-                                        background-color: light-dark(
-                                          var(--color--slate--200),
-                                          var(--color--slate--800)
-                                        );
-                                      }
-                                    `}"
-                                  >
-                                    <span
-                                      css="${css`
-                                        font-size: var(--space--1-5);
-                                        line-height: var(--space--0);
-                                        color: light-dark(
-                                          var(--color--blue--500),
-                                          var(--color--blue--500)
-                                        );
-                                        position: absolute;
-                                        margin-left: var(--space---2-5);
-                                        margin-top: calc(
-                                          var(--space--1) + var(--space--px)
-                                        );
-                                      `}"
-                                    >
-                                      <i class="bi bi-circle-fill"></i>
-                                    </span>
-                                    <span
-                                      css="${css`
-                                        display: inline-block;
-                                        transition-property: var(
-                                          --transition-property--transform
-                                        );
-                                        transition-duration: var(
-                                          --transition-duration--150
-                                        );
-                                        transition-timing-function: var(
-                                          --transition-timing-function--ease-in-out
-                                        );
-                                        [key~="courseConversations--group"][open]
-                                          & {
-                                          transform: rotate(
-                                            var(--transform--rotate--90)
-                                          );
-                                        }
-                                      `}"
-                                      ><i class="bi bi-chevron-right"></i></span
-                                    >  Pinned
-                                  </summary>
-                                </details>
-                              `});
-                            group = this.closest('[key="courseConversations"]').querySelector('[key~="courseConversations--group"][key~="pinned"]');
-                          }
-                          else {
-                            const firstCourseConversationMessageCreatedAtWeekStart = new Date(${firstCourseConversationMessage.createdAt});
-                          firstCourseConversationMessageCreatedAtWeekStart.setHours(12, 0, 0, 0);
-                            while (firstCourseConversationMessageCreatedAtWeekStart.getDay() !== 0)
-                              firstCourseConversationMessageCreatedAtWeekStart.setDate(firstCourseConversationMessageCreatedAtWeekStart.getDate() - 1);
-                            const firstCourseConversationMessageCreatedAtWeekEnd = new Date(${firstCourseConversationMessage.createdAt});
-                            firstCourseConversationMessageCreatedAtWeekEnd.setHours(12, 0, 0, 0);
-                            while (firstCourseConversationMessageCreatedAtWeekEnd.getDay() !== 6)
-                              firstCourseConversationMessageCreatedAtWeekEnd.setDate(firstCourseConversationMessageCreatedAtWeekEnd.getDate() + 1);
-                            const firstCourseConversationMessageCreatedAtWeek = javascript.localizeDate(firstCourseConversationMessageCreatedAtWeekStart.toISOString()) + " — " + javascript.localizeDate(firstCourseConversationMessageCreatedAtWeekEnd.toISOString());
-                          }
-                          group.insertAdjacentElement("beforeend", this);
+                                    `}}"
+                                    ><i class="bi bi-chevron-right"></i></span
+                                  >  \${label}
+                                </summary>
+                              </details>
+                            \`).firstElementChild)
+                          ).insertAdjacentElement("beforeend", this);
                         `}"
                       >
                         $${request.state.courseConversation?.id !==
