@@ -2552,7 +2552,7 @@ export default async (application: Application): Promise<void> => {
                       undefined
                     )
                       throw new Error();
-                    const firstCourseConversationMessageAnonymous =
+                    const courseConversationFirstCourseConversationMessageAnonymous =
                       courseConversationFirstCourseConversationMessage.createdByCourseParticipation !==
                         request.state.courseParticipation!.id &&
                       ((courseConversationFirstCourseConversationMessage.courseConversationMessageAnonymity ===
@@ -2562,9 +2562,10 @@ export default async (application: Application): Promise<void> => {
                           "courseParticipationRoleStudent") ||
                         courseConversationFirstCourseConversationMessage.courseConversationMessageAnonymity ===
                           "courseConversationMessageAnonymityCourseParticipationRoleInstructors");
-                    const firstCourseConversationMessageCreatedByCourseParticipation =
+                    const courseConversationFirstCourseConversationMessageCreatedByCourseParticipation =
                       typeof courseConversationFirstCourseConversationMessage.createdByCourseParticipation ===
-                        "number" && !firstCourseConversationMessageAnonymous
+                        "number" &&
+                      !courseConversationFirstCourseConversationMessageAnonymous
                         ? application.database.get<{
                             user: number;
 
@@ -2581,8 +2582,8 @@ export default async (application: Application): Promise<void> => {
                             `,
                           )
                         : undefined;
-                    const firstCourseConversationMessageCreatedByCourseParticipationUser =
-                      typeof firstCourseConversationMessageCreatedByCourseParticipation ===
+                    const courseConversationFirstCourseConversationMessageCreatedByCourseParticipationUser =
+                      typeof courseConversationFirstCourseConversationMessageCreatedByCourseParticipation ===
                       "object"
                         ? application.database.get<{
                             publicId: string;
@@ -2616,7 +2617,7 @@ export default async (application: Application): Promise<void> => {
                                 "avatarImage",
                                 "lastSeenOnlineAt"
                               from "users"
-                              where "id" = ${firstCourseConversationMessageCreatedByCourseParticipation.user};
+                              where "id" = ${courseConversationFirstCourseConversationMessageCreatedByCourseParticipation.user};
                             `,
                           )
                         : undefined;
@@ -2830,9 +2831,9 @@ export default async (application: Application): Promise<void> => {
                           : html``}
                         <div key="courseConversation--userAvatar">
                           $${application.partials.userAvatar({
-                            user: firstCourseConversationMessageAnonymous
+                            user: courseConversationFirstCourseConversationMessageAnonymous
                               ? "anonymous"
-                              : (firstCourseConversationMessageCreatedByCourseParticipationUser ??
+                              : (courseConversationFirstCourseConversationMessageCreatedByCourseParticipationUser ??
                                 "courseParticipationDeleted"),
                             size: 9,
                           })}
@@ -2907,19 +2908,19 @@ export default async (application: Application): Promise<void> => {
                               css="${css`
                                 font-weight: 600;
                               `}"
-                              >${firstCourseConversationMessageAnonymous
+                              >${courseConversationFirstCourseConversationMessageAnonymous
                                 ? "Anonymous"
-                                : typeof firstCourseConversationMessageCreatedByCourseParticipationUser ===
+                                : typeof courseConversationFirstCourseConversationMessageCreatedByCourseParticipationUser ===
                                     "object"
-                                  ? firstCourseConversationMessageCreatedByCourseParticipationUser.name
+                                  ? courseConversationFirstCourseConversationMessageCreatedByCourseParticipationUser.name
                                   : "Deleted course participant"}</span
-                            >${!firstCourseConversationMessageAnonymous &&
-                            typeof firstCourseConversationMessageCreatedByCourseParticipation ===
+                            >${!courseConversationFirstCourseConversationMessageAnonymous &&
+                            typeof courseConversationFirstCourseConversationMessageCreatedByCourseParticipation ===
                               "object" &&
-                            firstCourseConversationMessageCreatedByCourseParticipation.courseParticipationRole ===
+                            courseConversationFirstCourseConversationMessageCreatedByCourseParticipation.courseParticipationRole ===
                               "courseParticipationRoleInstructor"
                               ? " (instructor)"
-                              : ""}${!firstCourseConversationMessageAnonymous
+                              : ""}${!courseConversationFirstCourseConversationMessageAnonymous
                               ? courseConversationFirstCourseConversationMessage.courseConversationMessageAnonymity ===
                                 "courseConversationMessageAnonymityCourseParticipationRoleStudents"
                                 ? " (anonymous to students)"
