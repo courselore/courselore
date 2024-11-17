@@ -2627,10 +2627,8 @@ export default async (application: Application): Promise<void> => {
                         href="/courses/${request.state.course!
                           .publicId}/conversations/${courseConversation.publicId}"
                         data-orderBy="${courseConversationFirstCourseConversationMessage.createdAt}"
-                        class="${typeof request.state.courseConversation ===
-                          "object" &&
-                        request.state.courseConversation.id ===
-                          courseConversation.id
+                        class="${request.state.courseConversation?.id ===
+                        courseConversation.id
                           ? "selected"
                           : ""}"
                         css="${css`
@@ -2744,6 +2742,17 @@ export default async (application: Application): Promise<void> => {
                                         var(--color--slate--800)
                                       );
                                     }
+                                    [key~="courseConversations--group"].selected
+                                      & {
+                                      color: light-dark(
+                                        var(--color--white),
+                                        var(--color--white)
+                                      );
+                                      background-color: light-dark(
+                                        var(--color--blue--500),
+                                        var(--color--blue--500)
+                                      );
+                                    }
                                   `}}"
                                 >
                                   <span
@@ -2793,6 +2802,11 @@ export default async (application: Application): Promise<void> => {
                               </details>
                             \`).firstElementChild)
                           ).insertAdjacentElement("beforeend", this);
+                          if (${
+                            request.state.courseConversation?.id ===
+                            courseConversation.id
+                          })
+                            this.closest('[key~="courseConversations--group"]').classList.add("selected");
                         `}"
                       >
                         $${request.state.courseConversation?.id !==
