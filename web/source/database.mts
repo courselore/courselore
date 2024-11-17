@@ -3183,6 +3183,19 @@ export default async (application: Application): Promise<void> => {
               courseConversationPublicId === 1
                 ? 1
                 : 1 + Math.floor(Math.random() * 15);
+            const firstCourseConversationMessageCreatedAt = new Date(
+              Date.now() -
+                Math.floor(
+                  (course.courseConversationsNextPublicId -
+                    courseConversationPublicId +
+                    Math.random()) *
+                    2 *
+                    24 *
+                    60 *
+                    60 *
+                    1000,
+                ),
+            );
             let courseConversationMessageForCourseConversationMessageDraft: {
               publicId: string;
             };
@@ -3217,7 +3230,7 @@ export default async (application: Application): Promise<void> => {
                         values (
                           ${cryptoRandomString({ length: 20, type: "numeric" })},
                           ${courseConversation.id},
-                          ${new Date(Date.now() - Math.floor((course.courseConversationsNextPublicId - courseConversationPublicId + Math.random() * 0.5) * 5 * 60 * 60 * 1000)).toISOString()},
+                          ${new Date(firstCourseConversationMessageCreatedAt.valueOf() + Math.floor((courseConversationMessageIndex + Math.random()) * 60 * 60 * 1000)).toISOString()},
                           ${Math.random() < 0.1 ? new Date(Date.now() - Math.floor(24 * 5 * 60 * 60 * 1000)).toISOString() : null},
                           ${Math.random() < 0.9 ? courseParticipations[Math.floor(Math.random() * courseParticipations.length)].id : null},
                           ${
