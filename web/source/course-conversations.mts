@@ -2627,6 +2627,7 @@ export default async (application: Application): Promise<void> => {
                           .publicId}/conversations/${courseConversation.publicId}"
                         href="/courses/${request.state.course!
                           .publicId}/conversations/${courseConversation.publicId}"
+                        data-createdAt="${courseConversationFirstCourseConversationMessage.createdAt}"
                         class="${typeof request.state.courseConversation ===
                           "object" &&
                         request.state.courseConversation.id ===
@@ -2813,6 +2814,7 @@ export default async (application: Application): Promise<void> => {
                         ) !== undefined
                           ? html`
                               <div
+                                key="courseConversation--courseConversationMessageViews"
                                 css="${css`
                                   font-size: var(--space--1-5);
                                   line-height: var(--space--0);
@@ -2910,14 +2912,10 @@ export default async (application: Application): Promise<void> => {
                               `}"
                               >${courseConversationFirstCourseConversationMessageAnonymous
                                 ? "Anonymous"
-                                : typeof courseConversationFirstCourseConversationMessageCreatedByCourseParticipationUser ===
-                                    "object"
-                                  ? courseConversationFirstCourseConversationMessageCreatedByCourseParticipationUser.name
-                                  : "Deleted course participant"}</span
+                                : (courseConversationFirstCourseConversationMessageCreatedByCourseParticipationUser?.name ??
+                                  "Deleted course participant")}</span
                             >${!courseConversationFirstCourseConversationMessageAnonymous &&
-                            typeof courseConversationFirstCourseConversationMessageCreatedByCourseParticipation ===
-                              "object" &&
-                            courseConversationFirstCourseConversationMessageCreatedByCourseParticipation.courseParticipationRole ===
+                            courseConversationFirstCourseConversationMessageCreatedByCourseParticipation?.courseParticipationRole ===
                               "courseParticipationRoleInstructor"
                               ? " (instructor)"
                               : ""}${!courseConversationFirstCourseConversationMessageAnonymous
