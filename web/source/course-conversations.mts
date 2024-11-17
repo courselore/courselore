@@ -2770,6 +2770,8 @@ export default async (application: Application): Promise<void> => {
                                       margin-top: calc(
                                         var(--space--1) + var(--space--px)
                                       );
+                                      [key~="courseConversations--group"].selected
+                                        &,
                                       &.hidden {
                                         display: none;
                                       }
