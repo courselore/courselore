@@ -2812,7 +2812,7 @@ export default async (application: Application): Promise<void> => {
                           {
                             const element = this.closest('[key~="courseConversations--group"]');
                             const indexOf = [...element.parentElement.querySelectorAll('[key~="courseConversations--group"]:not([key~="pinned"])')].indexOf(element);
-                            if ((0 <= indexOf && indexOf < 4) || ${
+                            if ((0 <= indexOf && indexOf < 3) || ${
                               request.state.courseConversation?.id ===
                               courseConversation.id
                             }) element.setAttribute("open", "");
