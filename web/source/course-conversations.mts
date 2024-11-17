@@ -2629,7 +2629,7 @@ export default async (application: Application): Promise<void> => {
                         data-orderBy="${courseConversationFirstCourseConversationMessage.createdAt}"
                         class="${request.state.courseConversation?.id ===
                         courseConversation.id
-                          ? "selected"
+                          ? "current"
                           : ""}"
                         css="${css`
                           padding: var(--space--2) var(--space--4);
@@ -2662,7 +2662,7 @@ export default async (application: Application): Promise<void> => {
                               var(--color--slate--900)
                             );
                           }
-                          &.selected {
+                          &.current {
                             color: light-dark(
                               var(--color--white),
                               var(--color--white)
@@ -2742,7 +2742,7 @@ export default async (application: Application): Promise<void> => {
                                         var(--color--slate--800)
                                       );
                                     }
-                                    [key~="courseConversations--group"].selected
+                                    [key~="courseConversations--group"].current
                                       & {
                                       color: light-dark(
                                         var(--color--white),
@@ -2770,7 +2770,7 @@ export default async (application: Application): Promise<void> => {
                                       margin-top: calc(
                                         var(--space--1) + var(--space--px)
                                       );
-                                      [key~="courseConversations--group"].selected
+                                      [key~="courseConversations--group"].current
                                         &,
                                       &.hidden {
                                         display: none;
@@ -2808,7 +2808,7 @@ export default async (application: Application): Promise<void> => {
                             request.state.courseConversation?.id ===
                             courseConversation.id
                           })
-                            this.closest('[key~="courseConversations--group"]').classList.add("selected");
+                            this.closest('[key~="courseConversations--group"]').classList.add("current");
                         `}"
                       >
                         $${request.state.courseConversation?.id !==
@@ -2894,13 +2894,13 @@ export default async (application: Application): Promise<void> => {
                                 font-size: var(--font-size--3);
                                 line-height: var(--font-size--3--line-height);
                                 font-weight: 500;
-                                [key~="courseConversation"]:not(.selected) & {
+                                [key~="courseConversation"]:not(.current) & {
                                   color: light-dark(
                                     var(--color--slate--400),
                                     var(--color--slate--600)
                                   );
                                 }
-                                [key~="courseConversation"].selected & {
+                                [key~="courseConversation"].current & {
                                   color: light-dark(
                                     var(--color--blue--300),
                                     var(--color--blue--300)
@@ -2916,13 +2916,13 @@ export default async (application: Application): Promise<void> => {
                             css="${css`
                               font-size: var(--font-size--3);
                               line-height: var(--font-size--3--line-height);
-                              [key~="courseConversation"]:not(.selected) & {
+                              [key~="courseConversation"]:not(.current) & {
                                 color: light-dark(
                                   var(--color--slate--600),
                                   var(--color--slate--400)
                                 );
                               }
-                              [key~="courseConversation"].selected & {
+                              [key~="courseConversation"].current & {
                                 color: light-dark(
                                   var(--color--blue--200),
                                   var(--color--blue--200)
@@ -2963,13 +2963,13 @@ export default async (application: Application): Promise<void> => {
                             css="${css`
                               font-size: var(--font-size--3);
                               line-height: var(--font-size--3--line-height);
-                              [key~="courseConversation"]:not(.selected) & {
+                              [key~="courseConversation"]:not(.current) & {
                                 color: light-dark(
                                   var(--color--slate--600),
                                   var(--color--slate--400)
                                 );
                               }
-                              [key~="courseConversation"].selected & {
+                              [key~="courseConversation"].current & {
                                 color: light-dark(
                                   var(--color--blue--200),
                                   var(--color--blue--200)
@@ -2987,7 +2987,7 @@ export default async (application: Application): Promise<void> => {
                                       )
                                       ? css`
                                           [key~="courseConversation"]:not(
-                                              .selected
+                                              .current
                                             )
                                             & {
                                             color: light-dark(
@@ -2998,7 +2998,7 @@ export default async (application: Application): Promise<void> => {
                                         `
                                       : css`
                                           [key~="courseConversation"]:not(
-                                              .selected
+                                              .current
                                             )
                                             & {
                                             color: light-dark(
@@ -3058,13 +3058,13 @@ export default async (application: Application): Promise<void> => {
                               white-space: nowrap;
                               overflow: hidden;
                               text-overflow: ellipsis;
-                              [key~="courseConversation"]:not(.selected) & {
+                              [key~="courseConversation"]:not(.current) & {
                                 color: light-dark(
                                   var(--color--slate--400),
                                   var(--color--slate--600)
                                 );
                               }
-                              [key~="courseConversation"].selected & {
+                              [key~="courseConversation"].current & {
                                 color: light-dark(
                                   var(--color--blue--300),
                                   var(--color--blue--300)
