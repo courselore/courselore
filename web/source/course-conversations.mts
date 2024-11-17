@@ -2466,8 +2466,7 @@ export default async (application: Application): Promise<void> => {
                 overflow: auto;
               `}"
             >
-              <div key="courseConversations--groups"></div>
-              <div key="courseConversations--to-group" hidden>
+              <div key="courseConversations--toGroup" hidden>
                 $${application.database
                   .all<{
                     id: number;
@@ -3060,6 +3059,12 @@ export default async (application: Application): Promise<void> => {
                     `;
                   })}
               </div>
+              <div
+                key="courseConversations--groups"
+                javascript="${javascript`
+                  this.closest('[key="courseConversations"]').querySelector('[key="courseConversations--toGroup"]').remove();
+                `}"
+              ></div>
             </div>
           </div>
           <button
