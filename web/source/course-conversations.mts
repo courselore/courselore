@@ -2515,7 +2515,7 @@ export default async (application: Application): Promise<void> => {
                     `,
                   )
                   .map((courseConversation) => {
-                    const firstCourseConversationMessage =
+                    const courseConversationFirstCourseConversationMessage =
                       application.database.get<{
                         createdAt: string;
                         createdByCourseParticipation: number | null;
@@ -2547,20 +2547,23 @@ export default async (application: Application): Promise<void> => {
                           limit 1;
                         `,
                       );
-                    if (firstCourseConversationMessage === undefined)
+                    if (
+                      courseConversationFirstCourseConversationMessage ===
+                      undefined
+                    )
                       throw new Error();
                     const firstCourseConversationMessageAnonymous =
-                      firstCourseConversationMessage.createdByCourseParticipation !==
+                      courseConversationFirstCourseConversationMessage.createdByCourseParticipation !==
                         request.state.courseParticipation!.id &&
-                      ((firstCourseConversationMessage.courseConversationMessageAnonymity ===
+                      ((courseConversationFirstCourseConversationMessage.courseConversationMessageAnonymity ===
                         "courseConversationMessageAnonymityCourseParticipationRoleStudents" &&
                         request.state.courseParticipation!
                           .courseParticipationRole ===
                           "courseParticipationRoleStudent") ||
-                        firstCourseConversationMessage.courseConversationMessageAnonymity ===
+                        courseConversationFirstCourseConversationMessage.courseConversationMessageAnonymity ===
                           "courseConversationMessageAnonymityCourseParticipationRoleInstructors");
                     const firstCourseConversationMessageCreatedByCourseParticipation =
-                      typeof firstCourseConversationMessage.createdByCourseParticipation ===
+                      typeof courseConversationFirstCourseConversationMessage.createdByCourseParticipation ===
                         "number" && !firstCourseConversationMessageAnonymous
                         ? application.database.get<{
                             user: number;
@@ -2574,7 +2577,7 @@ export default async (application: Application): Promise<void> => {
                                 "user",
                                 "courseParticipationRole"
                               from "courseParticipations"
-                              where "id" = ${firstCourseConversationMessage.createdByCourseParticipation};
+                              where "id" = ${courseConversationFirstCourseConversationMessage.createdByCourseParticipation};
                             `,
                           )
                         : undefined;
@@ -2679,10 +2682,10 @@ export default async (application: Application): Promise<void> => {
                             label = "Pinned";
                           }
                           else {
-                            const firstCourseConversationMessageCreatedAtWeekStart = new Date(${firstCourseConversationMessage.createdAt});
+                            const firstCourseConversationMessageCreatedAtWeekStart = new Date(${courseConversationFirstCourseConversationMessage.createdAt});
                             firstCourseConversationMessageCreatedAtWeekStart.setHours(12, 0, 0, 0);
                             while (firstCourseConversationMessageCreatedAtWeekStart.getDay() !== 0) firstCourseConversationMessageCreatedAtWeekStart.setDate(firstCourseConversationMessageCreatedAtWeekStart.getDate() - 1);
-                            const firstCourseConversationMessageCreatedAtWeekEnd = new Date(${firstCourseConversationMessage.createdAt});
+                            const firstCourseConversationMessageCreatedAtWeekEnd = new Date(${courseConversationFirstCourseConversationMessage.createdAt});
                             firstCourseConversationMessageCreatedAtWeekEnd.setHours(12, 0, 0, 0);
                             while (firstCourseConversationMessageCreatedAtWeekEnd.getDay() !== 6) firstCourseConversationMessageCreatedAtWeekEnd.setDate(firstCourseConversationMessageCreatedAtWeekEnd.getDate() + 1);
                             key = javascript.localizeDate(firstCourseConversationMessageCreatedAtWeekStart.toISOString());
@@ -2917,16 +2920,16 @@ export default async (application: Application): Promise<void> => {
                               "courseParticipationRoleInstructor"
                               ? " (instructor)"
                               : ""}${!firstCourseConversationMessageAnonymous
-                              ? firstCourseConversationMessage.courseConversationMessageAnonymity ===
+                              ? courseConversationFirstCourseConversationMessage.courseConversationMessageAnonymity ===
                                 "courseConversationMessageAnonymityCourseParticipationRoleStudents"
                                 ? " (anonymous to students)"
-                                : firstCourseConversationMessage.courseConversationMessageAnonymity ===
+                                : courseConversationFirstCourseConversationMessage.courseConversationMessageAnonymity ===
                                     "courseConversationMessageAnonymityCourseParticipationRoleInstructors"
                                   ? " (anonymous to instructors)"
                                   : ""
                               : ""} ·
                             <time
-                              datetime="${firstCourseConversationMessage.createdAt}"
+                              datetime="${courseConversationFirstCourseConversationMessage.createdAt}"
                               javascript="${javascript`
                                 javascript.relativizeDateTimeElement(this, { capitalize: true });
                               `}"
@@ -3046,7 +3049,7 @@ export default async (application: Application): Promise<void> => {
                               }
                             `}"
                           >
-                            ${firstCourseConversationMessage.content.slice(
+                            ${courseConversationFirstCourseConversationMessage.content.slice(
                               0,
                               200,
                             )}
