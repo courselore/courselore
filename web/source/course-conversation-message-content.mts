@@ -18,8 +18,6 @@ export default async (application: Application): Promise<void> => {
       class="input--text"
       css="${css`
         padding: var(--space--0);
-        display: flex;
-        flex-direction: column;
       `}"
     >
       <div

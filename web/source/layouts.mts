@@ -751,19 +751,9 @@ export default async (application: Application): Promise<void> => {
                                 size: 9,
                               })}
                             </div>
-                            <div
-                              css="${css`
-                                display: flex;
-                                flex-direction: column;
-                                justify-content: center;
-                              `}"
-                            >
+                            <div>
                               <div
                                 css="${css`
-                                  font-family: "Roboto Serif Variable",
-                                    var(--font-family--serif);
-                                  font-size: var(--font-size--3);
-                                  line-height: var(--font-size--3--line-height);
                                   font-weight: 700;
                                 `}"
                               >
@@ -771,8 +761,6 @@ export default async (application: Application): Promise<void> => {
                               </div>
                               <div
                                 css="${css`
-                                  font-family: "Roboto Mono Variable",
-                                    var(--font-family--monospace);
                                   font-size: var(--font-size--3);
                                   line-height: var(--font-size--3--line-height);
                                   color: light-dark(

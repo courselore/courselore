@@ -2464,10 +2464,9 @@ export default async (application: Application): Promise<void> => {
               css="${css`
                 flex: 1;
                 overflow: auto;
-                display: flex;
-                flex-direction: column;
               `}"
             >
+              <div key="courseConversations--groups"></div>
               <div key="courseConversations--to-group" hidden>
                 $${application.database
                   .all<{
