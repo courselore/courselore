@@ -2695,7 +2695,7 @@ export default async (application: Application): Promise<void> => {
                           }
                           (
                             this.closest('[key="courseConversations"]').querySelector(\`[key~="courseConversations--group"][key~="\${key}"]\`) ??
-                            this.closest('[key="courseConversations"]').insertAdjacentElement("beforeend", javascript.stringToElement(html\`
+                            this.closest('[key="courseConversations"]').querySelector('[key="courseConversations--groups"]').insertAdjacentElement("beforeend", javascript.stringToElement(html\`
                               <details
                                 key="courseConversations--group \${key}"
                                 data-orderBy="\${key}"
