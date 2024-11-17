@@ -2747,6 +2747,8 @@ export default async (application: Application): Promise<void> => {
                                   `}}"
                                 >
                                   <span
+                                    key="courseConversations--group--view"
+                                    class="hidden"
                                     css="\${${css`
                                       font-size: var(--space--1-5);
                                       line-height: var(--space--0);
@@ -2759,6 +2761,9 @@ export default async (application: Application): Promise<void> => {
                                       margin-top: calc(
                                         var(--space--1) + var(--space--px)
                                       );
+                                      &.hidden {
+                                        display: none;
+                                      }
                                     `}}"
                                   >
                                     <i class="bi bi-circle-fill"></i>
@@ -2825,6 +2830,9 @@ export default async (application: Application): Promise<void> => {
                                   position: absolute;
                                   margin-left: var(--space---2-5);
                                   margin-top: var(--space--4);
+                                `}"
+                                javascript="${javascript`
+                                  this.closest('[key~="courseConversations--group"]').querySelector('[key="courseConversations--group--view"]').classList.remove("hidden");
                                 `}"
                               >
                                 <i class="bi bi-circle-fill"></i>
