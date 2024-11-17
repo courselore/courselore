@@ -3218,7 +3218,7 @@ export default async (application: Application): Promise<void> => {
                           ${cryptoRandomString({ length: 20, type: "numeric" })},
                           ${courseConversation.id},
                           ${new Date(Date.now() - Math.floor((course.courseConversationsNextPublicId - courseConversationPublicId + Math.random() * 0.5) * 5 * 60 * 60 * 1000)).toISOString()},
-                          ${Math.random() < 0.05 ? new Date(Date.now() - Math.floor(24 * 5 * 60 * 60 * 1000)).toISOString() : null},
+                          ${Math.random() < 0.1 ? new Date(Date.now() - Math.floor(24 * 5 * 60 * 60 * 1000)).toISOString() : null},
                           ${Math.random() < 0.9 ? courseParticipations[Math.floor(Math.random() * courseParticipations.length)].id : null},
                           ${
                             courseConversationMessageIndex === 1 ||
