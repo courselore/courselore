@@ -2571,7 +2571,6 @@ export default async (application: Application): Promise<void> => {
                         "number" && !firstCourseConversationMessageAnonymous
                         ? application.database.get<{
                             user: number;
-
                             courseParticipationRole:
                               | "courseParticipationRoleInstructor"
                               | "courseParticipationRoleStudent";
