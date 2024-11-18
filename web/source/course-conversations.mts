@@ -2704,8 +2704,8 @@ export default async (application: Application): Promise<void> => {
                                       var(--color--slate--500)
                                     );
                                     background-color: light-dark(
-                                      var(--color--slate--50),
-                                      var(--color--slate--950)
+                                      var(--color--slate--100),
+                                      var(--color--slate--900)
                                     );
                                     padding: var(--space--1-5) var(--space--4);
                                     border-bottom: var(--border-width--1) solid
@@ -2727,14 +2727,14 @@ export default async (application: Application): Promise<void> => {
                                     &:hover,
                                     &:focus-within {
                                       background-color: light-dark(
-                                        var(--color--slate--100),
-                                        var(--color--slate--900)
+                                        var(--color--slate--200),
+                                        var(--color--slate--800)
                                       );
                                     }
                                     &:active {
                                       background-color: light-dark(
-                                        var(--color--slate--200),
-                                        var(--color--slate--800)
+                                        var(--color--slate--300),
+                                        var(--color--slate--700)
                                       );
                                     }
                                     [key="courseConversations--group"].current
