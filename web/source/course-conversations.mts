@@ -2629,7 +2629,6 @@ export default async (application: Application): Promise<void> => {
                           .publicId}/conversations/${courseConversation.publicId}"
                         href="/courses/${request.state.course!
                           .publicId}/conversations/${courseConversation.publicId}"
-                        data-orderBy="${firstCourseConversationMessage.createdAt}"
                         class="${request.state.courseConversation?.id ===
                         courseConversation.id
                           ? "current"
@@ -2698,7 +2697,6 @@ export default async (application: Application): Promise<void> => {
                             this.closest('[key="courseConversations"]').querySelector('[key="courseConversations--groups"]').insertAdjacentElement("beforeend", javascript.stringToElement(html\`
                               <details
                                 key="courseConversations--group \${key}"
-                                data-orderBy="\${key}"
                               >
                                 <summary
                                   css="\${${css`
