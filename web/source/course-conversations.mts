@@ -2802,8 +2802,12 @@ export default async (application: Application): Promise<void> => {
                           if (${
                             request.state.courseConversation?.id ===
                             courseConversation.id
-                          })
+                          }) {
                             this.closest('[key="courseConversations--group"]').classList.add("current");
+                            window.setTimeout(() => {
+                              this.scrollIntoView({ block: "center" });
+                            });
+                          }
                           {
                             const element = this.closest('[key="courseConversations--group"]');
                             const indexOf = [...element.parentElement.querySelectorAll('[key="courseConversations--group"]:not([summary="Pinned"])')].indexOf(element);
