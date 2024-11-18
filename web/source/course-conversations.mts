@@ -2992,35 +2992,6 @@ export default async (application: Application): Promise<void> => {
                             $${(() => {
                               const courseConversationMainDetails = [
                                 html`<span
-                                  css="${courseConversation.courseConversationType ===
-                                  "courseConversationTypeQuestion"
-                                    ? !Boolean(
-                                        courseConversation.questionResolved,
-                                      )
-                                      ? css`
-                                          [key~="courseConversation"]:not(
-                                              .current
-                                            )
-                                            & {
-                                            color: light-dark(
-                                              var(--color--red--500),
-                                              var(--color--red--500)
-                                            );
-                                          }
-                                        `
-                                      : css`
-                                          [key~="courseConversation"]:not(
-                                              .current
-                                            )
-                                            & {
-                                            color: light-dark(
-                                              var(--color--green--500),
-                                              var(--color--green--500)
-                                            );
-                                          }
-                                        `
-                                    : css``}"
-                                  ><span
                                     css="${css`
                                       font-weight: 600;
                                     `}"
@@ -3033,15 +3004,40 @@ export default async (application: Application): Promise<void> => {
                                         : (() => {
                                             throw new Error();
                                           })()}</span
-                                  >${courseConversation.courseConversationType ===
+                                  >$${courseConversation.courseConversationType ===
                                   "courseConversationTypeQuestion"
                                     ? !Boolean(
                                         courseConversation.questionResolved,
                                       )
-                                      ? " (unresolved)"
-                                      : " (resolved)"
-                                    : ""}</span
-                                >`,
+                                      ? html` <span
+                                          css="${css`
+                                            [key~="courseConversation"]:not(
+                                                .current
+                                              )
+                                              & {
+                                              color: light-dark(
+                                                var(--color--red--500),
+                                                var(--color--red--500)
+                                              );
+                                            }
+                                          `}"
+                                          >(unresolved)</span
+                                        >`
+                                      : html` <span
+                                          css="${css`
+                                            [key~="courseConversation"]:not(
+                                                .current
+                                              )
+                                              & {
+                                              color: light-dark(
+                                                var(--color--green--500),
+                                                var(--color--green--500)
+                                              );
+                                            }
+                                          `}"
+                                          >(resolved)</span
+                                        >`
+                                    : ""}`,
                               ];
                               for (const courseConversationsTag of request.state
                                 .courseConversationsTags!)
