@@ -2804,9 +2804,10 @@ export default async (application: Application): Promise<void> => {
                             courseConversation.id
                           }) {
                             this.closest('[key="courseConversations--group"]').classList.add("current");
-                            window.setTimeout(() => {
-                              this.scrollIntoView({ block: "center" });
-                            });
+                            if (event?.detail?.liveConnectionUpdate !== true)
+                              window.setTimeout(() => {
+                                this.scrollIntoView({ block: "center" });
+                              });
                           }
                           {
                             const element = this.closest('[key="courseConversations--group"]');
