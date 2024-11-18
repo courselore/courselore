@@ -2830,15 +2830,16 @@ export default async (application: Application): Promise<void> => {
                               "courseConversationMessages"."id" = "courseConversationMessageViews"."courseConversationMessage" and
                               "courseConversationMessageViews"."courseParticipation" = ${request.state.courseParticipation!.id}
                             where
-                              "courseConversationMessages"."courseConversation" = ${courseConversation.id} and $${
+                              "courseConversationMessages"."courseConversation" = ${courseConversation.id} $${
                                 request.state.courseParticipation!
                                   .courseParticipationRole !==
                                 "courseParticipationRoleInstructor"
                                   ? sql`
-                                      "courseConversationMessages"."courseConversationMessageType" != 'courseConversationMessageTypeCourseParticipationRoleInstructorWhisper' and
+                                      and
+                                      "courseConversationMessages"."courseConversationMessageType" != 'courseConversationMessageTypeCourseParticipationRoleInstructorWhisper'
                                     `
                                   : sql``
-                              }
+                              } and
                               "courseConversationMessageViews"."id" is null;
                           `,
                         ) !== undefined
