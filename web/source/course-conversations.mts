@@ -2466,7 +2466,15 @@ export default async (application: Application): Promise<void> => {
                 overflow: auto;
               `}"
             >
-              <div key="courseConversations--toGroup" hidden>
+              <div
+                key="courseConversations--toGroup"
+                hidden
+                javascript="${javascript`
+                  window.setTimeout(() => {
+                    this.closest('[key="courseConversations"]').querySelector('[key="courseConversations--toGroup"]').remove();
+                  });
+                `}"
+              >
                 $${application.database
                   .all<{
                     id: number;
@@ -3093,12 +3101,7 @@ export default async (application: Application): Promise<void> => {
                     `;
                   })}
               </div>
-              <div
-                key="courseConversations--groups"
-                javascript="${javascript`
-                  this.closest('[key="courseConversations"]').querySelector('[key="courseConversations--toGroup"]').remove();
-                `}"
-              ></div>
+              <div key="courseConversations--groups"></div>
             </div>
           </div>
           <button
