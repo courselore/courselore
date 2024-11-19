@@ -2465,13 +2465,19 @@ export default async (application: Application): Promise<void> => {
                 flex: 1;
                 overflow: auto;
               `}"
+              javascript="${javascript`
+                this.courseConversationsGroupsFirstGrouping ??= true;
+                window.setTimeout(() => {
+                  this.courseConversationsGroupsFirstGrouping = false;
+                });
+              `}"
             >
               <div
                 key="courseConversations--toGroup"
                 hidden
                 javascript="${javascript`
                   window.setTimeout(() => {
-                    this.closest('[key="courseConversations"]').querySelector('[key="courseConversations--toGroup"]').remove();
+                    this.remove();
                   });
                 `}"
               >
@@ -2698,15 +2704,24 @@ export default async (application: Application): Promise<void> => {
                               <details
                                 key="courseConversations--group \${key}"
                                 javascript="\${${javascript`
-                                  this.closest('[key="courseConversations--groups"]').courseConversationsGroupsOpen ??= new Set();
-                                  if (this.closest('[key="courseConversations--groups"]').courseConversationsGroupsOpen.has(this.getAttribute("key")))
-                                    this.setAttribute("open", "");
+                                  this.closest('[key="courseConversations"]').courseConversationsGroupsOpen ??= new Set();
                                   this.ontoggle = () => {
                                     if (this.getAttribute("open") === null)
-                                      this.closest('[key="courseConversations--groups"]').courseConversationsGroupsOpen.delete(this.getAttribute("key"));
+                                      this.closest('[key="courseConversations"]').courseConversationsGroupsOpen.delete(this.getAttribute("key"));
                                     else
-                                      this.closest('[key="courseConversations--groups"]').courseConversationsGroupsOpen.add(this.getAttribute("key"));
+                                      this.closest('[key="courseConversations"]').courseConversationsGroupsOpen.add(this.getAttribute("key"));
                                   };
+                                  if (
+                                    (
+                                      this.closest('[key="courseConversations"]').courseConversationsGroupsFirstGrouping &&
+                                      (() => {
+                                        const indexOf = [...this.parentElement.querySelectorAll('[key~="courseConversations--group"]:not([key~="pinned"])')].indexOf(this);
+                                        return 0 <= indexOf && indexOf < 3;
+                                      })()
+                                    ) ||
+                                    this.closest('[key="courseConversations"]').courseConversationsGroupsOpen.has(this.getAttribute("key"))
+                                  )
+                                    this.setAttribute("open", "");
                                 `}}"
                               >
                                 <summary
@@ -2821,19 +2836,11 @@ export default async (application: Application): Promise<void> => {
                             courseConversation.id
                           }) {
                             this.closest('[key~="courseConversations--group"]').classList.add("current");
-                            if (event?.detail?.liveConnectionUpdate !== true)
-                              window.setTimeout(() => {
-                                this.scrollIntoView({ block: "center" });
-                              });
+                            if (event?.detail?.liveConnectionUpdate !== true) {
+                              this.closest('[key~="courseConversations--group"]').setAttribute("open", "");
+                              this.scrollIntoView({ block: "center" });
+                            }
                           }
-                          {
-                            const element = this.closest('[key~="courseConversations--group"]');
-                            const indexOf = [...element.parentElement.querySelectorAll('[key~="courseConversations--group"]:not([key~="pinned"])')].indexOf(element);
-                            if ((0 <= indexOf && indexOf < 3) || ${
-                              request.state.courseConversation?.id ===
-                              courseConversation.id
-                            }) element.setAttribute("open", "");
-                          };
                         `}"
                       >
                         $${request.state.courseConversation?.id !==
@@ -2875,7 +2882,7 @@ export default async (application: Application): Promise<void> => {
                                 `}"
                                 javascript="${javascript`
                                   this.closest('[key~="courseConversations--group"]').querySelector('[key="courseConversations--group--view"]').classList.remove("hidden");
-                                  if (${Boolean(courseConversation.pinned)})
+                                  if (${Boolean(courseConversation.pinned)} && this.closest('[key="courseConversations"]').courseConversationsGroupsFirstGrouping)
                                     this.closest('[key~="courseConversations--group"]').setAttribute("open", "");
                                 `}"
                               >
