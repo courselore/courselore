@@ -2697,6 +2697,17 @@ export default async (application: Application): Promise<void> => {
                             javascript.execute(this.closest('[key="courseConversations"]').querySelector('[key="courseConversations--groups"]').insertAdjacentElement("beforeend", javascript.stringToElement(html\`
                               <details
                                 key="courseConversations--group \${key}"
+                                javascript="\${${javascript`
+                                  this.closest('[key="courseConversations--groups"]').courseConversationsGroupsOpen ??= new Set();
+                                  if (this.closest('[key="courseConversations--groups"]').courseConversationsGroupsOpen.has(this.getAttribute("key")))
+                                    this.setAttribute("open", "");
+                                  this.ontoggle = () => {
+                                    if (this.getAttribute("open") === null)
+                                      this.closest('[key="courseConversations--groups"]').courseConversationsGroupsOpen.delete(this.getAttribute("key"));
+                                    else
+                                      this.closest('[key="courseConversations--groups"]').courseConversationsGroupsOpen.add(this.getAttribute("key"));
+                                  };
+                                `}}"
                               >
                                 <summary
                                   css="\${${css`
