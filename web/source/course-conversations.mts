@@ -2838,7 +2838,9 @@ export default async (application: Application): Promise<void> => {
                             this.closest('[key~="courseConversations--group"]').classList.add("current");
                             if (event?.detail?.liveConnectionUpdate !== true) {
                               this.closest('[key~="courseConversations--group"]').setAttribute("open", "");
-                              // TODO: this.scrollIntoView({ block: "center" });
+                              window.setTimeout(() => {
+                                scrollIntoView(this, { scrollMode: "if-needed", block: "nearest" });
+                              });
                             }
                           }
                         `}"
