@@ -2687,7 +2687,7 @@ export default async (application: Application): Promise<void> => {
                           })();
                           (
                             this.closest('[key="courseConversations"]').querySelector(\`[key="courseConversations--group"][data-summary="\${summary}"]\`) ??
-                            this.closest('[key="courseConversations"]').querySelector('[key="courseConversations--groups"]').insertAdjacentElement("beforeend", javascript.stringToElement(html\`
+                            javascript.execute(this.closest('[key="courseConversations"]').querySelector('[key="courseConversations--groups"]').insertAdjacentElement("beforeend", javascript.stringToElement(html\`
                               <details
                                 key="courseConversations--group"
                                 data-summary="\${summary}"
@@ -2797,7 +2797,7 @@ export default async (application: Application): Promise<void> => {
                                   >  \${summary}
                                 </summary>
                               </details>
-                            \`).firstElementChild)
+                            \`)))
                           ).insertAdjacentElement("beforeend", this);
                           if (${
                             request.state.courseConversation?.id ===
