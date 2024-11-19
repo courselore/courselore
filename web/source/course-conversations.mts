@@ -2676,21 +2676,27 @@ export default async (application: Application): Promise<void> => {
                           }
                         `}"
                         javascript="${javascript`
-                          const summary = ${courseConversation.pinned} ? "Pinned" : (() => {
+                          let key;
+                          let summary;
+                          if (${courseConversation.pinned}) {
+                            key = "pinned";
+                            summary = "Pinned";
+                          }
+                          else {
                             const firstCourseConversationMessageCreatedAtWeekStart = new Date(${firstCourseConversationMessage.createdAt});
                             firstCourseConversationMessageCreatedAtWeekStart.setHours(12, 0, 0, 0);
                             while (firstCourseConversationMessageCreatedAtWeekStart.getDay() !== 0) firstCourseConversationMessageCreatedAtWeekStart.setDate(firstCourseConversationMessageCreatedAtWeekStart.getDate() - 1);
                             const firstCourseConversationMessageCreatedAtWeekEnd = new Date(${firstCourseConversationMessage.createdAt});
                             firstCourseConversationMessageCreatedAtWeekEnd.setHours(12, 0, 0, 0);
                             while (firstCourseConversationMessageCreatedAtWeekEnd.getDay() !== 6) firstCourseConversationMessageCreatedAtWeekEnd.setDate(firstCourseConversationMessageCreatedAtWeekEnd.getDate() + 1);
-                            return \`\${javascript.localizeDate(firstCourseConversationMessageCreatedAtWeekStart.toISOString())} — \${javascript.localizeDate(firstCourseConversationMessageCreatedAtWeekEnd.toISOString())}\`;
-                          })();
+                            key = javascript.localizeDate(firstCourseConversationMessageCreatedAtWeekStart.toISOString());
+                            summary = \`\${javascript.localizeDate(firstCourseConversationMessageCreatedAtWeekStart.toISOString())} — \${javascript.localizeDate(firstCourseConversationMessageCreatedAtWeekEnd.toISOString())}\`;
+                          }
                           (
-                            this.closest('[key="courseConversations"]').querySelector(\`[key="courseConversations--group"][data-summary="\${summary}"]\`) ??
+                            this.closest('[key="courseConversations"]').querySelector(\`[key~="courseConversations--group"][key~="\${key}"]\`) ??
                             javascript.execute(this.closest('[key="courseConversations"]').querySelector('[key="courseConversations--groups"]').insertAdjacentElement("beforeend", javascript.stringToElement(html\`
                               <details
-                                key="courseConversations--group"
-                                data-summary="\${summary}"
+                                key="courseConversations--group \${key}"
                               >
                                 <summary
                                   css="\${${css`
@@ -2737,7 +2743,7 @@ export default async (application: Application): Promise<void> => {
                                         var(--color--slate--700)
                                       );
                                     }
-                                    [key="courseConversations--group"].current
+                                    [key~="courseConversations--group"].current
                                       & {
                                       color: light-dark(
                                         var(--color--white),
@@ -2765,7 +2771,7 @@ export default async (application: Application): Promise<void> => {
                                       margin-top: calc(
                                         var(--space--1) + var(--space--px)
                                       );
-                                      [key="courseConversations--group"].current
+                                      [key~="courseConversations--group"].current
                                         &,
                                       &.hidden {
                                         display: none;
@@ -2786,7 +2792,7 @@ export default async (application: Application): Promise<void> => {
                                       transition-timing-function: var(
                                         --transition-timing-function--ease-in-out
                                       );
-                                      [key="courseConversations--group"][open]
+                                      [key~="courseConversations--group"][open]
                                         & {
                                         transform: rotate(
                                           var(--transform--rotate--90)
@@ -2803,15 +2809,15 @@ export default async (application: Application): Promise<void> => {
                             request.state.courseConversation?.id ===
                             courseConversation.id
                           }) {
-                            this.closest('[key="courseConversations--group"]').classList.add("current");
+                            this.closest('[key~="courseConversations--group"]').classList.add("current");
                             if (event?.detail?.liveConnectionUpdate !== true)
                               window.setTimeout(() => {
                                 this.scrollIntoView({ block: "center" });
                               });
                           }
                           {
-                            const element = this.closest('[key="courseConversations--group"]');
-                            const indexOf = [...element.parentElement.querySelectorAll('[key="courseConversations--group"]:not([data-summary="Pinned"])')].indexOf(element);
+                            const element = this.closest('[key~="courseConversations--group"]');
+                            const indexOf = [...element.parentElement.querySelectorAll('[key~="courseConversations--group"]:not([key~="pinned"])')].indexOf(element);
                             if ((0 <= indexOf && indexOf < 3) || ${
                               request.state.courseConversation?.id ===
                               courseConversation.id
@@ -2857,9 +2863,9 @@ export default async (application: Application): Promise<void> => {
                                   margin-top: var(--space--4);
                                 `}"
                                 javascript="${javascript`
-                                  this.closest('[key="courseConversations--group"]').querySelector('[key="courseConversations--group--view"]').classList.remove("hidden");
+                                  this.closest('[key~="courseConversations--group"]').querySelector('[key="courseConversations--group--view"]').classList.remove("hidden");
                                   if (${Boolean(courseConversation.pinned)})
-                                    this.closest('[key="courseConversations--group"]').setAttribute("open", "");
+                                    this.closest('[key~="courseConversations--group"]').setAttribute("open", "");
                                 `}"
                               >
                                 <i class="bi bi-circle-fill"></i>
