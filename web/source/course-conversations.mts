@@ -2812,7 +2812,6 @@ export default async (application: Application): Promise<void> => {
                           {
                             const element = this.closest('[key="courseConversations--group"]');
                             const indexOf = [...element.parentElement.querySelectorAll('[key="courseConversations--group"]:not([data-summary="Pinned"])')].indexOf(element);
-                            console.log([...element.parentElement.querySelectorAll('[key="courseConversations--group"]:not([data-summary="Pinned"])')].length);
                             if ((0 <= indexOf && indexOf < 3) || ${
                               request.state.courseConversation?.id ===
                               courseConversation.id
