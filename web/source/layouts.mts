@@ -686,7 +686,8 @@ export default async (application: Application): Promise<void> => {
                                                   `
                                                 : sql``
                                             }
-                                            "courseConversationMessageViews"."id" is null;
+                                            "courseConversationMessageViews"."id" is null
+                                          limit 1;
                                         `,
                                       ) === undefined
                                         ? css`

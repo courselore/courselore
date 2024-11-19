@@ -2863,7 +2863,8 @@ export default async (application: Application): Promise<void> => {
                                     `
                                   : sql``
                               } and
-                              "courseConversationMessageViews"."id" is null;
+                              "courseConversationMessageViews"."id" is null
+                            limit 1;
                           `,
                         ) !== undefined
                           ? html`
