@@ -2839,7 +2839,7 @@ export default async (application: Application): Promise<void> => {
                             if (event?.detail?.liveConnectionUpdate !== true) {
                               this.closest('[key~="courseConversations--group"]').setAttribute("open", "");
                               window.setTimeout(() => {
-                                scrollIntoView(this, { scrollMode: "if-needed", block: "nearest" });
+                                this.scrollIntoView({ block: "nearest" });
                               });
                             }
                           }

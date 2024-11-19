@@ -300,7 +300,6 @@ export default async (application: Application): Promise<void> => {
     import rehypeRemark from "rehype-remark";
     import remarkGfm from "remark-gfm";
     import remarkStringify from "remark-stringify";
-    import scrollIntoView from "scroll-into-view-if-needed";
   `;
 
   application.layouts.base = ({
