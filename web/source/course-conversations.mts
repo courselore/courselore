@@ -2700,7 +2700,7 @@ export default async (application: Application): Promise<void> => {
                           }
                           (
                             this.closest('[key="courseConversations"]').querySelector(\`[key~="courseConversations--group"][key~="\${key}"]\`) ??
-                            javascript.execute(this.closest('[key="courseConversations"]').querySelector('[key="courseConversations--groups"]').insertAdjacentElement("beforeend", javascript.stringToElement(html\`
+                            javascript.execute(this.closest('[key="courseConversations"]').insertAdjacentElement("beforeend", javascript.stringToElement(html\`
                               <details
                                 key="courseConversations--group \${key}"
                                 javascript="\${${javascript`
@@ -3115,7 +3115,6 @@ export default async (application: Application): Promise<void> => {
                     `;
                   })}
               </div>
-              <div key="courseConversations--groups"></div>
             </div>
           </div>
           <button
