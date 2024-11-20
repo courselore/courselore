@@ -2214,45 +2214,44 @@ export default async (application: Application): Promise<void> => {
               </div>
               $${request.state.course.courseState === "courseStateActive"
                 ? html`
-                    <div key="courseConversationMessage--new">
-                      <form
-                        novalidate
+                    <form
+                      key="courseConversationMessage--new"
+                      novalidate
+                      css="${css`
+                        display: flex;
+                        flex-direction: column;
+                        gap: var(--space--2);
+                      `}"
+                    >
+                      $${application.partials.courseConversationMessageContentEditor()}
+                      <div
                         css="${css`
+                          font-size: var(--font-size--3);
+                          line-height: var(--font-size--3--line-height);
+                          font-weight: 600;
+                          color: light-dark(
+                            var(--color--slate--600),
+                            var(--color--slate--400)
+                          );
                           display: flex;
-                          flex-direction: column;
-                          gap: var(--space--2);
+                          gap: var(--space--4);
+                          align-items: baseline;
                         `}"
                       >
-                        $${application.partials.courseConversationMessageContentEditor()}
-                        <div
-                          css="${css`
-                            font-size: var(--font-size--3);
-                            line-height: var(--font-size--3--line-height);
-                            font-weight: 600;
-                            color: light-dark(
-                              var(--color--slate--600),
-                              var(--color--slate--400)
-                            );
-                            display: flex;
-                            gap: var(--space--4);
-                            align-items: baseline;
-                          `}"
+                        <button class="button button--rectangle button--blue">
+                          Send
+                        </button>
+                        <label
+                          class="button button--rectangle button--transparent"
                         >
-                          <button class="button button--rectangle button--blue">
-                            Send
-                          </button>
-                          <label
-                            class="button button--rectangle button--transparent"
-                          >
-                            <input
-                              type="checkbox"
-                              name="anonymous"
-                              class="input--checkbox"
-                            />  Anonymous to students
-                          </label>
-                        </div>
-                      </form>
-                    </div>
+                          <input
+                            type="checkbox"
+                            name="anonymous"
+                            class="input--checkbox"
+                          />  Anonymous to students
+                        </label>
+                      </div>
+                    </form>
                   `
                 : html``}
             </div>
