@@ -2689,18 +2689,22 @@ export default async (application: Application): Promise<void> => {
         `,
       );
 
-      const administrationOptions = database.get<{
-        privateKey: string;
-        certificate: string;
-        userSystemRolesWhoMayCreateCourses:
-          | "all"
-          | "staff-and-administrators"
-          | "administrators";
-      }>(
-        sql`
+      const administrationOptions =
+        database.get<{
+          privateKey: string;
+          certificate: string;
+          userSystemRolesWhoMayCreateCourses:
+            | "all"
+            | "staff-and-administrators"
+            | "administrators";
+        }>(
+          sql`
           select "privateKey", "certificate", "userSystemRolesWhoMayCreateCourses" from "old_administrationOptions";
         `,
-      )!;
+        ) ??
+        (() => {
+          throw new Error();
+        })();
       database.run(
         sql`
           insert into "systemOptions" (

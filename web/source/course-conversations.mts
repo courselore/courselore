@@ -139,7 +139,7 @@ export default async (application: Application): Promise<void> => {
               css="${css`
                 display: flex;
                 flex-direction: column;
-                gap: var(--space--4);
+                gap: var(--space--6);
               `}"
             >
               <div
@@ -147,7 +147,7 @@ export default async (application: Application): Promise<void> => {
                 css="${css`
                   display: flex;
                   flex-direction: column;
-                  gap: var(--space--1);
+                  gap: var(--space--2);
                 `}"
               >
                 $${(() => {
@@ -157,17 +157,22 @@ export default async (application: Application): Promise<void> => {
                       .courseParticipationRole ===
                       "courseParticipationRoleInstructor" ||
                       request.state.courseParticipation.id ===
-                        application.database.get<{
-                          createdByCourseParticipation: number;
-                        }>(
-                          sql`
-                            select "createdByCourseParticipation"
-                            from "courseConversationMessages"
-                            where "courseConversation" = ${request.state.courseConversation.id}
-                            order by "id" asc
-                            limit 1;
-                          `,
-                        )!.createdByCourseParticipation);
+                        (
+                          application.database.get<{
+                            createdByCourseParticipation: number;
+                          }>(
+                            sql`
+                              select "createdByCourseParticipation"
+                              from "courseConversationMessages"
+                              where "courseConversation" = ${request.state.courseConversation.id}
+                              order by "id" asc
+                              limit 1;
+                            `,
+                          ) ??
+                          (() => {
+                            throw new Error();
+                          })()
+                        ).createdByCourseParticipation);
                   return html`
                     $${request.state.course.courseState ===
                     "courseStateArchived"
@@ -206,7 +211,7 @@ export default async (application: Application): Promise<void> => {
                           css="${css`
                             font-size: var(--font-size--4);
                             line-height: var(--font-size--4--line-height);
-                            font-weight: 700;
+                            font-weight: 800;
                           `}"
                         >
                           ${request.state.courseConversation.title}
@@ -223,9 +228,8 @@ export default async (application: Application): Promise<void> => {
                                 hidden
                                 css="${css`
                                   display: flex;
+                                  flex-direction: column;
                                   gap: var(--space--2);
-                                  align-items: center;
-                                  margin-bottom: var(--space--2);
                                 `}"
                               >
                                 <input
@@ -233,35 +237,42 @@ export default async (application: Application): Promise<void> => {
                                   value="${request.state.courseConversation
                                     .title}"
                                   class="input--text"
-                                  css="${css`
-                                    flex: 1;
-                                  `}"
                                 />
-                                <button
-                                  class="button button--square button--icon button--transparent"
+                                <div
                                   css="${css`
-                                    font-size: var(--font-size--5);
-                                    line-height: var(--space--0);
+                                    font-size: var(--font-size--3);
+                                    line-height: var(
+                                      --font-size--3--line-height
+                                    );
+                                    display: flex;
+                                    align-items: baseline;
+                                    flex-wrap: wrap;
+                                    column-gap: var(--space--4);
+                                    row-gap: var(--space--2);
                                   `}"
                                 >
-                                  <i class="bi bi-check"></i>
-                                </button>
-                                <button
-                                  type="reset"
-                                  class="button button--square button--icon button--transparent"
-                                  css="${css`
-                                    font-size: var(--font-size--5);
-                                    line-height: var(--space--0);
-                                  `}"
-                                  javascript="${javascript`
-                                    this.onclick = () => {
-                                      this.closest('[key="courseConversation--header"]').querySelector('[key="courseConversation--header--title--show"]').hidden = false;
-                                      this.closest('[key="courseConversation--header"]').querySelector('[key="courseConversation--header--title--edit"]').hidden = true;
-                                    };
-                                  `}"
-                                >
-                                  <i class="bi bi-x"></i>
-                                </button>
+                                  <div>
+                                    <button
+                                      class="button button--rectangle button--blue"
+                                    >
+                                      Update
+                                    </button>
+                                  </div>
+                                  <div>
+                                    <button
+                                      type="reset"
+                                      class="button button--rectangle button--transparent"
+                                      javascript="${javascript`
+                                        this.onclick = () => {
+                                          this.closest('[key="courseConversation--header"]').querySelector('[key="courseConversation--header--title--show"]').hidden = false;
+                                          this.closest('[key="courseConversation--header"]').querySelector('[key="courseConversation--header--title--edit"]').hidden = true;
+                                        };
+                                      `}"
+                                    >
+                                      Cancel
+                                    </button>
+                                  </div>
+                                </div>
                               </form>
                             `
                           : html``}
@@ -1369,7 +1380,7 @@ export default async (application: Application): Promise<void> => {
                                     "courseParticipationRoleInstructor" ||
                                     request.state.courseParticipation!.id ===
                                       courseConversationMessage.createdByCourseParticipation)
-                                    ? html` (anonymous to other students)`
+                                    ? html` (anonymous to students)`
                                     : html``} ·
                                   <time
                                     datetime="${courseConversationMessage.createdAt}"
@@ -2192,7 +2203,7 @@ export default async (application: Application): Promise<void> => {
               </div>
               $${request.state.course.courseState === "courseStateActive"
                 ? html`
-                    <div key="courseConversationMessage/new">
+                    <div key="courseConversationMessage--new">
                       <form
                         novalidate
                         css="${css`
@@ -2226,7 +2237,7 @@ export default async (application: Application): Promise<void> => {
                               type="checkbox"
                               name="anonymous"
                               class="input--checkbox"
-                            />  Anonymous to other students
+                            />  Anonymous to students
                           </label>
                         </div>
                       </form>
