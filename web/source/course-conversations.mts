@@ -2885,7 +2885,7 @@ export default async (application: Application): Promise<void> => {
                                 `}"
                                 javascript="${javascript`
                                   this.closest('[key~="courseConversations--group"]').querySelector('[key="courseConversations--group--view"]').classList.remove("hidden");
-                                  if (${Boolean(courseConversation.pinned)} && this.closest('[key="courseConversations"]').courseConversationsGroupsFirstGrouping)
+                                  if (this.closest('[key="courseConversations"]').courseConversationsGroupsFirstGrouping && ${Boolean(courseConversation.pinned)})
                                     this.closest('[key~="courseConversations--group"]').setAttribute("open", "");
                                 `}"
                               >
