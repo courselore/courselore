@@ -3238,7 +3238,7 @@ export default async (application: Application): Promise<void> => {
                           ${Math.random() < 0.1 ? new Date(Date.now() - Math.floor(24 * 5 * 60 * 60 * 1000)).toISOString() : null},
                           ${Math.random() < 0.9 ? courseParticipations[Math.floor(Math.random() * courseParticipations.length)].id : null},
                           ${
-                            courseConversationMessageIndex === 1 ||
+                            courseConversationMessageIndex === 0 ||
                             Math.random() < 0.6
                               ? "courseConversationMessageTypeMessage"
                               : Math.random() < 0.5
