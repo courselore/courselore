@@ -262,6 +262,13 @@ export default async (application: Application): Promise<void> => {
                                     <button
                                       type="reset"
                                       class="button button--rectangle button--transparent"
+                                      css="${css`
+                                        font-weight: 600;
+                                        color: light-dark(
+                                          var(--color--slate--600),
+                                          var(--color--slate--400)
+                                        );
+                                      `}"
                                       javascript="${javascript`
                                         this.onclick = () => {
                                           this.closest('[key="courseConversation--header"]').querySelector('[key="courseConversation--header--title--show"]').hidden = false;
