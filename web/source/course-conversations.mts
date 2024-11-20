@@ -2470,6 +2470,7 @@ export default async (application: Application): Promise<void> => {
                 window.setTimeout(() => {
                   this.courseConversationsGroupsFirstGrouping = false;
                 });
+                this.courseConversationsGroupsOpen ??= new Set();
               `}"
             >
               <div
@@ -2704,7 +2705,6 @@ export default async (application: Application): Promise<void> => {
                               <details
                                 key="courseConversations--group \${key}"
                                 javascript="\${${javascript`
-                                  this.closest('[key="courseConversations"]').courseConversationsGroupsOpen ??= new Set();
                                   this.ontoggle = () => {
                                     if (this.getAttribute("open") === null)
                                       this.closest('[key="courseConversations"]').courseConversationsGroupsOpen.delete(this.getAttribute("key"));
