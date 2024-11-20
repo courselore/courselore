@@ -20,7 +20,10 @@ export type ApplicationCourses = {
           invitationLinkCourseParticipationRoleStudentsEnabled: number;
           invitationLinkCourseParticipationRoleStudentsToken: string;
           courseConversationRequiresTagging: number;
-          courseParticipationRoleStudentsAnonymityAllowed: number;
+          courseParticipationRoleStudentsAnonymityAllowed:
+            | "courseParticipationRoleStudentsAnonymityAllowedNone"
+            | "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleStudents"
+            | "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleInstructors";
           courseParticipationRoleStudentsMayHavePrivateCourseConversations: number;
           courseParticipationRoleStudentsMayAttachImages: number;
           courseParticipationRoleStudentsMayCreatePolls: number;
@@ -90,7 +93,10 @@ export default async (application: Application): Promise<void> => {
         invitationLinkCourseParticipationRoleStudentsEnabled: number;
         invitationLinkCourseParticipationRoleStudentsToken: string;
         courseConversationRequiresTagging: number;
-        courseParticipationRoleStudentsAnonymityAllowed: number;
+        courseParticipationRoleStudentsAnonymityAllowed:
+          | "courseParticipationRoleStudentsAnonymityAllowedNone"
+          | "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleStudents"
+          | "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleInstructors";
         courseParticipationRoleStudentsMayHavePrivateCourseConversations: number;
         courseParticipationRoleStudentsMayAttachImages: number;
         courseParticipationRoleStudentsMayCreatePolls: number;
