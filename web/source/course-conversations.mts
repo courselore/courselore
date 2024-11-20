@@ -2241,6 +2241,110 @@ export default async (application: Application): Promise<void> => {
                         $${(() => {
                           let courseConversationMessageNewOptionsHTML = html``;
                           if (
+                            request.state.courseConversation
+                              .courseConversationType ===
+                              "courseConversationTypeQuestion" ||
+                            request.state.courseParticipation
+                              .courseParticipationRole ===
+                              "courseParticipationRoleInstructor"
+                          )
+                            courseConversationMessageNewOptionsHTML += html`
+                              <button
+                                type="button"
+                                class="button button--rectangle button--transparent"
+                                javascript="${javascript`
+                                  javascript.tippy({
+                                    event,
+                                    element: this,
+                                    placement: "bottom-start",
+                                    interactive: true,
+                                    trigger: "click",
+                                    content: ${html`
+                                      <div
+                                        css="${css`
+                                          display: flex;
+                                          flex-direction: column;
+                                          gap: var(--space--2);
+                                        `}"
+                                      >
+                                        <form
+                                          method="PATCH"
+                                          action="/courses/${request.state
+                                            .course
+                                            .publicId}/conversations/${request
+                                            .state.courseConversation.publicId}"
+                                        >
+                                          <input
+                                            type="hidden"
+                                            name="courseConversationParticipations"
+                                            value="courseConversationParticipationsEveryone"
+                                          />
+                                          <button
+                                            class="button button--rectangle button--transparent $${request
+                                              .state.courseConversation
+                                              .courseConversationParticipations ===
+                                            "courseConversationParticipationsEveryone"
+                                              ? "button--blue"
+                                              : ""} button--dropdown-menu"
+                                          >
+                                            Everyone
+                                          </button>
+                                        </form>
+                                        <form
+                                          method="PATCH"
+                                          action="/courses/${request.state
+                                            .course
+                                            .publicId}/conversations/${request
+                                            .state.courseConversation.publicId}"
+                                        >
+                                          <input
+                                            type="hidden"
+                                            name="courseConversationParticipations"
+                                            value="courseConversationParticipationsCourseParticipationRoleInstructors"
+                                          />
+                                          <button
+                                            class="button button--rectangle button--transparent $${request
+                                              .state.courseConversation
+                                              .courseConversationParticipations ===
+                                            "courseConversationParticipationsCourseParticipationRoleInstructors"
+                                              ? "button--blue"
+                                              : ""} button--dropdown-menu"
+                                          >
+                                            Instructors and selected students
+                                          </button>
+                                        </form>
+                                        <form
+                                          method="PATCH"
+                                          action="/courses/${request.state
+                                            .course
+                                            .publicId}/conversations/${request
+                                            .state.courseConversation.publicId}"
+                                        >
+                                          <input
+                                            type="hidden"
+                                            name="courseConversationParticipations"
+                                            value="courseConversationParticipationsCourseConversationParticipations"
+                                          />
+                                          <button
+                                            class="button button--rectangle button--transparent $${request
+                                              .state.courseConversation
+                                              .courseConversationParticipations ===
+                                            "courseConversationParticipationsCourseConversationParticipations"
+                                              ? "button--blue"
+                                              : ""} button--dropdown-menu"
+                                          >
+                                            Selected course participants
+                                          </button>
+                                        </form>
+                                      </div>
+                                    `},
+                                  });
+                                `}"
+                              >
+                                Message <i class="bi bi-chevron-down"></i>
+                              </button>
+                            `;
+                          if (
                             request.state.courseParticipation
                               .courseParticipationRole ===
                               "courseParticipationRoleStudent" &&
