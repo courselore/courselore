@@ -1061,15 +1061,20 @@ export default async (application: Application): Promise<void> => {
                           courseConversationsTagsHTML += html`
                             <div>Tags</div>
                           `;
-                        for (const courseConversationsTag of courseConversationsTagsWithTagging)
+                        if (courseConversationsTagsWithTagging.length > 0)
                           courseConversationsTagsHTML += html`
                             <div
-                              key="courseConversationsTag ${courseConversationsTag.publicId}"
                               css="${css`
+                                flex: 1;
                                 font-weight: 400;
                               `}"
                             >
-                              ${courseConversationsTag.name}
+                              ${courseConversationsTagsWithTagging
+                                .map(
+                                  (courseConversationsTag) =>
+                                    courseConversationsTag.name,
+                                )
+                                .join(" · ")}
                             </div>
                           `;
                         return courseConversationsTagsHTML !== html``
@@ -1077,9 +1082,8 @@ export default async (application: Application): Promise<void> => {
                               <div
                                 css="${css`
                                   display: flex;
-                                  flex-wrap: wrap;
-                                  column-gap: var(--space--4);
-                                  row-gap: var(--space--2);
+                                  gap: var(--space--4);
+                                  align-items: baseline;
                                 `}"
                               >
                                 $${courseConversationsTagsHTML}
