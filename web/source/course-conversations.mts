@@ -3043,9 +3043,9 @@ export default async (application: Application): Promise<void> => {
                                           })()}</span
                                   >$${courseConversation.courseConversationType ===
                                   "courseConversationTypeQuestion"
-                                    ? !Boolean(
+                                    ? Boolean(
                                         courseConversation.questionResolved,
-                                      )
+                                      ) === false
                                       ? html` <span
                                           css="${css`
                                             [key~="courseConversation"]:not(
