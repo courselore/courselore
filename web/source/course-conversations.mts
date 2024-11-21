@@ -604,7 +604,15 @@ export default async (application: Application): Promise<void> => {
                                   });
                                 `}"
                               >
-                                ${request.state.courseConversation
+                                <span
+                                  css="${css`
+                                    color: light-dark(
+                                      var(--color--slate--500),
+                                      var(--color--slate--500)
+                                    );
+                                  `}"
+                                  >Type:</span
+                                >  ${request.state.courseConversation
                                   .courseConversationType ===
                                 "courseConversationTypeNote"
                                   ? "Note"
@@ -619,7 +627,15 @@ export default async (application: Application): Promise<void> => {
                             `
                           : html`
                               <div>
-                                ${request.state.courseConversation
+                                <span
+                                  css="${css`
+                                    color: light-dark(
+                                      var(--color--slate--500),
+                                      var(--color--slate--500)
+                                    );
+                                  `}"
+                                  >Type:</span
+                                >  ${request.state.courseConversation
                                   .courseConversationType ===
                                 "courseConversationTypeNote"
                                   ? "Note"
@@ -642,22 +658,6 @@ export default async (application: Application): Promise<void> => {
                             ? html`
                                 <button
                                   class="button button--rectangle button--transparent"
-                                  css="${Boolean(
-                                    request.state.courseConversation
-                                      .questionResolved,
-                                  ) === false
-                                    ? css`
-                                        color: light-dark(
-                                          var(--color--red--500),
-                                          var(--color--red--500)
-                                        );
-                                      `
-                                    : css`
-                                        color: light-dark(
-                                          var(--color--green--500),
-                                          var(--color--green--500)
-                                        );
-                                      `}"
                                   javascript="${javascript`
                                     javascript.tippy({
                                       event,
@@ -726,41 +726,74 @@ export default async (application: Application): Promise<void> => {
                                     });
                                   `}"
                                 >
-                                  ${Boolean(
-                                    request.state.courseConversation
-                                      .questionResolved,
-                                  ) === false
-                                    ? "Unresolved"
-                                    : "Resolved"} <i
-                                    class="bi bi-chevron-down"
-                                  ></i>
+                                  <span
+                                    css="${css`
+                                      color: light-dark(
+                                        var(--color--slate--500),
+                                        var(--color--slate--500)
+                                      );
+                                    `}"
+                                    >Question:</span
+                                  >  <span
+                                    css="${Boolean(
+                                      request.state.courseConversation
+                                        .questionResolved,
+                                    ) === false
+                                      ? css`
+                                          color: light-dark(
+                                            var(--color--red--500),
+                                            var(--color--red--500)
+                                          );
+                                        `
+                                      : css`
+                                          color: light-dark(
+                                            var(--color--green--500),
+                                            var(--color--green--500)
+                                          );
+                                        `}"
+                                    >${Boolean(
+                                      request.state.courseConversation
+                                        .questionResolved,
+                                    ) === false
+                                      ? "Unresolved"
+                                      : "Resolved"}</span
+                                  > <i class="bi bi-chevron-down"></i>
                                 </button>
                               `
                             : html`
-                                <div
-                                  css="${Boolean(
-                                    request.state.courseConversation
-                                      .questionResolved,
-                                  ) === false
-                                    ? css`
-                                        color: light-dark(
-                                          var(--color--red--500),
-                                          var(--color--red--500)
-                                        );
-                                      `
-                                    : css`
-                                        color: light-dark(
-                                          var(--color--green--500),
-                                          var(--color--green--500)
-                                        );
-                                      `}"
-                                >
-                                  ${Boolean(
-                                    request.state.courseConversation
-                                      .questionResolved,
-                                  ) === false
-                                    ? "Unresolved"
-                                    : "Resolved"}
+                                <div>
+                                  <span
+                                    css="${css`
+                                      color: light-dark(
+                                        var(--color--slate--500),
+                                        var(--color--slate--500)
+                                      );
+                                    `}"
+                                    >Question:</span
+                                  >  <span
+                                    css="${Boolean(
+                                      request.state.courseConversation
+                                        .questionResolved,
+                                    ) === false
+                                      ? css`
+                                          color: light-dark(
+                                            var(--color--red--500),
+                                            var(--color--red--500)
+                                          );
+                                        `
+                                      : css`
+                                          color: light-dark(
+                                            var(--color--green--500),
+                                            var(--color--green--500)
+                                          );
+                                        `}"
+                                    >${Boolean(
+                                      request.state.courseConversation
+                                        .questionResolved,
+                                    ) === false
+                                      ? "Unresolved"
+                                      : "Resolved"}</span
+                                  >
                                 </div>
                               `
                           : html``}
@@ -826,7 +859,8 @@ export default async (application: Application): Promise<void> => {
                                               ? "button--blue"
                                               : ""} button--dropdown-menu"
                                           >
-                                            Instructors and selected students
+                                            Instructors and selected course
+                                            participants
                                           </button>
                                         </form>
                                         <form
@@ -857,14 +891,22 @@ export default async (application: Application): Promise<void> => {
                                   });
                                 `}"
                               >
-                                ${request.state.courseConversation
+                                <span
+                                  css="${css`
+                                    color: light-dark(
+                                      var(--color--slate--500),
+                                      var(--color--slate--500)
+                                    );
+                                  `}"
+                                  >Visibility:</span
+                                >  ${request.state.courseConversation
                                   .courseConversationVisibility ===
                                 "courseConversationVisibilityEveryone"
                                   ? "Everyone"
                                   : request.state.courseConversation
                                         .courseConversationVisibility ===
                                       "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
-                                    ? "Instructors and selected students"
+                                    ? "Instructors and selected course participants"
                                     : request.state.courseConversation
                                           .courseConversationVisibility ===
                                         "courseConversationVisibilityCourseConversationParticipations"
@@ -876,14 +918,22 @@ export default async (application: Application): Promise<void> => {
                             `
                           : html`
                               <div>
-                                ${request.state.courseConversation
+                                <span
+                                  css="${css`
+                                    color: light-dark(
+                                      var(--color--slate--500),
+                                      var(--color--slate--500)
+                                    );
+                                  `}"
+                                  >Visibility:</span
+                                >  ${request.state.courseConversation
                                   .courseConversationVisibility ===
                                 "courseConversationVisibilityEveryone"
                                   ? "Everyone"
                                   : request.state.courseConversation
                                         .courseConversationVisibility ===
                                       "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
-                                    ? "Instructors and selected students"
+                                    ? "Instructors and selected course participants"
                                     : request.state.courseConversation
                                           .courseConversationVisibility ===
                                         "courseConversationVisibilityCourseConversationParticipations"
@@ -966,7 +1016,15 @@ export default async (application: Application): Promise<void> => {
                                   });
                                 `}"
                               >
-                                ${Boolean(
+                                <span
+                                  css="${css`
+                                    color: light-dark(
+                                      var(--color--slate--500),
+                                      var(--color--slate--500)
+                                    );
+                                  `}"
+                                  >Pin:</span
+                                >  ${Boolean(
                                   request.state.courseConversation.pinned,
                                 ) === false
                                   ? "Unpinned"
@@ -974,7 +1032,19 @@ export default async (application: Application): Promise<void> => {
                               </button>
                             `
                           : Boolean(request.state.courseConversation.pinned)
-                            ? html`<div>Pinned</div>`
+                            ? html`
+                                <div>
+                                  <span
+                                    css="${css`
+                                      color: light-dark(
+                                        var(--color--slate--500),
+                                        var(--color--slate--500)
+                                      );
+                                    `}"
+                                    >Pin:</span
+                                  >  Pinned
+                                </div>
+                              `
                             : html``}
                       </div>
                       $${(() => {
@@ -2307,7 +2377,8 @@ export default async (application: Application): Promise<void> => {
                                               ? "button--blue"
                                               : ""} button--dropdown-menu"
                                           >
-                                            Instructors and selected students
+                                            Instructors and selected course
+                                            participants
                                           </button>
                                         </form>
                                         <form
@@ -2414,7 +2485,8 @@ export default async (application: Application): Promise<void> => {
                                               ? "button--blue"
                                               : ""} button--dropdown-menu"
                                           >
-                                            Instructors and selected students
+                                            Instructors and selected course
+                                            participants
                                           </button>
                                         </form>
                                         <form
