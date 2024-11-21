@@ -2310,10 +2310,7 @@ export default async (application: Application): Promise<void> => {
                           if (
                             request.state.courseConversation
                               .courseConversationType ===
-                              "courseConversationTypeQuestion" ||
-                            request.state.courseParticipation
-                              .courseParticipationRole ===
-                              "courseParticipationRoleInstructor"
+                            "courseConversationTypeQuestion"
                           )
                             courseConversationMessageNewOptionsHTML += html`
                               <button
@@ -2326,90 +2323,50 @@ export default async (application: Application): Promise<void> => {
                                     placement: "bottom-start",
                                     interactive: true,
                                     trigger: "click",
-                                    content: ${html`
-                                      <div
-                                        css="${css`
-                                          display: flex;
-                                          flex-direction: column;
-                                          gap: var(--space--2);
-                                        `}"
-                                      >
-                                        <form
-                                          method="PATCH"
-                                          action="/courses/${request.state
-                                            .course
-                                            .publicId}/conversations/${request
-                                            .state.courseConversation.publicId}"
-                                        >
-                                          <input
-                                            type="hidden"
-                                            name="courseConversationVisibility"
-                                            value="courseConversationVisibilityEveryone"
-                                          />
-                                          <button
-                                            class="button button--rectangle button--transparent $${request
-                                              .state.courseConversation
-                                              .courseConversationVisibility ===
-                                            "courseConversationVisibilityEveryone"
-                                              ? "button--blue"
-                                              : ""} button--dropdown-menu"
-                                          >
-                                            Everyone
-                                          </button>
-                                        </form>
-                                        <form
-                                          method="PATCH"
-                                          action="/courses/${request.state
-                                            .course
-                                            .publicId}/conversations/${request
-                                            .state.courseConversation.publicId}"
-                                        >
-                                          <input
-                                            type="hidden"
-                                            name="courseConversationVisibility"
-                                            value="courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
-                                          />
-                                          <button
-                                            class="button button--rectangle button--transparent $${request
-                                              .state.courseConversation
-                                              .courseConversationVisibility ===
-                                            "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
-                                              ? "button--blue"
-                                              : ""} button--dropdown-menu"
-                                          >
-                                            Instructors and selected course
-                                            participants
-                                          </button>
-                                        </form>
-                                        <form
-                                          method="PATCH"
-                                          action="/courses/${request.state
-                                            .course
-                                            .publicId}/conversations/${request
-                                            .state.courseConversation.publicId}"
-                                        >
-                                          <input
-                                            type="hidden"
-                                            name="courseConversationVisibility"
-                                            value="courseConversationVisibilityCourseConversationParticipations"
-                                          />
-                                          <button
-                                            class="button button--rectangle button--transparent $${request
-                                              .state.courseConversation
-                                              .courseConversationVisibility ===
-                                            "courseConversationVisibilityCourseConversationParticipations"
-                                              ? "button--blue"
-                                              : ""} button--dropdown-menu"
-                                          >
-                                            Selected course participants
-                                          </button>
-                                        </form>
-                                      </div>
-                                    `},
+                                    content: ${html` TODO `},
                                   });
                                 `}"
                               >
-                                Message <i class="bi bi-chevron-down"></i>
+                                <span
+                                  css="${css`
+                                    color: light-dark(
+                                      var(--color--slate--500),
+                                      var(--color--slate--500)
+                                    );
+                                  `}"
+                                  >Type:</span
+                                >  Message <i class="bi bi-chevron-down"></i>
+                              </button>
+                            `;
+                          if (
+                            request.state.courseParticipation
+                              .courseParticipationRole ===
+                            "courseParticipationRoleInstructor"
+                          )
+                            courseConversationMessageNewOptionsHTML += html`
+                              <button
+                                type="button"
+                                class="button button--rectangle button--transparent"
+                                javascript="${javascript`
+                                  javascript.tippy({
+                                    event,
+                                    element: this,
+                                    placement: "bottom-start",
+                                    interactive: true,
+                                    trigger: "click",
+                                    content: ${html` TODO `},
+                                  });
+                                `}"
+                              >
+                                <span
+                                  css="${css`
+                                    color: light-dark(
+                                      var(--color--slate--500),
+                                      var(--color--slate--500)
+                                    );
+                                  `}"
+                                  >Visibility:</span
+                                >  Everyone <i class="bi bi-chevron-down"></i>
                               </button>
                             `;
                           if (
@@ -2434,90 +2391,19 @@ export default async (application: Application): Promise<void> => {
                                     placement: "bottom-start",
                                     interactive: true,
                                     trigger: "click",
-                                    content: ${html`
-                                      <div
-                                        css="${css`
-                                          display: flex;
-                                          flex-direction: column;
-                                          gap: var(--space--2);
-                                        `}"
-                                      >
-                                        <form
-                                          method="PATCH"
-                                          action="/courses/${request.state
-                                            .course
-                                            .publicId}/conversations/${request
-                                            .state.courseConversation.publicId}"
-                                        >
-                                          <input
-                                            type="hidden"
-                                            name="courseConversationVisibility"
-                                            value="courseConversationVisibilityEveryone"
-                                          />
-                                          <button
-                                            class="button button--rectangle button--transparent $${request
-                                              .state.courseConversation
-                                              .courseConversationVisibility ===
-                                            "courseConversationVisibilityEveryone"
-                                              ? "button--blue"
-                                              : ""} button--dropdown-menu"
-                                          >
-                                            Everyone
-                                          </button>
-                                        </form>
-                                        <form
-                                          method="PATCH"
-                                          action="/courses/${request.state
-                                            .course
-                                            .publicId}/conversations/${request
-                                            .state.courseConversation.publicId}"
-                                        >
-                                          <input
-                                            type="hidden"
-                                            name="courseConversationVisibility"
-                                            value="courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
-                                          />
-                                          <button
-                                            class="button button--rectangle button--transparent $${request
-                                              .state.courseConversation
-                                              .courseConversationVisibility ===
-                                            "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
-                                              ? "button--blue"
-                                              : ""} button--dropdown-menu"
-                                          >
-                                            Instructors and selected course
-                                            participants
-                                          </button>
-                                        </form>
-                                        <form
-                                          method="PATCH"
-                                          action="/courses/${request.state
-                                            .course
-                                            .publicId}/conversations/${request
-                                            .state.courseConversation.publicId}"
-                                        >
-                                          <input
-                                            type="hidden"
-                                            name="courseConversationVisibility"
-                                            value="courseConversationVisibilityCourseConversationParticipations"
-                                          />
-                                          <button
-                                            class="button button--rectangle button--transparent $${request
-                                              .state.courseConversation
-                                              .courseConversationVisibility ===
-                                            "courseConversationVisibilityCourseConversationParticipations"
-                                              ? "button--blue"
-                                              : ""} button--dropdown-menu"
-                                          >
-                                            Selected course participants
-                                          </button>
-                                        </form>
-                                      </div>
-                                    `},
+                                    content: ${html` TODO `},
                                   });
                                 `}"
                               >
-                                Public <i class="bi bi-chevron-down"></i>
+                                <span
+                                  css="${css`
+                                    color: light-dark(
+                                      var(--color--slate--500),
+                                      var(--color--slate--500)
+                                    );
+                                  `}"
+                                  >Anonymity:</span
+                                >  None <i class="bi bi-chevron-down"></i>
                               </button>
                             `;
                           return courseConversationMessageNewOptionsHTML !==
