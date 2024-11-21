@@ -2547,7 +2547,7 @@ export default async (application: Application): Promise<void> => {
             "course" integer not null references "courses",
             "courseConversationType" text not null,
             "questionResolved" integer not null,
-            "courseConversationParticipations" text not null,
+            "courseConversationVisibility" text not null,
             "pinned" integer not null,
             "title" text not null,
             "titleSearch" text not null,
@@ -2616,6 +2616,7 @@ export default async (application: Application): Promise<void> => {
             "updatedAt" text null,
             "createdByCourseParticipation" integer null references "courseParticipations",
             "courseConversationMessageType" text not null,
+            "courseConversationMessageVisibility" text not null,
             "courseConversationMessageAnonymity" text not null,
             "content" text not null,
             "contentSearch" text not null
@@ -3109,7 +3110,7 @@ export default async (application: Application): Promise<void> => {
                         "course",
                         "courseConversationType",
                         "questionResolved",
-                        "courseConversationParticipations",
+                        "courseConversationVisibility",
                         "pinned",
                         "title",
                         "titleSearch"
@@ -3119,7 +3120,7 @@ export default async (application: Application): Promise<void> => {
                         ${course.id},
                         ${Math.random() < 0.3 ? "courseConversationTypeNote" : "courseConversationTypeQuestion"},
                         ${Number(Math.random() < 0.5)},
-                        ${courseConversationPublicId === 1 || Math.random() < 0.3 ? "courseConversationParticipationsEveryone" : Math.random() < 0.8 ? "courseConversationParticipationsCourseParticipationRoleInstructors" : "courseConversationParticipationsCourseConversationParticipations"},
+                        ${courseConversationPublicId === 1 || Math.random() < 0.3 ? "courseConversationVisibilityEveryone" : Math.random() < 0.8 ? "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations" : "courseConversationVisibilityCourseConversationParticipations"},
                         ${Number(courseConversationPublicId !== 1 && Math.random() < 0.1)},
                         ${courseConversationTitle},
                         ${utilities
@@ -3227,6 +3228,7 @@ export default async (application: Application): Promise<void> => {
                           "updatedAt",
                           "createdByCourseParticipation",
                           "courseConversationMessageType",
+                          "courseConversationMessageVisibility",
                           "courseConversationMessageAnonymity",
                           "content",
                           "contentSearch"
@@ -3239,13 +3241,17 @@ export default async (application: Application): Promise<void> => {
                           ${Math.random() < 0.9 ? courseParticipations[Math.floor(Math.random() * courseParticipations.length)].id : null},
                           ${
                             courseConversationMessageIndex === 0 ||
-                            Math.random() < 0.6
+                            Math.random() < 0.7
                               ? "courseConversationMessageTypeMessage"
-                              : Math.random() < 0.5
+                              : Math.random() < 0.7
                                 ? "courseConversationMessageTypeAnswer"
-                                : Math.random() < 0.5
-                                  ? "courseConversationMessageTypeFollowUpQuestion"
-                                  : "courseConversationMessageTypeCourseParticipationRoleInstructorWhisper"
+                                : "courseConversationMessageTypeFollowUpQuestion"
+                          },
+                          ${
+                            courseConversationMessageIndex === 0 ||
+                            Math.random() < 0.7
+                              ? "courseConversationMessageVisibilityEveryone"
+                              : "courseConversationMessageVisibilityCourseParticipationRoleInstructors"
                           },
                           ${Math.random() < 0.5 ? "courseConversationMessageAnonymityNone" : Math.random() < 0.9 ? "courseConversationMessageAnonymityCourseParticipationRoleStudents" : "courseConversationMessageAnonymityCourseParticipationRoleInstructors"},
                           ${courseConversationMessageContent},
