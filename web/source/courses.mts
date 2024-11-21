@@ -233,14 +233,14 @@ export default async (application: Application): Promise<void> => {
               : sql`
                   where
                     "course" = ${request.state.course.id} and (
-                      "courseConversationParticipations" = 'courseConversationParticipationsEveryone'
+                      "courseConversationVisibility" = 'courseConversationVisibilityEveryone'
                       $${
                         request.state.courseParticipation
                           .courseParticipationRole ===
                         "courseParticipationRoleInstructor"
                           ? sql`
                               or
-                              "courseConversationParticipations" = 'courseConversationParticipationsCourseParticipationRoleInstructors'
+                              "courseConversationVisibility" = 'courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations'
                             `
                           : sql``
                       }

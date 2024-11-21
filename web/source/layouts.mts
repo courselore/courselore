@@ -656,13 +656,13 @@ export default async (application: Application): Promise<void> => {
                                             "courseConversationMessages"."courseConversation" = "courseConversations"."id" and
                                             "courseConversations"."course" = ${course.id}
                                             and (
-                                              "courseConversations"."courseConversationParticipations" = 'courseConversationParticipationsEveryone'
+                                              "courseConversations"."courseConversationVisibility" = 'courseConversationVisibilityEveryone'
                                               $${
                                                 courseParticipation.courseParticipationRole ===
                                                 "courseParticipationRoleInstructor"
                                                   ? sql`
                                                       or
-                                                      "courseConversations"."courseConversationParticipations" = 'courseConversationParticipationsCourseParticipationRoleInstructors'
+                                                      "courseConversations"."courseConversationVisibility" = 'courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations'
                                                     `
                                                   : sql``
                                               }
