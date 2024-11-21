@@ -682,7 +682,7 @@ export default async (application: Application): Promise<void> => {
                                               courseParticipation.courseParticipationRole !==
                                               "courseParticipationRoleInstructor"
                                                 ? sql`
-                                                    "courseConversationMessages"."courseConversationMessageType" != 'courseConversationMessageTypeCourseParticipationRoleInstructorWhisper' and
+                                                    "courseConversationMessages"."courseConversationMessageVisibility" != 'courseConversationMessageVisibilityCourseParticipationRoleInstructors' and
                                                   `
                                                 : sql``
                                             }

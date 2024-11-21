@@ -51,7 +51,7 @@ export default async (application: Application): Promise<void> => {
                   "courseParticipationRoleInstructor"
                     ? sql`
                         and
-                        "courseConversationMessageType" != 'courseConversationMessageTypeCourseParticipationRoleInstructorWhisper'
+                        "courseConversationMessageVisibility" != 'courseConversationMessageVisibilityCourseParticipationRoleInstructors'
                       `
                     : sql``
                 };

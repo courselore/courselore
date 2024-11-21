@@ -1166,8 +1166,10 @@ export default async (application: Application): Promise<void> => {
                       courseConversationMessageType:
                         | "courseConversationMessageTypeMessage"
                         | "courseConversationMessageTypeAnswer"
-                        | "courseConversationMessageTypeFollowUpQuestion"
-                        | "courseConversationMessageTypeCourseParticipationRoleInstructorWhisper";
+                        | "courseConversationMessageTypeFollowUpQuestion";
+                      courseConversationMessageVisibility:
+                        | "courseConversationMessageVisibilityEveryone"
+                        | "courseConversationMessageVisibilityCourseParticipationRoleInstructors";
                       courseConversationMessageAnonymity:
                         | "courseConversationMessageAnonymityNone"
                         | "courseConversationMessageAnonymityCourseParticipationRoleStudents"
@@ -1182,6 +1184,7 @@ export default async (application: Application): Promise<void> => {
                           "updatedAt",
                           "createdByCourseParticipation",
                           "courseConversationMessageType",
+                          "courseConversationMessageVisibility",
                           "courseConversationMessageAnonymity",
                           "content"
                         from "courseConversationMessages"
@@ -1192,7 +1195,7 @@ export default async (application: Application): Promise<void> => {
                             "courseParticipationRoleInstructor"
                               ? sql`
                                   and
-                                  "courseConversationMessageType" != 'courseConversationMessageTypeCourseParticipationRoleInstructorWhisper'
+                                  "courseConversationMessageVisibility" != 'courseConversationMessageVisibilityCourseParticipationRoleInstructors'
                                 `
                               : sql``
                           }
@@ -1459,24 +1462,20 @@ export default async (application: Application): Promise<void> => {
                                               >Follow-up question</span
                                             ></span
                                           >`
-                                        : courseConversationMessage.courseConversationMessageType ===
-                                            "courseConversationMessageTypeCourseParticipationRoleInstructorWhisper"
+                                        : courseConversationMessage.courseConversationMessageVisibility ===
+                                            "courseConversationMessageVisibilityCourseParticipationRoleInstructors"
                                           ? html`<span
                                               > ·
                                               <span
                                                 css="${css`
+                                                  font-weight: 700;
                                                   color: light-dark(
                                                     var(--color--blue--500),
                                                     var(--color--blue--500)
                                                   );
                                                 `}"
-                                                ><span
-                                                  css="${css`
-                                                    font-weight: 700;
-                                                  `}"
-                                                  >Instructor whisper</span
-                                                >
-                                                (hidden from students)</span
+                                                >Visible to instructors
+                                                only</span
                                               ></span
                                             >`
                                           : (() => {
@@ -1583,8 +1582,6 @@ export default async (application: Application): Promise<void> => {
                                           request.state.courseConversation!
                                             .courseConversationType ===
                                             "courseConversationTypeQuestion" &&
-                                          courseConversationMessage.courseConversationMessageType !==
-                                            "courseConversationMessageTypeCourseParticipationRoleInstructorWhisper" &&
                                           courseConversationMessage.id !==
                                             firstCourseConversationMessage.id
                                             ? html`
@@ -2797,7 +2794,7 @@ export default async (application: Application): Promise<void> => {
                               "courseParticipationRoleInstructor"
                                 ? sql`
                                     and
-                                    "courseConversationMessageType" != 'courseConversationMessageTypeCourseParticipationRoleInstructorWhisper'
+                                    "courseConversationMessageVisibility" != 'courseConversationMessageVisibilityCourseParticipationRoleInstructors'
                                   `
                                 : sql``
                             }
@@ -3105,7 +3102,7 @@ export default async (application: Application): Promise<void> => {
                                 "courseParticipationRoleInstructor"
                                   ? sql`
                                       and
-                                      "courseConversationMessages"."courseConversationMessageType" != 'courseConversationMessageTypeCourseParticipationRoleInstructorWhisper'
+                                      "courseConversationMessages"."courseConversationMessageVisibility" != 'courseConversationMessageVisibilityCourseParticipationRoleInstructors'
                                     `
                                   : sql``
                               } and
