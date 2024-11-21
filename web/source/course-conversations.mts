@@ -2283,6 +2283,10 @@ export default async (application: Application): Promise<void> => {
                 ? html`
                     <form
                       key="courseConversationMessage--new"
+                      method="POST"
+                      action="/courses/${request.state.course
+                        .publicId}/conversations/${request.state
+                        .courseConversation.publicId}/messages"
                       novalidate
                       css="${css`
                         display: flex;
@@ -2320,10 +2324,77 @@ export default async (application: Application): Promise<void> => {
                                   javascript.tippy({
                                     event,
                                     element: this,
-                                    placement: "bottom-start",
+                                    placement: "top-start",
                                     interactive: true,
                                     trigger: "click",
-                                    content: ${html` TODO `},
+                                    content: ${html`
+                                      <div
+                                        css="${css`
+                                          display: flex;
+                                          flex-direction: column;
+                                          gap: var(--space--2);
+                                        `}"
+                                      >
+                                        <button
+                                          type="button"
+                                          class="button button--rectangle button--transparent button--dropdown-menu"
+                                          javascript="${javascript`
+                                            this.onclick = () => {
+                                              this.closest("form").querySelector('[name="courseConversationMessageType"][value="courseConversationMessageTypeMessage"]').checked = true;
+                                              for (const element of this.parentElement.querySelectorAll("button")) element.classList.remove("button--blue");
+                                              this.classList.add("button--blue");
+                                              Tippy.hideAll();
+                                            };
+                                          `}"
+                                        >
+                                          Message
+                                        </button>
+                                        <button
+                                          type="button"
+                                          class="button button--rectangle button--transparent button--dropdown-menu"
+                                          css="${css`
+                                            &:not(.button--blue) {
+                                              color: light-dark(
+                                                var(--color--green--500),
+                                                var(--color--green--500)
+                                              );
+                                            }
+                                          `}"
+                                          javascript="${javascript`
+                                            this.onclick = () => {
+                                              this.closest("form").querySelector('[name="courseConversationMessageType"][value="courseConversationMessageTypeAnswer"]').checked = true;
+                                              for (const element of this.parentElement.querySelectorAll("button")) element.classList.remove("button--blue");
+                                              this.classList.add("button--blue");
+                                              Tippy.hideAll();
+                                            };
+                                          `}"
+                                        >
+                                          Answer
+                                        </button>
+                                        <button
+                                          type="button"
+                                          class="button button--rectangle button--transparent button--dropdown-menu"
+                                          css="${css`
+                                            &:not(.button--blue) {
+                                              color: light-dark(
+                                                var(--color--red--500),
+                                                var(--color--red--500)
+                                              );
+                                            }
+                                          `}"
+                                          javascript="${javascript`
+                                            this.onclick = () => {
+                                              this.closest("form").querySelector('[name="courseConversationMessageType"][value="courseConversationMessageTypeFollowUpQuestion"]').checked = true;
+                                              for (const element of this.parentElement.querySelectorAll("button")) element.classList.remove("button--blue");
+                                              this.classList.add("button--blue");
+                                              Tippy.hideAll();
+                                            };
+                                          `}"
+                                        >
+                                          Follow-up question
+                                        </button>
+                                      </div>
+                                    `},
                                   });
                                 `}"
                               >
@@ -2335,7 +2406,51 @@ export default async (application: Application): Promise<void> => {
                                     );
                                   `}"
                                   >Type:</span
-                                >  Message <i class="bi bi-chevron-down"></i>
+                                >  <input
+                                  type="radio"
+                                  name="courseConversationMessageType"
+                                  value="courseConversationMessageTypeMessage"
+                                  hidden
+                                /><span
+                                  css="${css`
+                                    :not(:checked) + & {
+                                      display: none;
+                                    }
+                                  `}"
+                                  >Message</span
+                                ><input
+                                  type="radio"
+                                  name="courseConversationMessageType"
+                                  value="courseConversationMessageTypeAnswer"
+                                  hidden
+                                /><span
+                                  css="${css`
+                                    color: light-dark(
+                                      var(--color--green--500),
+                                      var(--color--green--500)
+                                    );
+                                    :not(:checked) + & {
+                                      display: none;
+                                    }
+                                  `}"
+                                  >Answer</span
+                                ><input
+                                  type="radio"
+                                  name="courseConversationMessageType"
+                                  value="courseConversationMessageTypeFollowUpQuestion"
+                                  hidden
+                                /><span
+                                  css="${css`
+                                    color: light-dark(
+                                      var(--color--red--500),
+                                      var(--color--red--500)
+                                    );
+                                    :not(:checked) + & {
+                                      display: none;
+                                    }
+                                  `}"
+                                  >Follow-up question</span
+                                > <i class="bi bi-chevron-down"></i>
                               </button>
                             `;
                           if (
