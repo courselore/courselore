@@ -3434,7 +3434,7 @@ export default async (application: Application): Promise<void> => {
             </div>
           </div>
           <button
-            key="sidebar--underlay"
+            key="sidebar--backdrop"
             css="${css`
               background-color: light-dark(
                 var(--color--black),
