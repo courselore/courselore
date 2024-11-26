@@ -355,6 +355,7 @@ export default async (application: Application): Promise<void> => {
           );
           position: absolute;
           inset: 0;
+          overflow: hidden;
           display: flex;
           flex-direction: column;
         `}"

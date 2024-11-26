@@ -2780,6 +2780,7 @@ export default async (application: Application): Promise<void> => {
               key="courseConversations"
               css="${css`
                 flex: 1;
+                position: relative;
                 overflow: auto;
               `}"
               javascript="${javascript`
@@ -3535,6 +3536,7 @@ export default async (application: Application): Promise<void> => {
             key="main--main ${request.URL.pathname}"
             css="${css`
               flex: 1;
+              position: relative;
               overflow: auto;
             `}"
           >
