@@ -31,7 +31,6 @@ export default async (application: Application): Promise<void> => {
           border-bottom: var(--border-width--1) solid
             light-dark(var(--color--slate--200), var(--color--slate--800));
           display: flex;
-          flex-wrap: wrap;
           gap: var(--space--2);
         `}"
       >
