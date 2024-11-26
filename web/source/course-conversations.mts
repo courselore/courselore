@@ -529,6 +529,7 @@ export default async (application: Application): Promise<void> => {
                       <div
                         css="${css`
                           display: flex;
+                          align-items: baseline;
                           flex-wrap: wrap;
                           column-gap: var(--space--4);
                           row-gap: var(--space--2);
@@ -2263,6 +2264,7 @@ export default async (application: Application): Promise<void> => {
                                           var(--color--slate--400)
                                         );
                                         display: flex;
+                                        align-items: baseline;
                                         flex-wrap: wrap;
                                         column-gap: var(--space--4);
                                         row-gap: var(--space--2);
@@ -2533,6 +2535,7 @@ export default async (application: Application): Promise<void> => {
                                       var(--color--slate--400)
                                     );
                                     display: flex;
+                                    align-items: baseline;
                                     flex-wrap: wrap;
                                     column-gap: var(--space--4);
                                     row-gap: var(--space--2);
