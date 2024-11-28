@@ -3444,7 +3444,7 @@ export default async (application: Application): Promise<void> => {
                 var(--color--black),
                 var(--color--white)
               );
-              position: absolute;
+              position: fixed;
               inset: 0;
               z-index: 99;
               opacity: var(--opacity--0);
@@ -3469,7 +3469,7 @@ export default async (application: Application): Promise<void> => {
             `}"
           ></button>
           <div
-            key="sidebar--separator"
+            key="sidebar--resize-handle"
             css="${css`
               position: relative;
               @media (max-width: 899px) {
