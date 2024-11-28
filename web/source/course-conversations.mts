@@ -3102,21 +3102,17 @@ export default async (application: Application): Promise<void> => {
                                     }
                                   `}}"
                                 >
-                                  <span
+                                  <div
                                     key="courseConversations--group--view"
                                     class="hidden"
                                     css="\${${css`
                                       font-size: var(--space--1-5);
-                                      line-height: var(--space--0);
                                       color: light-dark(
                                         var(--color--blue--500),
                                         var(--color--blue--500)
                                       );
                                       position: absolute;
                                       margin-left: var(--space---2-5);
-                                      margin-top: calc(
-                                        var(--space--1) + var(--space--px)
-                                      );
                                       [key~="courseConversations--group"].current
                                         &,
                                       &.hidden {
@@ -3125,28 +3121,30 @@ export default async (application: Application): Promise<void> => {
                                     `}}"
                                   >
                                     <i class="bi bi-circle-fill"></i>
-                                  </span>
-                                  <span
-                                    css="\${${css`
-                                      display: inline-block;
-                                      transition-property: var(
-                                        --transition-property--transform
-                                      );
-                                      transition-duration: var(
-                                        --transition-duration--150
-                                      );
-                                      transition-timing-function: var(
-                                        --transition-timing-function--ease-in-out
-                                      );
-                                      [key~="courseConversations--group"][open]
-                                        & {
-                                        transform: rotate(
-                                          var(--transform--rotate--90)
+                                  </div>
+                                  <div>
+                                    <span
+                                      css="\${${css`
+                                        display: inline-block;
+                                        transition-property: var(
+                                          --transition-property--transform
                                         );
-                                      }
-                                    `}}"
-                                    ><i class="bi bi-chevron-right"></i></span
-                                  >  \${summary}
+                                        transition-duration: var(
+                                          --transition-duration--150
+                                        );
+                                        transition-timing-function: var(
+                                          --transition-timing-function--ease-in-out
+                                        );
+                                        [key~="courseConversations--group"][open]
+                                          & {
+                                          transform: rotate(
+                                            var(--transform--rotate--90)
+                                          );
+                                        }
+                                      `}}"
+                                      ><i class="bi bi-chevron-right"></i></span
+                                    >  \${summary}
+                                  </div>
                                 </summary>
                               </details>
                             \`)))
