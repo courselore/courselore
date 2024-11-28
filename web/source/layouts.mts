@@ -353,8 +353,8 @@ export default async (application: Application): Promise<void> => {
             var(--color--white),
             var(--color--black)
           );
-          position: absolute;
-          inset: 0;
+          position: fixed;
+          inset: var(--space--0);
           overflow: hidden;
           display: flex;
           flex-direction: column;
