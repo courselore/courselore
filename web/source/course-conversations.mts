@@ -2609,9 +2609,9 @@ export default async (application: Application): Promise<void> => {
                   var(--color--black)
                 );
                 max-width: var(--space--112);
-                position: absolute;
-                inset: 0;
-                right: var(--space--14);
+                position: fixed;
+                inset: var(--space--0) var(--space--14) var(--space--0)
+                  var(--space--0);
                 z-index: 100;
                 transform: translateX(-101%);
                 transition-property: var(--transition-property--transform);
@@ -3445,7 +3445,7 @@ export default async (application: Application): Promise<void> => {
                 var(--color--white)
               );
               position: fixed;
-              inset: 0;
+              inset: var(--space--0);
               z-index: 99;
               opacity: var(--opacity--0);
               cursor: pointer;
