@@ -2613,14 +2613,16 @@ export default async (application: Application): Promise<void> => {
                 inset: var(--space--0) var(--space--14) var(--space--0)
                   var(--space--0);
                 z-index: 100;
-                transform: translateX(-101%);
                 transition-property: var(--transition-property--transform);
                 transition-duration: var(--transition-duration--200);
                 transition-timing-function: var(
                   --transition-timing-function--ease-in-out
                 );
+                [key="main--two-column-layout"]:not([state~="sidebar--open"])
+                  & {
+                  transform: translateX(-101%);
+                }
                 [key="main--two-column-layout"][state~="sidebar--open"] & {
-                  transform: translateX(0%);
                   box-shadow: var(--box-shadow--25);
                 }
               }
