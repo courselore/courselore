@@ -1224,7 +1224,7 @@ export default async (application: Application): Promise<void> => {
                       max-width: calc(100% - var(--space--8));
                       top: 0;
                       left: 0;
-                      z-index: 500;
+                      z-index: 1000;
                       transition-property: var(--transition-property--opacity);
                       transition-duration: var(--transition-duration--150);
                       transition-timing-function: var(
