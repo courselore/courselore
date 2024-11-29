@@ -642,7 +642,6 @@ export default async (application: Application): Promise<void> => {
                                         line-height: var(
                                           --font-size--3-5--line-height
                                         );
-                                        margin-top: var(--space--px);
                                         color: light-dark(
                                           var(--color--blue--500),
                                           var(--color--blue--500)
