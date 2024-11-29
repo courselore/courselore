@@ -3607,6 +3607,7 @@ export default async (application: Application): Promise<void> => {
                 width: var(--border-width--4);
                 height: 100%;
                 position: absolute;
+                z-index: 100;
                 transform: translateX(-50%);
                 cursor: col-resize;
                 pointer-events: auto;
