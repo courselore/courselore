@@ -1184,10 +1184,10 @@ export default async (application: Application): Promise<void> => {
                     const placement = trigger === "hover" ? "top" : trigger === "click" ? "bottom-start" : (() => { throw new Error(); })();
                     if (trigger === "hover") {
                       element.onmouseenter = element.onfocus = async () => {
-                        javascript.stateAdd(target, "open");
                         const targetCoordinate = await floatingUI.computePosition(element, target, { placement, middleware: [floatingUI.flip(), floatingUI.shift({ padding: 8 })] });
                         target.style.top = \`\${targetCoordinate.y}px\`;
                         target.style.left = \`\${targetCoordinate.x}px\`;
+                        javascript.stateAdd(target, "open");
                       };
                       element.onmouseleave = element.onblur = () => {
                         javascript.stateRemove(target, "open");
