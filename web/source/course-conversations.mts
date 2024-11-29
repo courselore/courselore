@@ -3199,9 +3199,6 @@ export default async (application: Application): Promise<void> => {
                                     key="courseConversation--sidebar--courseConversationMessageViews"
                                     css="${css`
                                       font-size: var(--space--1-5);
-                                      line-height: var(
-                                        --font-size--3--line-height
-                                      );
                                       color: light-dark(
                                         var(--color--blue--500),
                                         var(--color--blue--500)
