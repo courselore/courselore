@@ -348,6 +348,7 @@ export default async (application: Application): Promise<void> => {
           font-family: "Roboto Flex Variable", var(--font-family--sans-serif);
           font-size: var(--font-size--3-5);
           line-height: var(--font-size--3-5--line-height);
+          font-weight: 400;
           color: light-dark(var(--color--black), var(--color--white));
           background-color: light-dark(
             var(--color--white),
