@@ -3562,7 +3562,7 @@ export default async (application: Application): Promise<void> => {
               </div>
             </div>
           </div>
-          <button
+          <div
             key="sidebar--backdrop"
             css="${css`
               background-color: light-dark(
@@ -3572,9 +3572,9 @@ export default async (application: Application): Promise<void> => {
               position: fixed;
               inset: var(--space--0);
               z-index: 99;
+              visibility: hidden;
               opacity: var(--opacity--0);
               cursor: pointer;
-              pointer-events: none;
               transition-property: var(--transition-property--opacity);
               transition-duration: var(--transition-duration--200);
               transition-timing-function: var(
@@ -3582,8 +3582,8 @@ export default async (application: Application): Promise<void> => {
               );
               @media (max-width: 899px) {
                 [key="main--two-column-layout"][state~="sidebar--open"] & {
+                  visibility: visible;
                   opacity: var(--opacity--30);
-                  pointer-events: auto;
                 }
               }
             `}"
@@ -3592,7 +3592,7 @@ export default async (application: Application): Promise<void> => {
                 javascript.stateRemove(document.querySelector('[key="main--two-column-layout"]'), "sidebar--open");
               };
             `}"
-          ></button>
+          ></div>
           <div
             key="sidebar--resize-handle"
             css="${css`
