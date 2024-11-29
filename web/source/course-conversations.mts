@@ -1216,41 +1216,48 @@ export default async (application: Application): Promise<void> => {
                   Example <i class="bi bi-chevron-down"></i>
                 </button>
                 <div
+                  class="popover"
                   css="${css`
-                    font-family: "Roboto Flex Variable",
-                      var(--font-family--sans-serif);
-                    font-size: var(--font-size--3-5);
-                    line-height: var(--font-size--3-5--line-height);
-                    font-weight: 400;
-                    color: light-dark(var(--color--black), var(--color--white));
-                    background-color: light-dark(
-                      var(--color--slate--50),
-                      var(--color--slate--950)
-                    );
-                    padding: var(--space--1) var(--space--2);
-                    border: var(--border-width--1) solid
-                      light-dark(
-                        var(--color--slate--400),
-                        var(--color--slate--600)
+                    &.popover {
+                      position: absolute;
+                      width: max-content;
+                      max-width: calc(100% - var(--space--8));
+                      top: 0;
+                      left: 0;
+                      z-index: 500;
+                      transition-property: var(--transition-property--opacity);
+                      transition-duration: var(--transition-duration--150);
+                      transition-timing-function: var(
+                        --transition-timing-function--ease-in-out
                       );
-                    border-radius: var(--border-radius--1);
-                    box-shadow: var(--box-shadow--4);
+                      &:not([state~="open"]) {
+                        display: none;
+                        opacity: var(--opacity--0);
+                      }
+                    }
 
-                    position: absolute;
-                    width: max-content;
-                    max-width: calc(100% - var(--space--8));
-                    top: 0;
-                    left: 0;
-                    z-index: 500;
-
-                    transition-property: var(--transition-property--opacity);
-                    transition-duration: var(--transition-duration--150);
-                    transition-timing-function: var(
-                      --transition-timing-function--ease-in-out
-                    );
-                    &:not([state~="open"]) {
-                      opacity: var(--opacity--0);
-                      pointer-events: none;
+                    &.popover {
+                      font-family: "Roboto Flex Variable",
+                        var(--font-family--sans-serif);
+                      font-size: var(--font-size--3-5);
+                      line-height: var(--font-size--3-5--line-height);
+                      font-weight: 400;
+                      color: light-dark(
+                        var(--color--black),
+                        var(--color--white)
+                      );
+                      background-color: light-dark(
+                        var(--color--slate--50),
+                        var(--color--slate--950)
+                      );
+                      padding: var(--space--1) var(--space--2);
+                      border: var(--border-width--1) solid
+                        light-dark(
+                          var(--color--slate--400),
+                          var(--color--slate--600)
+                        );
+                      border-radius: var(--border-radius--1);
+                      box-shadow: var(--box-shadow--4);
                     }
 
                     display: flex;
