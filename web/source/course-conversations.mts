@@ -2967,7 +2967,6 @@ export default async (application: Application): Promise<void> => {
                               var(--color--slate--200),
                               var(--color--slate--800)
                             );
-                          position: relative;
                           display: flex;
                           gap: var(--space--2);
                           cursor: pointer;
@@ -3163,62 +3162,73 @@ export default async (application: Application): Promise<void> => {
                           }
                         `}"
                       >
-                        $${request.state.courseConversation?.id !==
-                          courseConversation.id &&
-                        application.database.get(
-                          sql`
-                            select true
-                            from "courseConversationMessages"
-                            left join "courseConversationMessageViews" on
-                              "courseConversationMessages"."id" = "courseConversationMessageViews"."courseConversationMessage" and
-                              "courseConversationMessageViews"."courseParticipation" = ${request.state.courseParticipation!.id}
-                            where
-                              "courseConversationMessages"."courseConversation" = ${courseConversation.id} $${
-                                request.state.courseParticipation!
-                                  .courseParticipationRole !==
-                                "courseParticipationRoleInstructor"
-                                  ? sql`
-                                      and
-                                      "courseConversationMessages"."courseConversationMessageVisibility" != 'courseConversationMessageVisibilityCourseParticipationRoleInstructors'
-                                    `
-                                  : sql``
-                              } and
-                              "courseConversationMessageViews"."id" is null
-                            limit 1;
-                          `,
-                        ) !== undefined
-                          ? html`
-                              <div
-                                key="courseConversation--courseConversationMessageViews"
-                                css="${css`
-                                  font-size: var(--space--1-5);
-                                  line-height: var(--space--0);
-                                  color: light-dark(
-                                    var(--color--blue--500),
-                                    var(--color--blue--500)
-                                  );
-                                  position: absolute;
-                                  margin-left: var(--space---2-5);
-                                  margin-top: var(--space--4);
-                                `}"
-                                javascript="${javascript`
-                                  this.closest('[key~="courseConversations--group"]').querySelector('[key="courseConversations--group--view"]').classList.remove("hidden");
-                                  if (this.closest('[key="courseConversations"]').courseConversationsGroupsFirstGrouping && ${Boolean(courseConversation.pinned)})
-                                    this.closest('[key~="courseConversations--group"]').setAttribute("open", "");
-                                `}"
-                              >
-                                <i class="bi bi-circle-fill"></i>
-                              </div>
-                            `
-                          : html``}
-                        <div key="courseConversation--userAvatar">
-                          $${application.partials.userAvatar({
-                            user: firstCourseConversationMessageAnonymous
-                              ? "anonymous"
-                              : (firstCourseConversationMessageCreatedByCourseParticipationUser ??
-                                "courseParticipationDeleted"),
-                            size: 9,
-                          })}
+                        <div key="courseConversation--sidebar">
+                          <div
+                            css="${css`
+                              position: relative;
+                              display: flex;
+                              align-items: center;
+                            `}"
+                          >
+                            $${request.state.courseConversation?.id !==
+                              courseConversation.id &&
+                            application.database.get(
+                              sql`
+                                select true
+                                from "courseConversationMessages"
+                                left join "courseConversationMessageViews" on
+                                  "courseConversationMessages"."id" = "courseConversationMessageViews"."courseConversationMessage" and
+                                  "courseConversationMessageViews"."courseParticipation" = ${request.state.courseParticipation!.id}
+                                where
+                                  "courseConversationMessages"."courseConversation" = ${courseConversation.id} $${
+                                    request.state.courseParticipation!
+                                      .courseParticipationRole !==
+                                    "courseParticipationRoleInstructor"
+                                      ? sql`
+                                          and
+                                          "courseConversationMessages"."courseConversationMessageVisibility" != 'courseConversationMessageVisibilityCourseParticipationRoleInstructors'
+                                        `
+                                      : sql``
+                                  } and
+                                  "courseConversationMessageViews"."id" is null
+                                limit 1;
+                              `,
+                            ) !== undefined
+                              ? html`
+                                  <div
+                                    key="courseConversation--sidebar--courseConversationMessageViews"
+                                    css="${css`
+                                      font-size: var(--space--1-5);
+                                      line-height: var(
+                                        --font-size--3--line-height
+                                      );
+                                      color: light-dark(
+                                        var(--color--blue--500),
+                                        var(--color--blue--500)
+                                      );
+                                      position: absolute;
+                                      margin-left: var(--space---2-5);
+                                    `}"
+                                    javascript="${javascript`
+                                      this.closest('[key~="courseConversations--group"]').querySelector('[key="courseConversations--group--view"]').classList.remove("hidden");
+                                      if (this.closest('[key="courseConversations"]').courseConversationsGroupsFirstGrouping && ${Boolean(courseConversation.pinned)})
+                                        this.closest('[key~="courseConversations--group"]').setAttribute("open", "");
+                                    `}"
+                                  >
+                                    <i class="bi bi-circle-fill"></i>
+                                  </div>
+                                `
+                              : html``}
+                            <div key="courseConversation--sidebar--userAvatar">
+                              $${application.partials.userAvatar({
+                                user: firstCourseConversationMessageAnonymous
+                                  ? "anonymous"
+                                  : (firstCourseConversationMessageCreatedByCourseParticipationUser ??
+                                    "courseParticipationDeleted"),
+                                size: 9,
+                              })}
+                            </div>
+                          </div>
                         </div>
                         <div
                           key="courseConversation--main"
