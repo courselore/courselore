@@ -1231,7 +1231,7 @@ export default async (application: Application): Promise<void> => {
                         --transition-timing-function--ease-in-out
                       );
                       &:not([state~="open"]) {
-                        display: none;
+                        visibility: hidden;
                         opacity: var(--opacity--0);
                       }
                     }
