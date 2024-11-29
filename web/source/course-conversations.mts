@@ -1173,6 +1173,117 @@ export default async (application: Application): Promise<void> => {
                   `;
                 })()}
               </div>
+              <div key="TODO">
+                <button
+                  type="button"
+                  class="button button--rectangle button--transparent"
+                  javascript="${javascript`
+                    const element = this;
+                    const target = this.nextElementSibling;
+                    const trigger = "hover";
+                    const placement = trigger === "hover" ? "top" : trigger === "click" ? "bottom-start" : (() => { throw new Error(); })();
+                    if (trigger === "hover") {
+                      element.onmouseenter = element.onfocus = async () => {
+                        javascript.stateAdd(target, "open");
+                        const targetCoordinate = await floatingUI.computePosition(element, target, { placement, middleware: [floatingUI.flip(), floatingUI.shift({ padding: 8 })] });
+                        target.style.top = \`\${targetCoordinate.y}px\`;
+                        target.style.left = \`\${targetCoordinate.x}px\`;
+                      };
+                      element.onmouseleave = element.onblur = () => {
+                        javascript.stateRemove(target, "open");
+                      };
+                    }
+                    else if (trigger === "click") {
+                      element.onclick = () => {
+                        element.onblur = () => { element.onclick(); };
+                        if (!javascript.stateContains(target, "open")) {
+                          javascript.stateAdd(target, "open");
+                          stopAutoUpdate = floatingUI.autoUpdate(element, target, async () => {
+                            const targetCoordinate = await floatingUI.computePosition(element, target, { placement: "top-start", middleware: [floatingUI.flip(), floatingUI.shift({ padding: 8 })] });
+                            target.style.top = \`\${targetCoordinate.y}px\`;
+                            target.style.left = \`\${targetCoordinate.x}px\`;
+                          });
+                        }
+                        else {
+                          javascript.stateRemove(target, "open");
+                          stopAutoUpdate?.();
+                          element.onblur = undefined;
+                        }
+                      };
+                    }
+                  `}"
+                >
+                  Example <i class="bi bi-chevron-down"></i>
+                </button>
+                <div
+                  css="${css`
+                    font-family: "Roboto Flex Variable",
+                      var(--font-family--sans-serif);
+                    font-size: var(--font-size--3-5);
+                    line-height: var(--font-size--3-5--line-height);
+                    font-weight: 400;
+                    color: light-dark(var(--color--black), var(--color--white));
+                    background-color: light-dark(
+                      var(--color--slate--50),
+                      var(--color--slate--950)
+                    );
+                    padding: var(--space--1) var(--space--2);
+                    border: var(--border-width--1) solid
+                      light-dark(
+                        var(--color--slate--400),
+                        var(--color--slate--600)
+                      );
+                    border-radius: var(--border-radius--1);
+                    box-shadow: var(--box-shadow--4);
+
+                    position: absolute;
+                    width: max-content;
+                    max-width: calc(100% - var(--space--8));
+                    top: 0;
+                    left: 0;
+                    z-index: 500;
+
+                    transition-property: var(--transition-property--opacity);
+                    transition-duration: var(--transition-duration--150);
+                    transition-timing-function: var(
+                      --transition-timing-function--ease-in-out
+                    );
+                    &:not([state~="open"]) {
+                      opacity: var(--opacity--0);
+                      pointer-events: none;
+                    }
+
+                    display: flex;
+                    flex-direction: column;
+                    gap: var(--space--2);
+                  `}"
+                >
+                  <button
+                    type="button"
+                    class="button button--rectangle button--transparent button--dropdown-menu"
+                  >
+                    Option 1
+                  </button>
+                  <button
+                    type="button"
+                    class="button button--rectangle button--transparent button--dropdown-menu"
+                  >
+                    Option 2
+                  </button>
+                  <button
+                    type="button"
+                    class="button button--rectangle button--transparent button--dropdown-menu"
+                  >
+                    Option 3
+                  </button>
+                  <button
+                    type="button"
+                    class="button button--rectangle button--transparent button--dropdown-menu"
+                  >
+                    Option 4
+                  </button>
+                </div>
+              </div>
               <div
                 key="courseConversationMessages"
                 css="${css`
