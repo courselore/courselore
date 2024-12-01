@@ -1180,28 +1180,30 @@ export default async (application: Application): Promise<void> => {
                   javascript="${javascript`
                     const element = this;
                     const target = this.nextElementSibling;
-                    const trigger = "hover";
+                    const trigger = "click";
+                    const closeOnFocusOut = true;
                     const placement = trigger === "hover" ? "top" : trigger === "click" ? "bottom-start" : (() => { throw new Error(); })();
                     if (trigger === "hover") {
-                      element.onmouseenter = element.onfocus = async () => {
+                      element.onmouseenter = element.onfocusin = async () => {
                         const targetCoordinate = await floatingUI.computePosition(element, target, { placement, middleware: [floatingUI.flip(), floatingUI.shift({ padding: 8 })] });
                         target.style.top = \`\${targetCoordinate.y}px\`;
                         target.style.left = \`\${targetCoordinate.x}px\`;
                         javascript.stateAdd(target, "open");
                       };
-                      element.onmouseleave = element.onblur = () => {
+                      element.onmouseleave = element.onfocusout = () => {
                         javascript.stateRemove(target, "open");
                       };
                     }
                     else if (trigger === "click") {
                       element.onclick = async () => {
                         const targetCoordinate = await floatingUI.computePosition(element, target, { placement, middleware: [floatingUI.flip(), floatingUI.shift({ padding: 8 })] });
-                            target.style.top = \`\${targetCoordinate.y}px\`;
-                            target.style.left = \`\${targetCoordinate.x}px\`;
+                        target.style.top = \`\${targetCoordinate.y}px\`;
+                        target.style.left = \`\${targetCoordinate.x}px\`;
                         javascript.stateToggle(target, "open");
                       };
-                      element.onblur = () => {
-                        javascript.stateRemove(target, "open");
+                      element.onfocusout = target.onfocusout = () => {
+                        if (closeOnFocusOut || (!element.contains(document.activeElement) && !target.contains(document.activeElement)))
+                          javascript.stateRemove(target, "open");
                       };
                     }
                   `}"
