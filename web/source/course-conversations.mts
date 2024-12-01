@@ -1184,8 +1184,8 @@ export default async (application: Application): Promise<void> => {
                         const element = this;
                         const target = this.nextElementSibling;
                         const trigger = "click";
-                        const closeOnFirstClick = true;
-                        const placement = trigger === "hover" ? "top" : trigger === "click" ? "bottom-start" : (() => { throw new Error(); })();
+                        const closeOnFirstSubsequentClick = true;
+                        const placement = trigger === "hover" ? "top" : trigger === "click" ? "bottom-start" : trigger === "none" ? "top" : (() => { throw new Error(); })();
                         target.showPopover = async () => {
                           const targetCoordinate = await floatingUI.computePosition(element, target, { placement, middleware: [floatingUI.flip(), floatingUI.shift({ padding: 8 })] });
                           target.style.top = \`\${targetCoordinate.y}px\`;
@@ -1210,7 +1210,7 @@ export default async (application: Application): Promise<void> => {
                             window.setTimeout(() => {
                               const originalDocumentOnclick = document.onclick;
                               document.onclick = (event) => {
-                                if (closeOnFirstClick || !target.contains(event.target)) {
+                                if (closeOnFirstSubsequentClick || !target.contains(event.target)) {
                                   target.hidePopover();
                                   document.onclick = originalDocumentOnclick;
                                 }
