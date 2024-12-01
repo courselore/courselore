@@ -1194,21 +1194,11 @@ export default async (application: Application): Promise<void> => {
                       };
                     }
                     else if (trigger === "click") {
-                      element.onclick = () => {
-                        element.onblur = () => { element.onclick(); };
-                        if (!javascript.stateContains(target, "open")) {
-                          javascript.stateAdd(target, "open");
-                          stopAutoUpdate = floatingUI.autoUpdate(element, target, async () => {
-                            const targetCoordinate = await floatingUI.computePosition(element, target, { placement: "top-start", middleware: [floatingUI.flip(), floatingUI.shift({ padding: 8 })] });
+                      element.onclick = async () => {
+                        const targetCoordinate = await floatingUI.computePosition(element, target, { placement, middleware: [floatingUI.flip(), floatingUI.shift({ padding: 8 })] });
                             target.style.top = \`\${targetCoordinate.y}px\`;
                             target.style.left = \`\${targetCoordinate.x}px\`;
-                          });
-                        }
-                        else {
-                          javascript.stateRemove(target, "open");
-                          stopAutoUpdate?.();
-                          element.onblur = undefined;
-                        }
+                        javascript.stateToggle(target, "open");
                       };
                     }
                   `}"
