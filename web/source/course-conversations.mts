@@ -2750,6 +2750,33 @@ export default async (application: Application): Promise<void> => {
             `}"
           >
             <div
+              key="sidebar--close"
+              css="${css`
+                border-bottom: var(--border-width--1) solid
+                  light-dark(var(--color--slate--200), var(--color--slate--800));
+                padding: var(--space--2) var(--space--4);
+                display: flex;
+                @media (min-width: 900px) {
+                  display: none;
+                }
+              `}"
+            >
+              <button
+                class="button button--square button--icon button--transparent"
+                css="${css`
+                  font-size: var(--font-size--4);
+                  line-height: var(--space--0);
+                `}"
+                javascript="${javascript`
+                  this.onclick = () => {
+                    javascript.stateRemove(document.querySelector('[key="main--two-column-layout"]'), "sidebar--open");
+                  };
+                `}"
+              >
+                <i class="bi bi-x-lg"></i>
+              </button>
+            </div>
+            <div
               key="sidebar--menu"
               css="${css`
                 border-bottom: var(--border-width--1) solid
