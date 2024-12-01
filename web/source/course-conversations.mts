@@ -1174,117 +1174,134 @@ export default async (application: Application): Promise<void> => {
                 })()}
               </div>
               <div key="TODO">
-                <button
-                  type="button"
-                  class="button button--rectangle button--transparent"
-                  javascript="${javascript`
-                    const element = this;
-                    const target = this.nextElementSibling;
-                    const trigger = "click";
-                    const closeOnFocusOut = true;
-                    const placement = trigger === "hover" ? "top" : trigger === "click" ? "bottom-start" : (() => { throw new Error(); })();
-                    if (trigger === "hover") {
-                      element.onmouseenter = element.onfocusin = async () => {
-                        const targetCoordinate = await floatingUI.computePosition(element, target, { placement, middleware: [floatingUI.flip(), floatingUI.shift({ padding: 8 })] });
-                        target.style.top = \`\${targetCoordinate.y}px\`;
-                        target.style.left = \`\${targetCoordinate.x}px\`;
-                        javascript.stateAdd(target, "open");
-                      };
-                      element.onmouseleave = element.onfocusout = () => {
-                        javascript.stateRemove(target, "open");
-                      };
-                    }
-                    else if (trigger === "click") {
-                      element.onclick = async () => {
-                        const targetCoordinate = await floatingUI.computePosition(element, target, { placement, middleware: [floatingUI.flip(), floatingUI.shift({ padding: 8 })] });
-                        target.style.top = \`\${targetCoordinate.y}px\`;
-                        target.style.left = \`\${targetCoordinate.x}px\`;
-                        javascript.stateToggle(target, "open");
-                      };
-                      element.onfocusout = target.onfocusout = () => {
-                        if (closeOnFocusOut || (!element.contains(document.activeElement) && !target.contains(document.activeElement)))
+                $${Array.from(
+                  { length: 5 },
+                  () => html`
+                    <button
+                      type="button"
+                      class="button button--rectangle button--transparent"
+                      javascript="${javascript`
+                        const element = this;
+                        const target = this.nextElementSibling;
+                        const trigger = "click";
+                        const closeOnFirstClick = true;
+                        const placement = trigger === "hover" ? "top" : trigger === "click" ? "bottom-start" : (() => { throw new Error(); })();
+                        target.showPopover = async () => {
+                          const targetCoordinate = await floatingUI.computePosition(element, target, { placement, middleware: [floatingUI.flip(), floatingUI.shift({ padding: 8 })] });
+                          target.style.top = \`\${targetCoordinate.y}px\`;
+                          target.style.left = \`\${targetCoordinate.x}px\`;
+                          javascript.stateAdd(target, "open");
+                        };
+                        target.hidePopover = () => {
                           javascript.stateRemove(target, "open");
-                      };
-                    }
-                  `}"
-                >
-                  Example <i class="bi bi-chevron-down"></i>
-                </button>
-                <div
-                  class="popover"
-                  css="${css`
-                    &.popover {
-                      position: absolute;
-                      width: max-content;
-                      max-width: calc(100% - var(--space--8));
-                      top: 0;
-                      left: 0;
-                      z-index: 1000;
-                      transition-property: var(--transition-property--opacity);
-                      transition-duration: var(--transition-duration--150);
-                      transition-timing-function: var(
-                        --transition-timing-function--ease-in-out
-                      );
-                      &:not([state~="open"]) {
-                        visibility: hidden;
-                        opacity: var(--opacity--0);
-                      }
-                    }
+                        };
+                        if (trigger === "hover") {
+                          element.onmouseenter = element.onfocusin = async () => {
+                            await target.showPopover();
+                          };
+                          element.onmouseleave = element.onfocusout = () => {
+                            target.hidePopover();
+                          };
+                        }
+                        else if (trigger === "click") {
+                          element.onclick = async () => {
+                            if (target.matches('[state~="open"]')) return;
+                            await target.showPopover();
+                            window.setTimeout(() => {
+                              const originalDocumentOnclick = document.onclick;
+                              document.onclick = (event) => {
+                                if (closeOnFirstClick || !target.contains(event.target)) {
+                                  target.hidePopover();
+                                  document.onclick = originalDocumentOnclick;
+                                }
+                                originalDocumentOnclick?.();
+                              };
+                            });
+                          };
+                        }
+                      `}"
+                    >
+                      Example <i class="bi bi-chevron-down"></i>
+                    </button>
+                    <div
+                      class="popover"
+                      css="${css`
+                        &.popover {
+                          position: absolute;
+                          width: max-content;
+                          max-width: calc(100% - var(--space--8));
+                          top: 0;
+                          left: 0;
+                          z-index: 1000;
+                          transition-property: var(
+                            --transition-property--opacity
+                          );
+                          transition-duration: var(--transition-duration--150);
+                          transition-timing-function: var(
+                            --transition-timing-function--ease-in-out
+                          );
+                          &:not([state~="open"]) {
+                            visibility: hidden;
+                            opacity: var(--opacity--0);
+                          }
+                        }
 
-                    &.popover {
-                      font-family: "Roboto Flex Variable",
-                        var(--font-family--sans-serif);
-                      font-size: var(--font-size--3-5);
-                      line-height: var(--font-size--3-5--line-height);
-                      font-weight: 400;
-                      color: light-dark(
-                        var(--color--black),
-                        var(--color--white)
-                      );
-                      background-color: light-dark(
-                        var(--color--slate--50),
-                        var(--color--slate--950)
-                      );
-                      padding: var(--space--1) var(--space--2);
-                      border: var(--border-width--1) solid
-                        light-dark(
-                          var(--color--slate--400),
-                          var(--color--slate--600)
-                        );
-                      border-radius: var(--border-radius--1);
-                      box-shadow: var(--box-shadow--4);
-                    }
+                        &.popover {
+                          font-family: "Roboto Flex Variable",
+                            var(--font-family--sans-serif);
+                          font-size: var(--font-size--3-5);
+                          line-height: var(--font-size--3-5--line-height);
+                          font-weight: 400;
+                          color: light-dark(
+                            var(--color--black),
+                            var(--color--white)
+                          );
+                          background-color: light-dark(
+                            var(--color--slate--50),
+                            var(--color--slate--950)
+                          );
+                          padding: var(--space--1) var(--space--2);
+                          border: var(--border-width--1) solid
+                            light-dark(
+                              var(--color--slate--400),
+                              var(--color--slate--600)
+                            );
+                          border-radius: var(--border-radius--1);
+                          box-shadow: var(--box-shadow--4);
+                        }
 
-                    display: flex;
-                    flex-direction: column;
-                    gap: var(--space--2);
-                  `}"
-                >
-                  <button
-                    type="button"
-                    class="button button--rectangle button--transparent button--dropdown-menu"
-                  >
-                    Option 1
-                  </button>
-                  <button
-                    type="button"
-                    class="button button--rectangle button--transparent button--dropdown-menu"
-                  >
-                    Option 2
-                  </button>
-                  <button
-                    type="button"
-                    class="button button--rectangle button--transparent button--dropdown-menu"
-                  >
-                    Option 3
-                  </button>
-                  <button
-                    type="button"
-                    class="button button--rectangle button--transparent button--dropdown-menu"
-                  >
-                    Option 4
-                  </button>
-                </div>
+                        display: flex;
+                        flex-direction: column;
+                        gap: var(--space--2);
+                      `}"
+                    >
+                      <button
+                        type="button"
+                        class="button button--rectangle button--transparent button--dropdown-menu"
+                      >
+                        Option 1
+                      </button>
+                      <button
+                        type="button"
+                        class="button button--rectangle button--transparent button--dropdown-menu"
+                      >
+                        Option 2
+                      </button>
+                      <button
+                        type="button"
+                        class="button button--rectangle button--transparent button--dropdown-menu"
+                      >
+                        Option 3
+                      </button>
+                      <button
+                        type="button"
+                        class="button button--rectangle button--transparent button--dropdown-menu"
+                      >
+                        Option 4
+                      </button>
+                    </div>
+                  `,
+                )}
               </div>
               <div
                 key="courseConversationMessages"
