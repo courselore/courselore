@@ -1200,6 +1200,9 @@ export default async (application: Application): Promise<void> => {
                             target.style.left = \`\${targetCoordinate.x}px\`;
                         javascript.stateToggle(target, "open");
                       };
+                      element.onblur = () => {
+                        javascript.stateRemove(target, "open");
+                      };
                     }
                   `}"
                 >
