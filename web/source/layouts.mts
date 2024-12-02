@@ -221,23 +221,6 @@ export default async (application: Application): Promise<void> => {
       border-top: var(--border-width--1) solid
         light-dark(var(--color--slate--200), var(--color--slate--800));
     }
-
-    .popover {
-      font-family: "Roboto Flex Variable", var(--font-family--sans-serif);
-      font-size: var(--font-size--3-5);
-      line-height: var(--font-size--3-5--line-height);
-      font-weight: 400;
-      color: light-dark(var(--color--black), var(--color--white));
-      background-color: light-dark(
-        var(--color--slate--50),
-        var(--color--slate--950)
-      );
-      padding: var(--space--1) var(--space--2);
-      border: var(--border-width--1) solid
-        light-dark(var(--color--slate--400), var(--color--slate--600));
-      border-radius: var(--border-radius--1);
-      box-shadow: var(--box-shadow--4);
-    }
   `;
 
   javascript`
@@ -780,6 +763,8 @@ export default async (application: Application): Promise<void> => {
         >
           $${body}
         </div>
+        <div key="global-error">Hello World!</div>
+        <div class="popover" state="open">Hello World!</div>
       </body>
     </html>
   `;
