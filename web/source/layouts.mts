@@ -763,8 +763,6 @@ export default async (application: Application): Promise<void> => {
         >
           $${body}
         </div>
-        <div key="global-error">Hello World!</div>
-        <div class="popover" state="open">Hello World!</div>
       </body>
     </html>
   `;
