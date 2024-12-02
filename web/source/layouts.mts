@@ -222,71 +222,21 @@ export default async (application: Application): Promise<void> => {
         light-dark(var(--color--slate--200), var(--color--slate--800));
     }
 
-    .tippy-box {
+    .popover {
+      font-family: "Roboto Flex Variable", var(--font-family--sans-serif);
+      font-size: var(--font-size--3-5);
+      line-height: var(--font-size--3-5--line-height);
       font-weight: 400;
       color: light-dark(var(--color--black), var(--color--white));
       background-color: light-dark(
         var(--color--slate--50),
         var(--color--slate--950)
       );
+      padding: var(--space--1) var(--space--2);
       border: var(--border-width--1) solid
         light-dark(var(--color--slate--400), var(--color--slate--600));
       border-radius: var(--border-radius--1);
       box-shadow: var(--box-shadow--4);
-      &[data-theme~="max-height"] {
-        max-height: var(--space--60);
-        overflow: auto;
-      }
-      &[data-theme~="error"] {
-        color: light-dark(var(--color--red--800), var(--color--red--200));
-        background-color: light-dark(
-          var(--color--red--50),
-          var(--color--red--950)
-        );
-        border-color: light-dark(
-          var(--color--red--400),
-          var(--color--red--600)
-        );
-      }
-      ${[
-        "red",
-        "orange",
-        "amber",
-        "yellow",
-        "lime",
-        "green",
-        "emerald",
-        "teal",
-        "cyan",
-        "sky",
-        "blue",
-        "indigo",
-        "violet",
-        "purple",
-        "fuchsia",
-        "pink",
-        "rose",
-      ].map(
-        (color) => css`
-          &[data-theme~="${color}"] {
-            color: light-dark(
-              var(--color--${color}--800),
-              var(--color--${color}--200)
-            );
-            background-color: light-dark(
-              var(--color--${color}--50),
-              var(--color--${color}--950)
-            );
-            border-color: light-dark(
-              var(--color--${color}--400),
-              var(--color--${color}--600)
-            );
-          }
-        `,
-      )}
-      .tippy-content {
-        padding: var(--space--1) var(--space--2);
-      }
     }
   `;
 
