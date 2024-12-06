@@ -1307,8 +1307,6 @@ export default async (application: Application): Promise<void> => {
                         <button
                           class="button button--square button--icon button--transparent"
                           css="${css`
-                            font-size: var(--font-size--4);
-                            line-height: var(--space--0);
                             color: light-dark(
                               var(--color--slate--600),
                               var(--color--slate--400)
