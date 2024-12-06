@@ -1228,6 +1228,7 @@ export default async (application: Application): Promise<void> => {
                       css="${css`
                         display: flex;
                         gap: var(--space--4);
+                        align-items: baseline;
                       `}"
                     >
                       <div
@@ -1312,7 +1313,6 @@ export default async (application: Application): Promise<void> => {
                               var(--color--slate--600),
                               var(--color--slate--400)
                             );
-                            margin-top: var(--space--0);
                           `}"
                           javascript="${javascript`
                             javascript.tippy({
