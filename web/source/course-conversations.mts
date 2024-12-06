@@ -3325,12 +3325,18 @@ export default async (application: Application): Promise<void> => {
                                   ? " (anonymous to instructors)"
                                   : ""
                               : ""} ·
-                            <time
-                              datetime="${firstCourseConversationMessage.createdAt}"
+                            <span
                               javascript="${javascript`
-                                javascript.relativizeDateTimeElement(this, { capitalize: true });
+                                javascript.relativizeDateTimeElement(this, ${firstCourseConversationMessage.createdAt}, { capitalize: true });
+                                javascript.popover({ element: this });
                               `}"
-                            ></time>
+                            ></span>
+                            <span
+                              class="popover"
+                              javascript="${javascript`
+                                this.textContent = javascript.localizeDateTime(${firstCourseConversationMessage.createdAt});
+                              `}"
+                            ></span>
                           </div>
                           <div
                             key="courseConversation--main--details"
