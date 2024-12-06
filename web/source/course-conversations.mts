@@ -1248,69 +1248,57 @@ export default async (application: Application): Promise<void> => {
                         </div>
                         $${mayEditCourseConversation
                           ? html`
-                              <form
+                              <div
                                 key="courseConversation--header--title--edit"
-                                method="PATCH"
-                                action="/courses/${request.state.course
-                                  .publicId}/conversations/${request.state
-                                  .courseConversation.publicId}"
-                                novalidate
                                 hidden
                                 css="${css`
                                   display: flex;
-                                  flex-direction: column;
-                                  gap: var(--space--2);
+                                  gap: var(--space--4);
+                                  align-items: baseline;
                                 `}"
                               >
-                                <input
-                                  name="title"
-                                  value="${request.state.courseConversation
-                                    .title}"
-                                  class="input--text"
-                                />
                                 <div
                                   css="${css`
-                                    font-size: var(--font-size--3);
-                                    line-height: var(
-                                      --font-size--3--line-height
-                                    );
+                                    flex: 1;
                                     display: flex;
-                                    align-items: baseline;
-                                    flex-wrap: wrap;
-                                    column-gap: var(--space--4);
-                                    row-gap: var(--space--2);
                                   `}"
                                 >
-                                  <div>
-                                    <button
-                                      class="button button--rectangle button--blue"
-                                    >
-                                      Update
-                                    </button>
-                                  </div>
-                                  <div>
-                                    <button
-                                      type="reset"
-                                      class="button button--rectangle button--transparent"
-                                      css="${css`
-                                        font-weight: 600;
-                                        color: light-dark(
-                                          var(--color--slate--600),
-                                          var(--color--slate--400)
-                                        );
-                                      `}"
-                                      javascript="${javascript`
-                                        this.onclick = () => {
-                                          this.closest('[key="courseConversation--header"]').querySelector('[key="courseConversation--header--title--show"]').hidden = false;
-                                          this.closest('[key="courseConversation--header"]').querySelector('[key="courseConversation--header--title--edit"]').hidden = true;
-                                        };
-                                      `}"
-                                    >
-                                      Cancel
-                                    </button>
-                                  </div>
+                                  <input
+                                    name="title"
+                                    value="${request.state.courseConversation
+                                      .title}"
+                                    class="input--text"
+                                    css="${css`
+                                      flex: 1;
+                                    `}"
+                                  />
                                 </div>
-                              </form>
+                                <div>
+                                  <button
+                                    type="reset"
+                                    class="button button--rectangle button--transparent"
+                                    css="${css`
+                                      font-size: var(--font-size--3);
+                                      line-height: var(
+                                        --font-size--3--line-height
+                                      );
+                                      font-weight: 600;
+                                      color: light-dark(
+                                        var(--color--slate--600),
+                                        var(--color--slate--400)
+                                      );
+                                    `}"
+                                    javascript="${javascript`
+                                      this.onclick = () => {
+                                        this.closest('[key="courseConversation--header"]').querySelector('[key="courseConversation--header--title--show"]').hidden = false;
+                                        this.closest('[key="courseConversation--header"]').querySelector('[key="courseConversation--header--title--edit"]').hidden = true;
+                                      };
+                                    `}"
+                                  >
+                                    Cancel
+                                  </button>
+                                </div>
+                              </div>
                             `
                           : html``}
                       </div>
@@ -2199,6 +2187,17 @@ export default async (application: Application): Promise<void> => {
                             `
                           : html``;
                       })()}
+                    </div>
+                    <div>
+                      <button
+                        class="button button--rectangle button--blue"
+                        css="${css`
+                          font-size: var(--font-size--3);
+                          line-height: var(--font-size--3--line-height);
+                        `}"
+                      >
+                        Update
+                      </button>
                     </div>
                   `;
                 })()}
