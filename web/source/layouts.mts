@@ -641,91 +641,7 @@ export default async (application: Application): Promise<void> => {
                   key="user"
                   class="button button--square button--transparent"
                   javascript="${javascript`
-                    javascript.tippy({
-                      event,
-                      element: this,
-                      placement: "bottom-end",
-                      interactive: true,
-                      trigger: "click",
-                      content: ${html`
-                        <div
-                          css="${css`
-                            display: flex;
-                            flex-direction: column;
-                            gap: var(--space--2);
-                          `}"
-                        >
-                          <div
-                            css="${css`
-                              display: flex;
-                              gap: var(--space--2);
-                            `}"
-                          >
-                            <div>
-                              $${application.partials.userAvatar({
-                                user: request.state.user,
-                                onlineIndicator: false,
-                                size: 9,
-                              })}
-                            </div>
-                            <div>
-                              <div
-                                css="${css`
-                                  font-weight: 700;
-                                `}"
-                              >
-                                ${request.state.user.name}
-                              </div>
-                              <div
-                                css="${css`
-                                  font-size: var(--font-size--3);
-                                  line-height: var(--font-size--3--line-height);
-                                  color: light-dark(
-                                    var(--color--slate--500),
-                                    var(--color--slate--500)
-                                  );
-                                `}"
-                              >
-                                ${request.state.user.email}
-                              </div>
-                            </div>
-                          </div>
-                          <hr class="separator" />
-                          $${request.state.user.userRole ===
-                          "userRoleSystemAdministrator"
-                            ? html`
-                                <a
-                                  href="/system"
-                                  class="button button--rectangle button--transparent ${request.URL.pathname.match(
-                                    new RegExp("^/system$"),
-                                  ) !== null
-                                    ? "button--blue"
-                                    : ""} button--dropdown-menu"
-                                >
-                                  System settings
-                                </a>
-                              `
-                            : html``}
-                          <a
-                            href="/settings"
-                            class="button button--rectangle button--transparent ${request.URL.pathname.match(
-                              new RegExp("^/settings$"),
-                            ) !== null
-                              ? "button--blue"
-                              : ""} button--dropdown-menu"
-                          >
-                            User settings
-                          </a>
-                          <form method="DELETE" action="/session">
-                            <button
-                              class="button button--rectangle button--transparent button--dropdown-menu"
-                            >
-                              Sign out
-                            </button>
-                          </form>
-                        </div>
-                      `},
-                    });
+                    javascript.popover({ element: this, trigger: "click", placement: "bottom-end" })
                   `}"
                 >
                   $${application.partials.userAvatar({
@@ -733,6 +649,83 @@ export default async (application: Application): Promise<void> => {
                     onlineIndicator: false,
                   })}
                 </button>
+                <div
+                  class="popover"
+                  css="${css`
+                    display: flex;
+                    flex-direction: column;
+                    gap: var(--space--2);
+                  `}"
+                >
+                  <div
+                    css="${css`
+                      display: flex;
+                      gap: var(--space--2);
+                    `}"
+                  >
+                    <div>
+                      $${application.partials.userAvatar({
+                        user: request.state.user,
+                        onlineIndicator: false,
+                        size: 9,
+                      })}
+                    </div>
+                    <div>
+                      <div
+                        css="${css`
+                          font-weight: 700;
+                        `}"
+                      >
+                        ${request.state.user.name}
+                      </div>
+                      <div
+                        css="${css`
+                          font-size: var(--font-size--3);
+                          line-height: var(--font-size--3--line-height);
+                          color: light-dark(
+                            var(--color--slate--600),
+                            var(--color--slate--400)
+                          );
+                        `}"
+                      >
+                        ${request.state.user.email}
+                      </div>
+                    </div>
+                  </div>
+                  <hr class="separator" />
+                  $${request.state.user.userRole ===
+                  "userRoleSystemAdministrator"
+                    ? html`
+                        <a
+                          href="/system"
+                          class="button button--rectangle button--transparent ${request.URL.pathname.match(
+                            new RegExp("^/system$"),
+                          ) !== null
+                            ? "button--blue"
+                            : ""} button--dropdown-menu"
+                        >
+                          System settings
+                        </a>
+                      `
+                    : html``}
+                  <a
+                    href="/settings"
+                    class="button button--rectangle button--transparent ${request.URL.pathname.match(
+                      new RegExp("^/settings$"),
+                    ) !== null
+                      ? "button--blue"
+                      : ""} button--dropdown-menu"
+                  >
+                    User settings
+                  </a>
+                  <form method="DELETE" action="/session">
+                    <button
+                      class="button button--rectangle button--transparent button--dropdown-menu"
+                    >
+                      Sign out
+                    </button>
+                  </form>
+                </div>
               `
             : html``}
         </div>
