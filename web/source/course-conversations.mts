@@ -2724,11 +2724,7 @@ export default async (application: Application): Promise<void> => {
                     padding: var(--space--1) var(--space--2);
                   `}"
                   javascript="${javascript`
-                    javascript.tippy({
-                      event,
-                      element: this,
-                      content: "Search",
-                    });
+                    javascript.popover({ element: this });
                     this.onclick = () => {
                       this.closest('[key="sidebar--menu--search-and-filter"]').querySelector('[name="search.courseConversations"]').focus();
                     };
@@ -2736,6 +2732,7 @@ export default async (application: Application): Promise<void> => {
                 >
                   <i class="bi bi-search"></i>
                 </button>
+                <div class="popover">Search</div>
                 $${request.state.courseConversationsTags.length > 0
                   ? html`
                       <button
@@ -2745,62 +2742,49 @@ export default async (application: Application): Promise<void> => {
                           padding: var(--space--1) var(--space--2);
                         `}"
                         javascript="${javascript`
-                          javascript.tippy({
-                            event,
-                            element: this,
-                            content: "Filter",
-                          });
-                          javascript.tippy({
-                            event,
-                            element: this,
-                            elementProperty: "dropdownMenu",
-                            placement: "bottom-end",
-                            interactive: true,
-                            trigger: "click",
-                            content: ${html`
-                              <div
-                                css="${css`
-                                  display: flex;
-                                  flex-direction: column;
-                                  gap: var(--space--2);
-                                `}"
-                              >
-                                <div
-                                  css="${css`
-                                    font-size: var(--font-size--3);
-                                    line-height: var(
-                                      --font-size--3--line-height
-                                    );
-                                    font-weight: 600;
-                                    color: light-dark(
-                                      var(--color--slate--600),
-                                      var(--color--slate--400)
-                                    );
-                                  `}"
-                                >
-                                  Tags
-                                </div>
-                                $${request.state.courseConversationsTags.map(
-                                  (courseConversationsTag) => html`
-                                    <label
-                                      class="button button--rectangle button--transparent button--dropdown-menu"
-                                    >
-                                      <input
-                                        type="checkbox"
-                                        name="filter.courseConversationsTags[]"
-                                        value="${courseConversationsTag.publicId}"
-                                        class="input--checkbox"
-                                      />  ${courseConversationsTag.name}
-                                    </label>
-                                  `,
-                                )}
-                              </div>
-                            `},
-                          });
+                          javascript.popover({ element: this });
+                          javascript.popover({ element: this, target: this.nextElementSibling.nextElementSibling, trigger: "click", remainOpenWhileFocused: true, placement: "bottom-end" });
                         `}"
                       >
                         <i class="bi bi-filter"></i>
                       </button>
+                      <div class="popover">Filter</div>
+                      <div
+                        class="popover"
+                        css="${css`
+                          display: flex;
+                          flex-direction: column;
+                          gap: var(--space--2);
+                        `}"
+                      >
+                        <div
+                          css="${css`
+                            font-size: var(--font-size--3);
+                            line-height: var(--font-size--3--line-height);
+                            font-weight: 600;
+                            color: light-dark(
+                              var(--color--slate--600),
+                              var(--color--slate--400)
+                            );
+                          `}"
+                        >
+                          Tags
+                        </div>
+                        $${request.state.courseConversationsTags.map(
+                          (courseConversationsTag) => html`
+                            <label
+                              class="button button--rectangle button--transparent button--dropdown-menu"
+                            >
+                              <input
+                                type="checkbox"
+                                name="filter.courseConversationsTags[]"
+                                value="${courseConversationsTag.publicId}"
+                                class="input--checkbox"
+                              />  ${courseConversationsTag.name}
+                            </label>
+                          `,
+                        )}
+                      </div>
                     `
                   : html``}
               </div>
