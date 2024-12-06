@@ -1265,6 +1265,7 @@ export default async (application: Application): Promise<void> => {
                                   `}"
                                 >
                                   <input
+                                    type="text"
                                     name="title"
                                     value="${request.state.courseConversation
                                       .title}"
@@ -1293,6 +1294,7 @@ export default async (application: Application): Promise<void> => {
                                       this.onclick = () => {
                                         this.closest('[key="courseConversation--header"]').querySelector('[key="courseConversation--header--title--show"]').hidden = false;
                                         this.closest('[key="courseConversation--header"]').querySelector('[key="courseConversation--header--title--edit"]').hidden = true;
+                                        javascript.reset(this.closest('[key="courseConversation--header--title--edit"]'));
                                       };
                                     `}"
                                   >
