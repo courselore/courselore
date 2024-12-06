@@ -1173,55 +1173,6 @@ export default async (application: Application): Promise<void> => {
                   `;
                 })()}
               </div>
-              <div key="TODO">
-                $${Array.from(
-                  { length: 5 },
-                  () => html`
-                    <button
-                      type="button"
-                      class="button button--rectangle button--transparent"
-                      javascript="${javascript`
-                        javascript.popover(this);
-                      `}"
-                    >
-                      Example <i class="bi bi-chevron-down"></i>
-                    </button>
-                    <div
-                      class="popover"
-                      css="${css`
-                        display: flex;
-                        flex-direction: column;
-                        gap: var(--space--2);
-                      `}"
-                    >
-                      <button
-                        type="button"
-                        class="button button--rectangle button--transparent button--dropdown-menu"
-                      >
-                        Option 1
-                      </button>
-                      <button
-                        type="button"
-                        class="button button--rectangle button--transparent button--dropdown-menu"
-                      >
-                        Option 2
-                      </button>
-                      <button
-                        type="button"
-                        class="button button--rectangle button--transparent button--dropdown-menu"
-                      >
-                        Option 3
-                      </button>
-                      <button
-                        type="button"
-                        class="button button--rectangle button--transparent button--dropdown-menu"
-                      >
-                        Option 4
-                      </button>
-                    </div>
-                  `,
-                )}
-              </div>
               <div
                 key="courseConversationMessages"
                 css="${css`
