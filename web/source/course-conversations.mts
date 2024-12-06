@@ -1167,8 +1167,13 @@ export default async (application: Application): Promise<void> => {
                 gap: var(--space--6);
               `}"
             >
-              <div
+              <form
                 key="courseConversation--header"
+                method="PATCH"
+                action="/courses/${request.state.course
+                  .publicId}/conversations/${request.state.courseConversation
+                  .publicId}"
+                novalidate
                 css="${css`
                   display: flex;
                   flex-direction: column;
@@ -2197,7 +2202,7 @@ export default async (application: Application): Promise<void> => {
                     </div>
                   `;
                 })()}
-              </div>
+              </form>
               <div
                 key="courseConversationMessages"
                 css="${css`
