@@ -1670,71 +1670,10 @@ export default async (application: Application): Promise<void> => {
                             "courseParticipationRoleInstructor"
                           ? html`
                               <button
+                                type="button"
                                 class="button button--rectangle button--transparent"
                                 javascript="${javascript`
-                                  javascript.tippy({
-                                    event,
-                                    element: this,
-                                    placement: "bottom-start",
-                                    interactive: true,
-                                    trigger: "click",
-                                    content: ${html`
-                                      <div
-                                        css="${css`
-                                          display: flex;
-                                          flex-direction: column;
-                                          gap: var(--space--2);
-                                        `}"
-                                      >
-                                        <form
-                                          method="PATCH"
-                                          action="/courses/${request.state
-                                            .course
-                                            .publicId}/conversations/${request
-                                            .state.courseConversation.publicId}"
-                                        >
-                                          <input
-                                            type="hidden"
-                                            name="questionResolved"
-                                            value="false"
-                                          />
-                                          <button
-                                            class="button button--rectangle button--transparent $${Boolean(
-                                              request.state.courseConversation
-                                                .questionResolved,
-                                            ) === false
-                                              ? "button--blue"
-                                              : ""} button--dropdown-menu"
-                                          >
-                                            Unresolved
-                                          </button>
-                                        </form>
-                                        <form
-                                          method="PATCH"
-                                          action="/courses/${request.state
-                                            .course
-                                            .publicId}/conversations/${request
-                                            .state.courseConversation.publicId}"
-                                        >
-                                          <input
-                                            type="hidden"
-                                            name="questionResolved"
-                                            value="true"
-                                          />
-                                          <button
-                                            class="button button--rectangle button--transparent $${Boolean(
-                                              request.state.courseConversation
-                                                .questionResolved,
-                                            ) === true
-                                              ? "button--blue"
-                                              : ""} button--dropdown-menu"
-                                          >
-                                            Resolved
-                                          </button>
-                                        </form>
-                                      </div>
-                                    `},
-                                  });
+                                  javascript.popover({ element: this, trigger: "click" });
                                 `}"
                               >
                                 <span
@@ -1745,31 +1684,97 @@ export default async (application: Application): Promise<void> => {
                                     );
                                   `}"
                                   >Question:</span
-                                >  <span
-                                  css="${Boolean(
+                                >  <input
+                                  type="radio"
+                                  name="questionResolved"
+                                  value="false"
+                                  required
+                                  $${Boolean(
                                     request.state.courseConversation
                                       .questionResolved,
                                   ) === false
-                                    ? css`
-                                        color: light-dark(
-                                          var(--color--red--500),
-                                          var(--color--red--500)
-                                        );
-                                      `
-                                    : css`
-                                        color: light-dark(
-                                          var(--color--green--500),
-                                          var(--color--green--500)
-                                        );
-                                      `}"
-                                  >${Boolean(
+                                    ? html`checked`
+                                    : html``}
+                                  hidden
+                                /><span
+                                  css="${css`
+                                    color: light-dark(
+                                      var(--color--red--500),
+                                      var(--color--red--500)
+                                    );
+                                    :not(:checked) + & {
+                                      display: none;
+                                    }
+                                  `}"
+                                  >Unresolved</span
+                                ><input
+                                  type="radio"
+                                  name="questionResolved"
+                                  value="true"
+                                  required
+                                  $${Boolean(
                                     request.state.courseConversation
                                       .questionResolved,
-                                  ) === false
-                                    ? "Unresolved"
-                                    : "Resolved"}</span
+                                  ) === true
+                                    ? html`checked`
+                                    : html``}
+                                  hidden
+                                /><span
+                                  css="${css`
+                                    color: light-dark(
+                                      var(--color--green--500),
+                                      var(--color--green--500)
+                                    );
+                                    :not(:checked) + & {
+                                      display: none;
+                                    }
+                                  `}"
+                                  >Resolved</span
                                 > <i class="bi bi-chevron-down"></i>
                               </button>
+                              <div
+                                class="popover"
+                                css="${css`
+                                  display: flex;
+                                  flex-direction: column;
+                                  gap: var(--space--2);
+                                `}"
+                              >
+                                <button
+                                  type="button"
+                                  class="button button--rectangle button--transparent button--dropdown-menu"
+                                  css="${css`
+                                    color: light-dark(
+                                      var(--color--red--500),
+                                      var(--color--red--500)
+                                    );
+                                  `}"
+                                  javascript="${javascript`
+                                    this.onclick = () => {
+                                      this.closest('[key="courseConversation--header"]').querySelector('[name="questionResolved"][value="false"]').click();
+                                    };
+                                  `}"
+                                >
+                                  Unresolved
+                                </button>
+                                <button
+                                  type="button"
+                                  class="button button--rectangle button--transparent button--dropdown-menu"
+                                  css="${css`
+                                    color: light-dark(
+                                      var(--color--green--500),
+                                      var(--color--green--500)
+                                    );
+                                  `}"
+                                  javascript="${javascript`
+                                    this.onclick = () => {
+                                      this.closest('[key="courseConversation--header"]').querySelector('[name="questionResolved"][value="true"]').click();
+                                    };
+                                  `}"
+                                >
+                                  Resolved
+                                </button>
+                              </div>
                             `
                           : html`
                               <div>
@@ -1781,30 +1786,35 @@ export default async (application: Application): Promise<void> => {
                                     );
                                   `}"
                                   >Question:</span
-                                >  <span
-                                  css="${Boolean(
-                                    request.state.courseConversation
-                                      .questionResolved,
-                                  ) === false
-                                    ? css`
+                                >  $${Boolean(
+                                  request.state.courseConversation
+                                    .questionResolved,
+                                ) === false
+                                  ? html`<span
+                                      css="${css`
                                         color: light-dark(
                                           var(--color--red--500),
                                           var(--color--red--500)
                                         );
-                                      `
-                                    : css`
-                                        color: light-dark(
-                                          var(--color--green--500),
-                                          var(--color--green--500)
-                                        );
                                       `}"
-                                  >${Boolean(
-                                    request.state.courseConversation
-                                      .questionResolved,
-                                  ) === false
-                                    ? "Unresolved"
-                                    : "Resolved"}</span
-                                >
+                                      >Unresolved</span
+                                    >`
+                                  : Boolean(
+                                        request.state.courseConversation
+                                          .questionResolved,
+                                      ) === true
+                                    ? html`<span
+                                        css="${css`
+                                          color: light-dark(
+                                            var(--color--green--500),
+                                            var(--color--green--500)
+                                          );
+                                        `}"
+                                        >Resolved</span
+                                      >`
+                                    : (() => {
+                                        throw new Error();
+                                      })()}
                               </div>
                             `
                         : html``}
