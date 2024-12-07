@@ -1179,6 +1179,11 @@ export default async (application: Application): Promise<void> => {
                   flex-direction: column;
                   gap: var(--space--2);
                 `}"
+                javascript="${javascript`
+                  this.oninput = () => {
+                    this.querySelector('[key="courseConversation--header--update"]').hidden = !javascript.isModified(this);
+                  };
+                `}"
               >
                 $${(() => {
                   const mayEditCourseConversation =
@@ -2188,14 +2193,15 @@ export default async (application: Application): Promise<void> => {
                           : html``;
                       })()}
                     </div>
-                    <div>
-                      <button
-                        class="button button--rectangle button--blue"
-                        css="${css`
-                          font-size: var(--font-size--3);
-                          line-height: var(--font-size--3--line-height);
-                        `}"
-                      >
+                    <div
+                      key="courseConversation--header--update"
+                      hidden
+                      css="${css`
+                        font-size: var(--font-size--3);
+                        line-height: var(--font-size--3--line-height);
+                      `}"
+                    >
+                      <button class="button button--rectangle button--blue">
                         Update
                       </button>
                     </div>
