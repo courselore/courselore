@@ -1559,8 +1559,8 @@ export default async (application: Application): Promise<void> => {
                           ? html`button type="button" class="button
                             button--rectangle button--transparent"
                             javascript="${javascript`
-                                javascript.popover({ element: this, trigger: "click" });
-                              `}" `
+                              javascript.popover({ element: this, trigger: "click" });
+                            `}" `
                           : html`div`
                       }>
                         <span
