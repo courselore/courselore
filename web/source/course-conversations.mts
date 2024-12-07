@@ -1554,69 +1554,10 @@ export default async (application: Application): Promise<void> => {
                       $${mayEditCourseConversation
                         ? html`
                             <button
+                              type="button"
                               class="button button--rectangle button--transparent"
                               javascript="${javascript`
-                                javascript.tippy({
-                                  event,
-                                  element: this,
-                                  placement: "bottom-start",
-                                  interactive: true,
-                                  trigger: "click",
-                                  content: ${html`
-                                    <div
-                                      css="${css`
-                                        display: flex;
-                                        flex-direction: column;
-                                        gap: var(--space--2);
-                                      `}"
-                                    >
-                                      <form
-                                        method="PATCH"
-                                        action="/courses/${request.state.course
-                                          .publicId}/conversations/${request
-                                          .state.courseConversation.publicId}"
-                                      >
-                                        <input
-                                          type="hidden"
-                                          name="courseConversationType"
-                                          value="courseConversationTypeNote"
-                                        />
-                                        <button
-                                          class="button button--rectangle button--transparent $${request
-                                            .state.courseConversation
-                                            .courseConversationType ===
-                                          "courseConversationTypeNote"
-                                            ? "button--blue"
-                                            : ""} button--dropdown-menu"
-                                        >
-                                          Note
-                                        </button>
-                                      </form>
-                                      <form
-                                        method="PATCH"
-                                        action="/courses/${request.state.course
-                                          .publicId}/conversations/${request
-                                          .state.courseConversation.publicId}"
-                                      >
-                                        <input
-                                          type="hidden"
-                                          name="courseConversationType"
-                                          value="courseConversationTypeQuestion"
-                                        />
-                                        <button
-                                          class="button button--rectangle button--transparent $${request
-                                            .state.courseConversation
-                                            .courseConversationType ===
-                                          "courseConversationTypeQuestion"
-                                            ? "button--blue"
-                                            : ""} button--dropdown-menu"
-                                        >
-                                          Question
-                                        </button>
-                                      </form>
-                                    </div>
-                                  `},
-                                });
+                                javascript.popover({ element: this, trigger: "click" });
                               `}"
                             >
                               <span
@@ -1627,18 +1568,75 @@ export default async (application: Application): Promise<void> => {
                                   );
                                 `}"
                                 >Type:</span
-                              >  ${request.state.courseConversation
-                                .courseConversationType ===
-                              "courseConversationTypeNote"
-                                ? "Note"
-                                : request.state.courseConversation
-                                      .courseConversationType ===
-                                    "courseConversationTypeQuestion"
-                                  ? "Question"
-                                  : (() => {
-                                      throw new Error();
-                                    })()} <i class="bi bi-chevron-down"></i>
+                              >  <input
+                                type="radio"
+                                name="courseConversationType"
+                                value="courseConversationTypeNote"
+                                required
+                                $${request.state.courseConversation
+                                  .courseConversationType ===
+                                "courseConversationTypeNote"
+                                  ? html`checked`
+                                  : html``}
+                                hidden
+                              /><span
+                                css="${css`
+                                  :not(:checked) + & {
+                                    display: none;
+                                  }
+                                `}"
+                                >Note</span
+                              ><input
+                                type="radio"
+                                name="courseConversationType"
+                                value="courseConversationTypeQuestion"
+                                required
+                                $${request.state.courseConversation
+                                  .courseConversationType ===
+                                "courseConversationTypeQuestion"
+                                  ? html`checked`
+                                  : html``}
+                                hidden
+                              /><span
+                                css="${css`
+                                  :not(:checked) + & {
+                                    display: none;
+                                  }
+                                `}"
+                                >Question</span
+                              > <i class="bi bi-chevron-down"></i>
                             </button>
+                            <div
+                              class="popover"
+                              css="${css`
+                                display: flex;
+                                flex-direction: column;
+                                gap: var(--space--2);
+                              `}"
+                            >
+                              <button
+                                type="button"
+                                class="button button--rectangle button--transparent button--dropdown-menu"
+                                javascript="${javascript`
+                                  this.onclick = () => {
+                                    this.closest('[key="courseConversation--header"]').querySelector('[name="courseConversationType"][value="courseConversationTypeNote"]').click();
+                                  };
+                                `}"
+                              >
+                                Note
+                              </button>
+                              <button
+                                type="button"
+                                class="button button--rectangle button--transparent button--dropdown-menu"
+                                javascript="${javascript`
+                                  this.onclick = () => {
+                                    this.closest('[key="courseConversation--header"]').querySelector('[name="courseConversationType"][value="courseConversationTypeQuestion"]').click();
+                                  };
+                                `}"
+                              >
+                                Question
+                              </button>
+                            </div>
                           `
                         : html`
                             <div>
