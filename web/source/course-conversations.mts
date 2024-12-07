@@ -1545,552 +1545,14 @@ export default async (application: Application): Promise<void> => {
                           var(--color--slate--400)
                         );
                         display: flex;
-                        flex-direction: column;
-                        gap: var(--space--2);
+                        align-items: baseline;
+                        flex-wrap: wrap;
+                        column-gap: var(--space--4);
+                        row-gap: var(--space--2);
                       `}"
                     >
-                      <div
-                        css="${css`
-                          display: flex;
-                          align-items: baseline;
-                          flex-wrap: wrap;
-                          column-gap: var(--space--4);
-                          row-gap: var(--space--2);
-                        `}"
-                      >
-                        $${mayEditCourseConversation
-                          ? html`
-                              <button
-                                class="button button--rectangle button--transparent"
-                                javascript="${javascript`
-                                  javascript.tippy({
-                                    event,
-                                    element: this,
-                                    placement: "bottom-start",
-                                    interactive: true,
-                                    trigger: "click",
-                                    content: ${html`
-                                      <div
-                                        css="${css`
-                                          display: flex;
-                                          flex-direction: column;
-                                          gap: var(--space--2);
-                                        `}"
-                                      >
-                                        <form
-                                          method="PATCH"
-                                          action="/courses/${request.state
-                                            .course
-                                            .publicId}/conversations/${request
-                                            .state.courseConversation.publicId}"
-                                        >
-                                          <input
-                                            type="hidden"
-                                            name="courseConversationType"
-                                            value="courseConversationTypeNote"
-                                          />
-                                          <button
-                                            class="button button--rectangle button--transparent $${request
-                                              .state.courseConversation
-                                              .courseConversationType ===
-                                            "courseConversationTypeNote"
-                                              ? "button--blue"
-                                              : ""} button--dropdown-menu"
-                                          >
-                                            Note
-                                          </button>
-                                        </form>
-                                        <form
-                                          method="PATCH"
-                                          action="/courses/${request.state
-                                            .course
-                                            .publicId}/conversations/${request
-                                            .state.courseConversation.publicId}"
-                                        >
-                                          <input
-                                            type="hidden"
-                                            name="courseConversationType"
-                                            value="courseConversationTypeQuestion"
-                                          />
-                                          <button
-                                            class="button button--rectangle button--transparent $${request
-                                              .state.courseConversation
-                                              .courseConversationType ===
-                                            "courseConversationTypeQuestion"
-                                              ? "button--blue"
-                                              : ""} button--dropdown-menu"
-                                          >
-                                            Question
-                                          </button>
-                                        </form>
-                                      </div>
-                                    `},
-                                  });
-                                `}"
-                              >
-                                <span
-                                  css="${css`
-                                    color: light-dark(
-                                      var(--color--slate--500),
-                                      var(--color--slate--500)
-                                    );
-                                  `}"
-                                  >Type:</span
-                                >  ${request.state.courseConversation
-                                  .courseConversationType ===
-                                "courseConversationTypeNote"
-                                  ? "Note"
-                                  : request.state.courseConversation
-                                        .courseConversationType ===
-                                      "courseConversationTypeQuestion"
-                                    ? "Question"
-                                    : (() => {
-                                        throw new Error();
-                                      })()} <i class="bi bi-chevron-down"></i>
-                              </button>
-                            `
-                          : html`
-                              <div>
-                                <span
-                                  css="${css`
-                                    color: light-dark(
-                                      var(--color--slate--500),
-                                      var(--color--slate--500)
-                                    );
-                                  `}"
-                                  >Type:</span
-                                >  ${request.state.courseConversation
-                                  .courseConversationType ===
-                                "courseConversationTypeNote"
-                                  ? "Note"
-                                  : request.state.courseConversation
-                                        .courseConversationType ===
-                                      "courseConversationTypeQuestion"
-                                    ? "Question"
-                                    : (() => {
-                                        throw new Error();
-                                      })()}
-                              </div>
-                            `}
-                        $${request.state.courseConversation
-                          .courseConversationType ===
-                        "courseConversationTypeQuestion"
-                          ? mayEditCourseConversation &&
-                            request.state.courseParticipation
-                              .courseParticipationRole ===
-                              "courseParticipationRoleInstructor"
-                            ? html`
-                                <button
-                                  class="button button--rectangle button--transparent"
-                                  javascript="${javascript`
-                                    javascript.tippy({
-                                      event,
-                                      element: this,
-                                      placement: "bottom-start",
-                                      interactive: true,
-                                      trigger: "click",
-                                      content: ${html`
-                                        <div
-                                          css="${css`
-                                            display: flex;
-                                            flex-direction: column;
-                                            gap: var(--space--2);
-                                          `}"
-                                        >
-                                          <form
-                                            method="PATCH"
-                                            action="/courses/${request.state
-                                              .course
-                                              .publicId}/conversations/${request
-                                              .state.courseConversation
-                                              .publicId}"
-                                          >
-                                            <input
-                                              type="hidden"
-                                              name="questionResolved"
-                                              value="false"
-                                            />
-                                            <button
-                                              class="button button--rectangle button--transparent $${Boolean(
-                                                request.state.courseConversation
-                                                  .questionResolved,
-                                              ) === false
-                                                ? "button--blue"
-                                                : ""} button--dropdown-menu"
-                                            >
-                                              Unresolved
-                                            </button>
-                                          </form>
-                                          <form
-                                            method="PATCH"
-                                            action="/courses/${request.state
-                                              .course
-                                              .publicId}/conversations/${request
-                                              .state.courseConversation
-                                              .publicId}"
-                                          >
-                                            <input
-                                              type="hidden"
-                                              name="questionResolved"
-                                              value="true"
-                                            />
-                                            <button
-                                              class="button button--rectangle button--transparent $${Boolean(
-                                                request.state.courseConversation
-                                                  .questionResolved,
-                                              ) === true
-                                                ? "button--blue"
-                                                : ""} button--dropdown-menu"
-                                            >
-                                              Resolved
-                                            </button>
-                                          </form>
-                                        </div>
-                                      `},
-                                    });
-                                  `}"
-                                >
-                                  <span
-                                    css="${css`
-                                      color: light-dark(
-                                        var(--color--slate--500),
-                                        var(--color--slate--500)
-                                      );
-                                    `}"
-                                    >Question:</span
-                                  >  <span
-                                    css="${Boolean(
-                                      request.state.courseConversation
-                                        .questionResolved,
-                                    ) === false
-                                      ? css`
-                                          color: light-dark(
-                                            var(--color--red--500),
-                                            var(--color--red--500)
-                                          );
-                                        `
-                                      : css`
-                                          color: light-dark(
-                                            var(--color--green--500),
-                                            var(--color--green--500)
-                                          );
-                                        `}"
-                                    >${Boolean(
-                                      request.state.courseConversation
-                                        .questionResolved,
-                                    ) === false
-                                      ? "Unresolved"
-                                      : "Resolved"}</span
-                                  > <i class="bi bi-chevron-down"></i>
-                                </button>
-                              `
-                            : html`
-                                <div>
-                                  <span
-                                    css="${css`
-                                      color: light-dark(
-                                        var(--color--slate--500),
-                                        var(--color--slate--500)
-                                      );
-                                    `}"
-                                    >Question:</span
-                                  >  <span
-                                    css="${Boolean(
-                                      request.state.courseConversation
-                                        .questionResolved,
-                                    ) === false
-                                      ? css`
-                                          color: light-dark(
-                                            var(--color--red--500),
-                                            var(--color--red--500)
-                                          );
-                                        `
-                                      : css`
-                                          color: light-dark(
-                                            var(--color--green--500),
-                                            var(--color--green--500)
-                                          );
-                                        `}"
-                                    >${Boolean(
-                                      request.state.courseConversation
-                                        .questionResolved,
-                                    ) === false
-                                      ? "Unresolved"
-                                      : "Resolved"}</span
-                                  >
-                                </div>
-                              `
-                          : html``}
-                        $${mayEditCourseConversation
-                          ? html`
-                              <button
-                                class="button button--rectangle button--transparent"
-                                javascript="${javascript`
-                                  javascript.tippy({
-                                    event,
-                                    element: this,
-                                    placement: "bottom-start",
-                                    interactive: true,
-                                    trigger: "click",
-                                    content: ${html`
-                                      <div
-                                        css="${css`
-                                          display: flex;
-                                          flex-direction: column;
-                                          gap: var(--space--2);
-                                        `}"
-                                      >
-                                        <form
-                                          method="PATCH"
-                                          action="/courses/${request.state
-                                            .course
-                                            .publicId}/conversations/${request
-                                            .state.courseConversation.publicId}"
-                                        >
-                                          <input
-                                            type="hidden"
-                                            name="courseConversationVisibility"
-                                            value="courseConversationVisibilityEveryone"
-                                          />
-                                          <button
-                                            class="button button--rectangle button--transparent $${request
-                                              .state.courseConversation
-                                              .courseConversationVisibility ===
-                                            "courseConversationVisibilityEveryone"
-                                              ? "button--blue"
-                                              : ""} button--dropdown-menu"
-                                          >
-                                            Everyone
-                                          </button>
-                                        </form>
-                                        <form
-                                          method="PATCH"
-                                          action="/courses/${request.state
-                                            .course
-                                            .publicId}/conversations/${request
-                                            .state.courseConversation.publicId}"
-                                        >
-                                          <input
-                                            type="hidden"
-                                            name="courseConversationVisibility"
-                                            value="courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
-                                          />
-                                          <button
-                                            class="button button--rectangle button--transparent $${request
-                                              .state.courseConversation
-                                              .courseConversationVisibility ===
-                                            "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
-                                              ? "button--blue"
-                                              : ""} button--dropdown-menu"
-                                          >
-                                            Instructors and selected course
-                                            participants
-                                          </button>
-                                        </form>
-                                        <form
-                                          method="PATCH"
-                                          action="/courses/${request.state
-                                            .course
-                                            .publicId}/conversations/${request
-                                            .state.courseConversation.publicId}"
-                                        >
-                                          <input
-                                            type="hidden"
-                                            name="courseConversationVisibility"
-                                            value="courseConversationVisibilityCourseConversationParticipations"
-                                          />
-                                          <button
-                                            class="button button--rectangle button--transparent $${request
-                                              .state.courseConversation
-                                              .courseConversationVisibility ===
-                                            "courseConversationVisibilityCourseConversationParticipations"
-                                              ? "button--blue"
-                                              : ""} button--dropdown-menu"
-                                          >
-                                            Selected course participants
-                                          </button>
-                                        </form>
-                                      </div>
-                                    `},
-                                  });
-                                `}"
-                              >
-                                <span
-                                  css="${css`
-                                    color: light-dark(
-                                      var(--color--slate--500),
-                                      var(--color--slate--500)
-                                    );
-                                  `}"
-                                  >Visibility:</span
-                                >  ${request.state.courseConversation
-                                  .courseConversationVisibility ===
-                                "courseConversationVisibilityEveryone"
-                                  ? "Everyone"
-                                  : request.state.courseConversation
-                                        .courseConversationVisibility ===
-                                      "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
-                                    ? "Instructors and selected course participants"
-                                    : request.state.courseConversation
-                                          .courseConversationVisibility ===
-                                        "courseConversationVisibilityCourseConversationParticipations"
-                                      ? "Selected course participants"
-                                      : (() => {
-                                          throw new Error();
-                                        })()} <i class="bi bi-chevron-down"></i>
-                              </button>
-                            `
-                          : html`
-                              <div>
-                                <span
-                                  css="${css`
-                                    color: light-dark(
-                                      var(--color--slate--500),
-                                      var(--color--slate--500)
-                                    );
-                                  `}"
-                                  >Visibility:</span
-                                >  ${request.state.courseConversation
-                                  .courseConversationVisibility ===
-                                "courseConversationVisibilityEveryone"
-                                  ? "Everyone"
-                                  : request.state.courseConversation
-                                        .courseConversationVisibility ===
-                                      "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
-                                    ? "Instructors and selected course participants"
-                                    : request.state.courseConversation
-                                          .courseConversationVisibility ===
-                                        "courseConversationVisibilityCourseConversationParticipations"
-                                      ? "Selected course participants"
-                                      : (() => {
-                                          throw new Error();
-                                        })()}
-                              </div>
-                            `}
-                        $${mayEditCourseConversation &&
-                        request.state.courseParticipation
-                          .courseParticipationRole ===
-                          "courseParticipationRoleInstructor"
-                          ? html`
-                              <button
-                                class="button button--rectangle button--transparent"
-                                javascript="${javascript`
-                                  javascript.tippy({
-                                    event,
-                                    element: this,
-                                    placement: "bottom-start",
-                                    interactive: true,
-                                    trigger: "click",
-                                    content: ${html`
-                                      <div
-                                        css="${css`
-                                          display: flex;
-                                          flex-direction: column;
-                                          gap: var(--space--2);
-                                        `}"
-                                      >
-                                        <form
-                                          method="PATCH"
-                                          action="/courses/${request.state
-                                            .course
-                                            .publicId}/conversations/${request
-                                            .state.courseConversation.publicId}"
-                                        >
-                                          <input
-                                            type="hidden"
-                                            name="pinned"
-                                            value="false"
-                                          />
-                                          <button
-                                            class="button button--rectangle button--transparent $${Boolean(
-                                              request.state.courseConversation
-                                                .pinned,
-                                            ) === false
-                                              ? "button--blue"
-                                              : ""} button--dropdown-menu"
-                                          >
-                                            Unpinned
-                                          </button>
-                                        </form>
-                                        <form
-                                          method="PATCH"
-                                          action="/courses/${request.state
-                                            .course
-                                            .publicId}/conversations/${request
-                                            .state.courseConversation.publicId}"
-                                        >
-                                          <input
-                                            type="hidden"
-                                            name="pinned"
-                                            value="true"
-                                          />
-                                          <button
-                                            class="button button--rectangle button--transparent $${Boolean(
-                                              request.state.courseConversation
-                                                .pinned,
-                                            ) === true
-                                              ? "button--blue"
-                                              : ""} button--dropdown-menu"
-                                          >
-                                            Pinned
-                                          </button>
-                                        </form>
-                                      </div>
-                                    `},
-                                  });
-                                `}"
-                              >
-                                <span
-                                  css="${css`
-                                    color: light-dark(
-                                      var(--color--slate--500),
-                                      var(--color--slate--500)
-                                    );
-                                  `}"
-                                  >Pin:</span
-                                >  ${Boolean(
-                                  request.state.courseConversation.pinned,
-                                ) === false
-                                  ? "Unpinned"
-                                  : "Pinned"} <i class="bi bi-chevron-down"></i>
-                              </button>
-                            `
-                          : Boolean(request.state.courseConversation.pinned)
-                            ? html`
-                                <div>
-                                  <span
-                                    css="${css`
-                                      color: light-dark(
-                                        var(--color--slate--500),
-                                        var(--color--slate--500)
-                                      );
-                                    `}"
-                                    >Pin:</span
-                                  >  Pinned
-                                </div>
-                              `
-                            : html``}
-                      </div>
-                      $${(() => {
-                        let courseConversationsTagsHTML = html``;
-                        const courseConversationsTagsWithTagging =
-                          request.state.courseConversationsTags.filter(
-                            (courseConversationsTag) =>
-                              application.database.get(
-                                sql`
-                                  select true
-                                  from "courseConversationTaggings"
-                                  where
-                                    "courseConversation" = ${request.state.courseConversation!.id} and
-                                    "courseConversationsTag" = ${courseConversationsTag.id};
-                                `,
-                              ) !== undefined,
-                          );
-                        if (
-                          mayEditCourseConversation &&
-                          request.state.courseConversationsTags.length > 0
-                        )
-                          courseConversationsTagsHTML += html`
+                      $${mayEditCourseConversation
+                        ? html`
                             <button
                               class="button button--rectangle button--transparent"
                               javascript="${javascript`
@@ -2101,98 +1563,624 @@ export default async (application: Application): Promise<void> => {
                                   interactive: true,
                                   trigger: "click",
                                   content: ${html`
-                                    <form
-                                      method="PUT"
-                                      action="/courses/${request.state.course
-                                        .publicId}/conversations/${request.state
-                                        .courseConversation.publicId}/taggings"
-                                      novalidate
+                                    <div
                                       css="${css`
                                         display: flex;
                                         flex-direction: column;
                                         gap: var(--space--2);
                                       `}"
                                     >
-                                      $${request.state.courseConversationsTags.map(
-                                        (courseConversationsTag) => html`
-                                          <label
-                                            class="button button--rectangle button--transparent button--dropdown-menu"
-                                          >
-                                            <input
-                                              type="checkbox"
-                                              name="tags[]"
-                                              value="${courseConversationsTag.publicId}"
-                                              required
-                                              $${courseConversationsTagsWithTagging.some(
-                                                (
-                                                  courseConversationsTagWithTagging,
-                                                ) =>
-                                                  courseConversationsTag.id ===
-                                                  courseConversationsTagWithTagging.id,
-                                              )
-                                                ? html`checked`
-                                                : html``}
-                                              class="input--checkbox"
-                                            />  ${courseConversationsTag.name}
-                                          </label>
-                                        `,
-                                      )}
-                                      <div>
+                                      <form
+                                        method="PATCH"
+                                        action="/courses/${request.state.course
+                                          .publicId}/conversations/${request
+                                          .state.courseConversation.publicId}"
+                                      >
+                                        <input
+                                          type="hidden"
+                                          name="courseConversationType"
+                                          value="courseConversationTypeNote"
+                                        />
                                         <button
-                                          class="button button--rectangle button--blue"
-                                          css="${css`
-                                            font-size: var(--font-size--3);
-                                            line-height: var(
-                                              --font-size--3--line-height
-                                            );
-                                          `}"
+                                          class="button button--rectangle button--transparent $${request
+                                            .state.courseConversation
+                                            .courseConversationType ===
+                                          "courseConversationTypeNote"
+                                            ? "button--blue"
+                                            : ""} button--dropdown-menu"
                                         >
-                                          Update tags
+                                          Note
                                         </button>
-                                      </div>
-                                    </form>
+                                      </form>
+                                      <form
+                                        method="PATCH"
+                                        action="/courses/${request.state.course
+                                          .publicId}/conversations/${request
+                                          .state.courseConversation.publicId}"
+                                      >
+                                        <input
+                                          type="hidden"
+                                          name="courseConversationType"
+                                          value="courseConversationTypeQuestion"
+                                        />
+                                        <button
+                                          class="button button--rectangle button--transparent $${request
+                                            .state.courseConversation
+                                            .courseConversationType ===
+                                          "courseConversationTypeQuestion"
+                                            ? "button--blue"
+                                            : ""} button--dropdown-menu"
+                                        >
+                                          Question
+                                        </button>
+                                      </form>
+                                    </div>
                                   `},
                                 });
                               `}"
                             >
-                              Tags <i class="bi bi-chevron-down"></i>
-                            </button>
-                          `;
-                        else if (courseConversationsTagsWithTagging.length > 0)
-                          courseConversationsTagsHTML += html`
-                            <div>Tags</div>
-                          `;
-                        if (courseConversationsTagsWithTagging.length > 0)
-                          courseConversationsTagsHTML += html`
-                            <div
-                              css="${css`
-                                flex: 1;
-                                font-weight: 400;
-                              `}"
-                            >
-                              ${courseConversationsTagsWithTagging
-                                .map(
-                                  (courseConversationsTag) =>
-                                    courseConversationsTag.name,
-                                )
-                                .join(" · ")}
-                            </div>
-                          `;
-                        return courseConversationsTagsHTML !== html``
-                          ? html`
-                              <div
+                              <span
                                 css="${css`
-                                  display: flex;
-                                  gap: var(--space--4);
-                                  align-items: baseline;
+                                  color: light-dark(
+                                    var(--color--slate--500),
+                                    var(--color--slate--500)
+                                  );
+                                `}"
+                                >Type:</span
+                              >  ${request.state.courseConversation
+                                .courseConversationType ===
+                              "courseConversationTypeNote"
+                                ? "Note"
+                                : request.state.courseConversation
+                                      .courseConversationType ===
+                                    "courseConversationTypeQuestion"
+                                  ? "Question"
+                                  : (() => {
+                                      throw new Error();
+                                    })()} <i class="bi bi-chevron-down"></i>
+                            </button>
+                          `
+                        : html`
+                            <div>
+                              <span
+                                css="${css`
+                                  color: light-dark(
+                                    var(--color--slate--500),
+                                    var(--color--slate--500)
+                                  );
+                                `}"
+                                >Type:</span
+                              >  ${request.state.courseConversation
+                                .courseConversationType ===
+                              "courseConversationTypeNote"
+                                ? "Note"
+                                : request.state.courseConversation
+                                      .courseConversationType ===
+                                    "courseConversationTypeQuestion"
+                                  ? "Question"
+                                  : (() => {
+                                      throw new Error();
+                                    })()}
+                            </div>
+                          `}
+                      $${request.state.courseConversation
+                        .courseConversationType ===
+                      "courseConversationTypeQuestion"
+                        ? mayEditCourseConversation &&
+                          request.state.courseParticipation
+                            .courseParticipationRole ===
+                            "courseParticipationRoleInstructor"
+                          ? html`
+                              <button
+                                class="button button--rectangle button--transparent"
+                                javascript="${javascript`
+                                  javascript.tippy({
+                                    event,
+                                    element: this,
+                                    placement: "bottom-start",
+                                    interactive: true,
+                                    trigger: "click",
+                                    content: ${html`
+                                      <div
+                                        css="${css`
+                                          display: flex;
+                                          flex-direction: column;
+                                          gap: var(--space--2);
+                                        `}"
+                                      >
+                                        <form
+                                          method="PATCH"
+                                          action="/courses/${request.state
+                                            .course
+                                            .publicId}/conversations/${request
+                                            .state.courseConversation.publicId}"
+                                        >
+                                          <input
+                                            type="hidden"
+                                            name="questionResolved"
+                                            value="false"
+                                          />
+                                          <button
+                                            class="button button--rectangle button--transparent $${Boolean(
+                                              request.state.courseConversation
+                                                .questionResolved,
+                                            ) === false
+                                              ? "button--blue"
+                                              : ""} button--dropdown-menu"
+                                          >
+                                            Unresolved
+                                          </button>
+                                        </form>
+                                        <form
+                                          method="PATCH"
+                                          action="/courses/${request.state
+                                            .course
+                                            .publicId}/conversations/${request
+                                            .state.courseConversation.publicId}"
+                                        >
+                                          <input
+                                            type="hidden"
+                                            name="questionResolved"
+                                            value="true"
+                                          />
+                                          <button
+                                            class="button button--rectangle button--transparent $${Boolean(
+                                              request.state.courseConversation
+                                                .questionResolved,
+                                            ) === true
+                                              ? "button--blue"
+                                              : ""} button--dropdown-menu"
+                                          >
+                                            Resolved
+                                          </button>
+                                        </form>
+                                      </div>
+                                    `},
+                                  });
                                 `}"
                               >
-                                $${courseConversationsTagsHTML}
+                                <span
+                                  css="${css`
+                                    color: light-dark(
+                                      var(--color--slate--500),
+                                      var(--color--slate--500)
+                                    );
+                                  `}"
+                                  >Question:</span
+                                >  <span
+                                  css="${Boolean(
+                                    request.state.courseConversation
+                                      .questionResolved,
+                                  ) === false
+                                    ? css`
+                                        color: light-dark(
+                                          var(--color--red--500),
+                                          var(--color--red--500)
+                                        );
+                                      `
+                                    : css`
+                                        color: light-dark(
+                                          var(--color--green--500),
+                                          var(--color--green--500)
+                                        );
+                                      `}"
+                                  >${Boolean(
+                                    request.state.courseConversation
+                                      .questionResolved,
+                                  ) === false
+                                    ? "Unresolved"
+                                    : "Resolved"}</span
+                                > <i class="bi bi-chevron-down"></i>
+                              </button>
+                            `
+                          : html`
+                              <div>
+                                <span
+                                  css="${css`
+                                    color: light-dark(
+                                      var(--color--slate--500),
+                                      var(--color--slate--500)
+                                    );
+                                  `}"
+                                  >Question:</span
+                                >  <span
+                                  css="${Boolean(
+                                    request.state.courseConversation
+                                      .questionResolved,
+                                  ) === false
+                                    ? css`
+                                        color: light-dark(
+                                          var(--color--red--500),
+                                          var(--color--red--500)
+                                        );
+                                      `
+                                    : css`
+                                        color: light-dark(
+                                          var(--color--green--500),
+                                          var(--color--green--500)
+                                        );
+                                      `}"
+                                  >${Boolean(
+                                    request.state.courseConversation
+                                      .questionResolved,
+                                  ) === false
+                                    ? "Unresolved"
+                                    : "Resolved"}</span
+                                >
                               </div>
                             `
-                          : html``;
-                      })()}
+                        : html``}
+                      $${mayEditCourseConversation
+                        ? html`
+                            <button
+                              class="button button--rectangle button--transparent"
+                              javascript="${javascript`
+                                javascript.tippy({
+                                  event,
+                                  element: this,
+                                  placement: "bottom-start",
+                                  interactive: true,
+                                  trigger: "click",
+                                  content: ${html`
+                                    <div
+                                      css="${css`
+                                        display: flex;
+                                        flex-direction: column;
+                                        gap: var(--space--2);
+                                      `}"
+                                    >
+                                      <form
+                                        method="PATCH"
+                                        action="/courses/${request.state.course
+                                          .publicId}/conversations/${request
+                                          .state.courseConversation.publicId}"
+                                      >
+                                        <input
+                                          type="hidden"
+                                          name="courseConversationVisibility"
+                                          value="courseConversationVisibilityEveryone"
+                                        />
+                                        <button
+                                          class="button button--rectangle button--transparent $${request
+                                            .state.courseConversation
+                                            .courseConversationVisibility ===
+                                          "courseConversationVisibilityEveryone"
+                                            ? "button--blue"
+                                            : ""} button--dropdown-menu"
+                                        >
+                                          Everyone
+                                        </button>
+                                      </form>
+                                      <form
+                                        method="PATCH"
+                                        action="/courses/${request.state.course
+                                          .publicId}/conversations/${request
+                                          .state.courseConversation.publicId}"
+                                      >
+                                        <input
+                                          type="hidden"
+                                          name="courseConversationVisibility"
+                                          value="courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
+                                        />
+                                        <button
+                                          class="button button--rectangle button--transparent $${request
+                                            .state.courseConversation
+                                            .courseConversationVisibility ===
+                                          "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
+                                            ? "button--blue"
+                                            : ""} button--dropdown-menu"
+                                        >
+                                          Instructors and selected course
+                                          participants
+                                        </button>
+                                      </form>
+                                      <form
+                                        method="PATCH"
+                                        action="/courses/${request.state.course
+                                          .publicId}/conversations/${request
+                                          .state.courseConversation.publicId}"
+                                      >
+                                        <input
+                                          type="hidden"
+                                          name="courseConversationVisibility"
+                                          value="courseConversationVisibilityCourseConversationParticipations"
+                                        />
+                                        <button
+                                          class="button button--rectangle button--transparent $${request
+                                            .state.courseConversation
+                                            .courseConversationVisibility ===
+                                          "courseConversationVisibilityCourseConversationParticipations"
+                                            ? "button--blue"
+                                            : ""} button--dropdown-menu"
+                                        >
+                                          Selected course participants
+                                        </button>
+                                      </form>
+                                    </div>
+                                  `},
+                                });
+                              `}"
+                            >
+                              <span
+                                css="${css`
+                                  color: light-dark(
+                                    var(--color--slate--500),
+                                    var(--color--slate--500)
+                                  );
+                                `}"
+                                >Visibility:</span
+                              >  ${request.state.courseConversation
+                                .courseConversationVisibility ===
+                              "courseConversationVisibilityEveryone"
+                                ? "Everyone"
+                                : request.state.courseConversation
+                                      .courseConversationVisibility ===
+                                    "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
+                                  ? "Instructors and selected course participants"
+                                  : request.state.courseConversation
+                                        .courseConversationVisibility ===
+                                      "courseConversationVisibilityCourseConversationParticipations"
+                                    ? "Selected course participants"
+                                    : (() => {
+                                        throw new Error();
+                                      })()} <i class="bi bi-chevron-down"></i>
+                            </button>
+                          `
+                        : html`
+                            <div>
+                              <span
+                                css="${css`
+                                  color: light-dark(
+                                    var(--color--slate--500),
+                                    var(--color--slate--500)
+                                  );
+                                `}"
+                                >Visibility:</span
+                              >  ${request.state.courseConversation
+                                .courseConversationVisibility ===
+                              "courseConversationVisibilityEveryone"
+                                ? "Everyone"
+                                : request.state.courseConversation
+                                      .courseConversationVisibility ===
+                                    "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
+                                  ? "Instructors and selected course participants"
+                                  : request.state.courseConversation
+                                        .courseConversationVisibility ===
+                                      "courseConversationVisibilityCourseConversationParticipations"
+                                    ? "Selected course participants"
+                                    : (() => {
+                                        throw new Error();
+                                      })()}
+                            </div>
+                          `}
+                      $${mayEditCourseConversation &&
+                      request.state.courseParticipation
+                        .courseParticipationRole ===
+                        "courseParticipationRoleInstructor"
+                        ? html`
+                            <button
+                              class="button button--rectangle button--transparent"
+                              javascript="${javascript`
+                                javascript.tippy({
+                                  event,
+                                  element: this,
+                                  placement: "bottom-start",
+                                  interactive: true,
+                                  trigger: "click",
+                                  content: ${html`
+                                    <div
+                                      css="${css`
+                                        display: flex;
+                                        flex-direction: column;
+                                        gap: var(--space--2);
+                                      `}"
+                                    >
+                                      <form
+                                        method="PATCH"
+                                        action="/courses/${request.state.course
+                                          .publicId}/conversations/${request
+                                          .state.courseConversation.publicId}"
+                                      >
+                                        <input
+                                          type="hidden"
+                                          name="pinned"
+                                          value="false"
+                                        />
+                                        <button
+                                          class="button button--rectangle button--transparent $${Boolean(
+                                            request.state.courseConversation
+                                              .pinned,
+                                          ) === false
+                                            ? "button--blue"
+                                            : ""} button--dropdown-menu"
+                                        >
+                                          Unpinned
+                                        </button>
+                                      </form>
+                                      <form
+                                        method="PATCH"
+                                        action="/courses/${request.state.course
+                                          .publicId}/conversations/${request
+                                          .state.courseConversation.publicId}"
+                                      >
+                                        <input
+                                          type="hidden"
+                                          name="pinned"
+                                          value="true"
+                                        />
+                                        <button
+                                          class="button button--rectangle button--transparent $${Boolean(
+                                            request.state.courseConversation
+                                              .pinned,
+                                          ) === true
+                                            ? "button--blue"
+                                            : ""} button--dropdown-menu"
+                                        >
+                                          Pinned
+                                        </button>
+                                      </form>
+                                    </div>
+                                  `},
+                                });
+                              `}"
+                            >
+                              <span
+                                css="${css`
+                                  color: light-dark(
+                                    var(--color--slate--500),
+                                    var(--color--slate--500)
+                                  );
+                                `}"
+                                >Pin:</span
+                              >  ${Boolean(
+                                request.state.courseConversation.pinned,
+                              ) === false
+                                ? "Unpinned"
+                                : "Pinned"} <i class="bi bi-chevron-down"></i>
+                            </button>
+                          `
+                        : Boolean(request.state.courseConversation.pinned)
+                          ? html`
+                              <div>
+                                <span
+                                  css="${css`
+                                    color: light-dark(
+                                      var(--color--slate--500),
+                                      var(--color--slate--500)
+                                    );
+                                  `}"
+                                  >Pin:</span
+                                >  Pinned
+                              </div>
+                            `
+                          : html``}
                     </div>
+                    $${(() => {
+                      let courseConversationsTagsHTML = html``;
+                      const courseConversationsTagsWithTagging =
+                        request.state.courseConversationsTags.filter(
+                          (courseConversationsTag) =>
+                            application.database.get(
+                              sql`
+                                select true
+                                from "courseConversationTaggings"
+                                where
+                                  "courseConversation" = ${request.state.courseConversation!.id} and
+                                  "courseConversationsTag" = ${courseConversationsTag.id};
+                              `,
+                            ) !== undefined,
+                        );
+                      if (
+                        mayEditCourseConversation &&
+                        request.state.courseConversationsTags.length > 0
+                      )
+                        courseConversationsTagsHTML += html`
+                          <button
+                            class="button button--rectangle button--transparent"
+                            javascript="${javascript`
+                              javascript.tippy({
+                                event,
+                                element: this,
+                                placement: "bottom-start",
+                                interactive: true,
+                                trigger: "click",
+                                content: ${html`
+                                  <form
+                                    method="PUT"
+                                    action="/courses/${request.state.course
+                                      .publicId}/conversations/${request.state
+                                      .courseConversation.publicId}/taggings"
+                                    novalidate
+                                    css="${css`
+                                      display: flex;
+                                      flex-direction: column;
+                                      gap: var(--space--2);
+                                    `}"
+                                  >
+                                    $${request.state.courseConversationsTags.map(
+                                      (courseConversationsTag) => html`
+                                        <label
+                                          class="button button--rectangle button--transparent button--dropdown-menu"
+                                        >
+                                          <input
+                                            type="checkbox"
+                                            name="tags[]"
+                                            value="${courseConversationsTag.publicId}"
+                                            required
+                                            $${courseConversationsTagsWithTagging.some(
+                                              (
+                                                courseConversationsTagWithTagging,
+                                              ) =>
+                                                courseConversationsTag.id ===
+                                                courseConversationsTagWithTagging.id,
+                                            )
+                                              ? html`checked`
+                                              : html``}
+                                            class="input--checkbox"
+                                          />  ${courseConversationsTag.name}
+                                        </label>
+                                      `,
+                                    )}
+                                    <div>
+                                      <button
+                                        class="button button--rectangle button--blue"
+                                        css="${css`
+                                          font-size: var(--font-size--3);
+                                          line-height: var(
+                                            --font-size--3--line-height
+                                          );
+                                        `}"
+                                      >
+                                        Update tags
+                                      </button>
+                                    </div>
+                                  </form>
+                                `},
+                              });
+                            `}"
+                          >
+                            Tags <i class="bi bi-chevron-down"></i>
+                          </button>
+                        `;
+                      else if (courseConversationsTagsWithTagging.length > 0)
+                        courseConversationsTagsHTML += html` <div>Tags</div> `;
+                      if (courseConversationsTagsWithTagging.length > 0)
+                        courseConversationsTagsHTML += html`
+                          <div
+                            css="${css`
+                              flex: 1;
+                              font-weight: 400;
+                            `}"
+                          >
+                            ${courseConversationsTagsWithTagging
+                              .map(
+                                (courseConversationsTag) =>
+                                  courseConversationsTag.name,
+                              )
+                              .join(" · ")}
+                          </div>
+                        `;
+                      return courseConversationsTagsHTML !== html``
+                        ? html`
+                            <div
+                              css="${css`
+                                font-size: var(--font-size--3);
+                                line-height: var(--font-size--3--line-height);
+                                font-weight: 600;
+                                color: light-dark(
+                                  var(--color--slate--600),
+                                  var(--color--slate--400)
+                                );
+                                display: flex;
+                                gap: var(--space--4);
+                                align-items: baseline;
+                              `}"
+                            >
+                              $${courseConversationsTagsHTML}
+                            </div>
+                          `
+                        : html``;
+                    })()}
                     <div
                       key="courseConversation--header--update"
                       hidden
