@@ -1209,27 +1209,26 @@ export default async (application: Application): Promise<void> => {
                           })()
                         ).createdByCourseParticipation);
                   return html`
-                    $${
-                      request.state.course.courseState === "courseStateArchived"
-                        ? html`
-                            <div
-                              key="courseConversation--archived"
-                              css="${css`
-                                font-size: var(--font-size--3);
-                                line-height: var(--font-size--3--line-height);
-                                font-weight: 600;
-                                color: light-dark(
-                                  var(--color--red--500),
-                                  var(--color--red--500)
-                                );
-                              `}"
-                            >
-                              <i class="bi bi-exclamation-triangle-fill"></i
-                              > This course is archived (read-only).
-                            </div>
-                          `
-                        : html``
-                    }
+                    $${request.state.course.courseState ===
+                    "courseStateArchived"
+                      ? html`
+                          <div
+                            key="courseConversation--archived"
+                            css="${css`
+                              font-size: var(--font-size--3);
+                              line-height: var(--font-size--3--line-height);
+                              font-weight: 600;
+                              color: light-dark(
+                                var(--color--red--500),
+                                var(--color--red--500)
+                              );
+                            `}"
+                          >
+                            <i class="bi bi-exclamation-triangle-fill"></i> This
+                            course is archived (read-only).
+                          </div>
+                        `
+                      : html``}
                     <div
                       css="${css`
                         display: flex;
@@ -1253,65 +1252,63 @@ export default async (application: Application): Promise<void> => {
                         >
                           ${request.state.courseConversation.title}
                         </div>
-                        $${
-                          mayEditCourseConversation
-                            ? html`
+                        $${mayEditCourseConversation
+                          ? html`
+                              <div
+                                key="courseConversation--header--title--edit"
+                                hidden
+                                css="${css`
+                                  display: flex;
+                                  gap: var(--space--4);
+                                  align-items: baseline;
+                                `}"
+                              >
                                 <div
-                                  key="courseConversation--header--title--edit"
-                                  hidden
                                   css="${css`
+                                    flex: 1;
                                     display: flex;
-                                    gap: var(--space--4);
-                                    align-items: baseline;
                                   `}"
                                 >
-                                  <div
+                                  <input
+                                    type="text"
+                                    name="title"
+                                    value="${request.state.courseConversation
+                                      .title}"
+                                    class="input--text"
                                     css="${css`
                                       flex: 1;
-                                      display: flex;
                                     `}"
-                                  >
-                                    <input
-                                      type="text"
-                                      name="title"
-                                      value="${request.state.courseConversation
-                                        .title}"
-                                      class="input--text"
-                                      css="${css`
-                                        flex: 1;
-                                      `}"
-                                    />
-                                  </div>
-                                  <div>
-                                    <button
-                                      type="button"
-                                      class="button button--rectangle button--transparent"
-                                      css="${css`
-                                        font-size: var(--font-size--3);
-                                        line-height: var(
-                                          --font-size--3--line-height
-                                        );
-                                        font-weight: 600;
-                                        color: light-dark(
-                                          var(--color--slate--600),
-                                          var(--color--slate--400)
-                                        );
-                                      `}"
-                                      javascript="${javascript`
+                                  />
+                                </div>
+                                <div>
+                                  <button
+                                    type="button"
+                                    class="button button--rectangle button--transparent"
+                                    css="${css`
+                                      font-size: var(--font-size--3);
+                                      line-height: var(
+                                        --font-size--3--line-height
+                                      );
+                                      font-weight: 600;
+                                      color: light-dark(
+                                        var(--color--slate--600),
+                                        var(--color--slate--400)
+                                      );
+                                    `}"
+                                    javascript="${javascript`
                                       this.onclick = () => {
                                         this.closest('[key="courseConversation--header"]').querySelector('[key="courseConversation--header--title--show"]').hidden = false;
                                         this.closest('[key="courseConversation--header"]').querySelector('[key="courseConversation--header--title--edit"]').hidden = true;
                                         javascript.reset(this.closest('[key="courseConversation--header--title--edit"]'));
                                       };
                                     `}"
-                                    >
-                                      Cancel
-                                    </button>
-                                  </div>
+                                  >
+                                    Cancel
+                                  </button>
                                 </div>
-                              `
-                            : html``
-                        }
+                              </div>
+                            `
+                          : html``}
                       </div>
                       <div key="courseConversation--header--menu">
                         <button
@@ -1554,120 +1551,127 @@ export default async (application: Application): Promise<void> => {
                         row-gap: var(--space--2);
                       `}"
                     >
-                      <$${
-                        mayEditCourseConversation
-                          ? html`button type="button" class="button
-                            button--rectangle button--transparent"
-                            javascript="${javascript`
-                              javascript.popover({ element: this, trigger: "click" });
-                            `}" `
-                          : html`div`
-                      }>
-                        <span
-                          css="${css`
-                            color: light-dark(
-                              var(--color--slate--500),
-                              var(--color--slate--500)
-                            );
-                          `}"
-                          >Type:</span
-                        >  <input
-                          type="radio"
-                          name="courseConversationType"
-                          value="courseConversationTypeNote"
-                          required
-                          $${
-                            request.state.courseConversation
-                              .courseConversationType ===
-                            "courseConversationTypeNote"
-                              ? html`checked`
-                              : html``
-                          }
-                          $${!mayEditCourseConversation ? html`disabled` : html``}
-                          hidden
-                        /><span
-                          css="${css`
-                            :not(:checked) + & {
-                              display: none;
-                            }
-                          `}"
-                          >Note</span
-                        ><input
-                          type="radio"
-                          name="courseConversationType"
-                          value="courseConversationTypeQuestion"
-                          required
-                          $${
-                            request.state.courseConversation
-                              .courseConversationType ===
-                            "courseConversationTypeQuestion"
-                              ? html`checked`
-                              : html``
-                          }
-                          $${!mayEditCourseConversation ? html`disabled` : html``}
-                          hidden
-                        /><span
-                          css="${css`
-                            :not(:checked) + & {
-                              display: none;
-                            }
-                          `}"
-                          >Question</span
-                        >$${
-                          mayEditCourseConversation
-                            ? html`  <i class="bi bi-chevron-down"></i>`
-                            : html``
-                        }
-                      </$${mayEditCourseConversation ? html`button` : html`div`}>
-                      $${
-                        mayEditCourseConversation
-                          ? html`
-                              <div
-                                class="popover"
+                      $${mayEditCourseConversation
+                        ? html`
+                            <button
+                              type="button"
+                              class="button button--rectangle button--transparent"
+                              javascript="${javascript`
+                                javascript.popover({ element: this, trigger: "click" });
+                              `}"
+                            >
+                              <span
                                 css="${css`
-                                  display: flex;
-                                  flex-direction: column;
-                                  gap: var(--space--2);
+                                  color: light-dark(
+                                    var(--color--slate--500),
+                                    var(--color--slate--500)
+                                  );
                                 `}"
-                              >
-                                <button
-                                  type="button"
-                                  class="button button--rectangle button--transparent button--dropdown-menu"
-                                  javascript="${javascript`
+                                >Type:</span
+                              >  <input
+                                type="radio"
+                                name="courseConversationType"
+                                value="courseConversationTypeNote"
+                                required
+                                $${request.state.courseConversation
+                                  .courseConversationType ===
+                                "courseConversationTypeNote"
+                                  ? html`checked`
+                                  : html``}
+                                hidden
+                              /><span
+                                css="${css`
+                                  :not(:checked) + & {
+                                    display: none;
+                                  }
+                                `}"
+                                >Note</span
+                              ><input
+                                type="radio"
+                                name="courseConversationType"
+                                value="courseConversationTypeQuestion"
+                                required
+                                $${request.state.courseConversation
+                                  .courseConversationType ===
+                                "courseConversationTypeQuestion"
+                                  ? html`checked`
+                                  : html``}
+                                hidden
+                              /><span
+                                css="${css`
+                                  :not(:checked) + & {
+                                    display: none;
+                                  }
+                                `}"
+                                >Question</span
+                              > <i class="bi bi-chevron-down"></i>
+                            </button>
+                            <div
+                              class="popover"
+                              css="${css`
+                                display: flex;
+                                flex-direction: column;
+                                gap: var(--space--2);
+                              `}"
+                            >
+                              <button
+                                type="button"
+                                class="button button--rectangle button--transparent button--dropdown-menu"
+                                javascript="${javascript`
                                   this.onclick = () => {
                                     this.closest('[key="courseConversation--header"]').querySelector('[name="courseConversationType"][value="courseConversationTypeNote"]').click();
                                   };
                                 `}"
-                                >
-                                  Note
-                                </button>
-                                <button
-                                  type="button"
-                                  class="button button--rectangle button--transparent button--dropdown-menu"
-                                  javascript="${javascript`
+                              >
+                                Note
+                              </button>
+                              <button
+                                type="button"
+                                class="button button--rectangle button--transparent button--dropdown-menu"
+                                javascript="${javascript`
                                   this.onclick = () => {
                                     this.closest('[key="courseConversation--header"]').querySelector('[name="courseConversationType"][value="courseConversationTypeQuestion"]').click();
                                   };
                                 `}"
-                                >
-                                  Question
-                                </button>
-                              </div>
-                            `
-                          : html``
-                      }
-                      $${
-                        request.state.courseConversation
-                          .courseConversationType ===
-                        "courseConversationTypeQuestion"
-                          ? mayEditCourseConversation &&
-                            request.state.courseParticipation
-                              .courseParticipationRole ===
-                              "courseParticipationRoleInstructor"
-                            ? html`
-                                <button
-                                  class="button button--rectangle button--transparent"
-                                  javascript="${javascript`
+                              >
+                                Question
+                              </button>
+                            </div>
+                          `
+                        : html`
+                            <div>
+                              <span
+                                css="${css`
+                                  color: light-dark(
+                                    var(--color--slate--500),
+                                    var(--color--slate--500)
+                                  );
+                                `}"
+                                >Type:</span
+                              >  $${request.state.courseConversation
+                                .courseConversationType ===
+                              "courseConversationTypeNote"
+                                ? html`Note`
+                                : request.state.courseConversation
+                                      .courseConversationType ===
+                                    "courseConversationTypeQuestion"
+                                  ? html`Question`
+                                  : (() => {
+                                      throw new Error();
+                                    })()}
+                            </div>
+                          `}
+                      $${request.state.courseConversation
+                        .courseConversationType ===
+                      "courseConversationTypeQuestion"
+                        ? mayEditCourseConversation &&
+                          request.state.courseParticipation
+                            .courseParticipationRole ===
+                            "courseParticipationRoleInstructor"
+                          ? html`
+                              <button
+                                class="button button--rectangle button--transparent"
+                                javascript="${javascript`
                                   javascript.tippy({
                                     event,
                                     element: this,
@@ -1732,85 +1736,83 @@ export default async (application: Application): Promise<void> => {
                                     `},
                                   });
                                 `}"
+                              >
+                                <span
+                                  css="${css`
+                                    color: light-dark(
+                                      var(--color--slate--500),
+                                      var(--color--slate--500)
+                                    );
+                                  `}"
+                                  >Question:</span
+                                >  <span
+                                  css="${Boolean(
+                                    request.state.courseConversation
+                                      .questionResolved,
+                                  ) === false
+                                    ? css`
+                                        color: light-dark(
+                                          var(--color--red--500),
+                                          var(--color--red--500)
+                                        );
+                                      `
+                                    : css`
+                                        color: light-dark(
+                                          var(--color--green--500),
+                                          var(--color--green--500)
+                                        );
+                                      `}"
+                                  >${Boolean(
+                                    request.state.courseConversation
+                                      .questionResolved,
+                                  ) === false
+                                    ? "Unresolved"
+                                    : "Resolved"}</span
+                                > <i class="bi bi-chevron-down"></i>
+                              </button>
+                            `
+                          : html`
+                              <div>
+                                <span
+                                  css="${css`
+                                    color: light-dark(
+                                      var(--color--slate--500),
+                                      var(--color--slate--500)
+                                    );
+                                  `}"
+                                  >Question:</span
+                                >  <span
+                                  css="${Boolean(
+                                    request.state.courseConversation
+                                      .questionResolved,
+                                  ) === false
+                                    ? css`
+                                        color: light-dark(
+                                          var(--color--red--500),
+                                          var(--color--red--500)
+                                        );
+                                      `
+                                    : css`
+                                        color: light-dark(
+                                          var(--color--green--500),
+                                          var(--color--green--500)
+                                        );
+                                      `}"
+                                  >${Boolean(
+                                    request.state.courseConversation
+                                      .questionResolved,
+                                  ) === false
+                                    ? "Unresolved"
+                                    : "Resolved"}</span
                                 >
-                                  <span
-                                    css="${css`
-                                      color: light-dark(
-                                        var(--color--slate--500),
-                                        var(--color--slate--500)
-                                      );
-                                    `}"
-                                    >Question:</span
-                                  >  <span
-                                    css="${Boolean(
-                                      request.state.courseConversation
-                                        .questionResolved,
-                                    ) === false
-                                      ? css`
-                                          color: light-dark(
-                                            var(--color--red--500),
-                                            var(--color--red--500)
-                                          );
-                                        `
-                                      : css`
-                                          color: light-dark(
-                                            var(--color--green--500),
-                                            var(--color--green--500)
-                                          );
-                                        `}"
-                                    >${Boolean(
-                                      request.state.courseConversation
-                                        .questionResolved,
-                                    ) === false
-                                      ? "Unresolved"
-                                      : "Resolved"}</span
-                                  > <i class="bi bi-chevron-down"></i>
-                                </button>
-                              `
-                            : html`
-                                <div>
-                                  <span
-                                    css="${css`
-                                      color: light-dark(
-                                        var(--color--slate--500),
-                                        var(--color--slate--500)
-                                      );
-                                    `}"
-                                    >Question:</span
-                                  >  <span
-                                    css="${Boolean(
-                                      request.state.courseConversation
-                                        .questionResolved,
-                                    ) === false
-                                      ? css`
-                                          color: light-dark(
-                                            var(--color--red--500),
-                                            var(--color--red--500)
-                                          );
-                                        `
-                                      : css`
-                                          color: light-dark(
-                                            var(--color--green--500),
-                                            var(--color--green--500)
-                                          );
-                                        `}"
-                                    >${Boolean(
-                                      request.state.courseConversation
-                                        .questionResolved,
-                                    ) === false
-                                      ? "Unresolved"
-                                      : "Resolved"}</span
-                                  >
-                                </div>
-                              `
-                          : html``
-                      }
-                      $${
-                        mayEditCourseConversation
-                          ? html`
-                              <button
-                                class="button button--rectangle button--transparent"
-                                javascript="${javascript`
+                              </div>
+                            `
+                        : html``}
+                      $${mayEditCourseConversation
+                        ? html`
+                            <button
+                              class="button button--rectangle button--transparent"
+                              javascript="${javascript`
                                 javascript.tippy({
                                   event,
                                   element: this,
@@ -1896,69 +1898,67 @@ export default async (application: Application): Promise<void> => {
                                   `},
                                 });
                               `}"
-                              >
-                                <span
-                                  css="${css`
-                                    color: light-dark(
-                                      var(--color--slate--500),
-                                      var(--color--slate--500)
-                                    );
-                                  `}"
-                                  >Visibility:</span
-                                >  ${request.state.courseConversation
-                                  .courseConversationVisibility ===
-                                "courseConversationVisibilityEveryone"
-                                  ? "Everyone"
+                            >
+                              <span
+                                css="${css`
+                                  color: light-dark(
+                                    var(--color--slate--500),
+                                    var(--color--slate--500)
+                                  );
+                                `}"
+                                >Visibility:</span
+                              >  ${request.state.courseConversation
+                                .courseConversationVisibility ===
+                              "courseConversationVisibilityEveryone"
+                                ? "Everyone"
+                                : request.state.courseConversation
+                                      .courseConversationVisibility ===
+                                    "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
+                                  ? "Instructors and selected course participants"
                                   : request.state.courseConversation
                                         .courseConversationVisibility ===
-                                      "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
-                                    ? "Instructors and selected course participants"
-                                    : request.state.courseConversation
-                                          .courseConversationVisibility ===
-                                        "courseConversationVisibilityCourseConversationParticipations"
-                                      ? "Selected course participants"
-                                      : (() => {
-                                          throw new Error();
-                                        })()} <i class="bi bi-chevron-down"></i>
-                              </button>
-                            `
-                          : html`
-                              <div>
-                                <span
-                                  css="${css`
-                                    color: light-dark(
-                                      var(--color--slate--500),
-                                      var(--color--slate--500)
-                                    );
-                                  `}"
-                                  >Visibility:</span
-                                >  ${request.state.courseConversation
-                                  .courseConversationVisibility ===
-                                "courseConversationVisibilityEveryone"
-                                  ? "Everyone"
+                                      "courseConversationVisibilityCourseConversationParticipations"
+                                    ? "Selected course participants"
+                                    : (() => {
+                                        throw new Error();
+                                      })()} <i class="bi bi-chevron-down"></i>
+                            </button>
+                          `
+                        : html`
+                            <div>
+                              <span
+                                css="${css`
+                                  color: light-dark(
+                                    var(--color--slate--500),
+                                    var(--color--slate--500)
+                                  );
+                                `}"
+                                >Visibility:</span
+                              >  ${request.state.courseConversation
+                                .courseConversationVisibility ===
+                              "courseConversationVisibilityEveryone"
+                                ? "Everyone"
+                                : request.state.courseConversation
+                                      .courseConversationVisibility ===
+                                    "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
+                                  ? "Instructors and selected course participants"
                                   : request.state.courseConversation
                                         .courseConversationVisibility ===
-                                      "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
-                                    ? "Instructors and selected course participants"
-                                    : request.state.courseConversation
-                                          .courseConversationVisibility ===
-                                        "courseConversationVisibilityCourseConversationParticipations"
-                                      ? "Selected course participants"
-                                      : (() => {
-                                          throw new Error();
-                                        })()}
-                              </div>
-                            `
-                      }
-                      $${
-                        mayEditCourseConversation &&
-                        request.state.courseParticipation
-                          .courseParticipationRole ===
-                          "courseParticipationRoleInstructor"
-                          ? html`
-                              <button
-                                class="button button--rectangle button--transparent"
-                                javascript="${javascript`
+                                      "courseConversationVisibilityCourseConversationParticipations"
+                                    ? "Selected course participants"
+                                    : (() => {
+                                        throw new Error();
+                                      })()}
+                            </div>
+                          `}
+                      $${mayEditCourseConversation &&
+                      request.state.courseParticipation
+                        .courseParticipationRole ===
+                        "courseParticipationRoleInstructor"
+                        ? html`
+                            <button
+                              class="button button--rectangle button--transparent"
+                              javascript="${javascript`
                                 javascript.tippy({
                                   event,
                                   element: this,
@@ -2021,7 +2021,25 @@ export default async (application: Application): Promise<void> => {
                                   `},
                                 });
                               `}"
-                              >
+                            >
+                              <span
+                                css="${css`
+                                  color: light-dark(
+                                    var(--color--slate--500),
+                                    var(--color--slate--500)
+                                  );
+                                `}"
+                                >Pin:</span
+                              >  ${Boolean(
+                                request.state.courseConversation.pinned,
+                              ) === false
+                                ? "Unpinned"
+                                : "Pinned"} <i class="bi bi-chevron-down"></i>
+                            </button>
+                          `
+                        : Boolean(request.state.courseConversation.pinned)
+                          ? html`
+                              <div>
                                 <span
                                   css="${css`
                                     color: light-dark(
@@ -2030,29 +2048,10 @@ export default async (application: Application): Promise<void> => {
                                     );
                                   `}"
                                   >Pin:</span
-                                >  ${Boolean(
-                                  request.state.courseConversation.pinned,
-                                ) === false
-                                  ? "Unpinned"
-                                  : "Pinned"} <i class="bi bi-chevron-down"></i>
-                              </button>
+                                >  Pinned
+                              </div>
                             `
-                          : Boolean(request.state.courseConversation.pinned)
-                            ? html`
-                                <div>
-                                  <span
-                                    css="${css`
-                                      color: light-dark(
-                                        var(--color--slate--500),
-                                        var(--color--slate--500)
-                                      );
-                                    `}"
-                                    >Pin:</span
-                                  >  Pinned
-                                </div>
-                              `
-                            : html``
-                      }
+                          : html``}
                     </div>
                     $${(() => {
                       let courseConversationsTagsHTML = html``;
