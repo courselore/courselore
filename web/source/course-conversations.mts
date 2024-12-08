@@ -191,8 +191,8 @@ export default async (application: Application): Promise<void> => {
                   `}"
                 />
                 <button
-                  type="button"
                   key="sidebar--menu--search-and-filter--search"
+                  type="button"
                   class="button button--icon button--transparent"
                   css="${css`
                     padding: var(--space--1) var(--space--2);
@@ -210,8 +210,8 @@ export default async (application: Application): Promise<void> => {
                 $${request.state.courseConversationsTags.length > 0
                   ? html`
                       <button
-                        type="button"
                         key="sidebar--menu--search-and-filter--filter"
+                        type="button"
                         class="button button--icon button--transparent"
                         css="${css`
                           padding: var(--space--1) var(--space--2);
@@ -2931,8 +2931,8 @@ export default async (application: Application): Promise<void> => {
                                             .publicId}/messages/${courseConversationMessage.publicId}/likes"
                                         >
                                           <button
-                                            type="submit"
                                             key="courseConversationMessage--main--footer--like"
+                                            type="submit"
                                             class="button button--rectangle button--transparent"
                                           >
                                             Like
@@ -2949,8 +2949,8 @@ export default async (application: Application): Promise<void> => {
                                             .publicId}/messages/${courseConversationMessage.publicId}/likes"
                                         >
                                           <button
-                                            type="submit"
                                             key="courseConversationMessage--main--footer--like"
+                                            type="submit"
                                             class="button button--rectangle button--transparent"
                                             css="${css`
                                               color: light-dark(
@@ -2977,8 +2977,8 @@ export default async (application: Application): Promise<void> => {
                               if (courseConversationMessageLikes.length > 0)
                                 courseConversationMessageMainFooterHTML += html`
                                   <button
-                                    type="button"
                                     key="courseConversationMessage--main--footer--likes"
+                                    type="button"
                                     class="button button--rectangle button--transparent"
                                     javascript="${javascript`
                                       javascript.tippy({
@@ -3148,8 +3148,8 @@ export default async (application: Application): Promise<void> => {
                                   courseConversationMessageViews.length > 0
                                     ? html`
                                         <button
-                                          type="button"
                                           key="courseConversationMessage--main--footer--views"
+                                          type="button"
                                           class="button button--rectangle button--transparent"
                                           javascript="${javascript`
                                             javascript.tippy({

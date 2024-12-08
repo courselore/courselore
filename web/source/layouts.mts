@@ -336,8 +336,8 @@ export default async (application: Application): Promise<void> => {
           $${hamburger
             ? html`
                 <button
-                  type="button"
                   key="header--hamburger"
+                  type="button"
                   class="button button--square button--icon button--transparent"
                   css="${css`
                     font-size: var(--font-size--5);
@@ -640,8 +640,8 @@ export default async (application: Application): Promise<void> => {
           $${request.state.user !== undefined
             ? html`
                 <button
-                  type="button"
                   key="user"
+                  type="button"
                   class="button button--square button--transparent"
                   javascript="${javascript`
                     javascript.popover({ element: this, trigger: "click", placement: "bottom-end" })
