@@ -336,6 +336,7 @@ export default async (application: Application): Promise<void> => {
           $${hamburger
             ? html`
                 <button
+                  type="button"
                   key="header--hamburger"
                   class="button button--square button--icon button--transparent"
                   css="${css`
@@ -391,6 +392,7 @@ export default async (application: Application): Promise<void> => {
             request.state.course !== undefined
               ? html`
                   <button
+                    type="button"
                     class="button button--rectangle button--transparent"
                     css="${css`
                       max-width: 100%;
@@ -638,6 +640,7 @@ export default async (application: Application): Promise<void> => {
           $${request.state.user !== undefined
             ? html`
                 <button
+                  type="button"
                   key="user"
                   class="button button--square button--transparent"
                   javascript="${javascript`
@@ -720,6 +723,7 @@ export default async (application: Application): Promise<void> => {
                   </a>
                   <form method="DELETE" action="/session">
                     <button
+                      type="submit"
                       class="button button--rectangle button--transparent button--dropdown-menu"
                     >
                       Sign out

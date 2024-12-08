@@ -35,6 +35,7 @@ export default async (application: Application): Promise<void> => {
         `}"
       >
         <button
+          type="button"
           class="button button--square button--icon button--transparent"
           javascript="${javascript`
             javascript.tippy({
@@ -47,6 +48,7 @@ export default async (application: Application): Promise<void> => {
           <i class="bi bi-type-bold"></i>
         </button>
         <button
+          type="button"
           class="button button--square button--icon button--transparent"
           javascript="${javascript`
             javascript.tippy({
@@ -59,6 +61,7 @@ export default async (application: Application): Promise<void> => {
           <i class="bi bi-link"></i>
         </button>
         <button
+          type="button"
           class="button button--square button--icon button--transparent"
           javascript="${javascript`
             javascript.tippy({
@@ -71,6 +74,7 @@ export default async (application: Application): Promise<void> => {
           <i class="bi bi-image"></i>
         </button>
         <button
+          type="button"
           class="button button--square button--icon button--transparent"
           javascript="${javascript`
             javascript.tippy({
@@ -83,6 +87,7 @@ export default async (application: Application): Promise<void> => {
           <i class="bi bi-code"></i>
         </button>
         <button
+          type="button"
           class="button button--square button--icon button--transparent"
           javascript="${javascript`
             javascript.tippy({
@@ -95,6 +100,7 @@ export default async (application: Application): Promise<void> => {
           <i class="bi bi-calculator"></i>
         </button>
         <button
+          type="button"
           class="button button--square button--icon button--transparent"
           javascript="${javascript`
             javascript.tippy({
@@ -112,6 +118,7 @@ export default async (application: Application): Promise<void> => {
           `}"
         ></div>
         <button
+          type="button"
           class="button button--square button--icon button--transparent"
           javascript="${javascript`
             javascript.tippy({
@@ -124,6 +131,7 @@ export default async (application: Application): Promise<void> => {
           <i class="bi bi-eyeglasses"></i>
         </button>
         <button
+          type="button"
           class="button button--square button--icon button--transparent"
           javascript="${javascript`
             javascript.tippy({

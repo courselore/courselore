@@ -116,6 +116,7 @@ export default async (application: Application): Promise<void> => {
               `}"
             >
               <button
+                type="button"
                 class="button button--square button--icon button--transparent"
                 css="${css`
                   font-size: var(--font-size--4);
@@ -190,6 +191,7 @@ export default async (application: Application): Promise<void> => {
                   `}"
                 />
                 <button
+                  type="button"
                   key="sidebar--menu--search-and-filter--search"
                   class="button button--icon button--transparent"
                   css="${css`
@@ -208,6 +210,7 @@ export default async (application: Application): Promise<void> => {
                 $${request.state.courseConversationsTags.length > 0
                   ? html`
                       <button
+                        type="button"
                         key="sidebar--menu--search-and-filter--filter"
                         class="button button--icon button--transparent"
                         css="${css`
@@ -1312,6 +1315,7 @@ export default async (application: Application): Promise<void> => {
                       </div>
                       <div key="courseConversation--header--menu">
                         <button
+                          type="button"
                           class="button button--square button--icon button--transparent"
                           css="${css`
                             color: light-dark(
@@ -1335,6 +1339,7 @@ export default async (application: Application): Promise<void> => {
                                   `}"
                                 >
                                   <button
+                                    type="button"
                                     class="button button--rectangle button--transparent button--dropdown-menu"
                                     javascript="${javascript`
                                       this.onclick = async () => {
@@ -1355,6 +1360,7 @@ export default async (application: Application): Promise<void> => {
                                   $${mayEditCourseConversation
                                     ? html`
                                         <button
+                                          type="button"
                                           class="button button--rectangle button--transparent button--dropdown-menu"
                                           javascript="${javascript`
                                             this.onclick = () => {
@@ -1393,6 +1399,7 @@ export default async (application: Application): Promise<void> => {
                                     return courses.length > 0
                                       ? html`
                                           <button
+                                            type="button"
                                             class="button button--rectangle button--transparent button--dropdown-menu"
                                             javascript="${javascript`
                                               javascript.tippy({
@@ -1472,6 +1479,7 @@ export default async (application: Application): Promise<void> => {
                                     "courseParticipationRoleInstructor"
                                     ? html`
                                         <button
+                                          type="button"
                                           class="button button--rectangle button--transparent button--dropdown-menu"
                                           javascript="${javascript`
                                             javascript.tippy({
@@ -1504,6 +1512,7 @@ export default async (application: Application): Promise<void> => {
                                                   </div>
                                                   <div>
                                                     <button
+                                                      type="submit"
                                                       class="button button--rectangle button--red"
                                                       css="${css`
                                                         font-size: var(
@@ -1821,6 +1830,7 @@ export default async (application: Application): Promise<void> => {
                       $${mayEditCourseConversation
                         ? html`
                             <button
+                              type="button"
                               class="button button--rectangle button--transparent"
                               javascript="${javascript`
                                 javascript.tippy({
@@ -1849,6 +1859,7 @@ export default async (application: Application): Promise<void> => {
                                           value="courseConversationVisibilityEveryone"
                                         />
                                         <button
+                                          type="button"
                                           class="button button--rectangle button--transparent $${request
                                             .state.courseConversation
                                             .courseConversationVisibility ===
@@ -1871,6 +1882,7 @@ export default async (application: Application): Promise<void> => {
                                           value="courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
                                         />
                                         <button
+                                          type="button"
                                           class="button button--rectangle button--transparent $${request
                                             .state.courseConversation
                                             .courseConversationVisibility ===
@@ -1894,6 +1906,7 @@ export default async (application: Application): Promise<void> => {
                                           value="courseConversationVisibilityCourseConversationParticipations"
                                         />
                                         <button
+                                          type="button"
                                           class="button button--rectangle button--transparent $${request
                                             .state.courseConversation
                                             .courseConversationVisibility ===
@@ -1967,6 +1980,7 @@ export default async (application: Application): Promise<void> => {
                         "courseParticipationRoleInstructor"
                         ? html`
                             <button
+                              type="button"
                               class="button button--rectangle button--transparent"
                               javascript="${javascript`
                                 javascript.tippy({
@@ -1995,6 +2009,7 @@ export default async (application: Application): Promise<void> => {
                                           value="false"
                                         />
                                         <button
+                                          type="button"
                                           class="button button--rectangle button--transparent $${Boolean(
                                             request.state.courseConversation
                                               .pinned,
@@ -2017,6 +2032,7 @@ export default async (application: Application): Promise<void> => {
                                           value="true"
                                         />
                                         <button
+                                          type="button"
                                           class="button button--rectangle button--transparent $${Boolean(
                                             request.state.courseConversation
                                               .pinned,
@@ -2084,6 +2100,7 @@ export default async (application: Application): Promise<void> => {
                       )
                         courseConversationsTagsHTML += html`
                           <button
+                            type="button"
                             class="button button--rectangle button--transparent"
                             javascript="${javascript`
                               javascript.tippy({
@@ -2131,6 +2148,7 @@ export default async (application: Application): Promise<void> => {
                                     )}
                                     <div>
                                       <button
+                                        type="button"
                                         class="button button--rectangle button--blue"
                                         css="${css`
                                           font-size: var(--font-size--3);
@@ -2197,7 +2215,10 @@ export default async (application: Application): Promise<void> => {
                         line-height: var(--font-size--3--line-height);
                       `}"
                     >
-                      <button class="button button--rectangle button--blue">
+                      <button
+                        type="submit"
+                        class="button button--rectangle button--blue"
+                      >
                         Update
                       </button>
                     </div>
@@ -2589,6 +2610,7 @@ export default async (application: Application): Promise<void> => {
                                 key="courseConversationMessage--main--header--menu"
                               >
                                 <button
+                                  type="button"
                                   class="button button--square button--icon button--transparent"
                                   css="${css`
                                     margin-right: var(--space---0-5);
@@ -2609,6 +2631,7 @@ export default async (application: Application): Promise<void> => {
                                           `}"
                                         >
                                           <button
+                                            type="button"
                                             class="button button--rectangle button--transparent button--dropdown-menu"
                                             javascript="${javascript`
                                               this.onclick = async () => {
@@ -2630,6 +2653,7 @@ export default async (application: Application): Promise<void> => {
                                             .courseState === "courseStateActive"
                                             ? html`
                                                 <button
+                                                  type="button"
                                                   class="button button--rectangle button--transparent button--dropdown-menu"
                                                   javascript="${javascript`
                                                     this.onclick = async () => {
@@ -2644,6 +2668,7 @@ export default async (application: Application): Promise<void> => {
                                           $${mayEditCourseConversationMessage
                                             ? html`
                                                 <button
+                                                  type="button"
                                                   class="button button--rectangle button--transparent button--dropdown-menu"
                                                   javascript="${javascript`
                                                     this.onclick = () => {
@@ -2664,6 +2689,7 @@ export default async (application: Application): Promise<void> => {
                                             "courseParticipationRoleStudent"
                                             ? html`
                                                 <button
+                                                  type="button"
                                                   class="button button--rectangle button--transparent button--dropdown-menu"
                                                   javascript="${javascript`
                                                     javascript.tippy({
@@ -2688,6 +2714,7 @@ export default async (application: Application): Promise<void> => {
                                             firstCourseConversationMessage.id
                                             ? html`
                                                 <button
+                                                  type="button"
                                                   class="button button--rectangle button--transparent button--dropdown-menu"
                                                   javascript="${javascript`
                                                     javascript.tippy({
@@ -2721,6 +2748,7 @@ export default async (application: Application): Promise<void> => {
                                                               value="courseConversationMessageTypeMessage"
                                                             />
                                                             <button
+                                                              type="button"
                                                               class="button button--rectangle button--transparent $${courseConversationMessage.courseConversationMessageType ===
                                                               "courseConversationMessageTypeMessage"
                                                                 ? "button--blue"
@@ -2744,6 +2772,7 @@ export default async (application: Application): Promise<void> => {
                                                               value="courseConversationMessageTypeAnswer"
                                                             />
                                                             <button
+                                                              type="button"
                                                               class="button button--rectangle button--transparent $${courseConversationMessage.courseConversationMessageType ===
                                                               "courseConversationMessageTypeAnswer"
                                                                 ? "button--blue"
@@ -2767,6 +2796,7 @@ export default async (application: Application): Promise<void> => {
                                                               value="courseConversationMessageTypeFollowUpQuestion"
                                                             />
                                                             <button
+                                                              type="button"
                                                               class="button button--rectangle button--transparent $${courseConversationMessage.courseConversationMessageType ===
                                                               "courseConversationMessageTypeFollowUpQuestion"
                                                                 ? "button--blue"
@@ -2792,6 +2822,7 @@ export default async (application: Application): Promise<void> => {
                                             firstCourseConversationMessage.id
                                             ? html`
                                                 <button
+                                                  type="button"
                                                   class="button button--rectangle button--transparent button--dropdown-menu"
                                                   javascript="${javascript`
                                                     javascript.tippy({
@@ -2827,6 +2858,7 @@ export default async (application: Application): Promise<void> => {
                                                           </div>
                                                           <div>
                                                             <button
+                                                              type="submit"
                                                               class="button button--rectangle button--red"
                                                               css="${css`
                                                                 font-size: var(
@@ -2899,6 +2931,7 @@ export default async (application: Application): Promise<void> => {
                                             .publicId}/messages/${courseConversationMessage.publicId}/likes"
                                         >
                                           <button
+                                            type="submit"
                                             key="courseConversationMessage--main--footer--like"
                                             class="button button--rectangle button--transparent"
                                           >
@@ -2916,6 +2949,7 @@ export default async (application: Application): Promise<void> => {
                                             .publicId}/messages/${courseConversationMessage.publicId}/likes"
                                         >
                                           <button
+                                            type="submit"
                                             key="courseConversationMessage--main--footer--like"
                                             class="button button--rectangle button--transparent"
                                             css="${css`
@@ -2943,6 +2977,7 @@ export default async (application: Application): Promise<void> => {
                               if (courseConversationMessageLikes.length > 0)
                                 courseConversationMessageMainFooterHTML += html`
                                   <button
+                                    type="button"
                                     key="courseConversationMessage--main--footer--likes"
                                     class="button button--rectangle button--transparent"
                                     javascript="${javascript`
@@ -3113,6 +3148,7 @@ export default async (application: Application): Promise<void> => {
                                   courseConversationMessageViews.length > 0
                                     ? html`
                                         <button
+                                          type="button"
                                           key="courseConversationMessage--main--footer--views"
                                           class="button button--rectangle button--transparent"
                                           javascript="${javascript`
@@ -3338,7 +3374,10 @@ export default async (application: Application): Promise<void> => {
                         `}"
                       >
                         <div>
-                          <button class="button button--rectangle button--blue">
+                          <button
+                            type="submit"
+                            class="button button--rectangle button--blue"
+                          >
                             Send
                           </button>
                         </div>
