@@ -172,6 +172,7 @@ export default async (application: Application): Promise<void> => {
                 : html``}
               <div
                 key="sidebar--menu--search-and-filter"
+                type="form"
                 class="input--text"
                 css="${css`
                   flex: 1;
