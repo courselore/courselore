@@ -1170,13 +1170,13 @@ export default async (application: Application): Promise<void> => {
                 gap: var(--space--6);
               `}"
             >
-              <form
+              <div
                 key="courseConversation--header"
+                type="form"
                 method="PATCH"
                 action="/courses/${request.state.course
                   .publicId}/conversations/${request.state.courseConversation
                   .publicId}"
-                novalidate
                 css="${css`
                   display: flex;
                   flex-direction: column;
@@ -1490,7 +1490,8 @@ export default async (application: Application): Promise<void> => {
                                               interactive: true,
                                               trigger: "click",
                                               content: ${html`
-                                                <form
+                                                <div
+                                                  type="form"
                                                   method="DELETE"
                                                   action="/courses/${request
                                                     .state.course
@@ -1526,7 +1527,7 @@ export default async (application: Application): Promise<void> => {
                                                       Delete conversation
                                                     </button>
                                                   </div>
-                                                </form>
+                                                </div>
                                               `},
                                             });
                                           `}"
@@ -1847,7 +1848,8 @@ export default async (application: Application): Promise<void> => {
                                         gap: var(--space--2);
                                       `}"
                                     >
-                                      <form
+                                      <div
+                                        type="form"
                                         method="PATCH"
                                         action="/courses/${request.state.course
                                           .publicId}/conversations/${request
@@ -1869,8 +1871,9 @@ export default async (application: Application): Promise<void> => {
                                         >
                                           Everyone
                                         </button>
-                                      </form>
-                                      <form
+                                      </div>
+                                      <div
+                                        type="form"
                                         method="PATCH"
                                         action="/courses/${request.state.course
                                           .publicId}/conversations/${request
@@ -1893,8 +1896,9 @@ export default async (application: Application): Promise<void> => {
                                           Instructors and selected course
                                           participants
                                         </button>
-                                      </form>
-                                      <form
+                                      </div>
+                                      <div
+                                        type="form"
                                         method="PATCH"
                                         action="/courses/${request.state.course
                                           .publicId}/conversations/${request
@@ -1916,7 +1920,7 @@ export default async (application: Application): Promise<void> => {
                                         >
                                           Selected course participants
                                         </button>
-                                      </form>
+                                      </div>
                                     </div>
                                   `},
                                 });
@@ -1997,7 +2001,8 @@ export default async (application: Application): Promise<void> => {
                                         gap: var(--space--2);
                                       `}"
                                     >
-                                      <form
+                                      <div
+                                        type="form"
                                         method="PATCH"
                                         action="/courses/${request.state.course
                                           .publicId}/conversations/${request
@@ -2019,8 +2024,9 @@ export default async (application: Application): Promise<void> => {
                                         >
                                           Unpinned
                                         </button>
-                                      </form>
-                                      <form
+                                      </div>
+                                      <div
+                                        type="form"
                                         method="PATCH"
                                         action="/courses/${request.state.course
                                           .publicId}/conversations/${request
@@ -2042,7 +2048,7 @@ export default async (application: Application): Promise<void> => {
                                         >
                                           Pinned
                                         </button>
-                                      </form>
+                                      </div>
                                     </div>
                                   `},
                                 });
@@ -2110,12 +2116,12 @@ export default async (application: Application): Promise<void> => {
                                 interactive: true,
                                 trigger: "click",
                                 content: ${html`
-                                  <form
+                                  <div
+                                    type="form"
                                     method="PUT"
                                     action="/courses/${request.state.course
                                       .publicId}/conversations/${request.state
                                       .courseConversation.publicId}/taggings"
-                                    novalidate
                                     css="${css`
                                       display: flex;
                                       flex-direction: column;
@@ -2160,7 +2166,7 @@ export default async (application: Application): Promise<void> => {
                                         Update tags
                                       </button>
                                     </div>
-                                  </form>
+                                  </div>
                                 `},
                               });
                             `}"
@@ -2224,7 +2230,7 @@ export default async (application: Application): Promise<void> => {
                     </div>
                   `;
                 })()}
-              </form>
+              </div>
               <div
                 key="courseConversationMessages"
                 css="${css`
@@ -2733,7 +2739,8 @@ export default async (application: Application): Promise<void> => {
                                                             );
                                                           `}"
                                                         >
-                                                          <form
+                                                          <div
+                                                            type="form"
                                                             method="PATCH"
                                                             action="/courses/${request
                                                               .state.course!
@@ -2756,8 +2763,9 @@ export default async (application: Application): Promise<void> => {
                                                             >
                                                               Message
                                                             </button>
-                                                          </form>
-                                                          <form
+                                                          </div>
+                                                          <div
+                                                            type="form"
                                                             method="PATCH"
                                                             action="/courses/${request
                                                               .state.course!
@@ -2780,8 +2788,9 @@ export default async (application: Application): Promise<void> => {
                                                             >
                                                               Answer
                                                             </button>
-                                                          </form>
-                                                          <form
+                                                          </div>
+                                                          <div
+                                                            type="form"
                                                             method="PATCH"
                                                             action="/courses/${request
                                                               .state.course!
@@ -2804,7 +2813,7 @@ export default async (application: Application): Promise<void> => {
                                                             >
                                                               Follow-up question
                                                             </button>
-                                                          </form>
+                                                          </div>
                                                         </div>
                                                       `},
                                                     });
@@ -2833,7 +2842,8 @@ export default async (application: Application): Promise<void> => {
                                                       interactive: true,
                                                       trigger: "click",
                                                       content: ${html`
-                                                        <form
+                                                        <div
+                                                          type="form"
                                                           method="DELETE"
                                                           action="/courses/${request
                                                             .state.course!
@@ -2872,7 +2882,7 @@ export default async (application: Application): Promise<void> => {
                                                               Delete message
                                                             </button>
                                                           </div>
-                                                        </form>
+                                                        </div>
                                                       `},
                                                     });
                                                   `}"
@@ -2922,7 +2932,8 @@ export default async (application: Application): Promise<void> => {
                                     `,
                                   ) === undefined
                                     ? html`
-                                        <form
+                                        <div
+                                          type="form"
                                           method="POST"
                                           action="/courses/${request.state
                                             .course!
@@ -2937,10 +2948,11 @@ export default async (application: Application): Promise<void> => {
                                           >
                                             Like
                                           </button>
-                                        </form>
+                                        </div>
                                       `
                                     : html`
-                                        <form
+                                        <div
+                                          type="form"
                                           method="DELETE"
                                           action="/courses/${request.state
                                             .course!
@@ -2961,7 +2973,7 @@ export default async (application: Application): Promise<void> => {
                                           >
                                             Liked
                                           </button>
-                                        </form>
+                                        </div>
                                       `;
                               const courseConversationMessageLikes =
                                 application.database.all<{
@@ -3350,13 +3362,13 @@ export default async (application: Application): Promise<void> => {
               </div>
               $${request.state.course.courseState === "courseStateActive"
                 ? html`
-                    <form
+                    <div
+                      type="form"
                       key="courseConversationMessage--new"
                       method="POST"
                       action="/courses/${request.state.course
                         .publicId}/conversations/${request.state
                         .courseConversation.publicId}/messages"
-                      novalidate
                       css="${css`
                         display: flex;
                         flex-direction: column;
@@ -3617,7 +3629,7 @@ export default async (application: Application): Promise<void> => {
                             : html``;
                         })()}
                       </div>
-                    </form>
+                    </div>
                   `
                 : html``}
             </div>

@@ -721,14 +721,14 @@ export default async (application: Application): Promise<void> => {
                   >
                     User settings
                   </a>
-                  <form method="DELETE" action="/session">
+                  <div type="form" method="DELETE" action="/session">
                     <button
                       type="submit"
                       class="button button--rectangle button--transparent button--dropdown-menu"
                     >
                       Sign out
                     </button>
-                  </form>
+                  </div>
                 </div>
               `
             : html``}
