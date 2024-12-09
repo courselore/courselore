@@ -1325,7 +1325,7 @@ export default async (application: Application): Promise<void> => {
                             );
                           `}"
                           javascript="${javascript`
-                            javascript.popover({ element: this, trigger: "click", placement: "bottom-end" });
+                            javascript.popover({ element: this, trigger: "click", remainOpenWhileFocused: true, placement: "bottom-end" });
                           `}"
                         >
                           <i class="bi bi-three-dots-vertical"></i>
@@ -1345,11 +1345,15 @@ export default async (application: Application): Promise<void> => {
                               const popover = javascript.popover({ element: this, trigger: "none" });
                               this.onclick = async () => {
                                 await navigator.clipboard.writeText(${`https://${application.configuration.hostname}/courses/${request.state.course.publicId}/conversations/${request.state.courseConversation.publicId}`});
+                                popover.showPopover();
+                                await utilities.sleep(1000);
+                                popover.hidePopover();
                               };
                             `}"
                           >
                             Copy conversation permanent link
                           </button>
+                          <div class="popover">Copied</div>
                           $${mayEditCourseConversation
                             ? html`
                                 <button
@@ -1360,6 +1364,7 @@ export default async (application: Application): Promise<void> => {
                                       this.closest('[key="courseConversation--header"]').querySelector('[key="courseConversation--header--title--show"]').hidden = true;
                                       this.closest('[key="courseConversation--header"]').querySelector('[key="courseConversation--header--title--edit"]').hidden = false;
                                       this.closest('[key="courseConversation--header"]').querySelector('[key="courseConversation--header--title--edit"] [name="title"]').focus();
+                                      this.closest(".popover").hidePopover();
                                     };
                                   `}"
                                 >
@@ -1433,7 +1438,6 @@ export default async (application: Application): Promise<void> => {
                                                     line-height: var(
                                                       --font-size--3--line-height
                                                     );
-                                                    font-weight: 600;
                                                     color: light-dark(
                                                       var(--color--slate--600),
                                                       var(--color--slate--400)
