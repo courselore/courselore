@@ -545,8 +545,8 @@ export default async (application: Application): Promise<void> => {
                                             )
                                             & {
                                             color: light-dark(
-                                              var(--color--slate--500),
-                                              var(--color--slate--500)
+                                              var(--color--slate--600),
+                                              var(--color--slate--400)
                                             );
                                           }
                                           [key~="course-selector"].button--blue

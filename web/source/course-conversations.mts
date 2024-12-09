@@ -1434,15 +1434,15 @@ export default async (application: Application): Promise<void> => {
                                             ? html`
                                                 <div
                                                   css="${css`
-                                                    color: light-dark(
-                                                      var(--color--slate--500),
-                                                      var(--color--slate--500)
-                                                    );
                                                     font-size: var(
                                                       --font-size--3
                                                     );
                                                     line-height: var(
                                                       --font-size--3--line-height
+                                                    );
+                                                    color: light-dark(
+                                                      var(--color--slate--600),
+                                                      var(--color--slate--400)
                                                     );
                                                   `}"
                                                 >
