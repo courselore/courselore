@@ -1364,7 +1364,7 @@ export default async (application: Application): Promise<void> => {
                                       this.closest('[key="courseConversation--header"]').querySelector('[key="courseConversation--header--title--show"]').hidden = true;
                                       this.closest('[key="courseConversation--header"]').querySelector('[key="courseConversation--header--title--edit"]').hidden = false;
                                       this.closest('[key="courseConversation--header"]').querySelector('[key="courseConversation--header--title--edit"] [name="title"]').focus();
-                                      this.closest(".popover").hidePopover();
+                                      this.closest('[type~="popover"]').hidePopover();
                                     };
                                   `}"
                                 >
