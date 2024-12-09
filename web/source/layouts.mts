@@ -416,7 +416,7 @@ export default async (application: Application): Promise<void> => {
                     <i class="bi bi-chevron-down"></i>
                   </button>
                   <div
-                    class="popover"
+                    type="popover"
                     css="${css`
                       display: flex;
                       flex-direction: column;
@@ -653,7 +653,7 @@ export default async (application: Application): Promise<void> => {
                   })}
                 </button>
                 <div
-                  class="popover"
+                  type="popover"
                   css="${css`
                     display: flex;
                     flex-direction: column;

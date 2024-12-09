@@ -207,7 +207,7 @@ export default async (application: Application): Promise<void> => {
                 >
                   <i class="bi bi-search"></i>
                 </button>
-                <div class="popover">Search</div>
+                <div type="popover">Search</div>
                 $${request.state.courseConversationsTags.length > 0
                   ? html`
                       <button
@@ -224,9 +224,9 @@ export default async (application: Application): Promise<void> => {
                       >
                         <i class="bi bi-filter"></i>
                       </button>
-                      <div class="popover">Filter</div>
+                      <div type="popover">Filter</div>
                       <div
-                        class="popover"
+                        type="popover"
                         css="${css`
                           display: flex;
                           flex-direction: column;
@@ -808,7 +808,7 @@ export default async (application: Application): Promise<void> => {
                               `}"
                             ></span>
                             <span
-                              class="popover"
+                              type="popover"
                               javascript="${javascript`
                                 this.textContent = javascript.localizeDateTime(${firstCourseConversationMessage.createdAt});
                               `}"
@@ -1331,7 +1331,7 @@ export default async (application: Application): Promise<void> => {
                           <i class="bi bi-three-dots-vertical"></i>
                         </button>
                         <div
-                          class="popover"
+                          type="popover"
                           css="${css`
                             display: flex;
                             flex-direction: column;
@@ -1353,7 +1353,7 @@ export default async (application: Application): Promise<void> => {
                           >
                             Copy conversation permanent link
                           </button>
-                          <div class="popover">Copied</div>
+                          <div type="popover">Copied</div>
                           $${mayEditCourseConversation
                             ? html`
                                 <button
@@ -1405,7 +1405,7 @@ export default async (application: Application): Promise<void> => {
                                     Reuse conversation in another course
                                   </button>
                                   <div
-                                    class="popover"
+                                    type="popover"
                                     css="${css`
                                       display: flex;
                                       flex-direction: column;
@@ -1589,7 +1589,7 @@ export default async (application: Application): Promise<void> => {
                               > <i class="bi bi-chevron-down"></i>
                             </button>
                             <div
-                              class="popover"
+                              type="popover"
                               css="${css`
                                 display: flex;
                                 flex-direction: column;
@@ -1715,7 +1715,7 @@ export default async (application: Application): Promise<void> => {
                                 > <i class="bi bi-chevron-down"></i>
                               </button>
                               <div
-                                class="popover"
+                                type="popover"
                                 css="${css`
                                   display: flex;
                                   flex-direction: column;
