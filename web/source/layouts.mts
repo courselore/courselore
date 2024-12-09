@@ -507,7 +507,7 @@ export default async (application: Application): Promise<void> => {
                                 ${course.name}
                               </div>
                               $${(() => {
-                                const courseInformation = [
+                                const courseInformationHTML = [
                                   course.courseState === "courseStateArchived"
                                     ? html`<span
                                         css="${css`
@@ -532,7 +532,7 @@ export default async (application: Application): Promise<void> => {
                                       courseInformationPart !== "",
                                   )
                                   .join(" · ");
-                                return courseInformation !== html``
+                                return courseInformationHTML !== html``
                                   ? html`
                                       <div
                                         css="${css`
@@ -558,7 +558,7 @@ export default async (application: Application): Promise<void> => {
                                           }
                                         `}"
                                       >
-                                        $${courseInformation}
+                                        $${courseInformationHTML}
                                       </div>
                                     `
                                   : html``;
