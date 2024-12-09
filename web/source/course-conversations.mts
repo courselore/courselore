@@ -1342,18 +1342,14 @@ export default async (application: Application): Promise<void> => {
                             type="button"
                             class="button button--rectangle button--transparent button--dropdown-menu"
                             javascript="${javascript`
-                              const popover = javascript.popover({ element: this, trigger: "none" });
                               this.onclick = async () => {
                                 await navigator.clipboard.writeText(${`https://${application.configuration.hostname}/courses/${request.state.course.publicId}/conversations/${request.state.courseConversation.publicId}`});
-                                popover.showPopover();
-                                await utilities.sleep(1000);
-                                popover.hidePopover();
+                                this.closest('[type~="popover"]').hidePopover();
                               };
                             `}"
                           >
                             Copy conversation permanent link
                           </button>
-                          <div type="popover">Copied</div>
                           $${mayEditCourseConversation
                             ? html`
                                 <button
