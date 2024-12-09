@@ -1422,7 +1422,13 @@ export default async (application: Application): Promise<void> => {
                                           ).toString()}"
                                           class="button button--rectangle button--transparent button--dropdown-menu"
                                         >
-                                          ${course.name}
+                                          <div
+                                            css="${css`
+                                              font-weight: 500;
+                                            `}"
+                                          >
+                                            ${course.name}
+                                          </div>
                                           $${typeof course.information ===
                                           "string"
                                             ? html`

@@ -425,21 +425,13 @@ export default async (application: Application): Promise<void> => {
                   >
                     <a
                       href="/courses/${request.state.course.publicId}/"
-                      class="button button--rectangle button--transparent ${request.URL.pathname.match(
-                        new RegExp("^/courses/[0-9]+/settings$"),
-                      ) === null
-                        ? "button--blue"
-                        : ""} button--dropdown-menu"
+                      class="button button--rectangle button--transparent button--dropdown-menu"
                     >
                       Conversations
                     </a>
                     <a
                       href="/courses/${request.state.course.publicId}/settings"
-                      class="button button--rectangle button--transparent ${request.URL.pathname.match(
-                        new RegExp("^/courses/[0-9]+/settings$"),
-                      ) !== null
-                        ? "button--blue"
-                        : ""} button--dropdown-menu"
+                      class="button button--rectangle button--transparent button--dropdown-menu"
                     >
                       Course settings
                     </a>
@@ -701,11 +693,7 @@ export default async (application: Application): Promise<void> => {
                     ? html`
                         <a
                           href="/system"
-                          class="button button--rectangle button--transparent ${request.URL.pathname.match(
-                            new RegExp("^/system$"),
-                          ) !== null
-                            ? "button--blue"
-                            : ""} button--dropdown-menu"
+                          class="button button--rectangle button--transparent button--dropdown-menu"
                         >
                           System settings
                         </a>
@@ -713,11 +701,7 @@ export default async (application: Application): Promise<void> => {
                     : html``}
                   <a
                     href="/settings"
-                    class="button button--rectangle button--transparent ${request.URL.pathname.match(
-                      new RegExp("^/settings$"),
-                    ) !== null
-                      ? "button--blue"
-                      : ""} button--dropdown-menu"
+                    class="button button--rectangle button--transparent button--dropdown-menu"
                   >
                     User settings
                   </a>
