@@ -1718,12 +1718,6 @@ export default async (application: Application): Promise<void> => {
                                 <button
                                   type="button"
                                   class="button button--rectangle button--transparent button--dropdown-menu"
-                                  css="${css`
-                                    color: light-dark(
-                                      var(--color--red--500),
-                                      var(--color--red--500)
-                                    );
-                                  `}"
                                   javascript="${javascript`
                                     this.onclick = () => {
                                       this.closest('[key="courseConversation--header"]').querySelector('[name="questionResolved"][value="false"]').click();
@@ -1735,12 +1729,6 @@ export default async (application: Application): Promise<void> => {
                                 <button
                                   type="button"
                                   class="button button--rectangle button--transparent button--dropdown-menu"
-                                  css="${css`
-                                    color: light-dark(
-                                      var(--color--green--500),
-                                      var(--color--green--500)
-                                    );
-                                  `}"
                                   javascript="${javascript`
                                     this.onclick = () => {
                                       this.closest('[key="courseConversation--header"]').querySelector('[name="questionResolved"][value="true"]').click();
