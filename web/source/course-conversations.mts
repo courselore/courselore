@@ -1325,225 +1325,209 @@ export default async (application: Application): Promise<void> => {
                             );
                           `}"
                           javascript="${javascript`
-                            javascript.tippy({
-                              event,
-                              element: this,
-                              placement: "bottom-end",
-                              interactive: true,
-                              trigger: "click",
-                              content: ${html`
-                                <div
-                                  css="${css`
-                                    display: flex;
-                                    flex-direction: column;
-                                    gap: var(--space--2);
-                                  `}"
-                                >
-                                  <button
-                                    type="button"
-                                    class="button button--rectangle button--transparent button--dropdown-menu"
-                                    javascript="${javascript`
-                                      this.onclick = async () => {
-                                        await navigator.clipboard.writeText(${`https://${application.configuration.hostname}/courses/${request.state.course.publicId}/conversations/${request.state.courseConversation.publicId}`});
-                                        javascript.tippy({
-                                          element: this,
-                                          elementProperty: "copiedTippy",
-                                          trigger: "manual",
-                                          content: "Copied",
-                                        }).show();
-                                        await utilities.sleep(1000);
-                                        this.copiedTippy.hide();
-                                      };
-                                    `}"
-                                  >
-                                    Copy conversation permanent link
-                                  </button>
-                                  $${mayEditCourseConversation
-                                    ? html`
-                                        <button
-                                          type="button"
-                                          class="button button--rectangle button--transparent button--dropdown-menu"
-                                          javascript="${javascript`
-                                            this.onclick = () => {
-                                              this.closest('[key="courseConversation--header"]').querySelector('[key="courseConversation--header--title--show"]').hidden = true;
-                                              this.closest('[key="courseConversation--header"]').querySelector('[key="courseConversation--header--title--edit"]').hidden = false;
-                                              Tippy.hideAll();
-                                              this.closest('[key="courseConversation--header"]').querySelector('[key="courseConversation--header--title--edit"] [name="title"]').focus();
-                                            };
-                                          `}"
-                                        >
-                                          Edit conversation title
-                                        </button>
-                                      `
-                                    : html``}
-                                  $${(() => {
-                                    const courses = application.database.all<{
-                                      publicId: string;
-                                      name: string;
-                                      information: string | null;
-                                    }>(
-                                      sql`
-                                        select
-                                          "courses"."publicId" as "publicId",
-                                          "courses"."name" as "name",
-                                          "courses"."information" as "information"
-                                        from "courses"
-                                        join "courseParticipations" on
-                                          "courses"."id" = "courseParticipations"."course" and
-                                          "courseParticipations"."user" = ${request.state.user.id}
-                                        where
-                                          "courses"."id" != ${request.state.course.id} and
-                                          "courses"."courseState" = 'courseStateActive'
-                                        order by "courseParticipations"."id" desc;
-                                      `,
-                                    );
-                                    return courses.length > 0
-                                      ? html`
-                                          <button
-                                            type="button"
-                                            class="button button--rectangle button--transparent button--dropdown-menu"
-                                            javascript="${javascript`
-                                              javascript.tippy({
-                                                event,
-                                                element: this,
-                                                placement: "bottom-end",
-                                                interactive: true,
-                                                trigger: "click",
-                                                content: ${html`
-                                                  <div
-                                                    css="${css`
-                                                      display: flex;
-                                                      flex-direction: column;
-                                                      gap: var(--space--2);
-                                                    `}"
-                                                  >
-                                                    $${courses.map(
-                                                      (course) => html`
-                                                        <a
-                                                          href="/courses/${course.publicId}/conversations/new?${new URLSearchParams(
-                                                            {
-                                                              "reuse.course":
-                                                                request.state
-                                                                  .course!
-                                                                  .publicId,
-                                                              "reuse.courseConversation":
-                                                                request.state
-                                                                  .courseConversation!
-                                                                  .publicId,
-                                                            },
-                                                          ).toString()}"
-                                                          class="button button--rectangle button--transparent button--dropdown-menu"
-                                                        >
-                                                          ${course.name}
-                                                          $${typeof course.information ===
-                                                          "string"
-                                                            ? html`
-                                                                <span
-                                                                  css="${css`
-                                                                    font-size: var(
-                                                                      --font-size--3
-                                                                    );
-                                                                    line-height: var(
-                                                                      --font-size--3--line-height
-                                                                    );
-                                                                    font-weight: 600;
-                                                                    color: light-dark(
-                                                                      var(
-                                                                        --color--slate--600
-                                                                      ),
-                                                                      var(
-                                                                        --color--slate--400
-                                                                      )
-                                                                    );
-                                                                  `}"
-                                                                >
-                                                                  (${course.information})
-                                                                </span>
-                                                              `
-                                                            : html``}
-                                                        </a>
-                                                      `,
-                                                    )}
-                                                  </div>
-                                                `},
-                                              });
-                                            `}"
-                                          >
-                                            Reuse conversation in another course
-                                          </button>
-                                        `
-                                      : html``;
-                                  })()}
-                                  $${mayEditCourseConversation &&
-                                  request.state.courseParticipation
-                                    .courseParticipationRole ===
-                                    "courseParticipationRoleInstructor"
-                                    ? html`
-                                        <button
-                                          type="button"
-                                          class="button button--rectangle button--transparent button--dropdown-menu"
-                                          javascript="${javascript`
-                                            javascript.tippy({
-                                              event,
-                                              element: this,
-                                              theme: "red",
-                                              placement: "bottom-end",
-                                              interactive: true,
-                                              trigger: "click",
-                                              content: ${html`
-                                                <div
-                                                  type="form"
-                                                  method="DELETE"
-                                                  action="/courses/${request
-                                                    .state.course
-                                                    .publicId}/conversations/${request
-                                                    .state.courseConversation
-                                                    .publicId}"
-                                                  css="${css`
-                                                    display: flex;
-                                                    flex-direction: column;
-                                                    gap: var(--space--2);
-                                                  `}"
-                                                >
-                                                  <div>
-                                                    <i
-                                                      class="bi bi-exclamation-triangle-fill"
-                                                    ></i
-                                                    > This action cannot be
-                                                    reverted.
-                                                  </div>
-                                                  <div>
-                                                    <button
-                                                      type="submit"
-                                                      class="button button--rectangle button--red"
-                                                      css="${css`
-                                                        font-size: var(
-                                                          --font-size--3
-                                                        );
-                                                        line-height: var(
-                                                          --font-size--3--line-height
-                                                        );
-                                                      `}"
-                                                    >
-                                                      Delete conversation
-                                                    </button>
-                                                  </div>
-                                                </div>
-                                              `},
-                                            });
-                                          `}"
-                                        >
-                                          Delete conversation
-                                        </button>
-                                      `
-                                    : html``}
-                                </div>
-                              `},
-                            });
+                            javascript.popover({ element: this, trigger: "click" });
                           `}"
                         >
                           <i class="bi bi-three-dots-vertical"></i>
                         </button>
+                        <div
+                          class="popover"
+                          css="${css`
+                            display: flex;
+                            flex-direction: column;
+                            gap: var(--space--2);
+                          `}"
+                        >
+                          <button
+                            type="button"
+                            class="button button--rectangle button--transparent button--dropdown-menu"
+                            javascript="${javascript`
+                              const popover = javascript.popover({ element: this, trigger: "none" });
+                              this.onclick = async () => {
+                                await navigator.clipboard.writeText(${`https://${application.configuration.hostname}/courses/${request.state.course.publicId}/conversations/${request.state.courseConversation.publicId}`});
+                                popover.showPopover();
+                                await utilities.sleep(1000);
+                                popover.hidePopover();
+                              };
+                            `}"
+                          >
+                            Copy conversation permanent link
+                          </button>
+                          <div class="popover">Copied</div>
+                          $${mayEditCourseConversation
+                            ? html`
+                                <button
+                                  type="button"
+                                  class="button button--rectangle button--transparent button--dropdown-menu"
+                                  javascript="${javascript`
+                                    this.onclick = () => {
+                                      this.closest('[key="courseConversation--header"]').querySelector('[key="courseConversation--header--title--show"]').hidden = true;
+                                      this.closest('[key="courseConversation--header"]').querySelector('[key="courseConversation--header--title--edit"]').hidden = false;
+                                      this.closest('[key="courseConversation--header"]').querySelector('[key="courseConversation--header--title--edit"] [name="title"]').focus();
+                                    };
+                                  `}"
+                                >
+                                  Edit conversation title
+                                </button>
+                              `
+                            : html``}
+                          $${(() => {
+                            const courses = application.database.all<{
+                              publicId: string;
+                              name: string;
+                              information: string | null;
+                            }>(
+                              sql`
+                                select
+                                  "courses"."publicId" as "publicId",
+                                  "courses"."name" as "name",
+                                  "courses"."information" as "information"
+                                from "courses"
+                                join "courseParticipations" on
+                                  "courses"."id" = "courseParticipations"."course" and
+                                  "courseParticipations"."user" = ${request.state.user.id}
+                                where
+                                  "courses"."id" != ${request.state.course.id} and
+                                  "courses"."courseState" = 'courseStateActive'
+                                order by "courseParticipations"."id" desc;
+                              `,
+                            );
+                            return courses.length > 0
+                              ? html`
+                                  <button
+                                    type="button"
+                                    class="button button--rectangle button--transparent button--dropdown-menu"
+                                    javascript="${javascript`
+                                      javascript.tippy({
+                                        event,
+                                        element: this,
+                                        placement: "bottom-end",
+                                        interactive: true,
+                                        trigger: "click",
+                                        content: ${html`
+                                          <div
+                                            css="${css`
+                                              display: flex;
+                                              flex-direction: column;
+                                              gap: var(--space--2);
+                                            `}"
+                                          >
+                                            $${courses.map(
+                                              (course) => html`
+                                                <a
+                                                  href="/courses/${course.publicId}/conversations/new?${new URLSearchParams(
+                                                    {
+                                                      "reuse.course":
+                                                        request.state.course!
+                                                          .publicId,
+                                                      "reuse.courseConversation":
+                                                        request.state
+                                                          .courseConversation!
+                                                          .publicId,
+                                                    },
+                                                  ).toString()}"
+                                                  class="button button--rectangle button--transparent button--dropdown-menu"
+                                                >
+                                                  ${course.name}
+                                                  $${typeof course.information ===
+                                                  "string"
+                                                    ? html`
+                                                        <span
+                                                          css="${css`
+                                                            font-size: var(
+                                                              --font-size--3
+                                                            );
+                                                            line-height: var(
+                                                              --font-size--3--line-height
+                                                            );
+                                                            font-weight: 600;
+                                                            color: light-dark(
+                                                              var(
+                                                                --color--slate--600
+                                                              ),
+                                                              var(
+                                                                --color--slate--400
+                                                              )
+                                                            );
+                                                          `}"
+                                                        >
+                                                          (${course.information})
+                                                        </span>
+                                                      `
+                                                    : html``}
+                                                </a>
+                                              `,
+                                            )}
+                                          </div>
+                                        `},
+                                      });
+                                    `}"
+                                  >
+                                    Reuse conversation in another course
+                                  </button>
+                                `
+                              : html``;
+                          })()}
+                          $${mayEditCourseConversation &&
+                          request.state.courseParticipation
+                            .courseParticipationRole ===
+                            "courseParticipationRoleInstructor"
+                            ? html`
+                                <button
+                                  type="button"
+                                  class="button button--rectangle button--transparent button--dropdown-menu"
+                                  javascript="${javascript`
+                                    javascript.tippy({
+                                      event,
+                                      element: this,
+                                      theme: "red",
+                                      placement: "bottom-end",
+                                      interactive: true,
+                                      trigger: "click",
+                                      content: ${html`
+                                        <div
+                                          type="form"
+                                          method="DELETE"
+                                          action="/courses/${request.state
+                                            .course
+                                            .publicId}/conversations/${request
+                                            .state.courseConversation.publicId}"
+                                          css="${css`
+                                            display: flex;
+                                            flex-direction: column;
+                                            gap: var(--space--2);
+                                          `}"
+                                        >
+                                          <div>
+                                            <i
+                                              class="bi bi-exclamation-triangle-fill"
+                                            ></i
+                                            > This action cannot be reverted.
+                                          </div>
+                                          <div>
+                                            <button
+                                              type="submit"
+                                              class="button button--rectangle button--red"
+                                              css="${css`
+                                                font-size: var(--font-size--3);
+                                                line-height: var(
+                                                  --font-size--3--line-height
+                                                );
+                                              `}"
+                                            >
+                                              Delete conversation
+                                            </button>
+                                          </div>
+                                        </div>
+                                      `},
+                                    });
+                                  `}"
+                                >
+                                  Delete conversation
+                                </button>
+                              `
+                            : html``}
+                        </div>
                       </div>
                     </div>
                     <div
