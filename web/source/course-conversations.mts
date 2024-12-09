@@ -1395,7 +1395,7 @@ export default async (application: Application): Promise<void> => {
                                     type="button"
                                     class="button button--rectangle button--transparent button--dropdown-menu"
                                     javascript="${javascript`
-                                      javascript.popover({ element: this, trigger: "click", placement: "bottom-start" });
+                                      javascript.popover({ element: this, trigger: "click" });
                                     `}"
                                   >
                                     Reuse conversation in another course
@@ -1466,7 +1466,7 @@ export default async (application: Application): Promise<void> => {
                                   type="button"
                                   class="button button--rectangle button--transparent button--dropdown-menu"
                                   javascript="${javascript`
-                                    javascript.popover({ element: this, trigger: "click", placement: "bottom-start" });
+                                    javascript.popover({ element: this, trigger: "click" });
                                   `}"
                                 >
                                   Delete conversation
@@ -1787,96 +1787,7 @@ export default async (application: Application): Promise<void> => {
                               type="button"
                               class="button button--rectangle button--transparent"
                               javascript="${javascript`
-                                javascript.tippy({
-                                  event,
-                                  element: this,
-                                  placement: "bottom-start",
-                                  interactive: true,
-                                  trigger: "click",
-                                  content: ${html`
-                                    <div
-                                      css="${css`
-                                        display: flex;
-                                        flex-direction: column;
-                                        gap: var(--space--2);
-                                      `}"
-                                    >
-                                      <div
-                                        type="form"
-                                        method="PATCH"
-                                        action="/courses/${request.state.course
-                                          .publicId}/conversations/${request
-                                          .state.courseConversation.publicId}"
-                                      >
-                                        <input
-                                          type="hidden"
-                                          name="courseConversationVisibility"
-                                          value="courseConversationVisibilityEveryone"
-                                        />
-                                        <button
-                                          type="button"
-                                          class="button button--rectangle button--transparent $${request
-                                            .state.courseConversation
-                                            .courseConversationVisibility ===
-                                          "courseConversationVisibilityEveryone"
-                                            ? "button--blue"
-                                            : ""} button--dropdown-menu"
-                                        >
-                                          Everyone
-                                        </button>
-                                      </div>
-                                      <div
-                                        type="form"
-                                        method="PATCH"
-                                        action="/courses/${request.state.course
-                                          .publicId}/conversations/${request
-                                          .state.courseConversation.publicId}"
-                                      >
-                                        <input
-                                          type="hidden"
-                                          name="courseConversationVisibility"
-                                          value="courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
-                                        />
-                                        <button
-                                          type="button"
-                                          class="button button--rectangle button--transparent $${request
-                                            .state.courseConversation
-                                            .courseConversationVisibility ===
-                                          "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
-                                            ? "button--blue"
-                                            : ""} button--dropdown-menu"
-                                        >
-                                          Instructors and selected course
-                                          participants
-                                        </button>
-                                      </div>
-                                      <div
-                                        type="form"
-                                        method="PATCH"
-                                        action="/courses/${request.state.course
-                                          .publicId}/conversations/${request
-                                          .state.courseConversation.publicId}"
-                                      >
-                                        <input
-                                          type="hidden"
-                                          name="courseConversationVisibility"
-                                          value="courseConversationVisibilityCourseConversationParticipations"
-                                        />
-                                        <button
-                                          type="button"
-                                          class="button button--rectangle button--transparent $${request
-                                            .state.courseConversation
-                                            .courseConversationVisibility ===
-                                          "courseConversationVisibilityCourseConversationParticipations"
-                                            ? "button--blue"
-                                            : ""} button--dropdown-menu"
-                                        >
-                                          Selected course participants
-                                        </button>
-                                      </div>
-                                    </div>
-                                  `},
-                                });
+                                javascript.popover({ element: this, trigger: "click" });
                               `}"
                             >
                               <span
@@ -1887,22 +1798,105 @@ export default async (application: Application): Promise<void> => {
                                   );
                                 `}"
                                 >Visibility:</span
-                              >  ${request.state.courseConversation
-                                .courseConversationVisibility ===
-                              "courseConversationVisibilityEveryone"
-                                ? "Everyone"
-                                : request.state.courseConversation
-                                      .courseConversationVisibility ===
-                                    "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
-                                  ? "Instructors and selected course participants"
-                                  : request.state.courseConversation
-                                        .courseConversationVisibility ===
-                                      "courseConversationVisibilityCourseConversationParticipations"
-                                    ? "Selected course participants"
-                                    : (() => {
-                                        throw new Error();
-                                      })()} <i class="bi bi-chevron-down"></i>
+                              >  <input
+                                type="radio"
+                                name="courseConversationVisibility"
+                                value="courseConversationVisibilityEveryone"
+                                required
+                                $${request.state.courseConversation
+                                  .courseConversationVisibility ===
+                                "courseConversationVisibilityEveryone"
+                                  ? html`checked`
+                                  : html``}
+                                hidden
+                              /><span
+                                css="${css`
+                                  :not(:checked) + & {
+                                    display: none;
+                                  }
+                                `}"
+                                >Everyone</span
+                              ><input
+                                type="radio"
+                                name="courseConversationVisibility"
+                                value="courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
+                                required
+                                $${request.state.courseConversation
+                                  .courseConversationVisibility ===
+                                "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
+                                  ? html`checked`
+                                  : html``}
+                                hidden
+                              /><span
+                                css="${css`
+                                  :not(:checked) + & {
+                                    display: none;
+                                  }
+                                `}"
+                                >Instructors and selected course
+                                participants</span
+                              ><input
+                                type="radio"
+                                name="courseConversationVisibility"
+                                value="courseConversationVisibilityCourseConversationParticipations"
+                                required
+                                $${request.state.courseConversation
+                                  .courseConversationVisibility ===
+                                "courseConversationVisibilityCourseConversationParticipations"
+                                  ? html`checked`
+                                  : html``}
+                                hidden
+                              /><span
+                                css="${css`
+                                  :not(:checked) + & {
+                                    display: none;
+                                  }
+                                `}"
+                                >Selected course participants</span
+                              > <i class="bi bi-chevron-down"></i>
                             </button>
+                            <div
+                              type="popover"
+                              css="${css`
+                                display: flex;
+                                flex-direction: column;
+                                gap: var(--space--2);
+                              `}"
+                            >
+                              <button
+                                type="button"
+                                class="button button--rectangle button--transparent button--dropdown-menu"
+                                javascript="${javascript`
+                                  this.onclick = () => {
+                                    this.closest('[key="courseConversation--header"]').querySelector('[name="courseConversationVisibility"][value="courseConversationVisibilityEveryone"]').click();
+                                  };
+                                `}"
+                              >
+                                Everyone
+                              </button>
+                              <button
+                                type="button"
+                                class="button button--rectangle button--transparent button--dropdown-menu"
+                                javascript="${javascript`
+                                  this.onclick = () => {
+                                    this.closest('[key="courseConversation--header"]').querySelector('[name="courseConversationVisibility"][value="courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"]').click();
+                                  };
+                                `}"
+                              >
+                                Instructors and selected course participants
+                              </button>
+                              <button
+                                type="button"
+                                class="button button--rectangle button--transparent button--dropdown-menu"
+                                javascript="${javascript`
+                                  this.onclick = () => {
+                                    this.closest('[key="courseConversation--header"]').querySelector('[name="courseConversationVisibility"][value="courseConversationVisibilityCourseConversationParticipations"]').click();
+                                  };
+                                `}"
+                              >
+                                Selected course participants
+                              </button>
+                            </div>
                           `
                         : html`
                             <div>
