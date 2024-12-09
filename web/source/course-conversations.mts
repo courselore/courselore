@@ -1389,13 +1389,13 @@ export default async (application: Application): Promise<void> => {
                                 order by "courseParticipations"."id" desc;
                               `,
                             );
-                            return courses.length > 0
+                            return 0 < courses.length
                               ? html`
                                   <button
                                     type="button"
                                     class="button button--rectangle button--transparent button--dropdown-menu"
                                     javascript="${javascript`
-                                      javascript.popover({ element: this, trigger: "click", placement: "bottom-end" });
+                                      javascript.popover({ element: this, trigger: "click", placement: "bottom-start" });
                                     `}"
                                   >
                                     Reuse conversation in another course
@@ -1466,54 +1466,45 @@ export default async (application: Application): Promise<void> => {
                                   type="button"
                                   class="button button--rectangle button--transparent button--dropdown-menu"
                                   javascript="${javascript`
-                                    javascript.tippy({
-                                      event,
-                                      element: this,
-                                      theme: "red",
-                                      placement: "bottom-end",
-                                      interactive: true,
-                                      trigger: "click",
-                                      content: ${html`
-                                        <div
-                                          type="form"
-                                          method="DELETE"
-                                          action="/courses/${request.state
-                                            .course
-                                            .publicId}/conversations/${request
-                                            .state.courseConversation.publicId}"
-                                          css="${css`
-                                            display: flex;
-                                            flex-direction: column;
-                                            gap: var(--space--2);
-                                          `}"
-                                        >
-                                          <div>
-                                            <i
-                                              class="bi bi-exclamation-triangle-fill"
-                                            ></i
-                                            > This action cannot be reverted.
-                                          </div>
-                                          <div>
-                                            <button
-                                              type="submit"
-                                              class="button button--rectangle button--red"
-                                              css="${css`
-                                                font-size: var(--font-size--3);
-                                                line-height: var(
-                                                  --font-size--3--line-height
-                                                );
-                                              `}"
-                                            >
-                                              Delete conversation
-                                            </button>
-                                          </div>
-                                        </div>
-                                      `},
-                                    });
+                                    javascript.popover({ element: this, trigger: "click", placement: "bottom-start" });
                                   `}"
                                 >
                                   Delete conversation
                                 </button>
+                                <div
+                                  type="form popover"
+                                  method="DELETE"
+                                  action="/courses/${request.state.course
+                                    .publicId}/conversations/${request.state
+                                    .courseConversation.publicId}"
+                                  class="popover--red"
+                                  css="${css`
+                                    display: flex;
+                                    flex-direction: column;
+                                    gap: var(--space--2);
+                                  `}"
+                                >
+                                  <div>
+                                    <i
+                                      class="bi bi-exclamation-triangle-fill"
+                                    ></i
+                                    > This action cannot be reverted.
+                                  </div>
+                                  <div>
+                                    <button
+                                      type="submit"
+                                      class="button button--rectangle button--red"
+                                      css="${css`
+                                        font-size: var(--font-size--3);
+                                        line-height: var(
+                                          --font-size--3--line-height
+                                        );
+                                      `}"
+                                    >
+                                      Delete conversation
+                                    </button>
+                                  </div>
+                                </div>
                               `
                             : html``}
                         </div>
