@@ -1185,7 +1185,8 @@ export default async (application: Application): Promise<void> => {
                 `}"
                 javascript="${javascript`
                   this.oninput = () => {
-                    this.querySelector('[key="courseConversation--header--update"]').hidden = !javascript.isModified(this);
+                    for (const element of this.querySelectorAll(".hide-on-not-modified"))
+                      element.hidden = !javascript.isModified(this);
                   };
                 `}"
               >
@@ -2106,6 +2107,8 @@ export default async (application: Application): Promise<void> => {
                               `,
                             )}
                             <div
+                              hidden
+                              class="hide-on-not-modified"
                               css="${css`
                                 font-size: var(--font-size--3);
                                 line-height: var(--font-size--3--line-height);
@@ -2161,8 +2164,8 @@ export default async (application: Application): Promise<void> => {
                         : html``;
                     })()}
                     <div
-                      key="courseConversation--header--update"
                       hidden
+                      class="hide-on-not-modified"
                       css="${css`
                         font-size: var(--font-size--3);
                         line-height: var(--font-size--3--line-height);
@@ -3327,6 +3330,11 @@ export default async (application: Application): Promise<void> => {
                         css="${css`
                           font-size: var(--font-size--3);
                           line-height: var(--font-size--3--line-height);
+                          font-weight: 600;
+                          color: light-dark(
+                            var(--color--slate--600),
+                            var(--color--slate--400)
+                          );
                           display: flex;
                           align-items: baseline;
                           gap: var(--space--4);
@@ -3352,81 +3360,7 @@ export default async (application: Application): Promise<void> => {
                                 type="button"
                                 class="button button--rectangle button--transparent"
                                 javascript="${javascript`
-                                  javascript.tippy({
-                                    event,
-                                    element: this,
-                                    placement: "top-start",
-                                    interactive: true,
-                                    trigger: "click",
-                                    content: ${html`
-                                      <div
-                                        css="${css`
-                                          display: flex;
-                                          flex-direction: column;
-                                          gap: var(--space--2);
-                                        `}"
-                                      >
-                                        <button
-                                          type="button"
-                                          class="button button--rectangle button--transparent button--dropdown-menu"
-                                          javascript="${javascript`
-                                            this.onclick = () => {
-                                              this.closest("form").querySelector('[name="courseConversationMessageType"][value="courseConversationMessageTypeMessage"]').checked = true;
-                                              for (const element of this.parentElement.querySelectorAll("button")) element.classList.remove("button--blue");
-                                              this.classList.add("button--blue");
-                                              Tippy.hideAll();
-                                            };
-                                          `}"
-                                        >
-                                          Message
-                                        </button>
-                                        <button
-                                          type="button"
-                                          class="button button--rectangle button--transparent button--dropdown-menu"
-                                          css="${css`
-                                            &:not(.button--blue) {
-                                              color: light-dark(
-                                                var(--color--green--500),
-                                                var(--color--green--500)
-                                              );
-                                            }
-                                          `}"
-                                          javascript="${javascript`
-                                            this.onclick = () => {
-                                              this.closest("form").querySelector('[name="courseConversationMessageType"][value="courseConversationMessageTypeAnswer"]').checked = true;
-                                              for (const element of this.parentElement.querySelectorAll("button")) element.classList.remove("button--blue");
-                                              this.classList.add("button--blue");
-                                              Tippy.hideAll();
-                                            };
-                                          `}"
-                                        >
-                                          Answer
-                                        </button>
-                                        <button
-                                          type="button"
-                                          class="button button--rectangle button--transparent button--dropdown-menu"
-                                          css="${css`
-                                            &:not(.button--blue) {
-                                              color: light-dark(
-                                                var(--color--red--500),
-                                                var(--color--red--500)
-                                              );
-                                            }
-                                          `}"
-                                          javascript="${javascript`
-                                            this.onclick = () => {
-                                              this.closest("form").querySelector('[name="courseConversationMessageType"][value="courseConversationMessageTypeFollowUpQuestion"]').checked = true;
-                                              for (const element of this.parentElement.querySelectorAll("button")) element.classList.remove("button--blue");
-                                              this.classList.add("button--blue");
-                                              Tippy.hideAll();
-                                            };
-                                          `}"
-                                        >
-                                          Follow-up question
-                                        </button>
-                                      </div>
-                                    `},
-                                  });
+                                  javascript.popover({ element: this, trigger: "click" });
                                 `}"
                               >
                                 <span
@@ -3483,6 +3417,48 @@ export default async (application: Application): Promise<void> => {
                                   >Follow-up question</span
                                 > <i class="bi bi-chevron-down"></i>
                               </button>
+                              <div
+                                type="popover"
+                                css="${css`
+                                  display: flex;
+                                  flex-direction: column;
+                                  gap: var(--space--2);
+                                `}"
+                              >
+                                <button
+                                  type="button"
+                                  class="button button--rectangle button--transparent button--dropdown-menu"
+                                  javascript="${javascript`
+                                    this.onclick = () => {
+                                      this.closest('[key="courseConversation--header"]').querySelector('[name="courseConversationMessageType"][value="courseConversationMessageTypeMessage"]').click();
+                                    };
+                                  `}"
+                                >
+                                  Message
+                                </button>
+                                <button
+                                  type="button"
+                                  class="button button--rectangle button--transparent button--dropdown-menu"
+                                  javascript="${javascript`
+                                    this.onclick = () => {
+                                      this.closest('[key="courseConversation--header"]').querySelector('[name="courseConversationMessageType"][value="courseConversationMessageTypeAnswer"]').click();
+                                    };
+                                  `}"
+                                >
+                                  Answer
+                                </button>
+                                <button
+                                  type="button"
+                                  class="button button--rectangle button--transparent button--dropdown-menu"
+                                  javascript="${javascript`
+                                    this.onclick = () => {
+                                      this.closest('[key="courseConversation--header"]').querySelector('[name="courseConversationMessageType"][value="courseConversationMessageTypeFollowUpQuestion"]').click();
+                                    };
+                                  `}"
+                                >
+                                  Follow-up question
+                                </button>
+                              </div>
                             `;
                           if (
                             request.state.courseParticipation
@@ -3558,11 +3534,6 @@ export default async (application: Application): Promise<void> => {
                                 <div
                                   css="${css`
                                     flex: 1;
-                                    font-weight: 600;
-                                    color: light-dark(
-                                      var(--color--slate--600),
-                                      var(--color--slate--400)
-                                    );
                                     display: flex;
                                     align-items: baseline;
                                     flex-wrap: wrap;
