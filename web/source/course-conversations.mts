@@ -3557,14 +3557,7 @@ export default async (application: Application): Promise<void> => {
                                 type="button"
                                 class="button button--rectangle button--transparent"
                                 javascript="${javascript`
-                                  javascript.tippy({
-                                    event,
-                                    element: this,
-                                    placement: "bottom-start",
-                                    interactive: true,
-                                    trigger: "click",
-                                    content: ${html` TODO `},
-                                  });
+                                  javascript.popover({ element: this, trigger: "click" });
                                 `}"
                               >
                                 <span
@@ -3575,8 +3568,97 @@ export default async (application: Application): Promise<void> => {
                                     );
                                   `}"
                                   >Anonymity:</span
-                                >  None <i class="bi bi-chevron-down"></i>
+                                >  <input
+                                  type="radio"
+                                  name="courseConversationMessageAnonymity"
+                                  value="courseConversationMessageAnonymityNone"
+                                  checked
+                                  hidden
+                                /><span
+                                  css="${css`
+                                    :not(:checked) + & {
+                                      display: none;
+                                    }
+                                  `}"
+                                  >None</span
+                                ><input
+                                  type="radio"
+                                  name="courseConversationMessageAnonymity"
+                                  value="courseConversationMessageAnonymityCourseParticipationRoleStudents"
+                                  hidden
+                                /><span
+                                  css="${css`
+                                    :not(:checked) + & {
+                                      display: none;
+                                    }
+                                  `}"
+                                  >Anonymous to students</span
+                                >$${request.state.course
+                                  .courseParticipationRoleStudentsAnonymityAllowed ===
+                                "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleInstructors"
+                                  ? html`<input
+                                        type="radio"
+                                        name="courseConversationMessageAnonymity"
+                                        value="courseConversationMessageAnonymityCourseParticipationRoleInstructors"
+                                        hidden
+                                      /><span
+                                        css="${css`
+                                          :not(:checked) + & {
+                                            display: none;
+                                          }
+                                        `}"
+                                        >Anonymous to instructors</span
+                                      >`
+                                  : html``} <i class="bi bi-chevron-down"></i>
                               </button>
+                              <div
+                                type="popover"
+                                css="${css`
+                                  display: flex;
+                                  flex-direction: column;
+                                  gap: var(--space--2);
+                                `}"
+                              >
+                                <button
+                                  type="button"
+                                  class="button button--rectangle button--transparent button--dropdown-menu"
+                                  javascript="${javascript`
+                                    this.onclick = () => {
+                                      this.closest('[type~="form"]').querySelector('[name="courseConversationMessageAnonymity"][value="courseConversationMessageAnonymityNone"]').click();
+                                    };
+                                  `}"
+                                >
+                                  None
+                                </button>
+                                <button
+                                  type="button"
+                                  class="button button--rectangle button--transparent button--dropdown-menu"
+                                  javascript="${javascript`
+                                    this.onclick = () => {
+                                      this.closest('[type~="form"]').querySelector('[name="courseConversationMessageAnonymity"][value="courseConversationMessageAnonymityCourseParticipationRoleStudents"]').click();
+                                    };
+                                  `}"
+                                >
+                                  Anonymous to students
+                                </button>
+                                $${request.state.course
+                                  .courseParticipationRoleStudentsAnonymityAllowed ===
+                                "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleInstructors"
+                                  ? html`
+                                      <button
+                                        type="button"
+                                        class="button button--rectangle button--transparent button--dropdown-menu"
+                                        javascript="${javascript`
+                                          this.onclick = () => {
+                                            this.closest('[type~="form"]').querySelector('[name="courseConversationMessageAnonymity"][value="courseConversationMessageAnonymityCourseParticipationRoleInstructors"]').click();
+                                          };
+                                        `}"
+                                      >
+                                        Anonymous to instructors
+                                      </button>
+                                    `
+                                  : html``}
+                              </div>
                             `;
                           return courseConversationMessageNewOptionsHTML !==
                             html``
