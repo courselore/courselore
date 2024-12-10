@@ -1302,8 +1302,8 @@ export default async (application: Application): Promise<void> => {
                                     `}"
                                     javascript="${javascript`
                                       this.onclick = () => {
-                                        this.closest('[key="courseConversation--header"]').querySelector('[key="courseConversation--header--title--show"]').hidden = false;
-                                        this.closest('[key="courseConversation--header"]').querySelector('[key="courseConversation--header--title--edit"]').hidden = true;
+                                        this.closest('[type~="form"]').querySelector('[key="courseConversation--header--title--show"]').hidden = false;
+                                        this.closest('[type~="form"]').querySelector('[key="courseConversation--header--title--edit"]').hidden = true;
                                         javascript.reset(this.closest('[key="courseConversation--header--title--edit"]'));
                                       };
                                     `}"
@@ -1358,9 +1358,9 @@ export default async (application: Application): Promise<void> => {
                                   class="button button--rectangle button--transparent button--dropdown-menu"
                                   javascript="${javascript`
                                     this.onclick = () => {
-                                      this.closest('[key="courseConversation--header"]').querySelector('[key="courseConversation--header--title--show"]').hidden = true;
-                                      this.closest('[key="courseConversation--header"]').querySelector('[key="courseConversation--header--title--edit"]').hidden = false;
-                                      this.closest('[key="courseConversation--header"]').querySelector('[key="courseConversation--header--title--edit"] [name="title"]').focus();
+                                      this.closest('[type~="form"]').querySelector('[key="courseConversation--header--title--show"]').hidden = true;
+                                      this.closest('[type~="form"]').querySelector('[key="courseConversation--header--title--edit"]').hidden = false;
+                                      this.closest('[type~="form"]').querySelector('[key="courseConversation--header--title--edit"] [name="title"]').focus();
                                       this.closest('[type~="popover"]').hidePopover();
                                     };
                                   `}"
@@ -1595,7 +1595,7 @@ export default async (application: Application): Promise<void> => {
                                 class="button button--rectangle button--transparent button--dropdown-menu"
                                 javascript="${javascript`
                                   this.onclick = () => {
-                                    this.closest('[key="courseConversation--header"]').querySelector('[name="courseConversationType"][value="courseConversationTypeNote"]').click();
+                                    this.closest('[type~="form"]').querySelector('[name="courseConversationType"][value="courseConversationTypeNote"]').click();
                                   };
                                 `}"
                               >
@@ -1606,7 +1606,7 @@ export default async (application: Application): Promise<void> => {
                                 class="button button--rectangle button--transparent button--dropdown-menu"
                                 javascript="${javascript`
                                   this.onclick = () => {
-                                    this.closest('[key="courseConversation--header"]').querySelector('[name="courseConversationType"][value="courseConversationTypeQuestion"]').click();
+                                    this.closest('[type~="form"]').querySelector('[name="courseConversationType"][value="courseConversationTypeQuestion"]').click();
                                   };
                                 `}"
                               >
@@ -1721,7 +1721,7 @@ export default async (application: Application): Promise<void> => {
                                   class="button button--rectangle button--transparent button--dropdown-menu"
                                   javascript="${javascript`
                                     this.onclick = () => {
-                                      this.closest('[key="courseConversation--header"]').querySelector('[name="questionResolved"][value="false"]').click();
+                                      this.closest('[type~="form"]').querySelector('[name="questionResolved"][value="false"]').click();
                                     };
                                   `}"
                                 >
@@ -1732,7 +1732,7 @@ export default async (application: Application): Promise<void> => {
                                   class="button button--rectangle button--transparent button--dropdown-menu"
                                   javascript="${javascript`
                                     this.onclick = () => {
-                                      this.closest('[key="courseConversation--header"]').querySelector('[name="questionResolved"][value="true"]').click();
+                                      this.closest('[type~="form"]').querySelector('[name="questionResolved"][value="true"]').click();
                                     };
                                   `}"
                                 >
@@ -1869,7 +1869,7 @@ export default async (application: Application): Promise<void> => {
                                 class="button button--rectangle button--transparent button--dropdown-menu"
                                 javascript="${javascript`
                                   this.onclick = () => {
-                                    this.closest('[key="courseConversation--header"]').querySelector('[name="courseConversationVisibility"][value="courseConversationVisibilityEveryone"]').click();
+                                    this.closest('[type~="form"]').querySelector('[name="courseConversationVisibility"][value="courseConversationVisibilityEveryone"]').click();
                                   };
                                 `}"
                               >
@@ -1880,7 +1880,7 @@ export default async (application: Application): Promise<void> => {
                                 class="button button--rectangle button--transparent button--dropdown-menu"
                                 javascript="${javascript`
                                   this.onclick = () => {
-                                    this.closest('[key="courseConversation--header"]').querySelector('[name="courseConversationVisibility"][value="courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"]').click();
+                                    this.closest('[type~="form"]').querySelector('[name="courseConversationVisibility"][value="courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"]').click();
                                   };
                                 `}"
                               >
@@ -1891,7 +1891,7 @@ export default async (application: Application): Promise<void> => {
                                 class="button button--rectangle button--transparent button--dropdown-menu"
                                 javascript="${javascript`
                                   this.onclick = () => {
-                                    this.closest('[key="courseConversation--header"]').querySelector('[name="courseConversationVisibility"][value="courseConversationVisibilityCourseConversationParticipations"]').click();
+                                    this.closest('[type~="form"]').querySelector('[name="courseConversationVisibility"][value="courseConversationVisibilityCourseConversationParticipations"]').click();
                                   };
                                 `}"
                               >
@@ -1997,7 +1997,7 @@ export default async (application: Application): Promise<void> => {
                                 class="button button--rectangle button--transparent button--dropdown-menu"
                                 javascript="${javascript`
                                   this.onclick = () => {
-                                    this.closest('[key="courseConversation--header"]').querySelector('[name="pinned"][value="false"]').click();
+                                    this.closest('[type~="form"]').querySelector('[name="pinned"][value="false"]').click();
                                   };
                                 `}"
                               >
@@ -2008,7 +2008,7 @@ export default async (application: Application): Promise<void> => {
                                 class="button button--rectangle button--transparent button--dropdown-menu"
                                 javascript="${javascript`
                                   this.onclick = () => {
-                                    this.closest('[key="courseConversation--header"]').querySelector('[name="pinned"][value="true"]').click();
+                                    this.closest('[type~="form"]').querySelector('[name="pinned"][value="true"]').click();
                                   };
                                 `}"
                               >
@@ -3375,6 +3375,7 @@ export default async (application: Application): Promise<void> => {
                                   type="radio"
                                   name="courseConversationMessageType"
                                   value="courseConversationMessageTypeMessage"
+                                  checked
                                   hidden
                                 /><span
                                   css="${css`
@@ -3430,7 +3431,7 @@ export default async (application: Application): Promise<void> => {
                                   class="button button--rectangle button--transparent button--dropdown-menu"
                                   javascript="${javascript`
                                     this.onclick = () => {
-                                      this.closest('[key="courseConversation--header"]').querySelector('[name="courseConversationMessageType"][value="courseConversationMessageTypeMessage"]').click();
+                                      this.closest('[type~="form"]').querySelector('[name="courseConversationMessageType"][value="courseConversationMessageTypeMessage"]').click();
                                     };
                                   `}"
                                 >
@@ -3441,7 +3442,7 @@ export default async (application: Application): Promise<void> => {
                                   class="button button--rectangle button--transparent button--dropdown-menu"
                                   javascript="${javascript`
                                     this.onclick = () => {
-                                      this.closest('[key="courseConversation--header"]').querySelector('[name="courseConversationMessageType"][value="courseConversationMessageTypeAnswer"]').click();
+                                      this.closest('[type~="form"]').querySelector('[name="courseConversationMessageType"][value="courseConversationMessageTypeAnswer"]').click();
                                     };
                                   `}"
                                 >
@@ -3452,7 +3453,7 @@ export default async (application: Application): Promise<void> => {
                                   class="button button--rectangle button--transparent button--dropdown-menu"
                                   javascript="${javascript`
                                     this.onclick = () => {
-                                      this.closest('[key="courseConversation--header"]').querySelector('[name="courseConversationMessageType"][value="courseConversationMessageTypeFollowUpQuestion"]').click();
+                                      this.closest('[type~="form"]').querySelector('[name="courseConversationMessageType"][value="courseConversationMessageTypeFollowUpQuestion"]').click();
                                     };
                                   `}"
                                 >
