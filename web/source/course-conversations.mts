@@ -1934,71 +1934,7 @@ export default async (application: Application): Promise<void> => {
                               type="button"
                               class="button button--rectangle button--transparent"
                               javascript="${javascript`
-                                javascript.tippy({
-                                  event,
-                                  element: this,
-                                  placement: "bottom-start",
-                                  interactive: true,
-                                  trigger: "click",
-                                  content: ${html`
-                                    <div
-                                      css="${css`
-                                        display: flex;
-                                        flex-direction: column;
-                                        gap: var(--space--2);
-                                      `}"
-                                    >
-                                      <div
-                                        type="form"
-                                        method="PATCH"
-                                        action="/courses/${request.state.course
-                                          .publicId}/conversations/${request
-                                          .state.courseConversation.publicId}"
-                                      >
-                                        <input
-                                          type="hidden"
-                                          name="pinned"
-                                          value="false"
-                                        />
-                                        <button
-                                          type="button"
-                                          class="button button--rectangle button--transparent $${Boolean(
-                                            request.state.courseConversation
-                                              .pinned,
-                                          ) === false
-                                            ? "button--blue"
-                                            : ""} button--dropdown-menu"
-                                        >
-                                          Unpinned
-                                        </button>
-                                      </div>
-                                      <div
-                                        type="form"
-                                        method="PATCH"
-                                        action="/courses/${request.state.course
-                                          .publicId}/conversations/${request
-                                          .state.courseConversation.publicId}"
-                                      >
-                                        <input
-                                          type="hidden"
-                                          name="pinned"
-                                          value="true"
-                                        />
-                                        <button
-                                          type="button"
-                                          class="button button--rectangle button--transparent $${Boolean(
-                                            request.state.courseConversation
-                                              .pinned,
-                                          ) === true
-                                            ? "button--blue"
-                                            : ""} button--dropdown-menu"
-                                        >
-                                          Pinned
-                                        </button>
-                                      </div>
-                                    </div>
-                                  `},
-                                });
+                                javascript.popover({ element: this, trigger: "click" });
                               `}"
                             >
                               <span
@@ -2009,14 +1945,78 @@ export default async (application: Application): Promise<void> => {
                                   );
                                 `}"
                                 >Pin:</span
-                              >  ${Boolean(
-                                request.state.courseConversation.pinned,
-                              ) === false
-                                ? "Unpinned"
-                                : "Pinned"} <i class="bi bi-chevron-down"></i>
+                              >  <input
+                                type="radio"
+                                name="pinned"
+                                value="false"
+                                required
+                                $${Boolean(
+                                  request.state.courseConversation.pinned,
+                                ) === false
+                                  ? html`checked`
+                                  : html``}
+                                hidden
+                              /><span
+                                css="${css`
+                                  :not(:checked) + & {
+                                    display: none;
+                                  }
+                                `}"
+                                >Unpinned</span
+                              ><input
+                                type="radio"
+                                name="pinned"
+                                value="true"
+                                required
+                                $${Boolean(
+                                  request.state.courseConversation.pinned,
+                                ) === true
+                                  ? html`checked`
+                                  : html``}
+                                hidden
+                              /><span
+                                css="${css`
+                                  :not(:checked) + & {
+                                    display: none;
+                                  }
+                                `}"
+                                >Pinned</span
+                              > <i class="bi bi-chevron-down"></i>
                             </button>
+                            <div
+                              type="popover"
+                              css="${css`
+                                display: flex;
+                                flex-direction: column;
+                                gap: var(--space--2);
+                              `}"
+                            >
+                              <button
+                                type="button"
+                                class="button button--rectangle button--transparent button--dropdown-menu"
+                                javascript="${javascript`
+                                  this.onclick = () => {
+                                    this.closest('[key="courseConversation--header"]').querySelector('[name="pinned"][value="false"]').click();
+                                  };
+                                `}"
+                              >
+                                Unpinned
+                              </button>
+                              <button
+                                type="button"
+                                class="button button--rectangle button--transparent button--dropdown-menu"
+                                javascript="${javascript`
+                                  this.onclick = () => {
+                                    this.closest('[key="courseConversation--header"]').querySelector('[name="pinned"][value="true"]').click();
+                                  };
+                                `}"
+                              >
+                                Pinned
+                              </button>
+                            </div>
                           `
-                        : Boolean(request.state.courseConversation.pinned)
+                        : Boolean(request.state.courseConversation.pinned) ===
+                            true
                           ? html`
                               <div>
                                 <span
