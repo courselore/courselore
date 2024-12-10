@@ -3471,14 +3471,7 @@ export default async (application: Application): Promise<void> => {
                                 type="button"
                                 class="button button--rectangle button--transparent"
                                 javascript="${javascript`
-                                  javascript.tippy({
-                                    event,
-                                    element: this,
-                                    placement: "bottom-start",
-                                    interactive: true,
-                                    trigger: "click",
-                                    content: ${html` TODO `},
-                                  });
+                                  javascript.popover({ element: this, trigger: "click" });
                                 `}"
                               >
                                 <span
@@ -3489,8 +3482,64 @@ export default async (application: Application): Promise<void> => {
                                     );
                                   `}"
                                   >Visibility:</span
-                                >  Everyone <i class="bi bi-chevron-down"></i>
+                                >  <input
+                                  type="radio"
+                                  name="courseConversationMessageVisibility"
+                                  value="courseConversationMessageVisibilityEveryone"
+                                  checked
+                                  hidden
+                                /><span
+                                  css="${css`
+                                    :not(:checked) + & {
+                                      display: none;
+                                    }
+                                  `}"
+                                  >Everyone</span
+                                ><input
+                                  type="radio"
+                                  name="courseConversationMessageVisibility"
+                                  value="courseConversationMessageVisibilityCourseParticipationRoleInstructors"
+                                  hidden
+                                /><span
+                                  css="${css`
+                                    :not(:checked) + & {
+                                      display: none;
+                                    }
+                                  `}"
+                                  >Instructors</span
+                                > <i class="bi bi-chevron-down"></i>
                               </button>
+                              <div
+                                type="popover"
+                                css="${css`
+                                  display: flex;
+                                  flex-direction: column;
+                                  gap: var(--space--2);
+                                `}"
+                              >
+                                <button
+                                  type="button"
+                                  class="button button--rectangle button--transparent button--dropdown-menu"
+                                  javascript="${javascript`
+                                    this.onclick = () => {
+                                      this.closest('[type~="form"]').querySelector('[name="courseConversationMessageVisibility"][value="courseConversationMessageVisibilityEveryone"]').click();
+                                    };
+                                  `}"
+                                >
+                                  Everyone
+                                </button>
+                                <button
+                                  type="button"
+                                  class="button button--rectangle button--transparent button--dropdown-menu"
+                                  javascript="${javascript`
+                                    this.onclick = () => {
+                                      this.closest('[type~="form"]').querySelector('[name="courseConversationMessageVisibility"][value="courseConversationMessageVisibilityCourseParticipationRoleInstructors"]').click();
+                                    };
+                                  `}"
+                                >
+                                  Instructors
+                                </button>
+                              </div>
                             `;
                           if (
                             request.state.courseParticipation
