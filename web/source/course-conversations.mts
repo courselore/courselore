@@ -90,11 +90,11 @@ export default async (application: Application): Promise<void> => {
                 transition-timing-function: var(
                   --transition-timing-function--ease-in-out
                 );
-                [key="main--two-column-layout"]:not([state~="sidebar--open"])
+                [key~="main--two-column-layout"]:not([state~="sidebar--open"])
                   & {
                   transform: translateX(-101%);
                 }
-                [key="main--two-column-layout"][state~="sidebar--open"] & {
+                [key~="main--two-column-layout"][state~="sidebar--open"] & {
                   box-shadow: var(--box-shadow--25);
                 }
               }
@@ -124,7 +124,7 @@ export default async (application: Application): Promise<void> => {
                 `}"
                 javascript="${javascript`
                   this.onclick = () => {
-                    javascript.stateRemove(document.querySelector('[key="main--two-column-layout"]'), "sidebar--open");
+                    javascript.stateRemove(document.querySelector('[key~="main--two-column-layout"]'), "sidebar--open");
                   };
                 `}"
               >
@@ -201,7 +201,7 @@ export default async (application: Application): Promise<void> => {
                   javascript="${javascript`
                     javascript.popover({ element: this });
                     this.onclick = () => {
-                      this.closest('[key="sidebar--menu--search-and-filter"]').querySelector('[name="search.courseConversations"]').focus();
+                      this.closest('[key~="sidebar--menu--search-and-filter"]').querySelector('[name="search.courseConversations"]').focus();
                     };
                   `}"
                 >
@@ -506,26 +506,26 @@ export default async (application: Application): Promise<void> => {
                             summary = \`\${javascript.localizeDate(firstCourseConversationMessageCreatedAtWeekStart.toISOString())} — \${javascript.localizeDate(firstCourseConversationMessageCreatedAtWeekEnd.toISOString())}\`;
                           }
                           (
-                            this.closest('[key="courseConversations"]').querySelector(\`[key~="courseConversations--group"][key~="\${key}"]\`) ??
-                            javascript.execute(this.closest('[key="courseConversations"]').insertAdjacentElement("beforeend", javascript.stringToElement(html\`
+                            this.closest('[key~="courseConversations"]').querySelector(\`[key~="courseConversations--group"][key~="\${key}"]\`) ??
+                            javascript.execute(this.closest('[key~="courseConversations"]').insertAdjacentElement("beforeend", javascript.stringToElement(html\`
                               <details
                                 key="courseConversations--group \${key}"
                                 javascript="\${${javascript`
                                   this.ontoggle = () => {
                                     if (this.getAttribute("open") === null)
-                                      this.closest('[key="courseConversations"]').courseConversationsGroupsOpen.delete(this.getAttribute("key"));
+                                      this.closest('[key~="courseConversations"]').courseConversationsGroupsOpen.delete(this.getAttribute("key"));
                                     else
-                                      this.closest('[key="courseConversations"]').courseConversationsGroupsOpen.add(this.getAttribute("key"));
+                                      this.closest('[key~="courseConversations"]').courseConversationsGroupsOpen.add(this.getAttribute("key"));
                                   };
                                   if (
                                     (
-                                      this.closest('[key="courseConversations"]').courseConversationsGroupsFirstGrouping &&
+                                      this.closest('[key~="courseConversations"]').courseConversationsGroupsFirstGrouping &&
                                       (() => {
                                         const indexOf = [...this.parentElement.querySelectorAll('[key~="courseConversations--group"]:not([key~="pinned"])')].indexOf(this);
                                         return 0 <= indexOf && indexOf < 3;
                                       })()
                                     ) ||
-                                    this.closest('[key="courseConversations"]').courseConversationsGroupsOpen.has(this.getAttribute("key"))
+                                    this.closest('[key~="courseConversations"]').courseConversationsGroupsOpen.has(this.getAttribute("key"))
                                   )
                                     this.setAttribute("open", "");
                                 `}}"
@@ -694,8 +694,8 @@ export default async (application: Application): Promise<void> => {
                                       margin-left: var(--space---2-5);
                                     `}"
                                     javascript="${javascript`
-                                      this.closest('[key~="courseConversations--group"]').querySelector('[key="courseConversations--group--view"]').classList.remove("hidden");
-                                      if (this.closest('[key="courseConversations"]').courseConversationsGroupsFirstGrouping && ${Boolean(courseConversation.pinned)})
+                                      this.closest('[key~="courseConversations--group"]').querySelector('[key~="courseConversations--group--view"]').classList.remove("hidden");
+                                      if (this.closest('[key~="courseConversations"]').courseConversationsGroupsFirstGrouping && ${Boolean(courseConversation.pinned)})
                                         this.closest('[key~="courseConversations--group"]').setAttribute("open", "");
                                     `}"
                                   >
@@ -956,7 +956,7 @@ export default async (application: Application): Promise<void> => {
                 --transition-timing-function--ease-in-out
               );
               @media (max-width: 899px) {
-                [key="main--two-column-layout"][state~="sidebar--open"] & {
+                [key~="main--two-column-layout"][state~="sidebar--open"] & {
                   visibility: visible;
                   opacity: var(--opacity--30);
                 }
@@ -964,7 +964,7 @@ export default async (application: Application): Promise<void> => {
             `}"
             javascript="${javascript`
               this.onclick = () => {
-                javascript.stateRemove(document.querySelector('[key="main--two-column-layout"]'), "sidebar--open");
+                javascript.stateRemove(document.querySelector('[key~="main--two-column-layout"]'), "sidebar--open");
               };
             `}"
           ></div>
@@ -1007,7 +1007,7 @@ export default async (application: Application): Promise<void> => {
                   javascript.stateAdd(document.querySelector("body"), "noninteractive");
                   document.querySelector("body").style.cursor = "col-resize";
                   document.onpointermove = (event) => {
-                    this.closest('[key="main--two-column-layout"]').querySelector('[key~="sidebar"]').style.setProperty("--width", String(Math.min(Math.max(Math.floor(event.clientX), 60 * 4), 112 * 4)) + "px");
+                    this.closest('[key~="main--two-column-layout"]').querySelector('[key~="sidebar"]').style.setProperty("--width", String(Math.min(Math.max(Math.floor(event.clientX), 60 * 4), 112 * 4)) + "px");
                   };
                   document.onpointerup = () => {
                     javascript.stateRemove(this, "active");
@@ -1019,7 +1019,7 @@ export default async (application: Application): Promise<void> => {
                   };
                 };
                 this.ondblclick = (event) => {
-                  this.closest('[key="main--two-column-layout"]').querySelector('[key~="sidebar"]').style.setProperty("--width", String(80 * 4) +"px");
+                  this.closest('[key~="main--two-column-layout"]').querySelector('[key~="sidebar"]').style.setProperty("--width", String(80 * 4) +"px");
                   updateSidebarWidth();
                 };
                 const updateSidebarWidth = utilities.foregroundJob(async () => {
@@ -1027,7 +1027,7 @@ export default async (application: Application): Promise<void> => {
                     redirect: "manual",
                     method: "PATCH",
                     headers: { "CSRF-Protection": "true" },
-                    body: new URLSearchParams({ sidebarWidth: this.closest('[key="main--two-column-layout"]').querySelector('[key~="sidebar"]').style.getPropertyValue("--width").slice(0, -"px".length) }),
+                    body: new URLSearchParams({ sidebarWidth: this.closest('[key~="main--two-column-layout"]').querySelector('[key~="sidebar"]').style.getPropertyValue("--width").slice(0, -"px".length) }),
                   });
                 });
               `}"
@@ -1302,9 +1302,9 @@ export default async (application: Application): Promise<void> => {
                                     `}"
                                     javascript="${javascript`
                                       this.onclick = () => {
-                                        this.closest('[type~="form"]').querySelector('[key="courseConversation--header--title--show"]').hidden = false;
-                                        this.closest('[type~="form"]').querySelector('[key="courseConversation--header--title--edit"]').hidden = true;
-                                        javascript.reset(this.closest('[key="courseConversation--header--title--edit"]'));
+                                        this.closest('[type~="form"]').querySelector('[key~="courseConversation--header--title--show"]').hidden = false;
+                                        this.closest('[type~="form"]').querySelector('[key~="courseConversation--header--title--edit"]').hidden = true;
+                                        javascript.reset(this.closest('[key~="courseConversation--header--title--edit"]'));
                                       };
                                     `}"
                                   >
@@ -1358,9 +1358,9 @@ export default async (application: Application): Promise<void> => {
                                   class="button button--rectangle button--transparent button--dropdown-menu"
                                   javascript="${javascript`
                                     this.onclick = () => {
-                                      this.closest('[type~="form"]').querySelector('[key="courseConversation--header--title--show"]').hidden = true;
-                                      this.closest('[type~="form"]').querySelector('[key="courseConversation--header--title--edit"]').hidden = false;
-                                      this.closest('[type~="form"]').querySelector('[key="courseConversation--header--title--edit"] [name="title"]').focus();
+                                      this.closest('[type~="form"]').querySelector('[key~="courseConversation--header--title--show"]').hidden = true;
+                                      this.closest('[type~="form"]').querySelector('[key~="courseConversation--header--title--edit"]').hidden = false;
+                                      this.closest('[type~="form"]').querySelector('[key~="courseConversation--header--title--edit"] [name="title"]').focus();
                                       this.closest('[type~="popover"]').hidePopover();
                                     };
                                   `}"
@@ -2197,12 +2197,12 @@ export default async (application: Application): Promise<void> => {
                       courseConversationMessagePublicIds.add(entry.target.courseConversationMessagePublicId);
                       this.courseConversationMessageViewsIntersectionObserver.unobserve(entry.target);
                       setTimeout(() => {
-                        entry.target.querySelector('[key="courseConversationMessageView"]').classList.add("viewed");
+                        entry.target.querySelector('[key~="courseConversationMessageView"]').classList.add("viewed");
                       }, 1000);
                     }
                     updateCourseConversationMessageViews();
                   }, {
-                    root: this.closest('[key="main--main"]'),
+                    root: this.closest('[key~="main--main"]'),
                     threshold: 1,
                   });
                   const updateCourseConversationMessageViews = utilities.foregroundJob(async () => {
@@ -2385,7 +2385,7 @@ export default async (application: Application): Promise<void> => {
                                 `}"
                                 javascript="${javascript`
                                   if (${!courseConversationMessageView}) {
-                                    this.closest('[key="courseConversationMessages"]').courseConversationMessageViewsIntersectionObserver.observe(this);
+                                    this.closest('[key~="courseConversationMessages"]').courseConversationMessageViewsIntersectionObserver.observe(this);
                                     this.courseConversationMessagePublicId = ${courseConversationMessage.publicId};
                                   }
                                 `}"
@@ -2628,11 +2628,11 @@ export default async (application: Application): Promise<void> => {
                                                   class="button button--rectangle button--transparent button--dropdown-menu"
                                                   javascript="${javascript`
                                                     this.onclick = () => {
-                                                      this.closest('[key="courseConversationMessage--main"]').querySelector('[key="courseConversationMessage--main--content--show"]').hidden = true;
-                                                      this.closest('[key="courseConversationMessage--main"]').querySelector('[key="courseConversationMessage--main--content--edit"]').hidden = false;
-                                                      this.closest('[key="courseConversationMessage--main"]').querySelector('[key="courseConversationMessage--main--footer"]').hidden = true;
+                                                      this.closest('[key~="courseConversationMessage--main"]').querySelector('[key~="courseConversationMessage--main--content--show"]').hidden = true;
+                                                      this.closest('[key~="courseConversationMessage--main"]').querySelector('[key~="courseConversationMessage--main--content--edit"]').hidden = false;
+                                                      this.closest('[key~="courseConversationMessage--main"]').querySelector('[key~="courseConversationMessage--main--footer"]').hidden = true;
                                                       Tippy.hideAll();
-                                                      this.closest('[key="courseConversationMessage--main"]').querySelector('[key="courseConversationMessage--main--content--edit"] [name="TODO"]').focus();
+                                                      this.closest('[key~="courseConversationMessage--main"]').querySelector('[key~="courseConversationMessage--main--content--edit"] [name="TODO"]').focus();
                                                     };
                                                   `}"
                                                 >

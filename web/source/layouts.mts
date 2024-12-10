@@ -348,7 +348,7 @@ export default async (application: Application): Promise<void> => {
                   `}"
                   javascript="${javascript`
                     this.onclick = () => {
-                      javascript.stateAdd(document.querySelector('[key="main--two-column-layout"]'), "sidebar--open");
+                      javascript.stateAdd(document.querySelector('[key~="main--two-column-layout"]'), "sidebar--open");
                     };
                   `}"
                 >
