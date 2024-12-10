@@ -2056,88 +2056,91 @@ export default async (application: Application): Promise<void> => {
                             type="button"
                             class="button button--rectangle button--transparent"
                             javascript="${javascript`
-                              javascript.tippy({
-                                event,
-                                element: this,
-                                placement: "bottom-start",
-                                interactive: true,
-                                trigger: "click",
-                                content: ${html`
-                                  <div
-                                    type="form"
-                                    method="PUT"
-                                    action="/courses/${request.state.course
-                                      .publicId}/conversations/${request.state
-                                      .courseConversation.publicId}/taggings"
-                                    css="${css`
-                                      display: flex;
-                                      flex-direction: column;
-                                      gap: var(--space--2);
-                                    `}"
-                                  >
-                                    $${request.state.courseConversationsTags.map(
-                                      (courseConversationsTag) => html`
-                                        <label
-                                          class="button button--rectangle button--transparent button--dropdown-menu"
-                                        >
-                                          <input
-                                            type="checkbox"
-                                            name="tags[]"
-                                            value="${courseConversationsTag.publicId}"
-                                            required
-                                            $${courseConversationsTagsWithTagging.some(
-                                              (
-                                                courseConversationsTagWithTagging,
-                                              ) =>
-                                                courseConversationsTag.id ===
-                                                courseConversationsTagWithTagging.id,
-                                            )
-                                              ? html`checked`
-                                              : html``}
-                                            class="input--checkbox"
-                                          />  ${courseConversationsTag.name}
-                                        </label>
-                                      `,
-                                    )}
-                                    <div>
-                                      <button
-                                        type="button"
-                                        class="button button--rectangle button--blue"
-                                        css="${css`
-                                          font-size: var(--font-size--3);
-                                          line-height: var(
-                                            --font-size--3--line-height
-                                          );
-                                        `}"
-                                      >
-                                        Update tags
-                                      </button>
-                                    </div>
-                                  </div>
-                                `},
-                              });
+                              javascript.popover({ element: this, trigger: "click", remainOpenWhileFocused: true });
                             `}"
                           >
-                            Tags <i class="bi bi-chevron-down"></i>
+                            <span
+                              css="${css`
+                                color: light-dark(
+                                  var(--color--slate--500),
+                                  var(--color--slate--500)
+                                );
+                              `}"
+                              >Tags: <i class="bi bi-chevron-down"></i
+                            ></span>
                           </button>
+                          <div
+                            type="popover"
+                            css="${css`
+                              display: flex;
+                              flex-direction: column;
+                              gap: var(--space--2);
+                            `}"
+                          >
+                            $${request.state.courseConversationsTags.map(
+                              (courseConversationsTag) => html`
+                                <label
+                                  class="button button--rectangle button--transparent button--dropdown-menu"
+                                >
+                                  <input
+                                    type="checkbox"
+                                    name="tags[]"
+                                    value="${courseConversationsTag.publicId}"
+                                    $${Boolean(
+                                      request.state.course!
+                                        .courseConversationRequiresTagging,
+                                    )
+                                      ? html`required`
+                                      : html``}
+                                    required
+                                    $${courseConversationsTagsWithTagging.some(
+                                      (courseConversationsTagWithTagging) =>
+                                        courseConversationsTag.id ===
+                                        courseConversationsTagWithTagging.id,
+                                    )
+                                      ? html`checked`
+                                      : html``}
+                                    class="input--checkbox"
+                                  />  ${courseConversationsTag.name}
+                                </label>
+                              `,
+                            )}
+                            <div
+                              css="${css`
+                                font-size: var(--font-size--3);
+                                line-height: var(--font-size--3--line-height);
+                              `}"
+                            >
+                              <button
+                                type="submit"
+                                class="button button--rectangle button--blue"
+                              >
+                                Update
+                              </button>
+                            </div>
+                          </div>
                         `;
                       else if (courseConversationsTagsWithTagging.length > 0)
-                        courseConversationsTagsHTML += html` <div>Tags</div> `;
+                        courseConversationsTagsHTML += html`
+                          <span
+                            css="${css`
+                              color: light-dark(
+                                var(--color--slate--500),
+                                var(--color--slate--500)
+                              );
+                            `}"
+                            >Tags:</span
+                          >
+                        `;
                       if (courseConversationsTagsWithTagging.length > 0)
                         courseConversationsTagsHTML += html`
-                          <div
-                            css="${css`
-                              flex: 1;
-                              font-weight: 400;
-                            `}"
-                          >
-                            ${courseConversationsTagsWithTagging
-                              .map(
-                                (courseConversationsTag) =>
-                                  courseConversationsTag.name,
-                              )
-                              .join(" · ")}
-                          </div>
+                            
+                          ${courseConversationsTagsWithTagging
+                            .map(
+                              (courseConversationsTag) =>
+                                courseConversationsTag.name,
+                            )
+                            .join(" · ")}
                         `;
                       return courseConversationsTagsHTML !== html``
                         ? html`
@@ -2150,9 +2153,6 @@ export default async (application: Application): Promise<void> => {
                                   var(--color--slate--600),
                                   var(--color--slate--400)
                                 );
-                                display: flex;
-                                gap: var(--space--4);
-                                align-items: baseline;
                               `}"
                             >
                               $${courseConversationsTagsHTML}
