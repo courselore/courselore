@@ -2189,8 +2189,10 @@ export default async (application: Application): Promise<void> => {
                   gap: var(--space--4);
                 `}"
                 javascript="${javascript`
-                  // TODO: Prevent leaking intersection observer.
-                  this.courseConversationMessageViewsIntersectionObserver?.disconnect();
+                  this.onremove = () => {
+                    this.courseConversationMessageViewsIntersectionObserver?.disconnect();
+                  };
+                  this.onremove();
                   this.courseConversationMessageViewsIntersectionObserver = new IntersectionObserver((entries) => {
                     for (const entry of entries) {
                       if (entry.intersectionRatio !== 1) continue;
