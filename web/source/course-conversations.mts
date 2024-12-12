@@ -2199,7 +2199,7 @@ export default async (application: Application): Promise<void> => {
                       courseConversationMessagePublicIds.add(entry.target.courseConversationMessagePublicId);
                       this.courseConversationMessageViewsIntersectionObserver.unobserve(entry.target);
                       setTimeout(() => {
-                        javascript.stateAdd(entry.target.querySelector('[key~="courseConversationMessageView"]'), "viewed");
+                        javascript.stateAdd(entry.target, "viewed");
                       }, 2000);
                     }
                     updateCourseConversationMessageViews();
