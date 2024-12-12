@@ -2381,7 +2381,7 @@ export default async (application: Application): Promise<void> => {
                                     "courseConversationMessage" = ${courseConversationMessage.id} and
                                     "courseParticipation" = ${request.state.courseParticipation!.id};
                                 `,
-                              ) !== undefined
+                              ) === undefined
                                 ? html`
                                     <div
                                       key="courseConversationMessage--sidebar--courseConversationMessageView"
