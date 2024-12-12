@@ -2188,41 +2188,6 @@ export default async (application: Application): Promise<void> => {
                   flex-direction: column;
                   gap: var(--space--4);
                 `}"
-                javascript="${javascript`
-                  this.onremove = () => {
-                    this.courseConversationMessageViewsIntersectionObserver?.disconnect();
-                  };
-                  this.onremove();
-                  this.courseConversationMessageViewsIntersectionObserver = new IntersectionObserver((entries) => {
-                    for (const entry of entries) {
-                      if (entry.intersectionRatio !== 1) continue;
-                      courseConversationMessagePublicIds.add(entry.target.courseConversationMessagePublicId);
-                      this.courseConversationMessageViewsIntersectionObserver.unobserve(entry.target);
-                      setTimeout(() => {
-                        javascript.stateAdd(entry.target, "viewed");
-                      }, 2000);
-                    }
-                    updateCourseConversationMessageViews();
-                  }, {
-                    root: this.closest('[key~="main--main"]'),
-                    threshold: 1,
-                  });
-                  const updateCourseConversationMessageViews = utilities.foregroundJob(async () => {
-                    if (courseConversationMessagePublicIds.size === 0) return;
-                    const body = new URLSearchParams([...courseConversationMessagePublicIds].map(courseConversationMessagePublicId => ["courseCourseConversationMessagePublicIds[]", courseConversationMessagePublicId]));
-                    courseConversationMessagePublicIds.clear();
-                    await fetch(${`/courses/${
-                      request.state.course!.publicId
-                    }/conversations/${
-                      request.state.courseConversation!.publicId
-                    }/messages/views`}, {
-                      method: "POST",
-                      headers: { "CSRF-Protection": "true" },
-                      body,
-                    });
-                  });
-                  const courseConversationMessagePublicIds = new Set();
-                `}"
               >
                 $${(() => {
                   const firstCourseConversationMessage =
@@ -2396,20 +2361,37 @@ export default async (application: Application): Promise<void> => {
                                         transition-property: var(
                                           --transition-property--opacity
                                         );
+                                        transition-delay: 2s;
                                         transition-duration: var(
                                           --transition-duration--150
                                         );
                                         transition-timing-function: var(
                                           --transition-timing-function--ease-in-out
                                         );
-                                        [state~="viewed"] {
+                                        &[state~="viewed"] {
                                           visibility: hidden;
                                           opacity: var(--opacity--0);
                                         }
                                       `}"
                                       javascript="${javascript`
-                                        this.closest('[key~="courseConversationMessages"]').courseConversationMessageViewsIntersectionObserver.observe(this);
-                                        this.courseConversationMessagePublicId = ${courseConversationMessage.publicId};
+                                        if (this.intersectionObserver !== undefined) return;
+                                        this.intersectionObserver = new IntersectionObserver(async () => {
+                                          this.intersectionObserver.disconnect();
+                                          javascript.stateAdd(this, "viewed");
+                                          await fetch(${`/courses/${
+                                            request.state.course!.publicId
+                                          }/conversations/${
+                                            request.state.courseConversation!
+                                              .publicId
+                                          }/messages/${courseConversationMessage.publicId}/view`}, {
+                                            method: "POST",
+                                            headers: { "CSRF-Protection": "true" },
+                                          });
+                                        }, { root: this.closest('[key~="main--main"]') });
+                                        this.intersectionObserver.observe(this);
+                                        this.onremove = () => {
+                                          this.intersectionObserver.disconnect();
+                                        };
                                       `}"
                                     >
                                       <i class="bi bi-circle-fill"></i>
