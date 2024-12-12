@@ -788,19 +788,22 @@ export default async (application: Application): Promise<void> => {
                                 ? "Anonymous"
                                 : (firstCourseConversationMessageCreatedByCourseParticipationUser?.name ??
                                   "Deleted course participant")}</span
-                            >${!firstCourseConversationMessageAnonymous &&
-                            firstCourseConversationMessageCreatedByCourseParticipation?.courseParticipationRole ===
-                              "courseParticipationRoleInstructor"
-                              ? " (instructor)"
-                              : ""}${!firstCourseConversationMessageAnonymous
-                              ? firstCourseConversationMessage.courseConversationMessageAnonymity ===
-                                "courseConversationMessageAnonymityCourseParticipationRoleStudents"
-                                ? " (anonymous to students)"
-                                : firstCourseConversationMessage.courseConversationMessageAnonymity ===
-                                    "courseConversationMessageAnonymityCourseParticipationRoleInstructors"
-                                  ? " (anonymous to instructors)"
-                                  : ""
-                              : ""} ·
+                            >${!firstCourseConversationMessageAnonymous
+                              ? `${
+                                  firstCourseConversationMessageCreatedByCourseParticipation?.courseParticipationRole ===
+                                  "courseParticipationRoleInstructor"
+                                    ? " (instructor)"
+                                    : ""
+                                }${
+                                  firstCourseConversationMessage.courseConversationMessageAnonymity ===
+                                  "courseConversationMessageAnonymityCourseParticipationRoleStudents"
+                                    ? " (anonymous to students)"
+                                    : firstCourseConversationMessage.courseConversationMessageAnonymity ===
+                                        "courseConversationMessageAnonymityCourseParticipationRoleInstructors"
+                                      ? " (anonymous to instructors)"
+                                      : ""
+                                }`
+                              : ``} ·
                             <span
                               javascript="${javascript`
                                 javascript.relativizeDateTimeElement(this, ${firstCourseConversationMessage.createdAt}, { capitalize: true });
@@ -2257,9 +2260,19 @@ export default async (application: Application): Promise<void> => {
                           "courseParticipationRoleInstructor" ||
                           request.state.courseParticipation!.id ===
                             courseConversationMessage.createdByCourseParticipation);
+                      const courseConversationMessageAnonymous =
+                        courseConversationMessage.createdByCourseParticipation !==
+                          request.state.courseParticipation!.id &&
+                        ((courseConversationMessage.courseConversationMessageAnonymity ===
+                          "courseConversationMessageAnonymityCourseParticipationRoleStudents" &&
+                          request.state.courseParticipation!
+                            .courseParticipationRole ===
+                            "courseParticipationRoleStudent") ||
+                          courseConversationMessage.courseConversationMessageAnonymity ===
+                            "courseConversationMessageAnonymityCourseParticipationRoleInstructors");
                       const courseConversationMessageCreatedByCourseParticipation =
                         typeof courseConversationMessage.createdByCourseParticipation ===
-                        "number"
+                          "number" && !courseConversationMessageAnonymous
                           ? application.database.get<{
                               user: number;
                               courseParticipationRole:
@@ -2276,8 +2289,8 @@ export default async (application: Application): Promise<void> => {
                             )
                           : undefined;
                       const courseConversationMessageCreatedByUser =
-                        courseConversationMessageCreatedByCourseParticipation !==
-                        undefined
+                        typeof courseConversationMessageCreatedByCourseParticipation ===
+                        "object"
                           ? application.database.get<{
                               publicId: string;
                               name: string;
@@ -2300,10 +2313,6 @@ export default async (application: Application): Promise<void> => {
                                 | "pink"
                                 | "rose";
                               avatarImage: string | null;
-                              userRole:
-                                | "userRoleSystemAdministrator"
-                                | "userRoleStaff"
-                                | "userRoleUser";
                               lastSeenOnlineAt: string;
                             }>(
                               sql`
@@ -2312,7 +2321,6 @@ export default async (application: Application): Promise<void> => {
                                   "name",
                                   "avatarColor",
                                   "avatarImage",
-                                  "userRole",
                                   "lastSeenOnlineAt"
                                 from "users"
                                 where "id" = ${courseConversationMessageCreatedByCourseParticipation.user};
@@ -2403,19 +2411,10 @@ export default async (application: Application): Promise<void> => {
                                 key="courseConversationMessage--sidebar--userAvatar"
                               >
                                 $${application.partials.userAvatar({
-                                  user:
-                                    courseConversationMessage.courseConversationMessageAnonymity ===
-                                      "courseConversationMessageAnonymityCourseParticipationRoleInstructors" ||
-                                    (courseConversationMessage.courseConversationMessageAnonymity ===
-                                      "courseConversationMessageAnonymityCourseParticipationRoleStudents" &&
-                                      request.state.courseParticipation!
-                                        .courseParticipationRole ===
-                                        "courseParticipationRoleStudent" &&
-                                      request.state.courseParticipation!.id !==
-                                        courseConversationMessage.createdByCourseParticipation)
-                                      ? "anonymous"
-                                      : (courseConversationMessageCreatedByUser ??
-                                        "courseParticipationDeleted"),
+                                  user: courseConversationMessageAnonymous
+                                    ? "anonymous"
+                                    : (courseConversationMessageCreatedByUser ??
+                                      "courseParticipationDeleted"),
                                   size: 9,
                                 })}
                               </div>
@@ -2435,7 +2434,6 @@ export default async (application: Application): Promise<void> => {
                               css="${css`
                                 font-size: var(--font-size--3);
                                 line-height: var(--font-size--3--line-height);
-                                font-weight: 600;
                                 color: light-dark(
                                   var(--color--slate--600),
                                   var(--color--slate--400)
@@ -2452,122 +2450,118 @@ export default async (application: Application): Promise<void> => {
                               >
                                 <span
                                   css="${css`
-                                    font-weight: 700;
+                                    font-weight: 600;
                                   `}"
-                                  >${courseConversationMessage.courseConversationMessageAnonymity ===
-                                    "courseConversationMessageAnonymityCourseParticipationRoleInstructors" ||
-                                  (courseConversationMessage.courseConversationMessageAnonymity ===
-                                    "courseConversationMessageAnonymityCourseParticipationRoleStudents" &&
-                                    request.state.courseParticipation!
-                                      .courseParticipationRole ===
-                                      "courseParticipationRoleStudent" &&
-                                    request.state.courseParticipation!.id !==
-                                      courseConversationMessage.createdByCourseParticipation)
+                                  >${courseConversationMessageAnonymous
                                     ? "Anonymous"
                                     : (courseConversationMessageCreatedByUser?.name ??
                                       "Deleted course participant")}</span
-                                ><span
-                                  css="${css`
-                                    font-weight: 400;
+                                >${!courseConversationMessageAnonymous
+                                  ? `${
+                                      courseConversationMessageCreatedByCourseParticipation?.courseParticipationRole ===
+                                      "courseParticipationRoleInstructor"
+                                        ? " (instructor)"
+                                        : ""
+                                    }${
+                                      courseConversationMessage.courseConversationMessageAnonymity ===
+                                      "courseConversationMessageAnonymityCourseParticipationRoleStudents"
+                                        ? " (anonymous to students)"
+                                        : courseConversationMessage.courseConversationMessageAnonymity ===
+                                            "courseConversationMessageAnonymityCourseParticipationRoleInstructors"
+                                          ? " (anonymous to instructors)"
+                                          : ""
+                                    }`
+                                  : ``} ·
+                                <span
+                                  javascript="${javascript`
+                                    javascript.relativizeDateTimeElement(this, ${courseConversationMessage.createdAt}, { capitalize: true });
+                                    javascript.popover({ element: this });
                                   `}"
-                                  >$${courseConversationMessageCreatedByCourseParticipation?.courseParticipationRole ===
-                                  "courseParticipationRoleInstructor"
-                                    ? html` (instructor)`
-                                    : html``}$${courseConversationMessage.courseConversationMessageAnonymity ===
-                                    "courseConversationMessageAnonymityCourseParticipationRoleStudents" &&
-                                  (request.state.courseParticipation!
-                                    .courseParticipationRole ===
-                                    "courseParticipationRoleInstructor" ||
-                                    request.state.courseParticipation!.id ===
-                                      courseConversationMessage.createdByCourseParticipation)
-                                    ? html` (anonymous to students)`
-                                    : html``} ·
-                                  <time
-                                    datetime="${courseConversationMessage.createdAt}"
-                                    javascript="${javascript`
-                                      // javascript.relativizeDateTimeElement(this, { capitalize: true });
-                                    `}"
-                                  ></time
-                                  >$${typeof courseConversationMessage.updatedAt ===
-                                  "string"
-                                    ? html` (updated
-                                        <time
-                                          datetime="${courseConversationMessage.updatedAt}"
-                                          javascript="${javascript`
-                                            // javascript.relativizeDateTimeElement(this, { preposition: true });
+                                ></span>
+                                <span
+                                  type="popover"
+                                  javascript="${javascript`
+                                    this.textContent = javascript.localizeDateTime(${courseConversationMessage.createdAt});
+                                  `}"
+                                ></span>
+                                $${typeof courseConversationMessage.updatedAt ===
+                                "string"
+                                  ? html`(updated
+                                      <span
+                                        javascript="${javascript`
+                                          javascript.relativizeDateTimeElement(this, ${courseConversationMessage.updatedAt}, { preposition: true });
+                                          javascript.popover({ element: this });
+                                        `}"
+                                      ></span>
+                                      <span
+                                        type="popover"
+                                        javascript="${javascript`
+                                          this.textContent = javascript.localizeDateTime(${courseConversationMessage.updatedAt});
+                                        `}"
+                                      ></span
+                                      >)`
+                                  : html``}$${courseConversationMessage.courseConversationMessageType ===
+                                "courseConversationMessageTypeMessage"
+                                  ? html``
+                                  : courseConversationMessage.courseConversationMessageType ===
+                                      "courseConversationMessageTypeAnswer"
+                                    ? html`  ·
+                                        <span
+                                          css="${css`
+                                            color: light-dark(
+                                              var(--color--green--500),
+                                              var(--color--green--500)
+                                            );
                                           `}"
-                                        ></time
-                                        >)`
-                                    : html``}$${courseConversationMessage.courseConversationMessageType ===
-                                  "courseConversationMessageTypeMessage"
-                                    ? html``
+                                          ><span
+                                            css="${css`
+                                              font-weight: 700;
+                                            `}"
+                                            >Answer</span
+                                          >$${courseConversationMessageCreatedByCourseParticipation?.courseParticipationRole ===
+                                            "courseParticipationRoleStudent" &&
+                                          application.database.get(
+                                            sql`
+                                              select true
+                                              from "courseConversationMessageLikes"
+                                              join "courseParticipations" on
+                                                "courseConversationMessageLikes"."courseParticipation" = "courseParticipations"."id" and
+                                                "courseParticipations"."courseParticipationRole" = 'courseParticipationRoleInstructor'
+                                              where "courseConversationMessageLikes"."courseConversationMessage" = ${courseConversationMessage.id};
+                                            `,
+                                          ) !== undefined
+                                            ? html` (liked by instructor)`
+                                            : html``}</span
+                                        >`
                                     : courseConversationMessage.courseConversationMessageType ===
-                                        "courseConversationMessageTypeAnswer"
-                                      ? html`<span
-                                          > ·
+                                        "courseConversationMessageTypeFollowUpQuestion"
+                                      ? html`  ·
                                           <span
                                             css="${css`
+                                              font-weight: 700;
                                               color: light-dark(
-                                                var(--color--green--500),
-                                                var(--color--green--500)
+                                                var(--color--red--500),
+                                                var(--color--red--500)
                                               );
                                             `}"
-                                            ><span
-                                              css="${css`
-                                                font-weight: 700;
-                                              `}"
-                                              >Answer</span
-                                            >$${courseConversationMessageCreatedByCourseParticipation?.courseParticipationRole ===
-                                              "courseParticipationRoleStudent" &&
-                                            application.database.get(
-                                              sql`
-                                                select true
-                                                from "courseConversationMessageLikes"
-                                                join "courseParticipations" on
-                                                  "courseConversationMessageLikes"."courseParticipation" = "courseParticipations"."id" and
-                                                  "courseParticipations"."courseParticipationRole" = 'courseParticipationRoleInstructor'
-                                                where "courseConversationMessageLikes"."courseConversationMessage" = ${courseConversationMessage.id};
-                                              `,
-                                            ) !== undefined
-                                              ? html` (liked by instructor)`
-                                              : html``}</span
-                                          ></span
-                                        >`
-                                      : courseConversationMessage.courseConversationMessageType ===
-                                          "courseConversationMessageTypeFollowUpQuestion"
-                                        ? html`<span
-                                            > ·
-                                            <span
-                                              css="${css`
-                                                font-weight: 700;
-                                                color: light-dark(
-                                                  var(--color--red--500),
-                                                  var(--color--red--500)
-                                                );
-                                              `}"
-                                              >Follow-up question</span
-                                            ></span
+                                            >Follow-up question</span
                                           >`
-                                        : courseConversationMessage.courseConversationMessageVisibility ===
-                                            "courseConversationMessageVisibilityCourseParticipationRoleInstructors"
-                                          ? html`<span
-                                              > ·
-                                              <span
-                                                css="${css`
-                                                  font-weight: 700;
-                                                  color: light-dark(
-                                                    var(--color--blue--500),
-                                                    var(--color--blue--500)
-                                                  );
-                                                `}"
-                                                >Visible to instructors
-                                                only</span
-                                              ></span
-                                            >`
-                                          : (() => {
-                                              throw new Error();
-                                            })()}</span
-                                >
+                                      : (() => {
+                                          throw new Error();
+                                        })()}$${courseConversationMessage.courseConversationMessageVisibility ===
+                                "courseConversationMessageVisibilityCourseParticipationRoleInstructors"
+                                  ? html`  ·
+                                      <span
+                                        css="${css`
+                                          font-weight: 700;
+                                          color: light-dark(
+                                            var(--color--blue--500),
+                                            var(--color--blue--500)
+                                          );
+                                        `}"
+                                        >Visible to instructors only</span
+                                      >`
+                                  : html``}
                               </div>
                               <div
                                 key="courseConversationMessage--main--header--menu"
