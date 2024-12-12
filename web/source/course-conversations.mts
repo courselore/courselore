@@ -2361,14 +2361,19 @@ export default async (application: Application): Promise<void> => {
                             .state.courseConversation!
                             .publicId}/messages/${courseConversationMessage.publicId}"
                           css="${css`
-                            position: relative;
                             display: flex;
                             gap: var(--space--2);
                           `}"
                         >
-                          $${(() => {
-                            const courseConversationMessageView =
-                              application.database.get(
+                          <div key="courseConversationMessage--sidebar">
+                            <div
+                              css="${css`
+                                position: relative;
+                                display: flex;
+                                align-items: center;
+                              `}"
+                            >
+                              $${application.database.get(
                                 sql`
                                   select true
                                   from "courseConversationMessageViews"
@@ -2376,45 +2381,62 @@ export default async (application: Application): Promise<void> => {
                                     "courseConversationMessage" = ${courseConversationMessage.id} and
                                     "courseParticipation" = ${request.state.courseParticipation!.id};
                                 `,
-                              ) !== undefined;
-                            return html`
+                              ) !== undefined
+                                ? html`
+                                    <div
+                                      key="courseConversationMessage--sidebar--courseConversationMessageView"
+                                      css="${css`
+                                        font-size: var(--space--1-5);
+                                        color: light-dark(
+                                          var(--color--blue--500),
+                                          var(--color--blue--500)
+                                        );
+                                        position: absolute;
+                                        margin-left: var(--space---2-5);
+                                        transition-property: var(
+                                          --transition-property--opacity
+                                        );
+                                        transition-duration: var(
+                                          --transition-duration--150
+                                        );
+                                        transition-timing-function: var(
+                                          --transition-timing-function--ease-in-out
+                                        );
+                                        [state~="viewed"] {
+                                          visibility: hidden;
+                                          opacity: var(--opacity--0);
+                                        }
+                                      `}"
+                                      javascript="${javascript`
+                                        this.closest('[key~="courseConversationMessages"]').courseConversationMessageViewsIntersectionObserver.observe(this);
+                                        this.courseConversationMessagePublicId = ${courseConversationMessage.publicId};
+                                      `}"
+                                    >
+                                      <i class="bi bi-circle-fill"></i>
+                                    </div>
+                                  `
+                                : html``}
                               <div
-                                key="courseConversationMessage--courseConversationMessageView"
-                                css="${css`
-                                  position: absolute;
-                                  margin-left: var(--space---2-5);
-                                  margin-top: var(--space--4);
-                                `}"
-                                javascript="${javascript`
-                                  if (${!courseConversationMessageView}) {
-                                    this.closest('[key~="courseConversationMessages"]').courseConversationMessageViewsIntersectionObserver.observe(this);
-                                    this.courseConversationMessagePublicId = ${courseConversationMessage.publicId};
-                                  }
-                                `}"
+                                key="courseConversationMessage--sidebar--userAvatar"
                               >
-                                $${courseConversationMessageViewPartial(
-                                  courseConversationMessageView,
-                                )}
+                                $${application.partials.userAvatar({
+                                  user:
+                                    courseConversationMessage.courseConversationMessageAnonymity ===
+                                      "courseConversationMessageAnonymityCourseParticipationRoleInstructors" ||
+                                    (courseConversationMessage.courseConversationMessageAnonymity ===
+                                      "courseConversationMessageAnonymityCourseParticipationRoleStudents" &&
+                                      request.state.courseParticipation!
+                                        .courseParticipationRole ===
+                                        "courseParticipationRoleStudent" &&
+                                      request.state.courseParticipation!.id !==
+                                        courseConversationMessage.createdByCourseParticipation)
+                                      ? "anonymous"
+                                      : (courseConversationMessageCreatedByUser ??
+                                        "courseParticipationDeleted"),
+                                  size: 9,
+                                })}
                               </div>
-                            `;
-                          })()}
-                          <div key="courseConversationMessage--createdBy">
-                            $${application.partials.userAvatar({
-                              user:
-                                courseConversationMessage.courseConversationMessageAnonymity ===
-                                  "courseConversationMessageAnonymityCourseParticipationRoleInstructors" ||
-                                (courseConversationMessage.courseConversationMessageAnonymity ===
-                                  "courseConversationMessageAnonymityCourseParticipationRoleStudents" &&
-                                  request.state.courseParticipation!
-                                    .courseParticipationRole ===
-                                    "courseParticipationRoleStudent" &&
-                                  request.state.courseParticipation!.id !==
-                                    courseConversationMessage.createdByCourseParticipation)
-                                  ? "anonymous"
-                                  : (courseConversationMessageCreatedByUser ??
-                                    "courseParticipationDeleted"),
-                              size: 9,
-                            })}
+                            </div>
                           </div>
                           <div
                             key="courseConversationMessage--main"
@@ -3690,28 +3712,4 @@ export default async (application: Application): Promise<void> => {
       );
     },
   });
-
-  const courseConversationMessageViewPartial = (viewed: boolean): HTML => html`
-    <div
-      key="courseConversationMessageView"
-      class="${viewed ? "viewed" : ""}"
-      css="${css`
-        background-color: light-dark(
-          var(--color--blue--500),
-          var(--color--blue--500)
-        );
-        width: var(--space--1-5);
-        height: var(--space--1-5);
-        border-radius: var(--border-radius--circle);
-        transition-property: var(--transition-property--opacity);
-        transition-duration: var(--transition-duration--150);
-        transition-timing-function: var(
-          --transition-timing-function--ease-in-out
-        );
-        &.viewed {
-          opacity: var(--opacity--0);
-        }
-      `}"
-    ></div>
-  `;
 };
