@@ -2594,282 +2594,261 @@ export default async (application: Application): Promise<void> => {
                                     margin-right: var(--space---0-5);
                                   `}"
                                   javascript="${javascript`
-                                    javascript.tippy({
-                                      event,
-                                      element: this,
-                                      placement: "bottom-end",
-                                      interactive: true,
-                                      trigger: "click",
-                                      content: ${html`
-                                        <div
-                                          css="${css`
-                                            display: flex;
-                                            flex-direction: column;
-                                            gap: var(--space--2);
-                                          `}"
-                                        >
-                                          <button
-                                            type="button"
-                                            class="button button--rectangle button--transparent button--dropdown-menu"
-                                            javascript="${javascript`
-                                              this.onclick = async () => {
-                                                await navigator.clipboard.writeText(${`https://${application.configuration.hostname}/courses/${request.state.course!.publicId}/conversations/${request.state.courseConversation!.publicId}?${new URLSearchParams({ message: courseConversationMessage.publicId }).toString()}`});
-                                                javascript.tippy({
-                                                  element: this,
-                                                  elementProperty: "copiedTippy",
-                                                  trigger: "manual",
-                                                  content: "Copied",
-                                                }).show();
-                                                await utilities.sleep(1000);
-                                                this.copiedTippy.hide();
-                                              };
-                                            `}"
-                                          >
-                                            Copy message permanent link
-                                          </button>
-                                          $${request.state.course!
-                                            .courseState === "courseStateActive"
-                                            ? html`
-                                                <button
-                                                  type="button"
-                                                  class="button button--rectangle button--transparent button--dropdown-menu"
-                                                  javascript="${javascript`
-                                                    this.onclick = async () => {
-                                                      alert("TODO");
-                                                    };
-                                                  `}"
-                                                >
-                                                  Reply
-                                                </button>
-                                              `
-                                            : html``}
-                                          $${mayEditCourseConversationMessage
-                                            ? html`
-                                                <button
-                                                  type="button"
-                                                  class="button button--rectangle button--transparent button--dropdown-menu"
-                                                  javascript="${javascript`
-                                                    this.onclick = () => {
-                                                      this.closest('[key~="courseConversationMessage--main"]').querySelector('[key~="courseConversationMessage--main--content--show"]').hidden = true;
-                                                      this.closest('[key~="courseConversationMessage--main"]').querySelector('[key~="courseConversationMessage--main--content--edit"]').hidden = false;
-                                                      this.closest('[key~="courseConversationMessage--main"]').querySelector('[key~="courseConversationMessage--main--footer"]').hidden = true;
-                                                      Tippy.hideAll();
-                                                      this.closest('[key~="courseConversationMessage--main"]').querySelector('[key~="courseConversationMessage--main--content--edit"] [name="TODO"]').focus();
-                                                    };
-                                                  `}"
-                                                >
-                                                  Edit message
-                                                </button>
-                                              `
-                                            : html``}
-                                          $${mayEditCourseConversationMessage &&
-                                          courseConversationMessageCreatedByCourseParticipation?.courseParticipationRole ===
-                                            "courseParticipationRoleStudent"
-                                            ? html`
-                                                <button
-                                                  type="button"
-                                                  class="button button--rectangle button--transparent button--dropdown-menu"
-                                                  javascript="${javascript`
-                                                    javascript.tippy({
-                                                      event,
-                                                      element: this,
-                                                      placement: "bottom-end",
-                                                      interactive: true,
-                                                      trigger: "click",
-                                                      content: ${html` TODO `},
-                                                    });
-                                                  `}"
-                                                >
-                                                  Change anonymity
-                                                </button>
-                                              `
-                                            : html``}
-                                          $${mayEditCourseConversationMessage &&
-                                          request.state.courseConversation!
-                                            .courseConversationType ===
-                                            "courseConversationTypeQuestion" &&
-                                          courseConversationMessage.id !==
-                                            firstCourseConversationMessage.id
-                                            ? html`
-                                                <button
-                                                  type="button"
-                                                  class="button button--rectangle button--transparent button--dropdown-menu"
-                                                  javascript="${javascript`
-                                                    javascript.tippy({
-                                                      event,
-                                                      element: this,
-                                                      placement: "bottom-end",
-                                                      interactive: true,
-                                                      trigger: "click",
-                                                      content: ${html`
-                                                        <div
-                                                          css="${css`
-                                                            display: flex;
-                                                            flex-direction: column;
-                                                            gap: var(
-                                                              --space--2
-                                                            );
-                                                          `}"
-                                                        >
-                                                          <div
-                                                            type="form"
-                                                            method="PATCH"
-                                                            action="/courses/${request
-                                                              .state.course!
-                                                              .publicId}/conversations/${request
-                                                              .state
-                                                              .courseConversation!
-                                                              .publicId}/messages/${courseConversationMessage.publicId}"
-                                                          >
-                                                            <input
-                                                              type="hidden"
-                                                              name="courseConversationMessageType"
-                                                              value="courseConversationMessageTypeMessage"
-                                                            />
-                                                            <button
-                                                              type="button"
-                                                              class="button button--rectangle button--transparent $${courseConversationMessage.courseConversationMessageType ===
-                                                              "courseConversationMessageTypeMessage"
-                                                                ? "button--blue"
-                                                                : ""} button--dropdown-menu"
-                                                            >
-                                                              Message
-                                                            </button>
-                                                          </div>
-                                                          <div
-                                                            type="form"
-                                                            method="PATCH"
-                                                            action="/courses/${request
-                                                              .state.course!
-                                                              .publicId}/conversations/${request
-                                                              .state
-                                                              .courseConversation!
-                                                              .publicId}/messages/${courseConversationMessage.publicId}"
-                                                          >
-                                                            <input
-                                                              type="hidden"
-                                                              name="courseConversationMessageType"
-                                                              value="courseConversationMessageTypeAnswer"
-                                                            />
-                                                            <button
-                                                              type="button"
-                                                              class="button button--rectangle button--transparent $${courseConversationMessage.courseConversationMessageType ===
-                                                              "courseConversationMessageTypeAnswer"
-                                                                ? "button--blue"
-                                                                : ""} button--dropdown-menu"
-                                                            >
-                                                              Answer
-                                                            </button>
-                                                          </div>
-                                                          <div
-                                                            type="form"
-                                                            method="PATCH"
-                                                            action="/courses/${request
-                                                              .state.course!
-                                                              .publicId}/conversations/${request
-                                                              .state
-                                                              .courseConversation!
-                                                              .publicId}/messages/${courseConversationMessage.publicId}"
-                                                          >
-                                                            <input
-                                                              type="hidden"
-                                                              name="courseConversationMessageType"
-                                                              value="courseConversationMessageTypeFollowUpQuestion"
-                                                            />
-                                                            <button
-                                                              type="button"
-                                                              class="button button--rectangle button--transparent $${courseConversationMessage.courseConversationMessageType ===
-                                                              "courseConversationMessageTypeFollowUpQuestion"
-                                                                ? "button--blue"
-                                                                : ""} button--dropdown-menu"
-                                                            >
-                                                              Follow-up question
-                                                            </button>
-                                                          </div>
-                                                        </div>
-                                                      `},
-                                                    });
-                                                  `}"
-                                                >
-                                                  Change message type
-                                                </button>
-                                              `
-                                            : html``}
-                                          $${mayEditCourseConversationMessage &&
-                                          request.state.courseParticipation!
-                                            .courseParticipationRole ===
-                                            "courseParticipationRoleInstructor" &&
-                                          courseConversationMessage.id !==
-                                            firstCourseConversationMessage.id
-                                            ? html`
-                                                <button
-                                                  type="button"
-                                                  class="button button--rectangle button--transparent button--dropdown-menu"
-                                                  javascript="${javascript`
-                                                    javascript.tippy({
-                                                      event,
-                                                      element: this,
-                                                      theme: "red",
-                                                      placement: "bottom-end",
-                                                      interactive: true,
-                                                      trigger: "click",
-                                                      content: ${html`
-                                                        <div
-                                                          type="form"
-                                                          method="DELETE"
-                                                          action="/courses/${request
-                                                            .state.course!
-                                                            .publicId}/conversations/${request
-                                                            .state
-                                                            .courseConversation!
-                                                            .publicId}/messages/${courseConversationMessage.publicId}"
-                                                          css="${css`
-                                                            display: flex;
-                                                            flex-direction: column;
-                                                            gap: var(
-                                                              --space--2
-                                                            );
-                                                          `}"
-                                                        >
-                                                          <div>
-                                                            <i
-                                                              class="bi bi-exclamation-triangle-fill"
-                                                            ></i
-                                                            > This action cannot
-                                                            be reverted.
-                                                          </div>
-                                                          <div>
-                                                            <button
-                                                              type="submit"
-                                                              class="button button--rectangle button--red"
-                                                              css="${css`
-                                                                font-size: var(
-                                                                  --font-size--3
-                                                                );
-                                                                line-height: var(
-                                                                  --font-size--3--line-height
-                                                                );
-                                                              `}"
-                                                            >
-                                                              Delete message
-                                                            </button>
-                                                          </div>
-                                                        </div>
-                                                      `},
-                                                    });
-                                                  `}"
-                                                >
-                                                  Delete message
-                                                </button>
-                                              `
-                                            : html``}
-                                        </div>
-                                      `},
-                                    });
+                                    javascript.popover({ element: this, trigger: "click", remainOpenWhileFocused: true, placement: "bottom-end" });
                                   `}"
                                 >
                                   <i class="bi bi-three-dots-vertical"></i>
                                 </button>
+                                <div
+                                  type="popover"
+                                  css="${css`
+                                    display: flex;
+                                    flex-direction: column;
+                                    gap: var(--space--2);
+                                  `}"
+                                >
+                                  <button
+                                    type="button"
+                                    class="button button--rectangle button--transparent button--dropdown-menu"
+                                    javascript="${javascript`
+                                      this.onclick = async () => {
+                                        await navigator.clipboard.writeText(${`https://${application.configuration.hostname}/courses/${request.state.course!.publicId}/conversations/${request.state.courseConversation!.publicId}?${new URLSearchParams({ message: courseConversationMessage.publicId }).toString()}`});
+                                        this.closest('[type~="popover"]').hidePopover();
+                                      };
+                                    `}"
+                                  >
+                                    Copy message permanent link
+                                  </button>
+                                  $${request.state.course!.courseState ===
+                                  "courseStateActive"
+                                    ? html`
+                                        <button
+                                          type="button"
+                                          class="button button--rectangle button--transparent button--dropdown-menu"
+                                          javascript="${javascript`
+                                            this.onclick = async () => {
+                                              alert("TODO");
+                                            };
+                                          `}"
+                                        >
+                                          Reply
+                                        </button>
+                                      `
+                                    : html``}
+                                  $${mayEditCourseConversationMessage
+                                    ? html`
+                                        <button
+                                          type="button"
+                                          class="button button--rectangle button--transparent button--dropdown-menu"
+                                          javascript="${javascript`
+                                            this.onclick = () => {
+                                              this.closest('[type~="form"]').querySelector('[key~="courseConversationMessage--main--content--show"]').hidden = true;
+                                              this.closest('[type~="form"]').querySelector('[key~="courseConversationMessage--main--content--edit"]').hidden = false;
+                                              this.closest('[type~="form"]').querySelector('[key~="courseConversationMessage--main--content--edit"] [name="content"]').focus();
+                                              this.closest('[type~="popover"]').hidePopover();
+                                            };
+                                          `}"
+                                        >
+                                          Edit message
+                                        </button>
+                                      `
+                                    : html``}
+                                  $${mayEditCourseConversationMessage &&
+                                  courseConversationMessageCreatedByCourseParticipation?.courseParticipationRole ===
+                                    "courseParticipationRoleStudent" &&
+                                  courseConversationMessage.createdByCourseParticipation ===
+                                    request.state.courseParticipation!.id
+                                    ? html`
+                                        <button
+                                          type="button"
+                                          class="button button--rectangle button--transparent button--dropdown-menu"
+                                          javascript="${javascript`
+                                            javascript.tippy({
+                                              event,
+                                              element: this,
+                                              placement: "bottom-end",
+                                              interactive: true,
+                                              trigger: "click",
+                                              content: ${html` TODO `},
+                                            });
+                                          `}"
+                                        >
+                                          Change anonymity
+                                        </button>
+                                      `
+                                    : html``}
+                                  $${mayEditCourseConversationMessage &&
+                                  request.state.courseConversation!
+                                    .courseConversationType ===
+                                    "courseConversationTypeQuestion" &&
+                                  courseConversationMessage.id !==
+                                    firstCourseConversationMessage.id
+                                    ? html`
+                                        <button
+                                          type="button"
+                                          class="button button--rectangle button--transparent button--dropdown-menu"
+                                          javascript="${javascript`
+                                            javascript.tippy({
+                                              event,
+                                              element: this,
+                                              placement: "bottom-end",
+                                              interactive: true,
+                                              trigger: "click",
+                                              content: ${html`
+                                                <div
+                                                  css="${css`
+                                                    display: flex;
+                                                    flex-direction: column;
+                                                    gap: var(--space--2);
+                                                  `}"
+                                                >
+                                                  <div
+                                                    type="form"
+                                                    method="PATCH"
+                                                    action="/courses/${request
+                                                      .state.course!
+                                                      .publicId}/conversations/${request
+                                                      .state.courseConversation!
+                                                      .publicId}/messages/${courseConversationMessage.publicId}"
+                                                  >
+                                                    <input
+                                                      type="hidden"
+                                                      name="courseConversationMessageType"
+                                                      value="courseConversationMessageTypeMessage"
+                                                    />
+                                                    <button
+                                                      type="button"
+                                                      class="button button--rectangle button--transparent $${courseConversationMessage.courseConversationMessageType ===
+                                                      "courseConversationMessageTypeMessage"
+                                                        ? "button--blue"
+                                                        : ""} button--dropdown-menu"
+                                                    >
+                                                      Message
+                                                    </button>
+                                                  </div>
+                                                  <div
+                                                    type="form"
+                                                    method="PATCH"
+                                                    action="/courses/${request
+                                                      .state.course!
+                                                      .publicId}/conversations/${request
+                                                      .state.courseConversation!
+                                                      .publicId}/messages/${courseConversationMessage.publicId}"
+                                                  >
+                                                    <input
+                                                      type="hidden"
+                                                      name="courseConversationMessageType"
+                                                      value="courseConversationMessageTypeAnswer"
+                                                    />
+                                                    <button
+                                                      type="button"
+                                                      class="button button--rectangle button--transparent $${courseConversationMessage.courseConversationMessageType ===
+                                                      "courseConversationMessageTypeAnswer"
+                                                        ? "button--blue"
+                                                        : ""} button--dropdown-menu"
+                                                    >
+                                                      Answer
+                                                    </button>
+                                                  </div>
+                                                  <div
+                                                    type="form"
+                                                    method="PATCH"
+                                                    action="/courses/${request
+                                                      .state.course!
+                                                      .publicId}/conversations/${request
+                                                      .state.courseConversation!
+                                                      .publicId}/messages/${courseConversationMessage.publicId}"
+                                                  >
+                                                    <input
+                                                      type="hidden"
+                                                      name="courseConversationMessageType"
+                                                      value="courseConversationMessageTypeFollowUpQuestion"
+                                                    />
+                                                    <button
+                                                      type="button"
+                                                      class="button button--rectangle button--transparent $${courseConversationMessage.courseConversationMessageType ===
+                                                      "courseConversationMessageTypeFollowUpQuestion"
+                                                        ? "button--blue"
+                                                        : ""} button--dropdown-menu"
+                                                    >
+                                                      Follow-up question
+                                                    </button>
+                                                  </div>
+                                                </div>
+                                              `},
+                                            });
+                                          `}"
+                                        >
+                                          Change message type
+                                        </button>
+                                      `
+                                    : html``}
+                                  $${mayEditCourseConversationMessage &&
+                                  request.state.courseParticipation!
+                                    .courseParticipationRole ===
+                                    "courseParticipationRoleInstructor" &&
+                                  courseConversationMessage.id !==
+                                    firstCourseConversationMessage.id
+                                    ? html`
+                                        <button
+                                          type="button"
+                                          class="button button--rectangle button--transparent button--dropdown-menu"
+                                          javascript="${javascript`
+                                            javascript.tippy({
+                                              event,
+                                              element: this,
+                                              theme: "red",
+                                              placement: "bottom-end",
+                                              interactive: true,
+                                              trigger: "click",
+                                              content: ${html`
+                                                <div
+                                                  type="form"
+                                                  method="DELETE"
+                                                  action="/courses/${request
+                                                    .state.course!
+                                                    .publicId}/conversations/${request
+                                                    .state.courseConversation!
+                                                    .publicId}/messages/${courseConversationMessage.publicId}"
+                                                  css="${css`
+                                                    display: flex;
+                                                    flex-direction: column;
+                                                    gap: var(--space--2);
+                                                  `}"
+                                                >
+                                                  <div>
+                                                    <i
+                                                      class="bi bi-exclamation-triangle-fill"
+                                                    ></i
+                                                    > This action cannot be
+                                                    reverted.
+                                                  </div>
+                                                  <div>
+                                                    <button
+                                                      type="submit"
+                                                      class="button button--rectangle button--red"
+                                                      css="${css`
+                                                        font-size: var(
+                                                          --font-size--3
+                                                        );
+                                                        line-height: var(
+                                                          --font-size--3--line-height
+                                                        );
+                                                      `}"
+                                                    >
+                                                      Delete message
+                                                    </button>
+                                                  </div>
+                                                </div>
+                                              `},
+                                            });
+                                          `}"
+                                        >
+                                          Delete message
+                                        </button>
+                                      `
+                                    : html``}
+                                </div>
                               </div>
                             </div>
                             <div
