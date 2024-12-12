@@ -15,7 +15,9 @@ import courses, { ApplicationCourses } from "./courses.mjs";
 import courseConversations, {
   ApplicationCourseConversation,
 } from "./course-conversations.mjs";
-import courseConversationMessages from "./course-conversation-messages.mjs";
+import courseConversationMessages, {
+  ApplicationCourseConversationMessages,
+} from "./course-conversation-messages.mjs";
 import courseConversationMessageContent, {
   ApplicationCourseConversationMessageContent,
 } from "./course-conversation-message-content.mjs";
@@ -50,6 +52,7 @@ export type Application = {
   ApplicationUsers &
   ApplicationCourses &
   ApplicationCourseConversation &
+  ApplicationCourseConversationMessages &
   ApplicationCourseConversationMessageContent;
 const application = {} as Application;
 application.version = "9.0.0";
