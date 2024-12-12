@@ -2375,7 +2375,8 @@ export default async (application: Application): Promise<void> => {
                                       `}"
                                       javascript="${javascript`
                                         if (this.intersectionObserver !== undefined) return;
-                                        this.intersectionObserver = new IntersectionObserver(async () => {
+                                        this.intersectionObserver = new IntersectionObserver(async (entries) => {
+                                          if (entries[0].isIntersecting === false) return;
                                           this.intersectionObserver.disconnect();
                                           javascript.stateAdd(this, "viewed");
                                           await fetch(${`/courses/${
