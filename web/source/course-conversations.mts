@@ -267,10 +267,9 @@ export default async (application: Application): Promise<void> => {
             </div>
             <div
               key="courseConversations"
+              class="scroll"
               css="${css`
                 flex: 1;
-                position: relative;
-                overflow: auto;
               `}"
               javascript="${javascript`
                 this.courseConversationsGroupsFirstGrouping ??= true;
@@ -1038,10 +1037,9 @@ export default async (application: Application): Promise<void> => {
           </div>
           <div
             key="main--main ${request.URL.pathname}"
+            class="scroll"
             css="${css`
               flex: 1;
-              position: relative;
-              overflow: auto;
             `}"
           >
             <div
