@@ -2724,12 +2724,12 @@ export default async (application: Application): Promise<void> => {
                                 ${courseConversationMessage.content}
                               </div>
                               $${(() => {
-                                let courseConversationMessageMainFooterHTML = html``;
+                                let courseConversationMessageMainContentShowFooterHTML = html``;
                                 if (
                                   request.state.course!.courseState ===
                                   "courseStateActive"
                                 )
-                                  courseConversationMessageMainFooterHTML +=
+                                  courseConversationMessageMainContentShowFooterHTML +=
                                     application.database.get(
                                       sql`
                                         select true
@@ -2795,7 +2795,7 @@ export default async (application: Application): Promise<void> => {
                                     `,
                                   );
                                 if (courseConversationMessageLikes.length > 0)
-                                  courseConversationMessageMainFooterHTML += html`
+                                  courseConversationMessageMainContentShowFooterHTML += html`
                                     <button
                                       key="courseConversationMessage--main--content--show--footer--likes"
                                       type="button"
@@ -2964,7 +2964,7 @@ export default async (application: Application): Promise<void> => {
                                         order by "id" asc;
                                       `,
                                     );
-                                  courseConversationMessageMainFooterHTML +=
+                                  courseConversationMessageMainContentShowFooterHTML +=
                                     courseConversationMessageViews.length > 0
                                       ? html`
                                           <button
@@ -3135,7 +3135,7 @@ export default async (application: Application): Promise<void> => {
                                           </div>
                                         `;
                                 }
-                                return courseConversationMessageMainFooterHTML !==
+                                return courseConversationMessageMainContentShowFooterHTML !==
                                   html``
                                   ? html`
                                       <div
@@ -3157,7 +3157,7 @@ export default async (application: Application): Promise<void> => {
                                           row-gap: var(--space--2);
                                         `}"
                                       >
-                                        $${courseConversationMessageMainFooterHTML}
+                                        $${courseConversationMessageMainContentShowFooterHTML}
                                       </div>
                                     `
                                   : html``;
