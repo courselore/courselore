@@ -148,6 +148,8 @@ export default async (application: Application): Promise<void> => {
       </div>
       <textarea
         key="courseConversationMessageContentEditor--textarea"
+        name="content"
+        required
         css="${css`
           font-family: "Roboto Mono Variable", var(--font-family--monospace);
           height: var(--space--44);
