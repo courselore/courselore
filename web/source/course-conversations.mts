@@ -1352,7 +1352,7 @@ export default async (application: Application): Promise<void> => {
                               };
                             `}"
                           >
-                            Copy conversation permanent link
+                            Copy permanent link
                           </button>
                           $${mayEditCourseConversation
                             ? html`
@@ -1368,7 +1368,7 @@ export default async (application: Application): Promise<void> => {
                                     };
                                   `}"
                                 >
-                                  Edit conversation title
+                                  Edit title
                                 </button>
                               `
                             : html``}
@@ -1402,7 +1402,7 @@ export default async (application: Application): Promise<void> => {
                                       javascript.popover({ element: this, trigger: "click" });
                                     `}"
                                   >
-                                    Reuse conversation in another course
+                                    Reuse in another course
                                   </button>
                                   <div
                                     type="popover"
@@ -1473,7 +1473,7 @@ export default async (application: Application): Promise<void> => {
                                     javascript.popover({ element: this, trigger: "click" });
                                   `}"
                                 >
-                                  Delete conversation
+                                  Delete
                                 </button>
                                 <div
                                   type="form popover"
@@ -1505,7 +1505,7 @@ export default async (application: Application): Promise<void> => {
                                         );
                                       `}"
                                     >
-                                      Delete conversation
+                                      Delete
                                     </button>
                                   </div>
                                 </div>
@@ -2617,7 +2617,7 @@ export default async (application: Application): Promise<void> => {
                                       };
                                     `}"
                                   >
-                                    Copy message permanent link
+                                    Copy permanent link
                                   </button>
                                   $${request.state.course!.courseState ===
                                   "courseStateActive"
@@ -2649,7 +2649,7 @@ export default async (application: Application): Promise<void> => {
                                             };
                                           `}"
                                         >
-                                          Edit message
+                                          Edit
                                         </button>
                                       `
                                     : html``}
@@ -2667,7 +2667,7 @@ export default async (application: Application): Promise<void> => {
                                             javascript.popover({ element: this, trigger: "click" });
                                           `}"
                                         >
-                                          Delete message
+                                          Delete
                                         </button>
                                         <div
                                           type="form popover"
@@ -2701,7 +2701,7 @@ export default async (application: Application): Promise<void> => {
                                                 );
                                               `}"
                                             >
-                                              Delete message
+                                              Delete
                                             </button>
                                           </div>
                                         </div>
