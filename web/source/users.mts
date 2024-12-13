@@ -303,6 +303,7 @@ export default async (application: Application): Promise<void> => {
         ? html`
             <img
               src="${user.avatarImage}"
+              loading="lazy"
               css="${css`
                 background-color: light-dark(
                   var(--color--white),
