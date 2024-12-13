@@ -2801,141 +2801,7 @@ export default async (application: Application): Promise<void> => {
                                       type="button"
                                       class="button button--rectangle button--transparent"
                                       javascript="${javascript`
-                                        javascript.tippy({
-                                          event,
-                                          element: this,
-                                          theme: "max-height",
-                                          placement: "top-start",
-                                          interactive: true,
-                                          trigger: "click",
-                                          content: ${html`
-                                            <div
-                                              css="${css`
-                                                display: flex;
-                                                flex-direction: column;
-                                                gap: var(--space--2);
-                                              `}"
-                                            >
-                                              $${courseConversationMessageLikes.map(
-                                                (
-                                                  courseConversationMessageLike,
-                                                ) => {
-                                                  const courseConversationMessageLikeCourseParticipation =
-                                                    typeof courseConversationMessageLike.courseParticipation ===
-                                                    "number"
-                                                      ? application.database.get<{
-                                                          user: number;
-                                                          courseParticipationRole:
-                                                            | "courseParticipationRoleInstructor"
-                                                            | "courseParticipationRoleStudent";
-                                                        }>(
-                                                          sql`
-                                                            select
-                                                              "user",
-                                                              "courseParticipationRole"
-                                                            from "courseParticipations"
-                                                            where "id" = ${courseConversationMessageLike.courseParticipation};
-                                                          `,
-                                                        )
-                                                      : undefined;
-                                                  const courseConversationMessageLikeUser =
-                                                    courseConversationMessageLikeCourseParticipation !==
-                                                    undefined
-                                                      ? application.database.get<{
-                                                          publicId: string;
-                                                          name: string;
-                                                          avatarColor:
-                                                            | "red"
-                                                            | "orange"
-                                                            | "amber"
-                                                            | "yellow"
-                                                            | "lime"
-                                                            | "green"
-                                                            | "emerald"
-                                                            | "teal"
-                                                            | "cyan"
-                                                            | "sky"
-                                                            | "blue"
-                                                            | "indigo"
-                                                            | "violet"
-                                                            | "purple"
-                                                            | "fuchsia"
-                                                            | "pink"
-                                                            | "rose";
-                                                          avatarImage:
-                                                            | string
-                                                            | null;
-                                                          userRole:
-                                                            | "userRoleSystemAdministrator"
-                                                            | "userRoleStaff"
-                                                            | "userRoleUser";
-                                                          lastSeenOnlineAt: string;
-                                                        }>(
-                                                          sql`
-                                                            select
-                                                              "publicId",
-                                                              "name",
-                                                              "avatarColor",
-                                                              "avatarImage",
-                                                              "userRole",
-                                                              "lastSeenOnlineAt"
-                                                            from "users"
-                                                            where "id" = ${courseConversationMessageLikeCourseParticipation.user};
-                                                          `,
-                                                        )
-                                                      : undefined;
-                                                  return html`
-                                                    <div
-                                                      css="${css`
-                                                        display: flex;
-                                                        gap: var(--space--2);
-                                                      `}"
-                                                    >
-                                                      $${application.partials.userAvatar(
-                                                        {
-                                                          user:
-                                                            courseConversationMessageLikeUser ??
-                                                            "courseParticipationDeleted",
-                                                        },
-                                                      )}
-                                                      <div
-                                                        css="${css`
-                                                          margin-top: var(
-                                                            --space--0-5
-                                                          );
-                                                        `}"
-                                                      >
-                                                        ${courseConversationMessageLikeUser?.name ??
-                                                        "Deleted course participant"}<span
-                                                          css="${css`
-                                                            font-size: var(
-                                                              --font-size--3
-                                                            );
-                                                            line-height: var(
-                                                              --font-size--3--line-height
-                                                            );
-                                                            color: light-dark(
-                                                              var(
-                                                                --color--slate--600
-                                                              ),
-                                                              var(
-                                                                --color--slate--400
-                                                              )
-                                                            );
-                                                          `}"
-                                                          >${courseConversationMessageLikeCourseParticipation?.courseParticipationRole ===
-                                                          "courseParticipationRoleInstructor"
-                                                            ? " (instructor)"
-                                                            : ""}</span
-                                                        >
-                                                      </div>
-                                                    </div>
-                                                  `;
-                                                },
-                                              )}
-                                            </div>
-                                          `},
-                                        });
+                                        javascript.popover({ element: this, trigger: "click" });
                                       `}"
                                     >
                                       ${String(
@@ -2946,6 +2812,117 @@ export default async (application: Application): Promise<void> => {
                                         ? "s"
                                         : ""} <i class="bi bi-chevron-down"></i>
                                     </button>
+                                    <div
+                                      type="popover"
+                                      css="${css`
+                                        display: flex;
+                                        flex-direction: column;
+                                        gap: var(--space--2);
+                                      `}"
+                                    >
+                                      $${courseConversationMessageLikes.map(
+                                        (courseConversationMessageLike) => {
+                                          const courseConversationMessageLikeCourseParticipation =
+                                            typeof courseConversationMessageLike.courseParticipation ===
+                                            "number"
+                                              ? application.database.get<{
+                                                  user: number;
+                                                  courseParticipationRole:
+                                                    | "courseParticipationRoleInstructor"
+                                                    | "courseParticipationRoleStudent";
+                                                }>(
+                                                  sql`
+                                                    select
+                                                      "user",
+                                                      "courseParticipationRole"
+                                                    from "courseParticipations"
+                                                    where "id" = ${courseConversationMessageLike.courseParticipation};
+                                                  `,
+                                                )
+                                              : undefined;
+                                          const courseConversationMessageLikeUser =
+                                            courseConversationMessageLikeCourseParticipation !==
+                                            undefined
+                                              ? application.database.get<{
+                                                  publicId: string;
+                                                  name: string;
+                                                  avatarColor:
+                                                    | "red"
+                                                    | "orange"
+                                                    | "amber"
+                                                    | "yellow"
+                                                    | "lime"
+                                                    | "green"
+                                                    | "emerald"
+                                                    | "teal"
+                                                    | "cyan"
+                                                    | "sky"
+                                                    | "blue"
+                                                    | "indigo"
+                                                    | "violet"
+                                                    | "purple"
+                                                    | "fuchsia"
+                                                    | "pink"
+                                                    | "rose";
+                                                  avatarImage: string | null;
+                                                  lastSeenOnlineAt: string;
+                                                }>(
+                                                  sql`
+                                                    select
+                                                      "publicId",
+                                                      "name",
+                                                      "avatarColor",
+                                                      "avatarImage",
+                                                      "lastSeenOnlineAt"
+                                                    from "users"
+                                                    where "id" = ${courseConversationMessageLikeCourseParticipation.user};
+                                                  `,
+                                                )
+                                              : undefined;
+                                          return html`
+                                            <div
+                                              css="${css`
+                                                display: flex;
+                                                gap: var(--space--2);
+                                              `}"
+                                            >
+                                              $${application.partials.userAvatar(
+                                                {
+                                                  user:
+                                                    courseConversationMessageLikeUser ??
+                                                    "courseParticipationDeleted",
+                                                },
+                                              )}
+                                              <div
+                                                css="${css`
+                                                  margin-top: var(--space--0-5);
+                                                `}"
+                                              >
+                                                ${courseConversationMessageLikeUser?.name ??
+                                                "Deleted course participant"}<span
+                                                  css="${css`
+                                                    font-size: var(
+                                                      --font-size--3
+                                                    );
+                                                    line-height: var(
+                                                      --font-size--3--line-height
+                                                    );
+                                                    color: light-dark(
+                                                      var(--color--slate--600),
+                                                      var(--color--slate--400)
+                                                    );
+                                                  `}"
+                                                  >${courseConversationMessageLikeCourseParticipation?.courseParticipationRole ===
+                                                  "courseParticipationRoleInstructor"
+                                                    ? " (instructor)"
+                                                    : ""}</span
+                                                >
+                                              </div>
+                                            </div>
+                                          `;
+                                        },
+                                      )}
+                                    </div>
                                   `;
                                 if (
                                   request.state.courseParticipation!
@@ -2972,148 +2949,7 @@ export default async (application: Application): Promise<void> => {
                                             type="button"
                                             class="button button--rectangle button--transparent"
                                             javascript="${javascript`
-                                              javascript.tippy({
-                                                event,
-                                                element: this,
-                                                placement: "top-start",
-                                                interactive: true,
-                                                trigger: "click",
-                                                content: ${html`
-                                                  <div
-                                                    css="${css`
-                                                      display: flex;
-                                                      flex-direction: column;
-                                                      gap: var(--space--2);
-                                                    `}"
-                                                  >
-                                                    $${courseConversationMessageViews.map(
-                                                      (
-                                                        courseConversationMessageView,
-                                                      ) => {
-                                                        const courseConversationMessageViewCourseParticipation =
-                                                          typeof courseConversationMessageView.courseParticipation ===
-                                                          "number"
-                                                            ? application.database.get<{
-                                                                user: number;
-                                                                courseParticipationRole:
-                                                                  | "courseParticipationRoleInstructor"
-                                                                  | "courseParticipationRoleStudent";
-                                                              }>(
-                                                                sql`
-                                                                  select
-                                                                    "user",
-                                                                    "courseParticipationRole"
-                                                                  from "courseParticipations"
-                                                                  where "id" = ${courseConversationMessageView.courseParticipation};
-                                                                `,
-                                                              )
-                                                            : undefined;
-                                                        const courseConversationMessageViewUser =
-                                                          courseConversationMessageViewCourseParticipation !==
-                                                          undefined
-                                                            ? application.database.get<{
-                                                                publicId: string;
-                                                                name: string;
-                                                                avatarColor:
-                                                                  | "red"
-                                                                  | "orange"
-                                                                  | "amber"
-                                                                  | "yellow"
-                                                                  | "lime"
-                                                                  | "green"
-                                                                  | "emerald"
-                                                                  | "teal"
-                                                                  | "cyan"
-                                                                  | "sky"
-                                                                  | "blue"
-                                                                  | "indigo"
-                                                                  | "violet"
-                                                                  | "purple"
-                                                                  | "fuchsia"
-                                                                  | "pink"
-                                                                  | "rose";
-                                                                avatarImage:
-                                                                  | string
-                                                                  | null;
-                                                                userRole:
-                                                                  | "userRoleSystemAdministrator"
-                                                                  | "userRoleStaff"
-                                                                  | "userRoleUser";
-                                                                lastSeenOnlineAt: string;
-                                                              }>(
-                                                                sql`
-                                                                  select
-                                                                    "publicId",
-                                                                    "name",
-                                                                    "avatarColor",
-                                                                    "avatarImage",
-                                                                    "userRole",
-                                                                    "lastSeenOnlineAt"
-                                                                  from "users"
-                                                                  where "id" = ${courseConversationMessageViewCourseParticipation.user};
-                                                                `,
-                                                              )
-                                                            : undefined;
-                                                        return html`
-                                                          <div
-                                                            css="${css`
-                                                              display: flex;
-                                                              gap: var(
-                                                                --space--2
-                                                              );
-                                                            `}"
-                                                          >
-                                                            $${application.partials.userAvatar(
-                                                              {
-                                                                user:
-                                                                  courseConversationMessageViewUser ??
-                                                                  "courseParticipationDeleted",
-                                                              },
-                                                            )}
-                                                            <div
-                                                              css="${css`
-                                                                margin-top: var(
-                                                                  --space--0-5
-                                                                );
-                                                              `}"
-                                                            >
-                                                              ${courseConversationMessageViewUser?.name ??
-                                                              "Deleted course participant"}<span
-                                                                css="${css`
-                                                                  font-size: var(
-                                                                    --font-size--3
-                                                                  );
-                                                                  line-height: var(
-                                                                    --font-size--3--line-height
-                                                                  );
-                                                                  color: light-dark(
-                                                                    var(
-                                                                      --color--slate--600
-                                                                    ),
-                                                                    var(
-                                                                      --color--slate--400
-                                                                    )
-                                                                  );
-                                                                `}"
-                                                                >${courseConversationMessageViewCourseParticipation?.courseParticipationRole ===
-                                                                "courseParticipationRoleInstructor"
-                                                                  ? " (instructor)"
-                                                                  : ""} ·
-                                                                <time
-                                                                  datetime="${courseConversationMessageView.createdAt}"
-                                                                  javascript="${javascript`
-                                                                    // javascript.relativizeDateTimeElement(this, { preposition: true, capitalize: true });
-                                                                  `}"
-                                                                ></time
-                                                              ></span>
-                                                            </div>
-                                                          </div>
-                                                        `;
-                                                      },
-                                                    )}
-                                                  </div>
-                                                `},
-                                              });
+                                              javascript.popover({ element: this, trigger: "click" });
                                             `}"
                                           >
                                             ${String(
@@ -3126,6 +2962,139 @@ export default async (application: Application): Promise<void> => {
                                               class="bi bi-chevron-down"
                                             ></i>
                                           </button>
+                                          <div
+                                            type="popover"
+                                            css="${css`
+                                              display: flex;
+                                              flex-direction: column;
+                                              gap: var(--space--2);
+                                            `}"
+                                          >
+                                            $${courseConversationMessageViews.map(
+                                              (
+                                                courseConversationMessageView,
+                                              ) => {
+                                                const courseConversationMessageViewCourseParticipation =
+                                                  typeof courseConversationMessageView.courseParticipation ===
+                                                  "number"
+                                                    ? application.database.get<{
+                                                        user: number;
+                                                        courseParticipationRole:
+                                                          | "courseParticipationRoleInstructor"
+                                                          | "courseParticipationRoleStudent";
+                                                      }>(
+                                                        sql`
+                                                          select
+                                                            "user",
+                                                            "courseParticipationRole"
+                                                          from "courseParticipations"
+                                                          where "id" = ${courseConversationMessageView.courseParticipation};
+                                                        `,
+                                                      )
+                                                    : undefined;
+                                                const courseConversationMessageViewUser =
+                                                  courseConversationMessageViewCourseParticipation !==
+                                                  undefined
+                                                    ? application.database.get<{
+                                                        publicId: string;
+                                                        name: string;
+                                                        avatarColor:
+                                                          | "red"
+                                                          | "orange"
+                                                          | "amber"
+                                                          | "yellow"
+                                                          | "lime"
+                                                          | "green"
+                                                          | "emerald"
+                                                          | "teal"
+                                                          | "cyan"
+                                                          | "sky"
+                                                          | "blue"
+                                                          | "indigo"
+                                                          | "violet"
+                                                          | "purple"
+                                                          | "fuchsia"
+                                                          | "pink"
+                                                          | "rose";
+                                                        avatarImage:
+                                                          | string
+                                                          | null;
+                                                        lastSeenOnlineAt: string;
+                                                      }>(
+                                                        sql`
+                                                          select
+                                                            "publicId",
+                                                            "name",
+                                                            "avatarColor",
+                                                            "avatarImage",
+                                                            "lastSeenOnlineAt"
+                                                          from "users"
+                                                          where "id" = ${courseConversationMessageViewCourseParticipation.user};
+                                                        `,
+                                                      )
+                                                    : undefined;
+                                                return html`
+                                                  <div
+                                                    css="${css`
+                                                      display: flex;
+                                                      gap: var(--space--2);
+                                                    `}"
+                                                  >
+                                                    $${application.partials.userAvatar(
+                                                      {
+                                                        user:
+                                                          courseConversationMessageViewUser ??
+                                                          "courseParticipationDeleted",
+                                                      },
+                                                    )}
+                                                    <div
+                                                      css="${css`
+                                                        margin-top: var(
+                                                          --space--0-5
+                                                        );
+                                                      `}"
+                                                    >
+                                                      ${courseConversationMessageViewUser?.name ??
+                                                      "Deleted course participant"}<span
+                                                        css="${css`
+                                                          font-size: var(
+                                                            --font-size--3
+                                                          );
+                                                          line-height: var(
+                                                            --font-size--3--line-height
+                                                          );
+                                                          color: light-dark(
+                                                            var(
+                                                              --color--slate--600
+                                                            ),
+                                                            var(
+                                                              --color--slate--400
+                                                            )
+                                                          );
+                                                        `}"
+                                                        >${courseConversationMessageViewCourseParticipation?.courseParticipationRole ===
+                                                        "courseParticipationRoleInstructor"
+                                                          ? " (instructor)"
+                                                          : ""} ·
+                                                        <span
+                                                          javascript="${javascript`
+                                                            javascript.relativizeDateTimeElement(this, ${courseConversationMessageView.createdAt}, { capitalize: true });
+                                                            javascript.popover({ element: this });
+                                                          `}"
+                                                        ></span
+                                                        ><span
+                                                          type="popover"
+                                                          javascript="${javascript`
+                                                            this.textContent = javascript.localizeDateTime(${courseConversationMessageView.createdAt});
+                                                          `}"
+                                                        ></span
+                                                      ></span>
+                                                    </div>
+                                                  </div>
+                                                `;
+                                              },
+                                            )}
+                                          </div>
                                         `
                                       : html`
                                           <div
