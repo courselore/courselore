@@ -37,80 +37,62 @@ export default async (application: Application): Promise<void> => {
           type="button"
           class="button button--square button--icon button--transparent"
           javascript="${javascript`
-            javascript.tippy({
-              event,
-              element: this,
-              content: "Bold",
-            });
+            javascript.popover({ element: this });
           `}"
         >
           <i class="bi bi-type-bold"></i>
         </button>
+        <div type="popover">Bold</div>
         <button
           type="button"
           class="button button--square button--icon button--transparent"
           javascript="${javascript`
-            javascript.tippy({
-              event,
-              element: this,
-              content: "Link",
-            });
+            javascript.popover({ element: this });
           `}"
         >
           <i class="bi bi-link"></i>
         </button>
+        <div type="popover">Link</div>
         <button
           type="button"
           class="button button--square button--icon button--transparent"
           javascript="${javascript`
-            javascript.tippy({
-              event,
-              element: this,
-              content: "Image",
-            });
+            javascript.popover({ element: this });
           `}"
         >
           <i class="bi bi-image"></i>
         </button>
+        <div type="popover">Image</div>
         <button
           type="button"
           class="button button--square button--icon button--transparent"
           javascript="${javascript`
-            javascript.tippy({
-              event,
-              element: this,
-              content: "Code block",
-            });
+            javascript.popover({ element: this });
           `}"
         >
           <i class="bi bi-code"></i>
         </button>
+        <div type="popover">Code block</div>
         <button
           type="button"
           class="button button--square button--icon button--transparent"
           javascript="${javascript`
-            javascript.tippy({
-              event,
-              element: this,
-              content: "Mathematics block",
-            });
+            javascript.popover({ element: this });
           `}"
         >
           <i class="bi bi-calculator"></i>
         </button>
+        <div type="popover">Mathematics block</div>
         <button
           type="button"
           class="button button--square button--icon button--transparent"
           javascript="${javascript`
-            javascript.tippy({
-              event,
-              element: this,
-              content: "Poll",
-            });
+            javascript.popover({ element: this });
           `}"
         >
           <i class="bi bi-card-checklist"></i>
         </button>
+        <div type="popover">Poll</div>
         <div
           css="${css`
             flex: 1;
@@ -120,25 +102,15 @@ export default async (application: Application): Promise<void> => {
           type="button"
           class="button button--square button--icon button--transparent"
           javascript="${javascript`
-            javascript.tippy({
-              event,
-              element: this,
-              content: "Preview",
-            });
+            javascript.popover({ element: this });
           `}"
         >
           <i class="bi bi-eyeglasses"></i>
         </button>
+        <div type="popover">Preview</div>
         <button
           type="button"
           class="button button--square button--icon button--transparent"
-          javascript="${javascript`
-            javascript.tippy({
-              event,
-              element: this,
-              content: "Menu",
-            });
-          `}"
         >
           <i class="bi bi-three-dots-vertical"></i>
         </button>
