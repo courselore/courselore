@@ -2741,16 +2741,16 @@ export default async (application: Application): Promise<void> => {
                                     ) === undefined
                                       ? html`
                                           <div
+                                            key="courseConversationMessage--main--content--show--footer--like"
                                             type="form"
-                                            method="POST"
+                                            method="PUT"
                                             action="/courses/${request.state
                                               .course!
                                               .publicId}/conversations/${request
                                               .state.courseConversation!
-                                              .publicId}/messages/${courseConversationMessage.publicId}/likes"
+                                              .publicId}/messages/${courseConversationMessage.publicId}/like"
                                           >
                                             <button
-                                              key="courseConversationMessage--main--content--show--footer--like"
                                               type="submit"
                                               class="button button--rectangle button--transparent"
                                             >
@@ -2760,16 +2760,16 @@ export default async (application: Application): Promise<void> => {
                                         `
                                       : html`
                                           <div
+                                            key="courseConversationMessage--main--content--show--footer--like"
                                             type="form"
                                             method="DELETE"
                                             action="/courses/${request.state
                                               .course!
                                               .publicId}/conversations/${request
                                               .state.courseConversation!
-                                              .publicId}/messages/${courseConversationMessage.publicId}/likes"
+                                              .publicId}/messages/${courseConversationMessage.publicId}/like"
                                           >
                                             <button
-                                              key="courseConversationMessage--main--content--show--footer--like"
                                               type="submit"
                                               class="button button--rectangle button--transparent"
                                               css="${css`

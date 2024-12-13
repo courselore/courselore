@@ -151,4 +151,96 @@ export default async (application: Application): Promise<void> => {
       response.end();
     },
   });
+
+  application.server?.push({
+    method: "PUT",
+    pathname: new RegExp(
+      "^/courses/(?<coursePublicId>[0-9]+)/conversations/(?<courseConversationPublicId>[0-9]+)/messages/(?<courseConversationMessagePublicId>[0-9]+)/like$",
+    ),
+    handler: (
+      request: serverTypes.Request<
+        {},
+        {},
+        {},
+        {},
+        Application["types"]["states"]["CourseConversationMessage"]
+      >,
+      response,
+    ) => {
+      if (
+        request.state.courseParticipation === undefined ||
+        request.state.courseConversationMessage === undefined
+      )
+        return;
+      application.database.executeTransaction(() => {
+        if (
+          application.database.get(
+            sql`
+              select true
+              from "courseConversationMessageLikes"
+              where
+                "courseConversationMessage" = ${request.state.courseConversationMessage!.id} and
+                "courseParticipation" = ${request.state.courseParticipation!.id};
+            `,
+          ) === undefined
+        )
+          application.database.run(
+            sql`
+              insert into "courseConversationMessageLikes" (
+                "courseConversationMessage",
+                "courseParticipation"
+              )
+              values (
+                ${request.state.courseConversationMessage!.id},
+                ${request.state.courseParticipation!.id}
+              );
+            `,
+          );
+      });
+      response.end();
+    },
+  });
+
+  application.server?.push({
+    method: "DELETE",
+    pathname: new RegExp(
+      "^/courses/(?<coursePublicId>[0-9]+)/conversations/(?<courseConversationPublicId>[0-9]+)/messages/(?<courseConversationMessagePublicId>[0-9]+)/like$",
+    ),
+    handler: (
+      request: serverTypes.Request<
+        {},
+        {},
+        {},
+        {},
+        Application["types"]["states"]["CourseConversationMessage"]
+      >,
+      response,
+    ) => {
+      if (
+        request.state.courseParticipation === undefined ||
+        request.state.courseConversationMessage === undefined
+      )
+        return;
+      application.database.executeTransaction(() => {
+        const courseConversationMessageLike = application.database.get<{
+          id: number;
+        }>(
+          sql`
+            select "id"
+            from "courseConversationMessageLikes"
+            where
+              "courseConversationMessage" = ${request.state.courseConversationMessage!.id} and
+              "courseParticipation" = ${request.state.courseParticipation!.id};
+          `,
+        );
+        if (courseConversationMessageLike !== undefined)
+          application.database.run(
+            sql`
+              delete from "courseConversationMessageLikes" where "id" = ${courseConversationMessageLike.id};
+            `,
+          );
+      });
+      response.end();
+    },
+  });
 };
