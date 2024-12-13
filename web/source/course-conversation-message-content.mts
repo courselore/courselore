@@ -18,6 +18,8 @@ export default async (application: Application): Promise<void> => {
       class="input--text"
       css="${css`
         padding: var(--space--0);
+        display: flex;
+        flex-direction: column;
       `}"
     >
       <div
@@ -147,7 +149,7 @@ export default async (application: Application): Promise<void> => {
       <textarea
         key="courseConversationMessageContentEditor--textarea"
         css="${css`
-          font-family: "JetBrains Mono Variable", var(--font-family--sans-serif);
+          font-family: "Roboto Mono Variable", var(--font-family--monospace);
           height: var(--space--44);
           padding: var(--space--1) var(--space--2);
         `}"
