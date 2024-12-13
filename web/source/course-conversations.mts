@@ -2654,136 +2654,6 @@ export default async (application: Application): Promise<void> => {
                                       `
                                     : html``}
                                   $${mayEditCourseConversationMessage &&
-                                  courseConversationMessageCreatedByCourseParticipation?.courseParticipationRole ===
-                                    "courseParticipationRoleStudent" &&
-                                  courseConversationMessage.createdByCourseParticipation ===
-                                    request.state.courseParticipation!.id
-                                    ? html`
-                                        <button
-                                          type="button"
-                                          class="button button--rectangle button--transparent button--dropdown-menu"
-                                          javascript="${javascript`
-                                            javascript.tippy({
-                                              event,
-                                              element: this,
-                                              placement: "bottom-end",
-                                              interactive: true,
-                                              trigger: "click",
-                                              content: ${html` TODO `},
-                                            });
-                                          `}"
-                                        >
-                                          Change anonymity
-                                        </button>
-                                      `
-                                    : html``}
-                                  $${mayEditCourseConversationMessage &&
-                                  request.state.courseConversation!
-                                    .courseConversationType ===
-                                    "courseConversationTypeQuestion" &&
-                                  courseConversationMessage.id !==
-                                    firstCourseConversationMessage.id
-                                    ? html`
-                                        <button
-                                          type="button"
-                                          class="button button--rectangle button--transparent button--dropdown-menu"
-                                          javascript="${javascript`
-                                            javascript.tippy({
-                                              event,
-                                              element: this,
-                                              placement: "bottom-end",
-                                              interactive: true,
-                                              trigger: "click",
-                                              content: ${html`
-                                                <div
-                                                  css="${css`
-                                                    display: flex;
-                                                    flex-direction: column;
-                                                    gap: var(--space--2);
-                                                  `}"
-                                                >
-                                                  <div
-                                                    type="form"
-                                                    method="PATCH"
-                                                    action="/courses/${request
-                                                      .state.course!
-                                                      .publicId}/conversations/${request
-                                                      .state.courseConversation!
-                                                      .publicId}/messages/${courseConversationMessage.publicId}"
-                                                  >
-                                                    <input
-                                                      type="hidden"
-                                                      name="courseConversationMessageType"
-                                                      value="courseConversationMessageTypeMessage"
-                                                    />
-                                                    <button
-                                                      type="button"
-                                                      class="button button--rectangle button--transparent $${courseConversationMessage.courseConversationMessageType ===
-                                                      "courseConversationMessageTypeMessage"
-                                                        ? "button--blue"
-                                                        : ""} button--dropdown-menu"
-                                                    >
-                                                      Message
-                                                    </button>
-                                                  </div>
-                                                  <div
-                                                    type="form"
-                                                    method="PATCH"
-                                                    action="/courses/${request
-                                                      .state.course!
-                                                      .publicId}/conversations/${request
-                                                      .state.courseConversation!
-                                                      .publicId}/messages/${courseConversationMessage.publicId}"
-                                                  >
-                                                    <input
-                                                      type="hidden"
-                                                      name="courseConversationMessageType"
-                                                      value="courseConversationMessageTypeAnswer"
-                                                    />
-                                                    <button
-                                                      type="button"
-                                                      class="button button--rectangle button--transparent $${courseConversationMessage.courseConversationMessageType ===
-                                                      "courseConversationMessageTypeAnswer"
-                                                        ? "button--blue"
-                                                        : ""} button--dropdown-menu"
-                                                    >
-                                                      Answer
-                                                    </button>
-                                                  </div>
-                                                  <div
-                                                    type="form"
-                                                    method="PATCH"
-                                                    action="/courses/${request
-                                                      .state.course!
-                                                      .publicId}/conversations/${request
-                                                      .state.courseConversation!
-                                                      .publicId}/messages/${courseConversationMessage.publicId}"
-                                                  >
-                                                    <input
-                                                      type="hidden"
-                                                      name="courseConversationMessageType"
-                                                      value="courseConversationMessageTypeFollowUpQuestion"
-                                                    />
-                                                    <button
-                                                      type="button"
-                                                      class="button button--rectangle button--transparent $${courseConversationMessage.courseConversationMessageType ===
-                                                      "courseConversationMessageTypeFollowUpQuestion"
-                                                        ? "button--blue"
-                                                        : ""} button--dropdown-menu"
-                                                    >
-                                                      Follow-up question
-                                                    </button>
-                                                  </div>
-                                                </div>
-                                              `},
-                                            });
-                                          `}"
-                                        >
-                                          Change message type
-                                        </button>
-                                      `
-                                    : html``}
-                                  $${mayEditCourseConversationMessage &&
                                   request.state.courseParticipation!
                                     .courseParticipationRole ===
                                     "courseParticipationRoleInstructor" &&
@@ -2794,58 +2664,47 @@ export default async (application: Application): Promise<void> => {
                                           type="button"
                                           class="button button--rectangle button--transparent button--dropdown-menu"
                                           javascript="${javascript`
-                                            javascript.tippy({
-                                              event,
-                                              element: this,
-                                              theme: "red",
-                                              placement: "bottom-end",
-                                              interactive: true,
-                                              trigger: "click",
-                                              content: ${html`
-                                                <div
-                                                  type="form"
-                                                  method="DELETE"
-                                                  action="/courses/${request
-                                                    .state.course!
-                                                    .publicId}/conversations/${request
-                                                    .state.courseConversation!
-                                                    .publicId}/messages/${courseConversationMessage.publicId}"
-                                                  css="${css`
-                                                    display: flex;
-                                                    flex-direction: column;
-                                                    gap: var(--space--2);
-                                                  `}"
-                                                >
-                                                  <div>
-                                                    <i
-                                                      class="bi bi-exclamation-triangle-fill"
-                                                    ></i
-                                                    > This action cannot be
-                                                    reverted.
-                                                  </div>
-                                                  <div>
-                                                    <button
-                                                      type="submit"
-                                                      class="button button--rectangle button--red"
-                                                      css="${css`
-                                                        font-size: var(
-                                                          --font-size--3
-                                                        );
-                                                        line-height: var(
-                                                          --font-size--3--line-height
-                                                        );
-                                                      `}"
-                                                    >
-                                                      Delete message
-                                                    </button>
-                                                  </div>
-                                                </div>
-                                              `},
-                                            });
+                                            javascript.popover({ element: this, trigger: "click" });
                                           `}"
                                         >
                                           Delete message
                                         </button>
+                                        <div
+                                          type="form popover"
+                                          method="DELETE"
+                                          action="/courses/${request.state
+                                            .course!
+                                            .publicId}/conversations/${request
+                                            .state.courseConversation!
+                                            .publicId}/messages/${courseConversationMessage.publicId}"
+                                          class="popover--red"
+                                          css="${css`
+                                            display: flex;
+                                            flex-direction: column;
+                                            gap: var(--space--2);
+                                          `}"
+                                        >
+                                          <div>
+                                            <i
+                                              class="bi bi-exclamation-triangle-fill"
+                                            ></i
+                                            > This action cannot be reverted.
+                                          </div>
+                                          <div>
+                                            <button
+                                              type="submit"
+                                              class="button button--rectangle button--red"
+                                              css="${css`
+                                                font-size: var(--font-size--3);
+                                                line-height: var(
+                                                  --font-size--3--line-height
+                                                );
+                                              `}"
+                                            >
+                                              Delete message
+                                            </button>
+                                          </div>
+                                        </div>
                                       `
                                     : html``}
                                 </div>
