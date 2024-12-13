@@ -2483,8 +2483,8 @@ export default async (application: Application): Promise<void> => {
                                           javascript.relativizeDateTimeElement(this, ${courseConversationMessage.createdAt}, { capitalize: true });
                                           javascript.popover({ element: this });
                                         `}"
-                                      ></span>
-                                      <span
+                                      ></span
+                                      ><span
                                         type="popover"
                                         javascript="${javascript`
                                           this.textContent = javascript.localizeDateTime(${courseConversationMessage.createdAt});
@@ -2492,18 +2492,18 @@ export default async (application: Application): Promise<void> => {
                                       ></span
                                       >$${typeof courseConversationMessage.updatedAt ===
                                       "string"
-                                        ? html`(updated
+                                        ? html` (updated
                                             <span
                                               javascript="${javascript`
                                               javascript.relativizeDateTimeElement(this, ${courseConversationMessage.updatedAt}, { preposition: true });
                                               javascript.popover({ element: this });
                                             `}"
-                                            ></span>
-                                            <span
+                                            ></span
+                                            ><span
                                               type="popover"
                                               javascript="${javascript`
-                                              this.textContent = javascript.localizeDateTime(${courseConversationMessage.updatedAt});
-                                            `}"
+                                                this.textContent = javascript.localizeDateTime(${courseConversationMessage.updatedAt});
+                                              `}"
                                             ></span
                                             >)`
                                         : html``}`,
@@ -2642,9 +2642,9 @@ export default async (application: Application): Promise<void> => {
                                           class="button button--rectangle button--transparent button--dropdown-menu"
                                           javascript="${javascript`
                                             this.onclick = () => {
-                                              this.closest('[type~="form"]').querySelector('[key~="courseConversationMessage--main--content--show"]').hidden = true;
-                                              this.closest('[type~="form"]').querySelector('[key~="courseConversationMessage--main--content--edit"]').hidden = false;
-                                              this.closest('[type~="form"]').querySelector('[key~="courseConversationMessage--main--content--edit"] [name="content"]').focus();
+                                              this.closest('[key~="courseConversationMessage--main"]').querySelector('[key~="courseConversationMessage--main--content--show"]').hidden = true;
+                                              this.closest('[key~="courseConversationMessage--main"]').querySelector('[key~="courseConversationMessage--main--content--edit"]').hidden = false;
+                                              this.closest('[key~="courseConversationMessage--main"]').querySelector('[key~="courseConversationMessage--main--content--edit"] [name="content"]').focus();
                                               this.closest('[type~="popover"]').hidePopover();
                                             };
                                           `}"
