@@ -168,7 +168,9 @@ export default async (application: Application): Promise<void> => {
       response,
     ) => {
       if (
+        request.state.course === undefined ||
         request.state.courseParticipation === undefined ||
+        request.state.courseConversation === undefined ||
         request.state.courseConversationMessage === undefined
       )
         return;
@@ -197,7 +199,9 @@ export default async (application: Application): Promise<void> => {
             `,
           );
       });
-      response.end();
+      response.redirect(
+        `/courses/${request.state.course.publicId}/conversations/${request.state.courseConversation.publicId}`,
+      );
     },
   });
 
@@ -217,7 +221,9 @@ export default async (application: Application): Promise<void> => {
       response,
     ) => {
       if (
+        request.state.course === undefined ||
         request.state.courseParticipation === undefined ||
+        request.state.courseConversation === undefined ||
         request.state.courseConversationMessage === undefined
       )
         return;
@@ -240,7 +246,9 @@ export default async (application: Application): Promise<void> => {
             `,
           );
       });
-      response.end();
+      response.redirect(
+        `/courses/${request.state.course.publicId}/conversations/${request.state.courseConversation.publicId}`,
+      );
     },
   });
 };
