@@ -25,9 +25,6 @@ export default async (application: Application): Promise<void> => {
       <div
         key="courseConversationMessageContentEditor--menu"
         css="${css`
-          font-size: var(--font-size--3-5);
-          line-height: var(--font-size--3-5--line-height);
-          font-weight: 600;
           color: light-dark(var(--color--slate--600), var(--color--slate--400));
           padding: var(--space--1-5) var(--space--2);
           border-bottom: var(--border-width--1) solid
