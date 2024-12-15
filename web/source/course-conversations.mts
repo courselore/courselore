@@ -275,7 +275,7 @@ export default async (application: Application): Promise<void> => {
               `}"
               javascript="${javascript`
                 window.setTimeout(() => {
-                  let currentGroup;
+                  let previousElementGroup;
                   for (const element of this.querySelectorAll('[key~="courseConversation"]')) {
                     const elementGroup = element.pinned ? "Pinned" : (() => {
                       const createdAtWeekStart = new Date(element.createdAt);
@@ -286,7 +286,7 @@ export default async (application: Application): Promise<void> => {
                       while (createdAtWeekEnd.getDay() !== 6) createdAtWeekEnd.setDate(createdAtWeekEnd.getDate() + 1);
                       return \`\${javascript.localizeDate(createdAtWeekStart.toISOString())} — \${javascript.localizeDate(createdAtWeekEnd.toISOString())}\`;
                     })();
-                    if (elementGroup !== currentGroup)
+                    if (elementGroup !== previousElementGroup)
                       element.insertAdjacentElement("beforebegin", javascript.execute(javascript.stringToElement(html\`
                         <button
                           key="courseConversations--group"
@@ -344,6 +344,15 @@ export default async (application: Application): Promise<void> => {
                               );
                             }
                           `}}"
+                          javascript="\${${javascript`
+                            this.onclick = () => {
+                              javascript.stateToggle(this, "open");
+                              for (const element of javascript.nextSiblings(this).slice(1)) {
+                                if (!element.matches('[key~="courseConversation"]')) break;
+                                element.hidden = !javascript.stateContains(this, "open");
+                              }
+                            };
+                          `}}"
                         >
                           <div
                             key="courseConversations--group--view"
@@ -377,7 +386,8 @@ export default async (application: Application): Promise<void> => {
                                 transition-timing-function: var(
                                   --transition-timing-function--ease-in-out
                                 );
-                                [key~="courseConversations--group"][open] & {
+                                [key~="courseConversations--group"][state~="open"]
+                                  & {
                                   transform: rotate(
                                     var(--transform--rotate--90)
                                   );
@@ -388,6 +398,7 @@ export default async (application: Application): Promise<void> => {
                           </div>
                         </button>
                       \`)));
+                    previousElementGroup = elementGroup;
                   }
                 });
               `}"
