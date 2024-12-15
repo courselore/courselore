@@ -275,9 +275,9 @@ export default async (application: Application): Promise<void> => {
               `}"
               javascript="${javascript`
                 window.setTimeout(() => {
-                  let previousElementGroup;
+                  const groups = new Map();
                   for (const element of this.querySelectorAll('[key~="courseConversation"]')) {
-                    const elementGroup = element.pinned ? "Pinned" : (() => {
+                    const group = element.pinned ? "Pinned" : (() => {
                       const createdAtWeekStart = new Date(element.createdAt);
                       createdAtWeekStart.setHours(12, 0, 0, 0);
                       while (createdAtWeekStart.getDay() !== 0) createdAtWeekStart.setDate(createdAtWeekStart.getDate() - 1);
@@ -286,120 +286,111 @@ export default async (application: Application): Promise<void> => {
                       while (createdAtWeekEnd.getDay() !== 6) createdAtWeekEnd.setDate(createdAtWeekEnd.getDate() + 1);
                       return \`\${javascript.localizeDate(createdAtWeekStart.toISOString())} — \${javascript.localizeDate(createdAtWeekEnd.toISOString())}\`;
                     })();
-                    if (elementGroup !== previousElementGroup)
-                      element.insertAdjacentElement("beforebegin", javascript.execute(javascript.stringToElement(html\`
-                        <button
-                          key="courseConversations--group"
-                          type="button"
-                          css="\${${css`
-                            font-size: var(--font-size--3);
-                            line-height: var(--font-size--3--line-height);
-                            font-weight: 600;
+                    groups.get(group)?.push(element) ?? groups.set(group, [element]);
+                  }
+                  for (const [group, elements] of groups)
+                    elements[0].insertAdjacentElement("beforebegin", javascript.execute(javascript.stringToElement(html\`
+                      <button
+                        key="courseConversations--group"
+                        type="button"
+                        css="\${${css`
+                          font-size: var(--font-size--3);
+                          line-height: var(--font-size--3--line-height);
+                          font-weight: 600;
+                          color: light-dark(
+                            var(--color--slate--500),
+                            var(--color--slate--500)
+                          );
+                          background-color: light-dark(
+                            var(--color--slate--100),
+                            var(--color--slate--900)
+                          );
+                          padding: var(--space--1-5) var(--space--4);
+                          border-bottom: var(--border-width--1) solid
+                            light-dark(
+                              var(--color--slate--200),
+                              var(--color--slate--800)
+                            );
+                          position: relative;
+                          cursor: pointer;
+                          transition-property: var(
+                            --transition-property--colors
+                          );
+                          transition-duration: var(--transition-duration--150);
+                          transition-timing-function: var(
+                            --transition-timing-function--ease-in-out
+                          );
+                          &:hover,
+                          &:focus-within {
+                            background-color: light-dark(
+                              var(--color--slate--200),
+                              var(--color--slate--800)
+                            );
+                          }
+                          &:active {
+                            background-color: light-dark(
+                              var(--color--slate--300),
+                              var(--color--slate--700)
+                            );
+                          }
+                          [key~="courseConversations--group"].current & {
                             color: light-dark(
-                              var(--color--slate--500),
-                              var(--color--slate--500)
+                              var(--color--white),
+                              var(--color--white)
                             );
                             background-color: light-dark(
-                              var(--color--slate--100),
-                              var(--color--slate--900)
+                              var(--color--blue--500),
+                              var(--color--blue--500)
                             );
-                            padding: var(--space--1-5) var(--space--4);
-                            border-bottom: var(--border-width--1) solid
-                              light-dark(
-                                var(--color--slate--200),
-                                var(--color--slate--800)
-                              );
-                            position: relative;
-                            cursor: pointer;
-                            transition-property: var(
-                              --transition-property--colors
-                            );
-                            transition-duration: var(
-                              --transition-duration--150
-                            );
-                            transition-timing-function: var(
-                              --transition-timing-function--ease-in-out
-                            );
-                            &:hover,
-                            &:focus-within {
-                              background-color: light-dark(
-                                var(--color--slate--200),
-                                var(--color--slate--800)
-                              );
+                          }
+                        `}}"
+                        javascript="\${${javascript`
+                          this.onclick = () => {
+                            javascript.stateToggle(this, "open");
+                            for (const element of javascript.nextSiblings(this).slice(1)) {
+                              if (!element.matches('[key~="courseConversation"]')) break;
+                              element.hidden = !javascript.stateContains(this, "open");
                             }
-                            &:active {
-                              background-color: light-dark(
-                                var(--color--slate--300),
-                                var(--color--slate--700)
-                              );
-                            }
-                            [key~="courseConversations--group"].current & {
-                              color: light-dark(
-                                var(--color--white),
-                                var(--color--white)
-                              );
-                              background-color: light-dark(
-                                var(--color--blue--500),
-                                var(--color--blue--500)
-                              );
-                            }
-                          `}}"
-                          javascript="\${${javascript`
-                            this.onclick = () => {
-                              javascript.stateToggle(this, "open");
-                              for (const element of javascript.nextSiblings(this).slice(1)) {
-                                if (!element.matches('[key~="courseConversation"]')) break;
-                                element.hidden = !javascript.stateContains(this, "open");
-                              }
-                            };
+                          };
+                        `}}"
+                      >
+                        <div
+                          key="courseConversations--group--view"
+                          css="\${${css`
+                            font-size: var(--space--1-5);
+                            color: light-dark(
+                              var(--color--blue--500),
+                              var(--color--blue--500)
+                            );
+                            position: absolute;
+                            margin-left: var(--space---2-5);
                           `}}"
                         >
-                          <div
-                            key="courseConversations--group--view"
-                            class="hidden"
+                          <i class="bi bi-circle-fill"></i>
+                        </div>
+                        <div>
+                          <span
                             css="\${${css`
-                              font-size: var(--space--1-5);
-                              color: light-dark(
-                                var(--color--blue--500),
-                                var(--color--blue--500)
+                              display: inline-block;
+                              transition-property: var(
+                                --transition-property--transform
                               );
-                              position: absolute;
-                              margin-left: var(--space---2-5);
-                              [key~="courseConversations--group"].current &,
-                              &.hidden {
-                                display: none;
+                              transition-duration: var(
+                                --transition-duration--150
+                              );
+                              transition-timing-function: var(
+                                --transition-timing-function--ease-in-out
+                              );
+                              [key~="courseConversations--group"][state~="open"]
+                                & {
+                                transform: rotate(var(--transform--rotate--90));
                               }
                             `}}"
-                          >
-                            <i class="bi bi-circle-fill"></i>
-                          </div>
-                          <div>
-                            <span
-                              css="\${${css`
-                                display: inline-block;
-                                transition-property: var(
-                                  --transition-property--transform
-                                );
-                                transition-duration: var(
-                                  --transition-duration--150
-                                );
-                                transition-timing-function: var(
-                                  --transition-timing-function--ease-in-out
-                                );
-                                [key~="courseConversations--group"][state~="open"]
-                                  & {
-                                  transform: rotate(
-                                    var(--transform--rotate--90)
-                                  );
-                                }
-                              `}}"
-                              ><i class="bi bi-chevron-right"></i></span
-                            >  \${elementGroup}
-                          </div>
-                        </button>
-                      \`)));
-                    previousElementGroup = elementGroup;
-                  }
+                            ><i class="bi bi-chevron-right"></i></span
+                          >  \${group}
+                        </div>
+                      </button>
+                    \`)));
                 });
               `}"
             >
