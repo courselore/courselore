@@ -271,9 +271,6 @@ export default async (application: Application): Promise<void> => {
               css="${css`
                 flex: 1;
               `}"
-              javascript="${javascript`
-                this.courseConversationsGroupsOpen ??= new Set();
-              `}"
             >
               $${application.database
                 .all<{
