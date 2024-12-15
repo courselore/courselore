@@ -270,6 +270,126 @@ export default async (application: Application): Promise<void> => {
               class="scroll"
               css="${css`
                 flex: 1;
+                display: flex;
+                flex-direction: column;
+              `}"
+              javascript="${javascript`
+                window.setTimeout(() => {
+                  let currentGroup;
+                  for (const element of this.querySelectorAll('[key~="courseConversation"]')) {
+                    const elementGroup = element.pinned ? "Pinned" : (() => {
+                      const createdAtWeekStart = new Date(element.createdAt);
+                      createdAtWeekStart.setHours(12, 0, 0, 0);
+                      while (createdAtWeekStart.getDay() !== 0) createdAtWeekStart.setDate(createdAtWeekStart.getDate() - 1);
+                      const createdAtWeekEnd = new Date(element.createdAt);
+                      createdAtWeekEnd.setHours(12, 0, 0, 0);
+                      while (createdAtWeekEnd.getDay() !== 6) createdAtWeekEnd.setDate(createdAtWeekEnd.getDate() + 1);
+                      return \`\${javascript.localizeDate(createdAtWeekStart.toISOString())} — \${javascript.localizeDate(createdAtWeekEnd.toISOString())}\`;
+                    })();
+                    if (elementGroup !== currentGroup)
+                      element.insertAdjacentElement("beforebegin", javascript.execute(javascript.stringToElement(html\`
+                        <button
+                          key="courseConversations--group"
+                          type="button"
+                          css="\${${css`
+                            font-size: var(--font-size--3);
+                            line-height: var(--font-size--3--line-height);
+                            font-weight: 600;
+                            color: light-dark(
+                              var(--color--slate--500),
+                              var(--color--slate--500)
+                            );
+                            background-color: light-dark(
+                              var(--color--slate--100),
+                              var(--color--slate--900)
+                            );
+                            padding: var(--space--1-5) var(--space--4);
+                            border-bottom: var(--border-width--1) solid
+                              light-dark(
+                                var(--color--slate--200),
+                                var(--color--slate--800)
+                              );
+                            position: relative;
+                            cursor: pointer;
+                            transition-property: var(
+                              --transition-property--colors
+                            );
+                            transition-duration: var(
+                              --transition-duration--150
+                            );
+                            transition-timing-function: var(
+                              --transition-timing-function--ease-in-out
+                            );
+                            &:hover,
+                            &:focus-within {
+                              background-color: light-dark(
+                                var(--color--slate--200),
+                                var(--color--slate--800)
+                              );
+                            }
+                            &:active {
+                              background-color: light-dark(
+                                var(--color--slate--300),
+                                var(--color--slate--700)
+                              );
+                            }
+                            [key~="courseConversations--group"].current & {
+                              color: light-dark(
+                                var(--color--white),
+                                var(--color--white)
+                              );
+                              background-color: light-dark(
+                                var(--color--blue--500),
+                                var(--color--blue--500)
+                              );
+                            }
+                          `}}"
+                        >
+                          <div
+                            key="courseConversations--group--view"
+                            class="hidden"
+                            css="\${${css`
+                              font-size: var(--space--1-5);
+                              color: light-dark(
+                                var(--color--blue--500),
+                                var(--color--blue--500)
+                              );
+                              position: absolute;
+                              margin-left: var(--space---2-5);
+                              [key~="courseConversations--group"].current &,
+                              &.hidden {
+                                display: none;
+                              }
+                            `}}"
+                          >
+                            <i class="bi bi-circle-fill"></i>
+                          </div>
+                          <div>
+                            <span
+                              css="\${${css`
+                                display: inline-block;
+                                transition-property: var(
+                                  --transition-property--transform
+                                );
+                                transition-duration: var(
+                                  --transition-duration--150
+                                );
+                                transition-timing-function: var(
+                                  --transition-timing-function--ease-in-out
+                                );
+                                [key~="courseConversations--group"][open] & {
+                                  transform: rotate(
+                                    var(--transform--rotate--90)
+                                  );
+                                }
+                              `}}"
+                              ><i class="bi bi-chevron-right"></i></span
+                            >  \${elementGroup}
+                          </div>
+                        </button>
+                      \`)));
+                  }
+                });
               `}"
             >
               $${application.database
@@ -469,6 +589,10 @@ export default async (application: Application): Promise<void> => {
                               );
                             }
                           `}"
+                      javascript="${javascript`
+                        this.pinned = ${courseConversation.pinned};
+                        this.createdAt = ${firstCourseConversationMessage.createdAt};
+                      `}"
                     >
                       <div key="courseConversation--sidebar">
                         <div
