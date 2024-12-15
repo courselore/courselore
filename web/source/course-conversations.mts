@@ -288,7 +288,9 @@ export default async (application: Application): Promise<void> => {
                     })();
                     groups.get(group)?.push(element) ?? groups.set(group, [element]);
                   }
-                  for (const [group, elements] of groups)
+                  for (const [group, elements] of groups) {
+                    const current = elements.some((element) => element.current);
+                    const view = !current && elements.some((element) => element.querySelector('[key~="courseConversation--sidebar--courseConversationMessageViews"]') !== null);
                     elements[0].insertAdjacentElement("beforebegin", javascript.execute(javascript.stringToElement(html\`
                       <button
                         key="courseConversations--group"
@@ -297,14 +299,6 @@ export default async (application: Application): Promise<void> => {
                           font-size: var(--font-size--3);
                           line-height: var(--font-size--3--line-height);
                           font-weight: 600;
-                          color: light-dark(
-                            var(--color--slate--500),
-                            var(--color--slate--500)
-                          );
-                          background-color: light-dark(
-                            var(--color--slate--100),
-                            var(--color--slate--900)
-                          );
                           padding: var(--space--1-5) var(--space--4);
                           border-bottom: var(--border-width--1) solid
                             light-dark(
@@ -320,6 +314,24 @@ export default async (application: Application): Promise<void> => {
                           transition-timing-function: var(
                             --transition-timing-function--ease-in-out
                           );
+                        `}} \${current ? ${css`
+                          color: light-dark(
+                            var(--color--white),
+                            var(--color--white)
+                          );
+                          background-color: light-dark(
+                            var(--color--blue--500),
+                            var(--color--blue--500)
+                          );
+                        `} : ${css`
+                          color: light-dark(
+                            var(--color--slate--500),
+                            var(--color--slate--500)
+                          );
+                          background-color: light-dark(
+                            var(--color--slate--100),
+                            var(--color--slate--900)
+                          );
                           &:hover,
                           &:focus-within {
                             background-color: light-dark(
@@ -333,16 +345,6 @@ export default async (application: Application): Promise<void> => {
                               var(--color--slate--700)
                             );
                           }
-                          [key~="courseConversations--group"].current & {
-                            color: light-dark(
-                              var(--color--white),
-                              var(--color--white)
-                            );
-                            background-color: light-dark(
-                              var(--color--blue--500),
-                              var(--color--blue--500)
-                            );
-                          }
                         `}}"
                         javascript="\${${javascript`
                           this.onclick = () => {
@@ -354,20 +356,22 @@ export default async (application: Application): Promise<void> => {
                           };
                         `}}"
                       >
-                        <div
-                          key="courseConversations--group--view"
-                          css="\${${css`
-                            font-size: var(--space--1-5);
-                            color: light-dark(
-                              var(--color--blue--500),
-                              var(--color--blue--500)
-                            );
-                            position: absolute;
-                            margin-left: var(--space---2-5);
-                          `}}"
-                        >
-                          <i class="bi bi-circle-fill"></i>
-                        </div>
+                        $\${view ? html\`
+                            <div
+                              key="courseConversations--group--view"
+                              css="\${${css`
+                                font-size: var(--space--1-5);
+                                color: light-dark(
+                                  var(--color--blue--500),
+                                  var(--color--blue--500)
+                                );
+                                position: absolute;
+                                margin-left: var(--space---2-5);
+                              `}}"
+                            >
+                              <i class="bi bi-circle-fill"></i>
+                            </div>
+                          \` : html\`\`}
                         <div>
                           <span
                             css="\${${css`
@@ -391,6 +395,7 @@ export default async (application: Application): Promise<void> => {
                         </div>
                       </button>
                     \`)));
+                  }
                 });
               `}"
             >
@@ -594,6 +599,10 @@ export default async (application: Application): Promise<void> => {
                       javascript="${javascript`
                         this.pinned = ${courseConversation.pinned};
                         this.createdAt = ${firstCourseConversationMessage.createdAt};
+                        this.current = ${
+                          request.state.courseConversation?.id ===
+                          courseConversation.id
+                        };
                       `}"
                     >
                       <div key="courseConversation--sidebar">
