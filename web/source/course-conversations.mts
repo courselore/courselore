@@ -396,6 +396,15 @@ export default async (application: Application): Promise<void> => {
                       </button>
                     \`)));
                   }
+                  {
+                    const openGroups = [...groups.keys()].slice(0, 5);
+                    if (openGroups[0] === "Pinned") {
+                      if (groups.get("Pinned").every((element) => element.querySelector('[key~="courseConversation--sidebar--courseConversationMessageViews"]') === null))
+                        openGroups.shift();
+                    } else openGroups.pop();
+                    for (const group of openGroups)
+                      groups.get(group)[0].previousElementSibling.click();
+                  }
                 });
               `}"
             >
