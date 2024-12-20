@@ -364,7 +364,7 @@ export default async (application: Application): Promise<void> => {
                             javascript.stateToggle(this, "open");
                             for (const element of javascript.nextSiblings(this).slice(1)) {
                               if (!element.matches('[key~="courseConversation"]')) break;
-                              element.hidden = !javascript.stateContains(this, "open");
+                              element.hidden = !this.matches('[state~="open"]');
                             }
                           };
                         `}}"
@@ -417,6 +417,12 @@ export default async (application: Application): Promise<void> => {
                     } else openGroups.pop();
                     for (const group of openGroups)
                       groups.get(group)[0].previousElementSibling.click();
+                  }
+                  {
+                    const element = javascript.previousSiblings(
+                      [...this.querySelectorAll('[key~="courseConversation"]')].find(element => element.current)
+                    ).slice(1).find(element => element.matches('[key="courseConversations--group"]'));
+                    if (!element.matches('[state~="open"]')) element.click();
                   }
                 });
               `}"
