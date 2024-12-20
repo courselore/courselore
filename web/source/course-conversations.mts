@@ -410,6 +410,9 @@ export default async (application: Application): Promise<void> => {
                     </button>
                   \`)));
                 }
+                this.onscroll = () => {
+                  this.previousScrollTop = this.scrollTop;
+                };
                 if (this.openGroups === undefined) {
                   this.openGroups = new Set();
                   const openGroups = [...groups.keys()].slice(0, 5);
@@ -423,8 +426,10 @@ export default async (application: Application): Promise<void> => {
                   const current = this.querySelector('[key~="courseConversation"][data-current="true"]');
                   const button = javascript.previousSiblings(current).slice(1).find(element => element.matches('[key="courseConversations--group"]'));
                   if (!button.matches('[state~="open"]')) button.click();
+                  this.scrollTop = this.previousScrollTop ?? 0;
                   current.scrollIntoView({ block: "nearest" });
                 }
+                else this.scrollTop = this.previousScrollTop ?? 0;
               `}"
             >
               $${application.database
