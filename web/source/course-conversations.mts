@@ -422,7 +422,7 @@ export default async (application: Application): Promise<void> => {
                     } else openGroups.pop();
                     for (const group of openGroups) groups.get(group)[0].previousElementSibling.click();
                   } else for (const group of this.openGroups) groups.get(group)?.[0].previousElementSibling.click();
-                  {
+                  if (!event?.detail?.liveConnectionUpdate) {
                     const current = [...this.querySelectorAll('[key~="courseConversation"]')].find(element => element.current);
                     const button = javascript.previousSiblings(current).slice(1).find(element => element.matches('[key="courseConversations--group"]'));
                     if (!button.matches('[state~="open"]')) button.click();
