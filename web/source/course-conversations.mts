@@ -274,161 +274,157 @@ export default async (application: Application): Promise<void> => {
                 flex-direction: column;
               `}"
               javascript="${javascript`
-                window.setTimeout(() => {
-                  const groups = new Map();
-                  for (const element of this.querySelectorAll('[key~="courseConversation"]')) {
-                    const group = element.pinned ? "Pinned" : (() => {
-                      const createdAtWeekStart = new Date(element.createdAt);
-                      createdAtWeekStart.setHours(12, 0, 0, 0);
-                      while (createdAtWeekStart.getDay() !== 0) createdAtWeekStart.setDate(createdAtWeekStart.getDate() - 1);
-                      const createdAtWeekEnd = new Date(element.createdAt);
-                      createdAtWeekEnd.setHours(12, 0, 0, 0);
-                      while (createdAtWeekEnd.getDay() !== 6) createdAtWeekEnd.setDate(createdAtWeekEnd.getDate() + 1);
-                      return \`\${javascript.localizeDate(createdAtWeekStart.toISOString())} — \${javascript.localizeDate(createdAtWeekEnd.toISOString())}\`;
-                    })();
-                    groups.get(group)?.push(element) ?? groups.set(group, [element]);
-                  }
-                  for (const [group, elements] of groups) {
-                    const current = elements.some((element) => element.current);
-                    const view = !current && elements.some((element) => element.querySelector('[key~="courseConversation--sidebar--courseConversationMessageViews"]') !== null);
-                    elements[0].insertAdjacentElement("beforebegin", javascript.execute(javascript.stringToElement(html\`
-                      <button
-                        key="courseConversations--group"
-                        type="button"
-                        css="\${${css`
-                          font-size: var(--font-size--3);
-                          line-height: var(--font-size--3--line-height);
-                          font-weight: 600;
-                          padding: var(--space--1-5) var(--space--4);
-                          border-bottom: var(--border-width--1) solid
-                            light-dark(
-                              var(--color--slate--200),
-                              var(--color--slate--800)
-                            );
-                          position: relative;
-                          cursor: pointer;
-                          transition-property: var(
-                            --transition-property--colors
+                const groups = new Map();
+                for (const element of this.querySelectorAll('[key~="courseConversation"]')) {
+                  const group = element.matches('[data-pinned="true"]') ? "Pinned" : (() => {
+                    const createdAtWeekStart = new Date(element.getAttribute("data-created-at"));
+                    createdAtWeekStart.setHours(12, 0, 0, 0);
+                    while (createdAtWeekStart.getDay() !== 0) createdAtWeekStart.setDate(createdAtWeekStart.getDate() - 1);
+                    const createdAtWeekEnd = new Date(element.getAttribute("data-created-at"));
+                    createdAtWeekEnd.setHours(12, 0, 0, 0);
+                    while (createdAtWeekEnd.getDay() !== 6) createdAtWeekEnd.setDate(createdAtWeekEnd.getDate() + 1);
+                    return \`\${javascript.localizeDate(createdAtWeekStart.toISOString())} — \${javascript.localizeDate(createdAtWeekEnd.toISOString())}\`;
+                  })();
+                  groups.get(group)?.push(element) ?? groups.set(group, [element]);
+                }
+                for (const [group, elements] of groups) {
+                  const current = elements.some((element) => element.matches('[data-current="true"]'));
+                  const view = !current && elements.some((element) => element.querySelector('[key~="courseConversation--sidebar--courseConversationMessageViews"]') !== null);
+                  elements[0].insertAdjacentElement("beforebegin", javascript.execute(javascript.stringToElement(html\`
+                    <button
+                      key="courseConversations--group"
+                      type="button"
+                      css="\${${css`
+                        font-size: var(--font-size--3);
+                        line-height: var(--font-size--3--line-height);
+                        font-weight: 600;
+                        padding: var(--space--1-5) var(--space--4);
+                        border-bottom: var(--border-width--1) solid
+                          light-dark(
+                            var(--color--slate--200),
+                            var(--color--slate--800)
                           );
-                          transition-duration: var(--transition-duration--150);
-                          transition-timing-function: var(
-                            --transition-timing-function--ease-in-out
-                          );
-                        `}} \${current ? ${css`
-                          color: light-dark(
-                            var(--color--white),
-                            var(--color--white)
-                          );
+                        position: relative;
+                        cursor: pointer;
+                        transition-property: var(--transition-property--colors);
+                        transition-duration: var(--transition-duration--150);
+                        transition-timing-function: var(
+                          --transition-timing-function--ease-in-out
+                        );
+                      `}} \${current ? ${css`
+                        color: light-dark(
+                          var(--color--white),
+                          var(--color--white)
+                        );
+                        background-color: light-dark(
+                          var(--color--blue--500),
+                          var(--color--blue--500)
+                        );
+                        &:hover,
+                        &:focus-within {
                           background-color: light-dark(
-                            var(--color--blue--500),
-                            var(--color--blue--500)
+                            var(--color--blue--400),
+                            var(--color--blue--400)
                           );
-                          &:hover,
-                          &:focus-within {
-                            background-color: light-dark(
-                              var(--color--blue--400),
-                              var(--color--blue--400)
-                            );
-                          }
-                          &:active {
-                            background-color: light-dark(
-                              var(--color--blue--600),
-                              var(--color--blue--600)
-                            );
-                          }
-                        `} : ${css`
-                          color: light-dark(
-                            var(--color--slate--500),
-                            var(--color--slate--500)
-                          );
+                        }
+                        &:active {
                           background-color: light-dark(
-                            var(--color--slate--100),
-                            var(--color--slate--900)
+                            var(--color--blue--600),
+                            var(--color--blue--600)
                           );
-                          &:hover,
-                          &:focus-within {
-                            background-color: light-dark(
-                              var(--color--slate--200),
-                              var(--color--slate--800)
-                            );
+                        }
+                      `} : ${css`
+                        color: light-dark(
+                          var(--color--slate--500),
+                          var(--color--slate--500)
+                        );
+                        background-color: light-dark(
+                          var(--color--slate--100),
+                          var(--color--slate--900)
+                        );
+                        &:hover,
+                        &:focus-within {
+                          background-color: light-dark(
+                            var(--color--slate--200),
+                            var(--color--slate--800)
+                          );
+                        }
+                        &:active {
+                          background-color: light-dark(
+                            var(--color--slate--300),
+                            var(--color--slate--700)
+                          );
+                        }
+                      `}}"
+                      javascript="\${${javascript`
+                        this.onclick = () => {
+                          javascript.stateToggle(this, "open");
+                          for (const element of javascript.nextSiblings(this).slice(1)) {
+                            if (!element.matches('[key~="courseConversation"]')) break;
+                            element.hidden = !this.matches('[state~="open"]');
                           }
-                          &:active {
-                            background-color: light-dark(
-                              var(--color--slate--300),
-                              var(--color--slate--700)
-                            );
-                          }
-                        `}}"
-                        javascript="\${${javascript`
-                          this.onclick = () => {
-                            javascript.stateToggle(this, "open");
-                            for (const element of javascript.nextSiblings(this).slice(1)) {
-                              if (!element.matches('[key~="courseConversation"]')) break;
-                              element.hidden = !this.matches('[state~="open"]');
-                            }
-                            if (this.matches('[state~="open"]'))
-                              this.closest('[key~="courseConversations"]').openGroups.add(this.querySelector('[key~="courseConversations--group--group"]').textContent);
-                            else
-                              this.closest('[key~="courseConversations"]').openGroups.delete(this.querySelector('[key~="courseConversations--group--group"]').textContent);
-                          };
-                        `}}"
-                      >
-                        $\${view ? html\`
-                            <div
-                              key="courseConversations--group--view"
-                              css="\${${css`
-                                font-size: var(--space--1-5);
-                                color: light-dark(
-                                  var(--color--blue--500),
-                                  var(--color--blue--500)
-                                );
-                                position: absolute;
-                                margin-left: var(--space---2-5);
-                              `}}"
-                            >
-                              <i class="bi bi-circle-fill"></i>
-                            </div>
-                          \` : html\`\`}
-                        <div>
-                          <span
+                          if (this.matches('[state~="open"]'))
+                            this.closest('[key~="courseConversations"]').openGroups.add(this.querySelector('[key~="courseConversations--group--group"]').textContent);
+                          else
+                            this.closest('[key~="courseConversations"]').openGroups.delete(this.querySelector('[key~="courseConversations--group--group"]').textContent);
+                        };
+                      `}}"
+                    >
+                      $\${view ? html\`
+                          <div
+                            key="courseConversations--group--view"
                             css="\${${css`
-                              display: inline-block;
-                              transition-property: var(
-                                --transition-property--transform
+                              font-size: var(--space--1-5);
+                              color: light-dark(
+                                var(--color--blue--500),
+                                var(--color--blue--500)
                               );
-                              transition-duration: var(
-                                --transition-duration--150
-                              );
-                              transition-timing-function: var(
-                                --transition-timing-function--ease-in-out
-                              );
-                              [key~="courseConversations--group"][state~="open"]
-                                & {
-                                transform: rotate(var(--transform--rotate--90));
-                              }
+                              position: absolute;
+                              margin-left: var(--space---2-5);
                             `}}"
-                            ><i class="bi bi-chevron-right"></i></span
-                          >  <span key="courseConversations--group--group">\${group}</span>
-                        </div>
-                      </button>
-                    \`)));
-                  }
-                  if (this.openGroups === undefined) {
-                    this.openGroups = new Set();
-                    const openGroups = [...groups.keys()].slice(0, 5);
-                    if (openGroups[0] === "Pinned") {
-                      if (groups.get("Pinned").every((element) => element.querySelector('[key~="courseConversation--sidebar--courseConversationMessageViews"]') === null))
-                        openGroups.shift();
-                    } else openGroups.pop();
-                    for (const group of openGroups) groups.get(group)[0].previousElementSibling.click();
-                  } else for (const group of this.openGroups) groups.get(group)?.[0].previousElementSibling.click();
-                  if (!event?.detail?.liveConnectionUpdate) {
-                    const current = [...this.querySelectorAll('[key~="courseConversation"]')].find(element => element.current);
-                    const button = javascript.previousSiblings(current).slice(1).find(element => element.matches('[key="courseConversations--group"]'));
-                    if (!button.matches('[state~="open"]')) button.click();
-                    current.scrollIntoView({ block: "nearest" });
-                  }
-                });
+                          >
+                            <i class="bi bi-circle-fill"></i>
+                          </div>
+                        \` : html\`\`}
+                      <div>
+                        <span
+                          css="\${${css`
+                            display: inline-block;
+                            transition-property: var(
+                              --transition-property--transform
+                            );
+                            transition-duration: var(
+                              --transition-duration--150
+                            );
+                            transition-timing-function: var(
+                              --transition-timing-function--ease-in-out
+                            );
+                            [key~="courseConversations--group"][state~="open"]
+                              & {
+                              transform: rotate(var(--transform--rotate--90));
+                            }
+                          `}}"
+                          ><i class="bi bi-chevron-right"></i></span
+                        >  <span key="courseConversations--group--group">\${group}</span>
+                      </div>
+                    </button>
+                  \`)));
+                }
+                if (this.openGroups === undefined) {
+                  this.openGroups = new Set();
+                  const openGroups = [...groups.keys()].slice(0, 5);
+                  if (openGroups[0] === "Pinned") {
+                    if (groups.get("Pinned").every((element) => element.querySelector('[key~="courseConversation--sidebar--courseConversationMessageViews"]') === null))
+                      openGroups.shift();
+                  } else openGroups.pop();
+                  for (const group of openGroups) groups.get(group)[0].previousElementSibling.click();
+                } else for (const group of this.openGroups) groups.get(group)?.[0].previousElementSibling.click();
+                if (!event?.detail?.liveConnectionUpdate) {
+                  const current = this.querySelector('[key~="courseConversation"][data-current="true"]');
+                  const button = javascript.previousSiblings(current).slice(1).find(element => element.matches('[key="courseConversations--group"]'));
+                  if (!button.matches('[state~="open"]')) button.click();
+                  current.scrollIntoView({ block: "nearest" });
+                }
               `}"
             >
               $${application.database
@@ -585,6 +581,14 @@ export default async (application: Application): Promise<void> => {
                         .publicId}/conversations/${courseConversation.publicId}"
                       href="/courses/${request.state.course!
                         .publicId}/conversations/${courseConversation.publicId}"
+                      data-pinned="${Boolean(courseConversation.pinned)
+                        ? "true"
+                        : "false"}"
+                      data-created-at="${firstCourseConversationMessage.createdAt}"
+                      data-current="${request.state.courseConversation?.id ===
+                      courseConversation.id
+                        ? "true"
+                        : "false"}"
                       hidden
                       css="${css`
                         padding: var(--space--2) var(--space--4);
@@ -641,14 +645,6 @@ export default async (application: Application): Promise<void> => {
                               );
                             }
                           `}"
-                      javascript="${javascript`
-                        this.pinned = ${courseConversation.pinned};
-                        this.createdAt = ${firstCourseConversationMessage.createdAt};
-                        this.current = ${
-                          request.state.courseConversation?.id ===
-                          courseConversation.id
-                        };
-                      `}"
                     >
                       <div key="courseConversation--sidebar">
                         <div
