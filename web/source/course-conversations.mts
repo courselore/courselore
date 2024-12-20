@@ -323,6 +323,19 @@ export default async (application: Application): Promise<void> => {
                             var(--color--blue--500),
                             var(--color--blue--500)
                           );
+                          &:hover,
+                          &:focus-within {
+                            background-color: light-dark(
+                              var(--color--blue--400),
+                              var(--color--blue--400)
+                            );
+                          }
+                          &:active {
+                            background-color: light-dark(
+                              var(--color--blue--600),
+                              var(--color--blue--600)
+                            );
+                          }
                         `} : ${css`
                           color: light-dark(
                             var(--color--slate--500),
@@ -589,6 +602,19 @@ export default async (application: Application): Promise<void> => {
                               var(--color--blue--500),
                               var(--color--blue--500)
                             );
+                            &:hover,
+                            &:focus-within {
+                              background-color: light-dark(
+                                var(--color--blue--400),
+                                var(--color--blue--400)
+                              );
+                            }
+                            &:active {
+                              background-color: light-dark(
+                                var(--color--blue--600),
+                                var(--color--blue--600)
+                              );
+                            }
                           `
                         : css`
                             &:hover,
