@@ -366,6 +366,10 @@ export default async (application: Application): Promise<void> => {
                               if (!element.matches('[key~="courseConversation"]')) break;
                               element.hidden = !this.matches('[state~="open"]');
                             }
+                            if (this.matches('[state~="open"]'))
+                              this.closest('[key~="courseConversations"]').openGroups.add(this.querySelector('[key~="courseConversations--group--group"]').textContent);
+                            else
+                              this.closest('[key~="courseConversations"]').openGroups.delete(this.querySelector('[key~="courseConversations--group--group"]').textContent);
                           };
                         `}}"
                       >
@@ -404,7 +408,7 @@ export default async (application: Application): Promise<void> => {
                               }
                             `}}"
                             ><i class="bi bi-chevron-right"></i></span
-                          >  \${group}
+                          >  <span key="courseConversations--group--group">\${group}</span>
                         </div>
                       </button>
                     \`)));
@@ -416,9 +420,8 @@ export default async (application: Application): Promise<void> => {
                       if (groups.get("Pinned").every((element) => element.querySelector('[key~="courseConversation--sidebar--courseConversationMessageViews"]') === null))
                         openGroups.shift();
                     } else openGroups.pop();
-                    for (const group of openGroups)
-                      groups.get(group)[0].previousElementSibling.click();
-                  }
+                    for (const group of openGroups) groups.get(group)[0].previousElementSibling.click();
+                  } else for (const group of this.openGroups) groups.get(group)?.[0].previousElementSibling.click();
                   {
                     const current = [...this.querySelectorAll('[key~="courseConversation"]')].find(element => element.current);
                     const button = javascript.previousSiblings(current).slice(1).find(element => element.matches('[key="courseConversations--group"]'));
