@@ -424,6 +424,7 @@ export default async (application: Application): Promise<void> => {
                     ).slice(1).find(element => element.matches('[key="courseConversations--group"]'));
                     if (!element.matches('[state~="open"]')) element.click();
                   }
+                  [...this.querySelectorAll('[key~="courseConversation"]')].find(element => element.current).scrollIntoView({ block: "nearest" });
                 });
               `}"
             >
