@@ -409,7 +409,8 @@ export default async (application: Application): Promise<void> => {
                       </button>
                     \`)));
                   }
-                  {
+                  if (this.openGroups === undefined) {
+                    this.openGroups = new Set();
                     const openGroups = [...groups.keys()].slice(0, 5);
                     if (openGroups[0] === "Pinned") {
                       if (groups.get("Pinned").every((element) => element.querySelector('[key~="courseConversation--sidebar--courseConversationMessageViews"]') === null))
@@ -419,12 +420,11 @@ export default async (application: Application): Promise<void> => {
                       groups.get(group)[0].previousElementSibling.click();
                   }
                   {
-                    const element = javascript.previousSiblings(
-                      [...this.querySelectorAll('[key~="courseConversation"]')].find(element => element.current)
-                    ).slice(1).find(element => element.matches('[key="courseConversations--group"]'));
-                    if (!element.matches('[state~="open"]')) element.click();
+                    const current = [...this.querySelectorAll('[key~="courseConversation"]')].find(element => element.current);
+                    const button = javascript.previousSiblings(current).slice(1).find(element => element.matches('[key="courseConversations--group"]'));
+                    if (!button.matches('[state~="open"]')) button.click();
+                    current.scrollIntoView({ block: "nearest" });
                   }
-                  [...this.querySelectorAll('[key~="courseConversation"]')].find(element => element.current).scrollIntoView({ block: "nearest" });
                 });
               `}"
             >
