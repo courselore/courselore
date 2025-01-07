@@ -921,7 +921,9 @@ export default async (application: Application): Promise<void> => {
                                     );
                                   }
                                 `}}"
-                              ><i class="bi bi-chevron-right"></i></span>
+                              >
+                                <i class="bi bi-chevron-right"></i>
+                              </span>
                               \${groupSummary}
                             </div>
                           </summary>
