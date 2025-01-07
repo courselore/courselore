@@ -270,11 +270,9 @@ export default async (application: Application): Promise<void> => {
               class="scroll"
               css="${css`
                 flex: 1;
-                display: flex;
-                flex-direction: column;
               `}"
             >
-              <div key="to-group" hidden>
+              <div key="courseConversations--to-group" hidden>
                 $${application.database
                   .all<{
                     id: number;
@@ -781,6 +779,7 @@ export default async (application: Application): Promise<void> => {
                     `;
                   })}
               </div>
+              <div key="courseConversations--grouped"></div>
             </div>
           </div>
           <div
