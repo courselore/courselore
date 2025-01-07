@@ -486,6 +486,14 @@ export default async (application: Application): Promise<void> => {
                                 );
                               }
                             `}"
+                        javascript="${javascript`
+                          this.pinned = ${Boolean(courseConversation.pinned)};
+                          this.firstCourseConversationMessageCreatedAt = ${firstCourseConversationMessage.createdAt};
+                          this.current = ${
+                            request.state.courseConversation?.id ===
+                            courseConversation.id
+                          };
+                        `}"
                       >
                         <div key="courseConversation--sidebar">
                           <div
