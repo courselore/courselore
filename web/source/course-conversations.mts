@@ -780,7 +780,7 @@ export default async (application: Application): Promise<void> => {
                   })}
               </div>
               <div
-                key="courseConversations--groups"
+                key="courseConversations--groups--container"
                 javascript="${javascript`
                   const courseConversationsGroups = javascript.stringToElement(html\`<div key="courseConversations--groups"></div>\`);
                   for (const element of this.closest('[key~="courseConversations"]').querySelectorAll('[key~="courseConversations--to-group"] [key~="courseConversation"]')) {
@@ -936,9 +936,11 @@ export default async (application: Application): Promise<void> => {
                     if (element.querySelector('[key~="courseConversation--sidebar--courseConversationMessageViews"]') !== null)
                       element.closest('[key~="courseConversations--groups--group"]').querySelector('[key~="courseConversations--groups--group--view"]').classList.add("visible");
                   }
-                  javascript.mount(this, courseConversationsGroups);
+                  javascript.mount(this.querySelector('[key="courseConversations--groups"]'), courseConversationsGroups);
                 `}"
-              ></div>
+              >
+                <div key="courseConversations--groups"></div>
+              </div>
             </div>
           </div>
           <div
