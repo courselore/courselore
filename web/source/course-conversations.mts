@@ -780,10 +780,156 @@ export default async (application: Application): Promise<void> => {
                   })}
               </div>
               <div
-                key="courseConversations--grouped"
+                key="courseConversations--groups"
                 javascript="${javascript`
-                  const courseConversationsGrouped = javascript.stringToElement(html\`<div key="courseConversations--grouped"></div>\`);
-                  javascript.mount(this, courseConversationsGrouped);
+                  const courseConversationsGroups = javascript.stringToElement(html\`<div key="courseConversations--groups"></div>\`);
+                  for (const element of this.closest('[key~="courseConversations"]').querySelectorAll('[key~="courseConversations--to-group"] [key~="courseConversation"]')) {
+                    let groupKey;
+                    let groupSummary;
+                    if (element.pinned) {
+                      groupKey = "pinned";
+                      groupSummary = "Pinned";
+                    } else {
+                      const firstCourseConversationMessageCreatedAtWeekStart = new Date(element.firstCourseConversationMessageCreatedAt);
+                      firstCourseConversationMessageCreatedAtWeekStart.setHours(12, 0, 0, 0);
+                      while (firstCourseConversationMessageCreatedAtWeekStart.getDay() !== 0) firstCourseConversationMessageCreatedAtWeekStart.setDate(firstCourseConversationMessageCreatedAtWeekStart.getDate() - 1);
+                      const firstCourseConversationMessageCreatedAtWeekEnd = new Date(element.firstCourseConversationMessageCreatedAt);
+                      firstCourseConversationMessageCreatedAtWeekEnd.setHours(12, 0, 0, 0);
+                      while (firstCourseConversationMessageCreatedAtWeekEnd.getDay() !== 6) firstCourseConversationMessageCreatedAtWeekEnd.setDate(firstCourseConversationMessageCreatedAtWeekEnd.getDate() + 1);
+                      groupKey = javascript.localizeDate(firstCourseConversationMessageCreatedAtWeekStart.toISOString());
+                      groupSummary = \`\${javascript.localizeDate(firstCourseConversationMessageCreatedAtWeekStart.toISOString())} — \${javascript.localizeDate(firstCourseConversationMessageCreatedAtWeekEnd.toISOString())}\`;
+                    }
+                    (
+                      courseConversationsGroups.querySelector(\`[key~="courseConversations--groups--group"][key~="\${groupKey}"]\`) ??
+                      courseConversationsGroups.insertAdjacentElement("beforeend", javascript.stringToElement(html\`
+                        <details key="courseConversations--groups--group \${groupKey}">
+                          <summary
+                            css="\${${css`
+                              font-size: var(--font-size--3);
+                              line-height: var(--font-size--3--line-height);
+                              font-weight: 600;
+                              color: light-dark(
+                                var(--color--slate--500),
+                                var(--color--slate--500)
+                              );
+                              background-color: light-dark(
+                                var(--color--slate--100),
+                                var(--color--slate--900)
+                              );
+                              padding: var(--space--1-5) var(--space--4);
+                              border-bottom: var(--border-width--1) solid
+                                light-dark(
+                                  var(--color--slate--200),
+                                  var(--color--slate--800)
+                                );
+                              position: relative;
+                              cursor: pointer;
+                              transition-property: var(
+                                --transition-property--colors
+                              );
+                              transition-duration: var(
+                                --transition-duration--150
+                              );
+                              transition-timing-function: var(
+                                --transition-timing-function--ease-in-out
+                              );
+                              &:hover,
+                              &:focus-within {
+                                background-color: light-dark(
+                                  var(--color--slate--200),
+                                  var(--color--slate--800)
+                                );
+                              }
+                              &:active {
+                                background-color: light-dark(
+                                  var(--color--slate--300),
+                                  var(--color--slate--700)
+                                );
+                              }
+                              [key~="courseConversations--groups--group"].current
+                                & {
+                                color: light-dark(
+                                  var(--color--white),
+                                  var(--color--white)
+                                );
+                                background-color: light-dark(
+                                  var(--color--blue--500),
+                                  var(--color--blue--500)
+                                );
+                                &:hover,
+                                &:focus-within {
+                                  background-color: light-dark(
+                                    var(--color--blue--400),
+                                    var(--color--blue--400)
+                                  );
+                                }
+                                &:active {
+                                  background-color: light-dark(
+                                    var(--color--blue--600),
+                                    var(--color--blue--600)
+                                  );
+                                }
+                              }
+                            `}}"
+                          >
+                            <div
+                              key="courseConversations--groups--group--view"
+                              css="\${${css`
+                                font-size: var(--space--1-5);
+                                color: light-dark(
+                                  var(--color--blue--500),
+                                  var(--color--blue--500)
+                                );
+                                position: absolute;
+                                margin-left: var(--space---2-5);
+                                transition-property: var(
+                                  --transition-property--opacity
+                                );
+                                transition-duration: var(
+                                  --transition-duration--150
+                                );
+                                transition-timing-function: var(
+                                  --transition-timing-function--ease-in-out
+                                );
+                                &:not(.visible),
+                                [key~="courseConversations--groups--group"].current
+                                  & {
+                                  visibility: hidden;
+                                  opacity: var(--opacity--0);
+                                }
+                              `}}"
+                            >
+                              <i class="bi bi-circle-fill"></i>
+                            </div>
+                            <div>
+                              <span
+                                css="\${${css`
+                                  display: inline-block;
+                                  transition-property: var(
+                                    --transition-property--transform
+                                  );
+                                  transition-duration: var(
+                                    --transition-duration--150
+                                  );
+                                  transition-timing-function: var(
+                                    --transition-timing-function--ease-in-out
+                                  );
+                                  [key~="courseConversations--groups--group"][open]
+                                    & {
+                                    transform: rotate(
+                                      var(--transform--rotate--90)
+                                    );
+                                  }
+                                `}}"
+                              ><i class="bi bi-chevron-right"></i></span>
+                              \${groupSummary}
+                            </div>
+                          </summary>
+                        </details>
+                      \`))
+                    ).insertAdjacentElement("beforeend", element);
+                  }
+                  javascript.mount(this, courseConversationsGroups);
                 `}"
               ></div>
             </div>
