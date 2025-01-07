@@ -824,6 +824,7 @@ export default async (application: Application): Promise<void> => {
                                 );
                               position: relative;
                               cursor: pointer;
+                              user-select: none;
                               transition-property: var(
                                 --transition-property--colors
                               );
