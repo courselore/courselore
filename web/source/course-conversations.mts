@@ -779,7 +779,13 @@ export default async (application: Application): Promise<void> => {
                     `;
                   })}
               </div>
-              <div key="courseConversations--grouped"></div>
+              <div
+                key="courseConversations--grouped"
+                javascript="${javascript`
+                  const courseConversationsGrouped = javascript.stringToElement(html\`<div key="courseConversations--grouped"></div>\`);
+                  javascript.mount(this, courseConversationsGrouped);
+                `}"
+              ></div>
             </div>
           </div>
           <div
