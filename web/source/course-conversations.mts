@@ -931,6 +931,10 @@ export default async (application: Application): Promise<void> => {
                         </details>
                       \`))
                     ).insertAdjacentElement("beforeend", element);
+                    if (element.current)
+                      element.closest('[key~="courseConversations--groups--group"]').classList.add("current");
+                    if (element.querySelector('[key~="courseConversation--sidebar--courseConversationMessageViews"]') !== null)
+                      element.closest('[key~="courseConversations--groups--group"]').querySelector('[key~="courseConversations--groups--group--view"]').classList.add("visible");
                   }
                   javascript.mount(this, courseConversationsGroups);
                 `}"
