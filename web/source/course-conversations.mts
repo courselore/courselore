@@ -936,7 +936,16 @@ export default async (application: Application): Promise<void> => {
                     if (element.querySelector('[key~="courseConversation--sidebar--courseConversationMessageViews"]') !== null)
                       element.closest('[key~="courseConversations--groups--group"]').querySelector('[key~="courseConversations--groups--group--view"]').classList.add("visible");
                   }
-                  javascript.mount(this.querySelector('[key="courseConversations--groups"]'), courseConversationsGroups);
+                  {
+                    const preopenCourseConversationsGroups = [...courseConversationsGroups.querySelectorAll('[key~="courseConversations--groups--group"]')].slice(0, 5);
+                    if (preopenCourseConversationsGroups[0].matches('[key~="pinned"]')) {
+                      if (preopenCourseConversationsGroups[0].querySelector('[key~="courseConversations--groups--group--view"].visible') === null)
+                        preopenCourseConversationsGroups.shift();
+                    }
+                    else preopenCourseConversationsGroups.pop();
+                    for (const element of preopenCourseConversationsGroups) element.open = true;
+                  }
+                  javascript.mount(this.querySelector('[key~="courseConversations--groups"]'), courseConversationsGroups);
                 `}"
               >
                 <div key="courseConversations--groups"></div>
