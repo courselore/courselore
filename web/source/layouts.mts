@@ -117,6 +117,7 @@ export default async (application: Application): Promise<void> => {
     .button {
       border-radius: var(--border-radius--1);
       cursor: pointer;
+      user-select: none;
       transition-property: var(--transition-property--colors);
       transition-duration: var(--transition-duration--150);
       transition-timing-function: var(

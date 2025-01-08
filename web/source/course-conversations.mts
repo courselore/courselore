@@ -950,7 +950,7 @@ export default async (application: Application): Promise<void> => {
                     for (const element of preopenCourseConversationsGroups) element.open = true;
                   }
                   javascript.mount(this.querySelector('[key~="courseConversations--groups"]'), courseConversationsGroups);
-                  if (this.firstMount === undefined) currentCourseConversation.scrollIntoView({ block: "nearest" });
+                  if (this.firstMount === undefined) currentCourseConversation.scrollIntoView({ block: "center" });
                   this.firstMount = false;
                 `}"
               >
