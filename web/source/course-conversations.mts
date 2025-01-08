@@ -1455,17 +1455,21 @@ export default async (application: Application): Promise<void> => {
                           var(--color--slate--600),
                           var(--color--slate--400)
                         );
+                        display: flex;
+                        align-items: baseline;
+                        gap: var(--space--4);
                       `}"
                     >
-                      <span
+                      <div
                         css="${css`
                           color: light-dark(
                             var(--color--slate--500),
                             var(--color--slate--500)
                           );
                         `}"
-                        >Tags:</span
                       >
+                        Tags:
+                      </div>
                       <div
                         css="${css`
                           display: flex;
