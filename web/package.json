@@ -7,7 +7,7 @@
   },
   "dependencies": {
     "@node-saml/node-saml": "^5.0.0",
-    "@radically-straightforward/production": "^1.0.31",
+    "@radically-straightforward/production": "^1.0.32",
     "@tensorflow/tfjs-node": "^4.22.0",
     "argon2": "^0.41.1",
     "crypto-random-string": "^5.0.0",
@@ -47,7 +47,7 @@
     "rehype-parse": "^9.0.1",
     "rehype-remark": "^10.0.0",
     "remark-stringify": "^11.0.0",
-    "typescript": "^5.7.2"
+    "typescript": "^5.7.3"
   },
   "prettier": {}
 }
