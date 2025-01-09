@@ -1171,6 +1171,9 @@ export default async (application: Application): Promise<void> => {
                     <input
                       type="text"
                       name="title"
+                      value="${typeof request.search.title === "string"
+                        ? request.search.title
+                        : ""}"
                       maxlength="2000"
                       required
                       autofocus
@@ -1218,9 +1221,13 @@ export default async (application: Application): Promise<void> => {
                     name="courseConversationType"
                     value="courseConversationTypeNote"
                     required
-                    $${request.state.courseParticipation
-                      .courseParticipationRole ===
-                    "courseParticipationRoleInstructor"
+                    $${request.search.courseConversationType ===
+                      "courseConversationTypeNote" ||
+                    (request.search.courseConversationType !==
+                      "courseConversationTypeQuestion" &&
+                      request.state.courseParticipation
+                        .courseParticipationRole ===
+                        "courseParticipationRoleInstructor")
                       ? html`checked`
                       : html``}
                     hidden
@@ -1236,9 +1243,13 @@ export default async (application: Application): Promise<void> => {
                     name="courseConversationType"
                     value="courseConversationTypeQuestion"
                     required
-                    $${request.state.courseParticipation
-                      .courseParticipationRole ===
-                    "courseParticipationRoleStudent"
+                    $${request.search.courseConversationType ===
+                      "courseConversationTypeQuestion" ||
+                    (request.search.courseConversationType !==
+                      "courseConversationTypeNote" &&
+                      request.state.courseParticipation
+                        .courseParticipationRole ===
+                        "courseParticipationRoleStudent")
                       ? html`checked`
                       : html``}
                     hidden
@@ -1302,7 +1313,14 @@ export default async (application: Application): Promise<void> => {
                     name="courseConversationVisibility"
                     value="courseConversationVisibilityEveryone"
                     required
-                    checked
+                    $${request.search.courseConversationVisibility ===
+                      "courseConversationVisibilityEveryone" ||
+                    (request.search.courseConversationVisibility !==
+                      "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations" &&
+                      request.search.courseConversationVisibility !==
+                        "courseConversationVisibilityCourseConversationParticipations")
+                      ? html`checked`
+                      : html``}
                     hidden
                   /><span
                     css="${css`
@@ -1316,6 +1334,10 @@ export default async (application: Application): Promise<void> => {
                     name="courseConversationVisibility"
                     value="courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
                     required
+                    $${request.search.courseConversationVisibility ===
+                    "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
+                      ? html`checked`
+                      : html``}
                     hidden
                   /><span
                     css="${css`
@@ -1329,6 +1351,10 @@ export default async (application: Application): Promise<void> => {
                     name="courseConversationVisibility"
                     value="courseConversationVisibilityCourseConversationParticipations"
                     required
+                    $${request.search.courseConversationVisibility ===
+                    "courseConversationVisibilityCourseConversationParticipations"
+                      ? html`checked`
+                      : html``}
                     hidden
                   /><span
                     css="${css`
@@ -1404,7 +1430,10 @@ export default async (application: Application): Promise<void> => {
                           name="pinned"
                           value="false"
                           required
-                          checked
+                          $${request.search.pinned === "false" ||
+                          request.search.pinned !== "true"
+                            ? html`checked`
+                            : html``}
                           hidden
                         /><span
                           css="${css`
@@ -1418,6 +1447,9 @@ export default async (application: Application): Promise<void> => {
                           name="pinned"
                           value="true"
                           required
+                          $${request.search.pinned === "true"
+                            ? html`checked`
+                            : html``}
                           hidden
                         /><span
                           css="${css`
