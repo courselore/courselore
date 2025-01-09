@@ -1087,7 +1087,23 @@ export default async (application: Application): Promise<void> => {
     handler: (
       request: serverTypes.Request<
         {},
-        {},
+        {
+          title: string;
+          courseConversationType:
+            | "courseConversationTypeNote"
+            | "courseConversationTypeQuestion";
+          courseConversationVisibility:
+            | "courseConversationVisibilityEveryone"
+            | "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
+            | "courseConversationVisibilityCourseConversationParticipations";
+          pinned: "false" | "true";
+          tags: string[];
+          content: string;
+          courseConversationMessageAnonymity:
+            | "courseConversationMessageAnonymityNone"
+            | "courseConversationMessageAnonymityCourseParticipationRoleStudents"
+            | "courseConversationMessageAnonymityCourseParticipationRoleInstructors";
+        },
         {},
         {},
         Application["types"]["states"]["Course"]
