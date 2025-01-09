@@ -1457,7 +1457,7 @@ export default async (application: Application): Promise<void> => {
                         );
                         display: flex;
                         align-items: baseline;
-                        gap: var(--space--4);
+                        gap: var(--space--1-5);
                       `}"
                     >
                       <div
@@ -1472,15 +1472,17 @@ export default async (application: Application): Promise<void> => {
                       </div>
                       <div
                         css="${css`
+                          flex: 1;
                           display: flex;
-                          flex-direction: column;
-                          gap: var(--space--2);
+                          flex-wrap: wrap;
+                          column-gap: var(--space--4);
+                          row-gap: var(--space--2);
                         `}"
                       >
                         $${request.state.courseConversationsTags.map(
                           (courseConversationsTag) => html`
                             <label
-                              class="button button--rectangle button--transparent button--dropdown-menu"
+                              class="button button--rectangle button--transparent"
                             >
                               <input
                                 type="checkbox"
