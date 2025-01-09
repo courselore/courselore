@@ -1088,6 +1088,8 @@ export default async (application: Application): Promise<void> => {
       request: serverTypes.Request<
         {},
         {
+          "reuse.course": string;
+          "reuse.courseConversation": string;
           title: string;
           courseConversationType:
             | "courseConversationTypeNote"
@@ -1117,6 +1119,104 @@ export default async (application: Application): Promise<void> => {
         request.state.course.courseState !== "courseStateActive"
       )
         return;
+      let prefill: Partial<{
+        title: string;
+        courseConversationType:
+          | "courseConversationTypeNote"
+          | "courseConversationTypeQuestion";
+        courseConversationVisibility:
+          | "courseConversationVisibilityEveryone"
+          | "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
+          | "courseConversationVisibilityCourseConversationParticipations";
+        pinned: "false" | "true";
+        tags: string[];
+        content: string;
+        courseConversationMessageAnonymity:
+          | "courseConversationMessageAnonymityNone"
+          | "courseConversationMessageAnonymityCourseParticipationRoleStudents"
+          | "courseConversationMessageAnonymityCourseParticipationRoleInstructors";
+      }> = {};
+      if (
+        typeof request.search["reuse.course"] === "string" &&
+        request.search["reuse.course"].trim() !== "" &&
+        typeof request.search["reuse.courseConversation"] === "string" &&
+        request.search["reuse.courseConversation"].trim() !== ""
+      ) {
+        const prefillCourseConversation = application.database.get<{
+          id: number;
+          courseConversationType:
+            | "courseConversationTypeNote"
+            | "courseConversationTypeQuestion";
+          courseConversationVisibility:
+            | "courseConversationVisibilityEveryone"
+            | "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
+            | "courseConversationVisibilityCourseConversationParticipations";
+          pinned: number;
+          title: string;
+        }>(
+          sql`
+            select
+              "id",
+              "courseConversationType",
+              "courseConversationVisibility",
+              "pinned",
+              "title"
+            from "courseConversations"
+            where
+              "publicId" = ${request.search["reuse.courseConversation"]} and
+              "course" = ${request.search["reuse.course"]} and (
+                "courseConversationVisibility" = 'courseConversationVisibilityEveryone'
+                $${
+                  request.state.courseParticipation.courseParticipationRole ===
+                  "courseParticipationRoleInstructor"
+                    ? sql`
+                        or
+                        "courseConversationVisibility" = 'courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations'
+                      `
+                    : sql``
+                }
+                or (
+                  select true
+                  from "courseConversationParticipations"
+                  where
+                    "courseConversations"."id" = "courseConversationParticipations"."courseConversation" and
+                    "courseConversationParticipations"."courseParticipation" = ${request.state.courseParticipation.id}
+                )
+              );
+          `,
+        );
+        const prefillFirstCourseConversationMessage =
+          prefillCourseConversation !== undefined
+            ? application.database.get<{
+                content: string;
+                courseConversationMessageAnonymity:
+                  | "courseConversationMessageAnonymityNone"
+                  | "courseConversationMessageAnonymityCourseParticipationRoleStudents"
+                  | "courseConversationMessageAnonymityCourseParticipationRoleInstructors";
+              }>(
+                sql`
+                  select "content", "courseConversationMessageAnonymity"
+                  from "courseConversationMessages"
+                  where "courseConversation" = ${prefillCourseConversation.id}
+                  order by "id" asc
+                  limit 1;
+                `,
+              )
+            : undefined;
+        if (
+          prefillCourseConversation !== undefined &&
+          prefillFirstCourseConversationMessage !== undefined
+        )
+          prefill = {
+            ...prefill,
+            ...prefillCourseConversation,
+            pinned: Boolean(prefillCourseConversation.pinned)
+              ? "true"
+              : "false",
+            ...prefillFirstCourseConversationMessage,
+          };
+      }
+      prefill = { ...prefill, ...request.search };
       response.end(
         courseConversationsLayout({
           request,
@@ -1171,8 +1271,8 @@ export default async (application: Application): Promise<void> => {
                     <input
                       type="text"
                       name="title"
-                      value="${typeof request.search.title === "string"
-                        ? request.search.title
+                      value="${typeof prefill.title === "string"
+                        ? prefill.title
                         : ""}"
                       maxlength="2000"
                       required
@@ -1221,9 +1321,9 @@ export default async (application: Application): Promise<void> => {
                     name="courseConversationType"
                     value="courseConversationTypeNote"
                     required
-                    $${request.search.courseConversationType ===
+                    $${prefill.courseConversationType ===
                       "courseConversationTypeNote" ||
-                    (request.search.courseConversationType !==
+                    (prefill.courseConversationType !==
                       "courseConversationTypeQuestion" &&
                       request.state.courseParticipation
                         .courseParticipationRole ===
@@ -1243,9 +1343,9 @@ export default async (application: Application): Promise<void> => {
                     name="courseConversationType"
                     value="courseConversationTypeQuestion"
                     required
-                    $${request.search.courseConversationType ===
+                    $${prefill.courseConversationType ===
                       "courseConversationTypeQuestion" ||
-                    (request.search.courseConversationType !==
+                    (prefill.courseConversationType !==
                       "courseConversationTypeNote" &&
                       request.state.courseParticipation
                         .courseParticipationRole ===
@@ -1313,11 +1413,11 @@ export default async (application: Application): Promise<void> => {
                     name="courseConversationVisibility"
                     value="courseConversationVisibilityEveryone"
                     required
-                    $${request.search.courseConversationVisibility ===
+                    $${prefill.courseConversationVisibility ===
                       "courseConversationVisibilityEveryone" ||
-                    (request.search.courseConversationVisibility !==
+                    (prefill.courseConversationVisibility !==
                       "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations" &&
-                      request.search.courseConversationVisibility !==
+                      prefill.courseConversationVisibility !==
                         "courseConversationVisibilityCourseConversationParticipations")
                       ? html`checked`
                       : html``}
@@ -1334,7 +1434,7 @@ export default async (application: Application): Promise<void> => {
                     name="courseConversationVisibility"
                     value="courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
                     required
-                    $${request.search.courseConversationVisibility ===
+                    $${prefill.courseConversationVisibility ===
                     "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
                       ? html`checked`
                       : html``}
@@ -1351,7 +1451,7 @@ export default async (application: Application): Promise<void> => {
                     name="courseConversationVisibility"
                     value="courseConversationVisibilityCourseConversationParticipations"
                     required
-                    $${request.search.courseConversationVisibility ===
+                    $${prefill.courseConversationVisibility ===
                     "courseConversationVisibilityCourseConversationParticipations"
                       ? html`checked`
                       : html``}
@@ -1430,8 +1530,8 @@ export default async (application: Application): Promise<void> => {
                           name="pinned"
                           value="false"
                           required
-                          $${request.search.pinned === "false" ||
-                          request.search.pinned !== "true"
+                          $${prefill.pinned === "false" ||
+                          prefill.pinned !== "true"
                             ? html`checked`
                             : html``}
                           hidden
@@ -1447,9 +1547,7 @@ export default async (application: Application): Promise<void> => {
                           name="pinned"
                           value="true"
                           required
-                          $${request.search.pinned === "true"
-                            ? html`checked`
-                            : html``}
+                          $${prefill.pinned === "true" ? html`checked` : html``}
                           hidden
                         /><span
                           css="${css`
@@ -1544,8 +1642,8 @@ export default async (application: Application): Promise<void> => {
                                 )
                                   ? html`required`
                                   : html``}
-                                $${Array.isArray(request.search.tags) &&
-                                request.search.tags.includes(
+                                $${Array.isArray(prefill.tags) &&
+                                prefill.tags.includes(
                                   courseConversationsTag.publicId,
                                 )
                                   ? html`checked`
@@ -1561,8 +1659,8 @@ export default async (application: Application): Promise<void> => {
                 : html``}
               $${application.partials.courseConversationMessageContentEditor({
                 value:
-                  typeof request.search.content === "string"
-                    ? request.search.content
+                  typeof prefill.content === "string"
+                    ? prefill.content
                     : undefined,
               })}
               <div
@@ -1626,18 +1724,15 @@ export default async (application: Application): Promise<void> => {
                             name="courseConversationMessageAnonymity"
                             value="courseConversationMessageAnonymityNone"
                             required
-                            $${request.search
-                              .courseConversationMessageAnonymity ===
+                            $${prefill.courseConversationMessageAnonymity ===
                               "courseConversationMessageAnonymityNone" ||
-                            (request.search
-                              .courseConversationMessageAnonymity !==
+                            (prefill.courseConversationMessageAnonymity !==
                               "courseConversationMessageAnonymityCourseParticipationRoleStudents" &&
                               !(
                                 request.state.course
                                   .courseParticipationRoleStudentsAnonymityAllowed ===
                                   "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleInstructors" &&
-                                request.search
-                                  .courseConversationMessageAnonymity ===
+                                prefill.courseConversationMessageAnonymity ===
                                   "courseConversationMessageAnonymityCourseParticipationRoleInstructors"
                               ))
                               ? html`checked`
@@ -1655,8 +1750,7 @@ export default async (application: Application): Promise<void> => {
                             name="courseConversationMessageAnonymity"
                             value="courseConversationMessageAnonymityCourseParticipationRoleStudents"
                             required
-                            $${request.search
-                              .courseConversationMessageAnonymity ===
+                            $${prefill.courseConversationMessageAnonymity ===
                             "courseConversationMessageAnonymityCourseParticipationRoleStudents"
                               ? html`checked`
                               : html``}
@@ -1676,8 +1770,7 @@ export default async (application: Application): Promise<void> => {
                                   name="courseConversationMessageAnonymity"
                                   value="courseConversationMessageAnonymityCourseParticipationRoleInstructors"
                                   required
-                                  $${request.search
-                                    .courseConversationMessageAnonymity ===
+                                  $${prefill.courseConversationMessageAnonymity ===
                                   "courseConversationMessageAnonymityCourseParticipationRoleInstructors"
                                     ? html`checked`
                                     : html``}
