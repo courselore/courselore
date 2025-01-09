@@ -184,6 +184,7 @@ export default async (application: Application): Promise<void> => {
                 <input
                   type="text"
                   name="search.courseConversations"
+                  maxlength="3000"
                   css="${css`
                     flex: 1;
                     min-width: var(--space--0);
@@ -1154,6 +1155,7 @@ export default async (application: Application): Promise<void> => {
                     <input
                       type="text"
                       name="title"
+                      maxlength="2000"
                       required
                       autofocus
                       class="input--text"
@@ -1887,6 +1889,7 @@ export default async (application: Application): Promise<void> => {
                                     name="title"
                                     value="${request.state.courseConversation
                                       .title}"
+                                    maxlength="2000"
                                     required
                                     class="input--text"
                                     css="${css`
