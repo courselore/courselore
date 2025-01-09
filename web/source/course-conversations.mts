@@ -1544,6 +1544,12 @@ export default async (application: Application): Promise<void> => {
                                 )
                                   ? html`required`
                                   : html``}
+                                $${Array.isArray(request.search.tags) &&
+                                request.search.tags.includes(
+                                  courseConversationsTag.publicId,
+                                )
+                                  ? html`checked`
+                                  : html``}
                                 class="input--checkbox"
                               />  ${courseConversationsTag.name}
                             </label>
@@ -1553,7 +1559,12 @@ export default async (application: Application): Promise<void> => {
                     </div>
                   `
                 : html``}
-              $${application.partials.courseConversationMessageContentEditor()}
+              $${application.partials.courseConversationMessageContentEditor({
+                value:
+                  typeof request.search.content === "string"
+                    ? request.search.content
+                    : undefined,
+              })}
               <div
                 css="${css`
                   font-size: var(--font-size--3);

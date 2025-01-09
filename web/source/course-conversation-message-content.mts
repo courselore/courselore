@@ -7,12 +7,16 @@ import { Application } from "./index.mjs";
 
 export type ApplicationCourseConversationMessageContent = {
   partials: {
-    courseConversationMessageContentEditor: () => HTML;
+    courseConversationMessageContentEditor: (options?: {
+      value?: string;
+    }) => HTML;
   };
 };
 
 export default async (application: Application): Promise<void> => {
-  application.partials.courseConversationMessageContentEditor = () => html`
+  application.partials.courseConversationMessageContentEditor = ({
+    value = "",
+  } = {}) => html`
     <div
       key="courseConversationMessageContentEditor"
       class="input--text"
@@ -124,7 +128,9 @@ export default async (application: Application): Promise<void> => {
           height: var(--space--44);
           padding: var(--space--1) var(--space--2);
         `}"
-      ></textarea>
+      >
+${value}</textarea
+      >
     </div>
   `;
 };
