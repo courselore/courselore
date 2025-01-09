@@ -1626,7 +1626,22 @@ export default async (application: Application): Promise<void> => {
                             name="courseConversationMessageAnonymity"
                             value="courseConversationMessageAnonymityNone"
                             required
-                            checked
+                            $${request.search
+                              .courseConversationMessageAnonymity ===
+                              "courseConversationMessageAnonymityNone" ||
+                            (request.search
+                              .courseConversationMessageAnonymity !==
+                              "courseConversationMessageAnonymityCourseParticipationRoleStudents" &&
+                              !(
+                                request.state.course
+                                  .courseParticipationRoleStudentsAnonymityAllowed ===
+                                  "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleInstructors" &&
+                                request.search
+                                  .courseConversationMessageAnonymity ===
+                                  "courseConversationMessageAnonymityCourseParticipationRoleInstructors"
+                              ))
+                              ? html`checked`
+                              : html``}
                             hidden
                           /><span
                             css="${css`
@@ -1640,6 +1655,11 @@ export default async (application: Application): Promise<void> => {
                             name="courseConversationMessageAnonymity"
                             value="courseConversationMessageAnonymityCourseParticipationRoleStudents"
                             required
+                            $${request.search
+                              .courseConversationMessageAnonymity ===
+                            "courseConversationMessageAnonymityCourseParticipationRoleStudents"
+                              ? html`checked`
+                              : html``}
                             hidden
                           /><span
                             css="${css`
@@ -1656,6 +1676,11 @@ export default async (application: Application): Promise<void> => {
                                   name="courseConversationMessageAnonymity"
                                   value="courseConversationMessageAnonymityCourseParticipationRoleInstructors"
                                   required
+                                  $${request.search
+                                    .courseConversationMessageAnonymity ===
+                                  "courseConversationMessageAnonymityCourseParticipationRoleInstructors"
+                                    ? html`checked`
+                                    : html``}
                                   hidden
                                 /><span
                                   css="${css`
