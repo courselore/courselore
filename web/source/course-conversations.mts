@@ -947,7 +947,7 @@ export default async (application: Application): Promise<void> => {
                       if (preopenCourseConversationsGroups[0].querySelector('[key~="courseConversations--groups--group--view"].visible') === null)
                         preopenCourseConversationsGroups.shift();
                     }
-                    else preopenCourseConversationsGroups.pop();
+                    else if (preopenCourseConversationsGroups.length === 5) preopenCourseConversationsGroups.pop();
                     for (const element of preopenCourseConversationsGroups) element.open = true;
                   }
                   javascript.mount(this.querySelector('[key~="courseConversations--groups"]'), courseConversationsGroups);
