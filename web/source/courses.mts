@@ -694,7 +694,7 @@ export default async (application: Application): Promise<void> => {
                                   css="${css`
                                     display: flex;
                                     align-items: center;
-                                    gap: var(--space--2);
+                                    gap: var(--space--3);
                                   `}"
                                 >
                                   <div
