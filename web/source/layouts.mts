@@ -425,7 +425,7 @@ export default async (application: Application): Promise<void> => {
                     `}"
                   >
                     <a
-                      href="/courses/${request.state.course.publicId}/"
+                      href="/courses/${request.state.course.publicId}"
                       class="button button--rectangle button--transparent button--dropdown-menu"
                     >
                       Conversations
