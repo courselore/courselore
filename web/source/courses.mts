@@ -705,6 +705,13 @@ export default async (application: Application): Promise<void> => {
                                   <button
                                     type="button"
                                     class="button button--square button--icon button--transparent"
+                                    javascript="${javascript`
+                                      this.onclick = () => {
+                                        const element = this.closest('[key~="courseConversationsTag"]');
+                                        const previousElement = element.previousElementSibling;
+                                        if (previousElement !== null) previousElement.insertAdjacentElement("beforebegin", element);
+                                      };
+                                    `}"
                                   >
                                     <i class="bi bi-arrow-up"></i>
                                   </button>
@@ -713,6 +720,13 @@ export default async (application: Application): Promise<void> => {
                                   <button
                                     type="button"
                                     class="button button--square button--icon button--transparent"
+                                    javascript="${javascript`
+                                      this.onclick = () => {
+                                        const element = this.closest('[key~="courseConversationsTag"]');
+                                        const nextElement = element.nextElementSibling;
+                                        if (nextElement !== null) nextElement.insertAdjacentElement("afterend", element);
+                                      };
+                                    `}"
                                   >
                                     <i class="bi bi-arrow-down"></i>
                                   </button>
