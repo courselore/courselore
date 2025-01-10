@@ -741,7 +741,7 @@ export default async (application: Application): Promise<void> => {
           key="main"
           css="${css`
             flex: 1;
-            min-height: 0;
+            min-height: var(--space--0);
           `}"
         >
           $${body}
