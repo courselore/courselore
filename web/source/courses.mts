@@ -273,4 +273,53 @@ export default async (application: Application): Promise<void> => {
       );
     },
   });
+
+  application.server?.push({
+    method: "GET",
+    pathname: new RegExp("^/courses/(?<coursePublicId>[0-9]+)/settings$"),
+    handler: (
+      request: serverTypes.Request<
+        {},
+        {},
+        {},
+        {},
+        Application["types"]["states"]["Course"]
+      >,
+      response,
+    ) => {
+      if (
+        request.state.course === undefined ||
+        request.state.courseParticipation === undefined
+      )
+        return;
+      response.end(
+        application.layouts.base({
+          request,
+          response,
+          head: html`
+            <title>Settings · ${request.state.course.name} · Courselore</title>
+          `,
+          body: html`
+            <div
+              css="${css`
+                max-width: var(--space--168);
+                padding: var(--space--2) var(--space--4);
+                margin: var(--space--0) auto;
+              `}"
+            >
+              <div
+                css="${css`
+                  font-size: var(--font-size--4);
+                  line-height: var(--font-size--4--line-height);
+                  font-weight: 800;
+                `}"
+              >
+                Course settings
+              </div>
+            </div>
+          `,
+        }),
+      );
+    },
+  });
 };
