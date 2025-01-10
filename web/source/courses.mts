@@ -677,166 +677,170 @@ export default async (application: Application): Promise<void> => {
                           />  Tags are required when creating a conversation
                         </label>
                       </div>
-                      <div
-                        key="courseConversationsTags"
-                        css="${css`
-                          display: flex;
-                          flex-direction: column;
-                          gap: var(--space--4);
-                        `}"
-                      >
-                        $${request.state.courseConversationsTags.map(
-                          (courseConversationsTag) => html`
-                            <div
-                              key="courseConversationsTag ${courseConversationsTag.publicId}"
-                              css="${css`
-                                display: flex;
-                                align-items: center;
-                                gap: var(--space--2);
-                              `}"
-                            >
-                              <div
-                                css="${css`
-                                  color: light-dark(
-                                    var(--color--slate--600),
-                                    var(--color--slate--400)
-                                  );
-                                  display: flex;
-                                  flex-direction: column;
-                                  gap: var(--space--1);
-                                `}"
-                              >
-                                <div>
-                                  <button
-                                    type="button"
-                                    class="button button--square button--icon button--transparent"
-                                    javascript="${javascript`
-                                      this.onclick = () => {
-                                        const element = this.closest('[key~="courseConversationsTag"]');
-                                        const previousElement = element.previousElementSibling;
-                                        if (previousElement !== null) {
-                                          this.closest('[type~="form"]').isModified = true;
-                                          previousElement.insertAdjacentElement("beforebegin", element);
-                                        }
-                                      };
-                                    `}"
-                                  >
-                                    <i class="bi bi-arrow-up"></i>
-                                  </button>
-                                </div>
-                                <div>
-                                  <button
-                                    type="button"
-                                    class="button button--square button--icon button--transparent"
-                                    javascript="${javascript`
-                                      this.onclick = () => {
-                                        const element = this.closest('[key~="courseConversationsTag"]');
-                                        const nextElement = element.nextElementSibling;
-                                        if (nextElement !== null) {
-                                          this.closest('[type~="form"]').isModified = true;
-                                          nextElement.insertAdjacentElement("afterend", element);
-                                        }
-                                      };
-                                    `}"
-                                  >
-                                    <i class="bi bi-arrow-down"></i>
-                                  </button>
-                                </div>
-                              </div>
-                              <div
-                                css="${css`
-                                  flex: 1;
-                                  display: flex;
-                                  flex-direction: column;
-                                  gap: var(--space--2);
-                                `}"
-                              >
-                                <input
-                                  type="hidden"
-                                  name="tags.id[]"
-                                  value="${courseConversationsTag.publicId}"
-                                />
-                                <input
-                                  type="text"
-                                  name="tags.name[]"
-                                  value="${courseConversationsTag.name}"
-                                  required
-                                  maxlength="2000"
-                                  class="input--text"
-                                  css="${css`
-                                    flex: 1;
-                                  `}"
-                                />
+                      $${(() => {
+                        return html`
+                          <div
+                            key="courseConversationsTags"
+                            css="${css`
+                              display: flex;
+                              flex-direction: column;
+                              gap: var(--space--4);
+                            `}"
+                          >
+                            $${request.state.courseConversationsTags.map(
+                              (courseConversationsTag) => html`
                                 <div
+                                  key="courseConversationsTag ${courseConversationsTag.publicId}"
                                   css="${css`
-                                    font-size: var(--font-size--3);
-                                    line-height: var(
-                                      --font-size--3--line-height
-                                    );
-                                    font-weight: 600;
-                                    color: light-dark(
-                                      var(--color--slate--600),
-                                      var(--color--slate--400)
-                                    );
                                     display: flex;
-                                    align-items: baseline;
-                                    flex-wrap: wrap;
-                                    column-gap: var(--space--4);
-                                    row-gap: var(--space--2);
+                                    align-items: center;
+                                    gap: var(--space--2);
                                   `}"
                                 >
-                                  <label
-                                    class="button button--rectangle button--transparent"
-                                  >
-                                    <input
-                                      type="checkbox"
-                                      name="tags.privateToCourseParticipationRoleInstructors[]"
-                                      $${Boolean(
-                                        courseConversationsTag.privateToCourseParticipationRoleInstructors,
-                                      )
-                                        ? html`checked`
-                                        : html``}
-                                      class="input--checkbox"
-                                    />  Private to instructors
-                                  </label>
-                                  <button
-                                    type="button"
-                                    class="button button--rectangle button--transparent"
-                                    javascript="${javascript`
-                                      this.onclick = () => {
-                                        this.closest('[type~="form"]').isModified = true;
-                                        this.closest('[key~="courseConversationsTag"]').remove();
-                                      };
+                                  <div
+                                    css="${css`
+                                      color: light-dark(
+                                        var(--color--slate--600),
+                                        var(--color--slate--400)
+                                      );
+                                      display: flex;
+                                      flex-direction: column;
+                                      gap: var(--space--1);
                                     `}"
                                   >
-                                    Remove
-                                  </button>
+                                    <div>
+                                      <button
+                                        type="button"
+                                        class="button button--square button--icon button--transparent"
+                                        javascript="${javascript`
+                                          this.onclick = () => {
+                                            const element = this.closest('[key~="courseConversationsTag"]');
+                                            const previousElement = element.previousElementSibling;
+                                            if (previousElement !== null) {
+                                              this.closest('[type~="form"]').isModified = true;
+                                              previousElement.insertAdjacentElement("beforebegin", element);
+                                            }
+                                          };
+                                        `}"
+                                      >
+                                        <i class="bi bi-arrow-up"></i>
+                                      </button>
+                                    </div>
+                                    <div>
+                                      <button
+                                        type="button"
+                                        class="button button--square button--icon button--transparent"
+                                        javascript="${javascript`
+                                          this.onclick = () => {
+                                            const element = this.closest('[key~="courseConversationsTag"]');
+                                            const nextElement = element.nextElementSibling;
+                                            if (nextElement !== null) {
+                                              this.closest('[type~="form"]').isModified = true;
+                                              nextElement.insertAdjacentElement("afterend", element);
+                                            }
+                                          };
+                                        `}"
+                                      >
+                                        <i class="bi bi-arrow-down"></i>
+                                      </button>
+                                    </div>
+                                  </div>
+                                  <div
+                                    css="${css`
+                                      flex: 1;
+                                      display: flex;
+                                      flex-direction: column;
+                                      gap: var(--space--2);
+                                    `}"
+                                  >
+                                    <input
+                                      type="hidden"
+                                      name="tags.id[]"
+                                      value="${courseConversationsTag.publicId}"
+                                    />
+                                    <input
+                                      type="text"
+                                      name="tags.name[]"
+                                      value="${courseConversationsTag.name}"
+                                      required
+                                      maxlength="2000"
+                                      class="input--text"
+                                      css="${css`
+                                        flex: 1;
+                                      `}"
+                                    />
+                                    <div
+                                      css="${css`
+                                        font-size: var(--font-size--3);
+                                        line-height: var(
+                                          --font-size--3--line-height
+                                        );
+                                        font-weight: 600;
+                                        color: light-dark(
+                                          var(--color--slate--600),
+                                          var(--color--slate--400)
+                                        );
+                                        display: flex;
+                                        align-items: baseline;
+                                        flex-wrap: wrap;
+                                        column-gap: var(--space--4);
+                                        row-gap: var(--space--2);
+                                      `}"
+                                    >
+                                      <label
+                                        class="button button--rectangle button--transparent"
+                                      >
+                                        <input
+                                          type="checkbox"
+                                          name="tags.privateToCourseParticipationRoleInstructors[]"
+                                          $${Boolean(
+                                            courseConversationsTag.privateToCourseParticipationRoleInstructors,
+                                          )
+                                            ? html`checked`
+                                            : html``}
+                                          class="input--checkbox"
+                                        />  Private to instructors
+                                      </label>
+                                      <button
+                                        type="button"
+                                        class="button button--rectangle button--transparent"
+                                        javascript="${javascript`
+                                          this.onclick = () => {
+                                            this.closest('[type~="form"]').isModified = true;
+                                            this.closest('[key~="courseConversationsTag"]').remove();
+                                          };
+                                        `}"
+                                      >
+                                        Remove
+                                      </button>
+                                    </div>
+                                  </div>
                                 </div>
-                              </div>
-                            </div>
-                          `,
-                        )}
-                      </div>
-                      <div
-                        css="${css`
-                          font-size: var(--font-size--3);
-                          line-height: var(--font-size--3--line-height);
-                          font-weight: 600;
-                        `}"
-                      >
-                        <button
-                          type="button"
-                          class="button button--rectangle button--transparent"
-                          javascript="${javascript`
-                            this.onclick = () => {
-                              this.closest('[type~="form"]').isModified = true;
-                              javascript.execute(this.closest('[type~="form"]').querySelector('[key~="courseConversationsTags"]').insertAdjacentElement("beforeend", javascript.stringToElement(html\`<div>HELLO WORLD</div>\`))).morph = false;
-                            };
-                          `}"
-                        >
-                          Add tag
-                        </button>
-                      </div>
+                              `,
+                            )}
+                          </div>
+                          <div
+                            css="${css`
+                              font-size: var(--font-size--3);
+                              line-height: var(--font-size--3--line-height);
+                              font-weight: 600;
+                            `}"
+                          >
+                            <button
+                              type="button"
+                              class="button button--rectangle button--transparent"
+                              javascript="${javascript`
+                                this.onclick = () => {
+                                  this.closest('[type~="form"]').isModified = true;
+                                  javascript.execute(this.closest('[type~="form"]').querySelector('[key~="courseConversationsTags"]').insertAdjacentElement("beforeend", javascript.stringToElement(html\`<div>HELLO WORLD</div>\`))).morph = false;
+                                };
+                              `}"
+                            >
+                              Add tag
+                            </button>
+                          </div>
+                        `;
+                      })()}
                       <div
                         css="${css`
                           font-size: var(--font-size--3);
