@@ -540,6 +540,74 @@ export default async (application: Application): Promise<void> => {
                           </label>
                         </div>
                       </div>
+                      <div
+                        css="${css`
+                          display: flex;
+                          flex-direction: column;
+                          gap: var(--space--1);
+                        `}"
+                      >
+                        <div
+                          css="${css`
+                            font-size: var(--font-size--3);
+                            line-height: var(--font-size--3--line-height);
+                            font-weight: 600;
+                            color: light-dark(
+                              var(--color--slate--500),
+                              var(--color--slate--500)
+                            );
+                          `}"
+                        >
+                          Course state
+                        </div>
+                        <div
+                          css="${css`
+                            display: flex;
+                            flex-direction: column;
+                            gap: var(--space--2);
+                          `}"
+                        >
+                          <label
+                            class="button button--rectangle button--transparent"
+                          >
+                            <input
+                              type="radio"
+                              name="courseState"
+                              value="courseStateActive"
+                              $${request.state.course.courseState ===
+                              "courseStateActive"
+                                ? html`checked`
+                                : html``}
+                              class="input--radio"
+                            />  Active
+                          </label>
+                          <label
+                            class="button button--rectangle button--transparent"
+                          >
+                            <input
+                              type="radio"
+                              name="courseState"
+                              value="courseStateArchived"
+                              $${request.state.course.courseState ===
+                              "courseStateArchived"
+                                ? html`checked`
+                                : html``}
+                              class="input--radio"
+                            />  Archived
+                            <span
+                              css="${css`
+                                font-size: var(--font-size--3);
+                                line-height: var(--font-size--3--line-height);
+                                color: light-dark(
+                                  var(--color--slate--600),
+                                  var(--color--slate--400)
+                                );
+                              `}"
+                              >(read-only)</span
+                            >
+                          </label>
+                        </div>
+                      </div>
                     </div>
                   `
                 : html``}
