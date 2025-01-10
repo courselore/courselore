@@ -168,6 +168,13 @@ export default async (application: Application): Promise<void> => {
         `,
       );
       if (request.state.courseParticipation === undefined) return;
+      application.database.run(
+        sql`
+          update "users"
+          set "mostRecentlyVisitedCourseParticipation" = ${request.state.courseParticipation.id}
+          where "id" = ${request.state.user.id};
+        `,
+      );
       request.state.courseConversationsTags = application.database.all<{
         id: number;
         publicId: string;
