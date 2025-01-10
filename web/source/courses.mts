@@ -1,6 +1,6 @@
 import * as serverTypes from "@radically-straightforward/server";
 import sql from "@radically-straightforward/sqlite";
-import html from "@radically-straightforward/html";
+import html, { HTML } from "@radically-straightforward/html";
 import css from "@radically-straightforward/css";
 import javascript from "@radically-straightforward/javascript";
 import { Application } from "./index.mjs";
@@ -678,6 +678,138 @@ export default async (application: Application): Promise<void> => {
                         </label>
                       </div>
                       $${(() => {
+                        const courseConversationsTagPartial = (
+                          courseConversationsTag?: (typeof request.state.courseConversationsTags)[number],
+                        ): HTML => html`
+                          <div
+                            key="courseConversationsTag ${courseConversationsTag?.publicId ??
+                            ""}"
+                            css="${css`
+                              display: flex;
+                              align-items: center;
+                              gap: var(--space--3);
+                            `}"
+                          >
+                            <div
+                              css="${css`
+                                color: light-dark(
+                                  var(--color--slate--600),
+                                  var(--color--slate--400)
+                                );
+                                display: flex;
+                                flex-direction: column;
+                                gap: var(--space--1);
+                              `}"
+                            >
+                              <div>
+                                <button
+                                  type="button"
+                                  class="button button--square button--icon button--transparent"
+                                  javascript="${javascript`
+                                    this.onclick = () => {
+                                      const element = this.closest('[key~="courseConversationsTag"]');
+                                      const previousElement = element.previousElementSibling;
+                                      if (previousElement !== null) {
+                                        this.closest('[type~="form"]').isModified = true;
+                                        previousElement.insertAdjacentElement("beforebegin", element);
+                                      }
+                                    };
+                                  `}"
+                                >
+                                  <i class="bi bi-arrow-up"></i>
+                                </button>
+                              </div>
+                              <div>
+                                <button
+                                  type="button"
+                                  class="button button--square button--icon button--transparent"
+                                  javascript="${javascript`
+                                    this.onclick = () => {
+                                      const element = this.closest('[key~="courseConversationsTag"]');
+                                      const nextElement = element.nextElementSibling;
+                                      if (nextElement !== null) {
+                                        this.closest('[type~="form"]').isModified = true;
+                                        nextElement.insertAdjacentElement("afterend", element);
+                                      }
+                                    };
+                                  `}"
+                                >
+                                  <i class="bi bi-arrow-down"></i>
+                                </button>
+                              </div>
+                            </div>
+                            <div
+                              css="${css`
+                                flex: 1;
+                                display: flex;
+                                flex-direction: column;
+                                gap: var(--space--2);
+                              `}"
+                            >
+                              <input
+                                type="hidden"
+                                name="tags.id[]"
+                                value="${courseConversationsTag?.publicId ??
+                                ""}"
+                              />
+                              <input
+                                type="text"
+                                name="tags.name[]"
+                                value="${courseConversationsTag?.name ?? ""}"
+                                required
+                                maxlength="2000"
+                                class="input--text"
+                                css="${css`
+                                  flex: 1;
+                                `}"
+                              />
+                              <div
+                                css="${css`
+                                  font-size: var(--font-size--3);
+                                  line-height: var(--font-size--3--line-height);
+                                  font-weight: 600;
+                                  color: light-dark(
+                                    var(--color--slate--600),
+                                    var(--color--slate--400)
+                                  );
+                                  display: flex;
+                                  align-items: baseline;
+                                  flex-wrap: wrap;
+                                  column-gap: var(--space--4);
+                                  row-gap: var(--space--2);
+                                `}"
+                              >
+                                <label
+                                  class="button button--rectangle button--transparent"
+                                >
+                                  <input
+                                    type="checkbox"
+                                    name="tags.privateToCourseParticipationRoleInstructors[]"
+                                    $${Boolean(
+                                      courseConversationsTag?.privateToCourseParticipationRoleInstructors ??
+                                        false,
+                                    )
+                                      ? html`checked`
+                                      : html``}
+                                    class="input--checkbox"
+                                  />  Private to instructors
+                                </label>
+                                <button
+                                  type="button"
+                                  class="button button--rectangle button--transparent"
+                                  javascript="${javascript`
+                                    this.onclick = () => {
+                                      this.closest('[type~="form"]').isModified = true;
+                                      this.closest('[key~="courseConversationsTag"]').remove();
+                                    };
+                                  `}"
+                                >
+                                  Remove
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        `;
                         return html`
                           <div
                             key="courseConversationsTags"
@@ -688,135 +820,10 @@ export default async (application: Application): Promise<void> => {
                             `}"
                           >
                             $${request.state.courseConversationsTags.map(
-                              (courseConversationsTag) => html`
-                                <div
-                                  key="courseConversationsTag ${courseConversationsTag.publicId}"
-                                  css="${css`
-                                    display: flex;
-                                    align-items: center;
-                                    gap: var(--space--3);
-                                  `}"
-                                >
-                                  <div
-                                    css="${css`
-                                      color: light-dark(
-                                        var(--color--slate--600),
-                                        var(--color--slate--400)
-                                      );
-                                      display: flex;
-                                      flex-direction: column;
-                                      gap: var(--space--1);
-                                    `}"
-                                  >
-                                    <div>
-                                      <button
-                                        type="button"
-                                        class="button button--square button--icon button--transparent"
-                                        javascript="${javascript`
-                                          this.onclick = () => {
-                                            const element = this.closest('[key~="courseConversationsTag"]');
-                                            const previousElement = element.previousElementSibling;
-                                            if (previousElement !== null) {
-                                              this.closest('[type~="form"]').isModified = true;
-                                              previousElement.insertAdjacentElement("beforebegin", element);
-                                            }
-                                          };
-                                        `}"
-                                      >
-                                        <i class="bi bi-arrow-up"></i>
-                                      </button>
-                                    </div>
-                                    <div>
-                                      <button
-                                        type="button"
-                                        class="button button--square button--icon button--transparent"
-                                        javascript="${javascript`
-                                          this.onclick = () => {
-                                            const element = this.closest('[key~="courseConversationsTag"]');
-                                            const nextElement = element.nextElementSibling;
-                                            if (nextElement !== null) {
-                                              this.closest('[type~="form"]').isModified = true;
-                                              nextElement.insertAdjacentElement("afterend", element);
-                                            }
-                                          };
-                                        `}"
-                                      >
-                                        <i class="bi bi-arrow-down"></i>
-                                      </button>
-                                    </div>
-                                  </div>
-                                  <div
-                                    css="${css`
-                                      flex: 1;
-                                      display: flex;
-                                      flex-direction: column;
-                                      gap: var(--space--2);
-                                    `}"
-                                  >
-                                    <input
-                                      type="hidden"
-                                      name="tags.id[]"
-                                      value="${courseConversationsTag.publicId}"
-                                    />
-                                    <input
-                                      type="text"
-                                      name="tags.name[]"
-                                      value="${courseConversationsTag.name}"
-                                      required
-                                      maxlength="2000"
-                                      class="input--text"
-                                      css="${css`
-                                        flex: 1;
-                                      `}"
-                                    />
-                                    <div
-                                      css="${css`
-                                        font-size: var(--font-size--3);
-                                        line-height: var(
-                                          --font-size--3--line-height
-                                        );
-                                        font-weight: 600;
-                                        color: light-dark(
-                                          var(--color--slate--600),
-                                          var(--color--slate--400)
-                                        );
-                                        display: flex;
-                                        align-items: baseline;
-                                        flex-wrap: wrap;
-                                        column-gap: var(--space--4);
-                                        row-gap: var(--space--2);
-                                      `}"
-                                    >
-                                      <label
-                                        class="button button--rectangle button--transparent"
-                                      >
-                                        <input
-                                          type="checkbox"
-                                          name="tags.privateToCourseParticipationRoleInstructors[]"
-                                          $${Boolean(
-                                            courseConversationsTag.privateToCourseParticipationRoleInstructors,
-                                          )
-                                            ? html`checked`
-                                            : html``}
-                                          class="input--checkbox"
-                                        />  Private to instructors
-                                      </label>
-                                      <button
-                                        type="button"
-                                        class="button button--rectangle button--transparent"
-                                        javascript="${javascript`
-                                          this.onclick = () => {
-                                            this.closest('[type~="form"]').isModified = true;
-                                            this.closest('[key~="courseConversationsTag"]').remove();
-                                          };
-                                        `}"
-                                      >
-                                        Remove
-                                      </button>
-                                    </div>
-                                  </div>
-                                </div>
-                              `,
+                              (courseConversationsTag) =>
+                                courseConversationsTagPartial(
+                                  courseConversationsTag,
+                                ),
                             )}
                           </div>
                           <div
@@ -832,7 +839,14 @@ export default async (application: Application): Promise<void> => {
                               javascript="${javascript`
                                 this.onclick = () => {
                                   this.closest('[type~="form"]').isModified = true;
-                                  javascript.execute(this.closest('[type~="form"]').querySelector('[key~="courseConversationsTags"]').insertAdjacentElement("beforeend", javascript.stringToElement(html\`<div>HELLO WORLD</div>\`))).morph = false;
+                                  javascript.execute(
+                                    this.closest('[type~="form"]')
+                                      .querySelector('[key~="courseConversationsTags"]')
+                                      .insertAdjacentElement(
+                                        "beforeend",
+                                        javascript.stringToElement(${courseConversationsTagPartial()})
+                                      )
+                                  ).morph = false;
                                 };
                               `}"
                             >
