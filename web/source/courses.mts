@@ -293,7 +293,7 @@ export default async (application: Application): Promise<void> => {
       )
         return;
       response.end(
-        application.layouts.oneColumn({
+        application.layouts.main({
           request,
           response,
           head: html`

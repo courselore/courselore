@@ -29,7 +29,7 @@ export type ApplicationLayouts = {
       body: HTML;
     }) => HTML;
 
-    oneColumn: ({
+    main: ({
       request,
       response,
       head,
@@ -750,7 +750,7 @@ export default async (application: Application): Promise<void> => {
     </html>
   `;
 
-  application.layouts.oneColumn = ({ request, response, head, body }) =>
+  application.layouts.main = ({ request, response, head, body }) =>
     application.layouts.base({
       request,
       response,
