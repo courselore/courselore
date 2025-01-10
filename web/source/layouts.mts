@@ -28,6 +28,25 @@ export type ApplicationLayouts = {
       hamburger?: boolean;
       body: HTML;
     }) => HTML;
+
+    oneColumn: ({
+      request,
+      response,
+      head,
+      body,
+    }: {
+      request: serverTypes.Request<
+        {},
+        {},
+        {},
+        {},
+        Application["types"]["states"]["User"] &
+          Application["types"]["states"]["Course"]
+      >;
+      response: serverTypes.Response;
+      head: HTML;
+      body: HTML;
+    }) => HTML;
   };
 };
 
@@ -730,4 +749,30 @@ export default async (application: Application): Promise<void> => {
       </body>
     </html>
   `;
+
+  application.layouts.oneColumn = ({ request, response, head, body }) =>
+    application.layouts.base({
+      request,
+      response,
+      head,
+      body: html`
+        <div
+          class="scroll"
+          css="${css`
+            width: 100%;
+            height: 100%;
+          `}"
+        >
+          <div
+            css="${css`
+              max-width: var(--space--168);
+              padding: var(--space--2) var(--space--4);
+              margin: var(--space--0) auto;
+            `}"
+          >
+            $${body}
+          </div>
+        </div>
+      `,
+    });
 };
