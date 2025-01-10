@@ -2449,9 +2449,9 @@ export default async (application: Application): Promise<void> => {
             "emailNotificationsForMessagesInConversationsYouStarted" integer not null,
             "emailNotificationsForMessagesInConversationsInWhichYouParticipated" integer not null,
             "userAnonymityPreferred" text not null,
-            "mostRecentlyVisitedCourse" integer null references "courses"
+            "mostRecentlyVisitedCourseParticipation" integer null references "courseParticipations"
           ) strict;
-          create index "index_users_mostRecentlyVisitedCourse" on "users" ("mostRecentlyVisitedCourse");
+          create index "index_users_mostRecentlyVisitedCourseParticipation" on "users" ("mostRecentlyVisitedCourseParticipation");
           create virtual table "search_users_nameSearch" using fts5(
             content = "users",
             content_rowid = "id",
@@ -2812,7 +2812,7 @@ export default async (application: Application): Promise<void> => {
                         "emailNotificationsForMessagesInConversationsYouStarted",
                         "emailNotificationsForMessagesInConversationsInWhichYouParticipated",
                         "userAnonymityPreferred",
-                        "mostRecentlyVisitedCourse"
+                        "mostRecentlyVisitedCourseParticipation"
                       )
                       values (
                         ${cryptoRandomString({ length: 20, type: "numeric" })},

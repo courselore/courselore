@@ -62,7 +62,7 @@ export type ApplicationUsers = {
             | "userAnonymityPreferredNone"
             | "userAnonymityPreferredCourseParticipationRoleStudents"
             | "userAnonymityPreferredCourseParticipationRoleInstructors";
-          mostRecentlyVisitedCourse: number | null;
+          mostRecentlyVisitedCourseParticipation: number | null;
         };
       };
     };
@@ -172,7 +172,7 @@ export default async (application: Application): Promise<void> => {
           | "userAnonymityPreferredNone"
           | "userAnonymityPreferredCourseParticipationRoleStudents"
           | "userAnonymityPreferredCourseParticipationRoleInstructors";
-        mostRecentlyVisitedCourse: number | null;
+        mostRecentlyVisitedCourseParticipation: number | null;
       }>(
         sql`
           select
@@ -202,7 +202,7 @@ export default async (application: Application): Promise<void> => {
             "emailNotificationsForMessagesInConversationsYouStarted",
             "emailNotificationsForMessagesInConversationsInWhichYouParticipated",
             "userAnonymityPreferred",
-            "mostRecentlyVisitedCourse"
+            "mostRecentlyVisitedCourseParticipation"
           from "users"
           where "id" = ${1};
         `,
@@ -232,7 +232,7 @@ export default async (application: Application): Promise<void> => {
           select "publicId"
           from "courses"
           where "id" = ${
-            request.state.user.mostRecentlyVisitedCourse ??
+            request.state.user.mostRecentlyVisitedCourseParticipation ??
             application.database.get<{
               course: number;
             }>(
