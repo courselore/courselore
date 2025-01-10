@@ -259,7 +259,9 @@ export default async (application: Application): Promise<void> => {
                           "courseConversationParticipations"."courseParticipation" = ${request.state.courseParticipation.id}
                       )
                     )
-                  order by "id" desc
+                  order by
+                    "pinned" = true desc,
+                    "id" desc
                   limit 1
                 `
           };

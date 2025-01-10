@@ -1937,6 +1937,13 @@ export default async (application: Application): Promise<void> => {
         `,
       );
       if (request.state.courseConversation === undefined) return;
+      application.database.run(
+        sql`
+          update "courseParticipations"
+          set "mostRecentlyVisitedCourseConversation" = ${request.state.courseConversation.id}
+          where "id" = ${request.state.courseParticipation.id};
+        `,
+      );
     },
   });
 
