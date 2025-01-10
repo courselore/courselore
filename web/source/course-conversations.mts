@@ -1300,8 +1300,8 @@ export default async (application: Application): Promise<void> => {
                       value="${typeof prefill.title === "string"
                         ? prefill.title
                         : ""}"
-                      maxlength="2000"
                       required
+                      maxlength="2000"
                       autofocus
                       class="input--text"
                       css="${css`
@@ -2099,8 +2099,8 @@ export default async (application: Application): Promise<void> => {
                                     name="title"
                                     value="${request.state.courseConversation
                                       .title}"
-                                    maxlength="2000"
                                     required
+                                    maxlength="2000"
                                     class="input--text"
                                     css="${css`
                                       flex: 1;
