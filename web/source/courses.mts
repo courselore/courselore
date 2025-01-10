@@ -681,7 +681,7 @@ export default async (application: Application): Promise<void> => {
                         css="${css`
                           display: flex;
                           flex-direction: column;
-                          gap: var(--space--2);
+                          gap: var(--space--4);
                         `}"
                       >
                         $${request.state.courseConversationsTags.map(
@@ -689,8 +689,8 @@ export default async (application: Application): Promise<void> => {
                             <div
                               css="${css`
                                 display: flex;
-                                align-items: baseline;
-                                gap: var(--space--4);
+                                flex-direction: column;
+                                gap: var(--space--2);
                               `}"
                             >
                               <input
@@ -709,20 +709,43 @@ export default async (application: Application): Promise<void> => {
                                   flex: 1;
                                 `}"
                               />
-                              <label
-                                class="button button--rectangle button--transparent"
+                              <div
+                                css="${css`
+                                  font-size: var(--font-size--3);
+                                  line-height: var(--font-size--3--line-height);
+                                  font-weight: 600;
+                                  color: light-dark(
+                                    var(--color--slate--600),
+                                    var(--color--slate--400)
+                                  );
+                                  display: flex;
+                                  align-items: baseline;
+                                  flex-wrap: wrap;
+                                  column-gap: var(--space--4);
+                                  row-gap: var(--space--2);
+                                `}"
                               >
-                                <input
-                                  type="text"
-                                  name="tags.privateToCourseParticipationRoleInstructors[]"
-                                  $${Boolean(
-                                    courseConversationsTag.privateToCourseParticipationRoleInstructors,
-                                  )
-                                    ? html`checked`
-                                    : html``}
-                                  class="input--checkbox"
-                                />  Private to instructors
-                              </label>
+                                <label
+                                  class="button button--rectangle button--transparent"
+                                >
+                                  <input
+                                    type="checkbox"
+                                    name="tags.privateToCourseParticipationRoleInstructors[]"
+                                    $${Boolean(
+                                      courseConversationsTag.privateToCourseParticipationRoleInstructors,
+                                    )
+                                      ? html`checked`
+                                      : html``}
+                                    class="input--checkbox"
+                                  />  Private to instructors
+                                </label>
+                                <button
+                                  type="button"
+                                  class="button button--rectangle button--transparent"
+                                >
+                                  Remove
+                                </button>
+                              </div>
                             </div>
                           `,
                         )}
