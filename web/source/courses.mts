@@ -697,6 +697,10 @@ export default async (application: Application): Promise<void> => {
                             >
                               <div
                                 css="${css`
+                                  color: light-dark(
+                                    var(--color--slate--600),
+                                    var(--color--slate--400)
+                                  );
                                   display: flex;
                                   flex-direction: column;
                                   gap: var(--space--1);
