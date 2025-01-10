@@ -640,6 +640,11 @@ export default async (application: Application): Promise<void> => {
                         flex-direction: column;
                         gap: var(--space--4);
                       `}"
+                      javascript="${javascript`
+                        this.onsubmit = () => {
+                          for (const element of javascript.children(this)) delete element.morph;
+                        };
+                      `}"
                     >
                       <div
                         css="${css`
