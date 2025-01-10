@@ -504,8 +504,10 @@ export default async (application: Application): Promise<void> => {
                             <input
                               type="checkbox"
                               name="courseParticipationRoleStudentsMayHavePrivateCourseConversations"
-                              $${request.state.course
-                                .courseParticipationRoleStudentsMayHavePrivateCourseConversations
+                              $${Boolean(
+                                request.state.course
+                                  .courseParticipationRoleStudentsMayHavePrivateCourseConversations,
+                              )
                                 ? html`checked`
                                 : html``}
                               class="input--checkbox"
@@ -518,8 +520,10 @@ export default async (application: Application): Promise<void> => {
                             <input
                               type="checkbox"
                               name="courseParticipationRoleStudentsMayAttachImages"
-                              $${request.state.course
-                                .courseParticipationRoleStudentsMayAttachImages
+                              $${Boolean(
+                                request.state.course
+                                  .courseParticipationRoleStudentsMayAttachImages,
+                              )
                                 ? html`checked`
                                 : html``}
                               class="input--checkbox"
@@ -531,8 +535,10 @@ export default async (application: Application): Promise<void> => {
                             <input
                               type="checkbox"
                               name="courseParticipationRoleStudentsMayCreatePolls"
-                              $${request.state.course
-                                .courseParticipationRoleStudentsMayCreatePolls
+                              $${Boolean(
+                                request.state.course
+                                  .courseParticipationRoleStudentsMayCreatePolls,
+                              )
                                 ? html`checked`
                                 : html``}
                               class="input--checkbox"
@@ -607,6 +613,68 @@ export default async (application: Application): Promise<void> => {
                             >
                           </label>
                         </div>
+                      </div>
+                      <div
+                        css="${css`
+                          font-size: var(--font-size--3);
+                          line-height: var(--font-size--3--line-height);
+                        `}"
+                      >
+                        <button
+                          type="submit"
+                          class="button button--rectangle button--blue"
+                        >
+                          Update
+                        </button>
+                      </div>
+                    </div>
+                    <hr class="separator" />
+                    <div
+                      type="form"
+                      method="PUT"
+                      action="/courses/${request.state.course
+                        .publicId}/settings/tags"
+                      css="${css`
+                        display: flex;
+                        flex-direction: column;
+                        gap: var(--space--4);
+                      `}"
+                    >
+                      <div
+                        css="${css`
+                          display: flex;
+                          flex-direction: column;
+                          gap: var(--space--1);
+                        `}"
+                      >
+                        <div
+                          css="${css`
+                            font-size: var(--font-size--3);
+                            line-height: var(--font-size--3--line-height);
+                            font-weight: 600;
+                            color: light-dark(
+                              var(--color--slate--500),
+                              var(--color--slate--500)
+                            );
+                          `}"
+                        >
+                          Conversation tags
+                        </div>
+                        <label
+                          class="button button--rectangle button--transparent"
+                        >
+                          <input
+                            type="checkbox"
+                            name="courseConversationRequiresTagging"
+                            $${Boolean(
+                              request.state.course
+                                .courseConversationRequiresTagging,
+                            )
+                              ? html`checked`
+                              : html``}
+                            class="input--checkbox"
+                          />  Tags are required when creating a conversation
+                        </label>
                       </div>
                       <div
                         css="${css`
