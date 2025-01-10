@@ -678,6 +678,7 @@ export default async (application: Application): Promise<void> => {
                         </label>
                       </div>
                       <div
+                        key="courseConversationsTags"
                         css="${css`
                           display: flex;
                           flex-direction: column;
@@ -709,7 +710,10 @@ export default async (application: Application): Promise<void> => {
                                       this.onclick = () => {
                                         const element = this.closest('[key~="courseConversationsTag"]');
                                         const previousElement = element.previousElementSibling;
-                                        if (previousElement !== null) previousElement.insertAdjacentElement("beforebegin", element);
+                                        if (previousElement !== null) {
+                                          this.closest('[type~="form"]').isModified = true;
+                                          previousElement.insertAdjacentElement("beforebegin", element);
+                                        }
                                       };
                                     `}"
                                   >
@@ -724,7 +728,10 @@ export default async (application: Application): Promise<void> => {
                                       this.onclick = () => {
                                         const element = this.closest('[key~="courseConversationsTag"]');
                                         const nextElement = element.nextElementSibling;
-                                        if (nextElement !== null) nextElement.insertAdjacentElement("afterend", element);
+                                        if (nextElement !== null) {
+                                          this.closest('[type~="form"]').isModified = true;
+                                          nextElement.insertAdjacentElement("afterend", element);
+                                        }
                                       };
                                     `}"
                                   >
@@ -793,6 +800,7 @@ export default async (application: Application): Promise<void> => {
                                     class="button button--rectangle button--transparent"
                                     javascript="${javascript`
                                       this.onclick = () => {
+                                        this.closest('[type~="form"]').isModified = true;
                                         this.closest('[key~="courseConversationsTag"]').remove();
                                       };
                                     `}"
@@ -804,6 +812,26 @@ export default async (application: Application): Promise<void> => {
                             </div>
                           `,
                         )}
+                      </div>
+                      <div
+                        css="${css`
+                          font-size: var(--font-size--3);
+                          line-height: var(--font-size--3--line-height);
+                          font-weight: 600;
+                        `}"
+                      >
+                        <button
+                          type="button"
+                          class="button button--rectangle button--transparent"
+                          javascript="${javascript`
+                            this.onclick = () => {
+                              this.closest('[type~="form"]').isModified = true;
+                              javascript.execute(this.closest('[type~="form"]').querySelector('[key~="courseConversationsTags"]').insertAdjacentElement("beforeend", javascript.stringToElement(html\`<div>HELLO WORLD</div>\`))).morph = false;
+                            };
+                          `}"
+                        >
+                          Add tag
+                        </button>
                       </div>
                       <div
                         css="${css`
