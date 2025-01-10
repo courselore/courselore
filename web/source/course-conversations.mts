@@ -1113,6 +1113,7 @@ export default async (application: Application): Promise<void> => {
       response,
     ) => {
       if (
+        request.state.user === undefined ||
         request.state.course === undefined ||
         request.state.courseParticipation === undefined ||
         request.state.courseConversationsTags === undefined ||
@@ -1149,49 +1150,69 @@ export default async (application: Application): Promise<void> => {
             where "publicId" = ${request.search["reuse.course"]};
           `,
         );
-        const courseConversation = application.database.get<{
-          id: number;
-          courseConversationType:
-            | "courseConversationTypeNote"
-            | "courseConversationTypeQuestion";
-          courseConversationVisibility:
-            | "courseConversationVisibilityEveryone"
-            | "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
-            | "courseConversationVisibilityCourseConversationParticipations";
-          pinned: number;
-          title: string;
-        }>(
-          sql`
-            select
-              "id",
-              "courseConversationType",
-              "courseConversationVisibility",
-              "pinned",
-              "title"
-            from "courseConversations"
-            where
-              "publicId" = ${request.search["reuse.courseConversation"]} and
-              "course" = ${request.search["reuse.course"]} and (
-                "courseConversationVisibility" = 'courseConversationVisibilityEveryone'
-                $${
-                  request.state.courseParticipation.courseParticipationRole ===
-                  "courseParticipationRoleInstructor"
-                    ? sql`
-                        or
-                        "courseConversationVisibility" = 'courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations'
-                      `
-                    : sql``
-                }
-                or (
-                  select true
-                  from "courseConversationParticipations"
+        const courseParticipation =
+          course !== undefined
+            ? application.database.get<{
+                id: number;
+                courseParticipationRole:
+                  | "courseParticipationRoleInstructor"
+                  | "courseParticipationRoleStudent";
+              }>(
+                sql`
+                  select "id", "courseParticipationRole"
+                  from "courseParticipations"
                   where
-                    "courseConversations"."id" = "courseConversationParticipations"."courseConversation" and
-                    "courseConversationParticipations"."courseParticipation" = ${request.state.courseParticipation.id}
-                )
-              );
-          `,
-        );
+                    "user" = ${request.state.user.id} and
+                    "course" = ${course.id};
+                `,
+              )
+            : undefined;
+        const courseConversation =
+          course !== undefined && courseParticipation !== undefined
+            ? application.database.get<{
+                id: number;
+                courseConversationType:
+                  | "courseConversationTypeNote"
+                  | "courseConversationTypeQuestion";
+                courseConversationVisibility:
+                  | "courseConversationVisibilityEveryone"
+                  | "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
+                  | "courseConversationVisibilityCourseConversationParticipations";
+                pinned: number;
+                title: string;
+              }>(
+                sql`
+                  select
+                    "id",
+                    "courseConversationType",
+                    "courseConversationVisibility",
+                    "pinned",
+                    "title"
+                  from "courseConversations"
+                  where
+                    "publicId" = ${request.search["reuse.courseConversation"]} and
+                    "course" = ${course.id} and (
+                      "courseConversationVisibility" = 'courseConversationVisibilityEveryone'
+                      $${
+                        courseParticipation.courseParticipationRole ===
+                        "courseParticipationRoleInstructor"
+                          ? sql`
+                              or
+                              "courseConversationVisibility" = 'courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations'
+                            `
+                          : sql``
+                      }
+                      or (
+                        select true
+                        from "courseConversationParticipations"
+                        where
+                          "courseConversations"."id" = "courseConversationParticipations"."courseConversation" and
+                          "courseConversationParticipations"."courseParticipation" = ${courseParticipation.id}
+                      )
+                    );
+                `,
+              )
+            : undefined;
         const firstCourseConversationMessage =
           courseConversation !== undefined
             ? application.database.get<{
