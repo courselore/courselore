@@ -225,29 +225,37 @@ export default async (application: Application): Promise<void> => {
       response,
     ) => {
       if (request.state.user === undefined) return;
+      const courseParticipation = application.database.get<{
+        course: number;
+      }>(
+        sql`
+          select "course"
+          from "courseParticipations"
+          $${
+            typeof request.state.user.mostRecentlyVisitedCourseParticipation ===
+            "number"
+              ? sql`
+                  where "id" = ${request.state.user.mostRecentlyVisitedCourseParticipation}
+                `
+              : sql`
+                  where "user" = ${request.state.user.id}
+                  order by "id" desc
+                  limit 1
+                `
+          };
+        `,
+      );
+      if (courseParticipation === undefined) return;
       const course = application.database.get<{
         publicId: number;
       }>(
         sql`
           select "publicId"
           from "courses"
-          where "id" = ${
-            request.state.user.mostRecentlyVisitedCourseParticipation ??
-            application.database.get<{
-              course: number;
-            }>(
-              sql`
-                select "course"
-                from "courseParticipations"
-                where "user" = ${request.state.user.id}
-                order by "id" desc
-                limit 1;
-              `,
-            )?.course
-          };
+          where "id" = ${courseParticipation.course};
         `,
       );
-      if (course === undefined) return;
+      if (course === undefined) throw new Error();
       response.redirect(`/courses/${course.publicId}`);
     },
   });
