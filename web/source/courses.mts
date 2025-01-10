@@ -687,6 +687,7 @@ export default async (application: Application): Promise<void> => {
                         $${request.state.courseConversationsTags.map(
                           (courseConversationsTag) => html`
                             <div
+                              key="courseConversationsTag ${courseConversationsTag.publicId}"
                               css="${css`
                                 display: flex;
                                 flex-direction: column;
@@ -742,6 +743,11 @@ export default async (application: Application): Promise<void> => {
                                 <button
                                   type="button"
                                   class="button button--rectangle button--transparent"
+                                  javascript="${javascript`
+                                    this.onclick = () => {
+                                      this.closest('[key~="courseConversationsTag"]').remove();
+                                    };
+                                  `}"
                                 >
                                   Remove
                                 </button>
