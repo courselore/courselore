@@ -608,6 +608,19 @@ export default async (application: Application): Promise<void> => {
                           </label>
                         </div>
                       </div>
+                      <div
+                        css="${css`
+                          font-size: var(--font-size--3);
+                          line-height: var(--font-size--3--line-height);
+                        `}"
+                      >
+                        <button
+                          type="submit"
+                          class="button button--rectangle button--blue"
+                        >
+                          Update
+                        </button>
+                      </div>
                     </div>
                   `
                 : html``}
