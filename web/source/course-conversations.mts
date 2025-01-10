@@ -1142,14 +1142,14 @@ export default async (application: Application): Promise<void> => {
         typeof request.search["reuse.courseConversation"] === "string" &&
         request.search["reuse.courseConversation"].trim() !== ""
       ) {
-        const prefillCourse = application.database.get<{ id: number }>(
+        const course = application.database.get<{ id: number }>(
           sql`
             select "id"
             from "courses"
             where "publicId" = ${request.search["reuse.course"]};
           `,
         );
-        const prefillCourseConversation = application.database.get<{
+        const courseConversation = application.database.get<{
           id: number;
           courseConversationType:
             | "courseConversationTypeNote"
@@ -1192,8 +1192,8 @@ export default async (application: Application): Promise<void> => {
               );
           `,
         );
-        const prefillFirstCourseConversationMessage =
-          prefillCourseConversation !== undefined
+        const firstCourseConversationMessage =
+          courseConversation !== undefined
             ? application.database.get<{
                 content: string;
                 courseConversationMessageAnonymity:
@@ -1204,23 +1204,21 @@ export default async (application: Application): Promise<void> => {
                 sql`
                   select "content", "courseConversationMessageAnonymity"
                   from "courseConversationMessages"
-                  where "courseConversation" = ${prefillCourseConversation.id}
+                  where "courseConversation" = ${courseConversation.id}
                   order by "id" asc
                   limit 1;
                 `,
               )
             : undefined;
         if (
-          prefillCourseConversation !== undefined &&
-          prefillFirstCourseConversationMessage !== undefined
+          courseConversation !== undefined &&
+          firstCourseConversationMessage !== undefined
         )
           prefill = {
             ...prefill,
-            ...prefillCourseConversation,
-            pinned: Boolean(prefillCourseConversation.pinned)
-              ? "true"
-              : "false",
-            ...prefillFirstCourseConversationMessage,
+            ...courseConversation,
+            pinned: Boolean(courseConversation.pinned) ? "true" : "false",
+            ...firstCourseConversationMessage,
           };
       }
       prefill = { ...prefill, ...request.search };
