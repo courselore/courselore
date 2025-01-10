@@ -289,7 +289,8 @@ export default async (application: Application): Promise<void> => {
     ) => {
       if (
         request.state.course === undefined ||
-        request.state.courseParticipation === undefined
+        request.state.courseParticipation === undefined ||
+        request.state.courseConversationsTags === undefined
       )
         return;
       response.end(
@@ -675,6 +676,56 @@ export default async (application: Application): Promise<void> => {
                             class="input--checkbox"
                           />  Tags are required when creating a conversation
                         </label>
+                      </div>
+                      <div
+                        css="${css`
+                          display: flex;
+                          flex-direction: column;
+                          gap: var(--space--2);
+                        `}"
+                      >
+                        $${request.state.courseConversationsTags.map(
+                          (courseConversationsTag) => html`
+                            <div
+                              css="${css`
+                                display: flex;
+                                align-items: baseline;
+                                gap: var(--space--4);
+                              `}"
+                            >
+                              <input
+                                type="hidden"
+                                name="tags.id[]"
+                                value="${courseConversationsTag.publicId}"
+                              />
+                              <input
+                                type="text"
+                                name="tags.name[]"
+                                value="${courseConversationsTag.name}"
+                                required
+                                maxlength="2000"
+                                class="input--text"
+                                css="${css`
+                                  flex: 1;
+                                `}"
+                              />
+                              <label
+                                class="button button--rectangle button--transparent"
+                              >
+                                <input
+                                  type="text"
+                                  name="tags.privateToCourseParticipationRoleInstructors[]"
+                                  $${Boolean(
+                                    courseConversationsTag.privateToCourseParticipationRoleInstructors,
+                                  )
+                                    ? html`checked`
+                                    : html``}
+                                  class="input--checkbox"
+                                />  Private to instructors
+                              </label>
+                            </div>
+                          `,
+                        )}
                       </div>
                       <div
                         css="${css`
