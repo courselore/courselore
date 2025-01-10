@@ -644,14 +644,23 @@ export default async (application: Application): Promise<void> => {
                   method="DELETE"
                   action="/courses/${request.state.course
                     .publicId}/participation"
-                  class="popover--red"
                   css="${css`
                     display: flex;
                     flex-direction: column;
                     gap: var(--space--2);
                   `}"
                 >
-                  <div>
+                  <div
+                    css="${css`
+                      font-size: var(--font-size--3);
+                      line-height: var(--font-size--3--line-height);
+                      font-weight: 600;
+                      color: light-dark(
+                        var(--color--red--500),
+                        var(--color--red--500)
+                      );
+                    `}"
+                  >
                     <i class="bi bi-exclamation-triangle-fill"></i> Once you
                     remove yourself from the course, you may only participate
                     again with an invitation.
