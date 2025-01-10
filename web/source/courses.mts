@@ -622,8 +622,91 @@ export default async (application: Application): Promise<void> => {
                         </button>
                       </div>
                     </div>
+                    <hr class="separator" />
                   `
                 : html``}
+              <div>
+                <button
+                  type="button"
+                  class="button button--rectangle button--red"
+                  css="${css`
+                    font-size: var(--font-size--3);
+                    line-height: var(--font-size--3--line-height);
+                  `}"
+                  javascript="${javascript`
+                    javascript.popover({ element: this, trigger: "click", remainOpenWhileFocused: true });
+                  `}"
+                >
+                  Remove myself from the course
+                </button>
+                <div
+                  type="form popover"
+                  method="DELETE"
+                  action="/courses/${request.state.course
+                    .publicId}/participation"
+                  class="popover--red"
+                  css="${css`
+                    display: flex;
+                    flex-direction: column;
+                    gap: var(--space--2);
+                  `}"
+                >
+                  <div>
+                    <i class="bi bi-exclamation-triangle-fill"></i> Once you
+                    remove yourself from the course, you may only participate
+                    again with an invitation.
+                  </div>
+                  <label>
+                    <div
+                      css="${css`
+                        font-size: var(--font-size--3);
+                        line-height: var(--font-size--3--line-height);
+                        font-weight: 600;
+                        color: light-dark(
+                          var(--color--slate--500),
+                          var(--color--slate--500)
+                        );
+                      `}"
+                    >
+                      Course name confirmation
+                    </div>
+                    <div
+                      css="${css`
+                        display: flex;
+                      `}"
+                    >
+                      <input
+                        type="text"
+                        placeholder="${request.state.course.name}"
+                        required
+                        maxlength="2000"
+                        class="input--text"
+                        css="${css`
+                          flex: 1;
+                        `}"
+                        javascript="${javascript`
+                          this.onvalidate = () => {
+                            if (this.value !== ${request.state.course.name})
+                              throw new javascript.ValidationError(${`Incorrect course name confirmation: “${request.state.course.name}”`});
+                          };
+                        `}"
+                      />
+                    </div>
+                  </label>
+                  <div>
+                    <button
+                      type="submit"
+                      class="button button--rectangle button--red"
+                      css="${css`
+                        font-size: var(--font-size--3);
+                        line-height: var(--font-size--3--line-height);
+                      `}"
+                    >
+                      Remove myself from the course
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
           `,
         }),
