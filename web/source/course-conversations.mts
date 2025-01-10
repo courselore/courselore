@@ -1142,6 +1142,13 @@ export default async (application: Application): Promise<void> => {
         typeof request.search["reuse.courseConversation"] === "string" &&
         request.search["reuse.courseConversation"].trim() !== ""
       ) {
+        const prefillCourse = application.database.get<{ id: number }>(
+          sql`
+            select "id"
+            from "courses"
+            where "publicId" = ${request.search["reuse.course"]};
+          `,
+        );
         const prefillCourseConversation = application.database.get<{
           id: number;
           courseConversationType:
