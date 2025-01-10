@@ -395,6 +395,151 @@ export default async (application: Application): Promise<void> => {
                           />
                         </div>
                       </label>
+                      <div
+                        css="${css`
+                          display: flex;
+                          flex-direction: column;
+                          gap: var(--space--1);
+                        `}"
+                      >
+                        <div
+                          css="${css`
+                            font-size: var(--font-size--3);
+                            line-height: var(--font-size--3--line-height);
+                            font-weight: 600;
+                            color: light-dark(
+                              var(--color--slate--500),
+                              var(--color--slate--500)
+                            );
+                          `}"
+                        >
+                          Anonymity
+                        </div>
+                        <div
+                          css="${css`
+                            display: flex;
+                            flex-direction: column;
+                            gap: var(--space--2);
+                          `}"
+                        >
+                          <label
+                            class="button button--rectangle button--transparent"
+                          >
+                            <input
+                              type="radio"
+                              name="courseParticipationRoleStudentsAnonymityAllowed"
+                              value="courseParticipationRoleStudentsAnonymityAllowedNone"
+                              $${request.state.course
+                                .courseParticipationRoleStudentsAnonymityAllowed ===
+                              "courseParticipationRoleStudentsAnonymityAllowedNone"
+                                ? html`checked`
+                                : html``}
+                              class="input--radio"
+                            />  Students may not send anonymous messages
+                          </label>
+                          <label
+                            class="button button--rectangle button--transparent"
+                          >
+                            <input
+                              type="radio"
+                              name="courseParticipationRoleStudentsAnonymityAllowed"
+                              value="courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleStudents"
+                              $${request.state.course
+                                .courseParticipationRoleStudentsAnonymityAllowed ===
+                              "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleStudents"
+                                ? html`checked`
+                                : html``}
+                              class="input--radio"
+                            />  Students may send messages that are anonymous to
+                            other students, but not anonymous to instructors
+                          </label>
+                          <label
+                            class="button button--rectangle button--transparent"
+                          >
+                            <input
+                              type="radio"
+                              name="courseParticipationRoleStudentsAnonymityAllowed"
+                              value="courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleInstructors"
+                              $${request.state.course
+                                .courseParticipationRoleStudentsAnonymityAllowed ===
+                              "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleInstructors"
+                                ? html`checked`
+                                : html``}
+                              class="input--radio"
+                            />  Students may send messages that are anonymous to
+                            everyone, including instructors
+                          </label>
+                        </div>
+                      </div>
+                      <div
+                        css="${css`
+                          display: flex;
+                          flex-direction: column;
+                          gap: var(--space--1);
+                        `}"
+                      >
+                        <div
+                          css="${css`
+                            font-size: var(--font-size--3);
+                            line-height: var(--font-size--3--line-height);
+                            font-weight: 600;
+                            color: light-dark(
+                              var(--color--slate--500),
+                              var(--color--slate--500)
+                            );
+                          `}"
+                        >
+                          Students permissions
+                        </div>
+                        <div
+                          css="${css`
+                            display: flex;
+                            flex-direction: column;
+                            gap: var(--space--2);
+                          `}"
+                        >
+                          <label
+                            class="button button--rectangle button--transparent"
+                          >
+                            <input
+                              type="checkbox"
+                              name="courseParticipationRoleStudentsMayHavePrivateCourseConversations"
+                              $${request.state.course
+                                .courseParticipationRoleStudentsMayHavePrivateCourseConversations
+                                ? html`checked`
+                                : html``}
+                              class="input--checkbox"
+                            />  Students may create private conversations among
+                            other students that aren’t visible by instructors
+                          </label>
+                          <label
+                            class="button button--rectangle button--transparent"
+                          >
+                            <input
+                              type="checkbox"
+                              name="courseParticipationRoleStudentsMayAttachImages"
+                              $${request.state.course
+                                .courseParticipationRoleStudentsMayAttachImages
+                                ? html`checked`
+                                : html``}
+                              class="input--checkbox"
+                            />  Students may attach images to their messages
+                          </label>
+                          <label
+                            class="button button--rectangle button--transparent"
+                          >
+                            <input
+                              type="checkbox"
+                              name="courseParticipationRoleStudentsMayCreatePolls"
+                              $${request.state.course
+                                .courseParticipationRoleStudentsMayCreatePolls
+                                ? html`checked`
+                                : html``}
+                              class="input--checkbox"
+                            />  Students may create polls
+                          </label>
+                        </div>
+                      </div>
                     </div>
                   `
                 : html``}
