@@ -952,6 +952,10 @@ export default async (application: Application): Promise<void> => {
                               )}"
                               readonly
                               class="input--text"
+                              css="${css`
+                                font-family: "Roboto Mono Variable",
+                                  var(--font-family--monospace);
+                              `}"
                               javascript="${javascript`
                                 this.onclick = () => {
                                   this.select();
@@ -968,6 +972,10 @@ export default async (application: Application): Promise<void> => {
                               readonly
                               hidden
                               class="input--text"
+                              css="${css`
+                                font-family: "Roboto Mono Variable",
+                                  var(--font-family--monospace);
+                              `}"
                               javascript="${javascript`
                                 this.onclick = () => {
                                   this.select();
