@@ -880,6 +880,10 @@ export default async (application: Application): Promise<void> => {
                     </div>
                     <hr class="separator" />
                     <div
+                      type="form"
+                      method="PATCH"
+                      action="/courses/${request.state.course
+                        .publicId}/settings"
                       css="${css`
                         display: flex;
                         flex-direction: column;
@@ -991,6 +995,19 @@ export default async (application: Application): Promise<void> => {
                             </div>
                           </div>
                         </div>
+                      </div>
+                      <div
+                        css="${css`
+                          font-size: var(--font-size--3);
+                          line-height: var(--font-size--3--line-height);
+                        `}"
+                      >
+                        <button
+                          type="submit"
+                          class="button button--rectangle button--blue"
+                        >
+                          Update
+                        </button>
                       </div>
                     </div>
                     <hr class="separator" />
