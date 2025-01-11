@@ -1,4 +1,5 @@
 import * as serverTypes from "@radically-straightforward/server";
+import QRCode from "qrcode";
 import sql from "@radically-straightforward/sqlite";
 import html, { HTML } from "@radically-straightforward/html";
 import css from "@radically-straightforward/css";
@@ -277,7 +278,7 @@ export default async (application: Application): Promise<void> => {
   application.server?.push({
     method: "GET",
     pathname: new RegExp("^/courses/(?<coursePublicId>[0-9]+)/settings$"),
-    handler: (
+    handler: async (
       request: serverTypes.Request<
         {},
         {},
@@ -983,6 +984,26 @@ export default async (application: Application): Promise<void> => {
                               `}"
                             />
                             <div
+                              key="invitationLinkToken--QRCode--show--input"
+                              hidden
+                            >
+                              $${(
+                                await QRCode.toString(
+                                  `https://${
+                                    application.configuration.hostname
+                                  }/courses/${
+                                    request.state.course.publicId
+                                  }/invitations/${
+                                    request.state.course
+                                      .invitationLinkCourseParticipationRoleInstructorsToken
+                                  }`,
+                                  { type: "svg", margin: 0 },
+                                )
+                              )
+                                .replace("#000000", "currentColor")
+                                .replace("#ffffff", "transparent")}
+                            </div>
+                            <div
                               css="${css`
                                 font-size: var(--font-size--3);
                                 line-height: var(--font-size--3--line-height);
@@ -1028,9 +1049,9 @@ export default async (application: Application): Promise<void> => {
                                 javascript="${javascript`
                                   this.onclick = () => {
                                     this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--hide--input"]').hidden = true;
-                                    this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--hide--button"]').hidden = false;
                                     this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--show--input"]').hidden = false;
                                     this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--show--button"]').hidden = true;
+                                    this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--hide--button"]').hidden = false;
                                   };
                                 `}"
                               >
@@ -1044,13 +1065,42 @@ export default async (application: Application): Promise<void> => {
                                 javascript="${javascript`
                                   this.onclick = () => {
                                     this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--hide--input"]').hidden = false;
-                                    this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--hide--button"]').hidden = true;
                                     this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--show--input"]').hidden = true;
                                     this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--show--button"]').hidden = false;
+                                    this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--hide--button"]').hidden = true;
                                   };
                                 `}"
                               >
                                 Hide
+                              </button>
+                              <button
+                                key="invitationLinkToken--QRCode--show--button"
+                                type="button"
+                                class="button button--rectangle button--transparent"
+                                javascript="${javascript`
+                                  this.onclick = () => {
+                                    this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--QRCode--show--input"]').hidden = false;
+                                    this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--QRCode--show--button"]').hidden = true;
+                                    this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--QRCode--hide--button"]').hidden = false;
+                                  };
+                                `}"
+                              >
+                                Show QR code
+                              </button>
+                              <button
+                                key="invitationLinkToken--QRCode--hide--button"
+                                type="button"
+                                hidden
+                                class="button button--rectangle button--transparent"
+                                javascript="${javascript`
+                                  this.onclick = () => {
+                                    this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--QRCode--show--input"]').hidden = true;
+                                    this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--QRCode--show--button"]').hidden = false;
+                                    this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--QRCode--hide--button"]').hidden = true;
+                                  };
+                                `}"
+                              >
+                                Hide QR code
                               </button>
                             </div>
                           </div>
