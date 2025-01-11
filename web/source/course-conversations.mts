@@ -2165,14 +2165,18 @@ export default async (application: Application): Promise<void> => {
                             type="button"
                             class="button button--rectangle button--transparent button--dropdown-menu"
                             javascript="${javascript`
+                              const popover = javascript.popover({ element: this, trigger: "none" });
                               this.onclick = async () => {
                                 await navigator.clipboard.writeText(${`https://${application.configuration.hostname}/courses/${request.state.course.publicId}/conversations/${request.state.courseConversation.publicId}`});
-                                this.closest('[type~="popover"]').hidePopover();
+                                popover.showPopover();
+                                await utilities.sleep(1000);
+                                popover.hidePopover();
                               };
                             `}"
                           >
                             Copy permanent link
                           </button>
+                          <div type="popover">Copied</div>
                           $${mayEditCourseConversation
                             ? html`
                                 <button
@@ -3452,14 +3456,18 @@ export default async (application: Application): Promise<void> => {
                                     type="button"
                                     class="button button--rectangle button--transparent button--dropdown-menu"
                                     javascript="${javascript`
+                                      const popover = javascript.popover({ element: this, trigger: "none" });
                                       this.onclick = async () => {
                                         await navigator.clipboard.writeText(${`https://${application.configuration.hostname}/courses/${request.state.course!.publicId}/conversations/${request.state.courseConversation!.publicId}?${new URLSearchParams({ message: courseConversationMessage.publicId }).toString()}`});
-                                        this.closest('[type~="popover"]').hidePopover();
+                                        popover.showPopover();
+                                        await utilities.sleep(1000);
+                                        popover.hidePopover();
                                       };
                                     `}"
                                   >
                                     Copy permanent link
                                   </button>
+                                  <div type="popover">Copied</div>
                                   $${request.state.course!.courseState ===
                                   "courseStateActive"
                                     ? html`

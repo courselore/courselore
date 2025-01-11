@@ -879,6 +879,121 @@ export default async (application: Application): Promise<void> => {
                       </div>
                     </div>
                     <hr class="separator" />
+                    <div
+                      css="${css`
+                        display: flex;
+                        flex-direction: column;
+                        gap: var(--space--4);
+                      `}"
+                    >
+                      <div
+                        css="${css`
+                          display: flex;
+                          flex-direction: column;
+                          gap: var(--space--1);
+                        `}"
+                      >
+                        <div
+                          css="${css`
+                            font-size: var(--font-size--3);
+                            line-height: var(--font-size--3--line-height);
+                            font-weight: 600;
+                            color: light-dark(
+                              var(--color--slate--500),
+                              var(--color--slate--500)
+                            );
+                          `}"
+                        >
+                          Invitations
+                        </div>
+                        <div
+                          css="${css`
+                            display: flex;
+                            flex-direction: column;
+                            gap: var(--space--4);
+                          `}"
+                        >
+                          <div
+                            css="${css`
+                              display: flex;
+                              flex-direction: column;
+                              gap: var(--space--2);
+                            `}"
+                          >
+                            <label
+                              class="button button--rectangle button--transparent"
+                            >
+                              <input
+                                type="checkbox"
+                                name="invitationLinkCourseParticipationRoleInstructorsEnabled"
+                                $${Boolean(
+                                  request.state.course
+                                    .invitationLinkCourseParticipationRoleInstructorsEnabled,
+                                )
+                                  ? html`checked`
+                                  : html``}
+                                class="input--checkbox"
+                              />  Invitation link for instructors
+                            </label>
+                            <input
+                              type="text"
+                              value="https://${application.configuration
+                                .hostname}/courses/${request.state.course
+                                .publicId}/invitations/${request.state.course
+                                .invitationLinkCourseParticipationRoleInstructorsToken}"
+                              readonly
+                              class="input--text"
+                              javascript="${javascript`
+                                this.onclick = () => {
+                                  this.select();
+                                };
+                              `}"
+                            />
+                            <div
+                              css="${css`
+                                font-size: var(--font-size--3);
+                                line-height: var(--font-size--3--line-height);
+                                font-weight: 600;
+                                color: light-dark(
+                                  var(--color--slate--600),
+                                  var(--color--slate--400)
+                                );
+                                display: flex;
+                                align-items: baseline;
+                                flex-wrap: wrap;
+                                column-gap: var(--space--4);
+                                row-gap: var(--space--2);
+                              `}"
+                            >
+                              <button
+                                type="button"
+                                class="button button--rectangle button--transparent"
+                                javascript="${javascript`
+                                  const popover = javascript.popover({ element: this, trigger: "none" });
+                                  this.onclick = async () => {
+                                    await navigator.clipboard.writeText(${`https://${
+                                      application.configuration.hostname
+                                    }/courses/${
+                                      request.state.course.publicId
+                                    }/invitations/${
+                                      request.state.course
+                                        .invitationLinkCourseParticipationRoleInstructorsToken
+                                    }`});
+                                    popover.showPopover();
+                                    await utilities.sleep(1000);
+                                    popover.hidePopover();
+                                  };
+                                `}"
+                              >
+                                Copy
+                              </button>
+                              <div type="popover">Copied</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <hr class="separator" />
                   `
                 : html``}
               <div>
