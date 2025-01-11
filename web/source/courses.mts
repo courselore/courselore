@@ -918,6 +918,7 @@ export default async (application: Application): Promise<void> => {
                           `}"
                         >
                           <div
+                            key="invitationLink"
                             css="${css`
                               display: flex;
                               flex-direction: column;
@@ -940,12 +941,32 @@ export default async (application: Application): Promise<void> => {
                               />  Invitation link for instructors
                             </label>
                             <input
+                              key="invitationLinkToken--hide--input"
+                              type="text"
+                              value="https://${application.configuration
+                                .hostname}/courses/${request.state.course
+                                .publicId}/invitations/${"*".repeat(
+                                request.state.course
+                                  .invitationLinkCourseParticipationRoleInstructorsToken
+                                  .length,
+                              )}"
+                              readonly
+                              class="input--text"
+                              javascript="${javascript`
+                                this.onclick = () => {
+                                  this.select();
+                                };
+                              `}"
+                            />
+                            <input
+                              key="invitationLinkToken--show--input"
                               type="text"
                               value="https://${application.configuration
                                 .hostname}/courses/${request.state.course
                                 .publicId}/invitations/${request.state.course
                                 .invitationLinkCourseParticipationRoleInstructorsToken}"
                               readonly
+                              hidden
                               class="input--text"
                               javascript="${javascript`
                                 this.onclick = () => {
@@ -992,6 +1013,37 @@ export default async (application: Application): Promise<void> => {
                                 Copy
                               </button>
                               <div type="popover">Copied</div>
+                              <button
+                                key="invitationLinkToken--show--button"
+                                type="button"
+                                class="button button--rectangle button--transparent"
+                                javascript="${javascript`
+                                  this.onclick = () => {
+                                    this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--hide--input"]').hidden = true;
+                                    this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--hide--button"]').hidden = false;
+                                    this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--show--input"]').hidden = false;
+                                    this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--show--button"]').hidden = true;
+                                  };
+                                `}"
+                              >
+                                Show
+                              </button>
+                              <button
+                                key="invitationLinkToken--hide--button"
+                                type="button"
+                                hidden
+                                class="button button--rectangle button--transparent"
+                                javascript="${javascript`
+                                  this.onclick = () => {
+                                    this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--hide--input"]').hidden = false;
+                                    this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--hide--button"]').hidden = true;
+                                    this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--show--input"]').hidden = true;
+                                    this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--show--button"]').hidden = false;
+                                  };
+                                `}"
+                              >
+                                Hide
+                              </button>
                             </div>
                           </div>
                         </div>
