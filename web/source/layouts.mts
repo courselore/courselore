@@ -757,6 +757,7 @@ export default async (application: Application): Promise<void> => {
       head,
       body: html`
         <div
+          key="main--main ${request.URL.pathname}${request.URL.search}"
           class="scroll"
           css="${css`
             width: 100%;
