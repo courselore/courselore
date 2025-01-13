@@ -37,7 +37,6 @@ export type Application = {
     dataDirectory: string;
     environment: "production" | "development";
     hstsPreload?: boolean;
-    tunnel?: boolean;
     extraCaddyfile?: string;
   };
   privateConfiguration: {
