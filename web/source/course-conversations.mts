@@ -2186,8 +2186,8 @@ export default async (application: Application): Promise<void> => {
                                     this.onclick = () => {
                                       this.closest('[type~="form"]').querySelector('[key~="courseConversation--header--title--show"]').hidden = true;
                                       this.closest('[type~="form"]').querySelector('[key~="courseConversation--header--title--edit"]').hidden = false;
+                                      this.closest('[type~="form"]').querySelector('[key~="courseConversation--header--title--edit"] [name="title"]').click();
                                       this.closest('[type~="form"]').querySelector('[key~="courseConversation--header--title--edit"] [name="title"]').focus();
-                                      this.closest('[type~="popover"]').hidePopover();
                                     };
                                   `}"
                                 >
@@ -3493,8 +3493,8 @@ export default async (application: Application): Promise<void> => {
                                             this.onclick = () => {
                                               this.closest('[key~="courseConversationMessage--main"]').querySelector('[key~="courseConversationMessage--main--content--show"]').hidden = true;
                                               this.closest('[key~="courseConversationMessage--main"]').querySelector('[key~="courseConversationMessage--main--content--edit"]').hidden = false;
+                                              this.closest('[key~="courseConversationMessage--main"]').querySelector('[key~="courseConversationMessage--main--content--edit"] [name="content"]').click();
                                               this.closest('[key~="courseConversationMessage--main"]').querySelector('[key~="courseConversationMessage--main--content--edit"] [name="content"]').focus();
-                                              this.closest('[type~="popover"]').hidePopover();
                                             };
                                           `}"
                                         >
