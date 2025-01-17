@@ -1040,7 +1040,7 @@ export default async (application: Application): Promise<void> => {
                     updateSidebarWidth();
                   };
                 };
-                this.ondblclick = (event) => {
+                this.ondblclick = () => {
                   this.closest('[key~="main--two-column-layout"]').querySelector('[key~="sidebar"]').style.setProperty("--width", String(80 * 4) +"px");
                   updateSidebarWidth();
                 };
