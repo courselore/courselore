@@ -1503,15 +1503,36 @@ export default async (application: Application): Promise<void> => {
                             </label>
                           </div>
                         </div>
-                        <textarea
-                          name="courseInvitationEmails"
-                          required
-                          placeholder="${`"Scott Smith" <scott@courselore.org>, Leandro Facchinetti <leandro@courselore.org>, ali@courselore.org, …`}"
-                          class="input--text"
+                        <div
                           css="${css`
-                            height: var(--space--48);
+                            display: flex;
+                            flex-direction: column;
+                            gap: var(--space--1);
                           `}"
-                        ></textarea>
+                        >
+                          <textarea
+                            name="courseInvitationEmails"
+                            required
+                            placeholder="${`"Scott Smith" <scott@courselore.org>, Leandro Facchinetti <leandro@courselore.org>, ali@courselore.org, …`}"
+                            class="input--text"
+                            css="${css`
+                              height: var(--space--48);
+                            `}"
+                          ></textarea>
+                          <div
+                            css="${css`
+                              font-size: var(--font-size--3);
+                              line-height: var(--font-size--3--line-height);
+                              color: light-dark(
+                                var(--color--slate--600),
+                                var(--color--slate--400)
+                              );
+                            `}"
+                          >
+                            The list of emails may be separated by commas or by
+                            newlines.
+                          </div>
+                        </div>
                         <div
                           css="${css`
                             font-size: var(--font-size--3);
