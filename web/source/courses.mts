@@ -643,6 +643,7 @@ export default async (application: Application): Promise<void> => {
                       `}"
                       javascript="${javascript`
                         this.onsubmit = () => {
+                          this.isModified = false;
                           for (const element of javascript.children(this)) delete element.morph;
                         };
                       `}"
@@ -1446,7 +1447,7 @@ export default async (application: Application): Promise<void> => {
                         type="form"
                         method="POST"
                         action="/courses/${request.state.course
-                          .publicId}/settings/invitations"
+                          .publicId}/settings/invitation-emails"
                         css="${css`
                           display: flex;
                           flex-direction: column;
@@ -1510,6 +1511,8 @@ export default async (application: Application): Promise<void> => {
                           maxlength="50000"
                           class="input--text"
                           css="${css`
+                            font-family: "Roboto Mono Variable",
+                              var(--font-family--monospace);
                             height: var(--space--48);
                           `}"
                           javascript="${javascript`
@@ -1544,6 +1547,131 @@ export default async (application: Application): Promise<void> => {
                       </div>
                     </div>
                     <hr class="separator" />
+                    $${(() => {
+                      const courseInvitationEmails = application.database.all<{
+                        publicId: string;
+                        email: string;
+                        courseParticipationRole:
+                          | "courseParticipationRoleInstructor"
+                          | "courseParticipationRoleStudent";
+                      }>(
+                        sql`
+                          select
+                            "publicId",
+                            "email",
+                            "courseParticipationRole"
+                          from "courseInvitationEmails"
+                          where "course" = ${request.state.course.id}
+                          order by "id" asc;
+                        `,
+                      );
+                      return 0 < courseInvitationEmails.length
+                        ? html`
+                            <div
+                              type="form"
+                              method="PUT"
+                              action="/courses/${request.state.course
+                                .publicId}/settings/invitation-emails"
+                              css="${css`
+                                display: flex;
+                                flex-direction: column;
+                                gap: var(--space--4);
+                              `}"
+                              javascript="${javascript`
+                                this.onsubmit = () => {
+                                  this.isModified = false;
+                                };
+                              `}"
+                            >
+                              <div
+                                css="${css`
+                                  font-size: var(--font-size--3);
+                                  line-height: var(--font-size--3--line-height);
+                                  font-weight: 600;
+                                  color: light-dark(
+                                    var(--color--slate--500),
+                                    var(--color--slate--500)
+                                  );
+                                `}"
+                              >
+                                Pending invitation emails
+                              </div>
+                              $${courseInvitationEmails.map(
+                                (courseInvitationEmail) => html`
+                                  <div
+                                    key="courseInvitationEmail ${courseInvitationEmail.publicId}"
+                                    css="${css`
+                                      display: flex;
+                                      flex-direction: column;
+                                      gap: var(--space--1);
+                                    `}"
+                                  >
+                                    <input
+                                      type="hidden"
+                                      name="courseInvitationEmails.id[]"
+                                      value="${courseInvitationEmail.publicId}"
+                                    />
+                                    <div
+                                      css="${css`
+                                        font-family: "Roboto Mono Variable",
+                                          var(--font-family--monospace);
+                                      `}"
+                                    >
+                                      ${courseInvitationEmail.email}
+                                    </div>
+                                    <div
+                                      css="${css`
+                                        font-size: var(--font-size--3);
+                                        line-height: var(
+                                          --font-size--3--line-height
+                                        );
+                                        font-weight: 600;
+                                        color: light-dark(
+                                          var(--color--slate--600),
+                                          var(--color--slate--400)
+                                        );
+                                        display: flex;
+                                        align-items: baseline;
+                                        flex-wrap: wrap;
+                                        column-gap: var(--space--4);
+                                        row-gap: var(--space--2);
+                                      `}"
+                                    >
+                                      <div>TODO: ROLE</div>
+                                      <button
+                                        type="button"
+                                        class="button button--rectangle button--transparent"
+                                        javascript="${javascript`
+                                            this.onclick = () => {
+                                              this.closest('[type~="form"]').isModified = true;
+                                              this.closest('[key~="courseInvitationEmail"]').remove();
+                                            };
+                                          `}"
+                                      >
+                                        Remove
+                                      </button>
+                                    </div>
+                                  </div>
+                                `,
+                              )}
+                              <div
+                                css="${css`
+                                  font-size: var(--font-size--3);
+                                  line-height: var(--font-size--3--line-height);
+                                `}"
+                              >
+                                <button
+                                  type="submit"
+                                  class="button button--rectangle button--blue"
+                                >
+                                  Update pending invitation emails
+                                </button>
+                              </div>
+                            </div>
+                            <hr class="separator" />
+                          `
+                        : html``;
+                    })()}
                   `
                 : html``}
               <div>

@@ -2510,12 +2510,10 @@ export default async (application: Application): Promise<void> => {
             "id" integer primary key autoincrement,
             "publicId" text not null unique,
             "course" integer not null references "courses",
-            "createdAt" text not null,
             "email" text not null,
             "courseParticipationRole" text not null
           ) strict;
           create index "index_courseInvitationEmails_course" on "courseInvitationEmails" ("course");
-          create index "index_courseInvitationEmails_createdAt" on "courseInvitationEmails" ("createdAt");
           create index "index_courseInvitationEmails_email" on "courseInvitationEmails" ("email");
           
           create table "courseParticipations" (
@@ -2959,14 +2957,12 @@ export default async (application: Application): Promise<void> => {
                 insert into "courseInvitationEmails" (
                   "publicId",
                   "course",
-                  "createdAt",
                   "email",
                   "courseParticipationRole"
                 )
                 values (
                   ${cryptoRandomString({ length: 20, type: "numeric" })},
                   ${course.id},
-                  ${new Date(Date.now() - Math.floor(Math.random() * 10 * 24 * 60 * 60 * 1000)).toISOString()},
                   ${
                     Math.random() < 0.5
                       ? `${examples
