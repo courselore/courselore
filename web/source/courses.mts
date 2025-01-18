@@ -1502,13 +1502,16 @@ export default async (application: Application): Promise<void> => {
                               />  Students
                             </label>
                           </div>
-                          <textarea
-                            name="courseInvitationEmails"
-                            required
-                            placeholder="TODO…"
-                            class="input--text"
-                          ></textarea>
                         </div>
+                        <textarea
+                          name="courseInvitationEmails"
+                          required
+                          placeholder="TODO…"
+                          class="input--text"
+                          css="${css`
+                            height: var(--space--48);
+                          `}"
+                        ></textarea>
                         <div
                           css="${css`
                             font-size: var(--font-size--3);
