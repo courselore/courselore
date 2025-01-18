@@ -1717,7 +1717,7 @@ export default async (application: Application): Promise<void> => {
                                               class="button button--rectangle button--transparent button--dropdown-menu"
                                               javascript="${javascript`
                                                 this.onclick = () => {
-                                                  this.closest('[type~="form"]').querySelector('[name="courseParticipationRole[]"][value="courseParticipationRoleInstructor"]').click();
+                                                  this.closest('[key~="courseInvitationEmail"]').querySelector('[name="courseParticipationRole[]"][value="courseParticipationRoleInstructor"]').click();
                                                 };
                                               `}"
                                             >
@@ -1728,7 +1728,7 @@ export default async (application: Application): Promise<void> => {
                                               class="button button--rectangle button--transparent button--dropdown-menu"
                                               javascript="${javascript`
                                                 this.onclick = () => {
-                                                  this.closest('[type~="form"]').querySelector('[name="courseParticipationRole[]"][value="courseParticipationRoleStudent"]').click();
+                                                  this.closest('[key~="courseInvitationEmail"]').querySelector('[name="courseParticipationRole[]"][value="courseParticipationRoleStudent"]').click();
                                                 };
                                               `}"
                                             >
