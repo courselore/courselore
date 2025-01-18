@@ -626,7 +626,7 @@ export default async (application: Application): Promise<void> => {
                           type="submit"
                           class="button button--rectangle button--blue"
                         >
-                          Update
+                          Update course settings
                         </button>
                       </div>
                     </div>
@@ -875,7 +875,7 @@ export default async (application: Application): Promise<void> => {
                           type="submit"
                           class="button button--rectangle button--blue"
                         >
-                          Update
+                          Update conversation tags
                         </button>
                       </div>
                     </div>
@@ -1430,7 +1430,7 @@ export default async (application: Application): Promise<void> => {
                           type="submit"
                           class="button button--rectangle button--blue"
                         >
-                          Update
+                          Update invitations
                         </button>
                       </div>
                     </div>
