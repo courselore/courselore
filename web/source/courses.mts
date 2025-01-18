@@ -1102,6 +1102,70 @@ export default async (application: Application): Promise<void> => {
                               >
                                 Hide QR code
                               </button>
+                              <div>
+                                <button
+                                  type="button"
+                                  class="button button--rectangle button--transparent"
+                                  javascript="${javascript`
+                                    javascript.popover({ element: this, trigger: "click" });
+                                  `}"
+                                >
+                                  Renew
+                                </button>
+                                <div
+                                  type="form popover"
+                                  method="PATCH"
+                                  action="/courses/${request.state.course
+                                    .publicId}/settings"
+                                  css="${css`
+                                    display: flex;
+                                    flex-direction: column;
+                                    gap: var(--space--2);
+                                  `}"
+                                >
+                                  <input
+                                    type="hidden"
+                                    name="renewInvitationLinkCourseParticipationRoleInstructorsToken"
+                                    value="true"
+                                  />
+                                  <div
+                                    css="${css`
+                                      font-size: var(--font-size--3);
+                                      line-height: var(
+                                        --font-size--3--line-height
+                                      );
+                                      font-weight: 600;
+                                      color: light-dark(
+                                        var(--color--red--500),
+                                        var(--color--red--500)
+                                      );
+                                    `}"
+                                  >
+                                    <i
+                                      class="bi bi-exclamation-triangle-fill"
+                                    ></i
+                                    > The previous invitation link will become
+                                    invalid and a new invitation link will be
+                                    created. Only renew an invitation link if it
+                                    has been distributed to people who shouldn’t
+                                    have access to it.
+                                  </div>
+                                  <div>
+                                    <button
+                                      type="submit"
+                                      class="button button--rectangle button--red"
+                                      css="${css`
+                                        font-size: var(--font-size--3);
+                                        line-height: var(
+                                          --font-size--3--line-height
+                                        );
+                                      `}"
+                                    >
+                                      Renew invitation link
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
                             </div>
                           </div>
                         </div>
