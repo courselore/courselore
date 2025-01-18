@@ -1585,75 +1585,93 @@ export default async (application: Application): Promise<void> => {
                             >
                               <div
                                 css="${css`
-                                  font-size: var(--font-size--3);
-                                  line-height: var(--font-size--3--line-height);
-                                  font-weight: 600;
-                                  color: light-dark(
-                                    var(--color--slate--500),
-                                    var(--color--slate--500)
-                                  );
+                                  display: flex;
+                                  flex-direction: column;
+                                  gap: var(--space--2);
                                 `}"
                               >
-                                Pending invitation emails
-                              </div>
-                              $${courseInvitationEmails.map(
-                                (courseInvitationEmail) => html`
-                                  <div
-                                    key="courseInvitationEmail ${courseInvitationEmail.publicId}"
-                                    css="${css`
-                                      display: flex;
-                                      flex-direction: column;
-                                      gap: var(--space--1);
-                                    `}"
-                                  >
-                                    <input
-                                      type="hidden"
-                                      name="courseInvitationEmails.id[]"
-                                      value="${courseInvitationEmail.publicId}"
-                                    />
-                                    <div
-                                      css="${css`
-                                        font-family: "Roboto Mono Variable",
-                                          var(--font-family--monospace);
-                                      `}"
-                                    >
-                                      ${courseInvitationEmail.email}
-                                    </div>
-                                    <div
-                                      css="${css`
-                                        font-size: var(--font-size--3);
-                                        line-height: var(
-                                          --font-size--3--line-height
-                                        );
-                                        font-weight: 600;
-                                        color: light-dark(
-                                          var(--color--slate--600),
-                                          var(--color--slate--400)
-                                        );
-                                        display: flex;
-                                        align-items: baseline;
-                                        flex-wrap: wrap;
-                                        column-gap: var(--space--4);
-                                        row-gap: var(--space--2);
-                                      `}"
-                                    >
-                                      <div>TODO: ROLE</div>
-                                      <button
-                                        type="button"
-                                        class="button button--rectangle button--transparent"
-                                        javascript="${javascript`
-                                            this.onclick = () => {
-                                              this.closest('[type~="form"]').isModified = true;
-                                              this.closest('[key~="courseInvitationEmail"]').remove();
-                                            };
-                                          `}"
+                                <div
+                                  css="${css`
+                                    font-size: var(--font-size--3);
+                                    line-height: var(
+                                      --font-size--3--line-height
+                                    );
+                                    font-weight: 600;
+                                    color: light-dark(
+                                      var(--color--slate--500),
+                                      var(--color--slate--500)
+                                    );
+                                  `}"
+                                >
+                                  Pending invitation emails
+                                </div>
+                                <div
+                                  css="${css`
+                                    display: flex;
+                                    flex-direction: column;
+                                    gap: var(--space--4);
+                                  `}"
+                                >
+                                  $${courseInvitationEmails.map(
+                                    (courseInvitationEmail) => html`
+                                      <div
+                                        key="courseInvitationEmail ${courseInvitationEmail.publicId}"
+                                        css="${css`
+                                          display: flex;
+                                          flex-direction: column;
+                                          gap: var(--space--1);
+                                        `}"
                                       >
-                                        Remove
-                                      </button>
-                                    </div>
-                                  </div>
-                                `,
-                              )}
+                                        <input
+                                          type="hidden"
+                                          name="courseInvitationEmails.id[]"
+                                          value="${courseInvitationEmail.publicId}"
+                                        />
+                                        <div
+                                          css="${css`
+                                            font-family: "Roboto Mono Variable",
+                                              var(--font-family--monospace);
+                                          `}"
+                                        >
+                                          ${courseInvitationEmail.email}
+                                        </div>
+                                        <div
+                                          css="${css`
+                                            font-size: var(--font-size--3);
+                                            line-height: var(
+                                              --font-size--3--line-height
+                                            );
+                                            font-weight: 600;
+                                            color: light-dark(
+                                              var(--color--slate--600),
+                                              var(--color--slate--400)
+                                            );
+                                            display: flex;
+                                            align-items: baseline;
+                                            flex-wrap: wrap;
+                                            column-gap: var(--space--4);
+                                            row-gap: var(--space--2);
+                                          `}"
+                                        >
+                                          <div>TODO: ROLE</div>
+                                          <button
+                                            type="button"
+                                            class="button button--rectangle button--transparent"
+                                            javascript="${javascript`
+                                              this.onclick = () => {
+                                                this.closest('[type~="form"]').isModified = true;
+                                                this.closest('[key~="courseInvitationEmail"]').remove();
+                                              };
+                                            `}"
+                                          >
+                                            Remove
+                                          </button>
+                                        </div>
+                                      </div>
+                                    `,
+                                  )}
+                                </div>
+                              </div>
                               <div
                                 css="${css`
                                   font-size: var(--font-size--3);
