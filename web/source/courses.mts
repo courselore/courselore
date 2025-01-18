@@ -1503,37 +1503,16 @@ export default async (application: Application): Promise<void> => {
                             </label>
                           </div>
                         </div>
-                        <div
+                        <textarea
+                          name="courseInvitationEmails"
+                          placeholder="${`"Scott Smith" <scott@courselore.org>, Leandro Facchinetti <leandro@courselore.org>, ali@courselore.org, …`}"
+                          required
+                          maxlength="50000"
+                          class="input--text"
                           css="${css`
-                            display: flex;
-                            flex-direction: column;
-                            gap: var(--space--1);
+                            height: var(--space--48);
                           `}"
-                        >
-                          <textarea
-                            name="courseInvitationEmails"
-                            placeholder="${`"Scott Smith" <scott@courselore.org>, Leandro Facchinetti <leandro@courselore.org>, ali@courselore.org, …`}"
-                            required
-                            maxlength="50000"
-                            class="input--text"
-                            css="${css`
-                              height: var(--space--48);
-                            `}"
-                          ></textarea>
-                          <div
-                            css="${css`
-                              font-size: var(--font-size--3);
-                              line-height: var(--font-size--3--line-height);
-                              color: light-dark(
-                                var(--color--slate--600),
-                                var(--color--slate--400)
-                              );
-                            `}"
-                          >
-                            The list of emails may be separated by commas or by
-                            newlines.
-                          </div>
-                        </div>
+                        ></textarea>
                         <div
                           css="${css`
                             font-size: var(--font-size--3);
