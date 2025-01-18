@@ -1435,6 +1435,67 @@ export default async (application: Application): Promise<void> => {
                       </div>
                     </div>
                     <hr class="separator" />
+                    <div
+                      css="${css`
+                        display: flex;
+                        flex-direction: column;
+                        gap: var(--space--4);
+                      `}"
+                    >
+                      <div
+                        type="form"
+                        method="POST"
+                        action="/courses/${request.state.course
+                          .publicId}/settings/invitations"
+                        css="${css`
+                          display: flex;
+                          flex-direction: column;
+                          gap: var(--space--4);
+                        `}"
+                      >
+                        <div
+                          css="${css`
+                            display: flex;
+                            flex-direction: column;
+                            gap: var(--space--1);
+                          `}"
+                        >
+                          <div
+                            css="${css`
+                              font-size: var(--font-size--3);
+                              line-height: var(--font-size--3--line-height);
+                              font-weight: 600;
+                              color: light-dark(
+                                var(--color--slate--500),
+                                var(--color--slate--500)
+                              );
+                            `}"
+                          >
+                            Invitation emails
+                          </div>
+                          <textarea
+                            name="courseInvitationEmails"
+                            required
+                            placeholder="TODO…"
+                            class="input--text"
+                          ></textarea>
+                        </div>
+                        <div
+                          css="${css`
+                            font-size: var(--font-size--3);
+                            line-height: var(--font-size--3--line-height);
+                          `}"
+                        >
+                          <button
+                            type="submit"
+                            class="button button--rectangle button--blue"
+                          >
+                            Send invitation emails
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                    <hr class="separator" />
                   `
                 : html``}
               <div>
