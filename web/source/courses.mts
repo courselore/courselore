@@ -909,7 +909,7 @@ export default async (application: Application): Promise<void> => {
                             );
                           `}"
                         >
-                          Invitations
+                          Invitation links
                         </div>
                         <div
                           css="${css`
@@ -1430,7 +1430,7 @@ export default async (application: Application): Promise<void> => {
                           type="submit"
                           class="button button--rectangle button--blue"
                         >
-                          Update invitations
+                          Update invitation links
                         </button>
                       </div>
                     </div>
