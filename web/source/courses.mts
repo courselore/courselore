@@ -1512,6 +1512,21 @@ export default async (application: Application): Promise<void> => {
                           css="${css`
                             height: var(--space--48);
                           `}"
+                          javascript="${javascript`
+                            this.onvalidate = () => {
+                              const addresses = emailAddresses.parseAddressList(this.value.replaceAll(/\\n+/g, " , "));
+                              if (
+                                addresses === null ||
+                                addresses.length === 0 ||
+                                addresses.some(
+                                  (address) =>
+                                    address.type !== "mailbox" ||
+                                    address.address.match(utilities.emailRegExp) === null
+                                )
+                              )
+                                throw new javascript.ValidationError("Invalid email list");
+                            };
+                          `}"
                         ></textarea>
                         <div
                           css="${css`
