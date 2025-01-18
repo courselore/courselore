@@ -1473,6 +1473,35 @@ export default async (application: Application): Promise<void> => {
                           >
                             Invitation emails
                           </div>
+                          <div
+                            css="${css`
+                              display: flex;
+                              flex-direction: column;
+                              gap: var(--space--2);
+                            `}"
+                          >
+                            <label
+                              class="button button--rectangle button--transparent"
+                            >
+                              <input
+                                type="radio"
+                                name="courseParticipationRole"
+                                value="courseParticipationRoleInstructor"
+                                class="input--radio"
+                              />  Instructors
+                            </label>
+                            <label
+                              class="button button--rectangle button--transparent"
+                            >
+                              <input
+                                type="radio"
+                                name="courseParticipationRole"
+                                value="courseParticipationRoleStudent"
+                                checked
+                                class="input--radio"
+                              />  Students
+                            </label>
+                          </div>
                           <textarea
                             name="courseInvitationEmails"
                             required
