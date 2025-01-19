@@ -643,7 +643,7 @@ export default async (application: Application): Promise<void> => {
                       `}"
                       javascript="${javascript`
                         this.onsubmit = () => {
-                          this.isModified = false;
+                          delete this.isModified;
                           for (const element of javascript.children(this)) delete element.morph;
                         };
                       `}"
@@ -1678,7 +1678,7 @@ export default async (application: Application): Promise<void> => {
                               `}"
                               javascript="${javascript`
                                 this.onsubmit = () => {
-                                  this.isModified = false;
+                                  delete this.isModified;
                                 };
                               `}"
                             >
@@ -1877,6 +1877,208 @@ export default async (application: Application): Promise<void> => {
                     })()}
                   `
                 : html``}
+              <div
+                type="form"
+                method="PUT"
+                action="/courses/${request.state.course
+                  .publicId}/settings/participations"
+                css="${css`
+                  display: flex;
+                  flex-direction: column;
+                  gap: var(--space--4);
+                `}"
+                javascript="${javascript`
+                  this.onsubmit = () => {
+                    delete this.isModified;
+                  };
+                `}"
+              >
+                <div
+                  css="${css`
+                    display: flex;
+                    flex-direction: column;
+                    gap: var(--space--2);
+                  `}"
+                >
+                  <div
+                    css="${css`
+                      font-size: var(--font-size--3);
+                      line-height: var(--font-size--3--line-height);
+                      font-weight: 600;
+                      color: light-dark(
+                        var(--color--slate--500),
+                        var(--color--slate--500)
+                      );
+                    `}"
+                  >
+                    Pending invitation emails
+                  </div>
+                  <div
+                    css="${css`
+                      display: flex;
+                      flex-direction: column;
+                      gap: var(--space--4);
+                    `}"
+                  >
+                    $${courseInvitationEmails.map(
+                      (courseInvitationEmail) => html`
+                        <div
+                          key="courseInvitationEmail ${courseInvitationEmail.publicId}"
+                          css="${css`
+                            display: flex;
+                            flex-direction: column;
+                            gap: var(--space--1);
+                          `}"
+                        >
+                          <input
+                            type="hidden"
+                            name="courseInvitationEmails[]"
+                            value="${courseInvitationEmail.publicId}"
+                          />
+                          <input
+                            type="hidden"
+                            name="courseInvitationEmails[${courseInvitationEmail.publicId}].id"
+                            value="${courseInvitationEmail.publicId}"
+                          />
+                          <div
+                            css="${css`
+                              font-family: "Roboto Mono Variable",
+                                var(--font-family--monospace);
+                            `}"
+                          >
+                            ${courseInvitationEmail.email}
+                          </div>
+                          <div
+                            css="${css`
+                              font-size: var(--font-size--3);
+                              line-height: var(--font-size--3--line-height);
+                              font-weight: 600;
+                              color: light-dark(
+                                var(--color--slate--600),
+                                var(--color--slate--400)
+                              );
+                              display: flex;
+                              align-items: baseline;
+                              flex-wrap: wrap;
+                              column-gap: var(--space--4);
+                              row-gap: var(--space--2);
+                            `}"
+                          >
+                            <button
+                              type="button"
+                              class="button button--rectangle button--transparent"
+                              javascript="${javascript`
+                                javascript.popover({ element: this, trigger: "click" });
+                              `}"
+                            >
+                              <span
+                                css="${css`
+                                  color: light-dark(
+                                    var(--color--slate--500),
+                                    var(--color--slate--500)
+                                  );
+                                `}"
+                                >Role:</span
+                              >  <input
+                                type="radio"
+                                name="courseInvitationEmails[${courseInvitationEmail.publicId}].courseParticipationRole"
+                                value="courseParticipationRoleInstructor"
+                                required
+                                $${courseInvitationEmail.courseParticipationRole ===
+                                "courseParticipationRoleInstructor"
+                                  ? html`checked`
+                                  : html``}
+                                hidden
+                              /><span
+                                css="${css`
+                                  :not(:checked) + & {
+                                    display: none;
+                                  }
+                                `}"
+                                >Instructor</span
+                              ><input
+                                type="radio"
+                                name="courseInvitationEmails[${courseInvitationEmail.publicId}].courseParticipationRole"
+                                value="courseParticipationRoleStudent"
+                                required
+                                $${courseInvitationEmail.courseParticipationRole ===
+                                "courseParticipationRoleStudent"
+                                  ? html`checked`
+                                  : html``}
+                                hidden
+                              /><span
+                                css="${css`
+                                  :not(:checked) + & {
+                                    display: none;
+                                  }
+                                `}"
+                                >Student</span
+                              > <i class="bi bi-chevron-down"></i>
+                            </button>
+                            <div
+                              type="popover"
+                              css="${css`
+                                display: flex;
+                                flex-direction: column;
+                                gap: var(--space--2);
+                              `}"
+                            >
+                              <button
+                                type="button"
+                                class="button button--rectangle button--transparent button--dropdown-menu"
+                                javascript="${javascript`
+                                  this.onclick = () => {
+                                    this.closest('[key~="courseInvitationEmail"]').querySelector(${`[name="courseInvitationEmails[${courseInvitationEmail.publicId}].courseParticipationRole"][value="courseParticipationRoleInstructor"]`}).click();
+                                  };
+                                `}"
+                              >
+                                Instructor
+                              </button>
+                              <button
+                                type="button"
+                                class="button button--rectangle button--transparent button--dropdown-menu"
+                                javascript="${javascript`
+                                  this.onclick = () => {
+                                    this.closest('[key~="courseInvitationEmail"]').querySelector(${`[name="courseInvitationEmails[${courseInvitationEmail.publicId}].courseParticipationRole"][value="courseParticipationRoleStudent"]`}).click();
+                                  };
+                                `}"
+                              >
+                                Student
+                              </button>
+                            </div>
+                            <button
+                              type="button"
+                              class="button button--rectangle button--transparent"
+                              javascript="${javascript`
+                                this.onclick = () => {
+                                  this.closest('[type~="form"]').isModified = true;
+                                  this.closest('[key~="courseInvitationEmail"]').remove();
+                                };
+                              `}"
+                            >
+                              Remove
+                            </button>
+                          </div>
+                        </div>
+                      `,
+                    )}
+                  </div>
+                </div>
+                <div
+                  css="${css`
+                    font-size: var(--font-size--3);
+                    line-height: var(--font-size--3--line-height);
+                  `}"
+                >
+                  <button
+                    type="submit"
+                    class="button button--rectangle button--blue"
+                  >
+                    Update pending invitation emails
+                  </button>
+                </div>
+              </div>
+              <hr class="separator" />
               <div>
                 <button
                   type="button"
