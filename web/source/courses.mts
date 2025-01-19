@@ -1661,7 +1661,12 @@ export default async (application: Application): Promise<void> => {
                                       >
                                         <input
                                           type="hidden"
-                                          name="courseInvitationEmails.id[]"
+                                          name="courseInvitationEmails[]"
+                                          value="${courseInvitationEmail.publicId}"
+                                        />
+                                        <input
+                                          type="hidden"
+                                          name="courseInvitationEmails[${courseInvitationEmail.publicId}].id"
                                           value="${courseInvitationEmail.publicId}"
                                         />
                                         <div
@@ -1707,7 +1712,7 @@ export default async (application: Application): Promise<void> => {
                                               >Role:</span
                                             >  <input
                                               type="radio"
-                                              name="courseInvitationEmails.courseParticipationRole[]"
+                                              name="courseInvitationEmails[${courseInvitationEmail.publicId}].courseParticipationRole"
                                               value="courseParticipationRoleInstructor"
                                               required
                                               $${courseInvitationEmail.courseParticipationRole ===
@@ -1724,7 +1729,7 @@ export default async (application: Application): Promise<void> => {
                                               >Instructor</span
                                             ><input
                                               type="radio"
-                                              name="courseInvitationEmails.courseParticipationRole[]"
+                                              name="courseInvitationEmails[${courseInvitationEmail.publicId}].courseParticipationRole"
                                               value="courseParticipationRoleStudent"
                                               required
                                               $${courseInvitationEmail.courseParticipationRole ===
@@ -1754,7 +1759,7 @@ export default async (application: Application): Promise<void> => {
                                               class="button button--rectangle button--transparent button--dropdown-menu"
                                               javascript="${javascript`
                                                 this.onclick = () => {
-                                                  this.closest('[key~="courseInvitationEmail"]').querySelector('[name="courseInvitationEmails.courseParticipationRole[]"][value="courseParticipationRoleInstructor"]').click();
+                                                  this.closest('[key~="courseInvitationEmail"]').querySelector(${`[name="courseInvitationEmails[${courseInvitationEmail.publicId}].courseParticipationRole"][value="courseParticipationRoleInstructor"]`}).click();
                                                 };
                                               `}"
                                             >
@@ -1765,7 +1770,7 @@ export default async (application: Application): Promise<void> => {
                                               class="button button--rectangle button--transparent button--dropdown-menu"
                                               javascript="${javascript`
                                                 this.onclick = () => {
-                                                  this.closest('[key~="courseInvitationEmail"]').querySelector('[name="courseInvitationEmails.courseParticipationRole[]"][value="courseParticipationRoleStudent"]').click();
+                                                  this.closest('[key~="courseInvitationEmail"]').querySelector(${`[name="courseInvitationEmails[${courseInvitationEmail.publicId}].courseParticipationRole"][value="courseParticipationRoleStudent"]`}).click();
                                                 };
                                               `}"
                                             >
