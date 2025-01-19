@@ -2304,14 +2304,25 @@ export default async (application: Application): Promise<void> => {
                                   action="/courses/${request.state.course
                                     .publicId}/conversations/${request.state
                                     .courseConversation.publicId}"
-                                  class="popover--red"
                                   css="${css`
                                     display: flex;
                                     flex-direction: column;
                                     gap: var(--space--2);
                                   `}"
                                 >
-                                  <div>
+                                  <div
+                                    css="${css`
+                                      font-size: var(--font-size--3);
+                                      line-height: var(
+                                        --font-size--3--line-height
+                                      );
+                                      font-weight: 600;
+                                      color: light-dark(
+                                        var(--color--red--500),
+                                        var(--color--red--500)
+                                      );
+                                    `}"
+                                  >
                                     <i
                                       class="bi bi-exclamation-triangle-fill"
                                     ></i
@@ -2328,7 +2339,7 @@ export default async (application: Application): Promise<void> => {
                                         );
                                       `}"
                                     >
-                                      Delete
+                                      Delete conversation
                                     </button>
                                   </div>
                                 </div>
@@ -3526,14 +3537,25 @@ export default async (application: Application): Promise<void> => {
                                             .publicId}/conversations/${request
                                             .state.courseConversation!
                                             .publicId}/messages/${courseConversationMessage.publicId}"
-                                          class="popover--red"
                                           css="${css`
                                             display: flex;
                                             flex-direction: column;
                                             gap: var(--space--2);
                                           `}"
                                         >
-                                          <div>
+                                          <div
+                                            css="${css`
+                                              font-size: var(--font-size--3);
+                                              line-height: var(
+                                                --font-size--3--line-height
+                                              );
+                                              font-weight: 600;
+                                              color: light-dark(
+                                                var(--color--red--500),
+                                                var(--color--red--500)
+                                              );
+                                            `}"
+                                          >
                                             <i
                                               class="bi bi-exclamation-triangle-fill"
                                             ></i
@@ -3550,7 +3572,7 @@ export default async (application: Application): Promise<void> => {
                                                 );
                                               `}"
                                             >
-                                              Delete
+                                              Delete message
                                             </button>
                                           </div>
                                         </div>

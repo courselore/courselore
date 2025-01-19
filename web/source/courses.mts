@@ -842,14 +842,76 @@ export default async (application: Application): Promise<void> => {
                                   type="button"
                                   class="button button--rectangle button--transparent"
                                   javascript="${javascript`
-                                    this.onclick = () => {
-                                      this.closest('[type~="form"]').isModified = true;
-                                      this.closest('[key~="courseConversationsTag"]').remove();
-                                    };
+                                    if (${
+                                      courseConversationsTag !== undefined &&
+                                      application.database.get(
+                                        sql`
+                                          select true
+                                          from "courseConversationTaggings"
+                                          join "courseConversations" on
+                                            "courseConversationTaggings"."courseConversation" = "courseConversations"."id" and
+                                            "courseConversations"."course" = ${request.state.course!.id}
+                                          where "courseConversationTaggings"."courseConversationsTag" = ${courseConversationsTag.id};
+                                        `,
+                                      ) !== undefined
+                                    })
+                                      javascript.popover({ element: this, trigger: "click" });
+                                    else 
+                                      this.onclick = () => {
+                                        this.nextElementSibling.querySelector("button").click();
+                                      };
                                   `}"
                                 >
                                   Remove
                                 </button>
+                                <div
+                                  type="popover"
+                                  css="${css`
+                                    display: flex;
+                                    flex-direction: column;
+                                    gap: var(--space--2);
+                                  `}"
+                                >
+                                  <div
+                                    css="${css`
+                                      font-size: var(--font-size--3);
+                                      line-height: var(
+                                        --font-size--3--line-height
+                                      );
+                                      font-weight: 600;
+                                      color: light-dark(
+                                        var(--color--red--500),
+                                        var(--color--red--500)
+                                      );
+                                    `}"
+                                  >
+                                    <i
+                                      class="bi bi-exclamation-triangle-fill"
+                                    ></i
+                                    > The tag will be removed from all
+                                    conversations that use it.
+                                  </div>
+                                  <div>
+                                    <button
+                                      type="button"
+                                      class="button button--rectangle button--red"
+                                      css="${css`
+                                        font-size: var(--font-size--3);
+                                        line-height: var(
+                                          --font-size--3--line-height
+                                        );
+                                      `}"
+                                      javascript="${javascript`
+                                        this.onclick = () => {
+                                          this.closest('[type~="form"]').isModified = true;
+                                          this.closest('[key~="courseConversationsTag"]').remove();
+                                        };
+                                      `}"
+                                    >
+                                      Remove tag
+                                    </button>
+                                  </div>
+                                </div>
                               </div>
                             </div>
                           </div>
