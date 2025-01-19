@@ -755,13 +755,21 @@ export default async (application: Application): Promise<void> => {
                             >
                               <input
                                 type="hidden"
-                                name="tags.id[]"
+                                name="tags[]"
+                                value="${courseConversationsTag?.publicId ??
+                                ""}"
+                              />
+                              <input
+                                type="hidden"
+                                name="tags[${courseConversationsTag?.publicId ??
+                                "{tag}"}].id"
                                 value="${courseConversationsTag?.publicId ??
                                 ""}"
                               />
                               <input
                                 type="text"
-                                name="tags.name[]"
+                                name="tags[${courseConversationsTag?.publicId ??
+                                "{tag}"}].name"
                                 value="${courseConversationsTag?.name ?? ""}"
                                 required
                                 maxlength="2000"
@@ -791,7 +799,8 @@ export default async (application: Application): Promise<void> => {
                                 >
                                   <input
                                     type="checkbox"
-                                    name="tags.privateToCourseParticipationRoleInstructors[]"
+                                    name="tags[${courseConversationsTag?.publicId ??
+                                    "{tag}"}].privateToCourseParticipationRoleInstructors"
                                     $${Boolean(
                                       courseConversationsTag?.privateToCourseParticipationRoleInstructors ??
                                         false,
