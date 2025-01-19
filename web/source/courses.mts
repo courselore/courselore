@@ -758,6 +758,13 @@ export default async (application: Application): Promise<void> => {
                                 name="tags[]"
                                 value="${courseConversationsTag?.publicId ??
                                 ""}"
+                                $${courseConversationsTag === undefined
+                                  ? html`
+                                      javascript="${javascript`
+                                        this.setAttribute("value", utilities.randomString());
+                                      `}"
+                                    `
+                                  : html``}
                               />
                               <input
                                 type="hidden"
@@ -765,6 +772,13 @@ export default async (application: Application): Promise<void> => {
                                 "{tag}"}].id"
                                 value="${courseConversationsTag?.publicId ??
                                 ""}"
+                                $${courseConversationsTag === undefined
+                                  ? html`
+                                      javascript="${javascript`
+                                        this.setAttribute("name", this.getAttribute("name").replace("{tag}", this.closest('[key~="courseConversationsTag"]').querySelector('[name="tags[]"]').getAttribute("value")));
+                                      `}"
+                                    `
+                                  : html``}
                               />
                               <input
                                 type="text"
@@ -777,6 +791,13 @@ export default async (application: Application): Promise<void> => {
                                 css="${css`
                                   flex: 1;
                                 `}"
+                                $${courseConversationsTag === undefined
+                                  ? html`
+                                      javascript="${javascript`
+                                        this.setAttribute("name", this.getAttribute("name").replace("{tag}", this.closest('[key~="courseConversationsTag"]').querySelector('[name="tags[]"]').getAttribute("value")));
+                                      `}"
+                                    `
+                                  : html``}
                               />
                               <div
                                 css="${css`
@@ -808,6 +829,13 @@ export default async (application: Application): Promise<void> => {
                                       ? html`checked`
                                       : html``}
                                     class="input--checkbox"
+                                    $${courseConversationsTag === undefined
+                                      ? html`
+                                          javascript="${javascript`
+                                            this.setAttribute("name", this.getAttribute("name").replace("{tag}", this.closest('[key~="courseConversationsTag"]').querySelector('[name="tags[]"]').getAttribute("value")));
+                                          `}"
+                                        `
+                                      : html``}
                                   />  Private to instructors
                                 </label>
                                 <button
