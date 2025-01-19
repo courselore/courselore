@@ -1911,7 +1911,7 @@ export default async (application: Application): Promise<void> => {
                       );
                     `}"
                   >
-                    Pending invitation emails
+                    Course participants
                   </div>
                   <div
                     css="${css`
@@ -1920,148 +1920,161 @@ export default async (application: Application): Promise<void> => {
                       gap: var(--space--4);
                     `}"
                   >
-                    $${courseInvitationEmails.map(
-                      (courseInvitationEmail) => html`
-                        <div
-                          key="courseInvitationEmail ${courseInvitationEmail.publicId}"
-                          css="${css`
-                            display: flex;
-                            flex-direction: column;
-                            gap: var(--space--1);
-                          `}"
-                        >
-                          <input
-                            type="hidden"
-                            name="courseInvitationEmails[]"
-                            value="${courseInvitationEmail.publicId}"
-                          />
-                          <input
-                            type="hidden"
-                            name="courseInvitationEmails[${courseInvitationEmail.publicId}].id"
-                            value="${courseInvitationEmail.publicId}"
-                          />
+                    $${application.database
+                      .all<{}>(
+                        sql`
+                          select
+                            "id",
+                            "publicId",
+                            "user",
+                            "courseParticipationRole"
+                          from "courseParticipations"
+                          where "course" = ${request.state.course.id}
+                          order by "id";
+                        `,
+                      )
+                      .map(
+                        (courseParticipation) => html`
                           <div
+                            key="courseInvitationEmail ${courseParticipation.publicId}"
                             css="${css`
-                              font-family: "Roboto Mono Variable",
-                                var(--font-family--monospace);
-                            `}"
-                          >
-                            ${courseInvitationEmail.email}
-                          </div>
-                          <div
-                            css="${css`
-                              font-size: var(--font-size--3);
-                              line-height: var(--font-size--3--line-height);
-                              font-weight: 600;
-                              color: light-dark(
-                                var(--color--slate--600),
-                                var(--color--slate--400)
-                              );
                               display: flex;
-                              align-items: baseline;
-                              flex-wrap: wrap;
-                              column-gap: var(--space--4);
-                              row-gap: var(--space--2);
+                              flex-direction: column;
+                              gap: var(--space--1);
                             `}"
                           >
-                            <button
-                              type="button"
-                              class="button button--rectangle button--transparent"
-                              javascript="${javascript`
+                            <input
+                              type="hidden"
+                              name="courseInvitationEmails[]"
+                              value="${courseParticipation.publicId}"
+                            />
+                            <input
+                              type="hidden"
+                              name="courseInvitationEmails[${courseParticipation.publicId}].id"
+                              value="${courseParticipation.publicId}"
+                            />
+                            <div
+                              css="${css`
+                                font-family: "Roboto Mono Variable",
+                                  var(--font-family--monospace);
+                              `}"
+                            >
+                              ${courseParticipation.email}
+                            </div>
+                            <div
+                              css="${css`
+                                font-size: var(--font-size--3);
+                                line-height: var(--font-size--3--line-height);
+                                font-weight: 600;
+                                color: light-dark(
+                                  var(--color--slate--600),
+                                  var(--color--slate--400)
+                                );
+                                display: flex;
+                                align-items: baseline;
+                                flex-wrap: wrap;
+                                column-gap: var(--space--4);
+                                row-gap: var(--space--2);
+                              `}"
+                            >
+                              <button
+                                type="button"
+                                class="button button--rectangle button--transparent"
+                                javascript="${javascript`
                                 javascript.popover({ element: this, trigger: "click" });
                               `}"
-                            >
-                              <span
+                              >
+                                <span
+                                  css="${css`
+                                    color: light-dark(
+                                      var(--color--slate--500),
+                                      var(--color--slate--500)
+                                    );
+                                  `}"
+                                  >Role:</span
+                                >  <input
+                                  type="radio"
+                                  name="courseInvitationEmails[${courseParticipation.publicId}].courseParticipationRole"
+                                  value="courseParticipationRoleInstructor"
+                                  required
+                                  $${courseParticipation.courseParticipationRole ===
+                                  "courseParticipationRoleInstructor"
+                                    ? html`checked`
+                                    : html``}
+                                  hidden
+                                /><span
+                                  css="${css`
+                                    :not(:checked) + & {
+                                      display: none;
+                                    }
+                                  `}"
+                                  >Instructor</span
+                                ><input
+                                  type="radio"
+                                  name="courseInvitationEmails[${courseParticipation.publicId}].courseParticipationRole"
+                                  value="courseParticipationRoleStudent"
+                                  required
+                                  $${courseParticipation.courseParticipationRole ===
+                                  "courseParticipationRoleStudent"
+                                    ? html`checked`
+                                    : html``}
+                                  hidden
+                                /><span
+                                  css="${css`
+                                    :not(:checked) + & {
+                                      display: none;
+                                    }
+                                  `}"
+                                  >Student</span
+                                > <i class="bi bi-chevron-down"></i>
+                              </button>
+                              <div
+                                type="popover"
                                 css="${css`
-                                  color: light-dark(
-                                    var(--color--slate--500),
-                                    var(--color--slate--500)
-                                  );
-                                `}"
-                                >Role:</span
-                              >  <input
-                                type="radio"
-                                name="courseInvitationEmails[${courseInvitationEmail.publicId}].courseParticipationRole"
-                                value="courseParticipationRoleInstructor"
-                                required
-                                $${courseInvitationEmail.courseParticipationRole ===
-                                "courseParticipationRoleInstructor"
-                                  ? html`checked`
-                                  : html``}
-                                hidden
-                              /><span
-                                css="${css`
-                                  :not(:checked) + & {
-                                    display: none;
-                                  }
-                                `}"
-                                >Instructor</span
-                              ><input
-                                type="radio"
-                                name="courseInvitationEmails[${courseInvitationEmail.publicId}].courseParticipationRole"
-                                value="courseParticipationRoleStudent"
-                                required
-                                $${courseInvitationEmail.courseParticipationRole ===
-                                "courseParticipationRoleStudent"
-                                  ? html`checked`
-                                  : html``}
-                                hidden
-                              /><span
-                                css="${css`
-                                  :not(:checked) + & {
-                                    display: none;
-                                  }
-                                `}"
-                                >Student</span
-                              > <i class="bi bi-chevron-down"></i>
-                            </button>
-                            <div
-                              type="popover"
-                              css="${css`
-                                display: flex;
-                                flex-direction: column;
-                                gap: var(--space--2);
-                              `}"
-                            >
-                              <button
-                                type="button"
-                                class="button button--rectangle button--transparent button--dropdown-menu"
-                                javascript="${javascript`
-                                  this.onclick = () => {
-                                    this.closest('[key~="courseInvitationEmail"]').querySelector(${`[name="courseInvitationEmails[${courseInvitationEmail.publicId}].courseParticipationRole"][value="courseParticipationRoleInstructor"]`}).click();
-                                  };
+                                  display: flex;
+                                  flex-direction: column;
+                                  gap: var(--space--2);
                                 `}"
                               >
-                                Instructor
-                              </button>
-                              <button
-                                type="button"
-                                class="button button--rectangle button--transparent button--dropdown-menu"
-                                javascript="${javascript`
+                                <button
+                                  type="button"
+                                  class="button button--rectangle button--transparent button--dropdown-menu"
+                                  javascript="${javascript`
                                   this.onclick = () => {
-                                    this.closest('[key~="courseInvitationEmail"]').querySelector(${`[name="courseInvitationEmails[${courseInvitationEmail.publicId}].courseParticipationRole"][value="courseParticipationRoleStudent"]`}).click();
+                                    this.closest('[key~="courseInvitationEmail"]').querySelector(${`[name="courseInvitationEmails[${courseParticipation.publicId}].courseParticipationRole"][value="courseParticipationRoleInstructor"]`}).click();
                                   };
                                 `}"
-                              >
-                                Student
-                              </button>
-                            </div>
-                            <button
-                              type="button"
-                              class="button button--rectangle button--transparent"
-                              javascript="${javascript`
+                                >
+                                  Instructor
+                                </button>
+                                <button
+                                  type="button"
+                                  class="button button--rectangle button--transparent button--dropdown-menu"
+                                  javascript="${javascript`
+                                  this.onclick = () => {
+                                    this.closest('[key~="courseInvitationEmail"]').querySelector(${`[name="courseInvitationEmails[${courseParticipation.publicId}].courseParticipationRole"][value="courseParticipationRoleStudent"]`}).click();
+                                  };
+                                `}"
+                                >
+                                  Student
+                                </button>
+                              </div>
+                              <button
+                                type="button"
+                                class="button button--rectangle button--transparent"
+                                javascript="${javascript`
                                 this.onclick = () => {
                                   this.closest('[type~="form"]').isModified = true;
                                   this.closest('[key~="courseInvitationEmail"]').remove();
                                 };
                               `}"
-                            >
-                              Remove
-                            </button>
+                              >
+                                Remove
+                              </button>
+                            </div>
                           </div>
-                        </div>
-                      `,
-                    )}
+                        `,
+                      )}
                   </div>
                 </div>
                 <div
@@ -2074,7 +2087,7 @@ export default async (application: Application): Promise<void> => {
                     type="submit"
                     class="button button--rectangle button--blue"
                   >
-                    Update pending invitation emails
+                    Update course participants
                   </button>
                 </div>
               </div>
