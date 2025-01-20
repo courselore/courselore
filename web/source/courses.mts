@@ -1768,7 +1768,6 @@ export default async (application: Application): Promise<void> => {
                                           css="${css`
                                             font-family: "Roboto Mono Variable",
                                               var(--font-family--monospace);
-                                            font-weight: 500;
                                           `}"
                                         >
                                           ${courseInvitationEmail.email}
