@@ -2286,97 +2286,132 @@ export default async (application: Application): Promise<void> => {
                     </details>
                   `
                 : html``}
-              <div>
-                <button
-                  type="button"
-                  class="button button--rectangle button--red"
+              <details>
+                <summary
+                  class="button button--rectangle button--transparent"
                   css="${css`
-                    font-size: var(--font-size--3);
-                    line-height: var(--font-size--3--line-height);
-                  `}"
-                  javascript="${javascript`
-                    javascript.popover({ element: this, trigger: "click", remainOpenWhileFocused: true });
+                    font-weight: 500;
+                    color: light-dark(
+                      var(--color--red--500),
+                      var(--color--red--500)
+                    );
                   `}"
                 >
-                  Remove myself from the course
-                </button>
+                  <span
+                    css="${css`
+                      display: inline-block;
+                      transition-property: var(
+                        --transition-property--transform
+                      );
+                      transition-duration: var(--transition-duration--150);
+                      transition-timing-function: var(
+                        --transition-timing-function--ease-in-out
+                      );
+                      details[open] & {
+                        transform: rotate(var(--transform--rotate--90));
+                      }
+                    `}"
+                  >
+                    <i class="bi bi-chevron-right"></i>
+                  </span>
+                  Danger zone
+                </summary>
                 <div
-                  type="form popover"
-                  method="DELETE"
-                  action="/courses/${request.state.course
-                    .publicId}/participation"
                   css="${css`
-                    display: flex;
-                    flex-direction: column;
-                    gap: var(--space--2);
+                    margin: var(--space--2) var(--space--0);
                   `}"
                 >
-                  <div
+                  <button
+                    type="button"
+                    class="button button--rectangle button--red"
                     css="${css`
                       font-size: var(--font-size--3);
                       line-height: var(--font-size--3--line-height);
-                      font-weight: 600;
-                      color: light-dark(
-                        var(--color--red--500),
-                        var(--color--red--500)
-                      );
+                    `}"
+                    javascript="${javascript`
+                      javascript.popover({ element: this, trigger: "click", remainOpenWhileFocused: true });
                     `}"
                   >
-                    <i class="bi bi-exclamation-triangle-fill"></i> Once you
-                    remove yourself from the course, you may only participate
-                    again with an invitation.
-                  </div>
-                  <label>
+                    Remove myself from the course
+                  </button>
+                  <div
+                    type="form popover"
+                    method="DELETE"
+                    action="/courses/${request.state.course
+                      .publicId}/participation"
+                    css="${css`
+                      display: flex;
+                      flex-direction: column;
+                      gap: var(--space--2);
+                    `}"
+                  >
                     <div
                       css="${css`
                         font-size: var(--font-size--3);
                         line-height: var(--font-size--3--line-height);
                         font-weight: 600;
                         color: light-dark(
-                          var(--color--slate--500),
-                          var(--color--slate--500)
+                          var(--color--red--500),
+                          var(--color--red--500)
                         );
                       `}"
                     >
-                      Course name confirmation
+                      <i class="bi bi-exclamation-triangle-fill"></i> Once you
+                      remove yourself from the course, you may only participate
+                      again with an invitation.
                     </div>
-                    <div
-                      css="${css`
-                        display: flex;
-                      `}"
-                    >
-                      <input
-                        type="text"
-                        placeholder="${request.state.course.name}"
-                        required
-                        maxlength="2000"
-                        class="input--text"
+                    <label>
+                      <div
                         css="${css`
-                          flex: 1;
+                          font-size: var(--font-size--3);
+                          line-height: var(--font-size--3--line-height);
+                          font-weight: 600;
+                          color: light-dark(
+                            var(--color--slate--500),
+                            var(--color--slate--500)
+                          );
                         `}"
-                        javascript="${javascript`
-                          this.onvalidate = () => {
-                            if (this.value !== ${request.state.course.name})
-                              throw new javascript.ValidationError(${`Incorrect course name confirmation: “${request.state.course.name}”`});
-                          };
+                      >
+                        Course name confirmation
+                      </div>
+                      <div
+                        css="${css`
+                          display: flex;
                         `}"
-                      />
+                      >
+                        <input
+                          type="text"
+                          placeholder="${request.state.course.name}"
+                          required
+                          maxlength="2000"
+                          class="input--text"
+                          css="${css`
+                            flex: 1;
+                          `}"
+                          javascript="${javascript`
+                            this.onvalidate = () => {
+                              if (this.value !== ${request.state.course.name})
+                                throw new javascript.ValidationError(${`Incorrect course name confirmation: “${request.state.course.name}”`});
+                            };
+                          `}"
+                        />
+                      </div>
+                    </label>
+                    <div>
+                      <button
+                        type="submit"
+                        class="button button--rectangle button--red"
+                        css="${css`
+                          font-size: var(--font-size--3);
+                          line-height: var(--font-size--3--line-height);
+                        `}"
+                      >
+                        Remove myself from the course
+                      </button>
                     </div>
-                  </label>
-                  <div>
-                    <button
-                      type="submit"
-                      class="button button--rectangle button--red"
-                      css="${css`
-                        font-size: var(--font-size--3);
-                        line-height: var(--font-size--3--line-height);
-                      `}"
-                    >
-                      Remove myself from the course
-                    </button>
                   </div>
                 </div>
-              </div>
+              </details>
             </div>
           `,
         }),
