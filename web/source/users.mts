@@ -361,6 +361,75 @@ export default async (application: Application): Promise<void> => {
                       />
                     </div>
                   </label>
+                  <div
+                    css="${css`
+                      display: flex;
+                      flex-direction: column;
+                      gap: var(--space--1);
+                    `}"
+                  >
+                    <div
+                      css="${css`
+                        font-size: var(--font-size--3);
+                        line-height: var(--font-size--3--line-height);
+                        font-weight: 600;
+                        color: light-dark(
+                          var(--color--slate--500),
+                          var(--color--slate--500)
+                        );
+                      `}"
+                    >
+                      Dark mode
+                    </div>
+                    <div
+                      css="${css`
+                        display: flex;
+                        flex-direction: column;
+                        gap: var(--space--2);
+                      `}"
+                    >
+                      <label
+                        class="button button--rectangle button--transparent"
+                      >
+                        <input
+                          type="radio"
+                          name="darkMode"
+                          value="userDarkModeSystem"
+                          $${request.state.user.darkMode ===
+                          "userDarkModeSystem"
+                            ? html`checked`
+                            : html``}
+                          class="input--radio"
+                        />  System
+                      </label>
+                      <label
+                        class="button button--rectangle button--transparent"
+                      >
+                        <input
+                          type="radio"
+                          name="darkMode"
+                          value="userDarkModeLight"
+                          $${request.state.user.darkMode === "userDarkModeLight"
+                            ? html`checked`
+                            : html``}
+                          class="input--radio"
+                        />  Light
+                      </label>
+                      <label
+                        class="button button--rectangle button--transparent"
+                      >
+                        <input
+                          type="radio"
+                          name="darkMode"
+                          value="userDarkModeDark"
+                          $${request.state.user.darkMode === "userDarkModeDark"
+                            ? html`checked`
+                            : html``}
+                          class="input--radio"
+                        />  Dark
+                      </label>
+                    </div>
+                  </div>
                 </div>
               </details>
             </div>
