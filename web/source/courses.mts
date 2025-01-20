@@ -626,7 +626,7 @@ export default async (application: Application): Promise<void> => {
                           type="submit"
                           class="button button--rectangle button--blue"
                         >
-                          Update course settings
+                          Update general settings
                         </button>
                       </div>
                     </div>
