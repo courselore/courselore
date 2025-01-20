@@ -257,6 +257,49 @@ export default async (application: Application): Promise<void> => {
   });
 
   application.server?.push({
+    method: "GET",
+    pathname: new RegExp("^/settings$"),
+    handler: async (
+      request: serverTypes.Request<
+        {},
+        {},
+        {},
+        {},
+        Application["types"]["states"]["User"]
+      >,
+      response,
+    ) => {
+      if (request.state.user === undefined) return;
+      response.end(
+        application.layouts.main({
+          request,
+          response,
+          head: html` <title>User settings · Courselore</title> `,
+          body: html`
+            <div
+              css="${css`
+                display: flex;
+                flex-direction: column;
+                gap: var(--space--2);
+              `}"
+            >
+              <div
+                css="${css`
+                  font-size: var(--font-size--4);
+                  line-height: var(--font-size--4--line-height);
+                  font-weight: 800;
+                `}"
+              >
+                User settings
+              </div>
+            </div>
+          `,
+        }),
+      );
+    },
+  });
+
+  application.server?.push({
     method: "PATCH",
     pathname: "/settings",
     handler: (

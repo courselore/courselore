@@ -293,7 +293,7 @@ export default async (application: Application): Promise<void> => {
           request,
           response,
           head: html`
-            <title>Settings · ${request.state.course.name} · Courselore</title>
+            <title>Course settings · ${request.state.course.name} · Courselore</title>
           `,
           body: html`
             <div
