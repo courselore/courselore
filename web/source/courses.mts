@@ -2326,10 +2326,6 @@ export default async (application: Application): Promise<void> => {
                   class="button button--rectangle button--transparent"
                   css="${css`
                     font-weight: 500;
-                    color: light-dark(
-                      var(--color--red--500),
-                      var(--color--red--500)
-                    );
                   `}"
                 >
                   <span
