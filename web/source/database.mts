@@ -2424,7 +2424,6 @@ export default async (application: Application): Promise<void> => {
           create table "users" (
             "id" integer primary key autoincrement,
             "publicId" text not null unique,
-            "createdAt" text not null,
             "name" text not null,
             "nameSearch" text not null,
             "email" text not null unique,
@@ -2490,7 +2489,6 @@ export default async (application: Application): Promise<void> => {
           create table "courses" (
             "id" integer primary key autoincrement,
             "publicId" text not null unique,
-            "createdAt" text not null,
             "name" text not null,
             "information" text null,
             "invitationLinkCourseParticipationRoleInstructorsEnabled" integer not null,
@@ -2521,7 +2519,6 @@ export default async (application: Application): Promise<void> => {
             "publicId" text not null unique,
             "user" integer not null references "users",
             "course" integer not null references "courses",
-            "createdAt" text not null,
             "courseParticipationRole" text not null,
             "decorationColor" text not null,
             "mostRecentlyVisitedCourseConversation" integer null references "courseConversations",
