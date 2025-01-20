@@ -13,7 +13,6 @@ export type ApplicationCourses = {
         course: {
           id: number;
           publicId: string;
-          createdAt: string;
           name: string;
           information: string | null;
           invitationLinkCourseParticipationRoleInstructorsEnabled: number;
@@ -34,7 +33,6 @@ export type ApplicationCourses = {
         courseParticipation: {
           id: number;
           publicId: string;
-          createdAt: string;
           courseParticipationRole:
             | "courseParticipationRoleInstructor"
             | "courseParticipationRoleStudent";
@@ -86,7 +84,6 @@ export default async (application: Application): Promise<void> => {
       request.state.course = application.database.get<{
         id: number;
         publicId: string;
-        createdAt: string;
         name: string;
         information: string | null;
         invitationLinkCourseParticipationRoleInstructorsEnabled: number;
@@ -108,7 +105,6 @@ export default async (application: Application): Promise<void> => {
           select
             "id",
             "publicId",
-            "createdAt",
             "name",
             "information",
             "invitationLinkCourseParticipationRoleInstructorsEnabled",
@@ -130,7 +126,6 @@ export default async (application: Application): Promise<void> => {
       request.state.courseParticipation = application.database.get<{
         id: number;
         publicId: string;
-        createdAt: string;
         courseParticipationRole:
           | "courseParticipationRoleInstructor"
           | "courseParticipationRoleStudent";
@@ -158,7 +153,6 @@ export default async (application: Application): Promise<void> => {
           select
             "id",
             "publicId",
-            "createdAt",
             "courseParticipationRole",
             "decorationColor",
             "mostRecentlyVisitedCourseConversation"

@@ -12,7 +12,6 @@ export type ApplicationUsers = {
         user: {
           id: number;
           publicId: string;
-          createdAt: string;
           name: string;
           email: string;
           emailVerificationEmail: string | null;
@@ -122,7 +121,6 @@ export default async (application: Application): Promise<void> => {
       request.state.user = application.database.get<{
         id: number;
         publicId: string;
-        createdAt: string;
         name: string;
         email: string;
         emailVerificationEmail: string | null;
@@ -178,7 +176,6 @@ export default async (application: Application): Promise<void> => {
           select
             "id",
             "publicId",
-            "createdAt",
             "name",
             "email",
             "emailVerificationEmail",
