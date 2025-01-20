@@ -292,6 +292,77 @@ export default async (application: Application): Promise<void> => {
               >
                 User settings
               </div>
+              <details>
+                <summary
+                  class="button button--rectangle button--transparent"
+                  css="${css`
+                    font-weight: 500;
+                  `}"
+                >
+                  <span
+                    css="${css`
+                      display: inline-block;
+                      transition-property: var(
+                        --transition-property--transform
+                      );
+                      transition-duration: var(--transition-duration--150);
+                      transition-timing-function: var(
+                        --transition-timing-function--ease-in-out
+                      );
+                      details[open] & {
+                        transform: rotate(var(--transform--rotate--90));
+                      }
+                    `}"
+                  >
+                    <i class="bi bi-chevron-right"></i>
+                  </span>
+                  General settings
+                </summary>
+                <div
+                  type="form"
+                  method="PATCH"
+                  action="/settings"
+                  css="${css`
+                    margin: var(--space--2) var(--space--0);
+                    display: flex;
+                    flex-direction: column;
+                    gap: var(--space--4);
+                  `}"
+                >
+                  <label>
+                    <div
+                      css="${css`
+                        font-size: var(--font-size--3);
+                        line-height: var(--font-size--3--line-height);
+                        font-weight: 600;
+                        color: light-dark(
+                          var(--color--slate--500),
+                          var(--color--slate--500)
+                        );
+                      `}"
+                    >
+                      Name
+                    </div>
+                    <div
+                      css="${css`
+                        display: flex;
+                      `}"
+                    >
+                      <input
+                        type="text"
+                        name="name"
+                        value="${request.state.user.name}"
+                        required
+                        maxlength="2000"
+                        class="input--text"
+                        css="${css`
+                          flex: 1;
+                        `}"
+                      />
+                    </div>
+                  </label>
+                </div>
+              </details>
             </div>
           `,
         }),
