@@ -321,316 +321,348 @@ export default async (application: Application): Promise<void> => {
               $${request.state.courseParticipation.courseParticipationRole ===
               "courseParticipationRoleInstructor"
                 ? html`
-                    <div
-                      type="form"
-                      method="PATCH"
-                      action="/courses/${request.state.course
-                        .publicId}/settings"
-                      css="${css`
-                        display: flex;
-                        flex-direction: column;
-                        gap: var(--space--4);
-                      `}"
-                    >
-                      <label>
-                        <div
+                    <details>
+                      <summary
+                        class="button button--rectangle button--transparent"
+                        css="${css`
+                          font-weight: 500;
+                        `}"
+                      >
+                        <span
                           css="${css`
-                            font-size: var(--font-size--3);
-                            line-height: var(--font-size--3--line-height);
-                            font-weight: 600;
-                            color: light-dark(
-                              var(--color--slate--500),
-                              var(--color--slate--500)
+                            display: inline-block;
+                            transition-property: var(
+                              --transition-property--transform
                             );
+                            transition-duration: var(
+                              --transition-duration--150
+                            );
+                            transition-timing-function: var(
+                              --transition-timing-function--ease-in-out
+                            );
+                            details[open] & {
+                              transform: rotate(var(--transform--rotate--90));
+                            }
                           `}"
                         >
-                          Name
-                        </div>
-                        <div
-                          css="${css`
-                            display: flex;
-                          `}"
-                        >
-                          <input
-                            type="text"
-                            name="name"
-                            value="${request.state.course.name}"
-                            required
-                            maxlength="2000"
-                            class="input--text"
+                          <i class="bi bi-chevron-right"></i>
+                        </span>
+                        General settings
+                      </summary>
+                      <div
+                        type="form"
+                        method="PATCH"
+                        action="/courses/${request.state.course
+                          .publicId}/settings"
+                        css="${css`
+                          margin-top: var(--space--4);
+                          display: flex;
+                          flex-direction: column;
+                          gap: var(--space--4);
+                        `}"
+                      >
+                        <label>
+                          <div
                             css="${css`
-                              flex: 1;
+                              font-size: var(--font-size--3);
+                              line-height: var(--font-size--3--line-height);
+                              font-weight: 600;
+                              color: light-dark(
+                                var(--color--slate--500),
+                                var(--color--slate--500)
+                              );
                             `}"
-                          />
-                        </div>
-                      </label>
-                      <label>
-                        <div
-                          css="${css`
-                            font-size: var(--font-size--3);
-                            line-height: var(--font-size--3--line-height);
-                            font-weight: 600;
-                            color: light-dark(
-                              var(--color--slate--500),
-                              var(--color--slate--500)
-                            );
-                          `}"
-                        >
-                          Information
-                        </div>
-                        <div
-                          css="${css`
-                            display: flex;
-                          `}"
-                        >
-                          <input
-                            type="text"
-                            name="name"
-                            placeholder="Year / Term / Institution / Code / …"
-                            value="${request.state.course.information ?? ""}"
-                            required
-                            maxlength="2000"
-                            class="input--text"
+                          >
+                            Name
+                          </div>
+                          <div
                             css="${css`
-                              flex: 1;
+                              display: flex;
                             `}"
-                          />
-                        </div>
-                      </label>
-                      <div
-                        css="${css`
-                          display: flex;
-                          flex-direction: column;
-                          gap: var(--space--1);
-                        `}"
-                      >
-                        <div
-                          css="${css`
-                            font-size: var(--font-size--3);
-                            line-height: var(--font-size--3--line-height);
-                            font-weight: 600;
-                            color: light-dark(
-                              var(--color--slate--500),
-                              var(--color--slate--500)
-                            );
-                          `}"
-                        >
-                          Anonymity
-                        </div>
-                        <div
-                          css="${css`
-                            display: flex;
-                            flex-direction: column;
-                            gap: var(--space--2);
-                          `}"
-                        >
-                          <label
-                            class="button button--rectangle button--transparent"
                           >
                             <input
-                              type="radio"
-                              name="courseParticipationRoleStudentsAnonymityAllowed"
-                              value="courseParticipationRoleStudentsAnonymityAllowedNone"
-                              $${request.state.course
-                                .courseParticipationRoleStudentsAnonymityAllowed ===
-                              "courseParticipationRoleStudentsAnonymityAllowedNone"
-                                ? html`checked`
-                                : html``}
-                              class="input--radio"
-                            />  Students may not send anonymous messages
-                          </label>
-                          <label
-                            class="button button--rectangle button--transparent"
-                          >
-                            <input
-                              type="radio"
-                              name="courseParticipationRoleStudentsAnonymityAllowed"
-                              value="courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleStudents"
-                              $${request.state.course
-                                .courseParticipationRoleStudentsAnonymityAllowed ===
-                              "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleStudents"
-                                ? html`checked`
-                                : html``}
-                              class="input--radio"
-                            />  Students may send messages that are anonymous to
-                            other students, but not anonymous to instructors
-                          </label>
-                          <label
-                            class="button button--rectangle button--transparent"
-                          >
-                            <input
-                              type="radio"
-                              name="courseParticipationRoleStudentsAnonymityAllowed"
-                              value="courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleInstructors"
-                              $${request.state.course
-                                .courseParticipationRoleStudentsAnonymityAllowed ===
-                              "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleInstructors"
-                                ? html`checked`
-                                : html``}
-                              class="input--radio"
-                            />  Students may send messages that are anonymous to
-                            everyone, including instructors
-                          </label>
-                        </div>
-                      </div>
-                      <div
-                        css="${css`
-                          display: flex;
-                          flex-direction: column;
-                          gap: var(--space--1);
-                        `}"
-                      >
-                        <div
-                          css="${css`
-                            font-size: var(--font-size--3);
-                            line-height: var(--font-size--3--line-height);
-                            font-weight: 600;
-                            color: light-dark(
-                              var(--color--slate--500),
-                              var(--color--slate--500)
-                            );
-                          `}"
-                        >
-                          Students permissions
-                        </div>
-                        <div
-                          css="${css`
-                            display: flex;
-                            flex-direction: column;
-                            gap: var(--space--2);
-                          `}"
-                        >
-                          <label
-                            class="button button--rectangle button--transparent"
-                          >
-                            <input
-                              type="checkbox"
-                              name="courseParticipationRoleStudentsMayHavePrivateCourseConversations"
-                              $${Boolean(
-                                request.state.course
-                                  .courseParticipationRoleStudentsMayHavePrivateCourseConversations,
-                              )
-                                ? html`checked`
-                                : html``}
-                              class="input--checkbox"
-                            />  Students may create private conversations among
-                            other students that aren’t visible by instructors
-                          </label>
-                          <label
-                            class="button button--rectangle button--transparent"
-                          >
-                            <input
-                              type="checkbox"
-                              name="courseParticipationRoleStudentsMayAttachImages"
-                              $${Boolean(
-                                request.state.course
-                                  .courseParticipationRoleStudentsMayAttachImages,
-                              )
-                                ? html`checked`
-                                : html``}
-                              class="input--checkbox"
-                            />  Students may attach images to their messages
-                          </label>
-                          <label
-                            class="button button--rectangle button--transparent"
-                          >
-                            <input
-                              type="checkbox"
-                              name="courseParticipationRoleStudentsMayCreatePolls"
-                              $${Boolean(
-                                request.state.course
-                                  .courseParticipationRoleStudentsMayCreatePolls,
-                              )
-                                ? html`checked`
-                                : html``}
-                              class="input--checkbox"
-                            />  Students may create polls
-                          </label>
-                        </div>
-                      </div>
-                      <div
-                        css="${css`
-                          display: flex;
-                          flex-direction: column;
-                          gap: var(--space--1);
-                        `}"
-                      >
-                        <div
-                          css="${css`
-                            font-size: var(--font-size--3);
-                            line-height: var(--font-size--3--line-height);
-                            font-weight: 600;
-                            color: light-dark(
-                              var(--color--slate--500),
-                              var(--color--slate--500)
-                            );
-                          `}"
-                        >
-                          Course state
-                        </div>
-                        <div
-                          css="${css`
-                            display: flex;
-                            flex-direction: column;
-                            gap: var(--space--2);
-                          `}"
-                        >
-                          <label
-                            class="button button--rectangle button--transparent"
-                          >
-                            <input
-                              type="radio"
-                              name="courseState"
-                              value="courseStateActive"
-                              $${request.state.course.courseState ===
-                              "courseStateActive"
-                                ? html`checked`
-                                : html``}
-                              class="input--radio"
-                            />  Active
-                          </label>
-                          <label
-                            class="button button--rectangle button--transparent"
-                          >
-                            <input
-                              type="radio"
-                              name="courseState"
-                              value="courseStateArchived"
-                              $${request.state.course.courseState ===
-                              "courseStateArchived"
-                                ? html`checked`
-                                : html``}
-                              class="input--radio"
-                            />  Archived
-                            <span
+                              type="text"
+                              name="name"
+                              value="${request.state.course.name}"
+                              required
+                              maxlength="2000"
+                              class="input--text"
                               css="${css`
-                                font-size: var(--font-size--3);
-                                line-height: var(--font-size--3--line-height);
-                                color: light-dark(
-                                  var(--color--slate--600),
-                                  var(--color--slate--400)
-                                );
+                                flex: 1;
                               `}"
-                              >(read-only)</span
-                            >
-                          </label>
-                        </div>
-                      </div>
-                      <div
-                        css="${css`
-                          font-size: var(--font-size--3);
-                          line-height: var(--font-size--3--line-height);
-                        `}"
-                      >
-                        <button
-                          type="submit"
-                          class="button button--rectangle button--blue"
+                            />
+                          </div>
+                        </label>
+                        <label>
+                          <div
+                            css="${css`
+                              font-size: var(--font-size--3);
+                              line-height: var(--font-size--3--line-height);
+                              font-weight: 600;
+                              color: light-dark(
+                                var(--color--slate--500),
+                                var(--color--slate--500)
+                              );
+                            `}"
+                          >
+                            Information
+                          </div>
+                          <div
+                            css="${css`
+                              display: flex;
+                            `}"
+                          >
+                            <input
+                              type="text"
+                              name="name"
+                              placeholder="Year / Term / Institution / Code / …"
+                              value="${request.state.course.information ?? ""}"
+                              required
+                              maxlength="2000"
+                              class="input--text"
+                              css="${css`
+                                flex: 1;
+                              `}"
+                            />
+                          </div>
+                        </label>
+                        <div
+                          css="${css`
+                            display: flex;
+                            flex-direction: column;
+                            gap: var(--space--1);
+                          `}"
                         >
-                          Update general settings
-                        </button>
+                          <div
+                            css="${css`
+                              font-size: var(--font-size--3);
+                              line-height: var(--font-size--3--line-height);
+                              font-weight: 600;
+                              color: light-dark(
+                                var(--color--slate--500),
+                                var(--color--slate--500)
+                              );
+                            `}"
+                          >
+                            Anonymity
+                          </div>
+                          <div
+                            css="${css`
+                              display: flex;
+                              flex-direction: column;
+                              gap: var(--space--2);
+                            `}"
+                          >
+                            <label
+                              class="button button--rectangle button--transparent"
+                            >
+                              <input
+                                type="radio"
+                                name="courseParticipationRoleStudentsAnonymityAllowed"
+                                value="courseParticipationRoleStudentsAnonymityAllowedNone"
+                                $${request.state.course
+                                  .courseParticipationRoleStudentsAnonymityAllowed ===
+                                "courseParticipationRoleStudentsAnonymityAllowedNone"
+                                  ? html`checked`
+                                  : html``}
+                                class="input--radio"
+                              />  Students may not send anonymous messages
+                            </label>
+                            <label
+                              class="button button--rectangle button--transparent"
+                            >
+                              <input
+                                type="radio"
+                                name="courseParticipationRoleStudentsAnonymityAllowed"
+                                value="courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleStudents"
+                                $${request.state.course
+                                  .courseParticipationRoleStudentsAnonymityAllowed ===
+                                "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleStudents"
+                                  ? html`checked`
+                                  : html``}
+                                class="input--radio"
+                              />  Students may send messages that are anonymous
+                              to other students, but not anonymous to
+                              instructors
+                            </label>
+                            <label
+                              class="button button--rectangle button--transparent"
+                            >
+                              <input
+                                type="radio"
+                                name="courseParticipationRoleStudentsAnonymityAllowed"
+                                value="courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleInstructors"
+                                $${request.state.course
+                                  .courseParticipationRoleStudentsAnonymityAllowed ===
+                                "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleInstructors"
+                                  ? html`checked`
+                                  : html``}
+                                class="input--radio"
+                              />  Students may send messages that are anonymous
+                              to everyone, including instructors
+                            </label>
+                          </div>
+                        </div>
+                        <div
+                          css="${css`
+                            display: flex;
+                            flex-direction: column;
+                            gap: var(--space--1);
+                          `}"
+                        >
+                          <div
+                            css="${css`
+                              font-size: var(--font-size--3);
+                              line-height: var(--font-size--3--line-height);
+                              font-weight: 600;
+                              color: light-dark(
+                                var(--color--slate--500),
+                                var(--color--slate--500)
+                              );
+                            `}"
+                          >
+                            Students permissions
+                          </div>
+                          <div
+                            css="${css`
+                              display: flex;
+                              flex-direction: column;
+                              gap: var(--space--2);
+                            `}"
+                          >
+                            <label
+                              class="button button--rectangle button--transparent"
+                            >
+                              <input
+                                type="checkbox"
+                                name="courseParticipationRoleStudentsMayHavePrivateCourseConversations"
+                                $${Boolean(
+                                  request.state.course
+                                    .courseParticipationRoleStudentsMayHavePrivateCourseConversations,
+                                )
+                                  ? html`checked`
+                                  : html``}
+                                class="input--checkbox"
+                              />  Students may create private conversations
+                              among other students that aren’t visible by
+                              instructors
+                            </label>
+                            <label
+                              class="button button--rectangle button--transparent"
+                            >
+                              <input
+                                type="checkbox"
+                                name="courseParticipationRoleStudentsMayAttachImages"
+                                $${Boolean(
+                                  request.state.course
+                                    .courseParticipationRoleStudentsMayAttachImages,
+                                )
+                                  ? html`checked`
+                                  : html``}
+                                class="input--checkbox"
+                              />  Students may attach images to their messages
+                            </label>
+                            <label
+                              class="button button--rectangle button--transparent"
+                            >
+                              <input
+                                type="checkbox"
+                                name="courseParticipationRoleStudentsMayCreatePolls"
+                                $${Boolean(
+                                  request.state.course
+                                    .courseParticipationRoleStudentsMayCreatePolls,
+                                )
+                                  ? html`checked`
+                                  : html``}
+                                class="input--checkbox"
+                              />  Students may create polls
+                            </label>
+                          </div>
+                        </div>
+                        <div
+                          css="${css`
+                            display: flex;
+                            flex-direction: column;
+                            gap: var(--space--1);
+                          `}"
+                        >
+                          <div
+                            css="${css`
+                              font-size: var(--font-size--3);
+                              line-height: var(--font-size--3--line-height);
+                              font-weight: 600;
+                              color: light-dark(
+                                var(--color--slate--500),
+                                var(--color--slate--500)
+                              );
+                            `}"
+                          >
+                            Course state
+                          </div>
+                          <div
+                            css="${css`
+                              display: flex;
+                              flex-direction: column;
+                              gap: var(--space--2);
+                            `}"
+                          >
+                            <label
+                              class="button button--rectangle button--transparent"
+                            >
+                              <input
+                                type="radio"
+                                name="courseState"
+                                value="courseStateActive"
+                                $${request.state.course.courseState ===
+                                "courseStateActive"
+                                  ? html`checked`
+                                  : html``}
+                                class="input--radio"
+                              />  Active
+                            </label>
+                            <label
+                              class="button button--rectangle button--transparent"
+                            >
+                              <input
+                                type="radio"
+                                name="courseState"
+                                value="courseStateArchived"
+                                $${request.state.course.courseState ===
+                                "courseStateArchived"
+                                  ? html`checked`
+                                  : html``}
+                                class="input--radio"
+                              />  Archived
+                              <span
+                                css="${css`
+                                  font-size: var(--font-size--3);
+                                  line-height: var(--font-size--3--line-height);
+                                  color: light-dark(
+                                    var(--color--slate--600),
+                                    var(--color--slate--400)
+                                  );
+                                `}"
+                                >(read-only)</span
+                              >
+                            </label>
+                          </div>
+                        </div>
+                        <div
+                          css="${css`
+                            font-size: var(--font-size--3);
+                            line-height: var(--font-size--3--line-height);
+                          `}"
+                        >
+                          <button
+                            type="submit"
+                            class="button button--rectangle button--blue"
+                          >
+                            Update general settings
+                          </button>
+                        </div>
+                        <hr class="separator" />
                       </div>
-                    </div>
-                    <hr class="separator" />
+                    </details>
                     <div
                       type="form"
                       method="PUT"
