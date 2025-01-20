@@ -306,7 +306,7 @@ export default async (application: Application): Promise<void> => {
               css="${css`
                 display: flex;
                 flex-direction: column;
-                gap: var(--space--4);
+                gap: var(--space--2);
               `}"
             >
               <div
@@ -355,7 +355,7 @@ export default async (application: Application): Promise<void> => {
                         action="/courses/${request.state.course
                           .publicId}/settings"
                         css="${css`
-                          margin-top: var(--space--4);
+                          margin: var(--space--2) var(--space--0);
                           display: flex;
                           flex-direction: column;
                           gap: var(--space--4);
