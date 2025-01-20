@@ -1921,22 +1921,67 @@ export default async (application: Application): Promise<void> => {
                     `}"
                   >
                     $${application.database
-                      .all<{}>(
+                      .all<{
+                        id: number;
+                        publicId: string;
+                        user: number;
+                        courseParticipationRole:
+                          | "courseParticipationRoleInstructor"
+                          | "courseParticipationRoleStudent";
+                      }>(
                         sql`
                           select
-                            "id",
-                            "publicId",
-                            "user",
-                            "courseParticipationRole"
-                          from "courseParticipations"
-                          where "course" = ${request.state.course.id}
-                          order by "id";
+                            "courseParticipations"."id" as "id",
+                            "courseParticipations"."publicId" as "publicId",
+                            "courseParticipations"."user" as "user",
+                            "courseParticipations"."courseParticipationRole" as "courseParticipationRole"
+                          from "courseParticipations"."courseParticipations"
+                          join "users" on "courseParticipations"."user" = "users"."id"
+                          where "courseParticipations"."course" = ${request.state.course.id}
+                          order by
+                            "courseParticipations"."courseParticipationRole" = 'courseParticipationRoleInstructor' desc,
+                            "users"."name" asc;
                         `,
                       )
-                      .map(
-                        (courseParticipation) => html`
+                      .map((courseParticipation) => {
+                        const user = application.database.get<{
+                          publicId: string;
+                          name: string;
+                          avatarColor:
+                            | "red"
+                            | "orange"
+                            | "amber"
+                            | "yellow"
+                            | "lime"
+                            | "green"
+                            | "emerald"
+                            | "teal"
+                            | "cyan"
+                            | "sky"
+                            | "blue"
+                            | "indigo"
+                            | "violet"
+                            | "purple"
+                            | "fuchsia"
+                            | "pink"
+                            | "rose";
+                          avatarImage: string | null;
+                          lastSeenOnlineAt: string;
+                        }>(
+                          sql`
+                            select
+                              "publicId",
+                              "name",
+                              "avatarColor",
+                              "avatarImage",
+                              "lastSeenOnlineAt"
+                            from "users"
+                            where "id" = ${courseParticipation.user};
+                          `,
+                        );
+                        return html`
                           <div
-                            key="courseInvitationEmail ${courseParticipation.publicId}"
+                            key="courseParticipation ${courseParticipation.publicId}"
                             css="${css`
                               display: flex;
                               flex-direction: column;
@@ -2073,8 +2118,8 @@ export default async (application: Application): Promise<void> => {
                               </button>
                             </div>
                           </div>
-                        `,
-                      )}
+                        `;
+                      })}
                   </div>
                 </div>
                 <div
