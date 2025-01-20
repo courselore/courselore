@@ -2782,7 +2782,6 @@ export default async (application: Application): Promise<void> => {
                     sql`
                       insert into "users" (
                         "publicId",
-                        "createdAt",
                         "name",
                         "nameSearch",
                         "email",
@@ -2811,7 +2810,6 @@ export default async (application: Application): Promise<void> => {
                       )
                       values (
                         ${cryptoRandomString({ length: 20, type: "numeric" })},
-                        ${new Date(Date.now() - Math.floor(Math.random() * 24 * 60 * 60 * 1000)).toISOString()},
                         ${userName},
                         ${utilities
                           .tokenize(userName)
@@ -2903,7 +2901,6 @@ export default async (application: Application): Promise<void> => {
                   sql`
                     insert into "courses" (
                       "publicId",
-                      "createdAt",
                       "name",
                       "information",
                       "invitationLinkCourseParticipationRoleInstructorsEnabled",
@@ -2920,7 +2917,6 @@ export default async (application: Application): Promise<void> => {
                     )
                     values (
                       ${cryptoRandomString({ length: 10, type: "numeric" })},
-                      ${new Date(Date.now() - Math.floor(Math.random() * 365 * 24 * 60 * 60 * 1000)).toISOString()},
                       ${courseData.name},
                       ${courseData.information},
                       ${Number(Math.random() < 0.2)},
@@ -3002,7 +2998,6 @@ export default async (application: Application): Promise<void> => {
                           "publicId",
                           "user",
                           "course",
-                          "createdAt",
                           "courseParticipationRole",
                           "decorationColor",
                           "mostRecentlyVisitedCourseConversation"
@@ -3011,7 +3006,6 @@ export default async (application: Application): Promise<void> => {
                           ${cryptoRandomString({ length: 20, type: "numeric" })},
                           ${user.id},
                           ${course.id},
-                          ${new Date(Date.now() - Math.floor(Math.random() * 100 * 24 * 60 * 60 * 1000)).toISOString()},
                           ${userIndex === 0 ? courseData.courseParticipationRole : Math.random() < 0.15 ? "courseParticipationRoleInstructor" : "courseParticipationRoleStudent"},
                           ${
                             [
