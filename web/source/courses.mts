@@ -1735,6 +1735,7 @@ export default async (application: Application): Promise<void> => {
                                           css="${css`
                                             font-family: "Roboto Mono Variable",
                                               var(--font-family--monospace);
+                                            font-weight: 500;
                                           `}"
                                         >
                                           ${courseInvitationEmail.email}
@@ -2015,8 +2016,12 @@ export default async (application: Application): Promise<void> => {
                                 value="${courseParticipation.publicId}"
                               />
                               <div>
-                                ${user.name}
                                 <span
+                                  css="${css`
+                                    font-weight: 500;
+                                  `}"
+                                  >${user.name}</span
+                                >  <span
                                   css="${css`
                                     font-family: "Roboto Mono Variable",
                                       var(--font-family--monospace);
