@@ -689,7 +689,7 @@ export default async (application: Application): Promise<void> => {
                         >
                           <i class="bi bi-chevron-right"></i>
                         </span>
-                        TODO
+                        Conversation tags
                       </summary>
                       <div
                         type="form"
@@ -697,6 +697,7 @@ export default async (application: Application): Promise<void> => {
                         action="/courses/${request.state.course
                           .publicId}/settings/tags"
                         css="${css`
+                          margin: var(--space--2) var(--space--0);
                           display: flex;
                           flex-direction: column;
                           gap: var(--space--4);
@@ -709,42 +710,21 @@ export default async (application: Application): Promise<void> => {
                           };
                         `}"
                       >
-                        <div
-                          css="${css`
-                            display: flex;
-                            flex-direction: column;
-                            gap: var(--space--1);
-                          `}"
+                        <label
+                          class="button button--rectangle button--transparent"
                         >
-                          <div
-                            css="${css`
-                              font-size: var(--font-size--3);
-                              line-height: var(--font-size--3--line-height);
-                              font-weight: 600;
-                              color: light-dark(
-                                var(--color--slate--500),
-                                var(--color--slate--500)
-                              );
-                            `}"
-                          >
-                            Conversation tags
-                          </div>
-                          <label
-                            class="button button--rectangle button--transparent"
-                          >
-                            <input
-                              type="checkbox"
-                              name="courseConversationRequiresTagging"
-                              $${Boolean(
-                                request.state.course
-                                  .courseConversationRequiresTagging,
-                              )
-                                ? html`checked`
-                                : html``}
-                              class="input--checkbox"
-                            />  Tags are required when creating a conversation
-                          </label>
-                        </div>
+                          <input
+                            type="checkbox"
+                            name="courseConversationRequiresTagging"
+                            $${Boolean(
+                              request.state.course
+                                .courseConversationRequiresTagging,
+                            )
+                              ? html`checked`
+                              : html``}
+                            class="input--checkbox"
+                          />  Tags are required when creating a conversation
+                        </label>
                         $${(() => {
                           const courseConversationsTagPartial = (
                             courseConversationsTag?: (typeof request.state.courseConversationsTags)[number],
@@ -1041,8 +1021,37 @@ export default async (application: Application): Promise<void> => {
                             Update conversation tags
                           </button>
                         </div>
+                        <hr class="separator" />
                       </div>
-                      <hr class="separator" />
+                    </details>
+                    <details>
+                      <summary
+                        class="button button--rectangle button--transparent"
+                        css="${css`
+                          font-weight: 500;
+                        `}"
+                      >
+                        <span
+                          css="${css`
+                            display: inline-block;
+                            transition-property: var(
+                              --transition-property--transform
+                            );
+                            transition-duration: var(
+                              --transition-duration--150
+                            );
+                            transition-timing-function: var(
+                              --transition-timing-function--ease-in-out
+                            );
+                            details[open] & {
+                              transform: rotate(var(--transform--rotate--90));
+                            }
+                          `}"
+                        >
+                          <i class="bi bi-chevron-right"></i>
+                        </span>
+                        TODO
+                      </summary>
                       <div
                         type="form"
                         method="PATCH"
