@@ -642,9 +642,10 @@ export default async (application: Application): Promise<void> => {
                         gap: var(--space--4);
                       `}"
                       javascript="${javascript`
+                        this.morph = false;
                         this.onsubmit = () => {
+                          delete this.morph;
                           delete this.isModified;
-                          for (const element of javascript.children(this)) delete element.morph;
                         };
                       `}"
                     >
@@ -956,7 +957,7 @@ export default async (application: Application): Promise<void> => {
                                         "beforeend",
                                         javascript.stringToElement(${courseConversationsTagPartial()})
                                       )
-                                  ).morph = false;
+                                  );
                                 };
                               `}"
                             >
