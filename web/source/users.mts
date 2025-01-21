@@ -446,12 +446,28 @@ export default async (application: Application): Promise<void> => {
                             hidden
                             javascript="${javascript`
                               this.isModified = false;
-                              this.onchange = () => {
-                                javascript.popover({
-                                  element: this.closest("label"),
-                                  target: html\`<div type="popover" class="popover--error">Example of error</div>\`,
-                                  trigger: "showOnce",
-                                });
+                              this.onchange = async () => {
+                                try {
+                                  const body = new FormData();
+                                  body.add("avatarImage", this);
+                                  const response = await fetch("/settings/avatar", { method: "PUT", body });
+                                  if (!response.ok) throw new Error();
+                                  const avatarImage = response.text();
+                                  this.closest('[type~="form"]').querySelector('[name="avatarImage"]').value = avatarImage;
+                                  this.closest('[type~="form"]').querySelector('[key~="userAvatar--withoutAvatarImage"]').hidden = true;
+                                  this.closest('[type~="form"]').querySelector('[key~="userAvatar--withAvatarImage"]').hidden = false;
+                                  this.closest('[type~="form"]').querySelector('[key~="userAvatar--withAvatarImage"] img').setAttribute("href", avatarImage);
+                                  this.closest('[type~="form"]').querySelector('[key~="userAvatar--userAvatar--add"]').hidden = true;
+                                  this.closest('[type~="form"]').querySelector('[key~="userAvatar--userAvatar--change"]').hidden = false;
+                                  this.closest('[type~="form"]').querySelector('[key~="userAvatar--userAvatar--remove"]').hidden = false;
+                                }
+                                catch {
+                                  javascript.popover({
+                                    element: this.closest("label"),
+                                    target: html\`<div type="popover" class="popover--error">Failed to upload avatar</div>\`,
+                                    trigger: "showOnce",
+                                  });
+                                }
                               };
                             `}"
                           />
