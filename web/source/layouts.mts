@@ -709,6 +709,12 @@ export default async (application: Application): Promise<void> => {
                     </div>
                   </div>
                   <hr class="separator" />
+                  <a
+                    href="/settings"
+                    class="button button--rectangle button--transparent button--dropdown-menu"
+                  >
+                    User settings
+                  </a>
                   $${request.state.user.userRole ===
                   "userRoleSystemAdministrator"
                     ? html`
@@ -720,12 +726,6 @@ export default async (application: Application): Promise<void> => {
                         </a>
                       `
                     : html``}
-                  <a
-                    href="/settings"
-                    class="button button--rectangle button--transparent button--dropdown-menu"
-                  >
-                    User settings
-                  </a>
                   <div type="form" method="DELETE" action="/session">
                     <button
                       type="submit"
