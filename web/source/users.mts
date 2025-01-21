@@ -379,6 +379,65 @@ export default async (application: Application): Promise<void> => {
                         );
                       `}"
                     >
+                      Avatar
+                    </div>
+                    <div
+                      css="${css`
+                        display: flex;
+                        flex-direction: column;
+                        gap: var(--space--1);
+                      `}"
+                    >
+                      <div>
+                        $${application.partials.userAvatar({
+                          user: request.state.user,
+                          onlineIndicator: false,
+                          size: 9,
+                        })}
+                      </div>
+                      <div
+                        css="${css`
+                          font-size: var(--font-size--3);
+                          line-height: var(--font-size--3--line-height);
+                          font-weight: 600;
+                          color: light-dark(
+                            var(--color--slate--600),
+                            var(--color--slate--400)
+                          );
+                          display: flex;
+                          align-items: baseline;
+                          flex-wrap: wrap;
+                          column-gap: var(--space--4);
+                          row-gap: var(--space--2);
+                        `}"
+                      >
+                        <button
+                          type="button"
+                          class="button button--rectangle button--transparent"
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    css="${css`
+                      display: flex;
+                      flex-direction: column;
+                      gap: var(--space--1);
+                    `}"
+                  >
+                    <div
+                      css="${css`
+                        font-size: var(--font-size--3);
+                        line-height: var(--font-size--3--line-height);
+                        font-weight: 600;
+                        color: light-dark(
+                          var(--color--slate--500),
+                          var(--color--slate--500)
+                        );
+                      `}"
+                    >
                       Dark mode
                     </div>
                     <div
@@ -494,6 +553,7 @@ export default async (application: Application): Promise<void> => {
     <div
       key="user--avatar/${typeof user === "object" ? user.publicId : user}"
       css="${css`
+        user-select: none;
         display: grid;
         & > * {
           grid-area: 1 / 1;
@@ -673,7 +733,7 @@ export default async (application: Application): Promise<void> => {
                       })()}
             </div>
           `}
-      $${typeof user === "object"
+      $${onlineIndicator && typeof user === "object"
         ? html`
             <div
               css="${css`
