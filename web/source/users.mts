@@ -393,6 +393,15 @@ export default async (application: Application): Promise<void> => {
                         name="avatarImage"
                         value="${request.state.user.avatarImage ?? ""}"
                       />
+                      <input
+                        key="userAvatar--file"
+                        type="file"
+                        accept="image/png, image/jpeg"
+                        hidden
+                        javascript="${javascript`
+                          this.isModified = false;
+                        `}"
+                      />
                       <div key="userAvatar">
                         $${application.partials.userAvatar({
                           user: request.state.user,
