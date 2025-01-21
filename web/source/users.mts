@@ -411,13 +411,14 @@ export default async (application: Application): Promise<void> => {
                           ? html`hidden`
                           : html``}
                       >
-                        $${typeof request.state.user.avatarImage === "string"
-                          ? application.partials.userAvatar({
-                              user: request.state.user,
-                              onlineIndicator: false,
-                              size: 9,
-                            })
-                          : html``}
+                        $${application.partials.userAvatar({
+                          user: {
+                            ...request.state.user,
+                            avatarImage: request.state.user.avatarImage ?? "",
+                          },
+                          onlineIndicator: false,
+                          size: 9,
+                        })}
                       </div>
                       <div
                         css="${css`
