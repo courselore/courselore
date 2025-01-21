@@ -388,17 +388,36 @@ export default async (application: Application): Promise<void> => {
                         gap: var(--space--1-5);
                       `}"
                     >
-                      <div key="userAvatar">
-                        <input
-                          type="hidden"
-                          name="avatarImage"
-                          value="${request.state.user.avatarImage ?? ""}"
-                        />
+                      <input
+                        type="hidden"
+                        name="avatarImage"
+                        value="${request.state.user.avatarImage ?? ""}"
+                      />
+                      <div
+                        key="userAvatar--withoutAvatarImage"
+                        $${typeof request.state.user.avatarImage === "string"
+                          ? html`hidden`
+                          : html``}
+                      >
                         $${application.partials.userAvatar({
-                          user: request.state.user,
+                          user: { ...request.state.user, avatarImage: null },
                           onlineIndicator: false,
                           size: 9,
                         })}
+                      </div>
+                      <div
+                        key="userAvatar--withAvatarImage"
+                        $${request.state.user.avatarImage === null
+                          ? html`hidden`
+                          : html``}
+                      >
+                        $${typeof request.state.user.avatarImage === "string"
+                          ? application.partials.userAvatar({
+                              user: request.state.user,
+                              onlineIndicator: false,
+                              size: 9,
+                            })
+                          : html``}
                       </div>
                       <div
                         css="${css`
