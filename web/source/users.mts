@@ -385,10 +385,15 @@ export default async (application: Application): Promise<void> => {
                       css="${css`
                         display: flex;
                         flex-direction: column;
-                        gap: var(--space--1);
+                        gap: var(--space--1-5);
                       `}"
                     >
-                      <div>
+                      <input
+                        type="hidden"
+                        name="avatarImage"
+                        value="${request.state.user.avatarImage ?? ""}"
+                      />
+                      <div key="userAvatar">
                         $${application.partials.userAvatar({
                           user: request.state.user,
                           onlineIndicator: false,
@@ -412,7 +417,31 @@ export default async (application: Application): Promise<void> => {
                         `}"
                       >
                         <button
+                          key="userAvatar--add"
                           type="button"
+                          $${typeof request.state.user.avatarImage === "string"
+                            ? html`hidden`
+                            : html``}
+                          class="button button--rectangle button--transparent"
+                        >
+                          Add
+                        </button>
+                        <button
+                          key="userAvatar--change"
+                          type="button"
+                          $${request.state.user.avatarImage === null
+                            ? html`hidden`
+                            : html``}
+                          class="button button--rectangle button--transparent"
+                        >
+                          Change
+                        </button>
+                        <button
+                          key="userAvatar--remove"
+                          type="button"
+                          $${request.state.user.avatarImage === null
+                            ? html`hidden`
+                            : html``}
                           class="button button--rectangle button--transparent"
                         >
                           Remove
