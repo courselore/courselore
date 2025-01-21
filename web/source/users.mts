@@ -328,6 +328,11 @@ export default async (application: Application): Promise<void> => {
                     flex-direction: column;
                     gap: var(--space--4);
                   `}"
+                  javascript="${javascript`
+                    this.onsubmit = () => {
+                      delete this.querySelector('[name="avatarImage"]').isModified;
+                    };
+                  `}"
                 >
                   <label>
                     <div
@@ -449,24 +454,26 @@ export default async (application: Application): Promise<void> => {
                               this.onchange = async () => {
                                 try {
                                   const body = new FormData();
-                                  body.add("avatarImage", this);
-                                  const response = await fetch("/settings/avatar", { method: "PUT", body });
+                                  body.set("avatarImage", this.files[0]);
+                                  const response = await fetch("/settings/avatar", { method: "PUT", headers: { "CSRF-Protection": "true" }, body });
                                   if (!response.ok) throw new Error();
-                                  const avatarImage = response.text();
+                                  const avatarImage = await response.text();
                                   this.closest('[type~="form"]').querySelector('[name="avatarImage"]').value = avatarImage;
+                                  this.closest('[type~="form"]').querySelector('[name="avatarImage"]').isModified = true;
                                   this.closest('[type~="form"]').querySelector('[key~="userAvatar--withoutAvatarImage"]').hidden = true;
                                   this.closest('[type~="form"]').querySelector('[key~="userAvatar--withAvatarImage"]').hidden = false;
-                                  this.closest('[type~="form"]').querySelector('[key~="userAvatar--withAvatarImage"] img').setAttribute("href", avatarImage);
-                                  this.closest('[type~="form"]').querySelector('[key~="userAvatar--userAvatar--add"]').hidden = true;
-                                  this.closest('[type~="form"]').querySelector('[key~="userAvatar--userAvatar--change"]').hidden = false;
-                                  this.closest('[type~="form"]').querySelector('[key~="userAvatar--userAvatar--remove"]').hidden = false;
+                                  this.closest('[type~="form"]').querySelector('[key~="userAvatar--withAvatarImage"] img').setAttribute("src", avatarImage);
+                                  this.closest('[type~="form"]').querySelector('[key~="userAvatar--add"]').hidden = true;
+                                  this.closest('[type~="form"]').querySelector('[key~="userAvatar--change"]').hidden = false;
+                                  this.closest('[type~="form"]').querySelector('[key~="userAvatar--remove"]').hidden = false;
                                 }
-                                catch {
+                                catch (error) {
                                   javascript.popover({
                                     element: this.closest("label"),
                                     target: html\`<div type="popover" class="popover--error">Failed to upload avatar</div>\`,
                                     trigger: "showOnce",
                                   });
+                                  throw error;
                                 }
                               };
                             `}"
@@ -496,6 +503,17 @@ export default async (application: Application): Promise<void> => {
                             ? html`hidden`
                             : html``}
                           class="button button--rectangle button--transparent"
+                          javascript="${javascript`
+                            this.onclick = async () => {
+                              this.closest('[type~="form"]').querySelector('[name="avatarImage"]').value = "";
+                              this.closest('[type~="form"]').querySelector('[name="avatarImage"]').isModified = true;
+                              this.closest('[type~="form"]').querySelector('[key~="userAvatar--withoutAvatarImage"]').hidden = false;
+                              this.closest('[type~="form"]').querySelector('[key~="userAvatar--withAvatarImage"]').hidden = true;
+                              this.closest('[type~="form"]').querySelector('[key~="userAvatar--add"]').hidden = false;
+                              this.closest('[type~="form"]').querySelector('[key~="userAvatar--change"]').hidden = true;
+                              this.closest('[type~="form"]').querySelector('[key~="userAvatar--remove"]').hidden = true;
+                            };
+                          `}"
                         >
                           Remove
                         </button>
@@ -624,6 +642,27 @@ export default async (application: Application): Promise<void> => {
             `,
           );
       response.redirect();
+    },
+  });
+
+  // TODO
+  application.server?.push({
+    method: "PUT",
+    pathname: "/settings/avatar",
+    handler: (
+      request: serverTypes.Request<
+        {},
+        {},
+        {},
+        {},
+        Application["types"]["states"]["User"]
+      >,
+      response,
+    ) => {
+      if (request.state.user === undefined) return;
+      response.end(
+        "/node_modules/@radically-straightforward/examples/avatars/webp/207.webp",
+      );
     },
   });
 
