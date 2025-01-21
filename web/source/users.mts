@@ -388,15 +388,6 @@ export default async (application: Application): Promise<void> => {
                         gap: var(--space--1-5);
                       `}"
                     >
-                      <input
-                        key="userAvatar--file"
-                        type="file"
-                        accept="image/png, image/jpeg"
-                        hidden
-                        javascript="${javascript`
-                          this.isModified = false;
-                        `}"
-                      />
                       <div key="userAvatar">
                         <input
                           type="hidden"
@@ -425,26 +416,36 @@ export default async (application: Application): Promise<void> => {
                           row-gap: var(--space--2);
                         `}"
                       >
-                        <button
-                          key="userAvatar--add"
-                          type="button"
-                          $${typeof request.state.user.avatarImage === "string"
-                            ? html`hidden`
-                            : html``}
+                        <label
                           class="button button--rectangle button--transparent"
                         >
-                          Add
-                        </button>
-                        <button
-                          key="userAvatar--change"
-                          type="button"
-                          $${request.state.user.avatarImage === null
-                            ? html`hidden`
-                            : html``}
-                          class="button button--rectangle button--transparent"
-                        >
-                          Change
-                        </button>
+                          <input
+                            key="userAvatar--file"
+                            type="file"
+                            accept="image/png, image/jpeg"
+                            hidden
+                            javascript="${javascript`
+                              this.isModified = false;
+                            `}"
+                          />
+                          <span
+                            key="userAvatar--add"
+                            $${typeof request.state.user.avatarImage ===
+                            "string"
+                              ? html`hidden`
+                              : html``}
+                          >
+                            Add
+                          </span>
+                          <span
+                            key="userAvatar--change"
+                            $${request.state.user.avatarImage === null
+                              ? html`hidden`
+                              : html``}
+                          >
+                            Change
+                          </span>
+                        </label>
                         <button
                           key="userAvatar--remove"
                           type="button"
