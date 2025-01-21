@@ -446,6 +446,13 @@ export default async (application: Application): Promise<void> => {
                             hidden
                             javascript="${javascript`
                               this.isModified = false;
+                              this.onchange = () => {
+                                javascript.popover({
+                                  element: this.closest("label"),
+                                  target: html\`<div type="popover" class="popover--error">Example of error</div>\`,
+                                  trigger: "showOnce",
+                                });
+                              };
                             `}"
                           />
                           <span
