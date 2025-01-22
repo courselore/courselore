@@ -470,12 +470,12 @@ export default async (application: Application): Promise<void> => {
                                   this.closest('[type~="form"]').querySelector('[key~="userAvatar--remove"]').hidden = false;
                                 }
                                 catch (error) {
+                                  utilities.log(error);
                                   javascript.popover({
                                     element: this.closest("label"),
                                     target: html\`<div type="popover" class="popover--error">Failed to upload avatar</div>\`,
                                     trigger: "showOnce",
                                   });
-                                  throw error;
                                 }
                               };
                             `}"
