@@ -648,7 +648,24 @@ export default async (application: Application): Promise<void> => {
                       })}
                   </div>
                 `
-              : html``}
+              : request.state.user !== undefined &&
+                  application.database.get(
+                    sql`
+                      select true
+                      from "courseParticipations"
+                      where "user" = ${request.state.user.id}
+                      limit 1;
+                    `,
+                  )
+                ? html`
+                    <a
+                      href="/"
+                      class="button button--rectangle button--transparent"
+                    >
+                      <i class="bi bi-arrow-left"></i> Return to courses
+                    </a>
+                  `
+                : html``}
           </div>
           $${request.state.user !== undefined
             ? html`
