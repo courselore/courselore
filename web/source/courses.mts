@@ -758,7 +758,7 @@ export default async (application: Application): Promise<void> => {
                                       };
                                     `}"
                                   >
-                                    <i class="bi bi-arrow-up"></i>
+                                    <i class="bi bi-caret-up-fill"></i>
                                   </button>
                                 </div>
                                 <div>
@@ -776,7 +776,7 @@ export default async (application: Application): Promise<void> => {
                                       };
                                     `}"
                                   >
-                                    <i class="bi bi-arrow-down"></i>
+                                    <i class="bi bi-caret-down-fill"></i>
                                   </button>
                                 </div>
                               </div>
