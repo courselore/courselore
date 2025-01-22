@@ -367,6 +367,38 @@ export default async (application: Application): Promise<void> => {
                       />
                     </div>
                   </label>
+                  <label>
+                    <div
+                      css="${css`
+                        font-size: var(--font-size--3);
+                        line-height: var(--font-size--3--line-height);
+                        font-weight: 600;
+                        color: light-dark(
+                          var(--color--slate--500),
+                          var(--color--slate--500)
+                        );
+                      `}"
+                    >
+                      Email
+                    </div>
+                    <div
+                      css="${css`
+                        display: flex;
+                      `}"
+                    >
+                      <input
+                        type="email"
+                        name="email"
+                        value="${request.state.user.email}"
+                        required
+                        maxlength="2000"
+                        class="input--text"
+                        css="${css`
+                          flex: 1;
+                        `}"
+                      />
+                    </div>
+                  </label>
                   <div
                     css="${css`
                       display: flex;
