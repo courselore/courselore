@@ -331,6 +331,7 @@ export default async (application: Application): Promise<void> => {
                   javascript="${javascript`
                     this.onsubmit = () => {
                       delete this.querySelector('[name="avatarImage"]').isModified;
+                      delete this.closest('[type~="form"]').querySelector('[key~="userAvatar--withAvatarImage"]').morph;
                     };
                   `}"
                 >
@@ -462,6 +463,7 @@ export default async (application: Application): Promise<void> => {
                                   this.closest('[type~="form"]').querySelector('[name="avatarImage"]').isModified = true;
                                   this.closest('[type~="form"]').querySelector('[key~="userAvatar--withoutAvatarImage"]').hidden = true;
                                   this.closest('[type~="form"]').querySelector('[key~="userAvatar--withAvatarImage"]').hidden = false;
+                                  this.closest('[type~="form"]').querySelector('[key~="userAvatar--withAvatarImage"]').morph = false;
                                   this.closest('[type~="form"]').querySelector('[key~="userAvatar--withAvatarImage"] img').setAttribute("src", avatarImage);
                                   this.closest('[type~="form"]').querySelector('[key~="userAvatar--add"]').hidden = true;
                                   this.closest('[type~="form"]').querySelector('[key~="userAvatar--change"]').hidden = false;
@@ -509,6 +511,7 @@ export default async (application: Application): Promise<void> => {
                               this.closest('[type~="form"]').querySelector('[name="avatarImage"]').isModified = true;
                               this.closest('[type~="form"]').querySelector('[key~="userAvatar--withoutAvatarImage"]').hidden = false;
                               this.closest('[type~="form"]').querySelector('[key~="userAvatar--withAvatarImage"]').hidden = true;
+                              delete this.closest('[type~="form"]').querySelector('[key~="userAvatar--withAvatarImage"]').morph;
                               this.closest('[type~="form"]').querySelector('[key~="userAvatar--add"]').hidden = false;
                               this.closest('[type~="form"]').querySelector('[key~="userAvatar--change"]').hidden = true;
                               this.closest('[type~="form"]').querySelector('[key~="userAvatar--remove"]').hidden = true;
