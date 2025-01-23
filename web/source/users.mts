@@ -717,7 +717,7 @@ export default async (application: Application): Promise<void> => {
                         javascript="${javascript`
                           this.onchange = () => {
                             if (!this.checked)
-                              this.closest('[type~="form"]').querySelectorAll('[name="emailNotificationsForAllMessages"]').checked = false;
+                              this.closest('[type~="form"]').querySelector('[name="emailNotificationsForAllMessages"]').checked = false;
                           };
                         `}"
                       />  Email notifications for messages including
@@ -742,9 +742,9 @@ export default async (application: Application): Promise<void> => {
                         javascript="${javascript`
                           this.onchange = () => {
                             if (!this.checked)
-                              this.closest('[type~="form"]').querySelectorAll('[name="emailNotificationsForAllMessages"]').checked = false;
+                              this.closest('[type~="form"]').querySelector('[name="emailNotificationsForAllMessages"]').checked = false;
                             else
-                              this.closest('[type~="form"]').querySelectorAll('[name="emailNotificationsForMessagesInConversationsYouStarted"]').checked = true;
+                              this.closest('[type~="form"]').querySelector('[name="emailNotificationsForMessagesInConversationsYouStarted"]').checked = true;
                           };
                         `}"
                       />  Email notifications for messages in conversations in
@@ -764,8 +764,8 @@ export default async (application: Application): Promise<void> => {
                         javascript="${javascript`
                           this.onchange = () => {
                             if (!this.checked) {
-                              this.closest('[type~="form"]').querySelectorAll('[name="emailNotificationsForAllMessages"]').checked = false;
-                              this.closest('[type~="form"]').querySelectorAll('[name="emailNotificationsForMessagesInConversationsInWhichYouParticipated"]').checked = false;
+                              this.closest('[type~="form"]').querySelector('[name="emailNotificationsForAllMessages"]').checked = false;
+                              this.closest('[type~="form"]').querySelector('[name="emailNotificationsForMessagesInConversationsInWhichYouParticipated"]').checked = false;
                             }
                           };
                         `}"
