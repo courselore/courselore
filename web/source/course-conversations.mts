@@ -80,10 +80,10 @@ export default async (application: Application): Promise<void> => {
                   var(--color--white),
                   var(--color--black)
                 );
-                max-width: var(--space--112);
+                max-width: var(--size--112);
                 position: fixed;
-                inset: var(--space--0) var(--space--14) var(--space--0)
-                  var(--space--0);
+                inset: var(--size--0) var(--size--14) var(--size--0)
+                  var(--size--0);
                 z-index: 100;
                 transition-property: var(--transition-property--transform);
                 transition-duration: var(--transition-duration--200);
@@ -108,7 +108,7 @@ export default async (application: Application): Promise<void> => {
               css="${css`
                 border-bottom: var(--border-width--1) solid
                   light-dark(var(--color--slate--200), var(--color--slate--800));
-                padding: var(--space--2) var(--space--4);
+                padding: var(--size--2) var(--size--4);
                 display: flex;
                 @media (min-width: 900px) {
                   display: none;
@@ -120,7 +120,7 @@ export default async (application: Application): Promise<void> => {
                 class="button button--square button--icon button--transparent"
                 css="${css`
                   font-size: var(--font-size--4);
-                  line-height: var(--space--0);
+                  line-height: var(--size--0);
                 `}"
                 javascript="${javascript`
                   this.onclick = () => {
@@ -136,9 +136,9 @@ export default async (application: Application): Promise<void> => {
               css="${css`
                 border-bottom: var(--border-width--1) solid
                   light-dark(var(--color--slate--200), var(--color--slate--800));
-                padding: var(--space--2) var(--space--4);
+                padding: var(--size--2) var(--size--4);
                 display: flex;
-                gap: var(--space--2);
+                gap: var(--size--2);
               `}"
             >
               $${request.state.course.courseState === "courseStateActive"
@@ -176,8 +176,8 @@ export default async (application: Application): Promise<void> => {
                 class="input--text"
                 css="${css`
                   flex: 1;
-                  min-width: var(--space--0);
-                  padding: var(--space--0);
+                  min-width: var(--size--0);
+                  padding: var(--size--0);
                   display: flex;
                 `}"
               >
@@ -187,9 +187,9 @@ export default async (application: Application): Promise<void> => {
                   maxlength="3000"
                   css="${css`
                     flex: 1;
-                    min-width: var(--space--0);
-                    padding: var(--space--1) var(--space--0) var(--space--1)
-                      var(--space--2);
+                    min-width: var(--size--0);
+                    padding: var(--size--1) var(--size--0) var(--size--1)
+                      var(--size--2);
                   `}"
                 />
                 <button
@@ -197,7 +197,7 @@ export default async (application: Application): Promise<void> => {
                   type="button"
                   class="button button--icon button--transparent"
                   css="${css`
-                    padding: var(--space--1) var(--space--2);
+                    padding: var(--size--1) var(--size--2);
                   `}"
                   javascript="${javascript`
                     javascript.popover({ element: this });
@@ -216,7 +216,7 @@ export default async (application: Application): Promise<void> => {
                         type="button"
                         class="button button--icon button--transparent"
                         css="${css`
-                          padding: var(--space--1) var(--space--2);
+                          padding: var(--size--1) var(--size--2);
                         `}"
                         javascript="${javascript`
                           javascript.popover({ element: this });
@@ -231,7 +231,7 @@ export default async (application: Application): Promise<void> => {
                         css="${css`
                           display: flex;
                           flex-direction: column;
-                          gap: var(--space--2);
+                          gap: var(--size--2);
                         `}"
                       >
                         <div
@@ -429,14 +429,14 @@ export default async (application: Application): Promise<void> => {
                         href="/courses/${request.state.course!
                           .publicId}/conversations/${courseConversation.publicId}"
                         css="${css`
-                          padding: var(--space--2) var(--space--4);
+                          padding: var(--size--2) var(--size--4);
                           border-bottom: var(--border-width--1) solid
                             light-dark(
                               var(--color--slate--200),
                               var(--color--slate--800)
                             );
                           display: flex;
-                          gap: var(--space--2);
+                          gap: var(--size--2);
                           cursor: pointer;
                           transition-property: var(
                             --transition-property--colors
@@ -530,13 +530,13 @@ export default async (application: Application): Promise<void> => {
                                   <div
                                     key="courseConversation--sidebar--courseConversationMessageViews"
                                     css="${css`
-                                      font-size: var(--space--1-5);
+                                      font-size: var(--size--1-5);
                                       color: light-dark(
                                         var(--color--blue--500),
                                         var(--color--blue--500)
                                       );
                                       position: absolute;
-                                      margin-left: var(--space---2-5);
+                                      margin-left: var(--size---2-5);
                                     `}"
                                   >
                                     <i class="bi bi-circle-fill"></i>
@@ -558,7 +558,7 @@ export default async (application: Application): Promise<void> => {
                           key="courseConversation--main"
                           css="${css`
                             flex: 1;
-                            min-width: var(--space--0);
+                            min-width: var(--size--0);
                           `}"
                         >
                           <div
@@ -566,7 +566,7 @@ export default async (application: Application): Promise<void> => {
                             css="${css`
                               display: flex;
                               align-items: baseline;
-                              gap: var(--space--2);
+                              gap: var(--size--2);
                             `}"
                           >
                             <div
@@ -818,7 +818,7 @@ export default async (application: Application): Promise<void> => {
                                 var(--color--slate--100),
                                 var(--color--slate--900)
                               );
-                              padding: var(--space--1-5) var(--space--4);
+                              padding: var(--size--1-5) var(--size--4);
                               border-bottom: var(--border-width--1) solid
                                 light-dark(
                                   var(--color--slate--200),
@@ -878,13 +878,13 @@ export default async (application: Application): Promise<void> => {
                             <div
                               key="courseConversations--groups--group--view"
                               css="\${${css`
-                                font-size: var(--space--1-5);
+                                font-size: var(--size--1-5);
                                 color: light-dark(
                                   var(--color--blue--500),
                                   var(--color--blue--500)
                                 );
                                 position: absolute;
-                                margin-left: var(--space---2-5);
+                                margin-left: var(--size---2-5);
                                 transition-property: var(
                                   --transition-property--opacity
                                 );
@@ -967,7 +967,7 @@ export default async (application: Application): Promise<void> => {
                 var(--color--white)
               );
               position: fixed;
-              inset: var(--space--0);
+              inset: var(--size--0);
               z-index: 99;
               visibility: hidden;
               opacity: var(--opacity--0);
@@ -1064,10 +1064,10 @@ export default async (application: Application): Promise<void> => {
           >
             <div
               css="${css`
-                max-width: var(--space--168);
-                padding: var(--space--2) var(--space--4);
+                max-width: var(--size--168);
+                padding: var(--size--2) var(--size--4);
                 @media (max-width: 899px) {
-                  margin: var(--space--0) auto;
+                  margin: var(--size--0) auto;
                 }
               `}"
             >
@@ -1262,7 +1262,7 @@ export default async (application: Application): Promise<void> => {
               css="${css`
                 display: flex;
                 flex-direction: column;
-                gap: var(--space--4);
+                gap: var(--size--4);
               `}"
             >
               <div
@@ -1323,8 +1323,8 @@ export default async (application: Application): Promise<void> => {
                   display: flex;
                   align-items: baseline;
                   flex-wrap: wrap;
-                  column-gap: var(--space--4);
-                  row-gap: var(--space--2);
+                  column-gap: var(--size--4);
+                  row-gap: var(--size--2);
                 `}"
               >
                 <button
@@ -1393,7 +1393,7 @@ export default async (application: Application): Promise<void> => {
                   css="${css`
                     display: flex;
                     flex-direction: column;
-                    gap: var(--space--2);
+                    gap: var(--size--2);
                   `}"
                 >
                   <button
@@ -1496,7 +1496,7 @@ export default async (application: Application): Promise<void> => {
                   css="${css`
                     display: flex;
                     flex-direction: column;
-                    gap: var(--space--2);
+                    gap: var(--size--2);
                   `}"
                 >
                   <button
@@ -1589,7 +1589,7 @@ export default async (application: Application): Promise<void> => {
                         css="${css`
                           display: flex;
                           flex-direction: column;
-                          gap: var(--space--2);
+                          gap: var(--size--2);
                         `}"
                       >
                         <button
@@ -1631,7 +1631,7 @@ export default async (application: Application): Promise<void> => {
                         );
                         display: flex;
                         align-items: baseline;
-                        gap: var(--space--1-5);
+                        gap: var(--size--1-5);
                       `}"
                     >
                       <div
@@ -1649,8 +1649,8 @@ export default async (application: Application): Promise<void> => {
                           flex: 1;
                           display: flex;
                           flex-wrap: wrap;
-                          column-gap: var(--space--4);
-                          row-gap: var(--space--2);
+                          column-gap: var(--size--4);
+                          row-gap: var(--size--2);
                         `}"
                       >
                         $${request.state.courseConversationsTags.map(
@@ -1700,7 +1700,7 @@ export default async (application: Application): Promise<void> => {
                   );
                   display: flex;
                   align-items: baseline;
-                  gap: var(--space--4);
+                  gap: var(--size--4);
                 `}"
               >
                 <div>
@@ -1726,8 +1726,8 @@ export default async (application: Application): Promise<void> => {
                           display: flex;
                           align-items: baseline;
                           flex-wrap: wrap;
-                          column-gap: var(--space--4);
-                          row-gap: var(--space--2);
+                          column-gap: var(--size--4);
+                          row-gap: var(--size--2);
                         `}"
                       >
                         <button
@@ -1816,7 +1816,7 @@ export default async (application: Application): Promise<void> => {
                           css="${css`
                             display: flex;
                             flex-direction: column;
-                            gap: var(--space--2);
+                            gap: var(--size--2);
                           `}"
                         >
                           <button
@@ -1988,7 +1988,7 @@ export default async (application: Application): Promise<void> => {
               css="${css`
                 display: flex;
                 flex-direction: column;
-                gap: var(--space--6);
+                gap: var(--size--6);
               `}"
             >
               <div
@@ -2001,7 +2001,7 @@ export default async (application: Application): Promise<void> => {
                 css="${css`
                   display: flex;
                   flex-direction: column;
-                  gap: var(--space--2);
+                  gap: var(--size--2);
                 `}"
                 javascript="${javascript`
                   this.oninput = () => {
@@ -2057,7 +2057,7 @@ export default async (application: Application): Promise<void> => {
                     <div
                       css="${css`
                         display: flex;
-                        gap: var(--space--4);
+                        gap: var(--size--4);
                         align-items: baseline;
                       `}"
                     >
@@ -2084,7 +2084,7 @@ export default async (application: Application): Promise<void> => {
                                 hidden
                                 css="${css`
                                   display: flex;
-                                  gap: var(--space--4);
+                                  gap: var(--size--4);
                                   align-items: baseline;
                                 `}"
                               >
@@ -2158,7 +2158,7 @@ export default async (application: Application): Promise<void> => {
                           css="${css`
                             display: flex;
                             flex-direction: column;
-                            gap: var(--space--2);
+                            gap: var(--size--2);
                           `}"
                         >
                           <button
@@ -2232,7 +2232,7 @@ export default async (application: Application): Promise<void> => {
                                     css="${css`
                                       display: flex;
                                       flex-direction: column;
-                                      gap: var(--space--2);
+                                      gap: var(--size--2);
                                     `}"
                                   >
                                     $${courses.map(
@@ -2307,7 +2307,7 @@ export default async (application: Application): Promise<void> => {
                                   css="${css`
                                     display: flex;
                                     flex-direction: column;
-                                    gap: var(--space--2);
+                                    gap: var(--size--2);
                                   `}"
                                 >
                                   <div
@@ -2360,8 +2360,8 @@ export default async (application: Application): Promise<void> => {
                         display: flex;
                         align-items: baseline;
                         flex-wrap: wrap;
-                        column-gap: var(--space--4);
-                        row-gap: var(--space--2);
+                        column-gap: var(--size--4);
+                        row-gap: var(--size--2);
                       `}"
                     >
                       $${mayEditCourseConversation
@@ -2424,7 +2424,7 @@ export default async (application: Application): Promise<void> => {
                               css="${css`
                                 display: flex;
                                 flex-direction: column;
-                                gap: var(--space--2);
+                                gap: var(--size--2);
                               `}"
                             >
                               <button
@@ -2550,7 +2550,7 @@ export default async (application: Application): Promise<void> => {
                                 css="${css`
                                   display: flex;
                                   flex-direction: column;
-                                  gap: var(--space--2);
+                                  gap: var(--size--2);
                                 `}"
                               >
                                 <button
@@ -2698,7 +2698,7 @@ export default async (application: Application): Promise<void> => {
                               css="${css`
                                 display: flex;
                                 flex-direction: column;
-                                gap: var(--space--2);
+                                gap: var(--size--2);
                               `}"
                             >
                               <button
@@ -2826,7 +2826,7 @@ export default async (application: Application): Promise<void> => {
                               css="${css`
                                 display: flex;
                                 flex-direction: column;
-                                gap: var(--space--2);
+                                gap: var(--size--2);
                               `}"
                             >
                               <button
@@ -2911,7 +2911,7 @@ export default async (application: Application): Promise<void> => {
                                   css="${css`
                                     display: flex;
                                     flex-direction: column;
-                                    gap: var(--space--2);
+                                    gap: var(--size--2);
                                   `}"
                                 >
                                   $${request.state.courseConversationsTags.map(
@@ -3010,10 +3010,10 @@ export default async (application: Application): Promise<void> => {
                                     align-items: baseline;
                                   `} ${mayEditCourseConversation
                                     ? css`
-                                        gap: var(--space--2-5);
+                                        gap: var(--size--2-5);
                                       `
                                     : css`
-                                        gap: var(--space--1-5);
+                                        gap: var(--size--1-5);
                                       `}"
                                 >
                                   $${courseConversationsTagsHTML}
@@ -3045,7 +3045,7 @@ export default async (application: Application): Promise<void> => {
                 css="${css`
                   display: flex;
                   flex-direction: column;
-                  gap: var(--space--4);
+                  gap: var(--size--4);
                 `}"
               >
                 $${(() => {
@@ -3191,7 +3191,7 @@ export default async (application: Application): Promise<void> => {
                             .publicId}/messages/${courseConversationMessage.publicId}"
                           css="${css`
                             display: flex;
-                            gap: var(--space--2);
+                            gap: var(--size--2);
                           `}"
                         >
                           <div key="courseConversationMessage--sidebar">
@@ -3215,13 +3215,13 @@ export default async (application: Application): Promise<void> => {
                                     <div
                                       key="courseConversationMessage--sidebar--courseConversationMessageView"
                                       css="${css`
-                                        font-size: var(--space--1-5);
+                                        font-size: var(--size--1-5);
                                         color: light-dark(
                                           var(--color--blue--500),
                                           var(--color--blue--500)
                                         );
                                         position: absolute;
-                                        margin-left: var(--space---2-5);
+                                        margin-left: var(--size---2-5);
                                         transition-property: var(
                                           --transition-property--opacity
                                         );
@@ -3282,7 +3282,7 @@ export default async (application: Application): Promise<void> => {
                               flex: 1;
                               display: flex;
                               flex-direction: column;
-                              gap: var(--space--1);
+                              gap: var(--size--1);
                             `}"
                           >
                             <div
@@ -3295,7 +3295,7 @@ export default async (application: Application): Promise<void> => {
                                   var(--color--slate--400)
                                 );
                                 display: flex;
-                                gap: var(--space--2);
+                                gap: var(--size--2);
                               `}"
                             >
                               <div
@@ -3447,7 +3447,7 @@ export default async (application: Application): Promise<void> => {
                                   type="button"
                                   class="button button--square button--icon button--transparent"
                                   css="${css`
-                                    margin-right: var(--space---0-5);
+                                    margin-right: var(--size---0-5);
                                   `}"
                                   javascript="${javascript`
                                     javascript.popover({ element: this, trigger: "click", remainOpenWhileFocused: true, placement: "bottom-end" });
@@ -3460,7 +3460,7 @@ export default async (application: Application): Promise<void> => {
                                   css="${css`
                                     display: flex;
                                     flex-direction: column;
-                                    gap: var(--space--2);
+                                    gap: var(--size--2);
                                   `}"
                                 >
                                   <button
@@ -3540,7 +3540,7 @@ export default async (application: Application): Promise<void> => {
                                           css="${css`
                                             display: flex;
                                             flex-direction: column;
-                                            gap: var(--space--2);
+                                            gap: var(--size--2);
                                           `}"
                                         >
                                           <div
@@ -3586,7 +3586,7 @@ export default async (application: Application): Promise<void> => {
                               css="${css`
                                 display: flex;
                                 flex-direction: column;
-                                gap: var(--space--1);
+                                gap: var(--size--1);
                               `}"
                             >
                               <div
@@ -3688,7 +3688,7 @@ export default async (application: Application): Promise<void> => {
                                       css="${css`
                                         display: flex;
                                         flex-direction: column;
-                                        gap: var(--space--2);
+                                        gap: var(--size--2);
                                       `}"
                                     >
                                       $${courseConversationMessageLikes.map(
@@ -3754,7 +3754,7 @@ export default async (application: Application): Promise<void> => {
                                             <div
                                               css="${css`
                                                 display: flex;
-                                                gap: var(--space--2);
+                                                gap: var(--size--2);
                                               `}"
                                             >
                                               $${application.partials.userAvatar(
@@ -3766,7 +3766,7 @@ export default async (application: Application): Promise<void> => {
                                               )}
                                               <div
                                                 css="${css`
-                                                  margin-top: var(--space--0-5);
+                                                  margin-top: var(--size--0-5);
                                                 `}"
                                               >
                                                 ${courseConversationMessageLikeUser?.name ??
@@ -3838,7 +3838,7 @@ export default async (application: Application): Promise<void> => {
                                             css="${css`
                                               display: flex;
                                               flex-direction: column;
-                                              gap: var(--space--2);
+                                              gap: var(--size--2);
                                             `}"
                                           >
                                             $${courseConversationMessageViews.map(
@@ -3908,7 +3908,7 @@ export default async (application: Application): Promise<void> => {
                                                   <div
                                                     css="${css`
                                                       display: flex;
-                                                      gap: var(--space--2);
+                                                      gap: var(--size--2);
                                                     `}"
                                                   >
                                                     $${application.partials.userAvatar(
@@ -3921,7 +3921,7 @@ export default async (application: Application): Promise<void> => {
                                                     <div
                                                       css="${css`
                                                         margin-top: var(
-                                                          --space--0-5
+                                                          --size--0-5
                                                         );
                                                       `}"
                                                     >
@@ -3993,8 +3993,8 @@ export default async (application: Application): Promise<void> => {
                                           display: flex;
                                           align-items: baseline;
                                           flex-wrap: wrap;
-                                          column-gap: var(--space--4);
-                                          row-gap: var(--space--2);
+                                          column-gap: var(--size--4);
+                                          row-gap: var(--size--2);
                                         `}"
                                       >
                                         $${courseConversationMessageMainContentShowFooterHTML}
@@ -4031,7 +4031,7 @@ export default async (application: Application): Promise<void> => {
                       css="${css`
                         display: flex;
                         flex-direction: column;
-                        gap: var(--space--2);
+                        gap: var(--size--2);
                       `}"
                     >
                       $${application.partials.courseConversationMessageContentEditor()}
@@ -4046,7 +4046,7 @@ export default async (application: Application): Promise<void> => {
                           );
                           display: flex;
                           align-items: baseline;
-                          gap: var(--space--4);
+                          gap: var(--size--4);
                         `}"
                       >
                         <div>
@@ -4135,7 +4135,7 @@ export default async (application: Application): Promise<void> => {
                                 css="${css`
                                   display: flex;
                                   flex-direction: column;
-                                  gap: var(--space--2);
+                                  gap: var(--size--2);
                                 `}"
                               >
                                 <button
@@ -4232,7 +4232,7 @@ export default async (application: Application): Promise<void> => {
                                 css="${css`
                                   display: flex;
                                   flex-direction: column;
-                                  gap: var(--space--2);
+                                  gap: var(--size--2);
                                 `}"
                               >
                                 <button
@@ -4337,7 +4337,7 @@ export default async (application: Application): Promise<void> => {
                                 css="${css`
                                   display: flex;
                                   flex-direction: column;
-                                  gap: var(--space--2);
+                                  gap: var(--size--2);
                                 `}"
                               >
                                 <button
@@ -4390,8 +4390,8 @@ export default async (application: Application): Promise<void> => {
                                     display: flex;
                                     align-items: baseline;
                                     flex-wrap: wrap;
-                                    column-gap: var(--space--4);
-                                    row-gap: var(--space--2);
+                                    column-gap: var(--size--4);
+                                    row-gap: var(--size--2);
                                   `}"
                                 >
                                   $${courseConversationMessageNewOptionsHTML}

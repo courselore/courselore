@@ -280,7 +280,7 @@ export default async (application: Application): Promise<void> => {
               css="${css`
                 display: flex;
                 flex-direction: column;
-                gap: var(--space--2);
+                gap: var(--size--2);
               `}"
             >
               <div
@@ -323,10 +323,10 @@ export default async (application: Application): Promise<void> => {
                   method="PATCH"
                   action="/settings"
                   css="${css`
-                    margin: var(--space--2) var(--space--0);
+                    margin: var(--size--2) var(--size--0);
                     display: flex;
                     flex-direction: column;
-                    gap: var(--space--4);
+                    gap: var(--size--4);
                   `}"
                   javascript="${javascript`
                     this.onsubmit = () => {
@@ -403,7 +403,7 @@ export default async (application: Application): Promise<void> => {
                     css="${css`
                       display: flex;
                       flex-direction: column;
-                      gap: var(--space--1);
+                      gap: var(--size--1);
                     `}"
                   >
                     <div
@@ -423,7 +423,7 @@ export default async (application: Application): Promise<void> => {
                       css="${css`
                         display: flex;
                         flex-direction: column;
-                        gap: var(--space--1-5);
+                        gap: var(--size--1-5);
                       `}"
                     >
                       <input
@@ -470,8 +470,8 @@ export default async (application: Application): Promise<void> => {
                           display: flex;
                           align-items: baseline;
                           flex-wrap: wrap;
-                          column-gap: var(--space--4);
-                          row-gap: var(--space--2);
+                          column-gap: var(--size--4);
+                          row-gap: var(--size--2);
                         `}"
                       >
                         <label
@@ -559,7 +559,7 @@ export default async (application: Application): Promise<void> => {
                     css="${css`
                       display: flex;
                       flex-direction: column;
-                      gap: var(--space--1);
+                      gap: var(--size--1);
                     `}"
                   >
                     <div
@@ -579,7 +579,7 @@ export default async (application: Application): Promise<void> => {
                       css="${css`
                         display: flex;
                         flex-direction: column;
-                        gap: var(--space--2);
+                        gap: var(--size--2);
                       `}"
                     >
                       <label
@@ -671,17 +671,17 @@ export default async (application: Application): Promise<void> => {
                   method="PATCH"
                   action="/settings"
                   css="${css`
-                    margin: var(--space--2) var(--space--0);
+                    margin: var(--size--2) var(--size--0);
                     display: flex;
                     flex-direction: column;
-                    gap: var(--space--4);
+                    gap: var(--size--4);
                   `}"
                 >
                   <div
                     css="${css`
                       display: flex;
                       flex-direction: column;
-                      gap: var(--space--2);
+                      gap: var(--size--2);
                     `}"
                   >
                     <label class="button button--rectangle button--transparent">
@@ -891,13 +891,13 @@ export default async (application: Application): Promise<void> => {
                 display: block;
               `} ${size === 6
                 ? css`
-                    width: var(--space--6);
-                    height: var(--space--6);
+                    width: var(--size--6);
+                    height: var(--size--6);
                   `
                 : size === 9
                   ? css`
-                      width: var(--space--9);
-                      height: var(--space--9);
+                      width: var(--size--9);
+                      height: var(--size--9);
                     `
                   : (() => {
                       throw new Error();
@@ -966,7 +966,7 @@ export default async (application: Application): Promise<void> => {
               "
               css="${css`
                 font-family: "Roboto Serif Variable", var(--font-family--serif);
-                line-height: var(--space--0);
+                line-height: var(--size--0);
                 font-weight: 900;
                 color: light-dark(var(--color--light), var(--color--dark));
                 background-color: light-dark(
@@ -993,8 +993,8 @@ export default async (application: Application): Promise<void> => {
                           font-size: var(--font-size--4);
                         `
                   } ${css`
-                    width: var(--space--6);
-                    height: var(--space--6);
+                    width: var(--size--6);
+                    height: var(--size--6);
                   `}`
                 : size === 9
                   ? `${
@@ -1006,8 +1006,8 @@ export default async (application: Application): Promise<void> => {
                             font-size: var(--font-size--6);
                           `
                     } ${css`
-                      width: var(--space--9);
-                      height: var(--space--9);
+                      width: var(--size--9);
+                      height: var(--size--9);
                     `}`
                   : (() => {
                       throw new Error();
@@ -1054,8 +1054,8 @@ export default async (application: Application): Promise<void> => {
         ? html`
             <div
               css="${css`
-                font-size: var(--space--1-5);
-                line-height: var(--space--0);
+                font-size: var(--size--1-5);
+                line-height: var(--size--0);
                 color: light-dark(
                   var(--color--green--500),
                   var(--color--green--500)

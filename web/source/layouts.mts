@@ -66,7 +66,7 @@ export default async (application: Application): Promise<void> => {
         var(--color--slate--50),
         var(--color--slate--950)
       );
-      padding: var(--space--1) var(--space--2);
+      padding: var(--size--1) var(--size--2);
       border: var(--border-width--1) solid
         light-dark(var(--color--slate--400), var(--color--slate--600));
       border-radius: var(--border-radius--1);
@@ -90,8 +90,8 @@ export default async (application: Application): Promise<void> => {
         var(--color--slate--50),
         var(--color--slate--950)
       );
-      width: var(--space--3-5);
-      height: var(--space--3-5);
+      width: var(--size--3-5);
+      height: var(--size--3-5);
       border: var(--border-width--1) solid
         light-dark(var(--color--slate--400), var(--color--slate--600));
       display: inline-flex;
@@ -115,7 +115,7 @@ export default async (application: Application): Promise<void> => {
     }
 
     .input--checkbox {
-      vertical-align: var(--space---0-5);
+      vertical-align: var(--size---0-5);
       border-radius: var(--border-radius--1);
       &::after {
         content: "\\f633";
@@ -124,9 +124,9 @@ export default async (application: Application): Promise<void> => {
     }
 
     .input--radio {
-      vertical-align: var(--space--px);
+      vertical-align: var(--size--px);
       border-radius: var(--border-radius--circle);
-      font-size: var(--space--1-5);
+      font-size: var(--size--1-5);
       &::after {
         content: "\\f287";
         font-family: "bootstrap-icons";
@@ -143,21 +143,21 @@ export default async (application: Application): Promise<void> => {
         --transition-timing-function--ease-in-out
       );
       &.button--rectangle {
-        padding: var(--space--1) var(--space--2);
+        padding: var(--size--1) var(--size--2);
       }
       &.button--square {
         aspect-ratio: var(--aspect-ratio--square);
-        padding: var(--space--1);
+        padding: var(--size--1);
       }
       &.button--icon .bi {
         display: flex;
       }
       &.button--transparent {
         &.button--rectangle {
-          margin: var(--space---1) var(--space---2);
+          margin: var(--size---1) var(--size---2);
         }
         &.button--square {
-          margin: var(--space---1);
+          margin: var(--size---1);
         }
         &:hover,
         &:focus-within {
@@ -231,7 +231,7 @@ export default async (application: Application): Promise<void> => {
       )}
       &.button--dropdown-menu {
         font-weight: 400;
-        width: calc(var(--space--2) + 100% + var(--space--2));
+        width: calc(var(--size--2) + 100% + var(--size--2));
         border: none;
         border-radius: calc(var(--border-radius--1) - var(--border-width--1));
       }
@@ -307,7 +307,7 @@ export default async (application: Application): Promise<void> => {
             var(--color--black)
           );
           position: fixed;
-          inset: var(--space--0);
+          inset: var(--size--0);
           overflow: hidden;
           display: flex;
           flex-direction: column;
@@ -333,7 +333,7 @@ export default async (application: Application): Promise<void> => {
                     var(--background-color--light),
                     var(--background-color--dark)
                   );
-                  height: var(--space--1);
+                  height: var(--size--1);
                   border-bottom: var(--border-width--1) solid
                     light-dark(
                       var(--border-color--light),
@@ -346,12 +346,12 @@ export default async (application: Application): Promise<void> => {
         <div
           key="header"
           css="${css`
-            padding: var(--space--2) var(--space--4);
+            padding: var(--size--2) var(--size--4);
             border-bottom: var(--border-width--1) solid
               light-dark(var(--color--slate--200), var(--color--slate--800));
             display: flex;
             align-items: center;
-            gap: var(--space--4);
+            gap: var(--size--4);
           `}"
         >
           $${hamburger
@@ -362,7 +362,7 @@ export default async (application: Application): Promise<void> => {
                   class="button button--square button--icon button--transparent"
                   css="${css`
                     font-size: var(--font-size--5);
-                    line-height: var(--space--0);
+                    line-height: var(--size--0);
                     @media (min-width: 900px) {
                       display: none;
                     }
@@ -387,7 +387,7 @@ export default async (application: Application): Promise<void> => {
               font-size: var(--font-size--4);
               line-height: var(--font-size--4--line-height);
               display: flex;
-              gap: var(--space--1);
+              gap: var(--size--1);
               align-items: center;
             `}"
           >
@@ -406,7 +406,7 @@ export default async (application: Application): Promise<void> => {
             key="header--course"
             css="${css`
               flex: 1;
-              min-width: var(--space--0);
+              min-width: var(--size--0);
             `}"
           >
             $${request.state.user !== undefined &&
@@ -418,7 +418,7 @@ export default async (application: Application): Promise<void> => {
                     css="${css`
                       max-width: 100%;
                       display: flex;
-                      gap: var(--space--1);
+                      gap: var(--size--1);
                       align-items: center;
                     `}"
                     javascript="${javascript`
@@ -441,7 +441,7 @@ export default async (application: Application): Promise<void> => {
                     css="${css`
                       display: flex;
                       flex-direction: column;
-                      gap: var(--space--2);
+                      gap: var(--size--2);
                     `}"
                   >
                     <a
@@ -512,7 +512,7 @@ export default async (application: Application): Promise<void> => {
                               : ""} button--dropdown-menu"
                             css="${css`
                               display: flex;
-                              gap: var(--space--2);
+                              gap: var(--size--2);
                             `}"
                           >
                             <div
@@ -587,7 +587,7 @@ export default async (application: Application): Promise<void> => {
                             </div>
                             <div
                               css="${css`
-                                font-size: var(--space--1-5);
+                                font-size: var(--size--1-5);
                                 line-height: var(--font-size--3-5--line-height);
                                 color: light-dark(
                                   var(--color--blue--500),
@@ -687,13 +687,13 @@ export default async (application: Application): Promise<void> => {
                   css="${css`
                     display: flex;
                     flex-direction: column;
-                    gap: var(--space--2);
+                    gap: var(--size--2);
                   `}"
                 >
                   <div
                     css="${css`
                       display: flex;
-                      gap: var(--space--2);
+                      gap: var(--size--2);
                     `}"
                   >
                     <div>
@@ -759,7 +759,7 @@ export default async (application: Application): Promise<void> => {
           key="main"
           css="${css`
             flex: 1;
-            min-height: var(--space--0);
+            min-height: var(--size--0);
           `}"
         >
           $${body}
@@ -784,9 +784,9 @@ export default async (application: Application): Promise<void> => {
         >
           <div
             css="${css`
-              max-width: var(--space--168);
-              padding: var(--space--2) var(--space--4);
-              margin: var(--space--0) auto;
+              max-width: var(--size--168);
+              padding: var(--size--2) var(--size--4);
+              margin: var(--size--0) auto;
             `}"
           >
             $${body}

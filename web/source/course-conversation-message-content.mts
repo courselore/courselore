@@ -21,7 +21,7 @@ export default async (application: Application): Promise<void> => {
       key="courseConversationMessageContentEditor"
       class="input--text"
       css="${css`
-        padding: var(--space--0);
+        padding: var(--size--0);
         display: flex;
         flex-direction: column;
       `}"
@@ -30,11 +30,11 @@ export default async (application: Application): Promise<void> => {
         key="courseConversationMessageContentEditor--menu"
         css="${css`
           color: light-dark(var(--color--slate--600), var(--color--slate--400));
-          padding: var(--space--1-5) var(--space--2);
+          padding: var(--size--1-5) var(--size--2);
           border-bottom: var(--border-width--1) solid
             light-dark(var(--color--slate--200), var(--color--slate--800));
           display: flex;
-          gap: var(--space--2);
+          gap: var(--size--2);
         `}"
       >
         <button
@@ -125,8 +125,8 @@ export default async (application: Application): Promise<void> => {
         required
         css="${css`
           font-family: "Roboto Mono Variable", var(--font-family--monospace);
-          height: var(--space--44);
-          padding: var(--space--1) var(--space--2);
+          height: var(--size--44);
+          padding: var(--size--1) var(--size--2);
         `}"
       >
 ${value}</textarea
