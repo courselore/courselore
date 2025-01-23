@@ -743,6 +743,19 @@ export default async (application: Application): Promise<void> => {
                       />  Email notifications for messages in conversations in
                       which you participated
                     </label>
+                    <div
+                      css="${css`
+                        font-size: var(--font-size--3);
+                        line-height: var(--font-size--3--line-height);
+                        color: light-dark(
+                          var(--color--slate--600),
+                          var(--color--slate--400)
+                        );
+                      `}"
+                    >
+                      You always receive email notifications for instructors
+                      announcements and you may not opt out of them.
+                    </div>
                   </div>
                   <div
                     css="${css`
