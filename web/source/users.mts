@@ -367,38 +367,6 @@ export default async (application: Application): Promise<void> => {
                       />
                     </div>
                   </label>
-                  <label>
-                    <div
-                      css="${css`
-                        font-size: var(--font-size--3);
-                        line-height: var(--font-size--3--line-height);
-                        font-weight: 600;
-                        color: light-dark(
-                          var(--color--slate--500),
-                          var(--color--slate--500)
-                        );
-                      `}"
-                    >
-                      Email
-                    </div>
-                    <div
-                      css="${css`
-                        display: flex;
-                      `}"
-                    >
-                      <input
-                        type="email"
-                        name="email"
-                        value="${request.state.user.email}"
-                        required
-                        maxlength="2000"
-                        class="input--text"
-                        css="${css`
-                          flex: 1;
-                        `}"
-                      />
-                    </div>
-                  </label>
                   <div
                     css="${css`
                       display: flex;
@@ -636,6 +604,162 @@ export default async (application: Application): Promise<void> => {
                     >
                       Update general settings
                     </button>
+                  </div>
+                  <hr class="separator" />
+                </div>
+              </details>
+              <details>
+                <summary
+                  class="button button--rectangle button--transparent"
+                  css="${css`
+                    font-weight: 500;
+                  `}"
+                >
+                  <span
+                    css="${css`
+                      display: inline-block;
+                      transition-property: var(
+                        --transition-property--transform
+                      );
+                      transition-duration: var(--transition-duration--150);
+                      transition-timing-function: var(
+                        --transition-timing-function--ease-in-out
+                      );
+                      details[open] & {
+                        transform: rotate(var(--transform--rotate--90));
+                      }
+                    `}"
+                  >
+                    <i class="bi bi-chevron-right"></i>
+                  </span>
+                  Authentication
+                </summary>
+                <div
+                  css="${css`
+                    margin: var(--size--2) var(--size--0);
+                    display: flex;
+                    flex-direction: column;
+                    gap: var(--size--4);
+                  `}"
+                >
+                  <div
+                    type="form"
+                    method="PATCH"
+                    action="/settings"
+                    css="${css`
+                      display: flex;
+                      flex-direction: column;
+                      gap: var(--size--4);
+                    `}"
+                  >
+                    <label>
+                      <div
+                        css="${css`
+                          font-size: var(--font-size--3);
+                          line-height: var(--font-size--3--line-height);
+                          font-weight: 600;
+                          color: light-dark(
+                            var(--color--slate--500),
+                            var(--color--slate--500)
+                          );
+                        `}"
+                      >
+                        Change email address
+                      </div>
+                      <div
+                        css="${css`
+                          display: flex;
+                        `}"
+                      >
+                        <input
+                          type="email"
+                          name="email"
+                          placeholder="${request.state.user.email}"
+                          required
+                          maxlength="2000"
+                          class="input--text"
+                          css="${css`
+                            flex: 1;
+                          `}"
+                        />
+                      </div>
+                    </label>
+                    <label>
+                      <div
+                        css="${css`
+                          font-size: var(--font-size--3);
+                          line-height: var(--font-size--3--line-height);
+                          font-weight: 600;
+                          color: light-dark(
+                            var(--color--slate--500),
+                            var(--color--slate--500)
+                          );
+                        `}"
+                      >
+                        Password confirmation
+                      </div>
+                      <div
+                        css="${css`
+                          display: flex;
+                        `}"
+                      >
+                        <input
+                          type="password"
+                          name="passwordConfirmation"
+                          required
+                          minlength="8"
+                          maxlength="2000"
+                          class="input--text"
+                          css="${css`
+                            flex: 1;
+                          `}"
+                        />
+                      </div>
+                    </label>
+                    <label>
+                      <div
+                        css="${css`
+                          font-size: var(--font-size--3);
+                          line-height: var(--font-size--3--line-height);
+                          font-weight: 600;
+                          color: light-dark(
+                            var(--color--slate--500),
+                            var(--color--slate--500)
+                          );
+                        `}"
+                      >
+                        Two-factor authentication code
+                      </div>
+                      <div
+                        css="${css`
+                          display: flex;
+                        `}"
+                      >
+                        <input
+                          type="text"
+                          inputmode="numeric"
+                          name="twoFactorAuthenticationConfirmation"
+                          required
+                          class="input--text"
+                          css="${css`
+                            flex: 1;
+                          `}"
+                        />
+                      </div>
+                    </label>
+                    <div
+                      css="${css`
+                        font-size: var(--font-size--3);
+                        line-height: var(--font-size--3--line-height);
+                      `}"
+                    >
+                      <button
+                        type="submit"
+                        class="button button--rectangle button--blue"
+                      >
+                        Change email address
+                      </button>
+                    </div>
                   </div>
                   <hr class="separator" />
                 </div>
