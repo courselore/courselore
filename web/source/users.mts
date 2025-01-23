@@ -640,6 +640,125 @@ export default async (application: Application): Promise<void> => {
                   <hr class="separator" />
                 </div>
               </details>
+              <details>
+                <summary
+                  class="button button--rectangle button--transparent"
+                  css="${css`
+                    font-weight: 500;
+                  `}"
+                >
+                  <span
+                    css="${css`
+                      display: inline-block;
+                      transition-property: var(
+                        --transition-property--transform
+                      );
+                      transition-duration: var(--transition-duration--150);
+                      transition-timing-function: var(
+                        --transition-timing-function--ease-in-out
+                      );
+                      details[open] & {
+                        transform: rotate(var(--transform--rotate--90));
+                      }
+                    `}"
+                  >
+                    <i class="bi bi-chevron-right"></i>
+                  </span>
+                  Email notifications
+                </summary>
+                <div
+                  type="form"
+                  method="PATCH"
+                  action="/settings"
+                  css="${css`
+                    margin: var(--space--2) var(--space--0);
+                    display: flex;
+                    flex-direction: column;
+                    gap: var(--space--4);
+                  `}"
+                >
+                  <div
+                    css="${css`
+                      display: flex;
+                      flex-direction: column;
+                      gap: var(--space--2);
+                    `}"
+                  >
+                    <label class="button button--rectangle button--transparent">
+                      <input
+                        type="checkbox"
+                        name="emailNotificationsForAllMessages"
+                        $${Boolean(
+                          request.state.user.emailNotificationsForAllMessages,
+                        )
+                          ? html`checked`
+                          : html``}
+                        class="input--checkbox"
+                      />  Email notifications for all messages
+                    </label>
+                    <label class="button button--rectangle button--transparent">
+                      <input
+                        type="checkbox"
+                        name="emailNotificationsForMessagesIncludingMentions"
+                        $${Boolean(
+                          request.state.user
+                            .emailNotificationsForMessagesIncludingMentions,
+                        )
+                          ? html`checked`
+                          : html``}
+                        class="input--checkbox"
+                      />  Email notifications for messages including
+                      <strong
+                        css="${css`
+                          font-weight: 500;
+                        `}"
+                        >@mentions</strong
+                      >.
+                    </label>
+                    <label class="button button--rectangle button--transparent">
+                      <input
+                        type="checkbox"
+                        name="emailNotificationsForMessagesInConversationsYouStarted"
+                        $${Boolean(
+                          request.state.user
+                            .emailNotificationsForMessagesInConversationsYouStarted,
+                        )
+                          ? html`checked`
+                          : html``}
+                        class="input--checkbox"
+                      />  Email notifications for messages in conversations that
+                      you started
+                    </label>
+                    <label class="button button--rectangle button--transparent">
+                      <input
+                        type="checkbox"
+                        name="emailNotificationsForMessagesInConversationsInWhichYouParticipated"
+                        $${Boolean(
+                          request.state.user
+                            .emailNotificationsForMessagesInConversationsInWhichYouParticipated,
+                        )
+                          ? html`checked`
+                          : html``}
+                        class="input--checkbox"
+                      />  Email notifications for messages in conversations in
+                      which you participated
+                    </label>
+                  </div>
+                  <div
+                    css="${css`
+                      font-size: var(--font-size--3);
+                      line-height: var(--font-size--3--line-height);
+                    `}"
+                  >
+                    <button
+                      type="submit"
+                      class="button button--rectangle button--blue"
+                    >
+                      Update email notifications
+                    </button>
+                  </div>
+                </div>
+              </details>
             </div>
           `,
         }),
