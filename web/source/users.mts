@@ -694,6 +694,13 @@ export default async (application: Application): Promise<void> => {
                           ? html`checked`
                           : html``}
                         class="input--checkbox"
+                        javascript="${javascript`
+                          this.onchange = () => {
+                            if (this.checked)
+                              for (const element of this.closest('[type~="form"]').querySelectorAll("input"))
+                                element.checked = true;
+                          };
+                        `}"
                       />  Email notifications for all messages
                     </label>
                     <label class="button button--rectangle button--transparent">
@@ -707,6 +714,12 @@ export default async (application: Application): Promise<void> => {
                           ? html`checked`
                           : html``}
                         class="input--checkbox"
+                        javascript="${javascript`
+                          this.onchange = () => {
+                            if (!this.checked)
+                              this.closest('[type~="form"]').querySelectorAll('[name="emailNotificationsForAllMessages"]').checked = false;
+                          };
+                        `}"
                       />  Email notifications for messages including
                       <strong
                         css="${css`
@@ -714,20 +727,6 @@ export default async (application: Application): Promise<void> => {
                         `}"
                         >@mentions</strong
                       >
-                    </label>
-                    <label class="button button--rectangle button--transparent">
-                      <input
-                        type="checkbox"
-                        name="emailNotificationsForMessagesInConversationsYouStarted"
-                        $${Boolean(
-                          request.state.user
-                            .emailNotificationsForMessagesInConversationsYouStarted,
-                        )
-                          ? html`checked`
-                          : html``}
-                        class="input--checkbox"
-                      />  Email notifications for messages in conversations that
-                      you started
                     </label>
                     <label class="button button--rectangle button--transparent">
                       <input
@@ -740,8 +739,38 @@ export default async (application: Application): Promise<void> => {
                           ? html`checked`
                           : html``}
                         class="input--checkbox"
+                        javascript="${javascript`
+                          this.onchange = () => {
+                            if (!this.checked)
+                              this.closest('[type~="form"]').querySelectorAll('[name="emailNotificationsForAllMessages"]').checked = false;
+                            else
+                              this.closest('[type~="form"]').querySelectorAll('[name="emailNotificationsForMessagesInConversationsYouStarted"]').checked = true;
+                          };
+                        `}"
                       />  Email notifications for messages in conversations in
                       which you participated
+                    </label>
+                    <label class="button button--rectangle button--transparent">
+                      <input
+                        type="checkbox"
+                        name="emailNotificationsForMessagesInConversationsYouStarted"
+                        $${Boolean(
+                          request.state.user
+                            .emailNotificationsForMessagesInConversationsYouStarted,
+                        )
+                          ? html`checked`
+                          : html``}
+                        class="input--checkbox"
+                        javascript="${javascript`
+                          this.onchange = () => {
+                            if (!this.checked) {
+                              this.closest('[type~="form"]').querySelectorAll('[name="emailNotificationsForAllMessages"]').checked = false;
+                              this.closest('[type~="form"]').querySelectorAll('[name="emailNotificationsForMessagesInConversationsInWhichYouParticipated"]').checked = false;
+                            }
+                          };
+                        `}"
+                      />  Email notifications for messages in conversations that
+                      you started
                     </label>
                     <div
                       css="${css`
