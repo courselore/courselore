@@ -2445,8 +2445,8 @@ export default async (application: Application): Promise<void> => {
             "sidebarWidth" integer not null,
             "emailNotificationsForAllMessages" integer not null,
             "emailNotificationsForMessagesIncludingMentions" integer not null,
-            "emailNotificationsForMessagesInConversationsYouStarted" integer not null,
             "emailNotificationsForMessagesInConversationsInWhichYouParticipated" integer not null,
+            "emailNotificationsForMessagesInConversationsThatYouStarted" integer not null,
             "userAnonymityPreferred" text not null,
             "mostRecentlyVisitedCourseParticipation" integer null references "courseParticipations"
           ) strict;
@@ -2803,8 +2803,8 @@ export default async (application: Application): Promise<void> => {
                         "sidebarWidth",
                         "emailNotificationsForAllMessages",
                         "emailNotificationsForMessagesIncludingMentions",
-                        "emailNotificationsForMessagesInConversationsYouStarted",
                         "emailNotificationsForMessagesInConversationsInWhichYouParticipated",
+                        "emailNotificationsForMessagesInConversationsThatYouStarted",
                         "userAnonymityPreferred",
                         "mostRecentlyVisitedCourseParticipation"
                       )

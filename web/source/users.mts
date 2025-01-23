@@ -55,8 +55,8 @@ export type ApplicationUsers = {
           sidebarWidth: number;
           emailNotificationsForAllMessages: number;
           emailNotificationsForMessagesIncludingMentions: number;
-          emailNotificationsForMessagesInConversationsYouStarted: number;
           emailNotificationsForMessagesInConversationsInWhichYouParticipated: number;
+          emailNotificationsForMessagesInConversationsThatYouStarted: number;
           userAnonymityPreferred:
             | "userAnonymityPreferredNone"
             | "userAnonymityPreferredCourseParticipationRoleStudents"
@@ -164,8 +164,8 @@ export default async (application: Application): Promise<void> => {
         sidebarWidth: number;
         emailNotificationsForAllMessages: number;
         emailNotificationsForMessagesIncludingMentions: number;
-        emailNotificationsForMessagesInConversationsYouStarted: number;
         emailNotificationsForMessagesInConversationsInWhichYouParticipated: number;
+        emailNotificationsForMessagesInConversationsThatYouStarted: number;
         userAnonymityPreferred:
           | "userAnonymityPreferredNone"
           | "userAnonymityPreferredCourseParticipationRoleStudents"
@@ -196,8 +196,8 @@ export default async (application: Application): Promise<void> => {
             "sidebarWidth",
             "emailNotificationsForAllMessages",
             "emailNotificationsForMessagesIncludingMentions",
-            "emailNotificationsForMessagesInConversationsYouStarted",
             "emailNotificationsForMessagesInConversationsInWhichYouParticipated",
+            "emailNotificationsForMessagesInConversationsThatYouStarted",
             "userAnonymityPreferred",
             "mostRecentlyVisitedCourseParticipation"
           from "users"
@@ -744,7 +744,7 @@ export default async (application: Application): Promise<void> => {
                             if (!this.checked)
                               this.closest('[type~="form"]').querySelector('[name="emailNotificationsForAllMessages"]').checked = false;
                             else
-                              this.closest('[type~="form"]').querySelector('[name="emailNotificationsForMessagesInConversationsYouStarted"]').checked = true;
+                              this.closest('[type~="form"]').querySelector('[name="emailNotificationsForMessagesInConversationsThatYouStarted"]').checked = true;
                           };
                         `}"
                       />  Email notifications for messages in conversations in
@@ -753,10 +753,10 @@ export default async (application: Application): Promise<void> => {
                     <label class="button button--rectangle button--transparent">
                       <input
                         type="checkbox"
-                        name="emailNotificationsForMessagesInConversationsYouStarted"
+                        name="emailNotificationsForMessagesInConversationsThatYouStarted"
                         $${Boolean(
                           request.state.user
-                            .emailNotificationsForMessagesInConversationsYouStarted,
+                            .emailNotificationsForMessagesInConversationsThatYouStarted,
                         )
                           ? html`checked`
                           : html``}
