@@ -713,7 +713,7 @@ export default async (application: Application): Promise<void> => {
                           font-weight: 500;
                         `}"
                         >@mentions</strong
-                      >.
+                      >
                     </label>
                     <label class="button button--rectangle button--transparent">
                       <input
