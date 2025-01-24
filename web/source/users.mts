@@ -664,7 +664,44 @@ export default async (application: Application): Promise<void> => {
                           );
                         `}"
                       >
-                        Change email address
+                        Current email address
+                      </div>
+                      <div
+                        css="${css`
+                          display: flex;
+                        `}"
+                      >
+                        <input
+                          type="text"
+                          value="${request.state.user.email}"
+                          readonly
+                          class="input--text"
+                          css="${css`
+                            flex: 1;
+                            font-family: "Roboto Mono Variable",
+                              var(--font-family--monospace);
+                          `}"
+                          javascript="${javascript`
+                            this.onclick = () => {
+                              this.select();
+                            };
+                          `}"
+                        />
+                      </div>
+                    </label>
+                    <label>
+                      <div
+                        css="${css`
+                          font-size: var(--font-size--3);
+                          line-height: var(--font-size--3--line-height);
+                          font-weight: 600;
+                          color: light-dark(
+                            var(--color--slate--500),
+                            var(--color--slate--500)
+                          );
+                        `}"
+                      >
+                        New email address
                       </div>
                       <div
                         css="${css`
@@ -674,12 +711,13 @@ export default async (application: Application): Promise<void> => {
                         <input
                           type="email"
                           name="email"
-                          placeholder="${request.state.user.email}"
                           required
                           maxlength="2000"
                           class="input--text"
                           css="${css`
                             flex: 1;
+                            font-family: "Roboto Mono Variable",
+                              var(--font-family--monospace);
                           `}"
                         />
                       </div>
