@@ -328,12 +328,6 @@ export default async (application: Application): Promise<void> => {
                     flex-direction: column;
                     gap: var(--size--4);
                   `}"
-                  javascript="${javascript`
-                    this.onsubmit = () => {
-                      delete this.querySelector('[name="avatarImage"]').isModified;
-                      delete this.closest('[type~="form"]').querySelector('[key~="userAvatar--withAvatarImage"]').morph;
-                    };
-                  `}"
                 >
                   <label>
                     <div
@@ -394,11 +388,6 @@ export default async (application: Application): Promise<void> => {
                         gap: var(--size--1-5);
                       `}"
                     >
-                      <input
-                        type="hidden"
-                        name="avatarImage"
-                        value="${request.state.user.avatarImage ?? ""}"
-                      />
                       <div
                         key="userAvatar--withoutAvatarImage"
                         $${typeof request.state.user.avatarImage === "string"
@@ -446,37 +435,25 @@ export default async (application: Application): Promise<void> => {
                           class="button button--rectangle button--transparent"
                         >
                           <input
-                            key="userAvatar--file"
                             type="file"
+                            name="avatarImage"
                             accept="image/png, image/jpeg"
                             hidden
                             javascript="${javascript`
-                              this.isModified = false;
                               this.onchange = async () => {
-                                try {
-                                  const body = new FormData();
-                                  body.set("avatarImage", this.files[0]);
-                                  const response = await fetch("/settings/avatar", { method: "PUT", headers: { "CSRF-Protection": "true" }, body });
-                                  if (!response.ok) throw new Error();
-                                  const avatarImage = await response.text();
-                                  this.closest('[type~="form"]').querySelector('[name="avatarImage"]').value = avatarImage;
-                                  this.closest('[type~="form"]').querySelector('[name="avatarImage"]').isModified = true;
-                                  this.closest('[type~="form"]').querySelector('[key~="userAvatar--withoutAvatarImage"]').hidden = true;
-                                  this.closest('[type~="form"]').querySelector('[key~="userAvatar--withAvatarImage"]').hidden = false;
-                                  this.closest('[type~="form"]').querySelector('[key~="userAvatar--withAvatarImage"]').morph = false;
-                                  this.closest('[type~="form"]').querySelector('[key~="userAvatar--withAvatarImage"] img').setAttribute("src", avatarImage);
-                                  this.closest('[type~="form"]').querySelector('[key~="userAvatar--add"]').hidden = true;
-                                  this.closest('[type~="form"]').querySelector('[key~="userAvatar--change"]').hidden = false;
-                                  this.closest('[type~="form"]').querySelector('[key~="userAvatar--remove"]').hidden = false;
-                                }
-                                catch (error) {
-                                  utilities.log(error);
-                                  javascript.popover({
-                                    element: this.closest("label"),
-                                    target: html\`<div type="popover" class="popover--error">Failed to upload avatar</div>\`,
-                                    trigger: "showOnce",
-                                  });
-                                }
+                                const image = await new Promise((resolve) => {
+                                  const reader = new FileReader();
+                                  reader.onload = () => {
+                                    resolve(reader.result);
+                                  };
+                                  reader.readAsDataURL(this.files[0]);
+                                });
+                                this.closest('[type~="form"]').querySelector('[key~="userAvatar--withoutAvatarImage"]').hidden = true;
+                                this.closest('[type~="form"]').querySelector('[key~="userAvatar--withAvatarImage"]').hidden = false;
+                                this.closest('[type~="form"]').querySelector('[key~="userAvatar--withAvatarImage"] img').setAttribute("src", image);
+                                this.closest('[type~="form"]').querySelector('[key~="userAvatar--add"]').hidden = true;
+                                this.closest('[type~="form"]').querySelector('[key~="userAvatar--change"]').hidden = false;
+                                this.closest('[type~="form"]').querySelector('[key~="userAvatar--remove"]').hidden = false;
                               };
                             `}"
                           />
@@ -507,11 +484,8 @@ export default async (application: Application): Promise<void> => {
                           class="button button--rectangle button--transparent"
                           javascript="${javascript`
                             this.onclick = async () => {
-                              this.closest('[type~="form"]').querySelector('[name="avatarImage"]').value = "";
-                              this.closest('[type~="form"]').querySelector('[name="avatarImage"]').isModified = true;
                               this.closest('[type~="form"]').querySelector('[key~="userAvatar--withoutAvatarImage"]').hidden = false;
                               this.closest('[type~="form"]').querySelector('[key~="userAvatar--withAvatarImage"]').hidden = true;
-                              delete this.closest('[type~="form"]').querySelector('[key~="userAvatar--withAvatarImage"]').morph;
                               this.closest('[type~="form"]').querySelector('[key~="userAvatar--add"]').hidden = false;
                               this.closest('[type~="form"]').querySelector('[key~="userAvatar--change"]').hidden = true;
                               this.closest('[type~="form"]').querySelector('[key~="userAvatar--remove"]').hidden = true;
@@ -1000,27 +974,6 @@ export default async (application: Application): Promise<void> => {
             `,
           );
       response.redirect();
-    },
-  });
-
-  // TODO
-  application.server?.push({
-    method: "PUT",
-    pathname: "/settings/avatar",
-    handler: (
-      request: serverTypes.Request<
-        {},
-        {},
-        {},
-        {},
-        Application["types"]["states"]["User"]
-      >,
-      response,
-    ) => {
-      if (request.state.user === undefined) return;
-      response.end(
-        "/node_modules/@radically-straightforward/examples/avatars/webp/207.webp",
-      );
     },
   });
 
