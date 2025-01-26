@@ -1004,6 +1004,7 @@ export default async (application: Application): Promise<void> => {
                 );
                 border-radius: var(--border-radius--1);
                 display: block;
+                object-fit: cover;
               `} ${size === 6
                 ? css`
                     width: var(--size--6);
