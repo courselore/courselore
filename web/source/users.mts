@@ -454,10 +454,11 @@ export default async (application: Application): Promise<void> => {
                                 this.closest('[type~="form"]').querySelector('[key~="userAvatar--add"]').hidden = true;
                                 this.closest('[type~="form"]').querySelector('[key~="userAvatar--change"]').hidden = false;
                                 this.closest('[type~="form"]').querySelector('[key~="userAvatar--remove"]').hidden = false;
+                                this.closest('[type~="form"]').querySelector('[name="avatarImage--remove"]').checked = false;
                               };
                             `}"
                           />
-                          <span
+                          <div
                             key="userAvatar--add"
                             $${typeof request.state.user.avatarImage ===
                             "string"
@@ -465,35 +466,40 @@ export default async (application: Application): Promise<void> => {
                               : html``}
                           >
                             Add
-                          </span>
-                          <span
+                          </div>
+                          <div
                             key="userAvatar--change"
                             $${request.state.user.avatarImage === null
                               ? html`hidden`
                               : html``}
                           >
                             Change
-                          </span>
+                          </div>
                         </label>
-                        <button
+                        <label
                           key="userAvatar--remove"
-                          type="button"
                           $${request.state.user.avatarImage === null
                             ? html`hidden`
                             : html``}
                           class="button button--rectangle button--transparent"
-                          javascript="${javascript`
-                            this.onclick = async () => {
-                              this.closest('[type~="form"]').querySelector('[key~="userAvatar--withoutAvatarImage"]').hidden = false;
-                              this.closest('[type~="form"]').querySelector('[key~="userAvatar--withAvatarImage"]').hidden = true;
-                              this.closest('[type~="form"]').querySelector('[key~="userAvatar--add"]').hidden = false;
-                              this.closest('[type~="form"]').querySelector('[key~="userAvatar--change"]').hidden = true;
-                              this.closest('[type~="form"]').querySelector('[key~="userAvatar--remove"]').hidden = true;
-                            };
-                          `}"
                         >
+                          <input
+                            type="checkbox"
+                            name="avatarImage--remove"
+                            hidden
+                            javascript="${javascript`
+                              this.onchange = () => {
+                                this.closest('[type~="form"]').querySelector('[key~="userAvatar--withoutAvatarImage"]').hidden = false;
+                                this.closest('[type~="form"]').querySelector('[key~="userAvatar--withAvatarImage"]').hidden = true;
+                                this.closest('[type~="form"]').querySelector('[name="avatarImage"]').value = "";
+                                this.closest('[type~="form"]').querySelector('[key~="userAvatar--add"]').hidden = false;
+                                this.closest('[type~="form"]').querySelector('[key~="userAvatar--change"]').hidden = true;
+                                this.closest('[type~="form"]').querySelector('[key~="userAvatar--remove"]').hidden = true;
+                              };
+                            `}"
+                          />
                           Remove
-                        </button>
+                        </label>
                       </div>
                     </div>
                   </div>
