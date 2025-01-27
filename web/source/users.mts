@@ -449,6 +449,7 @@ export default async (application: Application): Promise<void> => {
                             hidden
                             javascript="${javascript`
                               this.onchange = async () => {
+                                if (this.files.length !== 1) return;
                                 const image = await new Promise((resolve) => {
                                   const reader = new FileReader();
                                   reader.onload = () => {
@@ -497,6 +498,7 @@ export default async (application: Application): Promise<void> => {
                             hidden
                             javascript="${javascript`
                               this.onchange = () => {
+                                if (!this.checked) return;
                                 this.closest('[type~="form"]').querySelector('[key~="userAvatar--withoutAvatarImage"]').hidden = false;
                                 this.closest('[type~="form"]').querySelector('[key~="userAvatar--withAvatarImage"]').hidden = true;
                                 this.closest('[type~="form"]').querySelector('[name="avatarImage"]').value = "";
