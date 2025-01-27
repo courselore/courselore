@@ -328,6 +328,11 @@ export default async (application: Application): Promise<void> => {
                     flex-direction: column;
                     gap: var(--size--4);
                   `}"
+                  javascript="${javascript`
+                    this.onsubmit = () => {
+                      delete this.querySelector('[key~="userAvatar--withAvatarImage"]').morph;
+                    };
+                  `}"
                 >
                   <label>
                     <div
@@ -405,6 +410,9 @@ export default async (application: Application): Promise<void> => {
                         $${request.state.user.avatarImage === null
                           ? html`hidden`
                           : html``}
+                        javascript="${javascript`
+                          this.morph = false;
+                        `}"
                       >
                         $${application.partials.userAvatar({
                           user: {
