@@ -1058,7 +1058,7 @@ export default async (application: Application): Promise<void> => {
                       </summary>
                       <div
                         css="${css`
-                          margin: var(--size--2) var(--size--0);
+                          padding: var(--size--2) var(--size--0);
                           display: flex;
                           flex-direction: column;
                           gap: var(--size--2);
