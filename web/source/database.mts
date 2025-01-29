@@ -2435,8 +2435,8 @@ export default async (application: Application): Promise<void> => {
             "passwordResetNonce" text null unique,
             "passwordResetCreatedAt" text null,
             "twoFactorAuthenticationEnabled" integer not null,
-            "twoFactorAuthenticationSecret" text not null,
-            "twoFactorAuthenticationRecoveryCodes" text not null,
+            "twoFactorAuthenticationSecret" text null,
+            "twoFactorAuthenticationRecoveryCodes" text null,
             "avatarColor" text not null,
             "avatarImage" text null,
             "userRole" text not null,
@@ -2824,8 +2824,8 @@ export default async (application: Application): Promise<void> => {
                         ${null},
                         ${null},
                         ${Number(false)},
-                        ${cryptoRandomString({ length: 100, type: "alphanumeric" })},
-                        ${JSON.stringify(Array.from({ length: 10 }, () => cryptoRandomString({ length: 10, type: "numeric" })))},
+                        ${null},
+                        ${null},
                         ${
                           [
                             "red",
