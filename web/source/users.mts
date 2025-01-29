@@ -942,7 +942,6 @@ export default async (application: Application): Promise<void> => {
                           </label>
                         `
                       : html``}
-
                     <div
                       css="${css`
                         font-size: var(--font-size--3);
@@ -953,10 +952,161 @@ export default async (application: Application): Promise<void> => {
                         type="submit"
                         class="button button--rectangle button--blue"
                       >
-                        Change email address
+                        Change password
                       </button>
                     </div>
                   </div>
+                  <hr class="separator" />
+                  $${Boolean(
+                    request.state.user.twoFactorAuthenticationEnabled,
+                  ) === false
+                    ? html`
+                        <div
+                          type="form"
+                          method="PATCH"
+                          action="/settings"
+                          css="${css`
+                            display: flex;
+                            flex-direction: column;
+                            gap: var(--size--4);
+                          `}"
+                        >
+                          <label>
+                            <div
+                              css="${css`
+                                font-size: var(--font-size--3);
+                                line-height: var(--font-size--3--line-height);
+                                font-weight: 600;
+                                color: light-dark(
+                                  var(--color--slate--500),
+                                  var(--color--slate--500)
+                                );
+                              `}"
+                            >
+                              Password confirmation
+                            </div>
+                            <div
+                              css="${css`
+                                display: flex;
+                              `}"
+                            >
+                              <input
+                                type="password"
+                                name="passwordConfirmation"
+                                required
+                                minlength="8"
+                                maxlength="2000"
+                                class="input--text"
+                                css="${css`
+                                  flex: 1;
+                                `}"
+                              />
+                            </div>
+                          </label>
+                          <div
+                            css="${css`
+                              font-size: var(--font-size--3);
+                              line-height: var(--font-size--3--line-height);
+                            `}"
+                          >
+                            <button
+                              type="submit"
+                              class="button button--rectangle button--blue"
+                            >
+                              Enable two-factor authentication
+                            </button>
+                          </div>
+                        </div>
+                      `
+                    : html`
+                        <div
+                          type="form"
+                          method="PATCH"
+                          action="/settings"
+                          css="${css`
+                            display: flex;
+                            flex-direction: column;
+                            gap: var(--size--4);
+                          `}"
+                        >
+                          <label>
+                            <div
+                              css="${css`
+                                font-size: var(--font-size--3);
+                                line-height: var(--font-size--3--line-height);
+                                font-weight: 600;
+                                color: light-dark(
+                                  var(--color--slate--500),
+                                  var(--color--slate--500)
+                                );
+                              `}"
+                            >
+                              Password confirmation
+                            </div>
+                            <div
+                              css="${css`
+                                display: flex;
+                              `}"
+                            >
+                              <input
+                                type="password"
+                                name="passwordConfirmation"
+                                required
+                                minlength="8"
+                                maxlength="2000"
+                                class="input--text"
+                                css="${css`
+                                  flex: 1;
+                                `}"
+                              />
+                            </div>
+                          </label>
+                          <label>
+                            <div
+                              css="${css`
+                                font-size: var(--font-size--3);
+                                line-height: var(--font-size--3--line-height);
+                                font-weight: 600;
+                                color: light-dark(
+                                  var(--color--slate--500),
+                                  var(--color--slate--500)
+                                );
+                              `}"
+                            >
+                              Two-factor authentication code
+                            </div>
+                            <div
+                              css="${css`
+                                display: flex;
+                              `}"
+                            >
+                              <input
+                                type="text"
+                                inputmode="numeric"
+                                name="twoFactorAuthenticationConfirmation"
+                                required
+                                class="input--text"
+                                css="${css`
+                                  flex: 1;
+                                `}"
+                              />
+                            </div>
+                          </label>
+                          <div
+                            css="${css`
+                              font-size: var(--font-size--3);
+                              line-height: var(--font-size--3--line-height);
+                            `}"
+                          >
+                            <button
+                              type="submit"
+                              class="button button--rectangle button--blue"
+                            >
+                              Disable two-factor authentication
+                            </button>
+                          </div>
+                        </div>
+                      `}
                   <hr class="separator" />
                 </div>
               </details>
