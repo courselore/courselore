@@ -22,8 +22,8 @@ export type ApplicationUsers = {
           passwordResetNonce: string | null;
           passwordResetCreatedAt: string | null;
           twoFactorAuthenticationEnabled: number;
-          twoFactorAuthenticationSecret: string | null;
-          twoFactorAuthenticationBackupCodes: string | null;
+          twoFactorAuthenticationSecret: string;
+          twoFactorAuthenticationBackupCodes: string;
           avatarColor:
             | "red"
             | "orange"
@@ -131,8 +131,8 @@ export default async (application: Application): Promise<void> => {
         passwordResetNonce: string | null;
         passwordResetCreatedAt: string | null;
         twoFactorAuthenticationEnabled: number;
-        twoFactorAuthenticationSecret: string | null;
-        twoFactorAuthenticationBackupCodes: string | null;
+        twoFactorAuthenticationSecret: string;
+        twoFactorAuthenticationBackupCodes: string;
         avatarColor:
           | "red"
           | "orange"

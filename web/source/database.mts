@@ -2435,8 +2435,8 @@ export default async (application: Application): Promise<void> => {
             "passwordResetNonce" text null unique,
             "passwordResetCreatedAt" text null,
             "twoFactorAuthenticationEnabled" integer not null,
-            "twoFactorAuthenticationSecret" text null,
-            "twoFactorAuthenticationBackupCodes" text null,
+            "twoFactorAuthenticationSecret" text not null,
+            "twoFactorAuthenticationBackupCodes" text not null,
             "avatarColor" text not null,
             "avatarImage" text null,
             "userRole" text not null,
@@ -2824,8 +2824,8 @@ export default async (application: Application): Promise<void> => {
                         ${null},
                         ${null},
                         ${Number(false)},
-                        ${null},
-                        ${null},
+                        ${"twoFactorAuthenticationSecret"},
+                        ${JSON.stringify(Array.from({ length: 10 }, () => "twoFactorAuthenticationBackupCode"))},
                         ${
                           [
                             "red",
