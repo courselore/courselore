@@ -744,37 +744,42 @@ export default async (application: Application): Promise<void> => {
                         />
                       </div>
                     </label>
-                    <label>
-                      <div
-                        css="${css`
-                          font-size: var(--font-size--3);
-                          line-height: var(--font-size--3--line-height);
-                          font-weight: 600;
-                          color: light-dark(
-                            var(--color--slate--500),
-                            var(--color--slate--500)
-                          );
-                        `}"
-                      >
-                        Two-factor authentication code
-                      </div>
-                      <div
-                        css="${css`
-                          display: flex;
-                        `}"
-                      >
-                        <input
-                          type="text"
-                          inputmode="numeric"
-                          name="twoFactorAuthenticationConfirmation"
-                          required
-                          class="input--text"
-                          css="${css`
-                            flex: 1;
-                          `}"
-                        />
-                      </div>
-                    </label>
+                    $${Boolean(request.state.user.oneTimePasswordEnabled)
+                      ? html`
+                          <label>
+                            <div
+                              css="${css`
+                                font-size: var(--font-size--3);
+                                line-height: var(--font-size--3--line-height);
+                                font-weight: 600;
+                                color: light-dark(
+                                  var(--color--slate--500),
+                                  var(--color--slate--500)
+                                );
+                              `}"
+                            >
+                              Two-factor authentication code
+                            </div>
+                            <div
+                              css="${css`
+                                display: flex;
+                              `}"
+                            >
+                              <input
+                                type="text"
+                                inputmode="numeric"
+                                name="twoFactorAuthenticationConfirmation"
+                                required
+                                class="input--text"
+                                css="${css`
+                                  flex: 1;
+                                `}"
+                              />
+                            </div>
+                          </label>
+                        `
+                      : html``}
+
                     <div
                       css="${css`
                         font-size: var(--font-size--3);
