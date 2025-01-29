@@ -918,7 +918,9 @@ export default async (application: Application): Promise<void> => {
                                     --transition-timing-function--ease-in-out
                                   );
                                   [key~="courseConversations--groups--group"][open]
-                                    & {
+                                    > summary
+                                    > div
+                                    > & {
                                     transform: rotate(
                                       var(--transform--rotate--90)
                                     );

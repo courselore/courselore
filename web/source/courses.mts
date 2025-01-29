@@ -336,7 +336,7 @@ export default async (application: Application): Promise<void> => {
                             transition-timing-function: var(
                               --transition-timing-function--ease-in-out
                             );
-                            details[open] & {
+                            details[open] > summary > & {
                               transform: rotate(var(--transform--rotate--90));
                             }
                           `}"
@@ -678,7 +678,7 @@ export default async (application: Application): Promise<void> => {
                             transition-timing-function: var(
                               --transition-timing-function--ease-in-out
                             );
-                            details[open] & {
+                            details[open] > summary > & {
                               transform: rotate(var(--transform--rotate--90));
                             }
                           `}"
@@ -1039,7 +1039,7 @@ export default async (application: Application): Promise<void> => {
                             transition-timing-function: var(
                               --transition-timing-function--ease-in-out
                             );
-                            details[open] & {
+                            details[open] > summary > & {
                               transform: rotate(var(--transform--rotate--90));
                             }
                           `}"
@@ -2002,7 +2002,7 @@ export default async (application: Application): Promise<void> => {
                             transition-timing-function: var(
                               --transition-timing-function--ease-in-out
                             );
-                            details[open] & {
+                            details[open] > summary > & {
                               transform: rotate(var(--transform--rotate--90));
                             }
                           `}"
@@ -2351,7 +2351,7 @@ export default async (application: Application): Promise<void> => {
                       transition-timing-function: var(
                         --transition-timing-function--ease-in-out
                       );
-                      details[open] & {
+                      details[open] > summary > & {
                         transform: rotate(var(--transform--rotate--90));
                       }
                     `}"
