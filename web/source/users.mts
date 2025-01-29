@@ -21,9 +21,9 @@ export type ApplicationUsers = {
           password: string | null;
           passwordResetNonce: string | null;
           passwordResetCreatedAt: string | null;
-          oneTimePasswordEnabled: number;
-          oneTimePasswordSecret: string | null;
-          oneTimePasswordBackupCodes: string | null;
+          twoFactorAuthenticationEnabled: number;
+          twoFactorAuthenticationSecret: string | null;
+          twoFactorAuthenticationBackupCodes: string | null;
           avatarColor:
             | "red"
             | "orange"
@@ -130,9 +130,9 @@ export default async (application: Application): Promise<void> => {
         password: string | null;
         passwordResetNonce: string | null;
         passwordResetCreatedAt: string | null;
-        oneTimePasswordEnabled: number;
-        oneTimePasswordSecret: string | null;
-        oneTimePasswordBackupCodes: string | null;
+        twoFactorAuthenticationEnabled: number;
+        twoFactorAuthenticationSecret: string | null;
+        twoFactorAuthenticationBackupCodes: string | null;
         avatarColor:
           | "red"
           | "orange"
@@ -185,9 +185,9 @@ export default async (application: Application): Promise<void> => {
             "password",
             "passwordResetNonce",
             "passwordResetCreatedAt",
-            "oneTimePasswordEnabled",
-            "oneTimePasswordSecret",
-            "oneTimePasswordBackupCodes",
+            "twoFactorAuthenticationEnabled",
+            "twoFactorAuthenticationSecret",
+            "twoFactorAuthenticationBackupCodes",
             "avatarColor",
             "avatarImage",
             "userRole",
@@ -744,7 +744,9 @@ export default async (application: Application): Promise<void> => {
                         />
                       </div>
                     </label>
-                    $${Boolean(request.state.user.oneTimePasswordEnabled)
+                    $${Boolean(
+                      request.state.user.twoFactorAuthenticationEnabled,
+                    )
                       ? html`
                           <label>
                             <div
