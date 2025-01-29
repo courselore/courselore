@@ -1050,13 +1050,668 @@ export default async (application: Application): Promise<void> => {
                       </summary>
                       <div
                         css="${css`
+                          margin: var(--size--2) var(--size--0);
                           display: flex;
                           flex-direction: column;
                           gap: var(--size--2);
                         `}"
                       >
-                        HERE GO DETAILS
+                        <details>
+                          <summary
+                            class="button button--rectangle button--transparent"
+                            css="${css`
+                              font-size: var(--font-size--3);
+                              line-height: var(--font-size--3--line-height);
+                              font-weight: 600;
+                              color: light-dark(
+                                var(--color--slate--600),
+                                var(--color--slate--400)
+                              );
+                            `}"
+                          >
+                            <span
+                              css="${css`
+                                display: inline-block;
+                                transition-property: var(
+                                  --transition-property--transform
+                                );
+                                transition-duration: var(
+                                  --transition-duration--150
+                                );
+                                transition-timing-function: var(
+                                  --transition-timing-function--ease-in-out
+                                );
+                                details[open] > summary > & {
+                                  transform: rotate(
+                                    var(--transform--rotate--90)
+                                  );
+                                }
+                              `}"
+                            >
+                              <i class="bi bi-chevron-right"></i>
+                            </span>
+                            Invitation links
+                          </summary>
+                          <div
+                            css="${css`
+                              margin: var(--size--2) var(--size--0);
+                              display: flex;
+                              flex-direction: column;
+                              gap: var(--size--4);
+                            `}"
+                          >
+                            <div
+                              type="form"
+                              method="PATCH"
+                              action="/courses/${request.state.course
+                                .publicId}/settings"
+                              css="${css`
+                                display: flex;
+                                flex-direction: column;
+                                gap: var(--size--4);
+                              `}"
+                            >
+                              <div
+                                key="invitationLink"
+                                css="${css`
+                                  display: flex;
+                                  flex-direction: column;
+                                  gap: var(--size--2);
+                                `}"
+                              >
+                                <label
+                                  class="button button--rectangle button--transparent"
+                                >
+                                  <input
+                                    type="checkbox"
+                                    name="invitationLinkCourseParticipationRoleInstructorsEnabled"
+                                    $${Boolean(
+                                      request.state.course
+                                        .invitationLinkCourseParticipationRoleInstructorsEnabled,
+                                    )
+                                      ? html`checked`
+                                      : html``}
+                                    class="input--checkbox"
+                                  />  Invitation link for instructors
+                                </label>
+                                <input
+                                  key="invitationLinkToken--hide--input"
+                                  type="text"
+                                  value="https://${application.configuration
+                                    .hostname}/courses/${request.state.course
+                                    .publicId}/invitations/${"*".repeat(
+                                    request.state.course
+                                      .invitationLinkCourseParticipationRoleInstructorsToken
+                                      .length,
+                                  )}"
+                                  readonly
+                                  class="input--text"
+                                  css="${css`
+                                    font-family: "Roboto Mono Variable",
+                                      var(--font-family--monospace);
+                                  `}"
+                                  javascript="${javascript`
+                                    this.onclick = () => {
+                                      this.select();
+                                    };
+                                  `}"
+                                />
+                                <input
+                                  key="invitationLinkToken--show--input"
+                                  type="text"
+                                  value="https://${application.configuration
+                                    .hostname}/courses/${request.state.course
+                                    .publicId}/invitations/${request.state
+                                    .course
+                                    .invitationLinkCourseParticipationRoleInstructorsToken}"
+                                  readonly
+                                  hidden
+                                  class="input--text"
+                                  css="${css`
+                                    font-family: "Roboto Mono Variable",
+                                      var(--font-family--monospace);
+                                  `}"
+                                  javascript="${javascript`
+                                    this.onclick = () => {
+                                      this.select();
+                                    };
+                                  `}"
+                                />
+                                <div
+                                  key="invitationLinkToken--QRCode--show--input"
+                                  hidden
+                                >
+                                  $${(
+                                    await QRCode.toString(
+                                      `https://${
+                                        application.configuration.hostname
+                                      }/courses/${
+                                        request.state.course.publicId
+                                      }/invitations/${
+                                        request.state.course
+                                          .invitationLinkCourseParticipationRoleInstructorsToken
+                                      }`,
+                                      { type: "svg", margin: 0 },
+                                    )
+                                  )
+                                    .replace("#000000", "currentColor")
+                                    .replace("#ffffff", "transparent")}
+                                </div>
+                                <div
+                                  css="${css`
+                                    font-size: var(--font-size--3);
+                                    line-height: var(
+                                      --font-size--3--line-height
+                                    );
+                                    font-weight: 600;
+                                    color: light-dark(
+                                      var(--color--slate--600),
+                                      var(--color--slate--400)
+                                    );
+                                    display: flex;
+                                    align-items: baseline;
+                                    flex-wrap: wrap;
+                                    column-gap: var(--size--4);
+                                    row-gap: var(--size--2);
+                                  `}"
+                                >
+                                  <button
+                                    type="button"
+                                    class="button button--rectangle button--transparent"
+                                    javascript="${javascript`
+                                      const popover = javascript.popover({ element: this, trigger: "none" });
+                                      this.onclick = async () => {
+                                        await navigator.clipboard.writeText(${`https://${
+                                          application.configuration.hostname
+                                        }/courses/${
+                                          request.state.course.publicId
+                                        }/invitations/${
+                                          request.state.course
+                                            .invitationLinkCourseParticipationRoleInstructorsToken
+                                        }`});
+                                        popover.showPopover();
+                                        await utilities.sleep(1000);
+                                        popover.hidePopover();
+                                      };
+                                    `}"
+                                  >
+                                    Copy
+                                  </button>
+                                  <div type="popover">Copied</div>
+                                  <button
+                                    key="invitationLinkToken--show--button"
+                                    type="button"
+                                    class="button button--rectangle button--transparent"
+                                    javascript="${javascript`
+                                      this.onclick = () => {
+                                        this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--hide--input"]').hidden = true;
+                                        this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--show--input"]').hidden = false;
+                                        this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--show--button"]').hidden = true;
+                                        this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--hide--button"]').hidden = false;
+                                      };
+                                    `}"
+                                  >
+                                    Show
+                                  </button>
+                                  <button
+                                    key="invitationLinkToken--hide--button"
+                                    type="button"
+                                    hidden
+                                    class="button button--rectangle button--transparent"
+                                    javascript="${javascript`
+                                      this.onclick = () => {
+                                        this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--hide--input"]').hidden = false;
+                                        this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--show--input"]').hidden = true;
+                                        this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--show--button"]').hidden = false;
+                                        this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--hide--button"]').hidden = true;
+                                      };
+                                    `}"
+                                  >
+                                    Hide
+                                  </button>
+                                  <button
+                                    key="invitationLinkToken--QRCode--show--button"
+                                    type="button"
+                                    class="button button--rectangle button--transparent"
+                                    javascript="${javascript`
+                                      this.onclick = () => {
+                                        this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--QRCode--show--input"]').hidden = false;
+                                        this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--QRCode--show--button"]').hidden = true;
+                                        this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--QRCode--hide--button"]').hidden = false;
+                                      };
+                                    `}"
+                                  >
+                                    Show QR code
+                                  </button>
+                                  <button
+                                    key="invitationLinkToken--QRCode--hide--button"
+                                    type="button"
+                                    hidden
+                                    class="button button--rectangle button--transparent"
+                                    javascript="${javascript`
+                                      this.onclick = () => {
+                                        this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--QRCode--show--input"]').hidden = true;
+                                        this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--QRCode--show--button"]').hidden = false;
+                                        this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--QRCode--hide--button"]').hidden = true;
+                                      };
+                                    `}"
+                                  >
+                                    Hide QR code
+                                  </button>
+                                  <div>
+                                    <button
+                                      type="button"
+                                      class="button button--rectangle button--transparent"
+                                      javascript="${javascript`
+                                        javascript.popover({ element: this, trigger: "click" });
+                                      `}"
+                                    >
+                                      Renew
+                                    </button>
+                                    <div
+                                      type="form popover"
+                                      method="PATCH"
+                                      action="/courses/${request.state.course
+                                        .publicId}/settings"
+                                      css="${css`
+                                        display: flex;
+                                        flex-direction: column;
+                                        gap: var(--size--2);
+                                      `}"
+                                    >
+                                      <input
+                                        type="hidden"
+                                        name="renewInvitationLinkCourseParticipationRoleInstructorsToken"
+                                        value="true"
+                                      />
+                                      <div
+                                        css="${css`
+                                          font-size: var(--font-size--3);
+                                          line-height: var(
+                                            --font-size--3--line-height
+                                          );
+                                          font-weight: 600;
+                                          color: light-dark(
+                                            var(--color--red--500),
+                                            var(--color--red--500)
+                                          );
+                                        `}"
+                                      >
+                                        <i
+                                          class="bi bi-exclamation-triangle-fill"
+                                        ></i
+                                        > The existing invitation link will
+                                        become invalid and a new invitation link
+                                        will be created. Only renew the
+                                        invitation link if it has been
+                                        distributed to people who shouldn’t have
+                                        access to it.
+                                      </div>
+                                      <div>
+                                        <button
+                                          type="submit"
+                                          class="button button--rectangle button--red"
+                                          css="${css`
+                                            font-size: var(--font-size--3);
+                                            line-height: var(
+                                              --font-size--3--line-height
+                                            );
+                                          `}"
+                                        >
+                                          Renew invitation link
+                                        </button>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              <div
+                                key="invitationLink"
+                                css="${css`
+                                  display: flex;
+                                  flex-direction: column;
+                                  gap: var(--size--2);
+                                `}"
+                              >
+                                <label
+                                  class="button button--rectangle button--transparent"
+                                >
+                                  <input
+                                    type="checkbox"
+                                    name="invitationLinkCourseParticipationRoleStudentsEnabled"
+                                    $${Boolean(
+                                      request.state.course
+                                        .invitationLinkCourseParticipationRoleStudentsEnabled,
+                                    )
+                                      ? html`checked`
+                                      : html``}
+                                    class="input--checkbox"
+                                  />  Invitation link for students
+                                </label>
+                                <input
+                                  key="invitationLinkToken--hide--input"
+                                  type="text"
+                                  value="https://${application.configuration
+                                    .hostname}/courses/${request.state.course
+                                    .publicId}/invitations/${"*".repeat(
+                                    request.state.course
+                                      .invitationLinkCourseParticipationRoleStudentsToken
+                                      .length,
+                                  )}"
+                                  readonly
+                                  class="input--text"
+                                  css="${css`
+                                    font-family: "Roboto Mono Variable",
+                                      var(--font-family--monospace);
+                                  `}"
+                                  javascript="${javascript`
+                                    this.onclick = () => {
+                                      this.select();
+                                    };
+                                  `}"
+                                />
+                                <input
+                                  key="invitationLinkToken--show--input"
+                                  type="text"
+                                  value="https://${application.configuration
+                                    .hostname}/courses/${request.state.course
+                                    .publicId}/invitations/${request.state
+                                    .course
+                                    .invitationLinkCourseParticipationRoleStudentsToken}"
+                                  readonly
+                                  hidden
+                                  class="input--text"
+                                  css="${css`
+                                    font-family: "Roboto Mono Variable",
+                                      var(--font-family--monospace);
+                                  `}"
+                                  javascript="${javascript`
+                                    this.onclick = () => {
+                                      this.select();
+                                    };
+                                  `}"
+                                />
+                                <div
+                                  key="invitationLinkToken--QRCode--show--input"
+                                  hidden
+                                >
+                                  $${(
+                                    await QRCode.toString(
+                                      `https://${
+                                        application.configuration.hostname
+                                      }/courses/${
+                                        request.state.course.publicId
+                                      }/invitations/${
+                                        request.state.course
+                                          .invitationLinkCourseParticipationRoleStudentsToken
+                                      }`,
+                                      { type: "svg", margin: 0 },
+                                    )
+                                  )
+                                    .replace("#000000", "currentColor")
+                                    .replace("#ffffff", "transparent")}
+                                </div>
+                                <div
+                                  css="${css`
+                                    font-size: var(--font-size--3);
+                                    line-height: var(
+                                      --font-size--3--line-height
+                                    );
+                                    font-weight: 600;
+                                    color: light-dark(
+                                      var(--color--slate--600),
+                                      var(--color--slate--400)
+                                    );
+                                    display: flex;
+                                    align-items: baseline;
+                                    flex-wrap: wrap;
+                                    column-gap: var(--size--4);
+                                    row-gap: var(--size--2);
+                                  `}"
+                                >
+                                  <button
+                                    type="button"
+                                    class="button button--rectangle button--transparent"
+                                    javascript="${javascript`
+                                      const popover = javascript.popover({ element: this, trigger: "none" });
+                                      this.onclick = async () => {
+                                        await navigator.clipboard.writeText(${`https://${
+                                          application.configuration.hostname
+                                        }/courses/${
+                                          request.state.course.publicId
+                                        }/invitations/${
+                                          request.state.course
+                                            .invitationLinkCourseParticipationRoleStudentsToken
+                                        }`});
+                                        popover.showPopover();
+                                        await utilities.sleep(1000);
+                                        popover.hidePopover();
+                                      };
+                                    `}"
+                                  >
+                                    Copy
+                                  </button>
+                                  <div type="popover">Copied</div>
+                                  <button
+                                    key="invitationLinkToken--show--button"
+                                    type="button"
+                                    class="button button--rectangle button--transparent"
+                                    javascript="${javascript`
+                                      this.onclick = () => {
+                                        this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--hide--input"]').hidden = true;
+                                        this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--show--input"]').hidden = false;
+                                        this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--show--button"]').hidden = true;
+                                        this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--hide--button"]').hidden = false;
+                                      };
+                                    `}"
+                                  >
+                                    Show
+                                  </button>
+                                  <button
+                                    key="invitationLinkToken--hide--button"
+                                    type="button"
+                                    hidden
+                                    class="button button--rectangle button--transparent"
+                                    javascript="${javascript`
+                                      this.onclick = () => {
+                                        this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--hide--input"]').hidden = false;
+                                        this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--show--input"]').hidden = true;
+                                        this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--show--button"]').hidden = false;
+                                        this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--hide--button"]').hidden = true;
+                                      };
+                                    `}"
+                                  >
+                                    Hide
+                                  </button>
+                                  <button
+                                    key="invitationLinkToken--QRCode--show--button"
+                                    type="button"
+                                    class="button button--rectangle button--transparent"
+                                    javascript="${javascript`
+                                      this.onclick = () => {
+                                        this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--QRCode--show--input"]').hidden = false;
+                                        this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--QRCode--show--button"]').hidden = true;
+                                        this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--QRCode--hide--button"]').hidden = false;
+                                      };
+                                    `}"
+                                  >
+                                    Show QR code
+                                  </button>
+                                  <button
+                                    key="invitationLinkToken--QRCode--hide--button"
+                                    type="button"
+                                    hidden
+                                    class="button button--rectangle button--transparent"
+                                    javascript="${javascript`
+                                      this.onclick = () => {
+                                        this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--QRCode--show--input"]').hidden = true;
+                                        this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--QRCode--show--button"]').hidden = false;
+                                        this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--QRCode--hide--button"]').hidden = true;
+                                      };
+                                    `}"
+                                  >
+                                    Hide QR code
+                                  </button>
+                                  <div>
+                                    <button
+                                      type="button"
+                                      class="button button--rectangle button--transparent"
+                                      javascript="${javascript`
+                                        javascript.popover({ element: this, trigger: "click" });
+                                      `}"
+                                    >
+                                      Renew
+                                    </button>
+                                    <div
+                                      type="form popover"
+                                      method="PATCH"
+                                      action="/courses/${request.state.course
+                                        .publicId}/settings"
+                                      css="${css`
+                                        display: flex;
+                                        flex-direction: column;
+                                        gap: var(--size--2);
+                                      `}"
+                                    >
+                                      <input
+                                        type="hidden"
+                                        name="renewInvitationLinkCourseParticipationRoleStudentsToken"
+                                        value="true"
+                                      />
+                                      <div
+                                        css="${css`
+                                          font-size: var(--font-size--3);
+                                          line-height: var(
+                                            --font-size--3--line-height
+                                          );
+                                          font-weight: 600;
+                                          color: light-dark(
+                                            var(--color--red--500),
+                                            var(--color--red--500)
+                                          );
+                                        `}"
+                                      >
+                                        <i
+                                          class="bi bi-exclamation-triangle-fill"
+                                        ></i
+                                        > The existing invitation link will
+                                        become invalid and a new invitation link
+                                        will be created. Only renew the
+                                        invitation link if it has been
+                                        distributed to people who shouldn’t have
+                                        access to it.
+                                      </div>
+                                      <div>
+                                        <button
+                                          type="submit"
+                                          class="button button--rectangle button--red"
+                                          css="${css`
+                                            font-size: var(--font-size--3);
+                                            line-height: var(
+                                              --font-size--3--line-height
+                                            );
+                                          `}"
+                                        >
+                                          Renew invitation link
+                                        </button>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              <div
+                                css="${css`
+                                  font-size: var(--font-size--3);
+                                  line-height: var(--font-size--3--line-height);
+                                `}"
+                              >
+                                <button
+                                  type="submit"
+                                  class="button button--rectangle button--blue"
+                                >
+                                  Update invitation links
+                                </button>
+                              </div>
+                            </div>
+                            <hr class="separator" />
+                          </div>
+                        </details>
+                        <details>
+                          <summary
+                            class="button button--rectangle button--transparent"
+                            css="${css`
+                              font-size: var(--font-size--3);
+                              line-height: var(--font-size--3--line-height);
+                              font-weight: 600;
+                              color: light-dark(
+                                var(--color--slate--600),
+                                var(--color--slate--400)
+                              );
+                            `}"
+                          >
+                            <span
+                              css="${css`
+                                display: inline-block;
+                                transition-property: var(
+                                  --transition-property--transform
+                                );
+                                transition-duration: var(
+                                  --transition-duration--150
+                                );
+                                transition-timing-function: var(
+                                  --transition-timing-function--ease-in-out
+                                );
+                                details[open] > summary > & {
+                                  transform: rotate(
+                                    var(--transform--rotate--90)
+                                  );
+                                }
+                              `}"
+                            >
+                              <i class="bi bi-chevron-right"></i>
+                            </span>
+                            Send invitation emails
+                          </summary>
+                        </details>
+                        <details>
+                          <summary
+                            class="button button--rectangle button--transparent"
+                            css="${css`
+                              font-size: var(--font-size--3);
+                              line-height: var(--font-size--3--line-height);
+                              font-weight: 600;
+                              color: light-dark(
+                                var(--color--slate--600),
+                                var(--color--slate--400)
+                              );
+                            `}"
+                          >
+                            <span
+                              css="${css`
+                                display: inline-block;
+                                transition-property: var(
+                                  --transition-property--transform
+                                );
+                                transition-duration: var(
+                                  --transition-duration--150
+                                );
+                                transition-timing-function: var(
+                                  --transition-timing-function--ease-in-out
+                                );
+                                details[open] > summary > & {
+                                  transform: rotate(
+                                    var(--transform--rotate--90)
+                                  );
+                                }
+                              `}"
+                            >
+                              <i class="bi bi-chevron-right"></i>
+                            </span>
+                            Pending invitation emails
+                          </summary>
+                        </details>
                         <div
+                          hidden
                           css="${css`
                             margin: var(--size--2) var(--size--0);
                             display: flex;
@@ -1064,569 +1719,6 @@ export default async (application: Application): Promise<void> => {
                             gap: var(--size--4);
                           `}"
                         >
-                          <div
-                            type="form"
-                            method="PATCH"
-                            action="/courses/${request.state.course
-                              .publicId}/settings"
-                            css="${css`
-                              display: flex;
-                              flex-direction: column;
-                              gap: var(--size--4);
-                            `}"
-                          >
-                            <div
-                              css="${css`
-                                display: flex;
-                                flex-direction: column;
-                                gap: var(--size--1);
-                              `}"
-                            >
-                              <div
-                                css="${css`
-                                  font-size: var(--font-size--3);
-                                  line-height: var(--font-size--3--line-height);
-                                  font-weight: 600;
-                                  color: light-dark(
-                                    var(--color--slate--500),
-                                    var(--color--slate--500)
-                                  );
-                                `}"
-                              >
-                                Invitation links
-                              </div>
-                              <div
-                                css="${css`
-                                  display: flex;
-                                  flex-direction: column;
-                                  gap: var(--size--4);
-                                `}"
-                              >
-                                <div
-                                  key="invitationLink"
-                                  css="${css`
-                                    display: flex;
-                                    flex-direction: column;
-                                    gap: var(--size--2);
-                                  `}"
-                                >
-                                  <label
-                                    class="button button--rectangle button--transparent"
-                                  >
-                                    <input
-                                      type="checkbox"
-                                      name="invitationLinkCourseParticipationRoleInstructorsEnabled"
-                                      $${Boolean(
-                                        request.state.course
-                                          .invitationLinkCourseParticipationRoleInstructorsEnabled,
-                                      )
-                                        ? html`checked`
-                                        : html``}
-                                      class="input--checkbox"
-                                    />  Invitation link for instructors
-                                  </label>
-                                  <input
-                                    key="invitationLinkToken--hide--input"
-                                    type="text"
-                                    value="https://${application.configuration
-                                      .hostname}/courses/${request.state.course
-                                      .publicId}/invitations/${"*".repeat(
-                                      request.state.course
-                                        .invitationLinkCourseParticipationRoleInstructorsToken
-                                        .length,
-                                    )}"
-                                    readonly
-                                    class="input--text"
-                                    css="${css`
-                                      font-family: "Roboto Mono Variable",
-                                        var(--font-family--monospace);
-                                    `}"
-                                    javascript="${javascript`
-                                      this.onclick = () => {
-                                        this.select();
-                                      };
-                                    `}"
-                                  />
-                                  <input
-                                    key="invitationLinkToken--show--input"
-                                    type="text"
-                                    value="https://${application.configuration
-                                      .hostname}/courses/${request.state.course
-                                      .publicId}/invitations/${request.state
-                                      .course
-                                      .invitationLinkCourseParticipationRoleInstructorsToken}"
-                                    readonly
-                                    hidden
-                                    class="input--text"
-                                    css="${css`
-                                      font-family: "Roboto Mono Variable",
-                                        var(--font-family--monospace);
-                                    `}"
-                                    javascript="${javascript`
-                                      this.onclick = () => {
-                                        this.select();
-                                      };
-                                    `}"
-                                  />
-                                  <div
-                                    key="invitationLinkToken--QRCode--show--input"
-                                    hidden
-                                  >
-                                    $${(
-                                      await QRCode.toString(
-                                        `https://${
-                                          application.configuration.hostname
-                                        }/courses/${
-                                          request.state.course.publicId
-                                        }/invitations/${
-                                          request.state.course
-                                            .invitationLinkCourseParticipationRoleInstructorsToken
-                                        }`,
-                                        { type: "svg", margin: 0 },
-                                      )
-                                    )
-                                      .replace("#000000", "currentColor")
-                                      .replace("#ffffff", "transparent")}
-                                  </div>
-                                  <div
-                                    css="${css`
-                                      font-size: var(--font-size--3);
-                                      line-height: var(
-                                        --font-size--3--line-height
-                                      );
-                                      font-weight: 600;
-                                      color: light-dark(
-                                        var(--color--slate--600),
-                                        var(--color--slate--400)
-                                      );
-                                      display: flex;
-                                      align-items: baseline;
-                                      flex-wrap: wrap;
-                                      column-gap: var(--size--4);
-                                      row-gap: var(--size--2);
-                                    `}"
-                                  >
-                                    <button
-                                      type="button"
-                                      class="button button--rectangle button--transparent"
-                                      javascript="${javascript`
-                                        const popover = javascript.popover({ element: this, trigger: "none" });
-                                        this.onclick = async () => {
-                                          await navigator.clipboard.writeText(${`https://${
-                                            application.configuration.hostname
-                                          }/courses/${
-                                            request.state.course.publicId
-                                          }/invitations/${
-                                            request.state.course
-                                              .invitationLinkCourseParticipationRoleInstructorsToken
-                                          }`});
-                                          popover.showPopover();
-                                          await utilities.sleep(1000);
-                                          popover.hidePopover();
-                                        };
-                                      `}"
-                                    >
-                                      Copy
-                                    </button>
-                                    <div type="popover">Copied</div>
-                                    <button
-                                      key="invitationLinkToken--show--button"
-                                      type="button"
-                                      class="button button--rectangle button--transparent"
-                                      javascript="${javascript`
-                                        this.onclick = () => {
-                                          this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--hide--input"]').hidden = true;
-                                          this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--show--input"]').hidden = false;
-                                          this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--show--button"]').hidden = true;
-                                          this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--hide--button"]').hidden = false;
-                                        };
-                                      `}"
-                                    >
-                                      Show
-                                    </button>
-                                    <button
-                                      key="invitationLinkToken--hide--button"
-                                      type="button"
-                                      hidden
-                                      class="button button--rectangle button--transparent"
-                                      javascript="${javascript`
-                                        this.onclick = () => {
-                                          this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--hide--input"]').hidden = false;
-                                          this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--show--input"]').hidden = true;
-                                          this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--show--button"]').hidden = false;
-                                          this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--hide--button"]').hidden = true;
-                                        };
-                                      `}"
-                                    >
-                                      Hide
-                                    </button>
-                                    <button
-                                      key="invitationLinkToken--QRCode--show--button"
-                                      type="button"
-                                      class="button button--rectangle button--transparent"
-                                      javascript="${javascript`
-                                        this.onclick = () => {
-                                          this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--QRCode--show--input"]').hidden = false;
-                                          this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--QRCode--show--button"]').hidden = true;
-                                          this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--QRCode--hide--button"]').hidden = false;
-                                        };
-                                      `}"
-                                    >
-                                      Show QR code
-                                    </button>
-                                    <button
-                                      key="invitationLinkToken--QRCode--hide--button"
-                                      type="button"
-                                      hidden
-                                      class="button button--rectangle button--transparent"
-                                      javascript="${javascript`
-                                        this.onclick = () => {
-                                          this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--QRCode--show--input"]').hidden = true;
-                                          this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--QRCode--show--button"]').hidden = false;
-                                          this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--QRCode--hide--button"]').hidden = true;
-                                        };
-                                      `}"
-                                    >
-                                      Hide QR code
-                                    </button>
-                                    <div>
-                                      <button
-                                        type="button"
-                                        class="button button--rectangle button--transparent"
-                                        javascript="${javascript`
-                                          javascript.popover({ element: this, trigger: "click" });
-                                        `}"
-                                      >
-                                        Renew
-                                      </button>
-                                      <div
-                                        type="form popover"
-                                        method="PATCH"
-                                        action="/courses/${request.state.course
-                                          .publicId}/settings"
-                                        css="${css`
-                                          display: flex;
-                                          flex-direction: column;
-                                          gap: var(--size--2);
-                                        `}"
-                                      >
-                                        <input
-                                          type="hidden"
-                                          name="renewInvitationLinkCourseParticipationRoleInstructorsToken"
-                                          value="true"
-                                        />
-                                        <div
-                                          css="${css`
-                                            font-size: var(--font-size--3);
-                                            line-height: var(
-                                              --font-size--3--line-height
-                                            );
-                                            font-weight: 600;
-                                            color: light-dark(
-                                              var(--color--red--500),
-                                              var(--color--red--500)
-                                            );
-                                          `}"
-                                        >
-                                          <i
-                                            class="bi bi-exclamation-triangle-fill"
-                                          ></i
-                                          > The existing invitation link will
-                                          become invalid and a new invitation
-                                          link will be created. Only renew the
-                                          invitation link if it has been
-                                          distributed to people who shouldn’t
-                                          have access to it.
-                                        </div>
-                                        <div>
-                                          <button
-                                            type="submit"
-                                            class="button button--rectangle button--red"
-                                            css="${css`
-                                              font-size: var(--font-size--3);
-                                              line-height: var(
-                                                --font-size--3--line-height
-                                              );
-                                            `}"
-                                          >
-                                            Renew invitation link
-                                          </button>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                                <div
-                                  key="invitationLink"
-                                  css="${css`
-                                    display: flex;
-                                    flex-direction: column;
-                                    gap: var(--size--2);
-                                  `}"
-                                >
-                                  <label
-                                    class="button button--rectangle button--transparent"
-                                  >
-                                    <input
-                                      type="checkbox"
-                                      name="invitationLinkCourseParticipationRoleStudentsEnabled"
-                                      $${Boolean(
-                                        request.state.course
-                                          .invitationLinkCourseParticipationRoleStudentsEnabled,
-                                      )
-                                        ? html`checked`
-                                        : html``}
-                                      class="input--checkbox"
-                                    />  Invitation link for students
-                                  </label>
-                                  <input
-                                    key="invitationLinkToken--hide--input"
-                                    type="text"
-                                    value="https://${application.configuration
-                                      .hostname}/courses/${request.state.course
-                                      .publicId}/invitations/${"*".repeat(
-                                      request.state.course
-                                        .invitationLinkCourseParticipationRoleStudentsToken
-                                        .length,
-                                    )}"
-                                    readonly
-                                    class="input--text"
-                                    css="${css`
-                                      font-family: "Roboto Mono Variable",
-                                        var(--font-family--monospace);
-                                    `}"
-                                    javascript="${javascript`
-                                      this.onclick = () => {
-                                        this.select();
-                                      };
-                                    `}"
-                                  />
-                                  <input
-                                    key="invitationLinkToken--show--input"
-                                    type="text"
-                                    value="https://${application.configuration
-                                      .hostname}/courses/${request.state.course
-                                      .publicId}/invitations/${request.state
-                                      .course
-                                      .invitationLinkCourseParticipationRoleStudentsToken}"
-                                    readonly
-                                    hidden
-                                    class="input--text"
-                                    css="${css`
-                                      font-family: "Roboto Mono Variable",
-                                        var(--font-family--monospace);
-                                    `}"
-                                    javascript="${javascript`
-                                      this.onclick = () => {
-                                        this.select();
-                                      };
-                                    `}"
-                                  />
-                                  <div
-                                    key="invitationLinkToken--QRCode--show--input"
-                                    hidden
-                                  >
-                                    $${(
-                                      await QRCode.toString(
-                                        `https://${
-                                          application.configuration.hostname
-                                        }/courses/${
-                                          request.state.course.publicId
-                                        }/invitations/${
-                                          request.state.course
-                                            .invitationLinkCourseParticipationRoleStudentsToken
-                                        }`,
-                                        { type: "svg", margin: 0 },
-                                      )
-                                    )
-                                      .replace("#000000", "currentColor")
-                                      .replace("#ffffff", "transparent")}
-                                  </div>
-                                  <div
-                                    css="${css`
-                                      font-size: var(--font-size--3);
-                                      line-height: var(
-                                        --font-size--3--line-height
-                                      );
-                                      font-weight: 600;
-                                      color: light-dark(
-                                        var(--color--slate--600),
-                                        var(--color--slate--400)
-                                      );
-                                      display: flex;
-                                      align-items: baseline;
-                                      flex-wrap: wrap;
-                                      column-gap: var(--size--4);
-                                      row-gap: var(--size--2);
-                                    `}"
-                                  >
-                                    <button
-                                      type="button"
-                                      class="button button--rectangle button--transparent"
-                                      javascript="${javascript`
-                                        const popover = javascript.popover({ element: this, trigger: "none" });
-                                        this.onclick = async () => {
-                                          await navigator.clipboard.writeText(${`https://${
-                                            application.configuration.hostname
-                                          }/courses/${
-                                            request.state.course.publicId
-                                          }/invitations/${
-                                            request.state.course
-                                              .invitationLinkCourseParticipationRoleStudentsToken
-                                          }`});
-                                          popover.showPopover();
-                                          await utilities.sleep(1000);
-                                          popover.hidePopover();
-                                        };
-                                      `}"
-                                    >
-                                      Copy
-                                    </button>
-                                    <div type="popover">Copied</div>
-                                    <button
-                                      key="invitationLinkToken--show--button"
-                                      type="button"
-                                      class="button button--rectangle button--transparent"
-                                      javascript="${javascript`
-                                        this.onclick = () => {
-                                          this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--hide--input"]').hidden = true;
-                                          this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--show--input"]').hidden = false;
-                                          this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--show--button"]').hidden = true;
-                                          this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--hide--button"]').hidden = false;
-                                        };
-                                      `}"
-                                    >
-                                      Show
-                                    </button>
-                                    <button
-                                      key="invitationLinkToken--hide--button"
-                                      type="button"
-                                      hidden
-                                      class="button button--rectangle button--transparent"
-                                      javascript="${javascript`
-                                        this.onclick = () => {
-                                          this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--hide--input"]').hidden = false;
-                                          this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--show--input"]').hidden = true;
-                                          this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--show--button"]').hidden = false;
-                                          this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--hide--button"]').hidden = true;
-                                        };
-                                      `}"
-                                    >
-                                      Hide
-                                    </button>
-                                    <button
-                                      key="invitationLinkToken--QRCode--show--button"
-                                      type="button"
-                                      class="button button--rectangle button--transparent"
-                                      javascript="${javascript`
-                                        this.onclick = () => {
-                                          this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--QRCode--show--input"]').hidden = false;
-                                          this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--QRCode--show--button"]').hidden = true;
-                                          this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--QRCode--hide--button"]').hidden = false;
-                                        };
-                                      `}"
-                                    >
-                                      Show QR code
-                                    </button>
-                                    <button
-                                      key="invitationLinkToken--QRCode--hide--button"
-                                      type="button"
-                                      hidden
-                                      class="button button--rectangle button--transparent"
-                                      javascript="${javascript`
-                                        this.onclick = () => {
-                                          this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--QRCode--show--input"]').hidden = true;
-                                          this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--QRCode--show--button"]').hidden = false;
-                                          this.closest('[key~="invitationLink"]').querySelector('[key~="invitationLinkToken--QRCode--hide--button"]').hidden = true;
-                                        };
-                                      `}"
-                                    >
-                                      Hide QR code
-                                    </button>
-                                    <div>
-                                      <button
-                                        type="button"
-                                        class="button button--rectangle button--transparent"
-                                        javascript="${javascript`
-                                          javascript.popover({ element: this, trigger: "click" });
-                                        `}"
-                                      >
-                                        Renew
-                                      </button>
-                                      <div
-                                        type="form popover"
-                                        method="PATCH"
-                                        action="/courses/${request.state.course
-                                          .publicId}/settings"
-                                        css="${css`
-                                          display: flex;
-                                          flex-direction: column;
-                                          gap: var(--size--2);
-                                        `}"
-                                      >
-                                        <input
-                                          type="hidden"
-                                          name="renewInvitationLinkCourseParticipationRoleStudentsToken"
-                                          value="true"
-                                        />
-                                        <div
-                                          css="${css`
-                                            font-size: var(--font-size--3);
-                                            line-height: var(
-                                              --font-size--3--line-height
-                                            );
-                                            font-weight: 600;
-                                            color: light-dark(
-                                              var(--color--red--500),
-                                              var(--color--red--500)
-                                            );
-                                          `}"
-                                        >
-                                          <i
-                                            class="bi bi-exclamation-triangle-fill"
-                                          ></i
-                                          > The existing invitation link will
-                                          become invalid and a new invitation
-                                          link will be created. Only renew the
-                                          invitation link if it has been
-                                          distributed to people who shouldn’t
-                                          have access to it.
-                                        </div>
-                                        <div>
-                                          <button
-                                            type="submit"
-                                            class="button button--rectangle button--red"
-                                            css="${css`
-                                              font-size: var(--font-size--3);
-                                              line-height: var(
-                                                --font-size--3--line-height
-                                              );
-                                            `}"
-                                          >
-                                            Renew invitation link
-                                          </button>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                            <div
-                              css="${css`
-                                font-size: var(--font-size--3);
-                                line-height: var(--font-size--3--line-height);
-                              `}"
-                            >
-                              <button
-                                type="submit"
-                                class="button button--rectangle button--blue"
-                              >
-                                Update invitation links
-                              </button>
-                            </div>
-                          </div>
-                          <hr class="separator" />
                           <div
                             css="${css`
                               display: flex;
