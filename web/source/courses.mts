@@ -1672,6 +1672,97 @@ export default async (application: Application): Promise<void> => {
                             </span>
                             Send invitation emails
                           </summary>
+                          <div
+                            css="${css`
+                              margin: var(--size--2) var(--size--0);
+                              display: flex;
+                              flex-direction: column;
+                              gap: var(--size--4);
+                            `}"
+                          >
+                            <div
+                              type="form"
+                              method="POST"
+                              action="/courses/${request.state.course
+                                .publicId}/settings/invitation-emails"
+                              css="${css`
+                                display: flex;
+                                flex-direction: column;
+                                gap: var(--size--4);
+                              `}"
+                            >
+                              <div
+                                css="${css`
+                                  display: flex;
+                                  flex-direction: column;
+                                  gap: var(--size--2);
+                                `}"
+                              >
+                                <label
+                                  class="button button--rectangle button--transparent"
+                                >
+                                  <input
+                                    type="radio"
+                                    name="courseParticipationRole"
+                                    value="courseParticipationRoleInstructor"
+                                    class="input--radio"
+                                  />  Instructors
+                                </label>
+                                <label
+                                  class="button button--rectangle button--transparent"
+                                >
+                                  <input
+                                    type="radio"
+                                    name="courseParticipationRole"
+                                    value="courseParticipationRoleStudent"
+                                    checked
+                                    class="input--radio"
+                                  />  Students
+                                </label>
+                              </div>
+                              <textarea
+                                name="courseInvitationEmails"
+                                placeholder="${`"Scott Smith" <scott@courselore.org>, Leandro Facchinetti <leandro@courselore.org>, ali@courselore.org, …`}"
+                                required
+                                maxlength="50000"
+                                class="input--text"
+                                css="${css`
+                                  font-family: "Roboto Mono Variable",
+                                    var(--font-family--monospace);
+                                  height: var(--size--48);
+                                `}"
+                                javascript="${javascript`
+                                  this.onvalidate = () => {
+                                    const addresses = emailAddresses.parseAddressList(this.value.replaceAll(/\\n+/g, " , "));
+                                    if (
+                                      addresses === null ||
+                                      addresses.length === 0 ||
+                                      addresses.some(
+                                        (address) =>
+                                          address.type !== "mailbox" ||
+                                          address.address.match(utilities.emailRegExp) === null
+                                      )
+                                    )
+                                      throw new javascript.ValidationError("Invalid email list");
+                                  };
+                                `}"
+                              ></textarea>
+                              <div
+                                css="${css`
+                                  font-size: var(--font-size--3);
+                                  line-height: var(--font-size--3--line-height);
+                                `}"
+                              >
+                                <button
+                                  type="submit"
+                                  class="button button--rectangle button--blue"
+                                >
+                                  Send invitation emails
+                                </button>
+                              </div>
+                            </div>
+                            <hr class="separator" />
+                          </div>
                         </details>
                         <details>
                           <summary
@@ -1719,119 +1810,6 @@ export default async (application: Application): Promise<void> => {
                             gap: var(--size--4);
                           `}"
                         >
-                          <div
-                            css="${css`
-                              display: flex;
-                              flex-direction: column;
-                              gap: var(--size--4);
-                            `}"
-                          >
-                            <div
-                              type="form"
-                              method="POST"
-                              action="/courses/${request.state.course
-                                .publicId}/settings/invitation-emails"
-                              css="${css`
-                                display: flex;
-                                flex-direction: column;
-                                gap: var(--size--4);
-                              `}"
-                            >
-                              <div
-                                css="${css`
-                                  display: flex;
-                                  flex-direction: column;
-                                  gap: var(--size--1);
-                                `}"
-                              >
-                                <div
-                                  css="${css`
-                                    font-size: var(--font-size--3);
-                                    line-height: var(
-                                      --font-size--3--line-height
-                                    );
-                                    font-weight: 600;
-                                    color: light-dark(
-                                      var(--color--slate--500),
-                                      var(--color--slate--500)
-                                    );
-                                  `}"
-                                >
-                                  Invitation emails
-                                </div>
-                                <div
-                                  css="${css`
-                                    display: flex;
-                                    flex-direction: column;
-                                    gap: var(--size--2);
-                                  `}"
-                                >
-                                  <label
-                                    class="button button--rectangle button--transparent"
-                                  >
-                                    <input
-                                      type="radio"
-                                      name="courseParticipationRole"
-                                      value="courseParticipationRoleInstructor"
-                                      class="input--radio"
-                                    />  Instructors
-                                  </label>
-                                  <label
-                                    class="button button--rectangle button--transparent"
-                                  >
-                                    <input
-                                      type="radio"
-                                      name="courseParticipationRole"
-                                      value="courseParticipationRoleStudent"
-                                      checked
-                                      class="input--radio"
-                                    />  Students
-                                  </label>
-                                </div>
-                              </div>
-                              <textarea
-                                name="courseInvitationEmails"
-                                placeholder="${`"Scott Smith" <scott@courselore.org>, Leandro Facchinetti <leandro@courselore.org>, ali@courselore.org, …`}"
-                                required
-                                maxlength="50000"
-                                class="input--text"
-                                css="${css`
-                                  font-family: "Roboto Mono Variable",
-                                    var(--font-family--monospace);
-                                  height: var(--size--48);
-                                `}"
-                                javascript="${javascript`
-                                  this.onvalidate = () => {
-                                    const addresses = emailAddresses.parseAddressList(this.value.replaceAll(/\\n+/g, " , "));
-                                    if (
-                                      addresses === null ||
-                                      addresses.length === 0 ||
-                                      addresses.some(
-                                        (address) =>
-                                          address.type !== "mailbox" ||
-                                          address.address.match(utilities.emailRegExp) === null
-                                      )
-                                    )
-                                      throw new javascript.ValidationError("Invalid email list");
-                                  };
-                                `}"
-                              ></textarea>
-                              <div
-                                css="${css`
-                                  font-size: var(--font-size--3);
-                                  line-height: var(--font-size--3--line-height);
-                                `}"
-                              >
-                                <button
-                                  type="submit"
-                                  class="button button--rectangle button--blue"
-                                >
-                                  Send invitation emails
-                                </button>
-                              </div>
-                            </div>
-                          </div>
-                          <hr class="separator" />
                           $${(() => {
                             const courseInvitationEmails =
                               application.database.all<{
