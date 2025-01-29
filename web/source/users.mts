@@ -781,6 +781,167 @@ export default async (application: Application): Promise<void> => {
                           </label>
                         `
                       : html``}
+                    <div
+                      css="${css`
+                        font-size: var(--font-size--3);
+                        line-height: var(--font-size--3--line-height);
+                      `}"
+                    >
+                      <button
+                        type="submit"
+                        class="button button--rectangle button--blue"
+                      >
+                        Change email address
+                      </button>
+                    </div>
+                  </div>
+                  <hr class="separator" />
+                  <div
+                    type="form"
+                    method="PATCH"
+                    action="/settings"
+                    css="${css`
+                      display: flex;
+                      flex-direction: column;
+                      gap: var(--size--4);
+                    `}"
+                  >
+                    <label>
+                      <div
+                        css="${css`
+                          font-size: var(--font-size--3);
+                          line-height: var(--font-size--3--line-height);
+                          font-weight: 600;
+                          color: light-dark(
+                            var(--color--slate--500),
+                            var(--color--slate--500)
+                          );
+                        `}"
+                      >
+                        Current password
+                      </div>
+                      <div
+                        css="${css`
+                          display: flex;
+                        `}"
+                      >
+                        <input
+                          type="password"
+                          name="passwordConfirmation"
+                          required
+                          minlength="8"
+                          maxlength="2000"
+                          class="input--text"
+                          css="${css`
+                            flex: 1;
+                          `}"
+                        />
+                      </div>
+                    </label>
+                    <label>
+                      <div
+                        css="${css`
+                          font-size: var(--font-size--3);
+                          line-height: var(--font-size--3--line-height);
+                          font-weight: 600;
+                          color: light-dark(
+                            var(--color--slate--500),
+                            var(--color--slate--500)
+                          );
+                        `}"
+                      >
+                        New password
+                      </div>
+                      <div
+                        css="${css`
+                          display: flex;
+                        `}"
+                      >
+                        <input
+                          type="password"
+                          name="newPassword"
+                          required
+                          minlength="8"
+                          maxlength="2000"
+                          class="input--text"
+                          css="${css`
+                            flex: 1;
+                          `}"
+                        />
+                      </div>
+                    </label>
+                    <label>
+                      <div
+                        css="${css`
+                          font-size: var(--font-size--3);
+                          line-height: var(--font-size--3--line-height);
+                          font-weight: 600;
+                          color: light-dark(
+                            var(--color--slate--500),
+                            var(--color--slate--500)
+                          );
+                        `}"
+                      >
+                        New password confirmation
+                      </div>
+                      <div
+                        css="${css`
+                          display: flex;
+                        `}"
+                      >
+                        <input
+                          type="password"
+                          required
+                          class="input--text"
+                          css="${css`
+                            flex: 1;
+                          `}"
+                          javascript="${javascript`
+                            this.onvalidate = () => {
+                              if (this.value !== this.closest('[type~="form"]').querySelector('[name="newPassword"]'))
+                                throw new javascript.ValidationError("“New password” and “New password confirmation” don’t match.");
+                            };
+                          `}"
+                        />
+                      </div>
+                    </label>
+                    $${Boolean(
+                      request.state.user.twoFactorAuthenticationEnabled,
+                    )
+                      ? html`
+                          <label>
+                            <div
+                              css="${css`
+                                font-size: var(--font-size--3);
+                                line-height: var(--font-size--3--line-height);
+                                font-weight: 600;
+                                color: light-dark(
+                                  var(--color--slate--500),
+                                  var(--color--slate--500)
+                                );
+                              `}"
+                            >
+                              Two-factor authentication code
+                            </div>
+                            <div
+                              css="${css`
+                                display: flex;
+                              `}"
+                            >
+                              <input
+                                type="text"
+                                inputmode="numeric"
+                                name="twoFactorAuthenticationConfirmation"
+                                required
+                                class="input--text"
+                                css="${css`
+                                  flex: 1;
+                                `}"
+                              />
+                            </div>
+                          </label>
+                        `
+                      : html``}
 
                     <div
                       css="${css`
