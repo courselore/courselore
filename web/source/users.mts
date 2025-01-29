@@ -23,7 +23,7 @@ export type ApplicationUsers = {
           passwordResetCreatedAt: string | null;
           twoFactorAuthenticationEnabled: number;
           twoFactorAuthenticationSecret: string;
-          twoFactorAuthenticationBackupCodes: string;
+          twoFactorAuthenticationRecoveryCodes: string;
           avatarColor:
             | "red"
             | "orange"
@@ -132,7 +132,7 @@ export default async (application: Application): Promise<void> => {
         passwordResetCreatedAt: string | null;
         twoFactorAuthenticationEnabled: number;
         twoFactorAuthenticationSecret: string;
-        twoFactorAuthenticationBackupCodes: string;
+        twoFactorAuthenticationRecoveryCodes: string;
         avatarColor:
           | "red"
           | "orange"
@@ -187,7 +187,7 @@ export default async (application: Application): Promise<void> => {
             "passwordResetCreatedAt",
             "twoFactorAuthenticationEnabled",
             "twoFactorAuthenticationSecret",
-            "twoFactorAuthenticationBackupCodes",
+            "twoFactorAuthenticationRecoveryCodes",
             "avatarColor",
             "avatarImage",
             "userRole",
