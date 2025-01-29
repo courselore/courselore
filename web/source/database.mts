@@ -2824,8 +2824,8 @@ export default async (application: Application): Promise<void> => {
                         ${null},
                         ${null},
                         ${Number(false)},
-                        ${"twoFactorAuthenticationSecret"},
-                        ${JSON.stringify(Array.from({ length: 10 }, () => "twoFactorAuthenticationBackupCode"))},
+                        ${cryptoRandomString({ length: 100, type: "alphanumeric" })},
+                        ${JSON.stringify(Array.from({ length: 10 }, () => cryptoRandomString({ length: 10, type: "numeric" })))},
                         ${
                           [
                             "red",
