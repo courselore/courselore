@@ -351,7 +351,12 @@ export default async (application: Application): Promise<void> => {
                         action="/courses/${request.state.course
                           .publicId}/settings"
                         css="${css`
-                          margin: var(--size--2) var(--size--0);
+                          padding: var(--size--2) var(--size--0);
+                          border-bottom: var(--border-width--1) solid
+                            light-dark(
+                              var(--color--slate--200),
+                              var(--color--slate--800)
+                            );
                           display: flex;
                           flex-direction: column;
                           gap: var(--size--4);
@@ -656,7 +661,6 @@ export default async (application: Application): Promise<void> => {
                             Update general settings
                           </button>
                         </div>
-                        <hr class="separator" />
                       </div>
                     </details>
                     <details>
@@ -693,7 +697,12 @@ export default async (application: Application): Promise<void> => {
                         action="/courses/${request.state.course
                           .publicId}/settings/tags"
                         css="${css`
-                          margin: var(--size--2) var(--size--0);
+                          padding: var(--size--2) var(--size--0);
+                          border-bottom: var(--border-width--1) solid
+                            light-dark(
+                              var(--color--slate--200),
+                              var(--color--slate--800)
+                            );
                           display: flex;
                           flex-direction: column;
                           gap: var(--size--4);
@@ -1017,7 +1026,6 @@ export default async (application: Application): Promise<void> => {
                             Update conversation tags
                           </button>
                         </div>
-                        <hr class="separator" />
                       </div>
                     </details>
                     <details>
