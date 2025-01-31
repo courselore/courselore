@@ -1089,6 +1089,19 @@ export default async (application: Application): Promise<void> => {
                               gap: var(--size--4);
                             `}"
                           >
+                            <div
+                              css="${css`
+                                font-size: var(--font-size--3);
+                                line-height: var(--font-size--3--line-height);
+                                font-weight: 600;
+                                color: light-dark(
+                                  var(--color--red--500),
+                                  var(--color--red--500)
+                                );
+                              `}"
+                            >
+                              Disabled
+                            </div>
                             <label>
                               <div
                                 css="${css`
@@ -1153,6 +1166,19 @@ export default async (application: Application): Promise<void> => {
                               gap: var(--size--4);
                             `}"
                           >
+                            <div
+                              css="${css`
+                                font-size: var(--font-size--3);
+                                line-height: var(--font-size--3--line-height);
+                                font-weight: 600;
+                                color: light-dark(
+                                  var(--color--green--500),
+                                  var(--color--green--500)
+                                );
+                              `}"
+                            >
+                              Enabled
+                            </div>
                             <label>
                               <div
                                 css="${css`
