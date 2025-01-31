@@ -1620,6 +1620,33 @@ export default async (application: Application): Promise<void> => {
                     `
                   : html``}
               </div>
+              $${request.state.courseParticipation.courseParticipationRole ===
+              "courseParticipationRoleInstructor"
+                ? html`
+                    <div
+                      css="${css`
+                        font-size: var(--font-size--3);
+                        line-height: var(--font-size--3--line-height);
+                        font-weight: 600;
+                        color: light-dark(
+                          var(--color--slate--600),
+                          var(--color--slate--400)
+                        );
+                      `}"
+                    >
+                      <label
+                        class="button button--rectangle button--transparent"
+                      >
+                        <input
+                          type="checkbox"
+                          name="courseConversationAnnouncement"
+                          $${"TODO" === "TODO" ? html`checked` : html``}
+                          class="input--checkbox"
+                        />  Send email notifications to everyone about this note
+                      </label>
+                    </div>
+                  `
+                : html``}
               $${request.state.courseConversationsTags.length > 0
                 ? html`
                     <div
