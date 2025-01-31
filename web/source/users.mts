@@ -1211,11 +1211,20 @@ export default async (application: Application): Promise<void> => {
                                 />
                               </div>
                             </label>
+                            <div
+                              css="${css`
+                                display: flex;
+                                flex-direction: column;
+                                gap: var(--size--1);
+                              `}"
+                            >
                             <label>
                               <div
                                 css="${css`
                                   font-size: var(--font-size--3);
-                                  line-height: var(--font-size--3--line-height);
+                                    line-height: var(
+                                      --font-size--3--line-height
+                                    );
                                   font-weight: 600;
                                   color: light-dark(
                                     var(--color--slate--500),
@@ -1242,6 +1251,25 @@ export default async (application: Application): Promise<void> => {
                                 />
                               </div>
                             </label>
+                              <div
+                                css="${css`
+                                  font-size: var(--font-size--3);
+                                  line-height: var(--font-size--3--line-height);
+                                  font-weight: 600;
+                                  color: light-dark(
+                                    var(--color--slate--600),
+                                    var(--color--slate--400)
+                                  );
+                                `}"
+                              >
+                                <button
+                                  type="button"
+                                  class="button button--rectangle button--transparent"
+                                >
+                                  Use recovery code instead
+                                </button>
+                              </div>
+                            </div>
                             <div
                               css="${css`
                                 font-size: var(--font-size--3);
