@@ -1221,39 +1221,39 @@ export default async (application: Application): Promise<void> => {
                                 gap: var(--size--1);
                               `}"
                             >
-                            <label>
-                              <div
-                                css="${css`
-                                  font-size: var(--font-size--3);
+                              <label>
+                                <div
+                                  css="${css`
+                                    font-size: var(--font-size--3);
                                     line-height: var(
                                       --font-size--3--line-height
                                     );
-                                  font-weight: 600;
-                                  color: light-dark(
-                                    var(--color--slate--500),
-                                    var(--color--slate--500)
-                                  );
-                                `}"
-                              >
-                                Two-factor authentication code
-                              </div>
-                              <div
-                                css="${css`
-                                  display: flex;
-                                `}"
-                              >
-                                <input
-                                  type="text"
-                                  inputmode="numeric"
-                                  name="twoFactorAuthenticationConfirmation"
-                                  required
-                                  class="input--text"
-                                  css="${css`
-                                    flex: 1;
+                                    font-weight: 600;
+                                    color: light-dark(
+                                      var(--color--slate--500),
+                                      var(--color--slate--500)
+                                    );
                                   `}"
-                                />
-                              </div>
-                            </label>
+                                >
+                                  Two-factor authentication code
+                                </div>
+                                <div
+                                  css="${css`
+                                    display: flex;
+                                  `}"
+                                >
+                                  <input
+                                    type="text"
+                                    inputmode="numeric"
+                                    name="twoFactorAuthenticationConfirmation"
+                                    required
+                                    class="input--text"
+                                    css="${css`
+                                      flex: 1;
+                                    `}"
+                                  />
+                                </div>
+                              </label>
                               <div
                                 css="${css`
                                   font-size: var(--font-size--3);
@@ -1338,7 +1338,7 @@ export default async (application: Application): Promise<void> => {
                                 you configured two-factor authentication. Ten
                                 recovery codes have been shown, and you may use
                                 any one of them above. Only use the recovery
-                                codes if you lost access to the mechanism of
+                                codes if you lost access to the method of
                                 two-factor authentication, for example, if you
                                 lost your phone. Recovery codes may be used only
                                 once, and after that you must configure
