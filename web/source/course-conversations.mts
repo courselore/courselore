@@ -1101,6 +1101,7 @@ export default async (application: Application): Promise<void> => {
             | "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
             | "courseConversationVisibilityCourseConversationParticipations";
           pinned: "false" | "true";
+          announcement: "false" | "true";
           tags: string[];
           content: string;
           courseConversationMessageAnonymity:
@@ -1132,6 +1133,7 @@ export default async (application: Application): Promise<void> => {
           | "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
           | "courseConversationVisibilityCourseConversationParticipations";
         pinned: "false" | "true";
+        announcement: "false" | "true";
         tags: string[];
         content: string;
         courseConversationMessageAnonymity:
@@ -1359,6 +1361,13 @@ export default async (application: Application): Promise<void> => {
                       ? html`checked`
                       : html``}
                     hidden
+                    javascript="${javascript`
+                      this.onchange = () => {
+                        if (!this.checked) return;
+                        this.closest('[type~="form"]').querySelector('[key~="announcement"]')?.removeAttribute("hidden");
+                        this.closest('[type~="form"]').querySelector('[name="announcement"]')?.removeAttribute("disabled");
+                      };
+                    `}"
                   /><span
                     css="${css`
                       :not(:checked) + & {
@@ -1381,6 +1390,13 @@ export default async (application: Application): Promise<void> => {
                       ? html`checked`
                       : html``}
                     hidden
+                    javascript="${javascript`
+                      this.onchange = () => {
+                        if (!this.checked) return;
+                        this.closest('[type~="form"]').querySelector('[key~="announcement"]')?.setAttribute("hidden", "");
+                        this.closest('[type~="form"]').querySelector('[name="announcement"]')?.setAttribute("disabled", "");
+                      };
+                    `}"
                   /><span
                     css="${css`
                       :not(:checked) + & {
@@ -1624,6 +1640,11 @@ export default async (application: Application): Promise<void> => {
               "courseParticipationRoleInstructor"
                 ? html`
                     <div
+                      key="announcement"
+                      $${prefill.courseConversationType ===
+                      "courseConversationTypeQuestion"
+                        ? html`hidden`
+                        : html``}
                       css="${css`
                         font-size: var(--font-size--3);
                         line-height: var(--font-size--3--line-height);
@@ -1639,8 +1660,14 @@ export default async (application: Application): Promise<void> => {
                       >
                         <input
                           type="checkbox"
-                          name="courseConversationAnnouncement"
-                          $${"TODO" === "TODO" ? html`checked` : html``}
+                          name="announcement"
+                          $${prefill.courseConversationType ===
+                          "courseConversationTypeQuestion"
+                            ? html`disabled`
+                            : html``}
+                          $${prefill.announcement === "true"
+                            ? html`checked`
+                            : html``}
                           class="input--checkbox"
                         />  Send email notifications to everyone about this note
                       </label>
