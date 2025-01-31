@@ -30,6 +30,18 @@ export default async (application: Application): Promise<void> => {
               >
                 Page not found
               </div>
+              <div>
+                If you believe that there should be something here, please
+                contact the system administrator:
+                <a
+                  target="_blank"
+                  href="mailto:${application.configuration
+                    .systemAdministratorEmail ??
+                  "system-administrator@courselore.org"}"
+                  >${application.configuration.systemAdministratorEmail ??
+                  "system-administrator@courselore.org"}</a
+                >
+              </div>
             </div>
           `,
         }),
