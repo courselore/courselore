@@ -3451,7 +3451,8 @@ export default async (application: Application): Promise<void> => {
                                             join "courseParticipations" on
                                               "courseConversationMessageLikes"."courseParticipation" = "courseParticipations"."id" and
                                               "courseParticipations"."courseParticipationRole" = 'courseParticipationRoleInstructor'
-                                            where "courseConversationMessageLikes"."courseConversationMessage" = ${courseConversationMessage.id};
+                                            where "courseConversationMessageLikes"."courseConversationMessage" = ${courseConversationMessage.id}
+                                            limit 1;
                                           `,
                                         ) !== undefined
                                           ? html` (liked by instructor)`

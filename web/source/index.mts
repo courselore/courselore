@@ -21,6 +21,7 @@ import courseConversationMessages, {
 import courseConversationMessageContent, {
   ApplicationCourseConversationMessageContent,
 } from "./course-conversation-message-content.mjs";
+import errors from "./errors.mjs";
 
 export type Application = {
   version: string;
@@ -122,6 +123,7 @@ await courses(application);
 await courseConversations(application);
 await courseConversationMessages(application);
 await courseConversationMessageContent(application);
+await errors(application);
 
 // TODO
 if (application.commandLineArguments.values.type === "backgroundJob")

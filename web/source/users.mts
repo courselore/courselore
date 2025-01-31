@@ -274,7 +274,7 @@ export default async (application: Application): Promise<void> => {
         application.layouts.main({
           request,
           response,
-          head: html` <title>User settings · Courselore</title> `,
+          head: html`<title>User settings · Courselore</title>`,
           body: html`
             <div
               css="${css`
