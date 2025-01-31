@@ -1555,6 +1555,244 @@ export default async (application: Application): Promise<void> => {
                   </div>
                 </div>
               </details>
+              <details>
+                <summary
+                  class="button button--rectangle button--transparent"
+                  css="${css`
+                    font-weight: 500;
+                  `}"
+                >
+                  <span
+                    css="${css`
+                      display: inline-block;
+                      transition-property: var(
+                        --transition-property--transform
+                      );
+                      transition-duration: var(--transition-duration--150);
+                      transition-timing-function: var(
+                        --transition-timing-function--ease-in-out
+                      );
+                      details[open] > summary > & {
+                        transform: rotate(var(--transform--rotate--90));
+                      }
+                    `}"
+                  >
+                    <i class="bi bi-chevron-right"></i>
+                  </span>
+                  Danger zone
+                </summary>
+                <div
+                  css="${css`
+                    padding: var(--size--2) var(--size--0);
+                    border-bottom: var(--border-width--1) solid
+                      light-dark(
+                        var(--color--slate--200),
+                        var(--color--slate--800)
+                      );
+                    display: flex;
+                    flex-direction: column;
+                    gap: var(--size--4);
+                  `}"
+                >
+                  <div
+                    css="${css`
+                      font-size: var(--font-size--3);
+                      line-height: var(--font-size--3--line-height);
+                    `}"
+                  >
+                    <button
+                      type="button"
+                      class="button button--rectangle button--red"
+                      javascript="${javascript`
+                        javascript.popover({ element: this, trigger: "click", remainOpenWhileFocused: true });
+                      `}"
+                    >
+                      Delete my account
+                    </button>
+                    <div
+                      type="form popover"
+                      method="DELETE"
+                      action="/delete-my-account"
+                      css="${css`
+                        display: flex;
+                        flex-direction: column;
+                        gap: var(--size--2);
+                      `}"
+                    >
+                      <div
+                        css="${css`
+                          font-size: var(--font-size--3);
+                          line-height: var(--font-size--3--line-height);
+                          font-weight: 600;
+                          color: light-dark(
+                            var(--color--red--500),
+                            var(--color--red--500)
+                          );
+                        `}"
+                      >
+                        <i class="bi bi-exclamation-triangle-fill"></i> This
+                        action cannot be undone. You’ll lose access to all your
+                        courses.
+                      </div>
+                      <label>
+                        <div
+                          css="${css`
+                            font-size: var(--font-size--3);
+                            line-height: var(--font-size--3--line-height);
+                            font-weight: 600;
+                            color: light-dark(
+                              var(--color--slate--500),
+                              var(--color--slate--500)
+                            );
+                          `}"
+                        >
+                          Name confirmation
+                        </div>
+                        <div
+                          css="${css`
+                            display: flex;
+                          `}"
+                        >
+                          <input
+                            type="text"
+                            placeholder="${request.state.user.name}"
+                            required
+                            maxlength="2000"
+                            class="input--text"
+                            css="${css`
+                              flex: 1;
+                            `}"
+                            javascript="${javascript`
+                              this.onvalidate = () => {
+                                if (this.value !== ${request.state.user.name})
+                                  throw new javascript.ValidationError(${`Incorrect name confirmation: “${request.state.user.name}”`});
+                              };
+                            `}"
+                          />
+                        </div>
+                      </label>
+                      <label>
+                        <div
+                          css="${css`
+                            font-size: var(--font-size--3);
+                            line-height: var(--font-size--3--line-height);
+                            font-weight: 600;
+                            color: light-dark(
+                              var(--color--slate--500),
+                              var(--color--slate--500)
+                            );
+                          `}"
+                        >
+                          Email confirmation
+                        </div>
+                        <div
+                          css="${css`
+                            display: flex;
+                          `}"
+                        >
+                          <input
+                            type="text"
+                            placeholder="${request.state.user.email}"
+                            required
+                            maxlength="2000"
+                            class="input--text"
+                            css="${css`
+                              flex: 1;
+                            `}"
+                            javascript="${javascript`
+                              this.onvalidate = () => {
+                                if (this.value !== ${request.state.user.email})
+                                  throw new javascript.ValidationError(${`Incorrect email confirmation: “${request.state.user.email}”`});
+                              };
+                            `}"
+                          />
+                        </div>
+                      </label>
+                      <label>
+                        <div
+                          css="${css`
+                            font-size: var(--font-size--3);
+                            line-height: var(--font-size--3--line-height);
+                            font-weight: 600;
+                            color: light-dark(
+                              var(--color--slate--500),
+                              var(--color--slate--500)
+                            );
+                          `}"
+                        >
+                          Password confirmation
+                        </div>
+                        <div
+                          css="${css`
+                            display: flex;
+                          `}"
+                        >
+                          <input
+                            type="password"
+                            name="passwordConfirmation"
+                            required
+                            minlength="8"
+                            maxlength="2000"
+                            class="input--text"
+                            css="${css`
+                              flex: 1;
+                            `}"
+                          />
+                        </div>
+                      </label>
+                      $${Boolean(
+                        request.state.user.twoFactorAuthenticationEnabled,
+                      )
+                        ? html`
+                            <label>
+                              <div
+                                css="${css`
+                                  font-size: var(--font-size--3);
+                                  line-height: var(--font-size--3--line-height);
+                                  font-weight: 600;
+                                  color: light-dark(
+                                    var(--color--slate--500),
+                                    var(--color--slate--500)
+                                  );
+                                `}"
+                              >
+                                Two-factor authentication code
+                              </div>
+                              <div
+                                css="${css`
+                                  display: flex;
+                                `}"
+                              >
+                                <input
+                                  type="text"
+                                  inputmode="numeric"
+                                  name="twoFactorAuthenticationConfirmation"
+                                  required
+                                  class="input--text"
+                                  css="${css`
+                                    flex: 1;
+                                  `}"
+                                />
+                              </div>
+                            </label>
+                          `
+                        : html``}
+                      <div>
+                        <button
+                          type="submit"
+                          class="button button--rectangle button--red"
+                          css="${css`
+                            font-size: var(--font-size--3);
+                            line-height: var(--font-size--3--line-height);
+                          `}"
+                        >
+                          Delete my account
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </details>
             </div>
           `,
         }),
