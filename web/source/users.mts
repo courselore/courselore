@@ -322,6 +322,7 @@ export default async (application: Application): Promise<void> => {
                   type="form"
                   method="PATCH"
                   action="/settings"
+                  enctype="multipart/form-data"
                   css="${css`
                     padding: var(--size--2) var(--size--0);
                     border-bottom: var(--border-width--1) solid
