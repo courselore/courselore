@@ -5,6 +5,7 @@ import { Application } from "./index.mjs";
 export default async (application: Application): Promise<void> => {
   application.server?.push({
     handler: (request, response) => {
+      response.statusCode = 404;
       response.end(
         application.layouts.main({
           request,

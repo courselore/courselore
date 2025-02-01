@@ -116,7 +116,6 @@ application.server?.push({
       request.liveConnection.skipUpdateOnEstablish
     )
       response.end();
-    throw "validation";
   },
 });
 await users(application);
