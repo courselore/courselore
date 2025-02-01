@@ -86,7 +86,12 @@ export default async (application: Application): Promise<void> => {
                   class="link"
                   href="mailto:${application.configuration
                     .systemAdministratorEmail ??
-                  "system-administrator@courselore.org"}"
+                  "system-administrator@courselore.org"}?${new URLSearchParams({
+                    subject: "Server error",
+                    body: `Page: ${request.URL.href}\n\nPlease describe the circumstances under which you ran into the error:`,
+                  })
+                    .toString()
+                    .replaceAll("+", "%20")}"
                   >${application.configuration.systemAdministratorEmail ??
                   "system-administrator@courselore.org"}</a
                 >
