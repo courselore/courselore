@@ -10,6 +10,11 @@ export type ApplicationCourseConversationMessageContent = {
     courseConversationMessageContentEditor: (options?: {
       value?: string;
     }) => HTML;
+    courseConversationMessageContentProcessor: ({
+      content,
+    }: {
+      content: string;
+    }) => HTML;
   };
 };
 
@@ -133,4 +138,10 @@ ${value}</textarea
       >
     </div>
   `;
+
+  application.partials.courseConversationMessageContentProcessor = ({
+    content,
+  }) => {
+    return html``;
+  };
 };
