@@ -237,6 +237,24 @@ export default async (application: Application): Promise<void> => {
       }
     }
 
+    .link {
+      text-decoration: underline;
+      color: light-dark(var(--color--blue--500), var(--color--blue--500));
+      cursor: pointer;
+      transition-property: var(--transition-property--colors);
+      transition-duration: var(--transition-duration--150);
+      transition-timing-function: var(
+        --transition-timing-function--ease-in-out
+      );
+      &:hover,
+      &:focus-within {
+        color: light-dark(var(--color--blue--400), var(--color--blue--400));
+      }
+      &:active {
+        color: light-dark(var(--color--blue--600), var(--color--blue--600));
+      }
+    }
+
     .separator {
       border-top: var(--border-width--1) solid
         light-dark(var(--color--slate--200), var(--color--slate--800));
