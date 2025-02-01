@@ -3649,7 +3649,7 @@ export default async (application: Application): Promise<void> => {
                               <div
                                 key="courseConversationMessage--main--content--show--content"
                               >
-                                ${application.partials.courseConversationMessageContentProcessor(
+                                $${application.partials.courseConversationMessageContentProcessor(
                                   {
                                     content: courseConversationMessage.content,
                                   },
