@@ -46,4 +46,49 @@ export default async (application: Application): Promise<void> => {
       );
     },
   });
+
+  application.server?.push({
+    error: true,
+    handler: (request, response) => {
+      response.end(
+        application.layouts.main({
+          request,
+          response,
+          head: html`<title>Server error · Courselore</title>`,
+          body: html`
+            <div
+              css="${css`
+                display: flex;
+                flex-direction: column;
+                gap: var(--size--2);
+              `}"
+            >
+              <div
+                css="${css`
+                  font-size: var(--font-size--4);
+                  line-height: var(--font-size--4--line-height);
+                  font-weight: 800;
+                `}"
+              >
+                Server error
+              </div>
+              <div>
+                This is an issue with Courselore, please report to the system
+                administrator:<br />
+                <a
+                  target="_blank"
+                  class="link"
+                  href="mailto:${application.configuration
+                    .systemAdministratorEmail ??
+                  "system-administrator@courselore.org"}"
+                  >${application.configuration.systemAdministratorEmail ??
+                  "system-administrator@courselore.org"}</a
+                >
+              </div>
+            </div>
+          `,
+        }),
+      );
+    },
+  });
 };
