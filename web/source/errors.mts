@@ -1,13 +1,10 @@
-import * as serverTypes from "@radically-straightforward/server";
-import sql from "@radically-straightforward/sqlite";
-import html, { HTML } from "@radically-straightforward/html";
+import html from "@radically-straightforward/html";
 import css from "@radically-straightforward/css";
-import javascript from "@radically-straightforward/javascript";
 import { Application } from "./index.mjs";
 
 export default async (application: Application): Promise<void> => {
   application.server?.push({
-    handler: (request: serverTypes.Request<{}, {}, {}, {}, {}>, response) => {
+    handler: (request, response) => {
       response.end(
         application.layouts.main({
           request,
