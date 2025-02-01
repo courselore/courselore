@@ -36,7 +36,12 @@ export default async (application: Application): Promise<void> => {
                   class="link"
                   href="mailto:${application.configuration
                     .systemAdministratorEmail ??
-                  "system-administrator@courselore.org"}"
+                  "system-administrator@courselore.org"}?${new URLSearchParams({
+                    subject: "Page not found",
+                    body: `Page: ${request.URL.href}\n\nPlease describe the circumstances under which you reached the page and why you think there should be something there:`,
+                  })
+                    .toString()
+                    .replaceAll("+", "%20")}"
                   >${application.configuration.systemAdministratorEmail ??
                   "system-administrator@courselore.org"}</a
                 >
