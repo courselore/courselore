@@ -142,6 +142,6 @@ ${value}</textarea
   application.partials.courseConversationMessageContentProcessor = ({
     content,
   }) => {
-    return html``;
+    return html`${content}`;
   };
 };
