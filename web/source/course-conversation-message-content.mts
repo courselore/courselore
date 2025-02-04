@@ -150,9 +150,23 @@ ${value}</textarea
     </div>
   `;
 
+  const unifiedProcessor = unified()
+    .use(remarkParse)
+    // .use(remarkGfm)
+    // .use(remarkMath)
+    .use(remarkRehype)
+    // .use(rehypeRaw)
+    // .use(rehypeSanitize)
+    // .use(rehypeKatex)
+    // .use(rehypeShiki)
+    // .use(unistUtilVisit)
+    .use(rehypeStringify);
+
   application.partials.courseConversationMessageContentProcessor = async ({
     content,
   }) => {
-    return html`${content}`;
+    const value = (await unifiedProcessor.process(content)).value;
+    if (typeof value !== "string") throw new Error();
+    return value;
   };
 };
