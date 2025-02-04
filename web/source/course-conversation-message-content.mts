@@ -14,7 +14,7 @@ export type ApplicationCourseConversationMessageContent = {
       content,
     }: {
       content: string;
-    }) => HTML;
+    }) => Promise<HTML>;
   };
 };
 
@@ -139,7 +139,7 @@ ${value}</textarea
     </div>
   `;
 
-  application.partials.courseConversationMessageContentProcessor = ({
+  application.partials.courseConversationMessageContentProcessor = async ({
     content,
   }) => {
     return html`${content}`;
