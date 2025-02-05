@@ -152,6 +152,15 @@ ${value}</textarea
     .use(remarkGfm, { singleTilde: false })
     .use(remarkMath)
     .use(remarkRehype, { allowDangerousHtml: true, clobberPrefix: "" })
+    .use(() => (root: any) => {
+      if (Array.isArray(root?.children))
+        for (const node of root.children)
+          if (
+            typeof node.properties === "object" &&
+            typeof node.position === "object"
+          )
+            node.properties.dataPosition = JSON.stringify(node.position);
+    })
     .use(rehypeStringify, { allowDangerousHtml: true });
 
   application.partials.courseConversationMessageContentProcessor = async ({
@@ -159,8 +168,6 @@ ${value}</textarea
   }) => {
     const processedMarkdown = (await markdownProcessor.process(content)).value;
     if (typeof processedMarkdown !== "string") throw new Error();
-    // Position information
-    //
     // Sanitize
     // `id="___"`s
     //   De-clobber
