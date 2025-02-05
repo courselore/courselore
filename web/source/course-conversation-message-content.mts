@@ -152,9 +152,13 @@ ${value}</textarea
 
   const unifiedProcessor = unified()
     .use(remarkParse)
-    // .use(remarkGfm)
+    .use(remarkGfm)
     // .use(remarkMath)
-    .use(remarkRehype, { allowDangerousHtml: true })
+    .use(remarkRehype, {
+      allowDangerousHtml: true,
+      clobberPrefix: "",
+      footnoteBackContent: "(Back)",
+    })
     .use(rehypeRaw)
     // .use(rehypeSanitize)
     // .use(rehypeKatex)

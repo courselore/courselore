@@ -3556,6 +3556,12 @@ export default async (application: Application): Promise<void> => {
 
                       [^2]: ${examples.text({ model: textExamples, length: 1 })})}
 
+                      # \`id="___"\`
+
+                      <p id="an-id-defined-by-the-user">${examples.text({ model: textExamples, length: 1 })})}</p>
+
+                      <a href="#an-id-defined-by-the-user">An achor that points to that id</a>
+
                       # Cross-Site Scripting
 
                       👍<script>document.write("💩");</script>🙌
