@@ -142,30 +142,28 @@ ${value}</textarea
     </div>
   `;
 
-  const unifiedProcessor = unified()
-    .use(remarkParse)
-    .use(remarkGfm)
-    // .use(remarkMath)
-    .use(remarkRehype, {
-      allowDangerousHtml: true,
-      clobberPrefix: "",
-      footnoteBackContent: "(Back)",
-    })
-    .use(rehypeRaw)
-    // .use(rehypeSanitize)
-    // .use(rehypeKatex)
-    // .use(rehypeShiki)
-    // .use(unistUtilVisit)
-    .use(rehypeStringify);
-
-  // De-clobber `id="___"`s
-  // Add `id="___"`s to headings and treat `<a href="#___">`s (https://github.com/rehypejs/rehype-slug and https://github.com/rehypejs/rehype-autolink-headings)
-
   application.partials.courseConversationMessageContentProcessor = async ({
     content,
   }) => {
-    const value = (await unifiedProcessor.process(content)).value;
-    if (typeof value !== "string") throw new Error();
-    return value;
+    // const unifiedProcessor = unified()
+    // .use(remarkParse)
+    // .use(remarkGfm)
+    // // .use(remarkMath)
+    // .use(remarkRehype, {
+    //   allowDangerousHtml: true,
+    //   clobberPrefix: "",
+    //   footnoteBackContent: "(Back)",
+    // })
+    // .use(rehypeRaw)
+    // // .use(rehypeSanitize)
+    // // .use(rehypeKatex)
+    // // .use(rehypeShiki)
+    // // .use(unistUtilVisit)
+    // .use(rehypeStringify);
+
+    // De-clobber `id="___"`s
+    // Add `id="___"`s to headings and treat `<a href="#___">`s (https://github.com/rehypejs/rehype-slug and https://github.com/rehypejs/rehype-autolink-headings)
+
+    return micromark(content);
   };
 };
