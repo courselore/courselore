@@ -166,6 +166,9 @@ ${value}</textarea
     // .use(unistUtilVisit)
     .use(rehypeStringify);
 
+  // De-clobber `id="___"`s
+  // Add `id="___"`s to headings and treat `<a href="#___">`s (https://github.com/rehypejs/rehype-slug and https://github.com/rehypejs/rehype-autolink-headings)
+
   application.partials.courseConversationMessageContentProcessor = async ({
     content,
   }) => {
