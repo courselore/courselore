@@ -1,7 +1,4 @@
 import * as serverTypes from "@radically-straightforward/server";
-import { micromark } from "micromark";
-import * as micromarkGfm from "micromark-extension-gfm";
-import * as micromarkMath from "micromark-extension-math";
 import sql from "@radically-straightforward/sqlite";
 import html, { HTML } from "@radically-straightforward/html";
 import css from "@radically-straightforward/css";
@@ -145,25 +142,17 @@ ${value}</textarea
   application.partials.courseConversationMessageContentProcessor = async ({
     content,
   }) => {
-    // const unifiedProcessor = unified()
-    // .use(remarkParse)
-    // .use(remarkGfm)
-    // // .use(remarkMath)
-    // .use(remarkRehype, {
-    //   allowDangerousHtml: true,
-    //   clobberPrefix: "",
-    //   footnoteBackContent: "(Back)",
-    // })
-    // .use(rehypeRaw)
-    // // .use(rehypeSanitize)
-    // // .use(rehypeKatex)
-    // // .use(rehypeShiki)
-    // // .use(unistUtilVisit)
-    // .use(rehypeStringify);
+    // GFM
+    // Mathematics
+    // Position information
+    //
+    // Sanitize
+    // `id="___"`s
+    //   De-clobber
+    //   Add `id="___"`s to headings and treat `<a href="#___">`s (https://github.com/rehypejs/rehype-slug and https://github.com/rehypejs/rehype-autolink-headings)
+    // Mathematics
+    // Syntax highlighting
 
-    // De-clobber `id="___"`s
-    // Add `id="___"`s to headings and treat `<a href="#___">`s (https://github.com/rehypejs/rehype-slug and https://github.com/rehypejs/rehype-autolink-headings)
-
-    return micromark(content);
+    return content;
   };
 };
