@@ -147,11 +147,18 @@ ${value}</textarea
     </div>
   `;
 
+  const markdownProcessor = unified()
+    .use(remarkParse)
+    .use(remarkGfm, { singleTilde: false })
+    .use(remarkMath)
+    .use(remarkRehype, { allowDangerousHtml: true, clobberPrefix: "" })
+    .use(rehypeStringify, { allowDangerousHtml: true });
+
   application.partials.courseConversationMessageContentProcessor = async ({
     content,
   }) => {
-    // GFM
-    // Mathematics
+    const processedMarkdown = (await markdownProcessor.process(content)).value;
+    if (typeof processedMarkdown !== "string") throw new Error();
     // Position information
     //
     // Sanitize
@@ -161,6 +168,6 @@ ${value}</textarea
     // Mathematics
     // Syntax highlighting
 
-    return content;
+    return processedMarkdown;
   };
 };
