@@ -3458,6 +3458,8 @@ export default async (application: Application): Promise<void> => {
                       **Bold**, _italics_, <u>underline</u>, ~~strikethrough~~, [link](https://courselore.org), www.example.com, https://example.com, contact@example.com, $E=mc^2$, \`code\`, <ins>insertion</ins>, ~~deletion~~ (~one tilde~), <sup>superscript</sup>, <sub>subscript</sub>, and a line  
                       break.
 
+                      Areallylongwordwithoutbreaks${examples.text({ model: textExamples, length: 4 }).replaceAll(/\s/g, "")}
+
                       # Image
 
                       ![Image](/node_modules/@radically-straightforward/examples/avatars/webp/1.webp)
@@ -3684,6 +3686,14 @@ export default async (application: Application): Promise<void> => {
                       Message non-existent permanent link turned reference: <https://${
                         application.configuration.hostname
                       }/courses/${course.id}/conversations/1?message=9999>
+
+                      # Comment
+
+                      ${examples.text({ model: textExamples, length: 1 + Math.floor(Math.random() * 7) })}
+
+                      <!-- Comments should be removed -->
+
+                      ${examples.text({ model: textExamples, length: 1 + Math.floor(Math.random() * 7) })}
                     `}
                   );
                 `,
