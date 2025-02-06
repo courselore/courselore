@@ -5,6 +5,7 @@ import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
 import remarkRehype from "remark-rehype";
 import rehypeStringify from "rehype-stringify";
+import { DOMParser } from "linkedom";
 import katex from "katex";
 import * as shiki from "shiki";
 import sql from "@radically-straightforward/sqlite";
@@ -168,6 +169,19 @@ ${value}</textarea
   }) => {
     const processedMarkdown = (await markdownProcessor.process(content)).value;
     if (typeof processedMarkdown !== "string") throw new Error();
-    return processedMarkdown;
+    const dom = new DOMParser()
+      .parseFromString(
+        html`
+          <!doctype html>
+          <html>
+            <body>
+              <div css="${css``}">$${processedMarkdown}</div>
+            </body>
+          </html>
+        `,
+        "text/html",
+      )
+      .querySelector("div");
+    return dom.outerHTML;
   };
 };
