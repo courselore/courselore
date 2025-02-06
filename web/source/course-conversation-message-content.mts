@@ -168,13 +168,6 @@ ${value}</textarea
   }) => {
     const processedMarkdown = (await markdownProcessor.process(content)).value;
     if (typeof processedMarkdown !== "string") throw new Error();
-    // Sanitize
-    // `id="___"`s
-    //   De-clobber
-    //   Add `id="___"`s to headings and treat `<a href="#___">`s (https://github.com/rehypejs/rehype-slug and https://github.com/rehypejs/rehype-autolink-headings)
-    // Mathematics
-    // Syntax highlighting
-
     return processedMarkdown;
   };
 };
