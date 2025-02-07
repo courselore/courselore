@@ -210,9 +210,12 @@ ${value}</textarea
           (child.nodeType === child.ELEMENT_NODE &&
             !child.matches(
               "h1, h2, h3, h4, h5, h6, p, hr, strong, em, u, a, code, ins, del, sup, sub, br, img, video, courselore-pool, ul, ol, li, input, blockquote, table, thead, tbody, tr, th, td, details, summary, pre",
-            ))
+            )) ||
+          (child.matches("li") && !parent.matches("ul, ol")) ||
+          (child.matches("input") &&
+            (!parent.matches("li") ||
+              !child.matches(':first-child[type="checkbox"][disabled=""]')))
           // ||
-          // (child.matches("li") && !parent.matches("ul, ol")) ||
           // (
           //   child.matches("table") &&
           //   (child.children().length === 1 ||
