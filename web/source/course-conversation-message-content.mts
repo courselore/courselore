@@ -306,6 +306,17 @@ ${value}</textarea
         ).hostname !== application.configuration.hostname
       )
         element.setAttribute("target", "_blank");
+    for (const element of fragment.querySelectorAll("img, video")) {
+      const url = new URL(
+        element.getAttribute("src"),
+        `https://${application.configuration.hostname}`,
+      );
+      if (url.hostname !== application.configuration.hostname)
+        element.setAttribute(
+          "src",
+          `https://${application.configuration.hostname}/_proxy?${new URLSearchParams({ destination: url.href }).toString()}`,
+        );
+    }
     for (const element of fragment.querySelectorAll("details"))
       if (!element.firstElementChild.matches("summary"))
         element.insertAdjacentHTML(
