@@ -280,7 +280,11 @@ ${value}</textarea
               (child.matches("img") && attribute === "alt") ||
               (child.matches("input") &&
                 (attribute === "type" || attribute === "disabled")) ||
-              (child.matches("td") && attribute === "align") ||
+              (child.matches("td") &&
+                attribute === "align" &&
+                (child.getAttribute(attribute) === "left" ||
+                  child.getAttribute(attribute) === "center" ||
+                  child.getAttribute(attribute) === "right")) ||
               attribute === "id"
             )
           )
