@@ -223,12 +223,19 @@ ${value}</textarea
               (child.matches("tbody") &&
                 (!parent.matches("table") || !child.matches(":last-child"))) ||
               (child.matches("tr") && !parent.matches("thead, tbody")) ||
-              (child.matches("th") && !parent.parentElement.matches("thead")) ||
-              (child.matches("td") && !parent.parentElement.matches("tbody")) ||
+              (child.matches("th") &&
+                (!parent.matches("tr") ||
+                  !parent.parentElement.matches("thead"))) ||
+              (child.matches("td") &&
+                (!parent.matches("tr") ||
+                  !parent.parentElement.matches("tbody"))) ||
               (child.matches("summary") &&
                 (!parent.matches("details") ||
                   !child.matches(":first-child")))))
         ) {
+          // `<a href="___">`
+          // `<img src="___">` && `<video src="___">`
+          // `<courselore-pool id="___">`
           parent.removeChild(child);
           continue;
         }
