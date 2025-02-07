@@ -182,6 +182,24 @@ ${value}</textarea
         "text/html",
       )
       .querySelector("div");
+    if (
+      fragment.lastElementChild !== null &&
+      fragment.lastElementChild.matches(
+        'section[class="footnotes"][data-footnotes=""]',
+      ) &&
+      fragment.lastElementChild.children.length === 2 &&
+      fragment.lastElementChild.children[0].matches(
+        'h2[id="footnote-label"][class="sr-only"]',
+      ) &&
+      fragment.lastElementChild.children[0].textContent === "Footnotes" &&
+      fragment.lastElementChild.children[1].matches("ol")
+    ) {
+      fragment.lastElementChild.insertAdjacentElement(
+        "beforebegin",
+        fragment.lastElementChild.children[1],
+      );
+      fragment.lastElementChild.remove();
+    }
     // (function sanitize({ parent, topLevel }) {
     //   for (const child of parent.childNodes) {
     //     if (
