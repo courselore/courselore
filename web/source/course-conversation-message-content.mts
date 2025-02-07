@@ -208,27 +208,29 @@ ${value}</textarea
             child.nodeType === child.TEXT_NODE
           ) ||
           (child.nodeType === child.ELEMENT_NODE &&
-            !child.matches(
+            (!child.matches(
               "h1, h2, h3, h4, h5, h6, p, hr, strong, em, u, a, code, ins, del, sup, sub, br, img, video, courselore-pool, ul, ol, li, input, blockquote, table, thead, tbody, tr, th, td, details, summary, pre",
-            )) ||
-          (child.matches("li") && !parent.matches("ul, ol")) ||
-          (child.matches("input") &&
-            (!parent.matches("li") ||
-              !child.matches(':first-child[type="checkbox"][disabled=""]')))
-          // ||
-          // (
-          //   child.matches("table") &&
-          //   (child.children().length === 1 ||
-          //     "TODO: <table> must contain at most one <thead> and one <tbody> in that order")
-          // )(child.matches("thead") && !parent.matches("table")) ||
-          // (child.matches("tbody") && !parent.matches("table")) ||
-          // (child.matches("tr") && !parent.matches("thead, tbody")) ||
-          // (child.matches("th") && !parent.parentElement.matches("thead")) ||
-          // (child.matches("td") && !parent.parentElement.matches("tbody")) ||
-          // (child.matches("summary") &&
-          //   (!parent.matches("details") ||
-          //     "TODO: <summary> must be the first child")) ||
-          // "TODO: <section> must be the last child and it must be on the topLevel"
+            ) ||
+              (child.matches("li") && !parent.matches("ul, ol")) ||
+              (child.matches("input") &&
+                (!parent.matches("li") ||
+                  !child.matches(
+                    ':first-child[type="checkbox"][disabled=""]',
+                  )))))
+            // ||
+            // (
+            //   child.matches("table") &&
+            //   (child.children().length === 1 ||
+            //     "TODO: <table> must contain at most one <thead> and one <tbody> in that order")
+            // )(child.matches("thead") && !parent.matches("table")) ||
+            // (child.matches("tbody") && !parent.matches("table")) ||
+            // (child.matches("tr") && !parent.matches("thead, tbody")) ||
+            // (child.matches("th") && !parent.parentElement.matches("thead")) ||
+            // (child.matches("td") && !parent.parentElement.matches("tbody")) ||
+            // (child.matches("summary") &&
+            //   (!parent.matches("details") ||
+            //     "TODO: <summary> must be the first child")) ||
+            // "TODO: <section> must be the last child and it must be on the topLevel"
         ) {
           parent.removeChild(child);
           continue;
