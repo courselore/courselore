@@ -344,6 +344,14 @@ ${value}</textarea
           </span>
         `,
       );
+    const katexMacros = {};
+    for (const element of fragment.querySelectorAll(
+      'code[class~="language-math"]',
+    ))
+      element.outerHTML = katex.renderToString(element.textContent, {
+        throwOnError: false,
+        macros: katexMacros,
+      });
     return fragment.outerHTML;
   };
 };
