@@ -298,6 +298,14 @@ ${value}</textarea
         sanitize(child);
       }
     })(fragment);
+    for (const element of fragment.querySelectorAll("a"))
+      if (
+        new URL(
+          element.getAttribute("href"),
+          `https://${application.configuration.hostname}`,
+        ).hostname !== application.configuration.hostname
+      )
+        element.setAttribute("target", "_blank");
     for (const element of fragment.querySelectorAll("details"))
       if (!element.firstElementChild.matches("summary"))
         element.insertAdjacentHTML(
