@@ -216,21 +216,18 @@ ${value}</textarea
                 (!parent.matches("li") ||
                   !child.matches(
                     ':first-child[type="checkbox"][disabled=""]',
-                  )))))
-            // ||
-            // (
-            //   child.matches("table") &&
-            //   (child.children().length === 1 ||
-            //     "TODO: <table> must contain at most one <thead> and one <tbody> in that order")
-            // )(child.matches("thead") && !parent.matches("table")) ||
-            // (child.matches("tbody") && !parent.matches("table")) ||
-            // (child.matches("tr") && !parent.matches("thead, tbody")) ||
-            // (child.matches("th") && !parent.parentElement.matches("thead")) ||
-            // (child.matches("td") && !parent.parentElement.matches("tbody")) ||
-            // (child.matches("summary") &&
-            //   (!parent.matches("details") ||
-            //     "TODO: <summary> must be the first child")) ||
-            // "TODO: <section> must be the last child and it must be on the topLevel"
+                  ))) ||
+              (child.matches("table") && 2 < child.children.length) ||
+              (child.matches("thead") &&
+                (!parent.matches("table") || !child.matches(":first-child"))) ||
+              (child.matches("tbody") &&
+                (!parent.matches("table") || !child.matches(":last-child"))) ||
+              (child.matches("tr") && !parent.matches("thead, tbody")) ||
+              (child.matches("th") && !parent.parentElement.matches("thead")) ||
+              (child.matches("td") && !parent.parentElement.matches("tbody")) ||
+              (child.matches("summary") &&
+                (!parent.matches("details") ||
+                  !child.matches(":first-child")))))
         ) {
           parent.removeChild(child);
           continue;
