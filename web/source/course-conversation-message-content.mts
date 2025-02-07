@@ -265,38 +265,26 @@ ${value}</textarea
         for (const attribute of child.getAttributeNames())
           if (
             !(
-              (child.matches("a") &&
-                attribute === "href" &&
-                (() => {
-                  try {
-                    const url = new URL(child.getAttribute(attribute));
-                    return (
-                      url.protocol === "http:" || url.protocol === "https:"
-                    );
-                  } catch {
-                    return false;
-                  }
-                })()) ||
-              (child.matches("code") && attribute === "class") ||
-              (child.matches("img") &&
-                ((attribute === "href" &&
-                  (() => {
-                    try {
-                      const url = new URL(child.getAttribute(attribute));
-                      return (
-                        url.protocol === "http:" || url.protocol === "https:"
-                      );
-                    } catch {
-                      return false;
-                    }
-                  })()) ||
-                  (attribute === "width" &&
-                    child.getAttribute(attribute).match(/^\d+px$/)) ||
-                  attribute === "alt"))
+              (child.matches("a") && attribute === "href") ||
+              (child.matches("code") &&
+                attribute === "class" &&
+                child
+                  .getAttribute(attribute)
+                  .match(
+                    /^(?:language-math math-inline)|(?:language-math math-display)|(?:language-[a-z0-9\-+#]+)$/,
+                  )) ||
+              (child.matches("img, video") &&
+                (attribute === "src" ||
+                  attribute === "width" ||
+                  attribute === "height")) ||
+              (child.matches("img") && attribute === "alt") ||
+              (child.matches("input") &&
+                (attribute === "type" || attribute === "disabled")) ||
+              (child.matches("td") && attribute === "align") ||
+              attribute === "id"
             )
           )
-            "NOOP";
-        // node.removeAttribute(attribute);
+            child.removeAttribute(attribute);
         sanitize(child);
       }
     })(fragment);
