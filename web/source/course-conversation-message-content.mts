@@ -200,7 +200,7 @@ ${value}</textarea
       );
       fragment.lastElementChild.remove();
     }
-    (function sanitize({ parent, topLevel }) {
+    (function sanitize(parent) {
       for (const child of parent.childNodes) {
         if (
           !(
@@ -268,9 +268,9 @@ ${value}</textarea
           )
             "NOOP";
         // node.removeAttribute(attribute);
-        sanitize({ parent: child, topLevel: false });
+        sanitize(child);
       }
-    })({ parent: fragment, topLevel: true });
+    })(fragment);
     return fragment.outerHTML;
   };
 };
