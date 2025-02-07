@@ -3455,7 +3455,7 @@ export default async (application: Application): Promise<void> => {
 
                       # Inline
 
-                      **Bold**, _italics_, <u>underline</u>, ~~strikethrough~~, [link](https://courselore.org), www.example.com, https://example.com, contact@example.com, $E=mc^2$, \`code\`, <ins>insertion</ins>, ~~deletion~~ (~one tilde~), <sup>superscript</sup>, <sub>subscript</sub>, and a line  
+                      **Bold**, _italics_, <u>underline</u>, [link](https://courselore.org), www.example.com, https://example.com, contact@example.com, $E=mc^2$, \`code\`, <ins>insertion</ins>, ~~deletion~~ (~one tilde~), <sup>superscript</sup>, <sub>subscript</sub>, and a line  
                       break.
 
                       Areallylongwordwithoutbreaks${examples.text({ model: textExamples, length: 4 }).replaceAll(/\s/g, "")}
