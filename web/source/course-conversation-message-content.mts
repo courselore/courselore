@@ -182,75 +182,75 @@ ${value}</textarea
         "text/html",
       )
       .querySelector("div");
-    (function sanitize({ parent, topLevel }) {
-      for (const child of parent.childNodes) {
-        if (
-          !(
-            child.nodeType === child.ELEMENT_NODE ||
-            child.nodeType === child.TEXT_NODE
-          ) ||
-          (child.nodeType === child.ELEMENT_NODE &&
-            !child.matches(
-              "h1, h2, h3, h4, h5, h6, p, hr, strong, em, u, del, a, code, ins, sup, sub, br, img, video, courselore-pool, ul, ol, li, blockquote, table, thead, tbody, tr, th, td, details, summary, pre, section",
-            ))
-          // ||
-          // (child.matches("li") && !parent.matches("ul, ol")) ||
-          // (
-          //   child.matches("table") &&
-          //   (child.children().length === 1 ||
-          //     "TODO: <table> must contain at most one <thead> and one <tbody> in that order")
-          // )(child.matches("thead") && !parent.matches("table")) ||
-          // (child.matches("tbody") && !parent.matches("table")) ||
-          // (child.matches("tr") && !parent.matches("thead, tbody")) ||
-          // (child.matches("th") && !parent.parentElement.matches("thead")) ||
-          // (child.matches("td") && !parent.parentElement.matches("tbody")) ||
-          // (child.matches("summary") &&
-          //   (!parent.matches("details") ||
-          //     "TODO: <summary> must be the first child")) ||
-          // "TODO: <section> must be the last child and it must be on the topLevel"
-        ) {
-          parent.removeChild(child);
-          continue;
-        }
-        if (child.nodeType !== child.ELEMENT_NODE) continue;
-        for (const attribute of child.getAttributeNames())
-          if (
-            !(
-              (child.matches("a") &&
-                attribute === "href" &&
-                (() => {
-                  try {
-                    const url = new URL(child.getAttribute(attribute));
-                    return (
-                      url.protocol === "http:" || url.protocol === "https:"
-                    );
-                  } catch {
-                    return false;
-                  }
-                })()) ||
-              (child.matches("code") && attribute === "class") ||
-              (child.matches("img") &&
-                ((attribute === "href" &&
-                  (() => {
-                    try {
-                      const url = new URL(child.getAttribute(attribute));
-                      return (
-                        url.protocol === "http:" || url.protocol === "https:"
-                      );
-                    } catch {
-                      return false;
-                    }
-                  })()) ||
-                  (attribute === "width" &&
-                    child.getAttribute(attribute).match(/^\d+px$/)) ||
-                  attribute === "alt"))
-            )
-          )
-            "NOOP";
-        // node.removeAttribute(attribute);
-        sanitize({ parent: child, topLevel: false });
-      }
-    })({ parent: fragment, topLevel: true });
+    // (function sanitize({ parent, topLevel }) {
+    //   for (const child of parent.childNodes) {
+    //     if (
+    //       !(
+    //         child.nodeType === child.ELEMENT_NODE ||
+    //         child.nodeType === child.TEXT_NODE
+    //       ) ||
+    //       (child.nodeType === child.ELEMENT_NODE &&
+    //         !child.matches(
+    //           "h1, h2, h3, h4, h5, h6, p, hr, strong, em, u, del, a, code, ins, sup, sub, br, img, video, courselore-pool, ul, ol, li, blockquote, table, thead, tbody, tr, th, td, details, summary, pre, section",
+    //         ))
+    //       // ||
+    //       // (child.matches("li") && !parent.matches("ul, ol")) ||
+    //       // (
+    //       //   child.matches("table") &&
+    //       //   (child.children().length === 1 ||
+    //       //     "TODO: <table> must contain at most one <thead> and one <tbody> in that order")
+    //       // )(child.matches("thead") && !parent.matches("table")) ||
+    //       // (child.matches("tbody") && !parent.matches("table")) ||
+    //       // (child.matches("tr") && !parent.matches("thead, tbody")) ||
+    //       // (child.matches("th") && !parent.parentElement.matches("thead")) ||
+    //       // (child.matches("td") && !parent.parentElement.matches("tbody")) ||
+    //       // (child.matches("summary") &&
+    //       //   (!parent.matches("details") ||
+    //       //     "TODO: <summary> must be the first child")) ||
+    //       // "TODO: <section> must be the last child and it must be on the topLevel"
+    //     ) {
+    //       parent.removeChild(child);
+    //       continue;
+    //     }
+    //     if (child.nodeType !== child.ELEMENT_NODE) continue;
+    //     for (const attribute of child.getAttributeNames())
+    //       if (
+    //         !(
+    //           (child.matches("a") &&
+    //             attribute === "href" &&
+    //             (() => {
+    //               try {
+    //                 const url = new URL(child.getAttribute(attribute));
+    //                 return (
+    //                   url.protocol === "http:" || url.protocol === "https:"
+    //                 );
+    //               } catch {
+    //                 return false;
+    //               }
+    //             })()) ||
+    //           (child.matches("code") && attribute === "class") ||
+    //           (child.matches("img") &&
+    //             ((attribute === "href" &&
+    //               (() => {
+    //                 try {
+    //                   const url = new URL(child.getAttribute(attribute));
+    //                   return (
+    //                     url.protocol === "http:" || url.protocol === "https:"
+    //                   );
+    //                 } catch {
+    //                   return false;
+    //                 }
+    //               })()) ||
+    //               (attribute === "width" &&
+    //                 child.getAttribute(attribute).match(/^\d+px$/)) ||
+    //               attribute === "alt"))
+    //         )
+    //       )
+    //         "NOOP";
+    //     // node.removeAttribute(attribute);
+    //     sanitize({ parent: child, topLevel: false });
+    //   }
+    // })({ parent: fragment, topLevel: true });
     return fragment.outerHTML;
   };
 };
