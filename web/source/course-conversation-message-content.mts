@@ -214,7 +214,10 @@ ${value}</textarea
               (child.matches("a") &&
                 (() => {
                   try {
-                    const url = new URL(child.getAttribute("href"));
+                    const url = new URL(
+                      child.getAttribute("href"),
+                      `https://${application.configuration.hostname}`,
+                    );
                     return (
                       url.protocol !== "https:" && url.protocol !== "http:"
                     );
@@ -225,7 +228,10 @@ ${value}</textarea
               (child.matches("img, video") &&
                 (() => {
                   try {
-                    const url = new URL(child.getAttribute("src"));
+                    const url = new URL(
+                      child.getAttribute("src"),
+                      `https://${application.configuration.hostname}`,
+                    );
                     return !(
                       url.protocol === "https:" || url.protocol === "http:"
                     );
