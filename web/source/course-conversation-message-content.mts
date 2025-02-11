@@ -169,7 +169,7 @@ ${value}</textarea
   }) => {
     const processedMarkdown = (await markdownProcessor.process(content)).value;
     if (typeof processedMarkdown !== "string") throw new Error();
-    const fragment = new DOMParser()
+    const document = new DOMParser()
       .parseFromString(
         html`
           <!doctype html>
@@ -183,22 +183,22 @@ ${value}</textarea
       )
       .querySelector("div");
     if (
-      fragment.lastElementChild !== null &&
-      fragment.lastElementChild.matches(
+      document.lastElementChild !== null &&
+      document.lastElementChild.matches(
         'section[class="footnotes"][data-footnotes=""]',
       ) &&
-      fragment.lastElementChild.children.length === 2 &&
-      fragment.lastElementChild.children[0].matches(
+      document.lastElementChild.children.length === 2 &&
+      document.lastElementChild.children[0].matches(
         'h2[id="footnote-label"][class="sr-only"]',
       ) &&
-      fragment.lastElementChild.children[0].textContent === "Footnotes" &&
-      fragment.lastElementChild.children[1].matches("ol")
+      document.lastElementChild.children[0].textContent === "Footnotes" &&
+      document.lastElementChild.children[1].matches("ol")
     ) {
-      fragment.lastElementChild.insertAdjacentElement(
+      document.lastElementChild.insertAdjacentElement(
         "beforebegin",
-        fragment.lastElementChild.children[1],
+        document.lastElementChild.children[1],
       );
-      fragment.lastElementChild.remove();
+      document.lastElementChild.remove();
     }
     (function sanitize(parent) {
       for (const child of parent.childNodes) {
@@ -297,8 +297,8 @@ ${value}</textarea
             child.removeAttribute(attribute);
         sanitize(child);
       }
-    })(fragment);
-    for (const element of fragment.querySelectorAll("a"))
+    })(document);
+    for (const element of document.querySelectorAll("a"))
       if (
         new URL(
           element.getAttribute("href"),
@@ -306,7 +306,7 @@ ${value}</textarea
         ).hostname !== application.configuration.hostname
       )
         element.setAttribute("target", "_blank");
-    for (const element of fragment.querySelectorAll("img, video")) {
+    for (const element of document.querySelectorAll("img, video")) {
       const url = new URL(
         element.getAttribute("src"),
         `https://${application.configuration.hostname}`,
@@ -317,13 +317,13 @@ ${value}</textarea
           `https://${application.configuration.hostname}/_proxy?${new URLSearchParams({ destination: url.href }).toString()}`,
         );
     }
-    for (const element of fragment.querySelectorAll("details"))
+    for (const element of document.querySelectorAll("details"))
       if (!element.firstElementChild.matches("summary"))
         element.insertAdjacentHTML(
           "afterbegin",
           html`<summary>See more</summary>`,
         );
-    for (const element of fragment.querySelectorAll("summary"))
+    for (const element of document.querySelectorAll("summary"))
       element.insertAdjacentHTML(
         "afterbegin",
         html`
@@ -345,13 +345,13 @@ ${value}</textarea
         `,
       );
     const katexMacros = {};
-    for (const element of fragment.querySelectorAll(
+    for (const element of document.querySelectorAll(
       'code[class~="language-math"]',
     ))
       element.outerHTML = katex.renderToString(element.textContent, {
         throwOnError: false,
         macros: katexMacros,
       });
-    return fragment.outerHTML;
+    return document.outerHTML;
   };
 };
