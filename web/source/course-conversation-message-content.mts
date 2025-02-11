@@ -341,12 +341,16 @@ ${value}</textarea
         `,
       );
     const katexMacros = {};
-    for (const element of document.querySelectorAll(
-      'code[class~="language-math"]',
-    ))
-      element.outerHTML = katex.renderToString(element.textContent, {
+    for (const element of document.querySelectorAll("code.language-math"))
+      (element.matches(".math-display") && element.parentElement.matches("pre")
+        ? element.parentElement
+        : element
+      ).outerHTML = katex.renderToString(element.textContent, {
+        displayMode: element.matches(".math-display"),
+        output: "html",
         throwOnError: false,
         macros: katexMacros,
+        strict: false,
       });
     return document.outerHTML;
   };
