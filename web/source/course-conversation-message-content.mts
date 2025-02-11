@@ -193,10 +193,8 @@ ${value}</textarea
         ) &&
         footnotes.children[0].textContent === "Footnotes" &&
         footnotes.children[1].matches("ol")
-      ) {
-        footnotes.insertAdjacentElement("afterend", footnotes.children[1]);
-        footnotes.remove();
-      }
+      )
+        footnotes.replaceWith(footnotes.children[1]);
     }
     (function sanitize(parent) {
       for (const child of parent.childNodes) {
