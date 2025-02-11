@@ -266,33 +266,33 @@ ${value}</textarea
           continue;
         }
         if (child.nodeType !== child.ELEMENT_NODE) continue;
-        for (const attribute of child.getAttributeNames())
+        for (const attributeName of child.getAttributeNames())
           if (
             !(
-              (child.matches("a") && attribute === "href") ||
+              (child.matches("a") && attributeName === "href") ||
               (child.matches("code") &&
-                attribute === "class" &&
+                attributeName === "class" &&
                 child
-                  .getAttribute(attribute)
+                  .getAttribute(attributeName)
                   .match(
                     /^(?:language-math math-inline)|(?:language-math math-display)|(?:language-[a-z0-9\-+#]+)$/,
                   )) ||
               (child.matches("img, video") &&
-                (attribute === "src" ||
-                  attribute === "width" ||
-                  attribute === "height")) ||
-              (child.matches("img") && attribute === "alt") ||
+                (attributeName === "src" ||
+                  attributeName === "width" ||
+                  attributeName === "height")) ||
+              (child.matches("img") && attributeName === "alt") ||
               (child.matches("input") &&
-                (attribute === "type" || attribute === "disabled")) ||
+                (attributeName === "type" || attributeName === "disabled")) ||
               (child.matches("td") &&
-                attribute === "align" &&
-                (child.getAttribute(attribute) === "left" ||
-                  child.getAttribute(attribute) === "center" ||
-                  child.getAttribute(attribute) === "right")) ||
-              attribute === "id"
+                attributeName === "align" &&
+                (child.getAttribute(attributeName) === "left" ||
+                  child.getAttribute(attributeName) === "center" ||
+                  child.getAttribute(attributeName) === "right")) ||
+              attributeName === "id"
             )
           )
-            child.removeAttribute(attribute);
+            child.removeAttribute(attributeName);
         sanitize(child);
       }
     })(document);
