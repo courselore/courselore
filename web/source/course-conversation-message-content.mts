@@ -182,23 +182,21 @@ ${value}</textarea
         "text/html",
       )
       .querySelector("div");
-    if (
-      document.lastElementChild !== null &&
-      document.lastElementChild.matches(
-        'section[class="footnotes"][data-footnotes=""]',
-      ) &&
-      document.lastElementChild.children.length === 2 &&
-      document.lastElementChild.children[0].matches(
-        'h2[id="footnote-label"][class="sr-only"]',
-      ) &&
-      document.lastElementChild.children[0].textContent === "Footnotes" &&
-      document.lastElementChild.children[1].matches("ol")
-    ) {
-      document.lastElementChild.insertAdjacentElement(
-        "beforebegin",
-        document.lastElementChild.children[1],
-      );
-      document.lastElementChild.remove();
+    {
+      const footnotes = document.lastElementChild;
+      if (
+        footnotes !== null &&
+        footnotes.matches('section[class="footnotes"][data-footnotes=""]') &&
+        footnotes.children.length === 2 &&
+        footnotes.children[0].matches(
+          'h2[id="footnote-label"][class="sr-only"]',
+        ) &&
+        footnotes.children[0].textContent === "Footnotes" &&
+        footnotes.children[1].matches("ol")
+      ) {
+        footnotes.insertAdjacentElement("afterend", footnotes.children[1]);
+        footnotes.remove();
+      }
     }
     (function sanitize(parent) {
       for (const child of parent.childNodes) {
