@@ -711,7 +711,8 @@ export default async (application: Application): Promise<void> => {
                             class="input--text"
                             css="${css`
                               flex: 1;
-                              font-family: "Roboto Mono Variable",
+                              font-family:
+                                "Roboto Mono Variable",
                                 var(--font-family--monospace);
                             `}"
                             javascript="${javascript`
@@ -749,7 +750,8 @@ export default async (application: Application): Promise<void> => {
                             class="input--text"
                             css="${css`
                               flex: 1;
-                              font-family: "Roboto Mono Variable",
+                              font-family:
+                                "Roboto Mono Variable",
                                 var(--font-family--monospace);
                             `}"
                           />

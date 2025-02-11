@@ -1153,7 +1153,8 @@ export default async (application: Application): Promise<void> => {
                                 readonly
                                 class="input--text"
                                 css="${css`
-                                  font-family: "Roboto Mono Variable",
+                                  font-family:
+                                    "Roboto Mono Variable",
                                     var(--font-family--monospace);
                                 `}"
                                 javascript="${javascript`
@@ -1173,7 +1174,8 @@ export default async (application: Application): Promise<void> => {
                                 hidden
                                 class="input--text"
                                 css="${css`
-                                  font-family: "Roboto Mono Variable",
+                                  font-family:
+                                    "Roboto Mono Variable",
                                     var(--font-family--monospace);
                                 `}"
                                 javascript="${javascript`
@@ -1403,7 +1405,8 @@ export default async (application: Application): Promise<void> => {
                                 readonly
                                 class="input--text"
                                 css="${css`
-                                  font-family: "Roboto Mono Variable",
+                                  font-family:
+                                    "Roboto Mono Variable",
                                     var(--font-family--monospace);
                                 `}"
                                 javascript="${javascript`
@@ -1423,7 +1426,8 @@ export default async (application: Application): Promise<void> => {
                                 hidden
                                 class="input--text"
                                 css="${css`
-                                  font-family: "Roboto Mono Variable",
+                                  font-family:
+                                    "Roboto Mono Variable",
                                     var(--font-family--monospace);
                                 `}"
                                 javascript="${javascript`
@@ -1721,7 +1725,8 @@ export default async (application: Application): Promise<void> => {
                               maxlength="50000"
                               class="input--text"
                               css="${css`
-                                font-family: "Roboto Mono Variable",
+                                font-family:
+                                  "Roboto Mono Variable",
                                   var(--font-family--monospace);
                                 height: var(--size--48);
                               `}"
@@ -1860,7 +1865,8 @@ export default async (application: Application): Promise<void> => {
                                           />
                                           <div
                                             css="${css`
-                                              font-family: "Roboto Mono Variable",
+                                              font-family:
+                                                "Roboto Mono Variable",
                                                 var(--font-family--monospace);
                                             `}"
                                           >
@@ -2158,7 +2164,8 @@ export default async (application: Application): Promise<void> => {
                                       >${user.name}</span
                                     >  <span
                                       css="${css`
-                                        font-family: "Roboto Mono Variable",
+                                        font-family:
+                                          "Roboto Mono Variable",
                                           var(--font-family--monospace);
                                         font-size: var(--font-size--3);
                                         line-height: var(
