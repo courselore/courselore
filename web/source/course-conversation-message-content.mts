@@ -337,9 +337,21 @@ ${value}</textarea
           "id",
           githubSlugger.slug(element.getAttribute("id")),
         );
-      for (const element of document.querySelectorAll("h1, h2, h3, h4, h5, h6"))
-        if (element.getAttribute("id") === null)
-          element.setAttribute("id", githubSlugger.slug(element.textContent));
+      for (const element of document.querySelectorAll(
+        "h1, h2, h3, h4, h5, h6",
+      )) {
+        const slug =
+          element.getAttribute("id") ?? githubSlugger.slug(element.textContent);
+        element.setAttribute("id", slug);
+        element.insertAdjacentHTML(
+          "afterbegin",
+          html`
+            <a href="#${slug}" class="heading-link">
+              <i class="bi bi-hash"></i>
+            </a>
+          `,
+        );
+      }
     }
     for (const element of document.querySelectorAll("a"))
       if (
