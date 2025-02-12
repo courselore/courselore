@@ -3337,6 +3337,7 @@ export default async (application: Application): Promise<void> => {
                               key="courseConversationMessage--main"
                               css="${css`
                                 flex: 1;
+                                min-width: var(--size--0);
                                 display: flex;
                                 flex-direction: column;
                                 gap: var(--size--1);
