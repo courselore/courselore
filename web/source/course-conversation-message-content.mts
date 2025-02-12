@@ -177,6 +177,16 @@ ${value}</textarea
             <body>
               <div
                 css="${css`
+                  code {
+                    font-family:
+                      "Roboto Mono Variable", var(--font-family--monospace);
+                  }
+
+                  img,
+                  video {
+                    max-width: 100%;
+                  }
+
                   .katex-display {
                     overflow: auto;
                     & > .katex > .katex-html {
@@ -184,9 +194,17 @@ ${value}</textarea
                     }
                   }
 
-                  img,
-                  video {
-                    max-width: 100%;
+                  .shiki {
+                    border-radius: var(--border-radius--1);
+                    padding: var(--size--2) var(--size--4);
+                    &,
+                    & span {
+                      color: light-dark(var(--shiki-light), var(--shiki-dark));
+                      background-color: light-dark(
+                        var(--shiki-light-bg),
+                        var(--shiki-dark-bg)
+                      );
+                    }
                   }
                 `}"
               >
