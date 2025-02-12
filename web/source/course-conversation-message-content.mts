@@ -179,6 +179,9 @@ ${value}</textarea
                 css="${css`
                   .katex-display {
                     overflow: auto;
+                    & > .katex > .katex-html {
+                      text-align: center;
+                    }
                   }
 
                   img,
@@ -366,6 +369,15 @@ ${value}</textarea
         maxSize: 25,
         maxExpand: 10,
         strict: false,
+      });
+    for (const element of document.querySelectorAll('code[class^="language-"]'))
+      (element.parentElement.matches("pre")
+        ? element.parentElement
+        : element
+      ).outerHTML = await shiki.codeToHtml(element.textContent, {
+        lang: element.getAttribute("class").slice("language-".length),
+        themes: { light: "light-plus", dark: "dark-plus" },
+        defaultColor: false,
       });
     return document.outerHTML;
   };
