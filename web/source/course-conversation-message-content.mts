@@ -195,8 +195,9 @@ ${value}</textarea
                   }
 
                   .shiki {
-                    border-radius: var(--border-radius--1);
                     padding: var(--size--2) var(--size--4);
+                    border-radius: var(--border-radius--1);
+                    overflow: auto;
                     &,
                     & span {
                       color: light-dark(var(--shiki-light), var(--shiki-dark));
