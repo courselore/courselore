@@ -6,6 +6,7 @@ import remarkMath from "remark-math";
 import remarkRehype from "remark-rehype";
 import rehypeStringify from "rehype-stringify";
 import { DOMParser } from "linkedom";
+import GithubSlugger from "github-slugger";
 import katex from "katex";
 import * as shiki from "shiki";
 import sql from "@radically-straightforward/sqlite";
@@ -329,6 +330,17 @@ ${value}</textarea
         sanitize(child);
       }
     })(document);
+    {
+      const githubSlugger = new GithubSlugger();
+      for (const element of document.querySelectorAll("[id]"))
+        element.setAttribute(
+          "id",
+          githubSlugger.slug(element.getAttribute("id")),
+        );
+      for (const element of document.querySelectorAll("h1, h2, h3, h4, h5, h6"))
+        if (element.getAttribute("id") === null)
+          element.setAttribute("id", githubSlugger.slug(element.textContent));
+    }
     for (const element of document.querySelectorAll("a"))
       if (
         new URL(
