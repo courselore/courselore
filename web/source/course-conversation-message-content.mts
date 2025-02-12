@@ -175,7 +175,20 @@ ${value}</textarea
           <!doctype html>
           <html>
             <body>
-              <div css="${css``}">$${processedMarkdown}</div>
+              <div
+                css="${css`
+                  .katex-display {
+                    overflow: auto;
+                  }
+
+                  img,
+                  video {
+                    max-width: 100%;
+                  }
+                `}"
+              >
+                $${processedMarkdown}
+              </div>
             </body>
           </html>
         `,
@@ -350,6 +363,8 @@ ${value}</textarea
         output: "html",
         throwOnError: false,
         macros: katexMacros,
+        maxSize: 25,
+        maxExpand: 10,
         strict: false,
       });
     return document.outerHTML;
