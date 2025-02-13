@@ -3654,10 +3654,7 @@ export default async (application: Application): Promise<void> => {
                                   key="courseConversationMessage--main--content--show--content"
                                 >
                                   $${await application.partials.courseConversationMessageContentProcessor(
-                                    {
-                                      content:
-                                        courseConversationMessage.content,
-                                    },
+                                    { courseConversationMessage },
                                   )}
                                 </div>
                                 $${(() => {

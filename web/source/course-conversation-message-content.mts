@@ -21,9 +21,12 @@ export type ApplicationCourseConversationMessageContent = {
       value?: string;
     }) => HTML;
     courseConversationMessageContentProcessor: ({
-      content,
+      courseConversationMessage: { publicId, content },
     }: {
-      content: string;
+      courseConversationMessage: {
+        publicId: string;
+        content: string;
+      };
     }) => Promise<HTML>;
   };
 };
@@ -166,9 +169,11 @@ ${value}</textarea
     .use(rehypeStringify, { allowDangerousHtml: true });
 
   application.partials.courseConversationMessageContentProcessor = async ({
-    content,
+    courseConversationMessage,
   }) => {
-    const processedMarkdown = (await markdownProcessor.process(content)).value;
+    const processedMarkdown = (
+      await markdownProcessor.process(courseConversationMessage.content)
+    ).value;
     if (typeof processedMarkdown !== "string") throw new Error();
     const document = new DOMParser()
       .parseFromString(
@@ -352,6 +357,15 @@ ${value}</textarea
           `,
         );
       }
+    }
+    for (const element of document.querySelectorAll("[id]")) {
+      const originalId = element.getAttribute("id");
+      const unclobberedId = `${courseConversationMessage.publicId}--${originalId}`;
+      element.setAttribute("id", unclobberedId);
+      for (const element of document.querySelectorAll(
+        `a[href="#${originalId}"]`,
+      ))
+        element.setAttribute("id", unclobberedId);
     }
     for (const element of document.querySelectorAll("a"))
       if (
