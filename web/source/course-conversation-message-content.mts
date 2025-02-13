@@ -359,11 +359,16 @@ ${value}</textarea
           html`
             <a
               href="#${slug}"
+              class="button button--square button--icon button--transparent"
               css="${css`
                 font-size: var(--font-size--4-5);
                 color: light-dark(
                   var(--color--slate--500),
                   var(--color--slate--500)
+                );
+                background-color: light-dark(
+                  var(--color--white),
+                  var(--color--black)
                 );
                 display: block;
                 position: absolute;
