@@ -348,11 +348,29 @@ ${value}</textarea
         const slug =
           element.getAttribute("id") ?? githubSlugger.slug(element.textContent);
         element.setAttribute("id", slug);
+        element.setAttribute(
+          "css",
+          css`
+            position: relative;
+          `,
+        );
         element.insertAdjacentHTML(
           "afterbegin",
           html`
-            <a href="#${slug}" class="heading-link">
-              <i class="bi bi-hash"></i>
+            <a
+              href="#${slug}"
+              css="${css`
+                font-size: var(--font-size--4-5);
+                color: light-dark(
+                  var(--color--slate--500),
+                  var(--color--slate--500)
+                );
+                display: block;
+                position: absolute;
+                margin-left: var(--size---6);
+              `}"
+            >
+              <i class="bi bi-link"></i>
             </a>
           `,
         );
