@@ -365,7 +365,7 @@ ${value}</textarea
       for (const element of document.querySelectorAll(
         `a[href="#${originalId}"]`,
       ))
-        element.setAttribute("id", unclobberedId);
+        element.setAttribute("href", `#${unclobberedId}`);
     }
     for (const element of document.querySelectorAll("a"))
       if (
