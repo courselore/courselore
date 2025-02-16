@@ -369,11 +369,20 @@ ${value}</textarea
                 display: block;
                 position: absolute;
                 margin-left: var(--size---7);
+                transition-property: var(--transition-property--opacity);
+                transition-duration: var(--transition-duration--150);
+                transition-timing-function: var(
+                  --transition-timing-function--ease-in-out
+                );
                 &:not(:hover, :focus-within, :active) {
                   background-color: light-dark(
                     var(--color--white),
                     var(--color--black)
                   );
+                }
+                :not(:hover) > & {
+                  visibility: hidden;
+                  opacity: var(--opacity--0);
                 }
               `}"
             >
