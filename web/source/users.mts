@@ -2037,7 +2037,7 @@ export default async (application: Application): Promise<void> => {
                 );
                 justify-self: end;
                 align-self: end;
-                transform: translate(40%, 40%);
+                translate: 40% 40%;
                 transition-property: var(--transition-property--opacity);
                 transition-duration: var(--transition-duration--150);
                 transition-timing-function: var(

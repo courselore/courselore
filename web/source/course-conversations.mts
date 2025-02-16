@@ -92,7 +92,7 @@ export default async (application: Application): Promise<void> => {
                 );
                 [key~="main--two-column-layout"]:not([state~="sidebar--open"])
                   & {
-                  transform: translateX(-101%);
+                  translate: -101%;
                 }
                 [key~="main--two-column-layout"][state~="sidebar--open"] & {
                   box-shadow: var(--box-shadow--25);
@@ -921,9 +921,7 @@ export default async (application: Application): Promise<void> => {
                                     > summary
                                     > div
                                     > & {
-                                    transform: rotate(
-                                      var(--rotate--90)
-                                    );
+                                    rotate: var(--rotate--90);
                                   }
                                 `}}"
                               >
@@ -1007,7 +1005,7 @@ export default async (application: Application): Promise<void> => {
                 height: 100%;
                 position: absolute;
                 z-index: 100;
-                transform: translateX(-50%);
+                translate: -50%;
                 cursor: col-resize;
                 pointer-events: auto;
                 transition-property: var(--transition-property--colors);
