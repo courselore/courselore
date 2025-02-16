@@ -337,7 +337,7 @@ export default async (application: Application): Promise<void> => {
                               --transition-timing-function--ease-in-out
                             );
                             details[open] > summary > & {
-                              transform: rotate(var(--transform--rotate--90));
+                              transform: rotate(var(--rotate--90));
                             }
                           `}"
                         >
@@ -683,7 +683,7 @@ export default async (application: Application): Promise<void> => {
                               --transition-timing-function--ease-in-out
                             );
                             details[open] > summary > & {
-                              transform: rotate(var(--transform--rotate--90));
+                              transform: rotate(var(--rotate--90));
                             }
                           `}"
                         >
@@ -1048,7 +1048,7 @@ export default async (application: Application): Promise<void> => {
                               --transition-timing-function--ease-in-out
                             );
                             details[open] > summary > & {
-                              transform: rotate(var(--transform--rotate--90));
+                              transform: rotate(var(--rotate--90));
                             }
                           `}"
                         >
@@ -1091,7 +1091,7 @@ export default async (application: Application): Promise<void> => {
                                 );
                                 details[open] > summary > & {
                                   transform: rotate(
-                                    var(--transform--rotate--90)
+                                    var(--rotate--90)
                                   );
                                 }
                               `}"
@@ -1663,7 +1663,7 @@ export default async (application: Application): Promise<void> => {
                                 );
                                 details[open] > summary > & {
                                   transform: rotate(
-                                    var(--transform--rotate--90)
+                                    var(--rotate--90)
                                   );
                                 }
                               `}"
@@ -1811,7 +1811,7 @@ export default async (application: Application): Promise<void> => {
                                         );
                                         details[open] > summary > & {
                                           transform: rotate(
-                                            var(--transform--rotate--90)
+                                            var(--rotate--90)
                                           );
                                         }
                                       `}"
@@ -2032,7 +2032,7 @@ export default async (application: Application): Promise<void> => {
                               --transition-timing-function--ease-in-out
                             );
                             details[open] > summary > & {
-                              transform: rotate(var(--transform--rotate--90));
+                              transform: rotate(var(--rotate--90));
                             }
                           `}"
                         >
@@ -2378,7 +2378,7 @@ export default async (application: Application): Promise<void> => {
                         --transition-timing-function--ease-in-out
                       );
                       details[open] > summary > & {
-                        transform: rotate(var(--transform--rotate--90));
+                        transform: rotate(var(--rotate--90));
                       }
                     `}"
                   >

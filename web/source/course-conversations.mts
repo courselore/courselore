@@ -922,7 +922,7 @@ export default async (application: Application): Promise<void> => {
                                     > div
                                     > & {
                                     transform: rotate(
-                                      var(--transform--rotate--90)
+                                      var(--rotate--90)
                                     );
                                   }
                                 `}}"
