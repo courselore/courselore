@@ -442,7 +442,7 @@ ${value}</textarea
                 --transition-timing-function--ease-in-out
               );
               details[open] > summary > & {
-                transform: rotate(var(--rotate--90));
+                rotate: var(--rotate--90);
               }
             `}"
           >
