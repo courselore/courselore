@@ -366,9 +366,10 @@ ${value}</textarea
                   var(--color--slate--500),
                   var(--color--slate--500)
                 );
+                margin-left: var(--size--0);
                 display: block;
                 position: absolute;
-                margin-left: var(--size---7);
+                translate: -100%;
                 transition-property: var(--transition-property--opacity);
                 transition-duration: var(--transition-duration--150);
                 transition-timing-function: var(
