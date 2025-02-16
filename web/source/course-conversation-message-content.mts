@@ -366,13 +366,15 @@ ${value}</textarea
                   var(--color--slate--500),
                   var(--color--slate--500)
                 );
-                background-color: light-dark(
-                  var(--color--white),
-                  var(--color--black)
-                );
                 display: block;
                 position: absolute;
-                margin-left: var(--size---6);
+                margin-left: var(--size---7);
+                &:not(:hover, :focus-within, :active) {
+                  background-color: light-dark(
+                    var(--color--white),
+                    var(--color--black)
+                  );
+                }
               `}"
             >
               <i class="bi bi-link"></i>
