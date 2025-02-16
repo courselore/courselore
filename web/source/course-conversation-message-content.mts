@@ -370,7 +370,9 @@ ${value}</textarea
                 display: block;
                 position: absolute;
                 translate: -100%;
-                transition-property: var(--transition-property--opacity);
+                transition-property:
+                  var(--transition-property--opacity),
+                  var(--transition-property--colors);
                 transition-duration: var(--transition-duration--150);
                 transition-timing-function: var(
                   --transition-timing-function--ease-in-out
