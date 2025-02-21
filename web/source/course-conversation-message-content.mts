@@ -194,7 +194,7 @@ ${value}</textarea
                   }
 
                   .katex-display {
-                    overflow: auto;
+                    overflow: auto hidden;
                     & > .katex > .katex-html {
                       text-align: center;
                     }
@@ -203,7 +203,7 @@ ${value}</textarea
                   .shiki {
                     padding: var(--size--2) var(--size--4);
                     border-radius: var(--border-radius--1);
-                    overflow: auto;
+                    overflow: auto hidden;
                     &,
                     & span {
                       color: light-dark(var(--shiki-light), var(--shiki-dark));
