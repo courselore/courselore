@@ -293,7 +293,12 @@ ${value}</textarea
 
                   img,
                   video {
+                    background-color: light-dark(
+                      var(--color--white),
+                      var(--color--white)
+                    );
                     max-width: 100%;
+                    border-radius: var(--border-radius--1);
                   }
 
                   .katex-display {
@@ -372,7 +377,7 @@ ${value}</textarea
                   }
                 })()) ||
               (child.matches("img, video") &&
-                (() => {
+                ((() => {
                   try {
                     const url = new URL(
                       child.getAttribute("src"),
@@ -384,7 +389,11 @@ ${value}</textarea
                   } catch {
                     return true;
                   }
-                })()) ||
+                })() ||
+                  (typeof child.getAttribute("width") === "string" &&
+                    !child.getAttribute("width").match(/^\d+$/)) ||
+                  (typeof child.getAttribute("height") === "string" &&
+                    !child.getAttribute("height").match(/^\d+$/)))) ||
               (child.matches("courselore-pool") &&
                 (!child.matches("[id]") ||
                   !child.getAttribute("id").match(/^\d+$/))) ||
