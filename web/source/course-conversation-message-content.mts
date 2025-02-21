@@ -313,6 +313,48 @@ ${value}</textarea
                     list-style: decimal;
                   }
 
+                  input {
+                    color: light-dark(
+                      var(--color--slate--50),
+                      var(--color--slate--950)
+                    );
+                    background-color: light-dark(
+                      var(--color--slate--50),
+                      var(--color--slate--950)
+                    );
+                    vertical-align: var(--size---0-5);
+                    width: var(--size--3-5);
+                    height: var(--size--3-5);
+                    border: var(--border-width--1) solid
+                      light-dark(
+                        var(--color--slate--400),
+                        var(--color--slate--600)
+                      );
+                    border-radius: var(--border-radius--1);
+                    display: inline-flex;
+                    justify-content: center;
+                    align-items: center;
+                    transition-property: var(--transition-property--colors);
+                    transition-duration: var(--transition-duration--150);
+                    transition-timing-function: var(
+                      --transition-timing-function--ease-in-out
+                    );
+                    &:checked {
+                      background-color: light-dark(
+                        var(--color--blue--500),
+                        var(--color--blue--500)
+                      );
+                      border-color: light-dark(
+                        var(--color--blue--600),
+                        var(--color--blue--600)
+                      );
+                    }
+                    &::after {
+                      content: "\\f633";
+                      font-family: "bootstrap-icons";
+                    }
+                  }
+
                   .katex-display {
                     overflow: auto hidden;
                     & > .katex > .katex-html {
@@ -452,7 +494,9 @@ ${value}</textarea
                   attributeName === "height")) ||
               (child.matches("img") && attributeName === "alt") ||
               (child.matches("input") &&
-                (attributeName === "type" || attributeName === "disabled")) ||
+                (attributeName === "type" ||
+                  attributeName === "disabled" ||
+                  attributeName === "checked")) ||
               (child.matches("td") &&
                 attributeName === "align" &&
                 (child.getAttribute(attributeName) === "left" ||

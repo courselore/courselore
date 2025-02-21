@@ -3513,7 +3513,7 @@ export default async (application: Application): Promise<void> => {
 
                       ---
 
-                      ${Array.from({ length: 3 + Math.floor(Math.random() * 4) }, () => `- [${Math.random() < 0.5 ? " " : "x"}] ${examples.text({ model: textExamples, length: 1 + Math.floor(Math.random() * 7) }).replaceAll("\n\n", "\n\n  ")}`)}
+                      ${Array.from({ length: 3 + Math.floor(Math.random() * 4) }, () => `- [${Math.random() < 0.5 ? " " : "x"}] ${examples.text({ model: textExamples, length: 1 + Math.floor(Math.random() * 7) }).replaceAll("\n\n", "\n\n  ")}`).join("\n\n")}
 
                       # Blockquote
 
