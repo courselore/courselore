@@ -336,6 +336,8 @@ ${value}</textarea
                         var(--color--slate--600)
                       );
                     border-radius: var(--border-radius--1);
+                    position: absolute;
+                    translate: calc(-100% - var(--size--1));
                     display: inline-flex;
                     justify-content: center;
                     align-items: center;
@@ -458,7 +460,11 @@ ${value}</textarea
                   !child.getAttribute("id").match(/^\d+$/))) ||
               (child.matches("li") && !parent.matches("ul, ol")) ||
               (child.matches("input") &&
-                (!parent.matches("li") ||
+                (!(
+                  parent.matches("li") ||
+                  (parent.matches("p:first-child") &&
+                    parent.parentElement.matches("li"))
+                ) ||
                   !child.matches(
                     ':first-child[type="checkbox"][disabled=""]',
                   ))) ||
@@ -532,12 +538,6 @@ ${value}</textarea
           element.getAttribute("id") ??
           `${courseConversationMessage.publicId}--${githubSlugger.slug(element.textContent)}`;
         element.setAttribute("id", id);
-        element.setAttribute(
-          "css",
-          css`
-            position: relative;
-          `,
-        );
         element.insertAdjacentHTML(
           "afterbegin",
           html`
