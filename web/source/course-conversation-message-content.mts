@@ -301,6 +301,19 @@ ${value}</textarea
                     border-radius: var(--border-radius--1);
                   }
 
+                  ul,
+                  ol {
+                    margin: var(--size--2) var(--size--0);
+                  }
+
+                  ul > li {
+                    list-style: disc;
+                  }
+
+                  ol > li {
+                    list-style: decimal;
+                  }
+
                   .katex-display {
                     overflow: auto hidden;
                     & > .katex > .katex-html {
