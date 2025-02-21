@@ -521,7 +521,7 @@ ${value}</textarea
                 (attributeName === "type" ||
                   attributeName === "disabled" ||
                   attributeName === "checked")) ||
-              (child.matches("td") &&
+              ((child.matches("td") || child.matches("th")) &&
                 attributeName === "align" &&
                 (child.getAttribute(attributeName) === "left" ||
                   child.getAttribute(attributeName) === "center" ||
