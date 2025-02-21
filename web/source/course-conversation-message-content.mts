@@ -183,6 +183,32 @@ ${value}</textarea
             <body>
               <div
                 css="${css`
+                  h1,
+                  h2,
+                  h3,
+                  h4,
+                  h5,
+                  h6 {
+                    margin: var(--size--4) var(--size--0) var(--size--2)
+                      var(--size--0);
+                  }
+
+                  h1 {
+                    font-weight: 600;
+                  }
+
+                  h2,
+                  h3,
+                  h4,
+                  h5,
+                  h6 {
+                    font-style: italic;
+                  }
+
+                  p + p {
+                    margin-top: var(--size--2);
+                  }
+
                   code {
                     font-family:
                       "Roboto Mono Variable", var(--font-family--monospace);
@@ -212,6 +238,10 @@ ${value}</textarea
                         var(--shiki-dark-bg)
                       );
                     }
+                  }
+
+                  & > :first-child {
+                    margin-top: var(--size--0);
                   }
                 `}"
               >
