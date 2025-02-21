@@ -301,8 +301,7 @@ ${value}</textarea
                     border-radius: var(--border-radius--1);
                   }
 
-                  ul,
-                  ol {
+                  li {
                     margin: var(--size--2) var(--size--0);
                   }
 

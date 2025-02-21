@@ -3493,7 +3493,7 @@ export default async (application: Application): Promise<void> => {
 
                       ---
 
-                      ${Array.from({ length: 3 + Math.floor(Math.random() * 4) }, () => `- ${examples.text({ model: textExamples, length: 1 + Math.floor(Math.random() * 7) }).replaceAll("\n\n", "\n\n  ")}`)}
+                      ${Array.from({ length: 3 + Math.floor(Math.random() * 4) }, () => `- ${examples.text({ model: textExamples, length: 1 + Math.floor(Math.random() * 7) }).replaceAll("\n\n", "\n\n  ")}`).join("\n\n")}
 
                       ---
 
@@ -3503,7 +3503,7 @@ export default async (application: Application): Promise<void> => {
 
                       ---
 
-                      ${Array.from({ length: 3 + Math.floor(Math.random() * 4) }, (listItemValue, listItemIndex) => `${listItemIndex + 1}. ${examples.text({ model: textExamples, length: 1 + Math.floor(Math.random() * 7) }).replaceAll("\n\n", "\n\n   ")}`)}
+                      ${Array.from({ length: 3 + Math.floor(Math.random() * 4) }, (listItemValue, listItemIndex) => `${listItemIndex + 1}. ${examples.text({ model: textExamples, length: 1 + Math.floor(Math.random() * 7) }).replaceAll("\n\n", "\n\n   ")}`).join("\n\n")}
 
                       ---
 
