@@ -446,20 +446,23 @@ ${value}</textarea
           </span>
         `,
       );
-    const katexMacros = {};
-    for (const element of document.querySelectorAll("code.language-math"))
-      (element.matches(".math-display") && element.parentElement.matches("pre")
-        ? element.parentElement
-        : element
-      ).outerHTML = katex.renderToString(element.textContent, {
-        displayMode: element.matches(".math-display"),
-        output: "html",
-        throwOnError: false,
-        macros: katexMacros,
-        maxSize: 25,
-        maxExpand: 10,
-        strict: false,
-      });
+    {
+      const katexMacros = {};
+      for (const element of document.querySelectorAll("code.language-math"))
+        (element.matches(".math-display") &&
+        element.parentElement.matches("pre")
+          ? element.parentElement
+          : element
+        ).outerHTML = katex.renderToString(element.textContent, {
+          displayMode: element.matches(".math-display"),
+          output: "html",
+          throwOnError: false,
+          macros: katexMacros,
+          maxSize: 25,
+          maxExpand: 10,
+          strict: false,
+        });
+    }
     for (const element of document.querySelectorAll('code[class^="language-"]'))
       (element.parentElement.matches("pre")
         ? element.parentElement
