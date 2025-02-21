@@ -279,8 +279,8 @@ ${value}</textarea
 
                   sup,
                   sub {
-                    font-size: var(--font-size--3);
-                    line-height: var(--font-size--3--line-height);
+                    font-size: var(--font-size--2-5);
+                    line-height: var(--font-size--2-5--line-height);
                   }
 
                   sup {
