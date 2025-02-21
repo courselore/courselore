@@ -230,7 +230,7 @@ ${value}</textarea
                     text-decoration: underline;
                   }
 
-                  a {
+                  a:not(.button) {
                     text-decoration: underline;
                     color: light-dark(
                       var(--color--blue--500),
