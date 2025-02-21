@@ -6,7 +6,7 @@ import remarkMath from "remark-math";
 import remarkRehype from "remark-rehype";
 import rehypeStringify from "rehype-stringify";
 import { DOMParser } from "linkedom";
-import GithubSlugger from "github-slugger";
+import GitHubSlugger from "github-slugger";
 import katex from "katex";
 import * as shiki from "shiki";
 import sql from "@radically-straightforward/sqlite";
@@ -336,7 +336,7 @@ ${value}</textarea
       }
     })(document);
     {
-      const githubSlugger = new GithubSlugger();
+      const githubSlugger = new GitHubSlugger();
       for (const element of document.querySelectorAll("[id]"))
         element.setAttribute(
           "id",
