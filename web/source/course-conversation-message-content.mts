@@ -209,9 +209,72 @@ ${value}</textarea
                     margin-top: var(--size--2);
                   }
 
+                  hr {
+                    margin: var(--size--2) var(--size--0);
+                    border-bottom: var(--border-width--1) solid
+                      light-dark(
+                        var(--color--slate--200),
+                        var(--color--slate--800)
+                      );
+                  }
+
+                  strong {
+                    font-weight: 600;
+                  }
+
+                  em {
+                    font-style: italic;
+                  }
+
+                  u {
+                    text-decoration: underline;
+                  }
+
+                  a {
+                    text-decoration: underline;
+                    color: light-dark(
+                      var(--color--blue--500),
+                      var(--color--blue--500)
+                    );
+                    cursor: pointer;
+                    transition-property: var(--transition-property--colors);
+                    transition-duration: var(--transition-duration--150);
+                    transition-timing-function: var(
+                      --transition-timing-function--ease-in-out
+                    );
+                    &:hover,
+                    &:focus-within {
+                      color: light-dark(
+                        var(--color--blue--400),
+                        var(--color--blue--400)
+                      );
+                    }
+                    &:active {
+                      color: light-dark(
+                        var(--color--blue--600),
+                        var(--color--blue--600)
+                      );
+                    }
+                  }
+
                   code {
                     font-family:
                       "Roboto Mono Variable", var(--font-family--monospace);
+                  }
+
+                  ins {
+                    color: light-dark(
+                      var(--color--green--600),
+                      var(--color--green--600)
+                    );
+                  }
+
+                  del {
+                    text-decoration: line-through;
+                    color: light-dark(
+                      var(--color--red--600),
+                      var(--color--red--600)
+                    );
                   }
 
                   img,
@@ -286,7 +349,9 @@ ${value}</textarea
                       `https://${application.configuration.hostname}`,
                     );
                     return (
-                      url.protocol !== "https:" && url.protocol !== "http:"
+                      url.protocol !== "https:" &&
+                      url.protocol !== "http:" &&
+                      url.protocol !== "mailto:"
                     );
                   } catch {
                     return true;

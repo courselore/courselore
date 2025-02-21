@@ -256,7 +256,7 @@ export default async (application: Application): Promise<void> => {
     }
 
     .separator {
-      border-top: var(--border-width--1) solid
+      border-bottom: var(--border-width--1) solid
         light-dark(var(--color--slate--200), var(--color--slate--800));
     }
   `;
