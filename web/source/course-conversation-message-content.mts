@@ -327,7 +327,6 @@ ${value}</textarea
                       var(--color--slate--50),
                       var(--color--slate--950)
                     );
-                    vertical-align: var(--size---0-5);
                     width: var(--size--3-5);
                     height: var(--size--3-5);
                     border: var(--border-width--1) solid
@@ -337,7 +336,7 @@ ${value}</textarea
                       );
                     border-radius: var(--border-radius--1);
                     position: absolute;
-                    translate: calc(-100% - var(--size--1));
+                    translate: calc(-100% - var(--size--1)) 20%;
                     display: inline-flex;
                     justify-content: center;
                     align-items: center;
