@@ -349,13 +349,20 @@ ${value}</textarea
                   }
 
                   .katex-display {
+                    margin: var(--size--2) var(--size--0);
                     overflow: auto hidden;
                     & > .katex > .katex-html {
                       text-align: center;
                     }
                   }
 
+                  pre {
+                    margin: var(--size--2) var(--size--0);
+                  }
+
                   .shiki {
+                    font-size: var(--font-size--3);
+                    line-height: var(--font-size--3-5--line-height);
                     padding: var(--size--2) var(--size--4);
                     border-radius: var(--border-radius--1);
                     overflow: auto hidden;
