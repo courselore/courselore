@@ -536,7 +536,7 @@ export default async (application: Application): Promise<void> => {
                                         var(--color--blue--500)
                                       );
                                       position: absolute;
-                                      margin-left: var(--size---2-5);
+                                      translate: calc(-100% - var(--size--1));
                                     `}"
                                   >
                                     <i class="bi bi-circle-fill"></i>
@@ -884,7 +884,7 @@ export default async (application: Application): Promise<void> => {
                                   var(--color--blue--500)
                                 );
                                 position: absolute;
-                                margin-left: var(--size---2-5);
+                                translate: calc(-100% - var(--size--1));
                                 transition-property: var(
                                   --transition-property--opacity
                                 );
@@ -1004,8 +1004,8 @@ export default async (application: Application): Promise<void> => {
                 width: var(--border-width--4);
                 height: 100%;
                 position: absolute;
-                z-index: 100;
                 translate: -50%;
+                z-index: 100;
                 cursor: col-resize;
                 pointer-events: auto;
                 transition-property: var(--transition-property--colors);
@@ -3276,7 +3276,9 @@ export default async (application: Application): Promise<void> => {
                                             var(--color--blue--500)
                                           );
                                           position: absolute;
-                                          margin-left: var(--size---2-5);
+                                          translate: calc(
+                                            -100% - var(--size--1)
+                                          );
                                           transition-property: var(
                                             --transition-property--opacity
                                           );
