@@ -3557,9 +3557,9 @@ export default async (application: Application): Promise<void> => {
 
                       Footnote[^1] and another.[^2]
 
-                      [^1]: ${examples.text({ model: textExamples, length: 1 })})}
+                      [^1]: ${examples.text({ model: textExamples, length: 1 })}
 
-                      [^2]: ${examples.text({ model: textExamples, length: 1 })})}
+                      [^2]: ${examples.text({ model: textExamples, length: 1 })}
 
                       # \`id="___"\`
 

@@ -400,11 +400,23 @@ ${value}</textarea
         ) &&
         footnotes.children[0].textContent === "Footnotes" &&
         footnotes.children[1].matches("ol")
-      )
+      ) {
+        for (const element of footnotes.children[1].querySelectorAll(
+          "a:last-child",
+        ))
+          if (
+            typeof element.getAttribute("href") === "string" &&
+            element.getAttribute("href").match(/^#fnref-\d+$/) &&
+            element.textContent.trim() === "↩"
+          ) {
+            element.textContent = "(Back)";
+            element.outerHTML = html`<sup>$${element.outerHTML}</sup>`;
+          }
         footnotes.outerHTML = html`
           <hr />
           $${footnotes.children[1].outerHTML}
         `;
+      }
     }
     (function sanitize(parent) {
       for (const child of parent.childNodes) {
