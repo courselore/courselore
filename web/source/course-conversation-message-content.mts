@@ -375,6 +375,33 @@ ${value}</textarea
                     margin: var(--size--2) var(--size--0);
                   }
 
+                  table {
+                    border-collapse: collapse;
+                    margin: var(--size--2) var(--size--0);
+                  }
+
+                  thead {
+                    border-bottom: var(--border-width--2) solid
+                      light-dark(
+                        var(--color--slate--200),
+                        var(--color--slate--800)
+                      );
+                  }
+
+                  th,
+                  td {
+                    padding: var(--size--1) var(--size--2);
+                    &[align="left"] {
+                      text-align: left;
+                    }
+                    &[align="center"] {
+                      text-align: center;
+                    }
+                    &[align="right"] {
+                      text-align: right;
+                    }
+                  }
+
                   .katex-display {
                     overflow: auto hidden;
                     & > .katex > .katex-html {
