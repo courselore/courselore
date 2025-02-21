@@ -337,17 +337,22 @@ ${value}</textarea
     })(document);
     {
       const githubSlugger = new GitHubSlugger();
-      for (const element of document.querySelectorAll("[id]"))
-        element.setAttribute(
-          "id",
-          githubSlugger.slug(element.getAttribute("id")),
-        );
+      for (const element of document.querySelectorAll("[id]")) {
+        const originalId = element.getAttribute("id");
+        const newId = `${courseConversationMessage.publicId}--${githubSlugger.slug(originalId)}`;
+        element.setAttribute("id", newId);
+        for (const element of document.querySelectorAll(
+          `a[href="#${originalId}"]`,
+        ))
+          element.setAttribute("href", `#${newId}`);
+      }
       for (const element of document.querySelectorAll(
         "h1, h2, h3, h4, h5, h6",
       )) {
-        const slug =
-          element.getAttribute("id") ?? githubSlugger.slug(element.textContent);
-        element.setAttribute("id", slug);
+        const id =
+          element.getAttribute("id") ??
+          `${courseConversationMessage.publicId}--${githubSlugger.slug(element.textContent)}`;
+        element.setAttribute("id", id);
         element.setAttribute(
           "css",
           css`
@@ -358,7 +363,7 @@ ${value}</textarea
           "afterbegin",
           html`
             <a
-              href="#${slug}"
+              href="#${id}"
               class="button button--square button--icon button--transparent"
               css="${css`
                 font-size: var(--font-size--4-5);
@@ -394,15 +399,6 @@ ${value}</textarea
           `,
         );
       }
-    }
-    for (const element of document.querySelectorAll("[id]")) {
-      const originalId = element.getAttribute("id");
-      const unclobberedId = `${courseConversationMessage.publicId}--${originalId}`;
-      element.setAttribute("id", unclobberedId);
-      for (const element of document.querySelectorAll(
-        `a[href="#${originalId}"]`,
-      ))
-        element.setAttribute("href", `#${unclobberedId}`);
     }
     for (const element of document.querySelectorAll("a"))
       if (
