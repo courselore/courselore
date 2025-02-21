@@ -361,6 +361,20 @@ ${value}</textarea
                     }
                   }
 
+                  blockquote {
+                    color: light-dark(
+                      var(--color--slate--600),
+                      var(--color--slate--400)
+                    );
+                    padding-left: calc(var(--size--4) - var(--border-width--4));
+                    border-left: var(--border-width--4) solid
+                      light-dark(
+                        var(--color--slate--200),
+                        var(--color--slate--800)
+                      );
+                    margin: var(--size--2) var(--size--0);
+                  }
+
                   .katex-display {
                     overflow: auto hidden;
                     & > .katex > .katex-html {
