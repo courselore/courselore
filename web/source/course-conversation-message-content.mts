@@ -277,6 +277,20 @@ ${value}</textarea
                     );
                   }
 
+                  sup,
+                  sub {
+                    font-size: var(--font-size--3);
+                    line-height: var(--font-size--3--line-height);
+                  }
+
+                  sup {
+                    vertical-align: var(--size--1);
+                  }
+
+                  sub {
+                    vertical-align: var(--size---1);
+                  }
+
                   img,
                   video {
                     max-width: 100%;
