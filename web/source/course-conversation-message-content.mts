@@ -401,7 +401,10 @@ ${value}</textarea
         footnotes.children[0].textContent === "Footnotes" &&
         footnotes.children[1].matches("ol")
       )
-        footnotes.replaceWith(footnotes.children[1]);
+        footnotes.outerHTML = html`
+          <hr />
+          $${footnotes.children[1].outerHTML}
+        `;
     }
     (function sanitize(parent) {
       for (const child of parent.childNodes) {
