@@ -230,33 +230,6 @@ ${value}</textarea
                     text-decoration: underline;
                   }
 
-                  a:not(.button) {
-                    text-decoration: underline;
-                    color: light-dark(
-                      var(--color--blue--500),
-                      var(--color--blue--500)
-                    );
-                    cursor: pointer;
-                    transition-property: var(--transition-property--colors);
-                    transition-duration: var(--transition-duration--150);
-                    transition-timing-function: var(
-                      --transition-timing-function--ease-in-out
-                    );
-                    &:hover,
-                    &:focus-within {
-                      color: light-dark(
-                        var(--color--blue--400),
-                        var(--color--blue--400)
-                      );
-                    }
-                    &:active {
-                      color: light-dark(
-                        var(--color--blue--600),
-                        var(--color--blue--600)
-                      );
-                    }
-                  }
-
                   code {
                     font-family:
                       "Roboto Mono Variable", var(--font-family--monospace);
@@ -319,46 +292,8 @@ ${value}</textarea
                   }
 
                   input {
-                    color: light-dark(
-                      var(--color--slate--50),
-                      var(--color--slate--950)
-                    );
-                    background-color: light-dark(
-                      var(--color--slate--50),
-                      var(--color--slate--950)
-                    );
-                    width: var(--size--3-5);
-                    height: var(--size--3-5);
-                    border: var(--border-width--1) solid
-                      light-dark(
-                        var(--color--slate--400),
-                        var(--color--slate--600)
-                      );
-                    border-radius: var(--border-radius--1);
                     position: absolute;
                     translate: calc(-100% - var(--size--1)) 20%;
-                    display: inline-flex;
-                    justify-content: center;
-                    align-items: center;
-                    transition-property: var(--transition-property--colors);
-                    transition-duration: var(--transition-duration--150);
-                    transition-timing-function: var(
-                      --transition-timing-function--ease-in-out
-                    );
-                    &:checked {
-                      background-color: light-dark(
-                        var(--color--blue--500),
-                        var(--color--blue--500)
-                      );
-                      border-color: light-dark(
-                        var(--color--blue--600),
-                        var(--color--blue--600)
-                      );
-                    }
-                    &::after {
-                      content: "\\f633";
-                      font-family: "bootstrap-icons";
-                    }
                   }
 
                   blockquote {
@@ -399,6 +334,17 @@ ${value}</textarea
                     }
                     &[align="right"] {
                       text-align: right;
+                    }
+                  }
+
+                  details {
+                    margin: var(--size--2) var(--size--0);
+                  }
+
+                  summary {
+                    font-weight: 500;
+                    [open] > & {
+                      margin-bottom: var(--size--1);
                     }
                   }
 
@@ -560,6 +506,10 @@ ${value}</textarea
         sanitize(child);
       }
     })(document);
+    for (const element of document.querySelectorAll("a"))
+      element.setAttribute("class", "link");
+    for (const element of document.querySelectorAll("input"))
+      element.setAttribute("class", "input--checkbox");
     {
       const githubSlugger = new GitHubSlugger();
       for (const element of document.querySelectorAll("[id]")) {
@@ -644,7 +594,11 @@ ${value}</textarea
           "afterbegin",
           html`<summary>See more</summary>`,
         );
-    for (const element of document.querySelectorAll("summary"))
+    for (const element of document.querySelectorAll("summary")) {
+      element.setAttribute(
+        "class",
+        "button button--rectangle button--transparent",
+      );
       element.insertAdjacentHTML(
         "afterbegin",
         html`
@@ -665,6 +619,7 @@ ${value}</textarea
           </span>
         `,
       );
+    }
     {
       const katexMacros = {};
       for (const element of document.querySelectorAll("code.language-math"))

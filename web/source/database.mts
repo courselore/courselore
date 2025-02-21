@@ -3563,7 +3563,7 @@ export default async (application: Application): Promise<void> => {
 
                       # \`id="___"\`
 
-                      <p id="an-id-defined-by-the-user">${examples.text({ model: textExamples, length: 1 })})}</p>
+                      <p id="an-id-defined-by-the-user">${examples.text({ model: textExamples, length: 1 })}</p>
 
                       <a href="#an-id-defined-by-the-user">An achor that points to that id</a>
 
