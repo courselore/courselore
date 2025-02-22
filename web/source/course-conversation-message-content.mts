@@ -181,6 +181,7 @@ ${value}</textarea
           <html>
             <body>
               <div
+                key="courseConversationMessageContent/${courseConversationMessage.publicId}"
                 css="${css`
                   h1,
                   h2,
@@ -196,12 +197,21 @@ ${value}</textarea
                     font-weight: 600;
                   }
 
-                  h2,
+                  h2 {
+                    font-style: italic;
+                  }
+
                   h3,
                   h4,
                   h5,
                   h6 {
-                    font-style: italic;
+                    font-size: var(--font-size--3);
+                    line-height: var(--font-size--3--line-height);
+                    font-weight: 600;
+                    color: light-dark(
+                      var(--color--slate--600),
+                      var(--color--slate--400)
+                    );
                   }
 
                   p + p {
@@ -275,11 +285,12 @@ ${value}</textarea
 
                   ul,
                   ol {
-                    margin-left: var(--size--4);
+                    margin: var(--size--2) var(--size--0) var(--size--2)
+                      var(--size--4);
                   }
 
-                  li {
-                    margin: var(--size--2) var(--size--0);
+                  li + li {
+                    margin-top: var(--size--2);
                   }
 
                   ul > li {
@@ -310,8 +321,8 @@ ${value}</textarea
                   }
 
                   table {
-                    border-collapse: collapse;
                     margin: var(--size--2) var(--size--0);
+                    border-collapse: collapse;
                   }
 
                   thead {
@@ -377,6 +388,10 @@ ${value}</textarea
 
                   & > :first-child {
                     margin-top: var(--size--0);
+                  }
+
+                  & > :last-child {
+                    margin-bottom: var(--size--0);
                   }
                 `}"
               >
