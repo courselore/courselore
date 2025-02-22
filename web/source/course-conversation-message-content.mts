@@ -480,6 +480,10 @@ ${value}</textarea
               (child.matches("courselore-pool") &&
                 (!child.matches("[id]") ||
                   !child.getAttribute("id").match(/^\d+$/))) ||
+              (child.matches("ul, ol") &&
+                [...child.children].some(
+                  (element) => !element.matches("li"),
+                )) ||
               (child.matches("li") && !parent.matches("ul, ol")) ||
               (child.matches("input") &&
                 (!(
@@ -490,12 +494,30 @@ ${value}</textarea
                   !child.matches(
                     ':first-child[type="checkbox"][disabled=""]',
                   ))) ||
-              (child.matches("table") && 2 < child.children.length) ||
+              (child.matches("table") &&
+                (2 < child.children.length ||
+                  [...child.children].some(
+                    (element) => !element.matches("thead, tbody"),
+                  ))) ||
               (child.matches("thead") &&
-                (!parent.matches("table") || !child.matches(":first-child"))) ||
+                (!parent.matches("table") ||
+                  !child.matches(":first-child") ||
+                  1 < child.children.length ||
+                  [...child.children].some(
+                    (element) => !element.matches("tr"),
+                  ))) ||
               (child.matches("tbody") &&
-                (!parent.matches("table") || !child.matches(":last-child"))) ||
-              (child.matches("tr") && !parent.matches("thead, tbody")) ||
+                (!parent.matches("table") ||
+                  !child.matches(":last-child") ||
+                  [...child.children].some(
+                    (element) => !element.matches("tr"),
+                  ))) ||
+              (child.matches("tr") &&
+                (!parent.matches("thead, tbody") ||
+                  [...child.children].some(
+                    (element) =>
+                      !element.matches(parent.matches("thead") ? "th" : "td"),
+                  ))) ||
               (child.matches("th") &&
                 (!parent.matches("tr") ||
                   !parent.parentElement.matches("thead"))) ||
