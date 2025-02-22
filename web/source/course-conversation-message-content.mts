@@ -152,27 +152,26 @@ ${value}</textarea
     </div>
   `;
 
-  const markdownProcessor = unified()
-    .use(remarkParse)
-    .use(remarkGfm, { singleTilde: false })
-    .use(remarkMath)
-    .use(remarkRehype, { allowDangerousHtml: true, clobberPrefix: "" })
-    .use(() => (root: any) => {
-      if (Array.isArray(root?.children))
-        for (const node of root.children)
-          if (
-            typeof node.properties === "object" &&
-            typeof node.position === "object"
-          )
-            node.properties.dataPosition = JSON.stringify(node.position);
-    })
-    .use(rehypeStringify, { allowDangerousHtml: true });
-
   application.partials.courseConversationMessageContentProcessor = async ({
     courseConversationMessage,
   }) => {
     const processedMarkdown = (
-      await markdownProcessor.process(courseConversationMessage.content)
+      await unified()
+        .use(remarkParse)
+        .use(remarkGfm, { singleTilde: false })
+        .use(remarkMath)
+        .use(remarkRehype, { allowDangerousHtml: true, clobberPrefix: "" })
+        .use(() => (root: any) => {
+          if (Array.isArray(root?.children))
+            for (const node of root.children)
+              if (
+                typeof node.properties === "object" &&
+                typeof node.position === "object"
+              )
+                node.properties.dataPosition = JSON.stringify(node.position);
+        })
+        .use(rehypeStringify, { allowDangerousHtml: true })
+        .process(courseConversationMessage.content)
     ).value;
     if (typeof processedMarkdown !== "string") throw new Error();
     const document = new DOMParser()
