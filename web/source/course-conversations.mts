@@ -497,7 +497,6 @@ export default async (application: Application): Promise<void> => {
                         <div key="courseConversation--sidebar">
                           <div
                             css="${css`
-                              position: relative;
                               display: flex;
                               align-items: center;
                             `}"
@@ -824,7 +823,6 @@ export default async (application: Application): Promise<void> => {
                                   var(--color--slate--200),
                                   var(--color--slate--800)
                                 );
-                              position: relative;
                               cursor: pointer;
                               user-select: none;
                               transition-property: var(
@@ -3252,7 +3250,6 @@ export default async (application: Application): Promise<void> => {
                             <div key="courseConversationMessage--sidebar">
                               <div
                                 css="${css`
-                                  position: relative;
                                   display: flex;
                                   align-items: center;
                                 `}"
