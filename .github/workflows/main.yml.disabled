@@ -42,7 +42,7 @@ jobs:
             # courselore.org:22 SSH-2.0-OpenSSH_9.3p1 Ubuntu-1ubuntu3.2
             # courselore.org:22 SSH-2.0-OpenSSH_9.3p1 Ubuntu-1ubuntu3.2
           EOF
-          rsync -a ./courselore--ubuntu--${{ github.ref_name }}.tar.gz root@courselore.org:courselore--ubuntu--${{ github.ref_name }}.tar.gz
+          rsync -a ./courselore--ubuntu--${{ github.ref_name }}.tar.gz root@courselore.org:/root/courselore--ubuntu--${{ github.ref_name }}.tar.gz
           ssh root@courselore.org << "EOF"
             mkdir -p /root/courselore/
             rm -rf /root/courselore--deploy/
