@@ -403,34 +403,22 @@ ${value}</textarea
         "text/html",
       )
       .querySelector("div");
-    {
-      const footnotes = document.lastElementChild;
-      if (
-        footnotes !== null &&
-        footnotes.matches('section[class="footnotes"][data-footnotes=""]') &&
-        footnotes.children.length === 2 &&
-        footnotes.children[0].matches(
-          'h2[id="footnote-label"][class="sr-only"]',
-        ) &&
-        footnotes.children[0].textContent === "Footnotes" &&
-        footnotes.children[1].matches("ol")
-      ) {
-        for (const element of footnotes.children[1].querySelectorAll(
-          "a:last-child",
-        ))
-          if (
-            typeof element.getAttribute("href") === "string" &&
-            element.getAttribute("href").match(/^#fnref-\d+$/) &&
-            element.textContent.trim() === "↩"
-          ) {
-            element.textContent = "(Back)";
-            element.outerHTML = html`<sup>$${element.outerHTML}</sup>`;
-          }
-        footnotes.outerHTML = html`
-          <hr />
-          $${footnotes.children[1].outerHTML}
-        `;
-      }
+    if (
+      document.lastElementChild !== null &&
+      document.lastElementChild.matches(
+        'section[class="footnotes"][data-footnotes=""]',
+      ) &&
+      document.lastElementChild.children.length === 2 &&
+      document.lastElementChild.children[0].matches(
+        'h2[id="footnote-label"][class="sr-only"]',
+      ) &&
+      document.lastElementChild.children[0].textContent === "Footnotes" &&
+      document.lastElementChild.children[1].matches("ol")
+    ) {
+      document.lastElementChild.replaceWith(
+        document.lastElementChild.children[1],
+      );
+      document.lastElementChild.footnotes = true;
     }
     (function sanitize(parent) {
       for (const child of parent.childNodes) {
@@ -568,6 +556,43 @@ ${value}</textarea
       element.setAttribute("class", "link");
     for (const element of document.querySelectorAll("input"))
       element.setAttribute("class", "input--checkbox");
+    if (document.lastElementChild.footnotes === true) {
+      const footnotes = document.lastElementChild;
+      for (const element of footnotes.querySelectorAll("a:last-child"))
+        if (
+          typeof element.getAttribute("href") === "string" &&
+          element.getAttribute("href").match(/^#fnref-\d+$/) &&
+          element.textContent.trim() === "↩"
+        ) {
+          element.setAttribute(
+            "class",
+            "button button--square button--transparent",
+          );
+          element.innerHTML = html`<i class="bi bi-arrow-up"></i>`;
+        }
+      footnotes.outerHTML = html`
+        <div
+          css="${css`
+            font-size: var(--font-size--3);
+            line-height: var(--font-size--3--line-height);
+            color: light-dark(
+              var(--color--slate--600),
+              var(--color--slate--400)
+            );
+            padding-top: var(--size--2);
+            border-top: var(--border-width--1) solid
+              light-dark(var(--color--slate--200), var(--color--slate--800));
+            margin-top: var(--size--2);
+            & > ol {
+              margin-top: var(--size--0);
+              margin-bottom: var(--size--0);
+            }
+          `}"
+        >
+          $${footnotes.outerHTML}
+        </div>
+      `;
+    }
     {
       const githubSlugger = new GitHubSlugger();
       for (const element of document.querySelectorAll("[id]")) {
