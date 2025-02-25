@@ -567,6 +567,8 @@ ${value}</textarea
           `https://${application.configuration.hostname}/_proxy?${new URLSearchParams({ destination: url.href }).toString()}`,
         );
     }
+    for (const element of document.querySelectorAll("img"))
+      element.setAttribute("loading", "lazy");
     for (const element of document.querySelectorAll("video"))
       if (element.parentElement.matches("a")) {
         element.setAttribute("autoplay", "");
