@@ -2893,6 +2893,7 @@ export default async (application: Application): Promise<void> => {
         ]) {
           const course = database.get<{
             id: number;
+            publicId: string;
             courseConversationsNextPublicId: number;
           }>(
             sql`
@@ -2989,7 +2990,7 @@ export default async (application: Application): Promise<void> => {
             ),
           ].map(
             (user, userIndex) =>
-              database.get<{ id: number }>(
+              database.get<{ id: number; publicId: string }>(
                 sql`
                   select * from "courseParticipations" where "id" = ${
                     database.run(
@@ -3652,9 +3653,9 @@ export default async (application: Application): Promise<void> => {
 
                       # \`@mentions\`
 
-                      Self: @${courseParticipation.id}
+                      Self: @${courseParticipation.publicId}
 
-                      Other: @${courseParticipations[Math.floor(Math.random() * courseParticipations.length)].id}
+                      Other: @${courseParticipations[Math.floor(Math.random() * courseParticipations.length)].publicId}
 
                       Non-existent: @1571024857
 
@@ -3662,33 +3663,29 @@ export default async (application: Application): Promise<void> => {
 
                       # \`#references\`
 
-                      Conversation self: #1
+                      Conversation existent: #1
 
-                      Conversation other: #2
+                      Conversation non-existent: #999999
 
-                      Conversation non-existent: #14981039481
-
-                      Conversation permanent link turned reference: <https://${
+                      Conversation existent permanent link turned reference: <https://${
                         application.configuration.hostname
-                      }/courses/${course.id}/conversations/1>
+                      }/courses/${course.publicId}/conversations/1>
 
                       Conversation non-existent permanent link turned reference: <https://${
                         application.configuration.hostname
-                      }/courses/${course.id}/conversations/14981039481>
+                      }/courses/${course.publicId}/conversations/999999>
 
-                      Message self: **this can only be tested after submitting the message, collecting its identifier, and editing the message itself**
+                      Message existent: #1/${courseConversationMessageForCourseConversationMessageDraft!.publicId}
 
-                      Message other: #1/${courseConversationMessageForCourseConversationMessageDraft!.publicId}
+                      Message non-existent: #1/999999
 
-                      Message non-existent: #1/9999
-
-                      Message permanent link turned reference: <https://${
+                      Message existent permanent link turned reference: <https://${
                         application.configuration.hostname
-                      }/courses/${course.id}/conversations/1?message=${courseConversationMessageForCourseConversationMessageDraft!.publicId}>
+                      }/courses/${course.publicId}/conversations/1?message=${courseConversationMessageForCourseConversationMessageDraft!.publicId}>
 
                       Message non-existent permanent link turned reference: <https://${
                         application.configuration.hostname
-                      }/courses/${course.id}/conversations/1?message=9999>
+                      }/courses/${course.publicId}/conversations/1?message=999999>
 
                       # Comment
 
