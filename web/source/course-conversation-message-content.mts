@@ -21,8 +21,17 @@ export type ApplicationCourseConversationMessageContent = {
       value?: string;
     }) => HTML;
     courseConversationMessageContentProcessor: ({
-      courseConversationMessage: { publicId, content },
+      course,
+      courseParticipation,
+      courseConversationMessage,
     }: {
+      course: { id: number };
+      courseParticipation: {
+        id: number;
+        courseParticipationRole:
+          | "courseParticipationRoleInstructor"
+          | "courseParticipationRoleStudent";
+      };
       courseConversationMessage: {
         publicId: string;
         content: string;
@@ -153,6 +162,8 @@ ${value}</textarea
   `;
 
   application.partials.courseConversationMessageContentProcessor = async ({
+    course,
+    courseParticipation,
     courseConversationMessage,
   }) => {
     const processedMarkdown = (
