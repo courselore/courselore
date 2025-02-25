@@ -595,64 +595,6 @@ ${value}</textarea
         </div>
       `;
     }
-    {
-      const githubSlugger = new GitHubSlugger();
-      for (const element of document.querySelectorAll("[id]")) {
-        const originalId = element.getAttribute("id");
-        const newId = `${courseConversationMessage.publicId}--${githubSlugger.slug(originalId)}`;
-        element.setAttribute("id", newId);
-        for (const element of document.querySelectorAll(
-          `a[href="#${originalId}"]`,
-        ))
-          element.setAttribute("href", `#${newId}`);
-      }
-      for (const element of document.querySelectorAll(
-        "h1, h2, h3, h4, h5, h6",
-      )) {
-        const id =
-          element.getAttribute("id") ??
-          `${courseConversationMessage.publicId}--${githubSlugger.slug(element.textContent)}`;
-        element.setAttribute("id", id);
-        element.insertAdjacentHTML(
-          "afterbegin",
-          html`
-            <a
-              href="#${id}"
-              class="button button--square button--icon button--transparent"
-              css="${css`
-                font-size: var(--font-size--4-5);
-                color: light-dark(
-                  var(--color--slate--500),
-                  var(--color--slate--500)
-                );
-                margin-left: var(--size--0);
-                display: block;
-                position: absolute;
-                translate: -100%;
-                transition-property:
-                  var(--transition-property--opacity),
-                  var(--transition-property--colors);
-                transition-duration: var(--transition-duration--150);
-                transition-timing-function: var(
-                  --transition-timing-function--ease-in-out
-                );
-                &:not(:hover, :focus-within, :active) {
-                  background-color: light-dark(
-                    var(--color--white),
-                    var(--color--black)
-                  );
-                }
-                :not(:hover) > & {
-                  opacity: var(--opacity--0);
-                }
-              `}"
-            >
-              <i class="bi bi-link"></i>
-            </a>
-          `,
-        );
-      }
-    }
     for (const element of document.querySelectorAll("img, video")) {
       const url = new URL(
         element.getAttribute("src"),
@@ -722,6 +664,64 @@ ${value}</textarea
         themes: { light: "light-plus", dark: "dark-plus" },
         defaultColor: false,
       });
+    {
+      const githubSlugger = new GitHubSlugger();
+      for (const element of document.querySelectorAll("[id]")) {
+        const originalId = element.getAttribute("id");
+        const newId = `${courseConversationMessage.publicId}--${githubSlugger.slug(originalId)}`;
+        element.setAttribute("id", newId);
+        for (const element of document.querySelectorAll(
+          `a[href="#${originalId}"]`,
+        ))
+          element.setAttribute("href", `#${newId}`);
+      }
+      for (const element of document.querySelectorAll(
+        "h1, h2, h3, h4, h5, h6",
+      )) {
+        const id =
+          element.getAttribute("id") ??
+          `${courseConversationMessage.publicId}--${githubSlugger.slug(element.textContent)}`;
+        element.setAttribute("id", id);
+        element.insertAdjacentHTML(
+          "afterbegin",
+          html`
+            <a
+              href="#${id}"
+              class="button button--square button--icon button--transparent"
+              css="${css`
+                font-size: var(--font-size--4-5);
+                color: light-dark(
+                  var(--color--slate--500),
+                  var(--color--slate--500)
+                );
+                margin-left: var(--size--0);
+                display: block;
+                position: absolute;
+                translate: -100%;
+                transition-property:
+                  var(--transition-property--opacity),
+                  var(--transition-property--colors);
+                transition-duration: var(--transition-duration--150);
+                transition-timing-function: var(
+                  --transition-timing-function--ease-in-out
+                );
+                &:not(:hover, :focus-within, :active) {
+                  background-color: light-dark(
+                    var(--color--white),
+                    var(--color--black)
+                  );
+                }
+                :not(:hover) > & {
+                  opacity: var(--opacity--0);
+                }
+              `}"
+            >
+              <i class="bi bi-link"></i>
+            </a>
+          `,
+        );
+      }
+    }
     return document.outerHTML;
   };
 };
