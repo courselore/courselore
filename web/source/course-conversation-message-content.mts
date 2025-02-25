@@ -567,8 +567,10 @@ ${value}</textarea
           `https://${application.configuration.hostname}/_proxy?${new URLSearchParams({ destination: url.href }).toString()}`,
         );
     }
-    for (const element of document.querySelectorAll("video"))
+    for (const element of document.querySelectorAll("video")) {
       element.setAttribute("controls", "");
+      element.setAttribute("preload", "metadata");
+    }
     for (const element of document.querySelectorAll("input"))
       element.setAttribute("class", "input--checkbox");
     for (const element of document.querySelectorAll("details"))
