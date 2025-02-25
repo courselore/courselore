@@ -353,7 +353,7 @@ ${value}</textarea
 
                   summary {
                     font-weight: 500;
-                    [open] > & {
+                    details[open] > & {
                       margin-bottom: var(--size--1);
                     }
                   }
