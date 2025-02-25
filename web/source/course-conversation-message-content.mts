@@ -567,10 +567,18 @@ ${value}</textarea
           `https://${application.configuration.hostname}/_proxy?${new URLSearchParams({ destination: url.href }).toString()}`,
         );
     }
-    for (const element of document.querySelectorAll("video")) {
-      element.setAttribute("controls", "");
-      element.setAttribute("preload", "metadata");
-    }
+    for (const element of document.querySelectorAll("video"))
+      if (element.parentElement.matches("a")) {
+        element.setAttribute("autoplay", "");
+        element.setAttribute("disablepictureinpicture", "");
+        element.setAttribute("disableremoteplayback", "");
+        element.setAttribute("loop", "");
+        element.setAttribute("muted", "");
+        element.setAttribute("playsinline", "");
+      } else {
+        element.setAttribute("controls", "");
+        element.setAttribute("preload", "metadata");
+      }
     for (const element of document.querySelectorAll("input"))
       element.setAttribute("class", "input--checkbox");
     for (const element of document.querySelectorAll("details"))
