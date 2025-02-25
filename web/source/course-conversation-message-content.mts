@@ -556,8 +556,51 @@ ${value}</textarea
       element.setAttribute("target", "_blank");
       element.setAttribute("class", "link");
     }
+    for (const element of document.querySelectorAll("img, video")) {
+      const url = new URL(
+        element.getAttribute("src"),
+        `https://${application.configuration.hostname}`,
+      );
+      if (url.hostname !== application.configuration.hostname)
+        element.setAttribute(
+          "src",
+          `https://${application.configuration.hostname}/_proxy?${new URLSearchParams({ destination: url.href }).toString()}`,
+        );
+    }
     for (const element of document.querySelectorAll("input"))
       element.setAttribute("class", "input--checkbox");
+    for (const element of document.querySelectorAll("details"))
+      if (!element.firstElementChild.matches("summary"))
+        element.insertAdjacentHTML(
+          "afterbegin",
+          html`<summary>See more</summary>`,
+        );
+    for (const element of document.querySelectorAll("summary")) {
+      element.setAttribute(
+        "class",
+        "button button--rectangle button--transparent",
+      );
+      element.insertAdjacentHTML(
+        "afterbegin",
+        html`
+          <span
+            css="${css`
+              display: inline-block;
+              transition-property: var(--transition-property--transform);
+              transition-duration: var(--transition-duration--150);
+              transition-timing-function: var(
+                --transition-timing-function--ease-in-out
+              );
+              details[open] > summary > & {
+                rotate: var(--rotate--90);
+              }
+            `}"
+          >
+            <i class="bi bi-chevron-right"></i>
+          </span>
+        `,
+      );
+    }
     if (document.lastElementChild.footnotes === true) {
       const footnotes = document.lastElementChild;
       for (const element of footnotes.querySelectorAll("a:last-child"))
@@ -594,49 +637,6 @@ ${value}</textarea
           $${footnotes.outerHTML}
         </div>
       `;
-    }
-    for (const element of document.querySelectorAll("img, video")) {
-      const url = new URL(
-        element.getAttribute("src"),
-        `https://${application.configuration.hostname}`,
-      );
-      if (url.hostname !== application.configuration.hostname)
-        element.setAttribute(
-          "src",
-          `https://${application.configuration.hostname}/_proxy?${new URLSearchParams({ destination: url.href }).toString()}`,
-        );
-    }
-    for (const element of document.querySelectorAll("details"))
-      if (!element.firstElementChild.matches("summary"))
-        element.insertAdjacentHTML(
-          "afterbegin",
-          html`<summary>See more</summary>`,
-        );
-    for (const element of document.querySelectorAll("summary")) {
-      element.setAttribute(
-        "class",
-        "button button--rectangle button--transparent",
-      );
-      element.insertAdjacentHTML(
-        "afterbegin",
-        html`
-          <span
-            css="${css`
-              display: inline-block;
-              transition-property: var(--transition-property--transform);
-              transition-duration: var(--transition-duration--150);
-              transition-timing-function: var(
-                --transition-timing-function--ease-in-out
-              );
-              details[open] > summary > & {
-                rotate: var(--rotate--90);
-              }
-            `}"
-          >
-            <i class="bi bi-chevron-right"></i>
-          </span>
-        `,
-      );
     }
     {
       const katexMacros = {};
