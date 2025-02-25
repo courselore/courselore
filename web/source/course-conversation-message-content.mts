@@ -641,7 +641,6 @@ ${value}</textarea
                   );
                 }
                 :not(:hover) > & {
-                  visibility: hidden;
                   opacity: var(--opacity--0);
                 }
               `}"
