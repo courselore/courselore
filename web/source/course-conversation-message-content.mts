@@ -552,8 +552,10 @@ ${value}</textarea
         sanitize(child);
       }
     })(document);
-    for (const element of document.querySelectorAll("a"))
+    for (const element of document.querySelectorAll("a")) {
+      element.setAttribute("target", "_blank");
       element.setAttribute("class", "link");
+    }
     for (const element of document.querySelectorAll("input"))
       element.setAttribute("class", "input--checkbox");
     if (document.lastElementChild.footnotes === true) {
@@ -651,14 +653,6 @@ ${value}</textarea
         );
       }
     }
-    for (const element of document.querySelectorAll("a"))
-      if (
-        new URL(
-          element.getAttribute("href"),
-          `https://${application.configuration.hostname}`,
-        ).hostname !== application.configuration.hostname
-      )
-        element.setAttribute("target", "_blank");
     for (const element of document.querySelectorAll("img, video")) {
       const url = new URL(
         element.getAttribute("src"),
