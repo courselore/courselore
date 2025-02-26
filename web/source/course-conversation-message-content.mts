@@ -811,6 +811,19 @@ ${value}</textarea
             .replaceAll(
               /(?<=^|\s)@(?:everyone|instructors|students)/g,
               (match) => html`<strong>${match}</strong>`,
+            )
+            .replaceAll(
+              /(?<=^|\s)#(?<courseConversationPublicId>\d+)(?:\/(?<courseConversationMessagePublicId>\d+))?/g,
+              (
+                match,
+                captureGroup1,
+                captureGroup2,
+                offset,
+                string,
+                matchGroups,
+              ) => {
+                return html`<strong>${match}</strong>`;
+              },
             );
         parent.removeChild(child);
         if (previousElementSibling === undefined)
