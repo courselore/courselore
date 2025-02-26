@@ -757,7 +757,7 @@ ${value}</textarea
         }
         const childTextContentWithMentionsAndReferences =
           html`${child.textContent}`.replaceAll(
-            /(?<=^|\s)@(?<courseParticipationPublicId>\d+)(?:--[a-z\-]+)/g,
+            /(?<=^|\s)@(?<courseParticipationPublicId>\d+)--[a-z\-]+/g,
             html`<strong>TODO</strong>`,
           );
         parent.removeChild(child);
