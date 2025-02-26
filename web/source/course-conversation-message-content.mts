@@ -758,38 +758,47 @@ ${value}</textarea
         const childTextContentWithMentionsAndReferences =
           html`${child.textContent}`.replaceAll(
             /(?<=^|\s)@(?<courseParticipationPublicId>\d+)--[a-z\-]+/g,
-            (
-              match,
-              captureGroup1,
-              offset,
-              string,
-              { courseParticipationPublicId },
-            ) => {
-              const courseParticipation = application.database.get<{
+            (match, captureGroup1, offset, string, matchGroups) => {
+              const referenceCourseParticipation = application.database.get<{
+                id: number;
                 user: number;
                 courseParticipationRole:
                   | "courseParticipationRoleInstructor"
                   | "courseParticipationRoleStudent";
               }>(
                 sql`
-                  select "user", "courseParticipationRole"
+                  select
+                    "id",
+                    "user",
+                    "courseParticipationRole"
                   from "courseParticipations"
                   where
-                    "publicId" = ${courseParticipationPublicId} and
+                    "publicId" = ${matchGroups.courseParticipationPublicId} and
                     "course" = ${course.id};
                 `,
               );
-              if (courseParticipation === undefined) return match;
-              const user = application.database.get<{ name: string }>(
+              if (referenceCourseParticipation === undefined) return match;
+              const referenceUser = application.database.get<{ name: string }>(
                 sql`
                   select "name"
                   from "users"
-                  where "id" = ${courseParticipation.user};
+                  where "id" = ${referenceCourseParticipation.user};
                 `,
               );
-              if (user === undefined) throw new Error();
+              if (referenceUser === undefined) throw new Error();
               return html`<strong
-                >@${user.name}${courseParticipation.courseParticipationRole ===
+                css="${courseParticipation.id ===
+                referenceCourseParticipation.id
+                  ? css`
+                      background-color: light-dark(
+                        var(--color--yellow--200),
+                        var(--color--yellow--800)
+                      );
+                      padding: var(--size--0-5) var(--size--1);
+                      border-radius: var(--border-radius--1);
+                    `
+                  : css``}"
+                >@${referenceUser.name}${referenceCourseParticipation.courseParticipationRole ===
                 "courseParticipationRoleInstructor"
                   ? " (instructor)"
                   : ""}</strong
