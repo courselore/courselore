@@ -758,7 +758,43 @@ ${value}</textarea
         const childTextContentWithMentionsAndReferences =
           html`${child.textContent}`.replaceAll(
             /(?<=^|\s)@(?<courseParticipationPublicId>\d+)--[a-z\-]+/g,
-            html`<strong>TODO</strong>`,
+            (
+              match,
+              captureGroup1,
+              offset,
+              string,
+              { courseParticipationPublicId },
+            ) => {
+              const courseParticipation = application.database.get<{
+                user: number;
+                courseParticipationRole:
+                  | "courseParticipationRoleInstructor"
+                  | "courseParticipationRoleStudent";
+              }>(
+                sql`
+                  select "user", "courseParticipationRole"
+                  from "courseParticipations"
+                  where
+                    "publicId" = ${courseParticipationPublicId} and
+                    "course" = ${course.id};
+                `,
+              );
+              if (courseParticipation === undefined) return match;
+              const user = application.database.get<{ name: string }>(
+                sql`
+                  select "name"
+                  from "users"
+                  where "id" = ${courseParticipation.user};
+                `,
+              );
+              if (user === undefined) throw new Error();
+              return html`<strong
+                >@${user.name}${courseParticipation.courseParticipationRole ===
+                "courseParticipationRoleInstructor"
+                  ? " (instructor)"
+                  : ""}</strong
+              >`;
+            },
           );
         parent.removeChild(child);
         if (previousElementSibling === undefined)
