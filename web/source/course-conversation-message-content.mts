@@ -748,15 +748,29 @@ ${value}</textarea
       }
     }
     (function mentionsAndReferences(parent) {
+      let previousElementSibling;
       for (const child of parent.childNodes) {
         if (child.nodeType === child.ELEMENT_NODE) {
           if (!child.matches("code, .katex")) mentionsAndReferences(child);
+          previousElementSibling = child;
           continue;
         }
-        child.textContent = child.textContent.replaceAll(
-          /(?<=^|\s)@(?<courseParticipationPublicId>\d+)(?:--[a-z\-]+)?(?=\s|$)/g,
-          "TODO",
-        );
+        const childTextContentWithMentionsAndReferences =
+          html`${child.textContent}`.replaceAll(
+            /(?<=^|\s)@(?<courseParticipationPublicId>\d+)(?:--[a-z\-]+)/g,
+            html`<strong>TODO</strong>`,
+          );
+        parent.removeChild(child);
+        if (previousElementSibling === undefined)
+          parent.insertAdjacentHTML(
+            "afterbegin",
+            childTextContentWithMentionsAndReferences,
+          );
+        else
+          previousElementSibling.insertAdjacentHTML(
+            "afterend",
+            childTextContentWithMentionsAndReferences,
+          );
       }
     })(document);
     return document.outerHTML;
