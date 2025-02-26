@@ -750,7 +750,7 @@ ${value}</textarea
     (function mentionsAndReferences(parent) {
       for (const child of parent.childNodes) {
         if (child.nodeType === child.ELEMENT_NODE) {
-          if (!child.matches("code")) mentionsAndReferences(child);
+          if (!child.matches("code, .katex")) mentionsAndReferences(child);
           continue;
         }
         child.textContent = child.textContent.replaceAll(
