@@ -25,7 +25,10 @@ export type ApplicationCourseConversationMessageContent = {
       courseParticipation,
       courseConversationMessage,
     }: {
-      course: { id: number };
+      course: {
+        id: number;
+        publicId: string;
+      };
       courseParticipation: {
         id: number;
         courseParticipationRole:
@@ -747,97 +750,109 @@ ${value}</textarea
         );
       }
     }
-    (function mentionsAndReferences(parent) {
-      let previousElementSibling;
-      for (const child of parent.childNodes) {
-        if (child.nodeType === child.ELEMENT_NODE) {
-          if (!child.matches("code, .katex")) mentionsAndReferences(child);
-          previousElementSibling = child;
-          continue;
-        }
-        const childTextContentWithMentionsAndReferences =
-          html`${child.textContent}`
-            .replaceAll(
-              /(?<=^|\s)@(?<courseParticipationPublicId>\d+)--[a-z\-]+/g,
-              (match, captureGroup1, offset, string, matchGroups) => {
-                const referenceCourseParticipation = application.database.get<{
-                  id: number;
-                  user: number;
-                  courseParticipationRole:
-                    | "courseParticipationRoleInstructor"
-                    | "courseParticipationRoleStudent";
-                }>(
-                  sql`
-                    select
-                      "id",
-                      "user",
-                      "courseParticipationRole"
-                    from "courseParticipations"
-                    where
-                      "publicId" = ${matchGroups.courseParticipationPublicId} and
-                      "course" = ${course.id};
-                  `,
-                );
-                if (referenceCourseParticipation === undefined) return match;
-                const referenceUser = application.database.get<{
-                  name: string;
-                }>(
-                  sql`
-                    select "name"
-                    from "users"
-                    where "id" = ${referenceCourseParticipation.user};
-                  `,
-                );
-                if (referenceUser === undefined) throw new Error();
-                return html`<strong
-                  css="${courseParticipation.id ===
-                  referenceCourseParticipation.id
-                    ? css`
-                        background-color: light-dark(
-                          var(--color--yellow--200),
-                          var(--color--yellow--800)
-                        );
-                        padding: var(--size--0-5) var(--size--1);
-                        border-radius: var(--border-radius--1);
-                      `
-                    : css``}"
-                  >@${referenceUser.name}${referenceCourseParticipation.courseParticipationRole ===
-                  "courseParticipationRoleInstructor"
-                    ? " (instructor)"
-                    : ""}</strong
-                >`;
-              },
-            )
-            .replaceAll(
-              /(?<=^|\s)@(?:everyone|instructors|students)/g,
-              (match) => html`<strong>${match}</strong>`,
-            )
-            .replaceAll(
-              /(?<=^|\s)#(?<courseConversationPublicId>\d+)(?:\/(?<courseConversationMessagePublicId>\d+))?/g,
-              (
-                match,
-                captureGroup1,
-                captureGroup2,
-                offset,
-                string,
-                matchGroups,
-              ) => {
-                return html`<strong>${match}</strong>`;
-              },
-            );
-        parent.removeChild(child);
-        if (previousElementSibling === undefined)
-          parent.insertAdjacentHTML(
-            "afterbegin",
-            childTextContentWithMentionsAndReferences,
-          );
-        else
-          previousElementSibling.insertAdjacentHTML(
-            "afterend",
-            childTextContentWithMentionsAndReferences,
-          );
-      }
-    })(document);
+    for (const element of document.querySelectorAll("a")) {
+      if (element.getAttribute("href") !== element.textContent) continue;
+      const match = element
+        .getAttribute("href")
+        .match(
+          new RegExp(
+            `^https://${application.configuration.hostname.replaceAll(".", "\\.")}/courses/${course.publicId}/conversations/(?<courseConversationPublicId>\\d+)(?:\\?message=(?<courseConversationMessagePublicId>\\d+))?$`,
+          ),
+        );
+      if (match === null) continue;
+      element.outerHTML = `#${match.groups.courseConversationPublicId}${typeof match.groups.courseConversationMessagePublicId === "string" ? `/${match.groups.courseConversationMessagePublicId}` : ""}`;
+    }
+    // (function mentionsAndReferences(parent) {
+    //   let previousElementSibling;
+    //   for (const child of parent.childNodes) {
+    //     if (child.nodeType === child.ELEMENT_NODE) {
+    //       if (!child.matches("code, .katex")) mentionsAndReferences(child);
+    //       previousElementSibling = child;
+    //       continue;
+    //     }
+    //     const childTextContentWithMentionsAndReferences =
+    //       html`${child.textContent}`
+    //         .replaceAll(
+    //           /(?<=^|\s)@(?<courseParticipationPublicId>\d+)--[a-z\-]+/g,
+    //           (match, captureGroup1, offset, string, matchGroups) => {
+    //             const referenceCourseParticipation = application.database.get<{
+    //               id: number;
+    //               user: number;
+    //               courseParticipationRole:
+    //                 | "courseParticipationRoleInstructor"
+    //                 | "courseParticipationRoleStudent";
+    //             }>(
+    //               sql`
+    //                 select
+    //                   "id",
+    //                   "user",
+    //                   "courseParticipationRole"
+    //                 from "courseParticipations"
+    //                 where
+    //                   "publicId" = ${matchGroups.courseParticipationPublicId} and
+    //                   "course" = ${course.id};
+    //               `,
+    //             );
+    //             if (referenceCourseParticipation === undefined) return match;
+    //             const referenceUser = application.database.get<{
+    //               name: string;
+    //             }>(
+    //               sql`
+    //                 select "name"
+    //                 from "users"
+    //                 where "id" = ${referenceCourseParticipation.user};
+    //               `,
+    //             );
+    //             if (referenceUser === undefined) throw new Error();
+    //             return html`<strong
+    //               css="${courseParticipation.id ===
+    //               referenceCourseParticipation.id
+    //                 ? css`
+    //                     background-color: light-dark(
+    //                       var(--color--yellow--200),
+    //                       var(--color--yellow--800)
+    //                     );
+    //                     padding: var(--size--0-5) var(--size--1);
+    //                     border-radius: var(--border-radius--1);
+    //                   `
+    //                 : css``}"
+    //               >@${referenceUser.name}${referenceCourseParticipation.courseParticipationRole ===
+    //               "courseParticipationRoleInstructor"
+    //                 ? " (instructor)"
+    //                 : ""}</strong
+    //             >`;
+    //           },
+    //         )
+    //         .replaceAll(
+    //           /(?<=^|\s)@(?:everyone|instructors|students)/g,
+    //           (match) => html`<strong>${match}</strong>`,
+    //         )
+    //         .replaceAll(
+    //           /(?<=^|\s)#(?<courseConversationPublicId>\d+)(?:\/(?<courseConversationMessagePublicId>\d+))?/g,
+    //           (
+    //             match,
+    //             captureGroup1,
+    //             captureGroup2,
+    //             offset,
+    //             string,
+    //             matchGroups,
+    //           ) => {
+    //             return html`<strong>${match}</strong>`;
+    //           },
+    //         );
+    //     parent.removeChild(child);
+    //     if (previousElementSibling === undefined)
+    //       parent.insertAdjacentHTML(
+    //         "afterbegin",
+    //         childTextContentWithMentionsAndReferences,
+    //       );
+    //     else
+    //       previousElementSibling.insertAdjacentHTML(
+    //         "afterend",
+    //         childTextContentWithMentionsAndReferences,
+    //       );
+    //   }
+    // })(document);
     return document.outerHTML;
   };
 };
