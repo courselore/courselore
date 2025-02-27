@@ -2007,7 +2007,7 @@ export default async (application: Application): Promise<void> => {
     handler: async (
       request: serverTypes.Request<
         {},
-        {},
+        { message: string },
         {},
         {},
         Application["types"]["states"]["CourseConversation"]
@@ -3246,6 +3246,17 @@ export default async (application: Application): Promise<void> => {
                               display: flex;
                               gap: var(--size--2);
                             `}"
+                            $${request.search.message ===
+                            courseConversationMessage.publicId
+                              ? html`
+                                  javascript="${javascript`
+                                    if (this.scrolled === undefined) {
+                                      this.scrollIntoView({ block: "center" });
+                                      this.scrolled = true;
+                                    }
+                                  `}"
+                                `
+                              : html``}
                           >
                             <div key="courseConversationMessage--sidebar">
                               <div
