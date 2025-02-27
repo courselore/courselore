@@ -873,7 +873,33 @@ ${value}</textarea
                       >${match}</a
                     >
                   `;
-                return match;
+                const mentionCourseConversationMessage =
+                  application.database.get<{ publicId: string }>(
+                    sql`
+                      select "publicId"
+                      from "courseConversationMessages"
+                      where
+                        "publicId" = ${courseConversationMessagePublicId} and
+                        "courseConversation" = ${mentionCourseConversation.id} $${
+                          courseParticipation.courseParticipationRole !==
+                          "courseParticipationRoleInstructor"
+                            ? sql`
+                                and
+                                "courseConversationMessageVisibility" != 'courseConversationMessageVisibilityCourseParticipationRoleInstructors'
+                              `
+                            : sql``
+                        };
+                    `,
+                  );
+                if (mentionCourseConversationMessage === undefined)
+                  return match;
+                return html`
+                  <a
+                    href="/courses/${course.publicId}/conversations/${mentionCourseConversation.publicId}?message=${mentionCourseConversationMessage.publicId}"
+                    class="link"
+                    >${match}</a
+                  >
+                `;
               },
             );
         parent.removeChild(child);
