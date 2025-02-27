@@ -970,6 +970,34 @@ ${value}</textarea
       if (mentionCourseConversationMessage === undefined) continue;
       element.textContent = `#${mentionCourseConversation.publicId}/${mentionCourseConversationMessage.publicId}`;
     }
+    for (const element of document.querySelectorAll("courselore-poll")) {
+      const courseConversationMessagePoll = application.database.get<{
+        id: number;
+        publicId: string;
+        createdByCourseParticipation: number | null;
+        multipleChoices: number;
+        courseConversationMessagePollState:
+          | "courseConversationMessagePollStateOpen"
+          | "courseConversationMessagePollStateClosed";
+      }>(
+        sql`
+          select
+            "id",
+            "publicId",
+            "createdByCourseParticipation",
+            "multipleChoices",
+            "courseConversationMessagePollState"
+          from "courseConversationMessagePolls"
+          where
+            "publicId" = ${element.getAttribute("id")} and
+            "course" = ${course.id};
+        `,
+      );
+      if (courseConversationMessagePoll === undefined) {
+        element.remove();
+        continue;
+      }
+    }
     return document.outerHTML;
   };
 };
