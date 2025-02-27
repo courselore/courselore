@@ -195,7 +195,7 @@ ${value}</textarea
           <html>
             <body>
               <div
-                key="courseConversationMessageContent/${courseConversationMessage.publicId}"
+                key="courseConversationMessageContent ${courseConversationMessage.publicId}"
                 css="${css`
                   h1,
                   h2,
@@ -999,7 +999,15 @@ ${value}</textarea
         element.remove();
         continue;
       }
-      element.outerHTML = html` <div>POLL</div> `;
+      element.closest(
+        '[key~="courseConversationMessageContent"] > *',
+      ).outerHTML = html`
+        <div
+          key="courseConversationMessagePoll ${courseConversationMessagePoll.publicId}"
+        >
+          HELLO
+        </div>
+      `;
     }
     return document.outerHTML;
   };
