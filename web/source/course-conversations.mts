@@ -3245,7 +3245,18 @@ export default async (application: Application): Promise<void> => {
                             css="${css`
                               display: flex;
                               gap: var(--size--2);
-                            `}"
+                            `} ${request.search.message ===
+                            courseConversationMessage.publicId
+                              ? css`
+                                  background-color: light-dark(
+                                    var(--color--slate--50),
+                                    var(--color--slate--950)
+                                  );
+                                  padding: var(--size--2);
+                                  border-radius: var(--border-radius--1);
+                                  margin: var(--size---2);
+                                `
+                              : css``}"
                             $${request.search.message ===
                             courseConversationMessage.publicId
                               ? html`
