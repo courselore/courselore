@@ -750,18 +750,6 @@ ${value}</textarea
         );
       }
     }
-    for (const element of document.querySelectorAll("a")) {
-      if (element.getAttribute("href") !== element.textContent) continue;
-      const match = element
-        .getAttribute("href")
-        .match(
-          new RegExp(
-            `^https://${application.configuration.hostname.replaceAll(".", "\\.")}/courses/${course.publicId}/conversations/(?<courseConversationPublicId>\\d+)(?:\\?message=(?<courseConversationMessagePublicId>\\d+))?$`,
-          ),
-        );
-      if (match === null) continue;
-      element.textContent = `#${match.groups.courseConversationPublicId}${typeof match.groups.courseConversationMessagePublicId === "string" ? `/${match.groups.courseConversationMessagePublicId}` : ""}`;
-    }
     (function mentionsAndReferences(parent) {
       let previousElementSibling;
       for (const child of parent.childNodes) {
@@ -915,6 +903,73 @@ ${value}</textarea
           );
       }
     })(document);
+    for (const element of document.querySelectorAll("a")) {
+      if (element.getAttribute("href") !== element.textContent) continue;
+      const match = element
+        .getAttribute("href")
+        .match(
+          new RegExp(
+            `^https://${application.configuration.hostname.replaceAll(".", "\\.")}/courses/${course.publicId}/conversations/(?<courseConversationPublicId>\\d+)(?:\\?message=(?<courseConversationMessagePublicId>\\d+))?$`,
+          ),
+        );
+      if (match === null) continue;
+      const mentionCourseConversation = application.database.get<{
+        id: number;
+        publicId: string;
+      }>(
+        sql`
+          select "id", "publicId"
+          from "courseConversations"
+          where
+            "publicId" = ${match.groups.courseConversationPublicId} and
+            "course" = ${course.id} and (
+              "courseConversationVisibility" = 'courseConversationVisibilityEveryone'
+              $${
+                courseParticipation.courseParticipationRole ===
+                "courseParticipationRoleInstructor"
+                  ? sql`
+                      or
+                      "courseConversationVisibility" = 'courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations'
+                    `
+                  : sql``
+              }
+              or (
+                select true
+                from "courseConversationParticipations"
+                where
+                  "courseConversations"."id" = "courseConversationParticipations"."courseConversation" and
+                  "courseConversationParticipations"."courseParticipation" = ${courseParticipation.id}
+              )
+            );
+        `,
+      );
+      if (mentionCourseConversation === undefined) continue;
+      if (match.groups.courseConversationMessagePublicId === undefined) {
+        element.textContent = `#${mentionCourseConversation.publicId}`;
+        continue;
+      }
+      const mentionCourseConversationMessage = application.database.get<{
+        publicId: string;
+      }>(
+        sql`
+          select "publicId"
+          from "courseConversationMessages"
+          where
+            "publicId" = ${match.groups.courseConversationMessagePublicId} and
+            "courseConversation" = ${mentionCourseConversation.id} $${
+              courseParticipation.courseParticipationRole !==
+              "courseParticipationRoleInstructor"
+                ? sql`
+                    and
+                    "courseConversationMessageVisibility" != 'courseConversationMessageVisibilityCourseParticipationRoleInstructors'
+                  `
+                : sql``
+            };
+        `,
+      );
+      if (mentionCourseConversationMessage === undefined) continue;
+      element.textContent = `#${mentionCourseConversation.publicId}/${mentionCourseConversationMessage.publicId}`;
+    }
     return document.outerHTML;
   };
 };
