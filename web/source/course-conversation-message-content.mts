@@ -775,7 +775,7 @@ ${value}</textarea
             .replaceAll(
               /(?<=^|\s)@(?<courseParticipationPublicId>\d+)--[a-z\-]+/g,
               (match, courseParticipationPublicId) => {
-                const referenceCourseParticipation = application.database.get<{
+                const mentionCourseParticipation = application.database.get<{
                   id: number;
                   user: number;
                   courseParticipationRole:
@@ -793,20 +793,20 @@ ${value}</textarea
                       "course" = ${course.id};
                   `,
                 );
-                if (referenceCourseParticipation === undefined) return match;
-                const referenceUser = application.database.get<{
+                if (mentionCourseParticipation === undefined) return match;
+                const mentionUser = application.database.get<{
                   name: string;
                 }>(
                   sql`
                     select "name"
                     from "users"
-                    where "id" = ${referenceCourseParticipation.user};
+                    where "id" = ${mentionCourseParticipation.user};
                   `,
                 );
-                if (referenceUser === undefined) throw new Error();
+                if (mentionUser === undefined) throw new Error();
                 return html`<strong
                   css="${courseParticipation.id ===
-                  referenceCourseParticipation.id
+                  mentionCourseParticipation.id
                     ? css`
                         background-color: light-dark(
                           var(--color--yellow--200),
@@ -816,7 +816,7 @@ ${value}</textarea
                         border-radius: var(--border-radius--1);
                       `
                     : css``}"
-                  >@${referenceUser.name}${referenceCourseParticipation.courseParticipationRole ===
+                  >@${mentionUser.name}${mentionCourseParticipation.courseParticipationRole ===
                   "courseParticipationRoleInstructor"
                     ? " (instructor)"
                     : ""}</strong
