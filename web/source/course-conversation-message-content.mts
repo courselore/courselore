@@ -1032,10 +1032,17 @@ ${value}</textarea
               (courseConversationMessagePollOption) => html`
                 <div
                   key="courseConversationMessagePollOption ${courseConversationMessagePollOption.publicId}"
-                  class="button button--rectangle button--transparent"
-                  css="${css`
-                    margin: var(--size--0);
-                  `}"
+                  $${courseConversationMessagePoll.courseConversationMessagePollState ===
+                  "courseConversationMessagePollStateOpen"
+                    ? html`
+                        class="button button--rectangle button--transparent"
+                        css="${css`
+                          margin: var(--size--0) var(--size---2);`}"
+                      `
+                    : html`
+                        css="${css`
+                          margin: var(--size--2) var(--size--0);`}"
+                      `}
                 >
                   <input
                     type="${Boolean(
@@ -1066,7 +1073,7 @@ ${value}</textarea
                     )
                       ? "input--checkbox"
                       : "input--radio"}"
-                  />  ${courseConversationMessagePollOption.content}"
+                  />  ${courseConversationMessagePollOption.content}
                 </div>
               `,
             )}
