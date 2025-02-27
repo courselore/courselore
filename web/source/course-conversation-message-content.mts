@@ -766,7 +766,7 @@ ${value}</textarea
       let previousElementSibling;
       for (const child of parent.childNodes) {
         if (child.nodeType === child.ELEMENT_NODE) {
-          if (!child.matches("code, .katex")) mentionsAndReferences(child);
+          if (!child.matches("a, code, .katex")) mentionsAndReferences(child);
           previousElementSibling = child;
           continue;
         }
@@ -774,7 +774,7 @@ ${value}</textarea
           html`${child.textContent}`
             .replaceAll(
               /(?<=^|\s)@(?<courseParticipationPublicId>\d+)--[a-z\-]+/g,
-              (match, captureGroup1, offset, string, matchGroups) => {
+              (match, courseParticipationPublicId) => {
                 const referenceCourseParticipation = application.database.get<{
                   id: number;
                   user: number;
@@ -789,7 +789,7 @@ ${value}</textarea
                       "courseParticipationRole"
                     from "courseParticipations"
                     where
-                      "publicId" = ${matchGroups.courseParticipationPublicId} and
+                      "publicId" = ${courseParticipationPublicId} and
                       "course" = ${course.id};
                   `,
                 );
@@ -831,11 +831,8 @@ ${value}</textarea
               /(?<=^|\s)#(?<courseConversationPublicId>\d+)(?:\/(?<courseConversationMessagePublicId>\d+))?/g,
               (
                 match,
-                captureGroup1,
-                captureGroup2,
-                offset,
-                string,
-                matchGroups,
+                courseConversationPublicId,
+                courseConversationMessagePublicId,
               ) => {
                 return html`<strong>${match}</strong>`;
               },
