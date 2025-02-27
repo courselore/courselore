@@ -3292,6 +3292,7 @@ export default async (application: Application): Promise<void> => {
                 (courseConversationMessagePollMultipleChoices) => {
                   const courseConversationMessagePoll = database.get<{
                     id: number;
+                    publicId: string;
                     multipleChoices: number;
                   }>(
                     sql`
@@ -3484,7 +3485,7 @@ export default async (application: Application): Promise<void> => {
 
                       # Polls
 
-                      ${courseConversationMessagePolls.map((courseConversationMessagePoll) => markdown`<courselore-poll id="${courseConversationMessagePoll.id}"></courselore-poll>`).join("\n\n")}
+                      ${courseConversationMessagePolls.map((courseConversationMessagePoll) => markdown`<courselore-poll id="${courseConversationMessagePoll.publicId}"></courselore-poll>`).join("\n\n")}
 
                       # Lists
 

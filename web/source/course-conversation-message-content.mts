@@ -694,7 +694,9 @@ ${value}</textarea
       });
     {
       const githubSlugger = new GitHubSlugger();
-      for (const element of document.querySelectorAll("[id]")) {
+      for (const element of document.querySelectorAll(
+        ":not(courselore-poll)[id]",
+      )) {
         const originalId = element.getAttribute("id");
         const newId = `${courseConversationMessage.publicId}--${githubSlugger.slug(originalId)}`;
         element.setAttribute("id", newId);
@@ -997,6 +999,7 @@ ${value}</textarea
         element.remove();
         continue;
       }
+      element.outerHTML = html` <div>POLL</div> `;
     }
     return document.outerHTML;
   };
