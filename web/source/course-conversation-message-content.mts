@@ -1010,6 +1010,9 @@ ${value}</textarea
           type="form"
           css="${css`
             margin: var(--size--2) var(--size--0);
+            display: flex;
+            flex-direction: column;
+            gap: var(--size--2);
           `}"
         >
           $${application.database
@@ -1030,19 +1033,14 @@ ${value}</textarea
             )
             .map(
               (courseConversationMessagePollOption) => html`
-                <div
+                <label
                   key="courseConversationMessagePollOption ${courseConversationMessagePollOption.publicId}"
                   $${courseConversationMessagePoll.courseConversationMessagePollState ===
                   "courseConversationMessagePollStateOpen"
                     ? html`
                         class="button button--rectangle button--transparent"
-                        css="${css`
-                          margin: var(--size--0) var(--size---2);`}"
                       `
-                    : html`
-                        css="${css`
-                          margin: var(--size--2) var(--size--0);`}"
-                      `}
+                    : html``}
                 >
                   <input
                     type="${Boolean(
@@ -1074,7 +1072,7 @@ ${value}</textarea
                       ? "input--checkbox"
                       : "input--radio"}"
                   />  ${courseConversationMessagePollOption.content}
-                </div>
+                </label>
               `,
             )}
           $${courseConversationMessagePoll.courseConversationMessagePollState ===
@@ -1089,7 +1087,6 @@ ${value}</textarea
                       var(--color--slate--600),
                       var(--color--slate--400)
                     );
-                    margin: var(--size--2) var(--size--0);
                     display: flex;
                     align-items: baseline;
                     flex-wrap: wrap;
