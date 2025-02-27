@@ -750,18 +750,18 @@ ${value}</textarea
         );
       }
     }
-    // for (const element of document.querySelectorAll("a")) {
-    //   if (element.getAttribute("href") !== element.textContent) continue;
-    //   const match = element
-    //     .getAttribute("href")
-    //     .match(
-    //       new RegExp(
-    //         `^https://${application.configuration.hostname.replaceAll(".", "\\.")}/courses/${course.publicId}/conversations/(?<courseConversationPublicId>\\d+)(?:\\?message=(?<courseConversationMessagePublicId>\\d+))?$`,
-    //       ),
-    //     );
-    //   if (match === null) continue;
-    //   element.outerHTML = `#${match.groups.courseConversationPublicId}${typeof match.groups.courseConversationMessagePublicId === "string" ? `/${match.groups.courseConversationMessagePublicId}` : ""}`;
-    // }
+    for (const element of document.querySelectorAll("a")) {
+      if (element.getAttribute("href") !== element.textContent) continue;
+      const match = element
+        .getAttribute("href")
+        .match(
+          new RegExp(
+            `^https://${application.configuration.hostname.replaceAll(".", "\\.")}/courses/${course.publicId}/conversations/(?<courseConversationPublicId>\\d+)(?:\\?message=(?<courseConversationMessagePublicId>\\d+))?$`,
+          ),
+        );
+      if (match === null) continue;
+      element.textContent = `#${match.groups.courseConversationPublicId}${typeof match.groups.courseConversationMessagePublicId === "string" ? `/${match.groups.courseConversationMessagePublicId}` : ""}`;
+    }
     (function mentionsAndReferences(parent) {
       let previousElementSibling;
       for (const child of parent.childNodes) {
