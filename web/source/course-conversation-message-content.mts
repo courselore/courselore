@@ -834,7 +834,46 @@ ${value}</textarea
                 courseConversationPublicId,
                 courseConversationMessagePublicId,
               ) => {
-                return html`<strong>${match}</strong>`;
+                const mentionCourseConversation = application.database.get<{
+                  id: number;
+                  publicId: string;
+                }>(
+                  sql`
+                    select "id", "publicId"
+                    from "courseConversations"
+                    where
+                      "publicId" = ${courseConversationPublicId} and
+                      "course" = ${course.id} and (
+                        "courseConversationVisibility" = 'courseConversationVisibilityEveryone'
+                        $${
+                          courseParticipation.courseParticipationRole ===
+                          "courseParticipationRoleInstructor"
+                            ? sql`
+                                or
+                                "courseConversationVisibility" = 'courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations'
+                              `
+                            : sql``
+                        }
+                        or (
+                          select true
+                          from "courseConversationParticipations"
+                          where
+                            "courseConversations"."id" = "courseConversationParticipations"."courseConversation" and
+                            "courseConversationParticipations"."courseParticipation" = ${courseParticipation.id}
+                        )
+                      );
+                  `,
+                );
+                if (mentionCourseConversation === undefined) return match;
+                if (courseConversationMessagePublicId === undefined)
+                  return html`
+                    <a
+                      href="/courses/${course.publicId}/conversations/${mentionCourseConversation.publicId}"
+                      class="link"
+                      >${match}</a
+                    >
+                  `;
+                return match;
               },
             );
         parent.removeChild(child);
