@@ -315,7 +315,7 @@ ${value}</textarea
                     list-style: decimal;
                   }
 
-                  input {
+                  .input--checkbox--tasklist {
                     position: absolute;
                     translate: calc(-100% - var(--size--1)) 20%;
                   }
@@ -596,7 +596,10 @@ ${value}</textarea
         element.setAttribute("preload", "metadata");
       }
     for (const element of document.querySelectorAll("input"))
-      element.setAttribute("class", "input--checkbox");
+      element.setAttribute(
+        "class",
+        "input--checkbox input--checkbox--tasklist",
+      );
     for (const element of document.querySelectorAll("details"))
       if (!element.firstElementChild.matches("summary"))
         element.insertAdjacentHTML(
@@ -1004,8 +1007,98 @@ ${value}</textarea
       ).outerHTML = html`
         <div
           key="courseConversationMessagePoll ${courseConversationMessagePoll.publicId}"
+          type="form"
+          css="${css`
+            margin: var(--size--2) var(--size--0);
+          `}"
         >
-          HELLO
+          $${application.database
+            .all<{
+              id: number;
+              publicId: string;
+              content: string;
+            }>(
+              sql`
+                select
+                  "id",
+                  "publicId",
+                  "content"
+                from "courseConversationMessagePollOptions"
+                where "courseConversationMessagePoll" = ${courseConversationMessagePoll.id}
+                order by "order" asc;
+              `,
+            )
+            .map(
+              (courseConversationMessagePollOption) => html`
+                <div
+                  key="courseConversationMessagePollOption ${courseConversationMessagePollOption.publicId}"
+                  class="button button--rectangle button--transparent"
+                  css="${css`
+                    margin: var(--size--0);
+                  `}"
+                >
+                  <input
+                    type="${Boolean(
+                      courseConversationMessagePoll.multipleChoices,
+                    )
+                      ? "checkbox"
+                      : "radio"}"
+                    name="courseConversationMessagePollOptions[]"
+                    value="${courseConversationMessagePollOption.publicId}"
+                    $${courseConversationMessagePoll.courseConversationMessagePollState ===
+                    "courseConversationMessagePollStateClosed"
+                      ? html`disabled`
+                      : html``}
+                    $${application.database.get(
+                      sql`
+                        select true
+                        from "courseConversationMessagePollOptionVotes"
+                        where
+                          "courseConversationMessagePollOption" = ${courseConversationMessagePollOption.id} and
+                          "courseParticipation" = ${courseParticipation.id};
+                      `,
+                    ) !== undefined
+                      ? html`checked`
+                      : html``}
+                    required
+                    class="${Boolean(
+                      courseConversationMessagePoll.multipleChoices,
+                    )
+                      ? "input--checkbox"
+                      : "input--radio"}"
+                  />  ${courseConversationMessagePollOption.content}"
+                </div>
+              `,
+            )}
+          $${courseConversationMessagePoll.courseConversationMessagePollState ===
+          "courseConversationMessagePollStateOpen"
+            ? html`
+                <div
+                  css="${css`
+                    font-size: var(--font-size--3);
+                    line-height: var(--font-size--3--line-height);
+                    font-weight: 600;
+                    color: light-dark(
+                      var(--color--slate--600),
+                      var(--color--slate--400)
+                    );
+                    margin: var(--size--2) var(--size--0);
+                    display: flex;
+                    align-items: baseline;
+                    flex-wrap: wrap;
+                    column-gap: var(--size--4);
+                    row-gap: var(--size--2);
+                  `}"
+                >
+                  <button
+                    type="submit"
+                    class="button button--rectangle button--transparent"
+                  >
+                    Vote
+                  </button>
+                </div>
+              `
+            : html``}
         </div>
       `;
     }
