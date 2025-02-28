@@ -998,13 +998,14 @@ ${value}</textarea
             "course" = ${course.id};
         `,
       );
+      const parentElement = element.closest(
+        '[key~="courseConversationMessageContent"] > *',
+      );
       if (courseConversationMessagePoll === undefined) {
-        element.remove();
+        parentElement.remove();
         continue;
       }
-      element.closest(
-        '[key~="courseConversationMessageContent"] > *',
-      ).outerHTML = html`
+      parentElement.outerHTML = html`
         <div
           key="courseConversationMessagePoll ${courseConversationMessagePoll.publicId}"
           type="form"
@@ -1033,46 +1034,72 @@ ${value}</textarea
             )
             .map(
               (courseConversationMessagePollOption) => html`
-                <label
+                <div
                   key="courseConversationMessagePollOption ${courseConversationMessagePollOption.publicId}"
-                  $${courseConversationMessagePoll.courseConversationMessagePollState ===
-                  "courseConversationMessagePollStateOpen"
-                    ? html`
-                        class="button button--rectangle button--transparent"
-                      `
-                    : html``}
+                  css="${css`
+                    display: flex;
+                    flex-direction: column;
+                    gap: var(--size--1);
+                  `}"
                 >
-                  <input
-                    type="${Boolean(
-                      courseConversationMessagePoll.multipleChoices,
-                    )
-                      ? "checkbox"
-                      : "radio"}"
-                    name="courseConversationMessagePollOptions[]"
-                    value="${courseConversationMessagePollOption.publicId}"
+                  <label
                     $${courseConversationMessagePoll.courseConversationMessagePollState ===
-                    "courseConversationMessagePollStateClosed"
-                      ? html`disabled`
+                    "courseConversationMessagePollStateOpen"
+                      ? html`
+                          class="button button--rectangle button--transparent"
+                        `
                       : html``}
-                    $${application.database.get(
-                      sql`
-                        select true
-                        from "courseConversationMessagePollOptionVotes"
-                        where
-                          "courseConversationMessagePollOption" = ${courseConversationMessagePollOption.id} and
-                          "courseParticipation" = ${courseParticipation.id};
-                      `,
-                    ) !== undefined
-                      ? html`checked`
-                      : html``}
-                    required
-                    class="${Boolean(
-                      courseConversationMessagePoll.multipleChoices,
-                    )
-                      ? "input--checkbox"
-                      : "input--radio"}"
-                  />  ${courseConversationMessagePollOption.content}
-                </label>
+                  >
+                    <input
+                      type="${Boolean(
+                        courseConversationMessagePoll.multipleChoices,
+                      )
+                        ? "checkbox"
+                        : "radio"}"
+                      name="courseConversationMessagePollOptions[]"
+                      value="${courseConversationMessagePollOption.publicId}"
+                      $${courseConversationMessagePoll.courseConversationMessagePollState ===
+                      "courseConversationMessagePollStateClosed"
+                        ? html`disabled`
+                        : html``}
+                      $${application.database.get(
+                        sql`
+                          select true
+                          from "courseConversationMessagePollOptionVotes"
+                          where
+                            "courseConversationMessagePollOption" = ${courseConversationMessagePollOption.id} and
+                            "courseParticipation" = ${courseParticipation.id};
+                        `,
+                      ) !== undefined
+                        ? html`checked`
+                        : html``}
+                      required
+                      class="${Boolean(
+                        courseConversationMessagePoll.multipleChoices,
+                      )
+                        ? "input--checkbox"
+                        : "input--radio"}"
+                    />  ${courseConversationMessagePollOption.content}
+                  </label>
+                  <div
+                    css="${css`
+                      font-size: var(--font-size--3);
+                      line-height: var(--font-size--3--line-height);
+                      font-weight: 600;
+                      color: light-dark(
+                        var(--color--slate--500),
+                        var(--color--slate--500)
+                      );
+                    `}"
+                  >
+                    <button
+                      type="button"
+                      class="button button--rectangle button--transparent"
+                    >
+                      X votes <i class="bi bi-chevron-down"></i>
+                    </button>
+                  </div>
+                </div>
               `,
             )}
           $${courseConversationMessagePoll.courseConversationMessagePollState ===
