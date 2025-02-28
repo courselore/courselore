@@ -661,25 +661,6 @@ ${value}</textarea
           pollOption.insertAdjacentHTML(
             "beforeend",
             html`
-              $${0 < votesCount
-                ? html`
-                    <div
-                      style="width: ${String(
-                        Math.round(
-                          (pollOption.votes.length / votesCount) * 100,
-                        ),
-                      )}%;"
-                      css="${css`
-                        background-color: light-dark(
-                          var(--color--blue--500),
-                          var(--color--blue--500)
-                        );
-                        height: var(--border-width--4);
-                        border-radius: var(--border-radius--round);
-                      `}"
-                    ></div>
-                  `
-                : html``}
               <details
                 css="${css`
                   margin: var(--size--0);
@@ -689,8 +670,30 @@ ${value}</textarea
                   css="${css`
                     font-size: var(--font-size--3);
                     line-height: var(--font-size--3--line-height);
+                    position: relative;
                   `}"
                 >
+                  $${0 < votesCount
+                    ? html`
+                        <div
+                          style="width: ${String(
+                            Math.round(
+                              (pollOption.votes.length / votesCount) * 100,
+                            ),
+                          )}%;"
+                          css="${css`
+                            background-color: light-dark(
+                              var(--color--blue--500),
+                              var(--color--blue--500)
+                            );
+                            height: var(--border-width--4);
+                            border-radius: var(--border-radius--round);
+                            position: absolute;
+                            top: var(--size--0);
+                          `}"
+                        ></div>
+                      `
+                    : html``}
                   ${String(pollOption.votes.length)}
                   vote${pollOption.votes.length !== 1 ? "s" : ""}
                 </summary>
