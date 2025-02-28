@@ -318,7 +318,7 @@ ${value}</textarea
                     list-style: decimal;
                   }
 
-                  .input--checkbox--tasklist {
+                  input {
                     position: absolute;
                     translate: calc(-100% - var(--size--1)) 20%;
                   }
@@ -622,10 +622,7 @@ ${value}</textarea
         element.setAttribute("preload", "metadata");
       }
     for (const element of document.querySelectorAll("input"))
-      element.setAttribute(
-        "class",
-        "input--checkbox input--checkbox--tasklist",
-      );
+      element.setAttribute("class", "input--checkbox");
     for (const element of document.querySelectorAll("details"))
       if (!element.firstElementChild.matches("summary"))
         element.insertAdjacentHTML(
