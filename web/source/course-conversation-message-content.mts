@@ -1005,6 +1005,8 @@ ${value}</textarea
             courseParticipation.publicId,
           ),
       );
+      for (const votesElement of element.querySelectorAll("votes"))
+        votesElement.remove();
       if (course.courseState === "courseStateActive")
         element.insertAdjacentHTML(
           "beforeend",
