@@ -1011,6 +1011,8 @@ ${value}</textarea
             <label
               class="button button--rectangle button--transparent"
               css="${css`
+                padding-left: var(--size--6);
+                margin-left: var(--size---6);
                 display: block;
               `}"
             >
