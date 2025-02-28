@@ -1084,15 +1084,11 @@ ${value}</textarea
                       "courseConversationMessagePollStateClosed"
                         ? html`disabled`
                         : html``}
-                      $${application.database.get(
-                        sql`
-                          select true
-                          from "courseConversationMessagePollOptionVotes"
-                          where
-                            "courseConversationMessagePollOption" = ${courseConversationMessagePollOption.id} and
-                            "courseParticipation" = ${courseParticipation.id};
-                        `,
-                      ) !== undefined
+                      $${courseConversationMessagePollOptionVotes.some(
+                        (courseConversationMessagePollOptionVote) =>
+                          courseConversationMessagePollOptionVote.courseParticipation ===
+                          courseParticipation.id,
+                      )
                         ? html`checked`
                         : html``}
                       required
@@ -1103,167 +1099,178 @@ ${value}</textarea
                         : "input--radio"}"
                     />  ${courseConversationMessagePollOption.content}
                   </label>
-                  <div
-                    css="${css`
-                      font-size: var(--font-size--3);
-                      line-height: var(--font-size--3--line-height);
-                      font-weight: 600;
-                      color: light-dark(
-                        var(--color--blue--500),
-                        var(--color--blue--500)
-                      );
-                      display: grid;
-                      & > * {
-                        grid-area: 1 / 1;
-                      }
-                    `}"
-                  >
-                    <div
-                      style="width: ${String(
-                        courseConversationMessagePollOptionVotesTotalCount === 0
-                          ? 0
-                          : Math.round(
-                              (courseConversationMessagePollOptionVotes.length /
-                                courseConversationMessagePollOptionVotesTotalCount) *
-                                100,
-                            ),
-                      )}%;"
-                      css="${css`
-                        background-color: light-dark(
-                          var(--color--blue--100),
-                          var(--color--blue--900)
-                        );
-                        border-radius: var(--border-radius--1);
-                      `}"
-                    ></div>
-                    <div>
-                      <button
-                        type="button"
-                        class="button button--rectangle button--transparent"
-                        css="${css`
-                          margin: var(--size--0);
-                        `}"
-                        javascript="${javascript`
-                          javascript.popover({ element: this, trigger: "click" });
-                        `}"
-                      >
-                        ${String(
-                          courseConversationMessagePollOptionVotes.length,
-                        )}
-                        vote${courseConversationMessagePollOptionVotes.length !==
-                        1
-                          ? "s"
-                          : ""} <i class="bi bi-chevron-down"></i>
-                      </button>
-                      <div
-                        type="popover"
-                        css="${css`
-                          display: flex;
-                          flex-direction: column;
-                          gap: var(--size--2);
-                        `}"
-                      >
-                        $${courseConversationMessagePollOptionVotes.map(
-                          (courseConversationMessagePollOptionVote) => {
-                            const courseConversationMessagePollOptionVoteCourseParticipation =
-                              typeof courseConversationMessagePollOptionVote.courseParticipation ===
-                              "number"
-                                ? application.database.get<{
-                                    user: number;
-                                    courseParticipationRole:
-                                      | "courseParticipationRoleInstructor"
-                                      | "courseParticipationRoleStudent";
-                                  }>(
-                                    sql`
-                                      select
-                                        "user",
-                                        "courseParticipationRole"
-                                      from "courseParticipations"
-                                      where "id" = ${courseConversationMessagePollOptionVote.courseParticipation};
-                                    `,
-                                  )
-                                : undefined;
-                            const courseConversationMessagePollOptionVoteUser =
-                              courseConversationMessagePollOptionVoteCourseParticipation !==
-                              undefined
-                                ? application.database.get<{
-                                    publicId: string;
-                                    name: string;
-                                    avatarColor:
-                                      | "red"
-                                      | "orange"
-                                      | "amber"
-                                      | "yellow"
-                                      | "lime"
-                                      | "green"
-                                      | "emerald"
-                                      | "teal"
-                                      | "cyan"
-                                      | "sky"
-                                      | "blue"
-                                      | "indigo"
-                                      | "violet"
-                                      | "purple"
-                                      | "fuchsia"
-                                      | "pink"
-                                      | "rose";
-                                    avatarImage: string | null;
-                                    lastSeenOnlineAt: string;
-                                  }>(
-                                    sql`
-                                      select
-                                        "publicId",
-                                        "name",
-                                        "avatarColor",
-                                        "avatarImage",
-                                        "lastSeenOnlineAt"
-                                      from "users"
-                                      where "id" = ${courseConversationMessagePollOptionVoteCourseParticipation.user};
-                                    `,
-                                  )
-                                : undefined;
-                            return html`
-                              <div
-                                css="${css`
-                                  display: flex;
-                                  gap: var(--size--2);
-                                `}"
-                              >
-                                $${application.partials.userAvatar({
-                                  user:
-                                    courseConversationMessagePollOptionVoteUser ??
-                                    "courseParticipationDeleted",
-                                })}
-                                <div
-                                  css="${css`
-                                    margin-top: var(--size--0-5);
-                                  `}"
-                                >
-                                  ${courseConversationMessagePollOptionVoteUser?.name ??
-                                  "Deleted course participant"}<span
-                                    css="${css`
-                                      font-size: var(--font-size--3);
-                                      line-height: var(
-                                        --font-size--3--line-height
-                                      );
-                                      color: light-dark(
-                                        var(--color--slate--600),
-                                        var(--color--slate--400)
-                                      );
-                                    `}"
-                                    >${courseConversationMessagePollOptionVoteCourseParticipation?.courseParticipationRole ===
-                                    "courseParticipationRoleInstructor"
-                                      ? " (instructor)"
-                                      : ""}</span
-                                  >
-                                </div>
-                              </div>
-                            `;
-                          },
-                        )}
-                      </div>
-                    </div>
-                  </div>
+                  $${courseConversationMessagePoll.courseConversationMessagePollState ===
+                    "courseConversationMessagePollStateClosed" ||
+                  courseConversationMessagePollOptionVotes.some(
+                    (courseConversationMessagePollOptionVote) =>
+                      courseConversationMessagePollOptionVote.courseParticipation ===
+                      courseParticipation.id,
+                  )
+                    ? html`
+                        <div
+                          css="${css`
+                            font-size: var(--font-size--3);
+                            line-height: var(--font-size--3--line-height);
+                            font-weight: 600;
+                            color: light-dark(
+                              var(--color--blue--500),
+                              var(--color--blue--500)
+                            );
+                            display: grid;
+                            & > * {
+                              grid-area: 1 / 1;
+                            }
+                          `}"
+                        >
+                          <div
+                            style="width: ${String(
+                              courseConversationMessagePollOptionVotesTotalCount ===
+                                0
+                                ? 0
+                                : Math.round(
+                                    (courseConversationMessagePollOptionVotes.length /
+                                      courseConversationMessagePollOptionVotesTotalCount) *
+                                      100,
+                                  ),
+                            )}%;"
+                            css="${css`
+                              background-color: light-dark(
+                                var(--color--blue--100),
+                                var(--color--blue--900)
+                              );
+                              border-radius: var(--border-radius--1);
+                            `}"
+                          ></div>
+                          <div>
+                            <button
+                              type="button"
+                              class="button button--rectangle button--transparent"
+                              css="${css`
+                                margin: var(--size--0);
+                              `}"
+                              javascript="${javascript`
+                                javascript.popover({ element: this, trigger: "click" });
+                              `}"
+                            >
+                              ${String(
+                                courseConversationMessagePollOptionVotes.length,
+                              )}
+                              vote${courseConversationMessagePollOptionVotes.length !==
+                              1
+                                ? "s"
+                                : ""} <i class="bi bi-chevron-down"></i>
+                            </button>
+                            <div
+                              type="popover"
+                              css="${css`
+                                display: flex;
+                                flex-direction: column;
+                                gap: var(--size--2);
+                              `}"
+                            >
+                              $${courseConversationMessagePollOptionVotes.map(
+                                (courseConversationMessagePollOptionVote) => {
+                                  const courseConversationMessagePollOptionVoteCourseParticipation =
+                                    typeof courseConversationMessagePollOptionVote.courseParticipation ===
+                                    "number"
+                                      ? application.database.get<{
+                                          user: number;
+                                          courseParticipationRole:
+                                            | "courseParticipationRoleInstructor"
+                                            | "courseParticipationRoleStudent";
+                                        }>(
+                                          sql`
+                                            select
+                                              "user",
+                                              "courseParticipationRole"
+                                            from "courseParticipations"
+                                            where "id" = ${courseConversationMessagePollOptionVote.courseParticipation};
+                                          `,
+                                        )
+                                      : undefined;
+                                  const courseConversationMessagePollOptionVoteUser =
+                                    courseConversationMessagePollOptionVoteCourseParticipation !==
+                                    undefined
+                                      ? application.database.get<{
+                                          publicId: string;
+                                          name: string;
+                                          avatarColor:
+                                            | "red"
+                                            | "orange"
+                                            | "amber"
+                                            | "yellow"
+                                            | "lime"
+                                            | "green"
+                                            | "emerald"
+                                            | "teal"
+                                            | "cyan"
+                                            | "sky"
+                                            | "blue"
+                                            | "indigo"
+                                            | "violet"
+                                            | "purple"
+                                            | "fuchsia"
+                                            | "pink"
+                                            | "rose";
+                                          avatarImage: string | null;
+                                          lastSeenOnlineAt: string;
+                                        }>(
+                                          sql`
+                                            select
+                                              "publicId",
+                                              "name",
+                                              "avatarColor",
+                                              "avatarImage",
+                                              "lastSeenOnlineAt"
+                                            from "users"
+                                            where "id" = ${courseConversationMessagePollOptionVoteCourseParticipation.user};
+                                          `,
+                                        )
+                                      : undefined;
+                                  return html`
+                                    <div
+                                      css="${css`
+                                        display: flex;
+                                        gap: var(--size--2);
+                                      `}"
+                                    >
+                                      $${application.partials.userAvatar({
+                                        user:
+                                          courseConversationMessagePollOptionVoteUser ??
+                                          "courseParticipationDeleted",
+                                      })}
+                                      <div
+                                        css="${css`
+                                          margin-top: var(--size--0-5);
+                                        `}"
+                                      >
+                                        ${courseConversationMessagePollOptionVoteUser?.name ??
+                                        "Deleted course participant"}<span
+                                          css="${css`
+                                            font-size: var(--font-size--3);
+                                            line-height: var(
+                                              --font-size--3--line-height
+                                            );
+                                            color: light-dark(
+                                              var(--color--slate--600),
+                                              var(--color--slate--400)
+                                            );
+                                          `}"
+                                          >${courseConversationMessagePollOptionVoteCourseParticipation?.courseParticipationRole ===
+                                          "courseParticipationRoleInstructor"
+                                            ? " (instructor)"
+                                            : ""}</span
+                                        >
+                                      </div>
+                                    </div>
+                                  `;
+                                },
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      `
+                    : html``}
                 </div>
               `;
             })}
