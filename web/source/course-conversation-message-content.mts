@@ -624,11 +624,13 @@ ${value}</textarea
     for (const element of document.querySelectorAll("input"))
       element.setAttribute("class", "input--checkbox");
     for (const element of document.querySelectorAll("poll")) {
+      let votesCount = 0;
       for (const pollOption of element.children[0].children) {
         const votesElement = pollOption.querySelector("votes");
         votesElement?.remove();
         pollOption.votes =
           votesElement === null ? [] : JSON.parse(votesElement.textContent);
+        votesCount += pollOption.votes.length;
         if (pollOption.votes.includes(courseParticipation.publicId))
           pollOption.querySelector("input").setAttribute("checked", "");
         if (course.courseState === "courseStateActive") {
@@ -659,8 +661,36 @@ ${value}</textarea
           pollOption.insertAdjacentHTML(
             "beforeend",
             html`
-              <details>
-                <summary>
+              $${0 < votesCount
+                ? html`
+                    <div
+                      style="width: ${String(
+                        Math.round(
+                          (pollOption.votes.length / votesCount) * 100,
+                        ),
+                      )}%;"
+                      css="${css`
+                        background-color: light-dark(
+                          var(--color--blue--500),
+                          var(--color--blue--500)
+                        );
+                        height: var(--border-width--4);
+                        border-radius: var(--border-radius--round);
+                      `}"
+                    ></div>
+                  `
+                : html``}
+              <details
+                css="${css`
+                  margin: var(--size--0);
+                `}"
+              >
+                <summary
+                  css="${css`
+                    font-size: var(--font-size--3);
+                    line-height: var(--font-size--3--line-height);
+                  `}"
+                >
                   ${String(pollOption.votes.length)}
                   vote${pollOption.votes.length !== 1 ? "s" : ""}
                 </summary>
