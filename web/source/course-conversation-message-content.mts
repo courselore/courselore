@@ -623,6 +623,81 @@ ${value}</textarea
       }
     for (const element of document.querySelectorAll("input"))
       element.setAttribute("class", "input--checkbox");
+    for (const element of document.querySelectorAll("poll")) {
+      for (const pollOption of element.children[0].children) {
+        const votesElement = pollOption.querySelector("votes");
+        votesElement?.remove();
+        pollOption.votes =
+          votesElement === null ? [] : JSON.parse(votesElement.textContent);
+        if (pollOption.votes.includes(courseParticipation.publicId))
+          pollOption.querySelector("input").setAttribute("checked", "");
+        if (course.courseState === "courseStateActive") {
+          pollOption.innerHTML = html`
+            <label
+              class="button button--rectangle button--transparent"
+              css="${css`
+                padding-left: var(--size--6);
+                margin-left: var(--size---6);
+                display: block;
+              `}"
+            >
+              $${pollOption.innerHTML}
+            </label>
+          `;
+          pollOption.querySelector("input").removeAttribute("disabled");
+        }
+      }
+      if (
+        courseParticipation.courseParticipationRole ===
+          "courseParticipationRoleInstructor" ||
+        courseParticipation.id ===
+          courseConversationMessage.createdByCourseParticipation ||
+        element.querySelector("input:checked") !== null ||
+        course.courseState === "courseStateArchived"
+      )
+        for (const pollOption of element.children[0].children) {
+          pollOption.insertAdjacentHTML(
+            "beforeend",
+            html`
+              <details>
+                <summary>
+                  ${String(pollOption.votes.length)}
+                  vote${pollOption.votes.length !== 1 ? "s" : ""}
+                </summary>
+                VOTES
+              </details>
+            `,
+          );
+        }
+      if (course.courseState === "courseStateActive")
+        element.insertAdjacentHTML(
+          "beforeend",
+          html`
+            <div
+              css="${css`
+                font-size: var(--font-size--3);
+                line-height: var(--font-size--3--line-height);
+                font-weight: 600;
+                color: light-dark(
+                  var(--color--slate--600),
+                  var(--color--slate--400)
+                );
+                margin: var(--size--2) var(--size--0);
+              `}"
+            >
+              <button
+                type="submit"
+                class="button button--rectangle button--transparent"
+              >
+                ${element.querySelector("input:checked") === null
+                  ? "Vote"
+                  : "Update vote"}
+              </button>
+            </div>
+          `,
+        );
+      element.outerHTML = html`<div type="form">$${element.innerHTML}</div>`;
+    }
     for (const element of document.querySelectorAll("details"))
       if (!element.firstElementChild.matches("summary"))
         element.insertAdjacentHTML(
@@ -995,81 +1070,6 @@ ${value}</textarea
       );
       if (mentionCourseConversationMessage === undefined) continue;
       element.textContent = `#${mentionCourseConversation.publicId}/${mentionCourseConversationMessage.publicId}`;
-    }
-    for (const element of document.querySelectorAll("poll")) {
-      for (const pollOption of element.children[0].children) {
-        const votesElement = pollOption.querySelector("votes");
-        votesElement?.remove();
-        pollOption.votes =
-          votesElement === null ? [] : JSON.parse(votesElement.textContent);
-        if (pollOption.votes.includes(courseParticipation.publicId))
-          pollOption.querySelector("input").setAttribute("checked", "");
-        if (course.courseState === "courseStateActive") {
-          pollOption.innerHTML = html`
-            <label
-              class="button button--rectangle button--transparent"
-              css="${css`
-                padding-left: var(--size--6);
-                margin-left: var(--size---6);
-                display: block;
-              `}"
-            >
-              $${pollOption.innerHTML}
-            </label>
-          `;
-          pollOption.querySelector("input").removeAttribute("disabled");
-        }
-      }
-      if (
-        courseParticipation.courseParticipationRole ===
-          "courseParticipationRoleInstructor" ||
-        courseParticipation.id ===
-          courseConversationMessage.createdByCourseParticipation ||
-        element.querySelector("input:checked") !== null ||
-        course.courseState === "courseStateArchived"
-      )
-        for (const pollOption of element.children[0].children) {
-          pollOption.insertAdjacentHTML(
-            "beforeend",
-            html`
-              <details>
-                <summary>
-                  ${String(pollOption.votes.length)}
-                  vote${pollOption.votes.length !== 1 ? "s" : ""}
-                </summary>
-                VOTES
-              </details>
-            `,
-          );
-        }
-      if (course.courseState === "courseStateActive")
-        element.insertAdjacentHTML(
-          "beforeend",
-          html`
-            <div
-              css="${css`
-                font-size: var(--font-size--3);
-                line-height: var(--font-size--3--line-height);
-                font-weight: 600;
-                color: light-dark(
-                  var(--color--slate--600),
-                  var(--color--slate--400)
-                );
-                margin: var(--size--2) var(--size--0);
-              `}"
-            >
-              <button
-                type="submit"
-                class="button button--rectangle button--transparent"
-              >
-                ${element.querySelector("input:checked") === null
-                  ? "Vote"
-                  : "Update vote"}
-              </button>
-            </div>
-          `,
-        );
-      element.outerHTML = html`<div type="form">$${element.innerHTML}</div>`;
     }
     return document.outerHTML;
   };
