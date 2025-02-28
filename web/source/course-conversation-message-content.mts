@@ -1005,12 +1005,23 @@ ${value}</textarea
         parentElement.remove();
         continue;
       }
+      const courseConversationMessagePollOptionVotesTotalCount =
+        application.database.get<{ count: number }>(
+          sql`
+            select count(*) as "count"
+            from "courseConversationMessagePollOptionVotes"
+            join "courseConversationMessagePollOptions"
+            on
+              "courseConversationMessagePollOptionVotes"."courseConversationMessagePollOption" = "courseConversationMessagePollOptions"."id" and
+              "courseConversationMessagePollOptions"."courseConversationMessagePoll" = ${courseConversationMessagePoll.id};
+          `,
+        )!.count;
       parentElement.outerHTML = html`
         <div
           key="courseConversationMessagePoll ${courseConversationMessagePoll.publicId}"
           type="form"
           css="${css`
-            margin: var(--size--2) var(--size--0);
+            margin: var(--size--4) var(--size--0);
             display: flex;
             flex-direction: column;
             gap: var(--size--2);
@@ -1033,8 +1044,18 @@ ${value}</textarea
                 order by "order" asc;
               `,
             )
-            .map(
-              (courseConversationMessagePollOption) => html`
+            .map((courseConversationMessagePollOption) => {
+              const courseConversationMessagePollOptionVotes =
+                application.database.all<{
+                  courseParticipation: number | null;
+                }>(
+                  sql`
+                    select "courseParticipation"
+                    from "courseConversationMessagePollOptionVotes"
+                    where "courseConversationMessagePollOption" = ${courseConversationMessagePollOption.id};
+                  `,
+                );
+              return html`
                 <div
                   key="courseConversationMessagePollOption ${courseConversationMessagePollOption.publicId}"
                   css="${css`
@@ -1098,6 +1119,15 @@ ${value}</textarea
                     `}"
                   >
                     <div
+                      style="width: ${String(
+                        courseConversationMessagePollOptionVotesTotalCount === 0
+                          ? 0
+                          : Math.round(
+                              (courseConversationMessagePollOptionVotes.length /
+                                courseConversationMessagePollOptionVotesTotalCount) *
+                                100,
+                            ),
+                      )}%;"
                       css="${css`
                         background-color: light-dark(
                           var(--color--blue--100),
@@ -1106,7 +1136,6 @@ ${value}</textarea
                         padding: var(--size--1) var(--size--2);
                         border-radius: var(--border-radius--1);
                         margin: var(--size---1) var(--size---2);
-                        width: 50%;
                       `}"
                     ></div>
                     <div>
@@ -1114,13 +1143,19 @@ ${value}</textarea
                         type="button"
                         class="button button--rectangle button--transparent"
                       >
-                        X votes <i class="bi bi-chevron-down"></i>
+                        ${String(
+                          courseConversationMessagePollOptionVotes.length,
+                        )}
+                        vote${courseConversationMessagePollOptionVotes.length !==
+                        1
+                          ? "s"
+                          : ""} <i class="bi bi-chevron-down"></i>
                       </button>
                     </div>
                   </div>
                 </div>
-              `,
-            )}
+              `;
+            })}
           $${courseConversationMessagePoll.courseConversationMessagePollState ===
           "courseConversationMessagePollStateOpen"
             ? html`
