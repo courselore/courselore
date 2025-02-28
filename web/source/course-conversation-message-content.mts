@@ -998,11 +998,11 @@ ${value}</textarea
             "course" = ${course.id};
         `,
       );
-      const parentElement = element.closest(
+      const containerElement = element.closest(
         '[key~="courseConversationMessageContent"] > *',
       );
       if (courseConversationMessagePoll === undefined) {
-        parentElement.remove();
+        containerElement.remove();
         continue;
       }
       const courseConversationMessagePollOptionVotesTotalCount =
@@ -1016,7 +1016,7 @@ ${value}</textarea
               "courseConversationMessagePollOptions"."courseConversationMessagePoll" = ${courseConversationMessagePoll.id};
           `,
         )!.count;
-      parentElement.outerHTML = html`
+      containerElement.outerHTML = html`
         <div
           key="courseConversationMessagePoll ${courseConversationMessagePoll.publicId}"
           type="form"
