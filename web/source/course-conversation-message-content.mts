@@ -501,20 +501,22 @@ ${value}</textarea
                   [...child.children[0].children].some(
                     (element) => element.querySelector("input") === null,
                   ) ||
-                  ![...child.querySelectorAll("votes")].every((votesString) => {
-                    try {
-                      const votes = JSON.parse(votesString);
-                      return (
-                        Array.isArray(votes) &&
-                        votes.every(
-                          (vote) =>
-                            typeof vote === "string" && vote.match(/^\d+$/),
-                        )
-                      );
-                    } catch {
-                      return false;
-                    }
-                  }) ||
+                  ![...child.querySelectorAll("votes")].every(
+                    (votesElement) => {
+                      try {
+                        const votes = JSON.parse(votesElement.textContent);
+                        return (
+                          Array.isArray(votes) &&
+                          votes.every(
+                            (vote) =>
+                              typeof vote === "string" && vote.match(/^\d+$/),
+                          )
+                        );
+                      } catch {
+                        return false;
+                      }
+                    },
+                  ) ||
                   child.querySelector("poll") !== null)) ||
               (child.matches("vote") &&
                 (child.closest("poll") === null ||
@@ -997,8 +999,11 @@ ${value}</textarea
       element.textContent = `#${mentionCourseConversation.publicId}/${mentionCourseConversationMessage.publicId}`;
     }
     for (const element of document.querySelectorAll("poll")) {
-      const voted = [...element.querySelectorAll("votes")].some((votesString) =>
-        JSON.parse(votesString).includes(courseParticipation.publicId),
+      const voted = [...element.querySelectorAll("votes")].some(
+        (votesElement) =>
+          JSON.parse(votesElement.textContent).includes(
+            courseParticipation.publicId,
+          ),
       );
       if (course.courseState === "courseStateActive")
         element.insertAdjacentHTML(
