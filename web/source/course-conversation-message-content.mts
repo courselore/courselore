@@ -1008,8 +1008,13 @@ ${value}</textarea
           pollOption.querySelector("input").setAttribute("checked", "");
         if (course.courseState === "courseStateActive") {
           pollOption.innerHTML = html`
-            <label class="button button--rectangle button--transparent">
-              <div>$${pollOption.innerHTML}</div>
+            <label
+              class="button button--rectangle button--transparent"
+              css="${css`
+                display: block;
+              `}"
+            >
+              $${pollOption.innerHTML}
             </label>
           `;
           pollOption.querySelector("input").removeAttribute("disabled");
