@@ -1007,12 +1007,17 @@ ${value}</textarea
         if (votes.includes(courseParticipation.publicId))
           pollOption.querySelector("input").setAttribute("checked", "");
         if (course.courseState === "courseStateActive") {
-          pollOption.innerHTML = html`
-            <label class="button button--rectangle button--transparent">
-              $${pollOption.innerHTML}
+          pollOption.querySelector("input").removeAttribute("disabled");
+          pollOption.outerHTML = html`
+            <label
+              class="button button--rectangle button--transparent"
+              css="${css`
+                display: flex;
+              `}"
+            >
+              $${pollOption.outerHTML}
             </label>
           `;
-          pollOption.querySelector("input").removeAttribute("disabled");
         }
       }
       if (course.courseState === "courseStateActive")
