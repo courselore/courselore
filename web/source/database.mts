@@ -3485,7 +3485,7 @@ export default async (application: Application): Promise<void> => {
 
                       # Polls
 
-                      ${courseConversationMessagePolls.map((courseConversationMessagePoll) => markdown`<courselore-poll id="${courseConversationMessagePoll.publicId}"></courselore-poll>`).join("\n\n")}
+                      ${courseConversationMessagePolls.map((courseConversationMessagePoll) => markdown`<courselore-poll id="${courseConversationMessagePoll.publicId}"></courselore-poll>`).join("\n\n---\n\n")}
 
                       # Lists
 

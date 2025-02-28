@@ -1021,11 +1021,10 @@ ${value}</textarea
           key="courseConversationMessagePoll ${courseConversationMessagePoll.publicId}"
           type="form"
           css="${css`
-            margin: var(--size--4) var(--size--0);
+            margin: var(--size--2) var(--size--0);
             display: flex;
             flex-direction: column;
             gap: var(--size--2);
-            gap: var(--size--4);
           `}"
         >
           $${application.database
@@ -1062,7 +1061,7 @@ ${value}</textarea
                   css="${css`
                     display: flex;
                     flex-direction: column;
-                    gap: var(--size--2);
+                    gap: var(--size--1);
                   `}"
                 >
                   <label
@@ -1134,15 +1133,16 @@ ${value}</textarea
                           var(--color--blue--100),
                           var(--color--blue--900)
                         );
-                        padding: var(--size--1) var(--size--2);
                         border-radius: var(--border-radius--1);
-                        margin: var(--size---1) var(--size---2);
                       `}"
                     ></div>
                     <div>
                       <button
                         type="button"
                         class="button button--rectangle button--transparent"
+                        css="${css`
+                          margin: var(--size--0);
+                        `}"
                         javascript="${javascript`
                           javascript.popover({ element: this, trigger: "click" });
                         `}"
