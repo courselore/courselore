@@ -1142,6 +1142,9 @@ ${value}</textarea
                       <button
                         type="button"
                         class="button button--rectangle button--transparent"
+                        javascript="${javascript`
+                          javascript.popover({ element: this, trigger: "click" });
+                        `}"
                       >
                         ${String(
                           courseConversationMessagePollOptionVotes.length,
@@ -1151,6 +1154,113 @@ ${value}</textarea
                           ? "s"
                           : ""} <i class="bi bi-chevron-down"></i>
                       </button>
+                      <div
+                        type="popover"
+                        css="${css`
+                          display: flex;
+                          flex-direction: column;
+                          gap: var(--size--2);
+                        `}"
+                      >
+                        $${courseConversationMessagePollOptionVotes.map(
+                          (courseConversationMessagePollOptionVote) => {
+                            const courseConversationMessagePollOptionVoteCourseParticipation =
+                              typeof courseConversationMessagePollOptionVote.courseParticipation ===
+                              "number"
+                                ? application.database.get<{
+                                    user: number;
+                                    courseParticipationRole:
+                                      | "courseParticipationRoleInstructor"
+                                      | "courseParticipationRoleStudent";
+                                  }>(
+                                    sql`
+                                      select
+                                        "user",
+                                        "courseParticipationRole"
+                                      from "courseParticipations"
+                                      where "id" = ${courseConversationMessagePollOptionVote.courseParticipation};
+                                    `,
+                                  )
+                                : undefined;
+                            const courseConversationMessagePollOptionVoteUser =
+                              courseConversationMessagePollOptionVoteCourseParticipation !==
+                              undefined
+                                ? application.database.get<{
+                                    publicId: string;
+                                    name: string;
+                                    avatarColor:
+                                      | "red"
+                                      | "orange"
+                                      | "amber"
+                                      | "yellow"
+                                      | "lime"
+                                      | "green"
+                                      | "emerald"
+                                      | "teal"
+                                      | "cyan"
+                                      | "sky"
+                                      | "blue"
+                                      | "indigo"
+                                      | "violet"
+                                      | "purple"
+                                      | "fuchsia"
+                                      | "pink"
+                                      | "rose";
+                                    avatarImage: string | null;
+                                    lastSeenOnlineAt: string;
+                                  }>(
+                                    sql`
+                                      select
+                                        "publicId",
+                                        "name",
+                                        "avatarColor",
+                                        "avatarImage",
+                                        "lastSeenOnlineAt"
+                                      from "users"
+                                      where "id" = ${courseConversationMessagePollOptionVoteCourseParticipation.user};
+                                    `,
+                                  )
+                                : undefined;
+                            return html`
+                              <div
+                                css="${css`
+                                  display: flex;
+                                  gap: var(--size--2);
+                                `}"
+                              >
+                                $${application.partials.userAvatar({
+                                  user:
+                                    courseConversationMessagePollOptionVoteUser ??
+                                    "courseParticipationDeleted",
+                                })}
+                                <div
+                                  css="${css`
+                                    margin-top: var(--size--0-5);
+                                  `}"
+                                >
+                                  ${courseConversationMessagePollOptionVoteUser?.name ??
+                                  "Deleted course participant"}<span
+                                    css="${css`
+                                      font-size: var(--font-size--3);
+                                      line-height: var(
+                                        --font-size--3--line-height
+                                      );
+                                      color: light-dark(
+                                        var(--color--slate--600),
+                                        var(--color--slate--400)
+                                      );
+                                    `}"
+                                    >${courseConversationMessagePollOptionVoteCourseParticipation?.courseParticipationRole ===
+                                    "courseParticipationRoleInstructor"
+                                      ? " (instructor)"
+                                      : ""}</span
+                                  >
+                                </div>
+                              </div>
+                            `;
+                          },
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
