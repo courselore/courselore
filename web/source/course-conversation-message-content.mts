@@ -498,8 +498,10 @@ ${value}</textarea
               (child.matches("poll") &&
                 (child.children.length !== 1 ||
                   !child.children[0].matches("ul") ||
-                  [...child.children[0].children].some(
-                    (element) => element.querySelector("input") === null,
+                  ![...child.children[0].children].every(
+                    (element) =>
+                      element.querySelectorAll("input").length === 1 &&
+                      element.querySelectorAll("votes").length <= 1,
                   ) ||
                   ![...child.querySelectorAll("votes")].every(
                     (votesElement) => {
@@ -518,9 +520,7 @@ ${value}</textarea
                     },
                   ) ||
                   child.querySelector("poll") !== null)) ||
-              (child.matches("vote") &&
-                (child.closest("poll") === null ||
-                  !child.matches(":nth-child(2)"))) ||
+              (child.matches("votes") && child.closest("poll") === null) ||
               (child.matches("table") &&
                 (2 < child.children.length ||
                   [...child.children].some(
@@ -999,14 +999,14 @@ ${value}</textarea
       element.textContent = `#${mentionCourseConversation.publicId}/${mentionCourseConversationMessage.publicId}`;
     }
     for (const element of document.querySelectorAll("poll")) {
-      const voted = [...element.querySelectorAll("votes")].some(
-        (votesElement) =>
-          JSON.parse(votesElement.textContent).includes(
-            courseParticipation.publicId,
-          ),
-      );
-      for (const votesElement of element.querySelectorAll("votes"))
-        votesElement.remove();
+      for (const pollOption of element.children[0].children) {
+        const votesElement = pollOption.querySelector("votes");
+        votesElement?.remove();
+        const votes =
+          votesElement === null ? [] : JSON.parse(votesElement.textContent);
+        if (votes.includes(courseParticipation.publicId))
+          pollOption.querySelector("input").setAttribute("checked", "");
+      }
       if (course.courseState === "courseStateActive")
         element.insertAdjacentHTML(
           "beforeend",
@@ -1027,7 +1027,9 @@ ${value}</textarea
                 type="submit"
                 class="button button--rectangle button--transparent"
               >
-                ${!voted ? "Vote" : "Update vote"}
+                ${element.querySelector("input:checked") === null
+                  ? "Vote"
+                  : "Update vote"}
               </button>
             </div>
           `,
