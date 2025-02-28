@@ -1016,6 +1016,19 @@ ${value}</textarea
               "courseConversationMessagePollOptions"."courseConversationMessagePoll" = ${courseConversationMessagePoll.id};
           `,
         )!.count;
+      const voted =
+        application.database.get(
+          sql`
+            select true
+            from "courseConversationMessagePollOptionVotes"
+            join "courseConversationMessagePollOptions"
+            on
+              "courseConversationMessagePollOptionVotes"."courseConversationMessagePollOption" = "courseConversationMessagePollOptions"."id" and
+              "courseConversationMessagePollOptions"."courseConversationMessagePoll" = ${courseConversationMessagePoll.id}
+            where
+              "courseConversationMessagePollOptionVotes"."courseParticipation" = ${courseParticipation.id};
+          `,
+        ) !== undefined;
       containerElement.outerHTML = html`
         <div
           key="courseConversationMessagePoll ${courseConversationMessagePoll.publicId}"
@@ -1099,13 +1112,9 @@ ${value}</textarea
                         : "input--radio"}"
                     />  ${courseConversationMessagePollOption.content}
                   </label>
-                  $${courseConversationMessagePoll.courseConversationMessagePollState ===
-                    "courseConversationMessagePollStateClosed" ||
-                  courseConversationMessagePollOptionVotes.some(
-                    (courseConversationMessagePollOptionVote) =>
-                      courseConversationMessagePollOptionVote.courseParticipation ===
-                      courseParticipation.id,
-                  )
+                  $${voted ||
+                  courseConversationMessagePoll.courseConversationMessagePollState ===
+                    "courseConversationMessagePollStateClosed"
                     ? html`
                         <div
                           css="${css`
@@ -1297,7 +1306,7 @@ ${value}</textarea
                     type="submit"
                     class="button button--rectangle button--transparent"
                   >
-                    Vote
+                    ${!voted ? "Vote" : "Update vote"}
                   </button>
                 </div>
               `
