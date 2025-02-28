@@ -28,6 +28,7 @@ export type ApplicationCourseConversationMessageContent = {
       course: {
         id: number;
         publicId: string;
+        courseState: "courseStateActive" | "courseStateArchived";
       };
       courseParticipation: {
         id: number;
@@ -981,17 +982,13 @@ ${value}</textarea
         publicId: string;
         createdByCourseParticipation: number | null;
         multipleChoices: number;
-        courseConversationMessagePollState:
-          | "courseConversationMessagePollStateOpen"
-          | "courseConversationMessagePollStateClosed";
       }>(
         sql`
           select
             "id",
             "publicId",
             "createdByCourseParticipation",
-            "multipleChoices",
-            "courseConversationMessagePollState"
+            "multipleChoices"
           from "courseConversationMessagePolls"
           where
             "publicId" = ${element.getAttribute("id")} and
@@ -1053,7 +1050,7 @@ ${value}</textarea
                   "content"
                 from "courseConversationMessagePollOptions"
                 where "courseConversationMessagePoll" = ${courseConversationMessagePoll.id}
-                order by "order" asc;
+                order by "id" asc;
               `,
             )
             .map((courseConversationMessagePollOption) => {
@@ -1078,8 +1075,7 @@ ${value}</textarea
                   `}"
                 >
                   <label
-                    $${courseConversationMessagePoll.courseConversationMessagePollState ===
-                    "courseConversationMessagePollStateOpen"
+                    $${course.courseState === "courseStateActive"
                       ? html`
                           class="button button--rectangle button--transparent"
                         `
@@ -1093,8 +1089,7 @@ ${value}</textarea
                         : "radio"}"
                       name="courseConversationMessagePollOptions[]"
                       value="${courseConversationMessagePollOption.publicId}"
-                      $${courseConversationMessagePoll.courseConversationMessagePollState ===
-                      "courseConversationMessagePollStateClosed"
+                      $${course.courseState === "courseStateArchived"
                         ? html`disabled`
                         : html``}
                       $${courseConversationMessagePollOptionVotes.some(
@@ -1112,9 +1107,7 @@ ${value}</textarea
                         : "input--radio"}"
                     />  ${courseConversationMessagePollOption.content}
                   </label>
-                  $${voted ||
-                  courseConversationMessagePoll.courseConversationMessagePollState ===
-                    "courseConversationMessagePollStateClosed"
+                  $${voted || course.courseState === "courseStateArchived"
                     ? html`
                         <div
                           css="${css`
@@ -1283,8 +1276,7 @@ ${value}</textarea
                 </div>
               `;
             })}
-          $${courseConversationMessagePoll.courseConversationMessagePollState ===
-          "courseConversationMessagePollStateOpen"
+          $${course.courseState === "courseStateActive"
             ? html`
                 <div
                   css="${css`

@@ -2639,8 +2639,7 @@ export default async (application: Application): Promise<void> => {
             "publicId" text not null unique,
             "course" integer not null references "courses",
             "createdByCourseParticipation" integer null references "courseParticipations",
-            "multipleChoices" integer not null,
-            "courseConversationMessagePollState" text not null
+            "multipleChoices" integer not null
           ) strict;
           create index "index_courseConversationMessagePolls_course" on "courseConversationMessagePolls" ("course");
           create index "index_courseConversationMessagePolls_createdByCourseParticipation" on "courseConversationMessagePolls" ("createdByCourseParticipation");
@@ -2649,7 +2648,6 @@ export default async (application: Application): Promise<void> => {
             "id" integer primary key autoincrement,
             "publicId" text not null unique,
             "courseConversationMessagePoll" integer not null references "courseConversationMessagePolls",
-            "order" integer not null,
             "content" text not null
           ) strict;
           create index "index_courseConversationMessagePollOptions_courseConversationMessagePoll" on "courseConversationMessagePollOptions" ("courseConversationMessagePoll");
@@ -3303,15 +3301,13 @@ export default async (application: Application): Promise<void> => {
                             "publicId",
                             "course",
                             "createdByCourseParticipation",
-                            "multipleChoices",
-                            "courseConversationMessagePollState"
+                            "multipleChoices"
                           )
                           values (
                             ${cryptoRandomString({ length: 20, type: "numeric" })},
                             ${course.id},
                             ${courseParticipation.id},
-                            ${Number(courseConversationMessagePollMultipleChoices)},
-                            ${Math.random() < 0.5 ? "courseConversationMessagePollStateClosed" : "courseConversationMessagePollStateOpen"}
+                            ${Number(courseConversationMessagePollMultipleChoices)}
                           );
                         `,
                       ).lastInsertRowid
@@ -3320,10 +3316,7 @@ export default async (application: Application): Promise<void> => {
                   )!;
                   const courseConversationMessagePollOptions = Array.from(
                     { length: 3 + Math.floor(Math.random() * 4) },
-                    (
-                      courseConversationMessagePollOptionValue,
-                      courseConversationMessagePollOptionIndex,
-                    ) => {
+                    () => {
                       const courseConversationMessagePollOptionContentSource =
                         examples.text({ model: textExamples, length: 0 });
                       return database.get<{ id: number }>(
@@ -3334,13 +3327,11 @@ export default async (application: Application): Promise<void> => {
                               insert into "courseConversationMessagePollOptions" (
                                 "publicId",
                                 "courseConversationMessagePoll",
-                                "order",
                                 "content"
                               )
                               values (
                                 ${cryptoRandomString({ length: 20, type: "numeric" })},
                                 ${courseConversationMessagePoll.id},
-                                ${courseConversationMessagePollOptionIndex},
                                 ${courseConversationMessagePollOptionContentSource}
                               );
                             `,
