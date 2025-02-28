@@ -26,7 +26,6 @@ export type ApplicationCourses = {
             | "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleInstructors";
           courseParticipationRoleStudentsMayHavePrivateCourseConversations: number;
           courseParticipationRoleStudentsMayAttachImages: number;
-          courseParticipationRoleStudentsMayCreatePolls: number;
           courseState: "courseStateActive" | "courseStateArchived";
           courseConversationsNextPublicId: number;
         };
@@ -97,7 +96,6 @@ export default async (application: Application): Promise<void> => {
           | "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleInstructors";
         courseParticipationRoleStudentsMayHavePrivateCourseConversations: number;
         courseParticipationRoleStudentsMayAttachImages: number;
-        courseParticipationRoleStudentsMayCreatePolls: number;
         courseState: "courseStateActive" | "courseStateArchived";
         courseConversationsNextPublicId: number;
       }>(
@@ -115,7 +113,6 @@ export default async (application: Application): Promise<void> => {
             "courseParticipationRoleStudentsAnonymityAllowed",
             "courseParticipationRoleStudentsMayHavePrivateCourseConversations",
             "courseParticipationRoleStudentsMayAttachImages",
-            "courseParticipationRoleStudentsMayCreatePolls",
             "courseState",
             "courseConversationsNextPublicId"
           from "courses"
@@ -562,21 +559,6 @@ export default async (application: Application): Promise<void> => {
                                   : html``}
                                 class="input--checkbox"
                               />  Students may attach images to their messages
-                            </label>
-                            <label
-                              class="button button--rectangle button--transparent"
-                            >
-                              <input
-                                type="checkbox"
-                                name="courseParticipationRoleStudentsMayCreatePolls"
-                                $${Boolean(
-                                  request.state.course
-                                    .courseParticipationRoleStudentsMayCreatePolls,
-                                )
-                                  ? html`checked`
-                                  : html``}
-                                class="input--checkbox"
-                              />  Students may create polls
                             </label>
                           </div>
                         </div>

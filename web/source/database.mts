@@ -2499,7 +2499,6 @@ export default async (application: Application): Promise<void> => {
             "courseParticipationRoleStudentsAnonymityAllowed" text not null,
             "courseParticipationRoleStudentsMayHavePrivateCourseConversations" integer not null,
             "courseParticipationRoleStudentsMayAttachImages" integer not null,
-            "courseParticipationRoleStudentsMayCreatePolls" integer not null,
             "courseState" text not null,
             "courseConversationsNextPublicId" integer not null
           ) strict;
@@ -2633,31 +2632,6 @@ export default async (application: Application): Promise<void> => {
           create trigger "search_courseConversationMessages_contentSearch_delete" after delete on "courseConversationMessages" begin
             delete from "search_courseConversationMessages_contentSearch" where "rowid" = "old"."id";
           end;
-          
-          create table "courseConversationMessagePolls" (
-            "id" integer primary key autoincrement,
-            "publicId" text not null unique,
-            "course" integer not null references "courses",
-            "createdByCourseParticipation" integer null references "courseParticipations",
-            "multipleChoices" integer not null
-          ) strict;
-          create index "index_courseConversationMessagePolls_course" on "courseConversationMessagePolls" ("course");
-          create index "index_courseConversationMessagePolls_createdByCourseParticipation" on "courseConversationMessagePolls" ("createdByCourseParticipation");
-          
-          create table "courseConversationMessagePollOptions" (
-            "id" integer primary key autoincrement,
-            "publicId" text not null unique,
-            "courseConversationMessagePoll" integer not null references "courseConversationMessagePolls",
-            "content" text not null
-          ) strict;
-          create index "index_courseConversationMessagePollOptions_courseConversationMessagePoll" on "courseConversationMessagePollOptions" ("courseConversationMessagePoll");
-          
-          create table "courseConversationMessagePollOptionVotes" (
-            "id" integer primary key autoincrement,
-            "courseConversationMessagePollOption" integer not null references "courseConversationMessagePollOptions",
-            "courseParticipation" integer null references "courseParticipations",
-            unique ("courseConversationMessagePollOption", "courseParticipation")
-          ) strict;
           
           create table "courseConversationMessageViews" (
             "id" integer primary key autoincrement,
@@ -2910,7 +2884,6 @@ export default async (application: Application): Promise<void> => {
                       "courseParticipationRoleStudentsAnonymityAllowed",
                       "courseParticipationRoleStudentsMayHavePrivateCourseConversations",
                       "courseParticipationRoleStudentsMayAttachImages",
-                      "courseParticipationRoleStudentsMayCreatePolls",
                       "courseState",
                       "courseConversationsNextPublicId"
                     )
@@ -2924,7 +2897,6 @@ export default async (application: Application): Promise<void> => {
                       ${cryptoRandomString({ length: 20, type: "numeric" })},
                       ${Number(Math.random() < 0.8)},
                       ${Math.random() < 0.1 ? "courseParticipationRoleStudentsAnonymityAllowedNone" : Math.random() < 0.8 ? "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleStudents" : "courseParticipationRoleStudentsAnonymityAllowedCourseParticipationRoleInstructors"},
-                      ${Number(Math.random() < 0.8)},
                       ${Number(Math.random() < 0.8)},
                       ${Number(Math.random() < 0.8)},
                       ${courseData.courseState ?? "courseStateActive"},
@@ -3285,118 +3257,7 @@ export default async (application: Application): Promise<void> => {
                   `,
                 );
             }
-            if (courseConversationPublicId === 1) {
-              const courseConversationMessagePolls = [false, true].map(
-                (courseConversationMessagePollMultipleChoices) => {
-                  const courseConversationMessagePoll = database.get<{
-                    id: number;
-                    publicId: string;
-                    multipleChoices: number;
-                  }>(
-                    sql`
-                    select * from "courseConversationMessagePolls" where "id" = ${
-                      database.run(
-                        sql`
-                          insert into "courseConversationMessagePolls" (
-                            "publicId",
-                            "course",
-                            "createdByCourseParticipation",
-                            "multipleChoices"
-                          )
-                          values (
-                            ${cryptoRandomString({ length: 20, type: "numeric" })},
-                            ${course.id},
-                            ${courseParticipation.id},
-                            ${Number(courseConversationMessagePollMultipleChoices)}
-                          );
-                        `,
-                      ).lastInsertRowid
-                    };
-                  `,
-                  )!;
-                  const courseConversationMessagePollOptions = Array.from(
-                    { length: 3 + Math.floor(Math.random() * 4) },
-                    () => {
-                      const courseConversationMessagePollOptionContentSource =
-                        examples.text({ model: textExamples, length: 0 });
-                      return database.get<{ id: number }>(
-                        sql`
-                        select * from "courseConversationMessagePollOptions" where "id" = ${
-                          database.run(
-                            sql`
-                              insert into "courseConversationMessagePollOptions" (
-                                "publicId",
-                                "courseConversationMessagePoll",
-                                "content"
-                              )
-                              values (
-                                ${cryptoRandomString({ length: 20, type: "numeric" })},
-                                ${courseConversationMessagePoll.id},
-                                ${courseConversationMessagePollOptionContentSource}
-                              );
-                            `,
-                          ).lastInsertRowid
-                        };
-                      `,
-                      )!;
-                    },
-                  );
-                  const courseParticipationsForCourseConversationMessagePollOptionVotes =
-                    [...courseParticipations];
-                  const courseConversationMessagePollOptionVotesCount =
-                    Math.random() < 0.5
-                      ? 3 + Math.floor(Math.random() * 5)
-                      : 30 + Math.floor(Math.random() * 10);
-                  for (
-                    let courseConversationMessagePollOptionVoteIndex = 0;
-                    courseConversationMessagePollOptionVoteIndex <
-                    courseConversationMessagePollOptionVotesCount;
-                    courseConversationMessagePollOptionVoteIndex++
-                  ) {
-                    const courseParticipationForCourseConversationMessagePollOptionVotes =
-                      courseParticipationsForCourseConversationMessagePollOptionVotes.splice(
-                        Math.floor(
-                          Math.random() *
-                            courseParticipationsForCourseConversationMessagePollOptionVotes.length,
-                        ),
-                        1,
-                      )[0];
-                    const courseConversationMessagePollOptionsForCourseConversationMessagePollOptionVotes =
-                      [...courseConversationMessagePollOptions];
-                    const courseConversationMessagePollOptionVotesCount =
-                      Boolean(courseConversationMessagePoll.multipleChoices)
-                        ? 1 + Math.floor(Math.random() * 3)
-                        : 1;
-                    for (
-                      let courseConversationMessagePollOptionVoteIndex = 0;
-                      courseConversationMessagePollOptionVoteIndex <
-                      courseConversationMessagePollOptionVotesCount;
-                      courseConversationMessagePollOptionVoteIndex++
-                    )
-                      database.run(
-                        sql`
-                          insert into "courseConversationMessagePollOptionVotes" (
-                            "courseConversationMessagePollOption",
-                            "courseParticipation"
-                          )
-                          values (
-                            ${
-                              courseConversationMessagePollOptionsForCourseConversationMessagePollOptionVotes.splice(
-                                Math.floor(
-                                  Math.random() *
-                                    courseConversationMessagePollOptionsForCourseConversationMessagePollOptionVotes.length,
-                                ),
-                                1,
-                              )[0].id
-                            },
-                            ${courseParticipationForCourseConversationMessagePollOptionVotes.id}
-                          );
-                        `,
-                      );
-                  }
-                  return courseConversationMessagePoll;
-                },
-              );
+            if (courseConversationPublicId === 1)
               database.run(
                 sql`
                   insert into "courseConversationMessageDrafts" (
@@ -3474,10 +3335,6 @@ export default async (application: Application): Promise<void> => {
 
                       <video src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4"></video>
 
-                      # Polls
-
-                      ${courseConversationMessagePolls.map((courseConversationMessagePoll) => markdown`<courselore-poll id="${courseConversationMessagePoll.publicId}"></courselore-poll>`).join("\n\n---\n\n")}
-
                       # Lists
 
                       - Banana
@@ -3507,6 +3364,48 @@ export default async (application: Application): Promise<void> => {
                       ---
 
                       ${Array.from({ length: 3 + Math.floor(Math.random() * 4) }, () => `- [${Math.random() < 0.5 ? " " : "x"}] ${examples.text({ model: textExamples, length: 1 + Math.floor(Math.random() * 7) }).replaceAll("\n\n", "\n\n  ")}`).join("\n\n")}
+
+                      ---
+
+                      <poll>
+
+                      - [ ] Banana
+                      - [ ] <votes>${(() => {
+                        const courseParticipationsForCourseConversationMessagePollOptionVotes =
+                          [...courseParticipations];
+                        return JSON.stringify(
+                          Array.from(
+                            { length: 3 + Math.floor(Math.random() * 5) },
+                            () =>
+                              courseParticipationsForCourseConversationMessagePollOptionVotes.splice(
+                                Math.floor(
+                                  Math.random() *
+                                    courseParticipationsForCourseConversationMessagePollOptionVotes.length,
+                                ),
+                                1,
+                              )[0].publicId,
+                          ),
+                        );
+                      })()}</votes> Pyjamas
+                      - [ ] <votes>${(() => {
+                        const courseParticipationsForCourseConversationMessagePollOptionVotes =
+                          [...courseParticipations];
+                        return JSON.stringify(
+                          Array.from(
+                            { length: 30 + Math.floor(Math.random() * 10) },
+                            () =>
+                              courseParticipationsForCourseConversationMessagePollOptionVotes.splice(
+                                Math.floor(
+                                  Math.random() *
+                                    courseParticipationsForCourseConversationMessagePollOptionVotes.length,
+                                ),
+                                1,
+                              )[0].publicId,
+                          ),
+                        );
+                      })()}</votes> Phone
+
+                      </poll>
 
                       # Blockquote
 
@@ -3690,7 +3589,6 @@ export default async (application: Application): Promise<void> => {
                   );
                 `,
               );
-            }
           }
         }
       }
