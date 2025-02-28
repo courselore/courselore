@@ -1052,7 +1052,8 @@ ${value}</textarea
                   sql`
                     select "courseParticipation"
                     from "courseConversationMessagePollOptionVotes"
-                    where "courseConversationMessagePollOption" = ${courseConversationMessagePollOption.id};
+                    where "courseConversationMessagePollOption" = ${courseConversationMessagePollOption.id}
+                    order by "id" asc;
                   `,
                 );
               return html`
