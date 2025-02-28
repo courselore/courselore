@@ -39,6 +39,7 @@ export type ApplicationCourseConversationMessageContent = {
       };
       courseConversationMessage: {
         publicId: string;
+        createdByCourseParticipation: number | null;
         content: string;
       };
     }) => Promise<HTML>;
@@ -1002,9 +1003,9 @@ ${value}</textarea
       for (const pollOption of element.children[0].children) {
         const votesElement = pollOption.querySelector("votes");
         votesElement?.remove();
-        const votes =
+        pollOption.votes =
           votesElement === null ? [] : JSON.parse(votesElement.textContent);
-        if (votes.includes(courseParticipation.publicId))
+        if (pollOption.votes.includes(courseParticipation.publicId))
           pollOption.querySelector("input").setAttribute("checked", "");
         if (course.courseState === "courseStateActive") {
           pollOption.innerHTML = html`
@@ -1022,6 +1023,28 @@ ${value}</textarea
           pollOption.querySelector("input").removeAttribute("disabled");
         }
       }
+      if (
+        courseParticipation.courseParticipationRole ===
+          "courseParticipationRoleInstructor" ||
+        courseParticipation.id ===
+          courseConversationMessage.createdByCourseParticipation ||
+        element.querySelector("input:checked") !== null ||
+        course.courseState === "courseStateArchived"
+      )
+        for (const pollOption of element.children[0].children) {
+          pollOption.insertAdjacentHTML(
+            "beforeend",
+            html`
+              <details>
+                <summary>
+                  ${String(pollOption.votes.length)}
+                  vote${pollOption.votes.length !== 1 ? "s" : ""}
+                </summary>
+                VOTES
+              </details>
+            `,
+          );
+        }
       if (course.courseState === "courseStateActive")
         element.insertAdjacentHTML(
           "beforeend",
