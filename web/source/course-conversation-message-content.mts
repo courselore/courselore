@@ -623,7 +623,9 @@ ${value}</textarea
       }
     for (const element of document.querySelectorAll("input"))
       element.setAttribute("class", "input--checkbox");
-    for (const element of document.querySelectorAll("poll")) {
+    for (const [elementIndex, element] of [
+      ...document.querySelectorAll("poll"),
+    ].entries()) {
       let votesCount = 0;
       for (const pollOption of element.children[0].children) {
         const votesElement = pollOption.querySelector("votes");
@@ -631,6 +633,11 @@ ${value}</textarea
         pollOption.votes =
           votesElement === null ? [] : JSON.parse(votesElement.textContent);
         votesCount += pollOption.votes.length;
+        pollOption.querySelector("input").setAttribute("required", "");
+        pollOption
+          .querySelector("input")
+          .setAttribute("name", "courseConversationMessagePollOptions[]");
+        pollOption.querySelector("input").setAttribute("value", elementIndex);
         if (pollOption.votes.includes(courseParticipation.publicId))
           pollOption.querySelector("input").setAttribute("checked", "");
         if (course.courseState === "courseStateActive") {
@@ -697,7 +704,111 @@ ${value}</textarea
                   ${String(pollOption.votes.length)}
                   vote${pollOption.votes.length !== 1 ? "s" : ""}
                 </summary>
-                VOTES
+                <div
+                  css="${css`
+                    display: flex;
+                    flex-direction: column;
+                    gap: var(--size--2);
+                  `}"
+                >
+                  $${pollOption.votes.map(
+                    (voteCourseParticipationPublicId: string) => {
+                      const courseConversationMessagePollOptionVoteCourseParticipation =
+                        typeof voteCourseParticipationPublicId === "number"
+                          ? application.database.get<{
+                              user: number;
+                              courseParticipationRole:
+                                | "courseParticipationRoleInstructor"
+                                | "courseParticipationRoleStudent";
+                            }>(
+                              sql`
+                                select
+                                    "user",
+                                    "courseParticipationRole"
+                                from "courseParticipations"
+                                where
+                                  "publicId" = ${voteCourseParticipationPublicId} and
+                                  "course" = ${course.id};
+                              `,
+                            )
+                          : undefined;
+                      const courseConversationMessagePollOptionVoteUser =
+                        courseConversationMessagePollOptionVoteCourseParticipation !==
+                        undefined
+                          ? application.database.get<{
+                              publicId: string;
+                              name: string;
+                              avatarColor:
+                                | "red"
+                                | "orange"
+                                | "amber"
+                                | "yellow"
+                                | "lime"
+                                | "green"
+                                | "emerald"
+                                | "teal"
+                                | "cyan"
+                                | "sky"
+                                | "blue"
+                                | "indigo"
+                                | "violet"
+                                | "purple"
+                                | "fuchsia"
+                                | "pink"
+                                | "rose";
+                              avatarImage: string | null;
+                              lastSeenOnlineAt: string;
+                            }>(
+                              sql`
+                                select
+                                    "publicId",
+                                    "name",
+                                    "avatarColor",
+                                    "avatarImage",
+                                    "lastSeenOnlineAt"
+                                from "users"
+                                where "id" = ${courseConversationMessagePollOptionVoteCourseParticipation.user};
+                                `,
+                            )
+                          : undefined;
+                      return html`
+                        <div
+                          css="${css`
+                            display: flex;
+                            gap: var(--size--2);
+                          `}"
+                        >
+                          $${application.partials.userAvatar({
+                            user:
+                              courseConversationMessagePollOptionVoteUser ??
+                              "courseParticipationDeleted",
+                          })}
+                          <div
+                            css="${css`
+                              margin-top: var(--size--0-5);
+                            `}"
+                          >
+                            ${courseConversationMessagePollOptionVoteUser?.name ??
+                            "Deleted course participant"}<span
+                              css="${css`
+                                font-size: var(--font-size--3);
+                                line-height: var(--font-size--3--line-height);
+                                color: light-dark(
+                                  var(--color--slate--600),
+                                  var(--color--slate--400)
+                                );
+                              `}"
+                              >${courseConversationMessagePollOptionVoteCourseParticipation?.courseParticipationRole ===
+                              "courseParticipationRoleInstructor"
+                                ? " (instructor)"
+                                : ""}</span
+                            >
+                          </div>
+                        </div>
+                      `;
+                    },
+                  )}
+                </div>
               </details>
             `,
           );
