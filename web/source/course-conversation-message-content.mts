@@ -1006,6 +1006,13 @@ ${value}</textarea
           votesElement === null ? [] : JSON.parse(votesElement.textContent);
         if (votes.includes(courseParticipation.publicId))
           pollOption.querySelector("input").setAttribute("checked", "");
+        if (course.courseState === "courseStateActive") {
+          pollOption.setAttribute(
+            "class",
+            "button button--rectangle button--transparent",
+          );
+          pollOption.querySelector("input").removeAttribute("disabled");
+        }
       }
       if (course.courseState === "courseStateActive")
         element.insertAdjacentHTML(
