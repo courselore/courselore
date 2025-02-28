@@ -1014,6 +1014,7 @@ ${value}</textarea
             display: flex;
             flex-direction: column;
             gap: var(--size--2);
+            gap: var(--size--4);
           `}"
         >
           $${application.database
@@ -1039,7 +1040,7 @@ ${value}</textarea
                   css="${css`
                     display: flex;
                     flex-direction: column;
-                    gap: var(--size--1);
+                    gap: var(--size--2);
                   `}"
                 >
                   <label
@@ -1087,17 +1088,35 @@ ${value}</textarea
                       line-height: var(--font-size--3--line-height);
                       font-weight: 600;
                       color: light-dark(
-                        var(--color--slate--500),
-                        var(--color--slate--500)
+                        var(--color--blue--500),
+                        var(--color--blue--500)
                       );
+                      display: grid;
+                      & > * {
+                        grid-area: 1 / 1;
+                      }
                     `}"
                   >
-                    <button
-                      type="button"
-                      class="button button--rectangle button--transparent"
-                    >
-                      X votes <i class="bi bi-chevron-down"></i>
-                    </button>
+                    <div
+                      css="${css`
+                        background-color: light-dark(
+                          var(--color--blue--100),
+                          var(--color--blue--900)
+                        );
+                        padding: var(--size--1) var(--size--2);
+                        border-radius: var(--border-radius--1);
+                        margin: var(--size---1) var(--size---2);
+                        width: 50%;
+                      `}"
+                    ></div>
+                    <div>
+                      <button
+                        type="button"
+                        class="button button--rectangle button--transparent"
+                      >
+                        X votes <i class="bi bi-chevron-down"></i>
+                      </button>
+                    </div>
                   </div>
                 </div>
               `,
