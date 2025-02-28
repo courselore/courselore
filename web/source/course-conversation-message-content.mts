@@ -1007,10 +1007,11 @@ ${value}</textarea
         if (votes.includes(courseParticipation.publicId))
           pollOption.querySelector("input").setAttribute("checked", "");
         if (course.courseState === "courseStateActive") {
-          pollOption.setAttribute(
-            "class",
-            "button button--rectangle button--transparent",
-          );
+          pollOption.innerHTML = html`
+            <label class="button button--rectangle button--transparent">
+              $${pollOption.innerHTML}
+            </label>
+          `;
           pollOption.querySelector("input").removeAttribute("disabled");
         }
       }
