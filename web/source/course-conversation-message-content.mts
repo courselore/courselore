@@ -444,7 +444,7 @@ ${value}</textarea
           ) ||
           (child.nodeType === child.ELEMENT_NODE &&
             (!child.matches(
-              "h1, h2, h3, h4, h5, h6, p, hr, strong, em, u, a, code, ins, del, sup, sub, br, img, video, courselore-poll, ul, ol, li, input, blockquote, table, thead, tbody, tr, th, td, details, summary, pre",
+              "h1, h2, h3, h4, h5, h6, p, hr, strong, em, u, a, code, ins, del, sup, sub, br, img, video, ul, ol, li, input, poll, votes, blockquote, table, thead, tbody, tr, th, td, details, summary, pre",
             ) ||
               (child.matches("a") &&
                 (() => {
@@ -480,9 +480,6 @@ ${value}</textarea
                     !child.getAttribute("width").match(/^\d+$/)) ||
                   (typeof child.getAttribute("height") === "string" &&
                     !child.getAttribute("height").match(/^\d+$/)))) ||
-              (child.matches("courselore-poll") &&
-                (!child.matches("[id]") ||
-                  !child.getAttribute("id").match(/^\d+$/))) ||
               (child.matches("ul, ol") &&
                 [...child.children].some(
                   (element) => !element.matches("li"),
@@ -497,6 +494,15 @@ ${value}</textarea
                   !child.matches(
                     ':first-child[type="checkbox"][disabled=""]',
                   ))) ||
+              (child.matches("poll") &&
+                (child.children.length !== 1 ||
+                  !child.children[0].matches("ul") ||
+                  [...child.children[0].children].some(
+                    (element) => element.querySelector("input") === null,
+                  ))) ||
+              (child.matches("vote") &&
+                (child.closest("poll") === null ||
+                  !child.matches(":nth-child(2)"))) ||
               (child.matches("table") &&
                 (2 < child.children.length ||
                   [...child.children].some(
@@ -699,7 +705,7 @@ ${value}</textarea
     {
       const githubSlugger = new GitHubSlugger();
       for (const element of document.querySelectorAll(
-        ":not(courselore-poll)[id]",
+        "[id]",
       )) {
         const originalId = element.getAttribute("id");
         const newId = `${courseConversationMessage.publicId}--${githubSlugger.slug(originalId)}`;
@@ -976,336 +982,336 @@ ${value}</textarea
       if (mentionCourseConversationMessage === undefined) continue;
       element.textContent = `#${mentionCourseConversation.publicId}/${mentionCourseConversationMessage.publicId}`;
     }
-    for (const element of document.querySelectorAll("courselore-poll")) {
-      const courseConversationMessagePoll = application.database.get<{
-        id: number;
-        publicId: string;
-        createdByCourseParticipation: number | null;
-        multipleChoices: number;
-      }>(
-        sql`
-          select
-            "id",
-            "publicId",
-            "createdByCourseParticipation",
-            "multipleChoices"
-          from "courseConversationMessagePolls"
-          where
-            "publicId" = ${element.getAttribute("id")} and
-            "course" = ${course.id};
-        `,
-      );
-      const containerElement = element.closest(
-        '[key~="courseConversationMessageContent"] > *',
-      );
-      if (courseConversationMessagePoll === undefined) {
-        containerElement.remove();
-        continue;
-      }
-      const courseConversationMessagePollOptionVotesTotalCount =
-        application.database.get<{ count: number }>(
-          sql`
-            select count(*) as "count"
-            from "courseConversationMessagePollOptionVotes"
-            join "courseConversationMessagePollOptions"
-            on
-              "courseConversationMessagePollOptionVotes"."courseConversationMessagePollOption" = "courseConversationMessagePollOptions"."id" and
-              "courseConversationMessagePollOptions"."courseConversationMessagePoll" = ${courseConversationMessagePoll.id};
-          `,
-        )!.count;
-      const voted =
-        application.database.get(
-          sql`
-            select true
-            from "courseConversationMessagePollOptionVotes"
-            join "courseConversationMessagePollOptions"
-            on
-              "courseConversationMessagePollOptionVotes"."courseConversationMessagePollOption" = "courseConversationMessagePollOptions"."id" and
-              "courseConversationMessagePollOptions"."courseConversationMessagePoll" = ${courseConversationMessagePoll.id}
-            where
-              "courseConversationMessagePollOptionVotes"."courseParticipation" = ${courseParticipation.id};
-          `,
-        ) !== undefined;
-      containerElement.outerHTML = html`
-        <div
-          key="courseConversationMessagePoll ${courseConversationMessagePoll.publicId}"
-          type="form"
-          css="${css`
-            margin: var(--size--2) var(--size--0);
-            display: flex;
-            flex-direction: column;
-            gap: var(--size--2);
-          `}"
-        >
-          $${application.database
-            .all<{
-              id: number;
-              publicId: string;
-              content: string;
-            }>(
-              sql`
-                select
-                  "id",
-                  "publicId",
-                  "content"
-                from "courseConversationMessagePollOptions"
-                where "courseConversationMessagePoll" = ${courseConversationMessagePoll.id}
-                order by "id" asc;
-              `,
-            )
-            .map((courseConversationMessagePollOption) => {
-              const courseConversationMessagePollOptionVotes =
-                application.database.all<{
-                  courseParticipation: number | null;
-                }>(
-                  sql`
-                    select "courseParticipation"
-                    from "courseConversationMessagePollOptionVotes"
-                    where "courseConversationMessagePollOption" = ${courseConversationMessagePollOption.id}
-                    order by "id" asc;
-                  `,
-                );
-              return html`
-                <div
-                  key="courseConversationMessagePollOption ${courseConversationMessagePollOption.publicId}"
-                  css="${css`
-                    display: flex;
-                    flex-direction: column;
-                    gap: var(--size--1);
-                  `}"
-                >
-                  <label
-                    $${course.courseState === "courseStateActive"
-                      ? html`
-                          class="button button--rectangle button--transparent"
-                        `
-                      : html``}
-                  >
-                    <input
-                      type="${Boolean(
-                        courseConversationMessagePoll.multipleChoices,
-                      )
-                        ? "checkbox"
-                        : "radio"}"
-                      name="courseConversationMessagePollOptions[]"
-                      value="${courseConversationMessagePollOption.publicId}"
-                      $${course.courseState === "courseStateArchived"
-                        ? html`disabled`
-                        : html``}
-                      $${courseConversationMessagePollOptionVotes.some(
-                        (courseConversationMessagePollOptionVote) =>
-                          courseConversationMessagePollOptionVote.courseParticipation ===
-                          courseParticipation.id,
-                      )
-                        ? html`checked`
-                        : html``}
-                      required
-                      class="${Boolean(
-                        courseConversationMessagePoll.multipleChoices,
-                      )
-                        ? "input--checkbox"
-                        : "input--radio"}"
-                    />  ${courseConversationMessagePollOption.content}
-                  </label>
-                  $${voted || course.courseState === "courseStateArchived"
-                    ? html`
-                        <div
-                          css="${css`
-                            font-size: var(--font-size--3);
-                            line-height: var(--font-size--3--line-height);
-                            font-weight: 600;
-                            color: light-dark(
-                              var(--color--blue--500),
-                              var(--color--blue--500)
-                            );
-                            display: grid;
-                            & > * {
-                              grid-area: 1 / 1;
-                            }
-                          `}"
-                        >
-                          <div
-                            style="width: ${String(
-                              courseConversationMessagePollOptionVotesTotalCount ===
-                                0
-                                ? 0
-                                : Math.round(
-                                    (courseConversationMessagePollOptionVotes.length /
-                                      courseConversationMessagePollOptionVotesTotalCount) *
-                                      100,
-                                  ),
-                            )}%;"
-                            css="${css`
-                              background-color: light-dark(
-                                var(--color--blue--100),
-                                var(--color--blue--900)
-                              );
-                              border-radius: var(--border-radius--1);
-                            `}"
-                          ></div>
-                          <div>
-                            <button
-                              type="button"
-                              class="button button--rectangle button--transparent"
-                              css="${css`
-                                margin: var(--size--0);
-                              `}"
-                              javascript="${javascript`
-                                javascript.popover({ element: this, trigger: "click" });
-                              `}"
-                            >
-                              ${String(
-                                courseConversationMessagePollOptionVotes.length,
-                              )}
-                              vote${courseConversationMessagePollOptionVotes.length !==
-                              1
-                                ? "s"
-                                : ""} <i class="bi bi-chevron-down"></i>
-                            </button>
-                            <div
-                              type="popover"
-                              css="${css`
-                                display: flex;
-                                flex-direction: column;
-                                gap: var(--size--2);
-                              `}"
-                            >
-                              $${courseConversationMessagePollOptionVotes.map(
-                                (courseConversationMessagePollOptionVote) => {
-                                  const courseConversationMessagePollOptionVoteCourseParticipation =
-                                    typeof courseConversationMessagePollOptionVote.courseParticipation ===
-                                    "number"
-                                      ? application.database.get<{
-                                          user: number;
-                                          courseParticipationRole:
-                                            | "courseParticipationRoleInstructor"
-                                            | "courseParticipationRoleStudent";
-                                        }>(
-                                          sql`
-                                            select
-                                              "user",
-                                              "courseParticipationRole"
-                                            from "courseParticipations"
-                                            where "id" = ${courseConversationMessagePollOptionVote.courseParticipation};
-                                          `,
-                                        )
-                                      : undefined;
-                                  const courseConversationMessagePollOptionVoteUser =
-                                    courseConversationMessagePollOptionVoteCourseParticipation !==
-                                    undefined
-                                      ? application.database.get<{
-                                          publicId: string;
-                                          name: string;
-                                          avatarColor:
-                                            | "red"
-                                            | "orange"
-                                            | "amber"
-                                            | "yellow"
-                                            | "lime"
-                                            | "green"
-                                            | "emerald"
-                                            | "teal"
-                                            | "cyan"
-                                            | "sky"
-                                            | "blue"
-                                            | "indigo"
-                                            | "violet"
-                                            | "purple"
-                                            | "fuchsia"
-                                            | "pink"
-                                            | "rose";
-                                          avatarImage: string | null;
-                                          lastSeenOnlineAt: string;
-                                        }>(
-                                          sql`
-                                            select
-                                              "publicId",
-                                              "name",
-                                              "avatarColor",
-                                              "avatarImage",
-                                              "lastSeenOnlineAt"
-                                            from "users"
-                                            where "id" = ${courseConversationMessagePollOptionVoteCourseParticipation.user};
-                                          `,
-                                        )
-                                      : undefined;
-                                  return html`
-                                    <div
-                                      css="${css`
-                                        display: flex;
-                                        gap: var(--size--2);
-                                      `}"
-                                    >
-                                      $${application.partials.userAvatar({
-                                        user:
-                                          courseConversationMessagePollOptionVoteUser ??
-                                          "courseParticipationDeleted",
-                                      })}
-                                      <div
-                                        css="${css`
-                                          margin-top: var(--size--0-5);
-                                        `}"
-                                      >
-                                        ${courseConversationMessagePollOptionVoteUser?.name ??
-                                        "Deleted course participant"}<span
-                                          css="${css`
-                                            font-size: var(--font-size--3);
-                                            line-height: var(
-                                              --font-size--3--line-height
-                                            );
-                                            color: light-dark(
-                                              var(--color--slate--600),
-                                              var(--color--slate--400)
-                                            );
-                                          `}"
-                                          >${courseConversationMessagePollOptionVoteCourseParticipation?.courseParticipationRole ===
-                                          "courseParticipationRoleInstructor"
-                                            ? " (instructor)"
-                                            : ""}</span
-                                        >
-                                      </div>
-                                    </div>
-                                  `;
-                                },
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                      `
-                    : html``}
-                </div>
-              `;
-            })}
-          $${course.courseState === "courseStateActive"
-            ? html`
-                <div
-                  css="${css`
-                    font-size: var(--font-size--3);
-                    line-height: var(--font-size--3--line-height);
-                    font-weight: 600;
-                    color: light-dark(
-                      var(--color--slate--600),
-                      var(--color--slate--400)
-                    );
-                    display: flex;
-                    align-items: baseline;
-                    flex-wrap: wrap;
-                    column-gap: var(--size--4);
-                    row-gap: var(--size--2);
-                  `}"
-                >
-                  <button
-                    type="submit"
-                    class="button button--rectangle button--transparent"
-                  >
-                    ${!voted ? "Vote" : "Update vote"}
-                  </button>
-                </div>
-              `
-            : html``}
-        </div>
-      `;
-    }
+    // for (const element of document.querySelectorAll("courselore-poll")) {
+    //   const courseConversationMessagePoll = application.database.get<{
+    //     id: number;
+    //     publicId: string;
+    //     createdByCourseParticipation: number | null;
+    //     multipleChoices: number;
+    //   }>(
+    //     sql`
+    //       select
+    //         "id",
+    //         "publicId",
+    //         "createdByCourseParticipation",
+    //         "multipleChoices"
+    //       from "courseConversationMessagePolls"
+    //       where
+    //         "publicId" = ${element.getAttribute("id")} and
+    //         "course" = ${course.id};
+    //     `,
+    //   );
+    //   const containerElement = element.closest(
+    //     '[key~="courseConversationMessageContent"] > *',
+    //   );
+    //   if (courseConversationMessagePoll === undefined) {
+    //     containerElement.remove();
+    //     continue;
+    //   }
+    //   const courseConversationMessagePollOptionVotesTotalCount =
+    //     application.database.get<{ count: number }>(
+    //       sql`
+    //         select count(*) as "count"
+    //         from "courseConversationMessagePollOptionVotes"
+    //         join "courseConversationMessagePollOptions"
+    //         on
+    //           "courseConversationMessagePollOptionVotes"."courseConversationMessagePollOption" = "courseConversationMessagePollOptions"."id" and
+    //           "courseConversationMessagePollOptions"."courseConversationMessagePoll" = ${courseConversationMessagePoll.id};
+    //       `,
+    //     )!.count;
+    //   const voted =
+    //     application.database.get(
+    //       sql`
+    //         select true
+    //         from "courseConversationMessagePollOptionVotes"
+    //         join "courseConversationMessagePollOptions"
+    //         on
+    //           "courseConversationMessagePollOptionVotes"."courseConversationMessagePollOption" = "courseConversationMessagePollOptions"."id" and
+    //           "courseConversationMessagePollOptions"."courseConversationMessagePoll" = ${courseConversationMessagePoll.id}
+    //         where
+    //           "courseConversationMessagePollOptionVotes"."courseParticipation" = ${courseParticipation.id};
+    //       `,
+    //     ) !== undefined;
+    //   containerElement.outerHTML = html`
+    //     <div
+    //       key="courseConversationMessagePoll ${courseConversationMessagePoll.publicId}"
+    //       type="form"
+    //       css="${css`
+    //         margin: var(--size--2) var(--size--0);
+    //         display: flex;
+    //         flex-direction: column;
+    //         gap: var(--size--2);
+    //       `}"
+    //     >
+    //       $${application.database
+    //         .all<{
+    //           id: number;
+    //           publicId: string;
+    //           content: string;
+    //         }>(
+    //           sql`
+    //             select
+    //               "id",
+    //               "publicId",
+    //               "content"
+    //             from "courseConversationMessagePollOptions"
+    //             where "courseConversationMessagePoll" = ${courseConversationMessagePoll.id}
+    //             order by "id" asc;
+    //           `,
+    //         )
+    //         .map((courseConversationMessagePollOption) => {
+    //           const courseConversationMessagePollOptionVotes =
+    //             application.database.all<{
+    //               courseParticipation: number | null;
+    //             }>(
+    //               sql`
+    //                 select "courseParticipation"
+    //                 from "courseConversationMessagePollOptionVotes"
+    //                 where "courseConversationMessagePollOption" = ${courseConversationMessagePollOption.id}
+    //                 order by "id" asc;
+    //               `,
+    //             );
+    //           return html`
+    //             <div
+    //               key="courseConversationMessagePollOption ${courseConversationMessagePollOption.publicId}"
+    //               css="${css`
+    //                 display: flex;
+    //                 flex-direction: column;
+    //                 gap: var(--size--1);
+    //               `}"
+    //             >
+    //               <label
+    //                 $${course.courseState === "courseStateActive"
+    //                   ? html`
+    //                       class="button button--rectangle button--transparent"
+    //                     `
+    //                   : html``}
+    //               >
+    //                 <input
+    //                   type="${Boolean(
+    //                     courseConversationMessagePoll.multipleChoices,
+    //                   )
+    //                     ? "checkbox"
+    //                     : "radio"}"
+    //                   name="courseConversationMessagePollOptions[]"
+    //                   value="${courseConversationMessagePollOption.publicId}"
+    //                   $${course.courseState === "courseStateArchived"
+    //                     ? html`disabled`
+    //                     : html``}
+    //                   $${courseConversationMessagePollOptionVotes.some(
+    //                     (courseConversationMessagePollOptionVote) =>
+    //                       courseConversationMessagePollOptionVote.courseParticipation ===
+    //                       courseParticipation.id,
+    //                   )
+    //                     ? html`checked`
+    //                     : html``}
+    //                   required
+    //                   class="${Boolean(
+    //                     courseConversationMessagePoll.multipleChoices,
+    //                   )
+    //                     ? "input--checkbox"
+    //                     : "input--radio"}"
+    //                 />  ${courseConversationMessagePollOption.content}
+    //               </label>
+    //               $${voted || course.courseState === "courseStateArchived"
+    //                 ? html`
+    //                     <div
+    //                       css="${css`
+    //                         font-size: var(--font-size--3);
+    //                         line-height: var(--font-size--3--line-height);
+    //                         font-weight: 600;
+    //                         color: light-dark(
+    //                           var(--color--blue--500),
+    //                           var(--color--blue--500)
+    //                         );
+    //                         display: grid;
+    //                         & > * {
+    //                           grid-area: 1 / 1;
+    //                         }
+    //                       `}"
+    //                     >
+    //                       <div
+    //                         style="width: ${String(
+    //                           courseConversationMessagePollOptionVotesTotalCount ===
+    //                             0
+    //                             ? 0
+    //                             : Math.round(
+    //                                 (courseConversationMessagePollOptionVotes.length /
+    //                                   courseConversationMessagePollOptionVotesTotalCount) *
+    //                                   100,
+    //                               ),
+    //                         )}%;"
+    //                         css="${css`
+    //                           background-color: light-dark(
+    //                             var(--color--blue--100),
+    //                             var(--color--blue--900)
+    //                           );
+    //                           border-radius: var(--border-radius--1);
+    //                         `}"
+    //                       ></div>
+    //                       <div>
+    //                         <button
+    //                           type="button"
+    //                           class="button button--rectangle button--transparent"
+    //                           css="${css`
+    //                             margin: var(--size--0);
+    //                           `}"
+    //                           javascript="${javascript`
+    //                             javascript.popover({ element: this, trigger: "click" });
+    //                           `}"
+    //                         >
+    //                           ${String(
+    //                             courseConversationMessagePollOptionVotes.length,
+    //                           )}
+    //                           vote${courseConversationMessagePollOptionVotes.length !==
+    //                           1
+    //                             ? "s"
+    //                             : ""} <i class="bi bi-chevron-down"></i>
+    //                         </button>
+    //                         <div
+    //                           type="popover"
+    //                           css="${css`
+    //                             display: flex;
+    //                             flex-direction: column;
+    //                             gap: var(--size--2);
+    //                           `}"
+    //                         >
+    //                           $${courseConversationMessagePollOptionVotes.map(
+    //                             (courseConversationMessagePollOptionVote) => {
+    //                               const courseConversationMessagePollOptionVoteCourseParticipation =
+    //                                 typeof courseConversationMessagePollOptionVote.courseParticipation ===
+    //                                 "number"
+    //                                   ? application.database.get<{
+    //                                       user: number;
+    //                                       courseParticipationRole:
+    //                                         | "courseParticipationRoleInstructor"
+    //                                         | "courseParticipationRoleStudent";
+    //                                     }>(
+    //                                       sql`
+    //                                         select
+    //                                           "user",
+    //                                           "courseParticipationRole"
+    //                                         from "courseParticipations"
+    //                                         where "id" = ${courseConversationMessagePollOptionVote.courseParticipation};
+    //                                       `,
+    //                                     )
+    //                                   : undefined;
+    //                               const courseConversationMessagePollOptionVoteUser =
+    //                                 courseConversationMessagePollOptionVoteCourseParticipation !==
+    //                                 undefined
+    //                                   ? application.database.get<{
+    //                                       publicId: string;
+    //                                       name: string;
+    //                                       avatarColor:
+    //                                         | "red"
+    //                                         | "orange"
+    //                                         | "amber"
+    //                                         | "yellow"
+    //                                         | "lime"
+    //                                         | "green"
+    //                                         | "emerald"
+    //                                         | "teal"
+    //                                         | "cyan"
+    //                                         | "sky"
+    //                                         | "blue"
+    //                                         | "indigo"
+    //                                         | "violet"
+    //                                         | "purple"
+    //                                         | "fuchsia"
+    //                                         | "pink"
+    //                                         | "rose";
+    //                                       avatarImage: string | null;
+    //                                       lastSeenOnlineAt: string;
+    //                                     }>(
+    //                                       sql`
+    //                                         select
+    //                                           "publicId",
+    //                                           "name",
+    //                                           "avatarColor",
+    //                                           "avatarImage",
+    //                                           "lastSeenOnlineAt"
+    //                                         from "users"
+    //                                         where "id" = ${courseConversationMessagePollOptionVoteCourseParticipation.user};
+    //                                       `,
+    //                                     )
+    //                                   : undefined;
+    //                               return html`
+    //                                 <div
+    //                                   css="${css`
+    //                                     display: flex;
+    //                                     gap: var(--size--2);
+    //                                   `}"
+    //                                 >
+    //                                   $${application.partials.userAvatar({
+    //                                     user:
+    //                                       courseConversationMessagePollOptionVoteUser ??
+    //                                       "courseParticipationDeleted",
+    //                                   })}
+    //                                   <div
+    //                                     css="${css`
+    //                                       margin-top: var(--size--0-5);
+    //                                     `}"
+    //                                   >
+    //                                     ${courseConversationMessagePollOptionVoteUser?.name ??
+    //                                     "Deleted course participant"}<span
+    //                                       css="${css`
+    //                                         font-size: var(--font-size--3);
+    //                                         line-height: var(
+    //                                           --font-size--3--line-height
+    //                                         );
+    //                                         color: light-dark(
+    //                                           var(--color--slate--600),
+    //                                           var(--color--slate--400)
+    //                                         );
+    //                                       `}"
+    //                                       >${courseConversationMessagePollOptionVoteCourseParticipation?.courseParticipationRole ===
+    //                                       "courseParticipationRoleInstructor"
+    //                                         ? " (instructor)"
+    //                                         : ""}</span
+    //                                     >
+    //                                   </div>
+    //                                 </div>
+    //                               `;
+    //                             },
+    //                           )}
+    //                         </div>
+    //                       </div>
+    //                     </div>
+    //                   `
+    //                 : html``}
+    //             </div>
+    //           `;
+    //         })}
+    //       $${course.courseState === "courseStateActive"
+    //         ? html`
+    //             <div
+    //               css="${css`
+    //                 font-size: var(--font-size--3);
+    //                 line-height: var(--font-size--3--line-height);
+    //                 font-weight: 600;
+    //                 color: light-dark(
+    //                   var(--color--slate--600),
+    //                   var(--color--slate--400)
+    //                 );
+    //                 display: flex;
+    //                 align-items: baseline;
+    //                 flex-wrap: wrap;
+    //                 column-gap: var(--size--4);
+    //                 row-gap: var(--size--2);
+    //               `}"
+    //             >
+    //               <button
+    //                 type="submit"
+    //                 class="button button--rectangle button--transparent"
+    //               >
+    //                 ${!voted ? "Vote" : "Update vote"}
+    //               </button>
+    //             </div>
+    //           `
+    //         : html``}
+    //     </div>
+    //   `;
+    // }
     return document.outerHTML;
   };
 };
