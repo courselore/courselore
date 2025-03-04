@@ -599,7 +599,7 @@ ${value}</textarea
     for (const element of document.querySelectorAll("a")) {
       const url = new URL(
         element.getAttribute("href"),
-        `https://${application.configuration.hostname}`,
+        `https://${application.configuration.hostname}/courses/${course.publicId}/conversations/${courseConversation.publicId}`,
       );
       if (
         !(
