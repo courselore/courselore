@@ -3677,6 +3677,8 @@ export default async (application: Application): Promise<void> => {
                                       course: request.state.course!,
                                       courseParticipation:
                                         request.state.courseParticipation!,
+                                      courseConversation:
+                                        request.state.courseConversation!,
                                       courseConversationMessage,
                                     },
                                   )}

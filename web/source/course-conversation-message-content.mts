@@ -22,6 +22,7 @@ export type ApplicationCourseConversationMessageContent = {
     courseConversationMessageContentProcessor: ({
       course,
       courseParticipation,
+      courseConversation,
       courseConversationMessage,
     }: {
       course: {
@@ -35,6 +36,9 @@ export type ApplicationCourseConversationMessageContent = {
         courseParticipationRole:
           | "courseParticipationRoleInstructor"
           | "courseParticipationRoleStudent";
+      };
+      courseConversation: {
+        publicId: string;
       };
       courseConversationMessage: {
         publicId: string;
@@ -169,6 +173,7 @@ ${value}</textarea
   application.partials.courseConversationMessageContentProcessor = async ({
     course,
     courseParticipation,
+    courseConversation,
     courseConversationMessage,
   }) => {
     const processedMarkdown = (
@@ -626,7 +631,9 @@ ${value}</textarea
       ...document.querySelectorAll("poll"),
     ].entries()) {
       let votesCount = 0;
-      for (const pollOption of element.children[0].children) {
+      for (const [pollOptionIndex, pollOption] of [
+        ...element.children[0].children,
+      ].entries()) {
         const votesElement = pollOption.querySelector("votes");
         votesElement?.remove();
         pollOption.votes =
@@ -636,7 +643,9 @@ ${value}</textarea
         pollOption
           .querySelector("input")
           .setAttribute("name", "courseConversationMessagePollOptions[]");
-        pollOption.querySelector("input").setAttribute("value", elementIndex);
+        pollOption
+          .querySelector("input")
+          .setAttribute("value", pollOptionIndex);
         if (pollOption.votes.includes(courseParticipation.publicId))
           pollOption.querySelector("input").setAttribute("checked", "");
         if (course.courseState === "courseStateActive") {
@@ -839,7 +848,17 @@ ${value}</textarea
             </div>
           `,
         );
-      element.outerHTML = html`<div type="form">$${element.innerHTML}</div>`;
+      element.outerHTML = html`
+        <div
+          type="form"
+          method="PUT"
+          action="/courses/${course.publicId}/conversations/${courseConversation.publicId}/messages/${courseConversationMessage.publicId}/polls/${String(
+            elementIndex,
+          )}"
+        >
+          $${element.innerHTML}
+        </div>
+      `;
     }
     for (const element of document.querySelectorAll("details"))
       if (!element.firstElementChild.matches("summary"))
