@@ -639,13 +639,13 @@ ${value}</textarea
         pollOption.votes =
           votesElement === null ? [] : JSON.parse(votesElement.textContent);
         votesCount += pollOption.votes.length;
-        pollOption.querySelector("input").setAttribute("required", "");
         pollOption
           .querySelector("input")
           .setAttribute("name", "courseConversationMessagePollOptions[]");
         pollOption
           .querySelector("input")
           .setAttribute("value", pollOptionIndex);
+        pollOption.querySelector("input").setAttribute("required", "");
         if (pollOption.votes.includes(courseParticipation.publicId))
           pollOption.querySelector("input").setAttribute("checked", "");
         if (course.courseState === "courseStateActive") {
