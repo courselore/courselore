@@ -112,7 +112,7 @@ export default async (application: Application): Promise<void> => {
         >
           <i class="bi bi-code"></i>
         </button>
-        <div type="popover">Code block</div>
+        <div type="popover">Code</div>
         <button
           type="button"
           class="button button--square button--icon button--transparent"
@@ -122,7 +122,7 @@ export default async (application: Application): Promise<void> => {
         >
           <i class="bi bi-calculator"></i>
         </button>
-        <div type="popover">Mathematics block</div>
+        <div type="popover">Mathematics</div>
         <button
           type="button"
           class="button button--square button--icon button--transparent"
