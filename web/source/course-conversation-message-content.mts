@@ -722,24 +722,22 @@ ${value}</textarea
                   $${pollOption.votes.map(
                     (voteCourseParticipationPublicId: string) => {
                       const courseConversationMessagePollOptionVoteCourseParticipation =
-                        typeof voteCourseParticipationPublicId === "number"
-                          ? application.database.get<{
-                              user: number;
-                              courseParticipationRole:
-                                | "courseParticipationRoleInstructor"
-                                | "courseParticipationRoleStudent";
-                            }>(
-                              sql`
-                                select
-                                    "user",
-                                    "courseParticipationRole"
-                                from "courseParticipations"
-                                where
-                                  "publicId" = ${voteCourseParticipationPublicId} and
-                                  "course" = ${course.id};
-                              `,
-                            )
-                          : undefined;
+                        application.database.get<{
+                          user: number;
+                          courseParticipationRole:
+                            | "courseParticipationRoleInstructor"
+                            | "courseParticipationRoleStudent";
+                        }>(
+                          sql`
+                            select
+                              "user",
+                              "courseParticipationRole"
+                            from "courseParticipations"
+                            where
+                              "publicId" = ${voteCourseParticipationPublicId} and
+                              "course" = ${course.id};
+                          `,
+                        );
                       const courseConversationMessagePollOptionVoteUser =
                         courseConversationMessagePollOptionVoteCourseParticipation !==
                         undefined
@@ -769,14 +767,14 @@ ${value}</textarea
                             }>(
                               sql`
                                 select
-                                    "publicId",
-                                    "name",
-                                    "avatarColor",
-                                    "avatarImage",
-                                    "lastSeenOnlineAt"
+                                  "publicId",
+                                  "name",
+                                  "avatarColor",
+                                  "avatarImage",
+                                  "lastSeenOnlineAt"
                                 from "users"
                                 where "id" = ${courseConversationMessagePollOptionVoteCourseParticipation.user};
-                                `,
+                              `,
                             )
                           : undefined;
                       return html`
