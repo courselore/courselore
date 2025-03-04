@@ -887,6 +887,7 @@ ${value}</textarea
           >
             <i class="bi bi-chevron-right"></i>
           </span>
+          <span> </span>
         `,
       );
     }
