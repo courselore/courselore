@@ -597,7 +597,18 @@ ${value}</textarea
       }
     })(document);
     for (const element of document.querySelectorAll("a")) {
-      element.setAttribute("target", "_blank");
+      const url = new URL(
+        element.getAttribute("href"),
+        `https://${application.configuration.hostname}`,
+      );
+      if (
+        !(
+          url.protocol === "https:" &&
+          url.hostname === application.configuration.hostname &&
+          url.pathname.startsWith(`/courses/${course.publicId}/`)
+        )
+      )
+        element.setAttribute("target", "_blank");
       element.setAttribute("class", "link");
     }
     for (const element of document.querySelectorAll("img, video")) {
