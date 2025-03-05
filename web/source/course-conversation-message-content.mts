@@ -117,9 +117,9 @@ export default async (application: Application): Promise<void> => {
               javascript.popover({ element: this });
             `}"
           >
-            <i class="bi bi-code"></i>
+            <i class="bi bi-card-checklist"></i>
           </button>
-          <div type="popover">Code</div>
+          <div type="popover">Poll</div>
           <button
             type="button"
             class="button button--square button--icon button--transparent"
@@ -137,9 +137,9 @@ export default async (application: Application): Promise<void> => {
               javascript.popover({ element: this });
             `}"
           >
-            <i class="bi bi-card-checklist"></i>
+            <i class="bi bi-code"></i>
           </button>
-          <div type="popover">Poll</div>
+          <div type="popover">Code</div>
         </div>
         <div
           css="${css`
