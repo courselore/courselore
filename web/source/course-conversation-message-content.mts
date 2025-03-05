@@ -70,90 +70,100 @@ export default async (application: Application): Promise<void> => {
           border-bottom: var(--border-width--1) solid
             light-dark(var(--color--slate--200), var(--color--slate--800));
           display: flex;
-          gap: var(--size--2);
+          justify-content: space-between;
+          gap: var(--size--4);
         `}"
       >
-        <button
-          type="button"
-          class="button button--square button--icon button--transparent"
-          javascript="${javascript`
-            javascript.popover({ element: this });
-          `}"
-        >
-          <i class="bi bi-type-bold"></i>
-        </button>
-        <div type="popover">Bold</div>
-        <button
-          type="button"
-          class="button button--square button--icon button--transparent"
-          javascript="${javascript`
-            javascript.popover({ element: this });
-          `}"
-        >
-          <i class="bi bi-link"></i>
-        </button>
-        <div type="popover">Link</div>
-        <button
-          type="button"
-          class="button button--square button--icon button--transparent"
-          javascript="${javascript`
-            javascript.popover({ element: this });
-          `}"
-        >
-          <i class="bi bi-image"></i>
-        </button>
-        <div type="popover">Image</div>
-        <button
-          type="button"
-          class="button button--square button--icon button--transparent"
-          javascript="${javascript`
-            javascript.popover({ element: this });
-          `}"
-        >
-          <i class="bi bi-code"></i>
-        </button>
-        <div type="popover">Code</div>
-        <button
-          type="button"
-          class="button button--square button--icon button--transparent"
-          javascript="${javascript`
-            javascript.popover({ element: this });
-          `}"
-        >
-          <i class="bi bi-calculator"></i>
-        </button>
-        <div type="popover">Mathematics</div>
-        <button
-          type="button"
-          class="button button--square button--icon button--transparent"
-          javascript="${javascript`
-            javascript.popover({ element: this });
-          `}"
-        >
-          <i class="bi bi-card-checklist"></i>
-        </button>
-        <div type="popover">Poll</div>
         <div
           css="${css`
-            flex: 1;
-          `}"
-        ></div>
-        <button
-          type="button"
-          class="button button--square button--icon button--transparent"
-          javascript="${javascript`
-            javascript.popover({ element: this });
+            display: flex;
+            gap: var(--size--2);
           `}"
         >
-          <i class="bi bi-eyeglasses"></i>
-        </button>
-        <div type="popover">Preview</div>
-        <button
-          type="button"
-          class="button button--square button--icon button--transparent"
+          <button
+            type="button"
+            class="button button--square button--icon button--transparent"
+            javascript="${javascript`
+              javascript.popover({ element: this });
+            `}"
+          >
+            <i class="bi bi-type-bold"></i>
+          </button>
+          <div type="popover">Bold</div>
+          <button
+            type="button"
+            class="button button--square button--icon button--transparent"
+            javascript="${javascript`
+              javascript.popover({ element: this });
+            `}"
+          >
+            <i class="bi bi-link"></i>
+          </button>
+          <div type="popover">Link</div>
+          <button
+            type="button"
+            class="button button--square button--icon button--transparent"
+            javascript="${javascript`
+              javascript.popover({ element: this });
+            `}"
+          >
+            <i class="bi bi-image"></i>
+          </button>
+          <div type="popover">Image</div>
+          <button
+            type="button"
+            class="button button--square button--icon button--transparent"
+            javascript="${javascript`
+              javascript.popover({ element: this });
+            `}"
+          >
+            <i class="bi bi-code"></i>
+          </button>
+          <div type="popover">Code</div>
+          <button
+            type="button"
+            class="button button--square button--icon button--transparent"
+            javascript="${javascript`
+              javascript.popover({ element: this });
+            `}"
+          >
+            <i class="bi bi-calculator"></i>
+          </button>
+          <div type="popover">Mathematics</div>
+          <button
+            type="button"
+            class="button button--square button--icon button--transparent"
+            javascript="${javascript`
+              javascript.popover({ element: this });
+            `}"
+          >
+            <i class="bi bi-card-checklist"></i>
+          </button>
+          <div type="popover">Poll</div>
+        </div>
+        <div
+          css="${css`
+            display: flex;
+            gap: var(--size--2);
+          `}"
         >
-          <i class="bi bi-three-dots-vertical"></i>
-        </button>
+          <button
+            type="button"
+            class="button button--square button--icon button--transparent"
+            javascript="${javascript`
+              javascript.popover({ element: this });
+            `}"
+          >
+            <i class="bi bi-eyeglasses"></i>
+          </button>
+          <div type="popover">Preview</div>
+          <button
+            type="button"
+            class="button button--square button--icon button--transparent"
+          >
+            <i class="bi bi-three-dots-vertical"></i>
+          </button>
+        </div>
       </div>
       <textarea
         key="courseConversationMessageContentEditor--textarea"
