@@ -88,16 +88,16 @@ export default async (application: Application): Promise<void> => {
               this.onclick = () => {
                 const element = this.closest('[key~="courseConversationMessageContentEditor"]').querySelector('[key~="courseConversationMessageContentEditor--textarea"]');
                 element.focus();
-                const selectionStart = element.selectionStart;
-                const selectionEnd = element.selectionEnd;
-                if (selectionStart === selectionEnd) {
-                  document.execCommand("insertText", false, "**BOLD TEXT GOES HERE**");
-                  element.selectionStart = selectionStart + "**".length;
-                  element.selectionEnd = selectionEnd + "**BOLD TEXT GOES HERE".length;
+                const previousSelectionStart = element.selectionStart;
+                if (element.selectionStart === element.selectionEnd) {
+                  document.execCommand("insertText", false, "**BOLD**");
+                  element.selectionStart = previousSelectionStart + "**".length;
+                  element.selectionEnd = previousSelectionStart + "**BOLD".length;
                 } else {
-                  document.execCommand("insertText", false, "**" + element.value.substring(Math.min(selectionStart, selectionEnd), Math.max(selectionStart, selectionEnd)) + "**");
-                  element.selectionStart = selectionStart + "**".length;
-                  element.selectionEnd = selectionEnd + "**".length;
+                  const selection = element.value.substring(element.selectionStart, element.selectionEnd);
+                  document.execCommand("insertText", false, "**" + selection + "**");
+                  element.selectionStart = previousSelectionStart + "**".length;
+                  element.selectionEnd = previousSelectionStart + ("**" + selection).length;
                 }
               };
             `}"
@@ -110,6 +110,29 @@ export default async (application: Application): Promise<void> => {
             class="button button--square button--icon button--transparent"
             javascript="${javascript`
               javascript.popover({ element: this });
+              // this.onclick = () => {
+              //   const element = this.closest('[key~="courseConversationMessageContentEditor"]').querySelector('[key~="courseConversationMessageContentEditor--textarea"]');
+              //   element.focus();
+              //   const selectionStart = element.selectionStart;
+              //   const selectionEnd = element.selectionEnd;
+              //   if (selectionStart === selectionEnd) {
+              //     document.execCommand("insertText", false, "[LINK DESCRIPTION](https://example.com)");
+              //     element.selectionStart = selectionStart + "[".length;
+              //     element.selectionEnd = selectionEnd + "[LINK DESCRIPTION".length;
+              //   } else {
+              //     const selection = element.value.substring(Math.min(selectionStart, selectionEnd), Math.max(selectionStart, selectionEnd));
+              //     try {
+              //       new URL(selection);
+              //       document.execCommand("insertText", false, "[LINK DESCRIPTION](" + selection + ")");
+              //       element.selectionStart = selectionStart + "**".length;
+              //       element.selectionEnd = selectionEnd + "**".length;
+              //     } catch {
+              //       document.execCommand("insertText", false, "**" + selection + "**");
+              //       element.selectionStart = selectionStart + "**".length;
+              //       element.selectionEnd = selectionEnd + "**".length;
+              //     }
+              //   }
+              // };
             `}"
           >
             <i class="bi bi-link"></i>
