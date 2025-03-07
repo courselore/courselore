@@ -178,6 +178,15 @@ export default async (application: Application): Promise<void> => {
             class="button button--square button--icon button--transparent"
             javascript="${javascript`
               javascript.popover({ element: this });
+              this.onclick = () => {
+                const element = this.closest('[key~="courseConversationMessageContentEditor"]').querySelector('[key~="courseConversationMessageContentEditor--textarea"]');
+                element.focus();
+                element.selectionEnd = element.selectionStart;
+                const previousSelectionStart = element.selectionStart;
+                document.execCommand("insertText", false, "\\n\\n<poll>\\n\\n- [ ] OPTION 1\\n- [ ] OPTION 2\\n- [ ] ...\\n\\n</poll>\\n\\n");
+                element.selectionStart = previousSelectionStart + "\\n\\n<poll>\\n\\n- [ ] ".length;
+                element.selectionEnd = previousSelectionStart + "\\n\\n<poll>\\n\\n- [ ] OPTION 1".length;
+              };
             `}"
           >
             <i class="bi bi-card-checklist"></i>
@@ -188,6 +197,15 @@ export default async (application: Application): Promise<void> => {
             class="button button--square button--icon button--transparent"
             javascript="${javascript`
               javascript.popover({ element: this });
+              this.onclick = () => {
+                const element = this.closest('[key~="courseConversationMessageContentEditor"]').querySelector('[key~="courseConversationMessageContentEditor--textarea"]');
+                element.focus();
+                element.selectionEnd = element.selectionStart;
+                const previousSelectionStart = element.selectionStart;
+                document.execCommand("insertText", false, "\\n\\n$$\\nLATEX\\n$$\\n\\n");
+                element.selectionStart = previousSelectionStart + "\\n\\n$$\\n".length;
+                element.selectionEnd = previousSelectionStart + "\\n\\n$$\\nLATEX".length;
+              };
             `}"
           >
             <i class="bi bi-calculator"></i>
@@ -208,6 +226,15 @@ export default async (application: Application): Promise<void> => {
             class="button button--square button--icon button--transparent"
             javascript="${javascript`
               javascript.popover({ element: this });
+              this.onclick = () => {
+                const element = this.closest('[key~="courseConversationMessageContentEditor"]').querySelector('[key~="courseConversationMessageContentEditor--textarea"]');
+                element.focus();
+                element.selectionEnd = element.selectionStart;
+                const previousSelectionStart = element.selectionStart;
+                document.execCommand("insertText", false, "\\n\\n\`\`LANGUAGE\\nCODE\\n\`\`\\n\\n");
+                element.selectionStart = previousSelectionStart + "\\n\\n\`\`".length;
+                element.selectionEnd = previousSelectionStart + "\\n\\n\`\`LANGUAGE".length;
+              };
             `}"
           >
             <i class="bi bi-at"></i>
