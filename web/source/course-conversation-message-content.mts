@@ -107,9 +107,9 @@ export default async (application: Application): Promise<void> => {
               javascript.popover({ element: this });
             `}"
           >
-            <i class="bi bi-image"></i>
+            <i class="bi bi-paperclip"></i>
           </button>
-          <div type="popover">Image</div>
+          <div type="popover">Attachment</div>
           <button
             type="button"
             class="button button--square button--icon button--transparent"
@@ -140,6 +140,26 @@ export default async (application: Application): Promise<void> => {
             <i class="bi bi-code"></i>
           </button>
           <div type="popover">Code</div>
+          <button
+            type="button"
+            class="button button--square button--icon button--transparent"
+            javascript="${javascript`
+              javascript.popover({ element: this });
+            `}"
+          >
+            <i class="bi bi-at"></i>
+          </button>
+          <div type="popover">Mention a conversation participant</div>
+          <button
+            type="button"
+            class="button button--square button--icon button--transparent"
+            javascript="${javascript`
+              javascript.popover({ element: this });
+            `}"
+          >
+            <i class="bi bi-hash"></i>
+          </button>
+          <div type="popover">Reference a conversation or message</div>
         </div>
         <div
           css="${css`
@@ -160,9 +180,13 @@ export default async (application: Application): Promise<void> => {
           <button
             type="button"
             class="button button--square button--icon button--transparent"
+            javascript="${javascript`
+              javascript.popover({ element: this });
+            `}"
           >
-            <i class="bi bi-three-dots-vertical"></i>
+            <i class="bi bi-question-circle"></i>
           </button>
+          <div type="popover">Help</div>
         </div>
       </div>
       <textarea
