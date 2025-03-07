@@ -150,11 +150,29 @@ export default async (application: Application): Promise<void> => {
             class="button button--square button--icon button--transparent"
             javascript="${javascript`
               javascript.popover({ element: this });
+              this.onclick = () => {
+                this.closest('[key~="courseConversationMessageContentEditor"]').querySelector('[key~="courseConversationMessageContentEditor--attachment"] input[name="attachment"]').click();
+              };
             `}"
           >
             <i class="bi bi-paperclip"></i>
           </button>
           <div type="popover">Attachment</div>
+          <div
+            key="courseConversationMessageContentEditor--attachment"
+            type="form"
+            method="POST"
+            action="TODO"
+            enctype="multipart/form-data"
+            hidden
+            javascript="${javascript`
+              this.onchange = () => {
+                console.log("ATTACHMENT FORM SUBMISSION");
+              };
+            `}"
+          >
+            <input type="file" name="attachment" />
+          </div>
           <button
             type="button"
             class="button button--square button--icon button--transparent"
