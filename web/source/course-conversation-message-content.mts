@@ -85,6 +85,15 @@ export default async (application: Application): Promise<void> => {
             class="button button--square button--icon button--transparent"
             javascript="${javascript`
               javascript.popover({ element: this });
+              this.onclick = () => {
+                const element = this.closest('[key~="courseConversationMessageContentEditor"]').querySelector('[key~="courseConversationMessageContentEditor--textarea"]');
+                element.focus();
+                const selectionStart = element.selectionStart;
+                const selectionEnd = element.selectionEnd;
+                document.execCommand("insertText", false, "**" + element.value.substring(Math.min(selectionStart, selectionEnd), Math.max(selectionStart, selectionEnd)) + "**");
+                element.selectionStart = selectionStart + "**".length;
+                element.selectionEnd = selectionEnd + "**".length;
+              };
             `}"
           >
             <i class="bi bi-type-bold"></i>
