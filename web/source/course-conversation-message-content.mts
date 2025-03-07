@@ -200,11 +200,17 @@ export default async (application: Application): Promise<void> => {
               this.onclick = () => {
                 const element = this.closest('[key~="courseConversationMessageContentEditor"]').querySelector('[key~="courseConversationMessageContentEditor--textarea"]');
                 element.focus();
-                element.selectionEnd = element.selectionStart;
                 const previousSelectionStart = element.selectionStart;
-                document.execCommand("insertText", false, "\\n\\n$$\\nLATEX\\n$$\\n\\n");
-                element.selectionStart = previousSelectionStart + "\\n\\n$$\\n".length;
-                element.selectionEnd = previousSelectionStart + "\\n\\n$$\\nLATEX".length;
+                if (element.selectionStart === element.selectionEnd) {
+                  document.execCommand("insertText", false, "\\n\\n$$\\nLATEX\\n$$\\n\\n");
+                  element.selectionStart = previousSelectionStart + "\\n\\n$$\\n".length;
+                  element.selectionEnd = previousSelectionStart + "\\n\\n$$\\nLATEX".length;
+                } else {
+                  const selection = element.value.substring(element.selectionStart, element.selectionEnd);
+                  document.execCommand("insertText", false, \`\\n\\n$$\\n\${selection}\\n$$\\n\\n\`);
+                  element.selectionStart = previousSelectionStart + \`\\n\\n$$\\n\`.length;
+                  element.selectionEnd = previousSelectionStart + \`\\n\\n$$\\n\${selection}\`.length;
+                }
               };
             `}"
           >
