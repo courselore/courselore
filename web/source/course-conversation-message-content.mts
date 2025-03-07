@@ -90,9 +90,15 @@ export default async (application: Application): Promise<void> => {
                 element.focus();
                 const selectionStart = element.selectionStart;
                 const selectionEnd = element.selectionEnd;
-                document.execCommand("insertText", false, "**" + element.value.substring(Math.min(selectionStart, selectionEnd), Math.max(selectionStart, selectionEnd)) + "**");
-                element.selectionStart = selectionStart + "**".length;
-                element.selectionEnd = selectionEnd + "**".length;
+                if (selectionStart === selectionEnd) {
+                  document.execCommand("insertText", false, "**BOLD TEXT GOES HERE**");
+                  element.selectionStart = selectionStart + "**".length;
+                  element.selectionEnd = selectionEnd + "**BOLD TEXT GOES HERE".length;
+                } else {
+                  document.execCommand("insertText", false, "**" + element.value.substring(Math.min(selectionStart, selectionEnd), Math.max(selectionStart, selectionEnd)) + "**");
+                  element.selectionStart = selectionStart + "**".length;
+                  element.selectionEnd = selectionEnd + "**".length;
+                }
               };
             `}"
           >
