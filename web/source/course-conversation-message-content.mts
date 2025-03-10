@@ -341,33 +341,43 @@ export default async (application: Application): Promise<void> => {
               type="text"
               class="input--text"
             />
-            $${application.database
-              .all<{}>(
-                sql`
-                  select *
-                  from "courseParticipations"
-                  where "course" = ${course.id};
-                `,
-              )
-              .map((courseParticipation) => {
-                return html`
-                  <button
-                    type="button"
-                    class="button button--rectangle button--transparent button--dropdown-menu"
-                    javascript="${javascript`
-                      this.onclick = () => {
-                        const element = this.closest('[key~="courseConversationMessageContentEditor"]').querySelector('[key~="courseConversationMessageContentEditor--textarea"]');
-                        element.click();
-                        element.focus();
-                        element.selectionEnd = element.selectionStart;
-                        document.execCommand("insertText", false, \`\${0 < element.selectionStart && !element.value[element.selectionStart - 1].match(/\\s/) ? " " : ""}@students\`);
-                      };
-                    `}"
-                  >
-                    Students
-                  </button>
-                `;
-              })}
+            <div
+              css="${css`
+                max-height: var(--size--64);
+                overflow: auto;
+                display: flex;
+                flex-direction: column;
+                gap: var(--size--2);
+              `}"
+            >
+              $${application.database
+                .all<{}>(
+                  sql`
+                    select *
+                    from "courseParticipations"
+                    where "course" = ${course.id};
+                  `,
+                )
+                .map((courseParticipation) => {
+                  return html`
+                    <button
+                      type="button"
+                      class="button button--rectangle button--transparent button--dropdown-menu"
+                      javascript="${javascript`
+                        this.onclick = () => {
+                          const element = this.closest('[key~="courseConversationMessageContentEditor"]').querySelector('[key~="courseConversationMessageContentEditor--textarea"]');
+                          element.click();
+                          element.focus();
+                          element.selectionEnd = element.selectionStart;
+                          document.execCommand("insertText", false, \`\${0 < element.selectionStart && !element.value[element.selectionStart - 1].match(/\\s/) ? " " : ""}@students\`);
+                        };
+                      `}"
+                    >
+                      Students
+                    </button>
+                  `;
+                })}
+            </div>
           </div>
           <button
             type="button"
