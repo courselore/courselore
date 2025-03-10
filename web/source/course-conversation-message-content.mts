@@ -284,12 +284,28 @@ export default async (application: Application): Promise<void> => {
             <button
               type="button"
               class="button button--rectangle button--transparent button--dropdown-menu"
+              javascript="${javascript`
+                this.onclick = () => {
+                  const element = this.closest('[key~="courseConversationMessageContentEditor"]').querySelector('[key~="courseConversationMessageContentEditor--textarea"]');
+                  element.focus();
+                  element.selectionEnd = element.selectionStart;
+                  document.execCommand("insertText", false, \`\${0 < element.selectionStart && !element.value[element.selectionStart - 1].match(/\\s/) ? " " : ""}@instructors \`);
+                };
+              `}"
             >
               Instructors
             </button>
             <button
               type="button"
               class="button button--rectangle button--transparent button--dropdown-menu"
+              javascript="${javascript`
+                this.onclick = () => {
+                  const element = this.closest('[key~="courseConversationMessageContentEditor"]').querySelector('[key~="courseConversationMessageContentEditor--textarea"]');
+                  element.focus();
+                  element.selectionEnd = element.selectionStart;
+                  document.execCommand("insertText", false, \`\${0 < element.selectionStart && !element.value[element.selectionStart - 1].match(/\\s/) ? " " : ""}@students \`);
+                };
+              `}"
             >
               Students
             </button>
