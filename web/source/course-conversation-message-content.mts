@@ -222,6 +222,21 @@ export default async (application: Application): Promise<void> => {
             class="button button--square button--icon button--transparent"
             javascript="${javascript`
               javascript.popover({ element: this });
+              this.onclick = () => {
+                const element = this.closest('[key~="courseConversationMessageContentEditor"]').querySelector('[key~="courseConversationMessageContentEditor--textarea"]');
+                element.focus();
+                const previousSelectionStart = element.selectionStart;
+                if (element.selectionStart === element.selectionEnd) {
+                  document.execCommand("insertText", false, "\\n\\n\`\`\`LANGUAGE\\nCODE\\n\`\`\`\\n\\n");
+                  element.selectionStart = previousSelectionStart + "\\n\\n\`\`\`".length;
+                  element.selectionEnd = previousSelectionStart + "\\n\\n\`\`\`LANGUAGE".length;
+                } else {
+                  const selection = element.value.substring(element.selectionStart, element.selectionEnd);
+                  document.execCommand("insertText", false, \`\\n\\n\\\`\\\`\\\`LANGUAGE\\n\${selection}\\n\\\`\\\`\\\`\\n\\n\`);
+                  element.selectionStart = previousSelectionStart + \`\\n\\n\\\`\\\`\\\`\`.length;
+                  element.selectionEnd = previousSelectionStart + \`\\n\\n\\\`\\\`\\\`LANGUAGE\`.length;
+                }
+              };
             `}"
           >
             <i class="bi bi-code"></i>
@@ -232,15 +247,6 @@ export default async (application: Application): Promise<void> => {
             class="button button--square button--icon button--transparent"
             javascript="${javascript`
               javascript.popover({ element: this });
-              this.onclick = () => {
-                const element = this.closest('[key~="courseConversationMessageContentEditor"]').querySelector('[key~="courseConversationMessageContentEditor--textarea"]');
-                element.focus();
-                element.selectionEnd = element.selectionStart;
-                const previousSelectionStart = element.selectionStart;
-                document.execCommand("insertText", false, "\\n\\n\`\`LANGUAGE\\nCODE\\n\`\`\\n\\n");
-                element.selectionStart = previousSelectionStart + "\\n\\n\`\`".length;
-                element.selectionEnd = previousSelectionStart + "\\n\\n\`\`LANGUAGE".length;
-              };
             `}"
           >
             <i class="bi bi-at"></i>
