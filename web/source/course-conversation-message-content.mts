@@ -270,6 +270,14 @@ export default async (application: Application): Promise<void> => {
             <button
               type="button"
               class="button button--rectangle button--transparent button--dropdown-menu"
+              javascript="${javascript`
+                this.onclick = () => {
+                  const element = this.closest('[key~="courseConversationMessageContentEditor"]').querySelector('[key~="courseConversationMessageContentEditor--textarea"]');
+                  element.focus();
+                  element.selectionEnd = element.selectionStart;
+                  document.execCommand("insertText", false, \`\${0 < element.selectionStart && !element.value[element.selectionStart - 1].match(/\\s/) ? " " : ""}@everyone \`);
+                };
+              `}"
             >
               Everyone
             </button>
@@ -1262,7 +1270,7 @@ ${value}</textarea
               },
             )
             .replaceAll(
-              /(?<=^|\s)@(?:everyone|instructors|students)/g,
+              /(?<=^|\s)@(?:everyone|instructors|students)(?![a-z\-])/g,
               (match) => html`<strong>${match}</strong>`,
             )
             .replaceAll(
