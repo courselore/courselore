@@ -247,11 +247,52 @@ export default async (application: Application): Promise<void> => {
             class="button button--square button--icon button--transparent"
             javascript="${javascript`
               javascript.popover({ element: this });
+              javascript.popover({ element: this, target: this.nextElementSibling.nextElementSibling, trigger: "click", placement: "top-start" });
+              // const onclick = this.onclick;
+              // this.onclick = () => {
+              //   onclick();
+              //   this.nextElementSibling.nextElementSibling.querySelector('[key~="courseConversationMessageContentEditor--mention--input"]').focus();
+              // };
             `}"
           >
             <i class="bi bi-at"></i>
           </button>
           <div type="popover">Mention a conversation participant</div>
+          <div
+            key="courseConversationMessageContentEditor--mention"
+            type="popover"
+            css="${css`
+              display: flex;
+              flex-direction: column;
+              gap: var(--size--2);
+            `}"
+          >
+            <button
+              type="button"
+              class="button button--rectangle button--transparent button--dropdown-menu"
+            >
+              Everyone
+            </button>
+            <button
+              type="button"
+              class="button button--rectangle button--transparent button--dropdown-menu"
+            >
+              Instructors
+            </button>
+            <button
+              type="button"
+              class="button button--rectangle button--transparent button--dropdown-menu"
+            >
+              Students
+            </button>
+            <hr class="separator" />
+            <input
+              key="courseConversationMessageContentEditor--mention--input"
+              type="text"
+              class="input--text"
+            />
+            <div>TODO</div>
+          </div>
           <button
             type="button"
             class="button button--square button--icon button--transparent"
