@@ -3544,11 +3544,11 @@ export default async (application: Application): Promise<void> => {
 
                       # \`@mentions\`
 
-                      Self: @${courseParticipation.publicId}--self
+                      Self: @self--${courseParticipation.publicId}
 
-                      Other: @${courseParticipations[Math.floor(Math.random() * courseParticipations.length)].publicId}--other
+                      Other: @other--${courseParticipations[Math.floor(Math.random() * courseParticipations.length)].publicId}
 
-                      Non-existent: @1571024857--non-existent
+                      Non-existent: @non-existent--1571024857
 
                       Course roles: @everyone, @instructors, @students
 

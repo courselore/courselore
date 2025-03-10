@@ -1235,7 +1235,7 @@ ${value}</textarea
         const childTextContentWithMentionsAndReferences =
           html`${child.textContent}`
             .replaceAll(
-              /(?<=^|\s)@(?<courseParticipationPublicId>\d+)--[a-z\-]+/g,
+              /(?<=^|\s)@[a-z\-]+--(?<courseParticipationPublicId>\d+)/g,
               (match, courseParticipationPublicId) => {
                 const mentionCourseParticipation = application.database.get<{
                   id: number;
@@ -1286,7 +1286,7 @@ ${value}</textarea
               },
             )
             .replaceAll(
-              /(?<=^|\s)@(?:everyone|instructors|students)(?![a-z\-])/g,
+              /(?<=^|\s)@(?:everyone|instructors|students)(?![A-Za-z0-9\-])/g,
               (match) => html`<strong>${match}</strong>`,
             )
             .replaceAll(
