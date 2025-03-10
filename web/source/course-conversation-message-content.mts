@@ -247,7 +247,7 @@ export default async (application: Application): Promise<void> => {
             class="button button--square button--icon button--transparent"
             javascript="${javascript`
               javascript.popover({ element: this });
-              javascript.popover({ element: this, target: this.nextElementSibling.nextElementSibling, trigger: "click", placement: "top-start" });
+              javascript.popover({ element: this, target: this.nextElementSibling.nextElementSibling, trigger: "click", remainOpenWhileFocused: true, placement: "top-start" });
               const onclick = this.onclick;
               this.onclick = (event) => {
                 onclick(event);
