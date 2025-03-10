@@ -251,7 +251,9 @@ export default async (application: Application): Promise<void> => {
               const onclick = this.onclick;
               this.onclick = (event) => {
                 onclick(event);
-                this.nextElementSibling.nextElementSibling.querySelector('[key~="courseConversationMessageContentEditor--mention--input"]').focus();
+                window.setTimeout(() => {
+                  this.nextElementSibling.nextElementSibling.querySelector('[key~="courseConversationMessageContentEditor--mention--input"]').focus()
+                }, 50);
               };
             `}"
           >
