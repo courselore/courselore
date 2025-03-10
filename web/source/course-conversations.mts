@@ -1736,6 +1736,8 @@ export default async (application: Application): Promise<void> => {
                   `
                 : html``}
               $${application.partials.courseConversationMessageContentEditor({
+                course: request.state.course,
+                courseParticipation: request.state.courseParticipation,
                 value:
                   typeof prefill.content === "string"
                     ? prefill.content
@@ -4130,7 +4132,14 @@ export default async (application: Application): Promise<void> => {
                         gap: var(--size--2);
                       `}"
                     >
-                      $${application.partials.courseConversationMessageContentEditor()}
+                      $${application.partials.courseConversationMessageContentEditor(
+                        {
+                          course: request.state.course,
+                          courseParticipation:
+                            request.state.courseParticipation,
+                          courseConversation: request.state.courseConversation,
+                        },
+                      )}
                       <div
                         css="${css`
                           font-size: var(--font-size--3);
