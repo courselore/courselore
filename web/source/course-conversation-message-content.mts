@@ -348,7 +348,7 @@ export default async (application: Application): Promise<void> => {
             <div
               class="scroll"
               css="${css`
-                max-height: var(--size--40);
+                max-height: var(--size--28);
                 padding: var(--size--0) var(--size--2);
                 margin: var(--size--0) var(--size---2);
                 display: flex;
@@ -357,11 +357,57 @@ export default async (application: Application): Promise<void> => {
               `}"
             >
               $${application.database
-                .all<{}>(
+                .all<{
+                  user: number;
+                  courseParticipationRole:
+                    | "courseParticipationRoleInstructor"
+                    | "courseParticipationRoleStudent";
+                }>(
                   sql`
-                    select *
+                    select
+                      "user",
+                      "courseParticipationRole"
                     from "courseParticipations"
-                    where "course" = ${course.id};
+                    join "users" on "courseParticipations"."user" = "users"."id"
+                    where
+                      "courseParticipations"."course" = ${course.id} and
+                      "courseParticipations"."id" != ${courseParticipation.id} $${
+                        courseConversation === undefined
+                          ? sql``
+                          : courseConversation.courseConversationVisibility ===
+                              "courseConversationVisibilityEveryone"
+                            ? sql``
+                            : courseConversation.courseConversationVisibility ===
+                                "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
+                              ? sql`
+                                  and (
+                                    "courseParticipations"."courseParticipationRole" = 'courseParticipationRoleInstructor' or (
+                                      select true
+                                      from "courseConversationParticipations"
+                                      where
+                                        "courseConversationParticipations"."courseConversation" = ${courseConversation.id} and
+                                        "courseParticipations"."id" = "courseConversationParticipations"."courseParticipation"
+                                    )
+                                  )
+                                `
+                              : courseConversation.courseConversationVisibility ===
+                                  "courseConversationVisibilityCourseConversationParticipations"
+                                ? sql`
+                                    and (
+                                      select true
+                                      from "courseConversationParticipations"
+                                      where
+                                        "courseConversationParticipations"."courseConversation" = ${courseConversation.id} and
+                                        "courseParticipations"."id" = "courseConversationParticipations"."courseParticipation"
+                                    )
+                                  `
+                                : (() => {
+                                    throw new Error();
+                                  })()
+                      }
+                    order by
+                      "courseParticipations"."courseParticipationRole" = 'courseParticipationRoleInstructor' desc,
+                      "users"."name" asc;
                   `,
                 )
                 .map((courseParticipation) => {
