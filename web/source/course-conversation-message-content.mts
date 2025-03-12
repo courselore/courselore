@@ -346,9 +346,11 @@ export default async (application: Application): Promise<void> => {
               class="input--text"
             />
             <div
+              class="scroll"
               css="${css`
-                max-height: var(--size--64);
-                overflow: auto;
+                max-height: var(--size--40);
+                padding: var(--size--0) var(--size--2);
+                margin: var(--size--0) var(--size---2);
                 display: flex;
                 flex-direction: column;
                 gap: var(--size--2);
