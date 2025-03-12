@@ -411,21 +411,83 @@ export default async (application: Application): Promise<void> => {
                   `,
                 )
                 .map((courseParticipation) => {
+                  const courseParticipationUser = application.database.get<{
+                    publicId: string;
+                    name: string;
+                    avatarColor:
+                      | "red"
+                      | "orange"
+                      | "amber"
+                      | "yellow"
+                      | "lime"
+                      | "green"
+                      | "emerald"
+                      | "teal"
+                      | "cyan"
+                      | "sky"
+                      | "blue"
+                      | "indigo"
+                      | "violet"
+                      | "purple"
+                      | "fuchsia"
+                      | "pink"
+                      | "rose";
+                    avatarImage: string | null;
+                    lastSeenOnlineAt: string;
+                  }>(
+                    sql`
+                      select
+                        "publicId",
+                        "name",
+                        "avatarColor",
+                        "avatarImage",
+                        "lastSeenOnlineAt"
+                      from "users"
+                      where "id" = ${courseParticipation.user};
+                    `,
+                  );
+                  if (courseParticipationUser === undefined) throw new Error();
                   return html`
                     <button
                       type="button"
                       class="button button--rectangle button--transparent button--dropdown-menu"
+                      css="${css`
+                        display: flex;
+                        gap: var(--size--2);
+                      `}"
                       javascript="${javascript`
                         this.onclick = () => {
                           const element = this.closest('[key~="courseConversationMessageContentEditor"]').querySelector('[key~="courseConversationMessageContentEditor--textarea"]');
                           element.click();
                           element.focus();
                           element.selectionEnd = element.selectionStart;
-                          document.execCommand("insertText", false, \`\${0 < element.selectionStart && !element.value[element.selectionStart - 1].match(/\\s/) ? " " : ""}@students\`);
+                          document.execCommand("insertText", false, \`\${0 < element.selectionStart && !element.value[element.selectionStart - 1].match(/\\s/) ? " " : ""}@\${${courseParticipationUser.name.toLowerCase().replaceAll(/[^a-z\-]/g, "-")}}--\${${courseParticipationUser.publicId}} \`);
                         };
                       `}"
                     >
-                      Students
+                      $${application.partials.userAvatar({
+                        user: courseParticipationUser,
+                      })}
+                      <div
+                        css="${css`
+                          margin-top: var(--size--0-5);
+                        `}"
+                      >
+                        ${courseParticipationUser.name}<span
+                          css="${css`
+                            font-size: var(--font-size--3);
+                            line-height: var(--font-size--3--line-height);
+                            color: light-dark(
+                              var(--color--slate--600),
+                              var(--color--slate--400)
+                            );
+                          `}"
+                          >${courseParticipation.courseParticipationRole ===
+                          "courseParticipationRoleInstructor"
+                            ? " (instructor)"
+                            : ""}</span
+                        >
+                      </div>
                     </button>
                   `;
                 })}
