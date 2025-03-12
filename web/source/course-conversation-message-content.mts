@@ -344,8 +344,18 @@ export default async (application: Application): Promise<void> => {
               placeholder="Search…"
               maxlength="3000"
               class="input--text"
+              javascript="${javascript`
+                // this.onchange = () => {
+                //   for (const element of this.closest('[key~="courseConversationMessageContentEditor--mention"]').querySelector('[key~="courseConversationMessageContentEditor--mention--courseParticipations"]').children) {
+                //     const nameElement = element.querySelector('[key~="courseConversationMessageContentEditor--mention--courseParticipation--name"]');
+                //     nameElement.innerHTML = utilities.highlight(nameElement.name, utilities.tokenize(this.value, { stopWords, stem: natural.PorterStemmer.stem }).map((tokenWithPosition) => tokenWithPosition.token));
+                //     if (nameElement.querySelector())
+                //   }
+                // };
+              `}"
             />
             <div
+              key="courseConversationMessageContentEditor--mention--courseParticipations"
               class="scroll"
               css="${css`
                 max-height: var(--size--28);
@@ -473,7 +483,13 @@ export default async (application: Application): Promise<void> => {
                           margin-top: var(--size--0-5);
                         `}"
                       >
-                        ${courseParticipationUser.name}<span
+                        <span
+                          key="courseConversationMessageContentEditor--mention--courseParticipation--name"
+                          javascript="${javascript`
+                            this.name = ${courseParticipationUser.name};
+                          `}"
+                          >${courseParticipationUser.name}</span
+                        ><span
                           css="${css`
                             font-size: var(--font-size--3);
                             line-height: var(--font-size--3--line-height);
