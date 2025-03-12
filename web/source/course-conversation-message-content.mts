@@ -349,8 +349,8 @@ export default async (application: Application): Promise<void> => {
               class="scroll"
               css="${css`
                 max-height: var(--size--28);
-                padding: var(--size--0) var(--size--2);
-                margin: var(--size--0) var(--size---2);
+                padding: var(--size--1) var(--size--2);
+                margin: var(--size---1) var(--size---2);
                 display: flex;
                 flex-direction: column;
                 gap: var(--size--2);
