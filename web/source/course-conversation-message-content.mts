@@ -301,7 +301,7 @@ export default async (application: Application): Promise<void> => {
                   element.click();
                   element.focus();
                   element.selectionEnd = element.selectionStart;
-                  document.execCommand("insertText", false, \`\${0 < element.selectionStart && !element.value[element.selectionStart - 1].match(/\\s/) ? " " : ""}@everyone\`);
+                  document.execCommand("insertText", false, \`\${0 < element.selectionStart && !element.value[element.selectionStart - 1].match(/\\s/) ? " " : ""}@everyone \`);
                 };
               `}"
             >
@@ -316,7 +316,7 @@ export default async (application: Application): Promise<void> => {
                   element.click();
                   element.focus();
                   element.selectionEnd = element.selectionStart;
-                  document.execCommand("insertText", false, \`\${0 < element.selectionStart && !element.value[element.selectionStart - 1].match(/\\s/) ? " " : ""}@instructors\`);
+                  document.execCommand("insertText", false, \`\${0 < element.selectionStart && !element.value[element.selectionStart - 1].match(/\\s/) ? " " : ""}@instructors \`);
                 };
               `}"
             >
@@ -331,7 +331,7 @@ export default async (application: Application): Promise<void> => {
                   element.click();
                   element.focus();
                   element.selectionEnd = element.selectionStart;
-                  document.execCommand("insertText", false, \`\${0 < element.selectionStart && !element.value[element.selectionStart - 1].match(/\\s/) ? " " : ""}@students\`);
+                  document.execCommand("insertText", false, \`\${0 < element.selectionStart && !element.value[element.selectionStart - 1].match(/\\s/) ? " " : ""}@students \`);
                 };
               `}"
             >
