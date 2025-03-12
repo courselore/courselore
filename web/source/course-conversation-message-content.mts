@@ -341,6 +341,8 @@ export default async (application: Application): Promise<void> => {
             <input
               key="courseConversationMessageContentEditor--mention--input"
               type="text"
+              placeholder="Search…"
+              maxlength="3000"
               class="input--text"
             />
             <div

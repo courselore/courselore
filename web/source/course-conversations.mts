@@ -184,6 +184,7 @@ export default async (application: Application): Promise<void> => {
                 <input
                   type="text"
                   name="search.courseConversations"
+                  placeholder="Search…"
                   maxlength="3000"
                   css="${css`
                     flex: 1;
