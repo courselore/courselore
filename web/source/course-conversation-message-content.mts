@@ -268,14 +268,16 @@ export default async (application: Application): Promise<void> => {
             class="button button--square button--icon button--transparent"
             javascript="${javascript`
               javascript.popover({ element: this });
-              javascript.popover({ element: this, target: this.nextElementSibling.nextElementSibling, trigger: "click", remainOpenWhileFocused: true, placement: "top-start" });
-              const onclick = this.onclick;
-              this.onclick = (event) => {
-                onclick(event);
-                window.setTimeout(() => {
+              javascript.popover({
+                element: this,
+                target: this.nextElementSibling.nextElementSibling,
+                trigger: "click",
+                remainOpenWhileFocused: true,
+                placement: "top-start",
+                onshow: () => {
                   this.nextElementSibling.nextElementSibling.querySelector('[key~="courseConversationMessageContentEditor--mention--input"]').focus();
-                }, 50);
-              };
+                },
+              });
             `}"
           >
             <i class="bi bi-at"></i>
