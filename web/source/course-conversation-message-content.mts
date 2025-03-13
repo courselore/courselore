@@ -345,13 +345,14 @@ export default async (application: Application): Promise<void> => {
               maxlength="3000"
               class="input--text"
               javascript="${javascript`
-                // this.onchange = () => {
-                //   for (const element of this.closest('[key~="courseConversationMessageContentEditor--mention"]').querySelector('[key~="courseConversationMessageContentEditor--mention--courseParticipations"]').children) {
-                //     const nameElement = element.querySelector('[key~="courseConversationMessageContentEditor--mention--courseParticipation--name"]');
-                //     nameElement.innerHTML = utilities.highlight(nameElement.name, utilities.tokenize(this.value, { stopWords, stem: natural.PorterStemmer.stem }).map((tokenWithPosition) => tokenWithPosition.token));
-                //     if (nameElement.querySelector())
-                //   }
-                // };
+                this.onkeyup = utilities.foregroundJob(() => {
+                  const search = new Set(utilities.tokenize(this.value).map((tokenWithPosition) => tokenWithPosition.token));
+                  for (const element of this.closest('[key~="courseConversationMessageContentEditor--mention"]').querySelector('[key~="courseConversationMessageContentEditor--mention--courseParticipations"]').children) {
+                    const nameElement = element.querySelector('[key~="courseConversationMessageContentEditor--mention--courseParticipation--name"]');
+                    nameElement.innerHTML = utilities.highlight(html\`\${nameElement.name}\`, search);
+                    element.hidden = 0 < search.size && nameElement.querySelector("span") === null;
+                  }
+                });
               `}"
             />
             <div
@@ -1459,17 +1460,9 @@ ${value}</textarea
                 );
                 if (mentionUser === undefined) throw new Error();
                 return html`<strong
-                  css="${courseParticipation.id ===
-                  mentionCourseParticipation.id
-                    ? css`
-                        background-color: light-dark(
-                          var(--color--yellow--200),
-                          var(--color--yellow--800)
-                        );
-                        padding: var(--size--0-5) var(--size--1);
-                        border-radius: var(--border-radius--1);
-                      `
-                    : css``}"
+                  $${courseParticipation.id === mentionCourseParticipation.id
+                    ? html`class="highlight"`
+                    : html``}
                   >@${mentionUser.name}${mentionCourseParticipation.courseParticipationRole ===
                   "courseParticipationRoleInstructor"
                     ? " (instructor)"

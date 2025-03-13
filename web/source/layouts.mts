@@ -255,6 +255,15 @@ export default async (application: Application): Promise<void> => {
       }
     }
 
+    .highlight {
+      background-color: light-dark(
+        var(--color--yellow--200),
+        var(--color--yellow--800)
+      );
+      padding: var(--size--0-5) var(--size--1);
+      border-radius: var(--border-radius--1);
+    }
+
     .separator {
       border-bottom: var(--border-width--1) solid
         light-dark(var(--color--slate--200), var(--color--slate--800));
