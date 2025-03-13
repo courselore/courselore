@@ -350,7 +350,7 @@ export default async (application: Application): Promise<void> => {
                   const search = new Set(utilities.tokenize(this.value).map((tokenWithPosition) => tokenWithPosition.token));
                   for (const element of this.closest('[key~="courseConversationMessageContentEditor--mention"]').querySelector('[key~="courseConversationMessageContentEditor--mention--courseParticipations"]').children) {
                     const nameElement = element.querySelector('[key~="courseConversationMessageContentEditor--mention--courseParticipation--name"]');
-                    nameElement.innerHTML = utilities.highlight(html\`\${nameElement.name}\`, search);
+                    nameElement.innerHTML = utilities.highlight(html\`\${nameElement.name}\`, search, { prefix: true });
                     element.hidden = 0 < search.size && nameElement.querySelector("span") === null;
                   }
                 });
