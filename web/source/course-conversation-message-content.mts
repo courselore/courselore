@@ -283,7 +283,7 @@ export default async (application: Application): Promise<void> => {
           >
             <i class="bi bi-at"></i>
           </button>
-          <div type="popover">Mention a conversation participant</div>
+          <div type="popover">Mention</div>
           <div
             key="courseConversationMessageContentEditor--mention"
             type="popover"
@@ -520,7 +520,7 @@ export default async (application: Application): Promise<void> => {
           >
             <i class="bi bi-hash"></i>
           </button>
-          <div type="popover">Reference a conversation or message</div>
+          <div type="popover">Reference</div>
         </div>
         <div
           css="${css`
