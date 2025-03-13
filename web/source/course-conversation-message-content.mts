@@ -491,20 +491,21 @@ export default async (application: Application): Promise<void> => {
                             this.name = ${courseParticipationUser.name};
                           `}"
                           >${courseParticipationUser.name}</span
-                        ><span
-                          css="${css`
-                            font-size: var(--font-size--3);
-                            line-height: var(--font-size--3--line-height);
-                            color: light-dark(
-                              var(--color--slate--600),
-                              var(--color--slate--400)
-                            );
-                          `}"
-                          >${courseParticipation.courseParticipationRole ===
-                          "courseParticipationRoleInstructor"
-                            ? " (instructor)"
-                            : ""}</span
-                        >
+                        >$${courseParticipation.courseParticipationRole ===
+                        "courseParticipationRoleInstructor"
+                          ? html`<span
+                              css="${css`
+                                font-size: var(--font-size--3);
+                                line-height: var(--font-size--3--line-height);
+                                color: light-dark(
+                                  var(--color--slate--600),
+                                  var(--color--slate--400)
+                                );
+                              `}"
+                            >
+                              (instructor)</span
+                            >`
+                          : html``}
                       </div>
                     </button>
                   `;
@@ -1201,20 +1202,23 @@ ${value}</textarea
                             `}"
                           >
                             ${courseConversationMessagePollOptionVoteUser?.name ??
-                            "Deleted course participant"}<span
-                              css="${css`
-                                font-size: var(--font-size--3);
-                                line-height: var(--font-size--3--line-height);
-                                color: light-dark(
-                                  var(--color--slate--600),
-                                  var(--color--slate--400)
-                                );
-                              `}"
-                              >${courseConversationMessagePollOptionVoteCourseParticipation?.courseParticipationRole ===
-                              "courseParticipationRoleInstructor"
-                                ? " (instructor)"
-                                : ""}</span
-                            >
+                            "Deleted course participant"}$${courseConversationMessagePollOptionVoteCourseParticipation?.courseParticipationRole ===
+                            "courseParticipationRoleInstructor"
+                              ? html`<span
+                                  css="${css`
+                                    font-size: var(--font-size--3);
+                                    line-height: var(
+                                      --font-size--3--line-height
+                                    );
+                                    color: light-dark(
+                                      var(--color--slate--600),
+                                      var(--color--slate--400)
+                                    );
+                                  `}"
+                                >
+                                  (instructor)</span
+                                >`
+                              : html``}
                           </div>
                         </div>
                       `;

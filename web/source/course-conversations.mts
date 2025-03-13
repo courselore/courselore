@@ -3866,26 +3866,29 @@ export default async (application: Application): Promise<void> => {
                                                   `}"
                                                 >
                                                   ${courseConversationMessageLikeUser?.name ??
-                                                  "Deleted course participant"}<span
-                                                    css="${css`
-                                                      font-size: var(
-                                                        --font-size--3
-                                                      );
-                                                      line-height: var(
-                                                        --font-size--3--line-height
-                                                      );
-                                                      color: light-dark(
-                                                        var(
-                                                          --color--slate--600
-                                                        ),
-                                                        var(--color--slate--400)
-                                                      );
-                                                    `}"
-                                                    >${courseConversationMessageLikeCourseParticipation?.courseParticipationRole ===
-                                                    "courseParticipationRoleInstructor"
-                                                      ? " (instructor)"
-                                                      : ""}</span
-                                                  >
+                                                  "Deleted course participant"}$${courseConversationMessageLikeCourseParticipation?.courseParticipationRole ===
+                                                  "courseParticipationRoleInstructor"
+                                                    ? html`<span
+                                                        css="${css`
+                                                          font-size: var(
+                                                            --font-size--3
+                                                          );
+                                                          line-height: var(
+                                                            --font-size--3--line-height
+                                                          );
+                                                          color: light-dark(
+                                                            var(
+                                                              --color--slate--600
+                                                            ),
+                                                            var(
+                                                              --color--slate--400
+                                                            )
+                                                          );
+                                                        `}"
+                                                      >
+                                                        (instructor)</span
+                                                      >`
+                                                    : html``}
                                                 </div>
                                               </div>
                                             `;
