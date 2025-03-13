@@ -675,18 +675,49 @@ export default async (application: Application): Promise<void> => {
           <div type="popover">Help</div>
         </div>
       </div>
-      <textarea
-        key="courseConversationMessageContentEditor--textarea"
-        name="content"
-        required
+      <div
         css="${css`
-          font-family: "Roboto Mono Variable", var(--font-family--monospace);
-          height: var(--size--44);
-          padding: var(--size--1) var(--size--2);
+          display: grid;
+          & > * {
+            grid-area: 1/1;
+          }
         `}"
       >
+        <textarea
+          key="courseConversationMessageContentEditor--textarea"
+          name="content"
+          required
+          css="${css`
+            font-family: "Roboto Mono Variable", var(--font-family--monospace);
+            height: var(--size--44);
+            padding: var(--size--1) var(--size--2);
+          `}"
+        >
 ${value}</textarea
-      >
+        >
+        <div
+          css="${css`
+            background-color: light-dark(
+              rgb(0 0 0 / 30%),
+              rgb(255 255 255 / 30%)
+            );
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition-property: var(--transition-property--opacity);
+            transition-duration: var(--transition-duration--150);
+            transition-timing-function: var(
+              --transition-timing-function--ease-in-out
+            );
+            :not([state~="loading"]) > & {
+              visibility: hidden;
+              opacity: var(--opacity--0);
+            }
+          `}"
+        >
+          Loading…
+        </div>
+      </div>
     </div>
   `;
 
