@@ -517,11 +517,250 @@ export default async (application: Application): Promise<void> => {
             class="button button--square button--icon button--transparent"
             javascript="${javascript`
               javascript.popover({ element: this });
+              javascript.popover({
+                element: this,
+                target: this.nextElementSibling.nextElementSibling,
+                trigger: "click",
+                remainOpenWhileFocused: true,
+                placement: "top-start",
+                onshow: () => {
+                  this.nextElementSibling.nextElementSibling.querySelector('[key~="courseConversationMessageContentEditor--mention--input"]').focus();
+                  this.nextElementSibling.nextElementSibling.querySelector('[key~="courseConversationMessageContentEditor--mention--input"]').select();
+                },
+              });
             `}"
           >
             <i class="bi bi-hash"></i>
           </button>
           <div type="popover">Reference</div>
+          <div
+            key="courseConversationMessageContentEditor--reference"
+            type="popover"
+            css="${css`
+              display: flex;
+              flex-direction: column;
+              gap: var(--size--2);
+            `}"
+          >
+            <button
+              type="button"
+              class="button button--rectangle button--transparent button--dropdown-menu"
+              javascript="${javascript`
+                this.onclick = () => {
+                  const element = this.closest('[key~="courseConversationMessageContentEditor"]').querySelector('[key~="courseConversationMessageContentEditor--textarea"]');
+                  element.click();
+                  element.focus();
+                  element.selectionEnd = element.selectionStart;
+                  document.execCommand("insertText", false, \`\${0 < element.selectionStart && !element.value[element.selectionStart - 1].match(/\\s/) ? " " : ""}@everyone \`);
+                };
+              `}"
+            >
+              Everyone
+            </button>
+            <button
+              type="button"
+              class="button button--rectangle button--transparent button--dropdown-menu"
+              javascript="${javascript`
+                this.onclick = () => {
+                  const element = this.closest('[key~="courseConversationMessageContentEditor"]').querySelector('[key~="courseConversationMessageContentEditor--textarea"]');
+                  element.click();
+                  element.focus();
+                  element.selectionEnd = element.selectionStart;
+                  document.execCommand("insertText", false, \`\${0 < element.selectionStart && !element.value[element.selectionStart - 1].match(/\\s/) ? " " : ""}@instructors \`);
+                };
+              `}"
+            >
+              Instructors
+            </button>
+            <button
+              type="button"
+              class="button button--rectangle button--transparent button--dropdown-menu"
+              javascript="${javascript`
+                this.onclick = () => {
+                  const element = this.closest('[key~="courseConversationMessageContentEditor"]').querySelector('[key~="courseConversationMessageContentEditor--textarea"]');
+                  element.click();
+                  element.focus();
+                  element.selectionEnd = element.selectionStart;
+                  document.execCommand("insertText", false, \`\${0 < element.selectionStart && !element.value[element.selectionStart - 1].match(/\\s/) ? " " : ""}@students \`);
+                };
+              `}"
+            >
+              Students
+            </button>
+            <hr class="separator" />
+            <input
+              key="courseConversationMessageContentEditor--reference--input"
+              type="text"
+              placeholder="Search…"
+              maxlength="3000"
+              class="input--text"
+              javascript="${javascript`
+                this.onkeyup = utilities.foregroundJob(() => {
+                  const search = new Set(utilities.tokenize(this.value).map((tokenWithPosition) => tokenWithPosition.token));
+                  for (const element of this.closest('[key~="courseConversationMessageContentEditor--reference"]').querySelector('[key~="courseConversationMessageContentEditor--reference--courseParticipations"]').children) {
+                    const nameElement = element.querySelector('[key~="courseConversationMessageContentEditor--reference--courseParticipation--name"]');
+                    nameElement.innerHTML = utilities.highlight(html\`\${nameElement.name}\`, search, { prefix: true });
+                    element.hidden = 0 < search.size && nameElement.querySelector("span") === null;
+                  }
+                });
+              `}"
+            />
+            <div
+              key="courseConversationMessageContentEditor--reference--courseParticipations"
+              class="scroll"
+              css="${css`
+                height: var(--size--28);
+                padding: var(--size--1) var(--size--2);
+                margin: var(--size---1) var(--size---2);
+                display: flex;
+                flex-direction: column;
+                gap: var(--size--2);
+              `}"
+            >
+              $${application.database
+                .all<{
+                  user: number;
+                  courseParticipationRole:
+                    | "courseParticipationRoleInstructor"
+                    | "courseParticipationRoleStudent";
+                }>(
+                  sql`
+                    select
+                      "user",
+                      "courseParticipationRole"
+                    from "courseParticipations"
+                    join "users" on "courseParticipations"."user" = "users"."id"
+                    where
+                      "courseParticipations"."course" = ${course.id} and
+                      "courseParticipations"."id" != ${courseParticipation.id} $${
+                        courseConversation === undefined
+                          ? sql``
+                          : courseConversation.courseConversationVisibility ===
+                              "courseConversationVisibilityEveryone"
+                            ? sql``
+                            : courseConversation.courseConversationVisibility ===
+                                "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
+                              ? sql`
+                                  and (
+                                    "courseParticipations"."courseParticipationRole" = 'courseParticipationRoleInstructor' or (
+                                      select true
+                                      from "courseConversationParticipations"
+                                      where
+                                        "courseConversationParticipations"."courseConversation" = ${courseConversation.id} and
+                                        "courseParticipations"."id" = "courseConversationParticipations"."courseParticipation"
+                                    )
+                                  )
+                                `
+                              : courseConversation.courseConversationVisibility ===
+                                  "courseConversationVisibilityCourseConversationParticipations"
+                                ? sql`
+                                    and (
+                                      select true
+                                      from "courseConversationParticipations"
+                                      where
+                                        "courseConversationParticipations"."courseConversation" = ${courseConversation.id} and
+                                        "courseParticipations"."id" = "courseConversationParticipations"."courseParticipation"
+                                    )
+                                  `
+                                : (() => {
+                                    throw new Error();
+                                  })()
+                      }
+                    order by
+                      "courseParticipations"."courseParticipationRole" = 'courseParticipationRoleInstructor' desc,
+                      "users"."name" asc;
+                  `,
+                )
+                .map((courseParticipation) => {
+                  const courseParticipationUser = application.database.get<{
+                    publicId: string;
+                    name: string;
+                    avatarColor:
+                      | "red"
+                      | "orange"
+                      | "amber"
+                      | "yellow"
+                      | "lime"
+                      | "green"
+                      | "emerald"
+                      | "teal"
+                      | "cyan"
+                      | "sky"
+                      | "blue"
+                      | "indigo"
+                      | "violet"
+                      | "purple"
+                      | "fuchsia"
+                      | "pink"
+                      | "rose";
+                    avatarImage: string | null;
+                    lastSeenOnlineAt: string;
+                  }>(
+                    sql`
+                      select
+                        "publicId",
+                        "name",
+                        "avatarColor",
+                        "avatarImage",
+                        "lastSeenOnlineAt"
+                      from "users"
+                      where "id" = ${courseParticipation.user};
+                    `,
+                  );
+                  if (courseParticipationUser === undefined) throw new Error();
+                  return html`
+                    <button
+                      type="button"
+                      class="button button--rectangle button--transparent button--dropdown-menu"
+                      css="${css`
+                        display: flex;
+                        gap: var(--size--2);
+                      `}"
+                      javascript="${javascript`
+                        this.onclick = () => {
+                          const element = this.closest('[key~="courseConversationMessageContentEditor"]').querySelector('[key~="courseConversationMessageContentEditor--textarea"]');
+                          element.click();
+                          element.focus();
+                          element.selectionEnd = element.selectionStart;
+                          document.execCommand("insertText", false, \`\${0 < element.selectionStart && !element.value[element.selectionStart - 1].match(/\\s/) ? " " : ""}@\${${courseParticipationUser.name.toLowerCase().replaceAll(/[^a-z\-]/g, "-")}}--\${${courseParticipationUser.publicId}} \`);
+                        };
+                      `}"
+                    >
+                      $${application.partials.userAvatar({
+                        user: courseParticipationUser,
+                      })}
+                      <div
+                        css="${css`
+                          margin-top: var(--size--0-5);
+                        `}"
+                      >
+                        <span
+                          key="courseConversationMessageContentEditor--reference--courseParticipation--name"
+                          javascript="${javascript`
+                            this.name = ${courseParticipationUser.name};
+                          `}"
+                          >${courseParticipationUser.name}</span
+                        >$${courseParticipation.courseParticipationRole ===
+                        "courseParticipationRoleInstructor"
+                          ? html`<span
+                              css="${css`
+                                font-size: var(--font-size--3);
+                                line-height: var(--font-size--3--line-height);
+                                color: light-dark(
+                                  var(--color--slate--600),
+                                  var(--color--slate--400)
+                                );
+                              `}"
+                            >
+                              (instructor)</span
+                            >`
+                          : html``}
+                      </div>
+                    </button>
+                  `;
+                })}
+            </div>
+          </div>
         </div>
         <div
           css="${css`
