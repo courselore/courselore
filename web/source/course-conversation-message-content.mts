@@ -542,52 +542,6 @@ export default async (application: Application): Promise<void> => {
               gap: var(--size--2);
             `}"
           >
-            <button
-              type="button"
-              class="button button--rectangle button--transparent button--dropdown-menu"
-              javascript="${javascript`
-                this.onclick = () => {
-                  const element = this.closest('[key~="courseConversationMessageContentEditor"]').querySelector('[key~="courseConversationMessageContentEditor--textarea"]');
-                  element.click();
-                  element.focus();
-                  element.selectionEnd = element.selectionStart;
-                  document.execCommand("insertText", false, \`\${0 < element.selectionStart && !element.value[element.selectionStart - 1].match(/\\s/) ? " " : ""}@everyone \`);
-                };
-              `}"
-            >
-              Everyone
-            </button>
-            <button
-              type="button"
-              class="button button--rectangle button--transparent button--dropdown-menu"
-              javascript="${javascript`
-                this.onclick = () => {
-                  const element = this.closest('[key~="courseConversationMessageContentEditor"]').querySelector('[key~="courseConversationMessageContentEditor--textarea"]');
-                  element.click();
-                  element.focus();
-                  element.selectionEnd = element.selectionStart;
-                  document.execCommand("insertText", false, \`\${0 < element.selectionStart && !element.value[element.selectionStart - 1].match(/\\s/) ? " " : ""}@instructors \`);
-                };
-              `}"
-            >
-              Instructors
-            </button>
-            <button
-              type="button"
-              class="button button--rectangle button--transparent button--dropdown-menu"
-              javascript="${javascript`
-                this.onclick = () => {
-                  const element = this.closest('[key~="courseConversationMessageContentEditor"]').querySelector('[key~="courseConversationMessageContentEditor--textarea"]');
-                  element.click();
-                  element.focus();
-                  element.selectionEnd = element.selectionStart;
-                  document.execCommand("insertText", false, \`\${0 < element.selectionStart && !element.value[element.selectionStart - 1].match(/\\s/) ? " " : ""}@students \`);
-                };
-              `}"
-            >
-              Students
-            </button>
-            <hr class="separator" />
             <input
               key="courseConversationMessageContentEditor--reference--input"
               type="text"
@@ -597,16 +551,16 @@ export default async (application: Application): Promise<void> => {
               javascript="${javascript`
                 this.onkeyup = utilities.foregroundJob(() => {
                   const search = new Set(utilities.tokenize(this.value).map((tokenWithPosition) => tokenWithPosition.token));
-                  for (const element of this.closest('[key~="courseConversationMessageContentEditor--reference"]').querySelector('[key~="courseConversationMessageContentEditor--reference--courseParticipations"]').children) {
-                    const nameElement = element.querySelector('[key~="courseConversationMessageContentEditor--reference--courseParticipation--name"]');
-                    nameElement.innerHTML = utilities.highlight(html\`\${nameElement.name}\`, search, { prefix: true });
-                    element.hidden = 0 < search.size && nameElement.querySelector("span") === null;
+                  for (const element of this.closest('[key~="courseConversationMessageContentEditor--reference"]').querySelector('[key~="courseConversationMessageContentEditor--reference--courseConversations"]').children) {
+                    const titleElement = element.querySelector('[key~="courseConversationMessageContentEditor--reference--courseConversation--title"]');
+                    titleElement.innerHTML = utilities.highlight(html\`\${titleElement.title}\`, search, { prefix: true });
+                    element.hidden = 0 < search.size && titleElement.querySelector("span") === null;
                   }
                 });
               `}"
             />
             <div
-              key="courseConversationMessageContentEditor--reference--courseParticipations"
+              key="courseConversationMessageContentEditor--reference--courseConversations"
               class="scroll"
               css="${css`
                 height: var(--size--28);
@@ -735,9 +689,9 @@ export default async (application: Application): Promise<void> => {
                         `}"
                       >
                         <span
-                          key="courseConversationMessageContentEditor--reference--courseParticipation--name"
+                          key="courseConversationMessageContentEditor--reference--courseConversation--title"
                           javascript="${javascript`
-                            this.name = ${courseParticipationUser.name};
+                            this.title = ${courseParticipationUser.name};
                           `}"
                           >${courseParticipationUser.name}</span
                         >$${courseParticipation.courseParticipationRole ===
