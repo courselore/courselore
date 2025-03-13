@@ -27,6 +27,9 @@ export type ApplicationCourseConversationMessageContent = {
       };
       courseParticipation: {
         id: number;
+        courseParticipationRole:
+          | "courseParticipationRoleInstructor"
+          | "courseParticipationRoleStudent";
       };
       courseConversation?: {
         id: number;
@@ -524,8 +527,8 @@ export default async (application: Application): Promise<void> => {
                 remainOpenWhileFocused: true,
                 placement: "top-start",
                 onshow: () => {
-                  this.nextElementSibling.nextElementSibling.querySelector('[key~="courseConversationMessageContentEditor--mention--input"]').focus();
-                  this.nextElementSibling.nextElementSibling.querySelector('[key~="courseConversationMessageContentEditor--mention--input"]').select();
+                  this.nextElementSibling.nextElementSibling.querySelector('[key~="courseConversationMessageContentEditor--reference--input"]').focus();
+                  this.nextElementSibling.nextElementSibling.querySelector('[key~="courseConversationMessageContentEditor--reference--input"]').select();
                 },
               });
             `}"
@@ -563,7 +566,7 @@ export default async (application: Application): Promise<void> => {
               key="courseConversationMessageContentEditor--reference--courseConversations"
               class="scroll"
               css="${css`
-                height: var(--size--28);
+                height: var(--size--60);
                 padding: var(--size--1) var(--size--2);
                 margin: var(--size---1) var(--size---2);
                 display: flex;
@@ -573,146 +576,74 @@ export default async (application: Application): Promise<void> => {
             >
               $${application.database
                 .all<{
-                  user: number;
-                  courseParticipationRole:
-                    | "courseParticipationRoleInstructor"
-                    | "courseParticipationRoleStudent";
+                  publicId: string;
+                  title: string;
                 }>(
                   sql`
                     select
-                      "user",
-                      "courseParticipationRole"
-                    from "courseParticipations"
-                    join "users" on "courseParticipations"."user" = "users"."id"
+                      "publicId",
+                      "title"
+                    from "courseConversations"
                     where
-                      "courseParticipations"."course" = ${course.id} and
-                      "courseParticipations"."id" != ${courseParticipation.id} $${
-                        courseConversation === undefined
-                          ? sql``
-                          : courseConversation.courseConversationVisibility ===
-                              "courseConversationVisibilityEveryone"
-                            ? sql``
-                            : courseConversation.courseConversationVisibility ===
-                                "courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations"
-                              ? sql`
-                                  and (
-                                    "courseParticipations"."courseParticipationRole" = 'courseParticipationRoleInstructor' or (
-                                      select true
-                                      from "courseConversationParticipations"
-                                      where
-                                        "courseConversationParticipations"."courseConversation" = ${courseConversation.id} and
-                                        "courseParticipations"."id" = "courseConversationParticipations"."courseParticipation"
-                                    )
-                                  )
-                                `
-                              : courseConversation.courseConversationVisibility ===
-                                  "courseConversationVisibilityCourseConversationParticipations"
-                                ? sql`
-                                    and (
-                                      select true
-                                      from "courseConversationParticipations"
-                                      where
-                                        "courseConversationParticipations"."courseConversation" = ${courseConversation.id} and
-                                        "courseParticipations"."id" = "courseConversationParticipations"."courseParticipation"
-                                    )
-                                  `
-                                : (() => {
-                                    throw new Error();
-                                  })()
-                      }
-                    order by
-                      "courseParticipations"."courseParticipationRole" = 'courseParticipationRoleInstructor' desc,
-                      "users"."name" asc;
+                      "course" = ${course.id} and (
+                        "courseConversationVisibility" = 'courseConversationVisibilityEveryone'
+                        $${
+                          courseParticipation.courseParticipationRole ===
+                          "courseParticipationRoleInstructor"
+                            ? sql`
+                                or
+                                "courseConversationVisibility" = 'courseConversationVisibilityCourseParticipationRoleInstructorsAndCourseConversationParticipations'
+                              `
+                            : sql``
+                        }
+                        or (
+                          select true
+                          from "courseConversationParticipations"
+                          where
+                            "courseConversations"."id" = "courseConversationParticipations"."courseConversation" and
+                            "courseConversationParticipations"."courseParticipation" = ${courseParticipation.id}
+                        )
+                      )
+                    order by "id" desc;
                   `,
                 )
-                .map((courseParticipation) => {
-                  const courseParticipationUser = application.database.get<{
-                    publicId: string;
-                    name: string;
-                    avatarColor:
-                      | "red"
-                      | "orange"
-                      | "amber"
-                      | "yellow"
-                      | "lime"
-                      | "green"
-                      | "emerald"
-                      | "teal"
-                      | "cyan"
-                      | "sky"
-                      | "blue"
-                      | "indigo"
-                      | "violet"
-                      | "purple"
-                      | "fuchsia"
-                      | "pink"
-                      | "rose";
-                    avatarImage: string | null;
-                    lastSeenOnlineAt: string;
-                  }>(
-                    sql`
-                      select
-                        "publicId",
-                        "name",
-                        "avatarColor",
-                        "avatarImage",
-                        "lastSeenOnlineAt"
-                      from "users"
-                      where "id" = ${courseParticipation.user};
-                    `,
-                  );
-                  if (courseParticipationUser === undefined) throw new Error();
-                  return html`
+                .map(
+                  (courseConversation) => html`
                     <button
                       type="button"
                       class="button button--rectangle button--transparent button--dropdown-menu"
-                      css="${css`
-                        display: flex;
-                        gap: var(--size--2);
-                      `}"
                       javascript="${javascript`
                         this.onclick = () => {
                           const element = this.closest('[key~="courseConversationMessageContentEditor"]').querySelector('[key~="courseConversationMessageContentEditor--textarea"]');
                           element.click();
                           element.focus();
                           element.selectionEnd = element.selectionStart;
-                          document.execCommand("insertText", false, \`\${0 < element.selectionStart && !element.value[element.selectionStart - 1].match(/\\s/) ? " " : ""}@\${${courseParticipationUser.name.toLowerCase().replaceAll(/[^a-z\-]/g, "-")}}--\${${courseParticipationUser.publicId}} \`);
+                          document.execCommand("insertText", false, \`\${0 < element.selectionStart && !element.value[element.selectionStart - 1].match(/\\s/) ? " " : ""}#\${${courseConversation.publicId}} \`);
                         };
                       `}"
                     >
-                      $${application.partials.userAvatar({
-                        user: courseParticipationUser,
-                      })}
-                      <div
+                      <span
                         css="${css`
-                          margin-top: var(--size--0-5);
+                          font-size: var(--font-size--3);
+                          line-height: var(--font-size--3--line-height);
+                          font-weight: 500;
+                          color: light-dark(
+                            var(--color--slate--400),
+                            var(--color--slate--600)
+                          );
                         `}"
+                        >#${courseConversation.publicId}</span
                       >
-                        <span
-                          key="courseConversationMessageContentEditor--reference--courseConversation--title"
-                          javascript="${javascript`
-                            this.title = ${courseParticipationUser.name};
-                          `}"
-                          >${courseParticipationUser.name}</span
-                        >$${courseParticipation.courseParticipationRole ===
-                        "courseParticipationRoleInstructor"
-                          ? html`<span
-                              css="${css`
-                                font-size: var(--font-size--3);
-                                line-height: var(--font-size--3--line-height);
-                                color: light-dark(
-                                  var(--color--slate--600),
-                                  var(--color--slate--400)
-                                );
-                              `}"
-                            >
-                              (instructor)</span
-                            >`
-                          : html``}
-                      </div>
+                      <span
+                        key="courseConversationMessageContentEditor--reference--courseConversation--title"
+                        javascript="${javascript`
+                          this.title = ${courseConversation.title};
+                        `}"
+                        >${courseConversation.title}</span
+                      >
                     </button>
-                  `;
-                })}
+                  `,
+                )}
             </div>
           </div>
         </div>
