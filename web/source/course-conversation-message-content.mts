@@ -276,6 +276,7 @@ export default async (application: Application): Promise<void> => {
                 placement: "top-start",
                 onshow: () => {
                   this.nextElementSibling.nextElementSibling.querySelector('[key~="courseConversationMessageContentEditor--mention--input"]').focus();
+                  this.nextElementSibling.nextElementSibling.querySelector('[key~="courseConversationMessageContentEditor--mention--input"]').select();
                 },
               });
             `}"
@@ -359,7 +360,7 @@ export default async (application: Application): Promise<void> => {
               key="courseConversationMessageContentEditor--mention--courseParticipations"
               class="scroll"
               css="${css`
-                max-height: var(--size--28);
+                height: var(--size--28);
                 padding: var(--size--1) var(--size--2);
                 margin: var(--size---1) var(--size---2);
                 display: flex;
