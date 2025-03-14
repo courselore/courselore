@@ -676,10 +676,14 @@ export default async (application: Application): Promise<void> => {
         </div>
       </div>
       <div
+        key="courseConversationMessageContentEditor--main"
         css="${css`
-          display: grid;
+          display: flex;
+          justify-content: center;
+          align-items: center;
           & > * {
-            grid-area: 1/1;
+            flex: 1;
+            padding: var(--size--1) var(--size--2);
           }
         `}"
       >
@@ -690,32 +694,48 @@ export default async (application: Application): Promise<void> => {
           css="${css`
             font-family: "Roboto Mono Variable", var(--font-family--monospace);
             height: var(--size--44);
-            padding: var(--size--1) var(--size--2);
+            [key~="courseConversationMessageContentEditor--main"][state] & {
+              display: none;
+            }
           `}"
         >
 ${value}</textarea
         >
         <div
+          key="courseConversationMessageContentEditor--loading"
           css="${css`
-            background-color: light-dark(
-              rgb(0 0 0 / 30%),
-              rgb(255 255 255 / 30%)
+            font-size: var(--size--20);
+            color: light-dark(
+              var(--color--slate--600),
+              var(--color--slate--400)
             );
+            height: var(--size--44);
             display: flex;
             justify-content: center;
             align-items: center;
-            transition-property: var(--transition-property--opacity);
-            transition-duration: var(--transition-duration--150);
-            transition-timing-function: var(
-              --transition-timing-function--ease-in-out
-            );
-            :not([state~="loading"]) > & {
-              visibility: hidden;
-              opacity: var(--opacity--0);
+            animation: var(--animation--pulse);
+            [key~="courseConversationMessageContentEditor--main"]:not(
+                [state~="loading"]
+              )
+              & {
+              display: none;
             }
           `}"
         >
-          Loading…
+          <i class="bi bi-three-dots"></i>
+        </div>
+        <div
+          key="courseConversationMessageContentEditor--preview"
+          css="${css`
+            [key~="courseConversationMessageContentEditor--main"]:not(
+                [state~="preview"]
+              )
+              & {
+              display: none;
+            }
+          `}"
+        >
+          TODO
         </div>
       </div>
     </div>
