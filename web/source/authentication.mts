@@ -68,4 +68,12 @@ export type ApplicationAuthentication = {
   };
 };
 
-export default async (application: Application): Promise<void> => {};
+export default async (application: Application): Promise<void> => {
+  application.server?.push({
+    method: "GET",
+    pathname: "/",
+    handler: (request, response) => {
+      response.redirect("/sign-in");
+    },
+  });
+};
