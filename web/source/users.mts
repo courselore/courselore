@@ -198,7 +198,7 @@ export default async (application: Application): Promise<void> => {
 
   application.server?.push({
     method: "GET",
-    pathname: new RegExp("^/settings$"),
+    pathname: "/settings",
     handler: async (
       request: serverTypes.Request<
         {},

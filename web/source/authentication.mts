@@ -76,4 +76,10 @@ export default async (application: Application): Promise<void> => {
       response.redirect("/sign-in");
     },
   });
+
+  application.server?.push({
+    method: "GET",
+    pathname: "/sign-in",
+    handler: (request, response) => {},
+  });
 };
