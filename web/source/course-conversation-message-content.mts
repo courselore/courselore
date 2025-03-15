@@ -704,7 +704,7 @@ ${value}</textarea
         <div
           key="courseConversationMessageContentEditor--loading"
           css="${css`
-            font-size: var(--size--20);
+            font-size: var(--size--12);
             color: light-dark(
               var(--color--slate--600),
               var(--color--slate--400)
