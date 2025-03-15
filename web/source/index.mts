@@ -10,6 +10,9 @@ import * as caddy from "@radically-straightforward/caddy";
 import * as argon2 from "argon2";
 import database, { ApplicationDatabase } from "./database.mjs";
 import layouts, { ApplicationLayouts } from "./layouts.mjs";
+import authentication, {
+  ApplicationAuthentication,
+} from "./authentication.mjs";
 import users, { ApplicationUsers } from "./users.mjs";
 import courses, { ApplicationCourses } from "./courses.mjs";
 import courseConversations, {
@@ -49,6 +52,7 @@ export type Application = {
   partials: {};
 } & ApplicationDatabase &
   ApplicationLayouts &
+  ApplicationAuthentication &
   ApplicationUsers &
   ApplicationCourses &
   ApplicationCourseConversation &
@@ -118,6 +122,7 @@ application.server?.push({
       response.end();
   },
 });
+await authentication(application);
 await users(application);
 await courses(application);
 await courseConversations(application);
