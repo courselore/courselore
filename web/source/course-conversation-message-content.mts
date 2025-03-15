@@ -1078,6 +1078,7 @@ ${value}</textarea
                   ![...child.children[0].children].every(
                     (element) =>
                       element.querySelectorAll("input").length === 1 &&
+                      element.querySelector("input:checked") === null &&
                       element.querySelectorAll("votes").length <= 1,
                   ) ||
                   ![...child.querySelectorAll("votes")].every(
