@@ -6,8 +6,8 @@
     "backup": "rsync -av --delete --progress root@courselore.org:/root/courselore/ /Volumes/leafac--external-storage/Backups/courselore/"
   },
   "dependencies": {
-    "@node-saml/node-saml": "^5.0.0",
-    "@radically-straightforward/production": "^1.0.35",
+    "@node-saml/node-saml": "^5.0.1",
+    "@radically-straightforward/production": "^1.0.36",
     "argon2": "^0.41.1",
     "crypto-random-string": "^5.0.0",
     "email-addresses": "^5.0.0",
