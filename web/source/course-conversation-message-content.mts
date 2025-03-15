@@ -663,15 +663,16 @@ export default async (application: Application): Promise<void> => {
             <i class="bi bi-eyeglasses"></i>
           </button>
           <div type="popover">Preview</div>
-          <button
-            type="button"
+          <a
+            href="/help/content"
+            target="_blank"
             class="button button--square button--icon button--transparent"
             javascript="${javascript`
               javascript.popover({ element: this });
             `}"
           >
             <i class="bi bi-question-circle"></i>
-          </button>
+          </a>
           <div type="popover">Help</div>
         </div>
       </div>
