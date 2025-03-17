@@ -633,7 +633,7 @@ export default async (application: Application): Promise<void> => {
         typeof request.body.name !== "string" ||
         request.body.name.trim() === "" ||
         typeof request.body.email !== "string" ||
-        request.body.email.match(utilities.emailRegExp) ||
+        !request.body.email.match(utilities.emailRegExp) ||
         typeof request.body.password !== "string" ||
         request.body.password.length <= 8
       )
@@ -745,6 +745,53 @@ export default async (application: Application): Promise<void> => {
                 ${Number(true)},
                 ${"userAnonymityPreferredNone"},
                 ${null}
+              );
+            `,
+          );
+          application.database.run(
+            sql`
+              insert into "_backgroundJobs" (
+                "type",
+                "startAt",
+                "parameters"
+              )
+              values (
+                'email',
+                ${new Date().toISOString()},
+                ${JSON.stringify({
+                  to: request.body.email,
+                  subject: "Courselore email verification",
+                  html: html`
+                    <p>
+                      If you created an account on Courselore, please confirm
+                      your email:
+                      <a
+                        href="https://${application.configuration
+                          .hostname}/authentication/email-verification/${emailVerificationNonce}"
+                        >https://${application.configuration
+                          .hostname}/authentication/email-verification/${emailVerificationNonce}</a
+                      >
+                    </p>
+                    <p>
+                      If you didn’t create an account on Courselore, please
+                      report the issue to
+                      <a
+                        href="mailto:${application.configuration
+                          .systemAdministratorEmail ??
+                        "system-administrator@courselore.org"}?${new URLSearchParams(
+                          {
+                            subject: "Potential sign up impersonation",
+                            body: `Email: ${request.body.email}`,
+                          },
+                        )
+                          .toString()
+                          .replaceAll("+", "%20")}"
+                        >${application.configuration.systemAdministratorEmail ??
+                        "system-administrator@courselore.org"}</a
+                      >
+                    </p>
+                  `,
+                })}
               );
             `,
           );
