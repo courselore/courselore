@@ -169,6 +169,7 @@ export default async (application: Application): Promise<void> => {
                         name="email"
                         required
                         maxlength="2000"
+                        autofocus
                         class="input--text"
                         css="${css`
                           flex: 1;
