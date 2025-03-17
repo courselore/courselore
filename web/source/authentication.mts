@@ -1,8 +1,11 @@
 import * as serverTypes from "@radically-straightforward/server";
+import cryptoRandomString from "crypto-random-string";
+import argon2 from "argon2";
 import sql from "@radically-straightforward/sqlite";
 import html, { HTML } from "@radically-straightforward/html";
 import css from "@radically-straightforward/css";
 import javascript from "@radically-straightforward/javascript";
+import * as utilities from "@radically-straightforward/utilities";
 import { Application } from "./index.mjs";
 
 export type ApplicationAuthentication = {
@@ -612,7 +615,7 @@ export default async (application: Application): Promise<void> => {
   application.server?.push({
     method: "POST",
     pathname: "/users",
-    handler: (
+    handler: async (
       request: serverTypes.Request<
         {},
         {},
@@ -626,6 +629,127 @@ export default async (application: Application): Promise<void> => {
       >,
       response,
     ) => {
+      if (
+        typeof request.body.name !== "string" ||
+        request.body.name.trim() === "" ||
+        typeof request.body.email !== "string" ||
+        request.body.email.match(utilities.emailRegExp) ||
+        typeof request.body.password !== "string" ||
+        request.body.password.length <= 8
+      )
+        throw "validation";
+      const password = await argon2.hash(
+        request.body.password,
+        application.privateConfiguration.argon2,
+      );
+      application.database.executeTransaction(() => {
+        if (
+          application.database.get(
+            sql`
+              select true
+              from "users"
+              where "email" = ${request.body.email};
+            `,
+          ) !== undefined
+        ) {
+        } else {
+          const emailVerificationNonce = cryptoRandomString({
+            length: 100,
+            type: "numeric",
+          });
+          application.database.run(
+            sql`
+              insert into "users" (
+                "publicId",
+                "name",
+                "nameSearch",
+                "email",
+                "emailVerificationEmail",
+                "emailVerificationNonce",
+                "emailVerificationCreatedAt",
+                "emailVerified",
+                "password",
+                "passwordResetNonce",
+                "passwordResetCreatedAt",
+                "twoFactorAuthenticationEnabled",
+                "twoFactorAuthenticationSecret",
+                "twoFactorAuthenticationRecoveryCodes",
+                "avatarColor",
+                "avatarImage",
+                "userRole",
+                "lastSeenOnlineAt",
+                "darkMode",
+                "sidebarWidth",
+                "emailNotificationsForAllMessages",
+                "emailNotificationsForMessagesIncludingMentions",
+                "emailNotificationsForMessagesInConversationsInWhichYouParticipated",
+                "emailNotificationsForMessagesInConversationsThatYouStarted",
+                "userAnonymityPreferred",
+                "mostRecentlyVisitedCourseParticipation"
+              )
+              values (
+                ${cryptoRandomString({ length: 20, type: "numeric" })},
+                ${request.body.name!},
+                ${utilities
+                  .tokenize(request.body.name!)
+                  .map((tokenWithPosition) => tokenWithPosition.token)
+                  .join(" ")},
+                ${request.body.email},
+                ${request.body.email},
+                ${emailVerificationNonce},
+                ${new Date().toISOString()},
+                ${Number(false)},
+                ${password},
+                ${null},
+                ${null},
+                ${Number(false)},
+                ${null},
+                ${null},
+                ${
+                  [
+                    "red",
+                    "orange",
+                    "amber",
+                    "yellow",
+                    "lime",
+                    "green",
+                    "emerald",
+                    "teal",
+                    "cyan",
+                    "sky",
+                    "blue",
+                    "indigo",
+                    "violet",
+                    "purple",
+                    "fuchsia",
+                    "pink",
+                    "rose",
+                  ][Math.floor(Math.random() * 17)]
+                },
+                ${null},
+                ${
+                  application.database.get<{ count: number }>(
+                    sql`
+                    select count(*) as "count" from "users";
+                  `,
+                  )!.count === 0
+                    ? "userRoleSystemAdministrator"
+                    : "userRoleUser"
+                },
+                ${new Date().toISOString()},
+                ${"userDarkModeSystem"},
+                ${80 * 4},
+                ${Number(false)},
+                ${Number(true)},
+                ${Number(true)},
+                ${Number(true)},
+                ${"userAnonymityPreferredNone"},
+                ${null}
+              );
+            `,
+          );
+        }
+      });
       response.redirect();
     },
   });
