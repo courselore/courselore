@@ -441,7 +441,7 @@ export default async (application: Application): Promise<void> => {
                 <div
                   type="form"
                   method="POST"
-                  action="/authentication/sessions"
+                  action="/users"
                   css="${css`
                     padding: var(--size--2) var(--size--0);
                     border-bottom: var(--border-width--1) solid
@@ -602,6 +602,74 @@ export default async (application: Application): Promise<void> => {
                   </div>
                 </div>
               </details>
+            </div>
+          `,
+        }),
+      );
+    },
+  });
+
+  application.server?.push({
+    method: "POST",
+    pathname: "/users",
+    handler: (
+      request: serverTypes.Request<
+        {},
+        {},
+        {},
+        {
+          name: string;
+          email: string;
+          password: string;
+        },
+        {}
+      >,
+      response,
+    ) => {
+      response.redirect();
+    },
+  });
+
+  application.server?.push({
+    method: "GET",
+    pathname: "/users",
+    handler: (
+      request: serverTypes.Request<
+        {},
+        {},
+        {},
+        {
+          name: string;
+          email: string;
+          password: string;
+        },
+        {}
+      >,
+      response,
+    ) => {
+      response.end(
+        application.layouts.main({
+          request,
+          response,
+          head: html`<title>Sign up · Courselore</title>`,
+          body: html`
+            <div
+              css="${css`
+                display: flex;
+                flex-direction: column;
+                gap: var(--size--2);
+              `}"
+            >
+              <div
+                css="${css`
+                  font-size: var(--font-size--4);
+                  line-height: var(--font-size--4--line-height);
+                  font-weight: 800;
+                `}"
+              >
+                Authentication
+              </div>
+              <p>To continue with sign up, please check your email.</p>
             </div>
           `,
         }),
