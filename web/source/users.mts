@@ -921,7 +921,7 @@ export default async (application: Application): Promise<void> => {
                             `}"
                             javascript="${javascript`
                               this.onvalidate = () => {
-                                if (this.value !== this.closest('[type~="form"]').querySelector('[name="newPassword"]'))
+                                if (this.value !== this.closest('[type~="form"]').querySelector('[name="newPassword"]').value)
                                   throw new javascript.ValidationError("“New password” and “New password confirmation” don’t match.");
                               };
                             `}"
