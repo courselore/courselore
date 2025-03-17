@@ -651,8 +651,60 @@ export default async (application: Application): Promise<void> => {
               where "email" = ${request.body.email};
             `,
           ) !== undefined
-        ) {
-        } else {
+        )
+          application.database.run(
+            sql`
+              insert into "_backgroundJobs" (
+                "type",
+                "startAt",
+                "parameters"
+              )
+              values (
+                'email',
+                ${new Date().toISOString()},
+                ${JSON.stringify({
+                  to: request.body.email,
+                  subject:
+                    "Tried to create an account in Courselore with an existing email",
+                  html: html`
+                    <p>
+                      Someone tried to sign up to Courselore with this email
+                      address that already has an account:
+                      <code>${request.body.email!}</code>
+                    </p>
+                    <p>
+                      If this was you, please sign in instead, and if you don’t
+                      remember your password, use the “Forgot password” feature
+                      <a
+                        href="https://${application.configuration
+                          .hostname}/authentication"
+                        >https://${application.configuration
+                          .hostname}/authentication</a
+                      >
+                    </p>
+                    <p>
+                      If this was not you, please report the issue to
+                      <a
+                        href="mailto:${application.configuration
+                          .systemAdministratorEmail ??
+                        "system-administrator@courselore.org"}?${new URLSearchParams(
+                          {
+                            subject: "Potential sign up impersonation",
+                            body: `Email: ${request.body.email}`,
+                          },
+                        )
+                          .toString()
+                          .replaceAll("+", "%20")}"
+                        >${application.configuration.systemAdministratorEmail ??
+                        "system-administrator@courselore.org"}</a
+                      >
+                    </p>
+                  `,
+                })}
+              );
+            `,
+          );
+        else {
           const emailVerificationNonce = cryptoRandomString({
             length: 100,
             type: "numeric",
@@ -763,8 +815,11 @@ export default async (application: Application): Promise<void> => {
                   subject: "Courselore email verification",
                   html: html`
                     <p>
-                      If you created an account on Courselore, please confirm
-                      your email:
+                      Someone created an account on Courselore with this email
+                      address: <code>${request.body.email!}</code>
+                    </p>
+                    <p>
+                      If this was you, please confirm your email:
                       <a
                         href="https://${application.configuration
                           .hostname}/authentication/email-verification/${emailVerificationNonce}"
@@ -773,8 +828,7 @@ export default async (application: Application): Promise<void> => {
                       >
                     </p>
                     <p>
-                      If you didn’t create an account on Courselore, please
-                      report the issue to
+                      If this was not you, please report the issue to
                       <a
                         href="mailto:${application.configuration
                           .systemAdministratorEmail ??
@@ -840,7 +894,7 @@ export default async (application: Application): Promise<void> => {
               >
                 Authentication
               </div>
-              <p>To continue with sign up, please check your email.</p>
+              <p>To continue please check your email.</p>
             </div>
           `,
         }),
