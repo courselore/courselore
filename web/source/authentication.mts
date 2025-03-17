@@ -642,6 +642,10 @@ export default async (application: Application): Promise<void> => {
         request.body.password,
         application.privateConfiguration.argon2,
       );
+      const emailVerificationNonce = cryptoRandomString({
+        length: 100,
+        type: "numeric",
+      });
       application.database.executeTransaction(() => {
         if (
           application.database.get(
@@ -705,10 +709,6 @@ export default async (application: Application): Promise<void> => {
             `,
           );
         else {
-          const emailVerificationNonce = cryptoRandomString({
-            length: 100,
-            type: "numeric",
-          });
           application.database.run(
             sql`
               insert into "users" (
