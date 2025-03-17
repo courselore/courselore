@@ -73,13 +73,159 @@ export default async (application: Application): Promise<void> => {
     method: "GET",
     pathname: "/",
     handler: (request, response) => {
-      response.redirect("/sign-in");
+      response.redirect("/authentication");
     },
   });
 
   application.server?.push({
     method: "GET",
-    pathname: "/sign-in",
-    handler: (request, response) => {},
+    pathname: "/authentication",
+    handler: (request, response) => {
+      response.end(
+        application.layouts.main({
+          request,
+          response,
+          head: html`<title>Authentication · Courselore</title>`,
+          body: html`
+            <div
+              css="${css`
+                display: flex;
+                flex-direction: column;
+                gap: var(--size--2);
+              `}"
+            >
+              <div
+                css="${css`
+                  font-size: var(--font-size--4);
+                  line-height: var(--font-size--4--line-height);
+                  font-weight: 800;
+                `}"
+              >
+                Authentication
+              </div>
+              <details open>
+                <summary
+                  class="button button--rectangle button--transparent"
+                  css="${css`
+                    font-weight: 500;
+                  `}"
+                >
+                  <span
+                    css="${css`
+                      display: inline-block;
+                      transition-property: var(
+                        --transition-property--transform
+                      );
+                      transition-duration: var(--transition-duration--150);
+                      transition-timing-function: var(
+                        --transition-timing-function--ease-in-out
+                      );
+                      details[open] > summary > & {
+                        rotate: var(--rotate--90);
+                      }
+                    `}"
+                  >
+                    <i class="bi bi-chevron-right"></i>
+                  </span>
+                  Sign in
+                </summary>
+                <div
+                  type="form"
+                  method="POST"
+                  action="/authentication/sessions"
+                  css="${css`
+                    padding: var(--size--2) var(--size--0);
+                    border-bottom: var(--border-width--1) solid
+                      light-dark(
+                        var(--color--slate--200),
+                        var(--color--slate--800)
+                      );
+                    display: flex;
+                    flex-direction: column;
+                    gap: var(--size--4);
+                  `}"
+                >
+                  <label>
+                    <div
+                      css="${css`
+                        font-size: var(--font-size--3);
+                        line-height: var(--font-size--3--line-height);
+                        font-weight: 600;
+                        color: light-dark(
+                          var(--color--slate--500),
+                          var(--color--slate--500)
+                        );
+                      `}"
+                    >
+                      Email
+                    </div>
+                    <div
+                      css="${css`
+                        display: flex;
+                      `}"
+                    >
+                      <input
+                        type="email"
+                        name="email"
+                        required
+                        maxlength="2000"
+                        class="input--text"
+                        css="${css`
+                          flex: 1;
+                        `}"
+                      />
+                    </div>
+                  </label>
+                  <label>
+                    <div
+                      css="${css`
+                        font-size: var(--font-size--3);
+                        line-height: var(--font-size--3--line-height);
+                        font-weight: 600;
+                        color: light-dark(
+                          var(--color--slate--500),
+                          var(--color--slate--500)
+                        );
+                      `}"
+                    >
+                      Password
+                    </div>
+                    <div
+                      css="${css`
+                        display: flex;
+                      `}"
+                    >
+                      <input
+                        type="password"
+                        name="password"
+                        required
+                        maxlength="2000"
+                        class="input--text"
+                        css="${css`
+                          flex: 1;
+                        `}"
+                      />
+                    </div>
+                  </label>
+                  <div
+                    css="${css`
+                      font-size: var(--font-size--3);
+                      line-height: var(--font-size--3--line-height);
+                    `}"
+                  >
+                    <button
+                      type="submit"
+                      class="button button--rectangle button--blue"
+                    >
+                      Sign in
+                    </button>
+                  </div>
+                </div>
+              </details>
+            </div>
+          `,
+        }),
+      );
+    },
   });
 };
