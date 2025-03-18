@@ -7,7 +7,10 @@ export default async (application: Application): Promise<void> => {
       { type: "email" },
       async (parameters) => {
         await nodemailer
-          .createTransport(application.configuration.email)
+          .createTransport(
+            application.configuration.email,
+            application.configuration.email,
+          )
           .sendMail(parameters);
       },
     );
