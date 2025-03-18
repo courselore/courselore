@@ -249,6 +249,38 @@ export default async (application: Application): Promise<void> => {
         `,
       );
       if (request.state.user === undefined) throw new Error();
+      if (
+        request.state.user.email === request.state.user.emailVerificationEmail
+      ) {
+        response.end(
+          application.layouts.main({
+            request,
+            response,
+            head: html`<title>Sign up · Courselore</title>`,
+            body: html`
+              <div
+                css="${css`
+                  display: flex;
+                  flex-direction: column;
+                  gap: var(--size--2);
+                `}"
+              >
+                <div
+                  css="${css`
+                    font-size: var(--font-size--4);
+                    line-height: var(--font-size--4--line-height);
+                    font-weight: 800;
+                  `}"
+                >
+                  Authentication
+                </div>
+                <p>To continue please check your email.</p>
+              </div>
+            `,
+          }),
+        );
+        return;
+      }
     },
   });
 
@@ -1063,53 +1095,6 @@ export default async (application: Application): Promise<void> => {
         }
       });
       response.redirect("/");
-    },
-  });
-
-  application.server?.push({
-    method: "GET",
-    pathname: "/users",
-    handler: (
-      request: serverTypes.Request<
-        {},
-        {},
-        {},
-        {
-          name: string;
-          email: string;
-          password: string;
-        },
-        {}
-      >,
-      response,
-    ) => {
-      response.end(
-        application.layouts.main({
-          request,
-          response,
-          head: html`<title>Sign up · Courselore</title>`,
-          body: html`
-            <div
-              css="${css`
-                display: flex;
-                flex-direction: column;
-                gap: var(--size--2);
-              `}"
-            >
-              <div
-                css="${css`
-                  font-size: var(--font-size--4);
-                  line-height: var(--font-size--4--line-height);
-                  font-weight: 800;
-                `}"
-              >
-                Authentication
-              </div>
-              <p>To continue please check your email.</p>
-            </div>
-          `,
-        }),
-      );
     },
   });
 };
