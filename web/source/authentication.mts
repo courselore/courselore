@@ -677,7 +677,7 @@ export default async (application: Application): Promise<void> => {
                       <code>${request.body.email!}</code>
                     </p>
                     <p>
-                      If this was you, please sign in instead, and if you don’t
+                      If it was you, please sign in instead, and if you don’t
                       remember your password, use the “Forgot password” feature
                       <a
                         href="https://${application.configuration
@@ -687,7 +687,7 @@ export default async (application: Application): Promise<void> => {
                       >
                     </p>
                     <p>
-                      If this was not you, please report the issue to
+                      If it was not you, please report the issue to
                       <a
                         href="mailto:${application.configuration
                           .systemAdministratorEmail ??
@@ -819,7 +819,7 @@ export default async (application: Application): Promise<void> => {
                       address: <code>${request.body.email!}</code>
                     </p>
                     <p>
-                      If this was you, please confirm your email:
+                      If it was you, please confirm your email:
                       <a
                         href="https://${application.configuration
                           .hostname}/authentication/email-verification/${emailVerificationNonce}"
@@ -828,7 +828,7 @@ export default async (application: Application): Promise<void> => {
                       >
                     </p>
                     <p>
-                      If this was not you, please report the issue to
+                      If it was not you, please report the issue to
                       <a
                         href="mailto:${application.configuration
                           .systemAdministratorEmail ??
