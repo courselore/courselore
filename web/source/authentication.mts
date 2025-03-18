@@ -90,9 +90,19 @@ export default async (application: Application): Promise<void> => {
       const userSession = application.database.get<{
         id: number;
         user: number;
+        createdAt: string;
+        samlIdentifier: string | null;
+        samlSessionIndex: string | null;
+        samlNameID: string | null;
       }>(
         sql`
-          select "id", "user"
+          select
+            "id",
+            "user",
+            "createdAt",
+            "samlIdentifier",
+            "samlSessionIndex",
+            "samlNameID"
           from "userSessions"
           where "publicId" = ${userSessionPublicId};
         `,
@@ -101,6 +111,55 @@ export default async (application: Application): Promise<void> => {
         response.deleteCookie("session");
         response.redirect("/authentication");
         return;
+      }
+      if (
+        userSession.createdAt <
+        new Date(Date.now() - 150 * 24 * 60 * 60 * 1000).toISOString()
+      ) {
+        application.database.run(
+          sql`
+            delete from "userSessions" where "id" = ${userSession.id};
+          `,
+        );
+        response.deleteCookie("session");
+        response.redirect("/authentication");
+        return;
+      }
+      if (
+        userSession.createdAt <
+        new Date(Date.now() - 100 * 24 * 60 * 60 * 1000).toISOString()
+      ) {
+        const userSessionPublicId = cryptoRandomString({
+          length: 100,
+          type: "alphanumeric",
+        });
+        application.database.run(
+          sql`
+            delete from "userSessions" where "id" = ${userSession.id};
+          `,
+        );
+        response.deleteCookie("session");
+        application.database.run(
+          sql`
+            insert into "userSessions" (
+              "publicId",
+              "user",
+              "createdAt",
+              "samlIdentifier",
+              "samlSessionIndex",
+              "samlNameID"
+            )
+            values (
+              ${userSessionPublicId},
+              ${userSession.user},
+              ${new Date().toISOString()},
+              ${userSession.samlIdentifier},
+              ${userSession.samlSessionIndex},
+              ${userSession.samlNameID}
+            );
+          `,
+        );
+        response.setCookie("session", userSessionPublicId);
       }
       request.state.user = application.database.get<{
         id: number;
