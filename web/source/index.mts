@@ -24,6 +24,7 @@ import courseConversationMessages, {
 import courseConversationMessageContent, {
   ApplicationCourseConversationMessageContent,
 } from "./course-conversation-message-content.mjs";
+import emails from "./emails.mjs";
 import errors from "./errors.mjs";
 
 export type Application = {
@@ -38,6 +39,7 @@ export type Application = {
   configuration: {
     hostname: string;
     systemAdministratorEmail: string | undefined;
+    email: any;
     dataDirectory: string;
     environment: "production" | "development";
     hstsPreload?: boolean;
@@ -128,11 +130,8 @@ await courses(application);
 await courseConversations(application);
 await courseConversationMessages(application);
 await courseConversationMessageContent(application);
+await emails(application);
 await errors(application);
-
-// TODO
-if (application.commandLineArguments.values.type === "backgroundJob")
-  setInterval(() => {}, 1000);
 
 if (application.commandLineArguments.values.type === undefined) {
   for (const port of application.privateConfiguration.ports) {
