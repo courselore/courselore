@@ -84,7 +84,8 @@ export default async (application: Application): Promise<void> => {
     ) => {
       const userSessionPublicId = request.cookies.session;
       if (typeof userSessionPublicId !== "string") {
-        response.redirect("/authentication");
+        if (request.URL.pathname !== "/authentication")
+          response.redirect("/authentication");
         return;
       }
       const userSession = application.database.get<{
@@ -109,7 +110,8 @@ export default async (application: Application): Promise<void> => {
       );
       if (userSession === undefined) {
         response.deleteCookie("session");
-        response.redirect("/authentication");
+        if (request.URL.pathname !== "/authentication")
+          response.redirect("/authentication");
         return;
       }
       if (
@@ -122,7 +124,8 @@ export default async (application: Application): Promise<void> => {
           `,
         );
         response.deleteCookie("session");
-        response.redirect("/authentication");
+        if (request.URL.pathname !== "/authentication")
+          response.redirect("/authentication");
         return;
       }
       if (
@@ -246,14 +249,6 @@ export default async (application: Application): Promise<void> => {
         `,
       );
       if (request.state.user === undefined) throw new Error();
-    },
-  });
-
-  application.server?.push({
-    method: "GET",
-    pathname: "/",
-    handler: (request, response) => {
-      response.redirect("/authentication");
     },
   });
 
