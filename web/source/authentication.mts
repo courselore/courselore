@@ -72,6 +72,125 @@ export type ApplicationAuthentication = {
 
 export default async (application: Application): Promise<void> => {
   application.server?.push({
+    handler: (
+      request: serverTypes.Request<
+        {},
+        {},
+        { session: string },
+        {},
+        Application["types"]["states"]["User"]
+      >,
+      response,
+    ) => {
+      const userSessionPublicId = request.cookies.session;
+      if (typeof userSessionPublicId !== "string") {
+        response.redirect("/authentication");
+        return;
+      }
+      const userSession = application.database.get<{
+        id: number;
+        user: number;
+      }>(
+        sql`
+          select "id", "user"
+          from "userSessions"
+          where "publicId" = ${userSessionPublicId};
+        `,
+      );
+      if (userSession === undefined) {
+        response.deleteCookie("session");
+        response.redirect("/authentication");
+        return;
+      }
+      request.state.user = application.database.get<{
+        id: number;
+        publicId: string;
+        name: string;
+        email: string;
+        emailVerificationEmail: string | null;
+        emailVerificationNonce: string | null;
+        emailVerificationCreatedAt: string | null;
+        password: string | null;
+        passwordResetNonce: string | null;
+        passwordResetCreatedAt: string | null;
+        twoFactorAuthenticationEnabled: number;
+        twoFactorAuthenticationSecret: string | null;
+        twoFactorAuthenticationRecoveryCodes: string | null;
+        avatarColor:
+          | "red"
+          | "orange"
+          | "amber"
+          | "yellow"
+          | "lime"
+          | "green"
+          | "emerald"
+          | "teal"
+          | "cyan"
+          | "sky"
+          | "blue"
+          | "indigo"
+          | "violet"
+          | "purple"
+          | "fuchsia"
+          | "pink"
+          | "rose";
+        avatarImage: string | null;
+        userRole:
+          | "userRoleSystemAdministrator"
+          | "userRoleStaff"
+          | "userRoleUser";
+        lastSeenOnlineAt: string;
+        darkMode:
+          | "userDarkModeSystem"
+          | "userDarkModeLight"
+          | "userDarkModeDark";
+        sidebarWidth: number;
+        emailNotificationsForAllMessages: number;
+        emailNotificationsForMessagesIncludingMentions: number;
+        emailNotificationsForMessagesInConversationsInWhichYouParticipated: number;
+        emailNotificationsForMessagesInConversationsThatYouStarted: number;
+        userAnonymityPreferred:
+          | "userAnonymityPreferredNone"
+          | "userAnonymityPreferredCourseParticipationRoleStudents"
+          | "userAnonymityPreferredCourseParticipationRoleInstructors";
+        mostRecentlyVisitedCourseParticipation: number | null;
+      }>(
+        sql`
+          select
+            "id",
+            "publicId",
+            "name",
+            "email",
+            "emailVerificationEmail",
+            "emailVerificationNonce",
+            "emailVerificationCreatedAt",
+            "password",
+            "passwordResetNonce",
+            "passwordResetCreatedAt",
+            "twoFactorAuthenticationEnabled",
+            "twoFactorAuthenticationSecret",
+            "twoFactorAuthenticationRecoveryCodes",
+            "avatarColor",
+            "avatarImage",
+            "userRole",
+            "lastSeenOnlineAt",
+            "darkMode",
+            "sidebarWidth",
+            "emailNotificationsForAllMessages",
+            "emailNotificationsForMessagesIncludingMentions",
+            "emailNotificationsForMessagesInConversationsInWhichYouParticipated",
+            "emailNotificationsForMessagesInConversationsThatYouStarted",
+            "userAnonymityPreferred",
+            "mostRecentlyVisitedCourseParticipation"
+          from "users"
+          where "id" = ${userSession.user};
+        `,
+      );
+      if (request.state.user === undefined) throw new Error();
+    },
+  });
+
+  application.server?.push({
     method: "GET",
     pathname: "/",
     handler: (request, response) => {
