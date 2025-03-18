@@ -84,7 +84,7 @@ export default async (application: Application): Promise<void> => {
     ) => {
       const userSessionPublicId = request.cookies.session;
       if (typeof userSessionPublicId !== "string") {
-        if (request.URL.pathname !== "/authentication")
+        if (!request.URL.pathname.match(new RegExp("^/authentication(?:$|/)")))
           response.redirect("/authentication");
         return;
       }
@@ -110,7 +110,7 @@ export default async (application: Application): Promise<void> => {
       );
       if (userSession === undefined) {
         response.deleteCookie("session");
-        if (request.URL.pathname !== "/authentication")
+        if (!request.URL.pathname.match(new RegExp("^/authentication(?:$|/)")))
           response.redirect("/authentication");
         return;
       }
@@ -124,7 +124,7 @@ export default async (application: Application): Promise<void> => {
           `,
         );
         response.deleteCookie("session");
-        if (request.URL.pathname !== "/authentication")
+        if (!request.URL.pathname.match(new RegExp("^/authentication(?:$|/)")))
           response.redirect("/authentication");
         return;
       }
@@ -658,7 +658,7 @@ export default async (application: Application): Promise<void> => {
                 <div
                   type="form"
                   method="POST"
-                  action="/users"
+                  action="/authentication/sign-up"
                   css="${css`
                     padding: var(--size--2) var(--size--0);
                     border-bottom: var(--border-width--1) solid
@@ -828,7 +828,7 @@ export default async (application: Application): Promise<void> => {
 
   application.server?.push({
     method: "POST",
-    pathname: "/users",
+    pathname: "/authentication/sign-up",
     handler: async (
       request: serverTypes.Request<
         {},
