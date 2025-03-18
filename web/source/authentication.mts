@@ -20,7 +20,6 @@ export type ApplicationAuthentication = {
           emailVerificationEmail: string | null;
           emailVerificationNonce: string | null;
           emailVerificationCreatedAt: string | null;
-          emailVerified: number;
           password: string | null;
           passwordResetNonce: string | null;
           passwordResetCreatedAt: string | null;
@@ -718,7 +717,6 @@ export default async (application: Application): Promise<void> => {
                 "emailVerificationEmail",
                 "emailVerificationNonce",
                 "emailVerificationCreatedAt",
-                "emailVerified",
                 "password",
                 "passwordResetNonce",
                 "passwordResetCreatedAt",
@@ -749,7 +747,6 @@ export default async (application: Application): Promise<void> => {
                 ${request.body.email},
                 ${emailVerificationNonce},
                 ${new Date().toISOString()},
-                ${Number(false)},
                 ${password},
                 ${null},
                 ${null},

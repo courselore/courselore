@@ -66,7 +66,6 @@ export default async (application: Application): Promise<void> => {
         emailVerificationEmail: string | null;
         emailVerificationNonce: string | null;
         emailVerificationCreatedAt: string | null;
-        emailVerified: number;
         password: string | null;
         passwordResetNonce: string | null;
         passwordResetCreatedAt: string | null;
@@ -121,7 +120,6 @@ export default async (application: Application): Promise<void> => {
             "emailVerificationEmail",
             "emailVerificationNonce",
             "emailVerificationCreatedAt",
-            "emailVerified",
             "password",
             "passwordResetNonce",
             "passwordResetCreatedAt",
