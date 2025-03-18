@@ -668,8 +668,7 @@ export default async (application: Application): Promise<void> => {
                 ${new Date().toISOString()},
                 ${JSON.stringify({
                   to: request.body.email,
-                  subject:
-                    "Tried to create an account in Courselore with an existing email",
+                  subject: "Tried to create an account with an existing email",
                   html: html`
                     <p>
                       Someone tried to sign up to Courselore with this email
@@ -812,11 +811,11 @@ export default async (application: Application): Promise<void> => {
                 ${new Date().toISOString()},
                 ${JSON.stringify({
                   to: request.body.email,
-                  subject: "Courselore email verification",
+                  subject: "Email verification",
                   html: html`
                     <p>
-                      Someone created an account on Courselore with this email
-                      address: <code>${request.body.email!}</code>
+                      Someone signed up to Courselore with this email address:
+                      <code>${request.body.email!}</code>
                     </p>
                     <p>
                       If it was you, please confirm your email:
