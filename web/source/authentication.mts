@@ -6,6 +6,7 @@ import html, { HTML } from "@radically-straightforward/html";
 import css from "@radically-straightforward/css";
 import javascript from "@radically-straightforward/javascript";
 import * as utilities from "@radically-straightforward/utilities";
+import * as node from "@radically-straightforward/node";
 import { Application } from "./index.mjs";
 
 export type ApplicationAuthentication = {
@@ -283,6 +284,15 @@ export default async (application: Application): Promise<void> => {
       }
     },
   });
+
+  if (application.commandLineArguments.values.type === "backgroundJob")
+    node.backgroundJob({ interval: 60 * 60 * 1000 }, async () => {
+      application.database.run(
+        sql`
+          delete from "userSessions" where "createdAt" < ${new Date(Date.now() - 150 * 24 * 60 * 60 * 1000).toISOString()};
+        `,
+      );
+    });
 
   application.server?.push({
     method: "GET",
