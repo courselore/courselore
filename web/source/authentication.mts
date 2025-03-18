@@ -781,8 +781,8 @@ export default async (application: Application): Promise<void> => {
                 ${
                   application.database.get<{ count: number }>(
                     sql`
-                    select count(*) as "count" from "users";
-                  `,
+                      select count(*) as "count" from "users";
+                    `,
                   )!.count === 0
                     ? "userRoleSystemAdministrator"
                     : "userRoleUser"
