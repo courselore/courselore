@@ -1,3 +1,5 @@
+import secrets from "./secrets.mjs";
+
 export default {
   hostname: "courselore.org",
   systemAdministratorEmail: "system-administrator@courselore.org",
@@ -10,4 +12,5 @@ export default {
       redir https://courselore.org/courses/8537410611/invitations/3667859788?{query}
     }
   `,
+  ...secrets,
 };
