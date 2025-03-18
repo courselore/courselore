@@ -826,6 +826,7 @@ export default async (application: Application): Promise<void> => {
               );
             `,
           );
+          response.setCookie("session", userSessionPublicId);
           application.database.run(
             sql`
               insert into "_backgroundJobs" (
