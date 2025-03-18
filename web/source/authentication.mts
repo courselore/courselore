@@ -255,7 +255,17 @@ export default async (application: Application): Promise<void> => {
   application.server?.push({
     method: "GET",
     pathname: "/authentication",
-    handler: (request, response) => {
+    handler: (
+      request: serverTypes.Request<
+        {},
+        {},
+        { session: string },
+        {},
+        Application["types"]["states"]["User"]
+      >,
+      response,
+    ) => {
+      if (request.state.user !== undefined) return;
       response.end(
         application.layouts.main({
           request,
@@ -797,10 +807,11 @@ export default async (application: Application): Promise<void> => {
           email: string;
           password: string;
         },
-        {}
+        Application["types"]["states"]["User"]
       >,
       response,
     ) => {
+      if (request.state.user !== undefined) return;
       if (
         typeof request.body.name !== "string" ||
         request.body.name.trim() === "" ||
