@@ -9,7 +9,7 @@ import { Application } from "./index.mjs";
 export type ApplicationCourses = {
   types: {
     states: {
-      Course: Application["types"]["states"]["User"] & {
+      Course: Application["types"]["states"]["Authentication"] & {
         course: {
           id: number;
           publicId: string;

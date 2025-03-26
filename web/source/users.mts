@@ -55,7 +55,7 @@ export default async (application: Application): Promise<void> => {
         {},
         {},
         {},
-        Application["types"]["states"]["User"]
+        Application["types"]["states"]["Authentication"]
       >,
       response,
     ) => {
@@ -104,7 +104,7 @@ export default async (application: Application): Promise<void> => {
         {},
         {},
         {},
-        Application["types"]["states"]["User"]
+        Application["types"]["states"]["Authentication"]
       >,
       response,
     ) => {
@@ -1651,7 +1651,7 @@ export default async (application: Application): Promise<void> => {
         {},
         {},
         { sidebarWidth: string },
-        Application["types"]["states"]["User"]
+        Application["types"]["states"]["Authentication"]
       >,
       response,
     ) => {

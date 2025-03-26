@@ -12,7 +12,7 @@ import { Application } from "./index.mjs";
 export type ApplicationAuthentication = {
   types: {
     states: {
-      User: {
+      Authentication: {
         user: {
           id: number;
           publicId: string;
@@ -79,7 +79,7 @@ export default async (application: Application): Promise<void> => {
         {},
         { session: string },
         {},
-        Application["types"]["states"]["User"]
+        Application["types"]["states"]["Authentication"]
       >,
       response,
     ) => {
@@ -303,7 +303,7 @@ export default async (application: Application): Promise<void> => {
         {},
         { session: string },
         {},
-        Application["types"]["states"]["User"]
+        Application["types"]["states"]["Authentication"]
       >,
       response,
     ) => {
@@ -849,7 +849,7 @@ export default async (application: Application): Promise<void> => {
           email: string;
           password: string;
         },
-        Application["types"]["states"]["User"]
+        Application["types"]["states"]["Authentication"]
       >,
       response,
     ) => {

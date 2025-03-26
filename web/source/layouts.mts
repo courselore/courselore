@@ -20,8 +20,7 @@ export type ApplicationLayouts = {
         {},
         {},
         {},
-        Application["types"]["states"]["User"] &
-          Application["types"]["states"]["Course"]
+        Application["types"]["states"]["Course"]
       >;
       response: serverTypes.Response;
       head: HTML;
@@ -40,8 +39,7 @@ export type ApplicationLayouts = {
         {},
         {},
         {},
-        Application["types"]["states"]["User"] &
-          Application["types"]["states"]["Course"]
+        Application["types"]["states"]["Course"]
       >;
       response: serverTypes.Response;
       head: HTML;
