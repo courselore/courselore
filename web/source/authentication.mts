@@ -13,6 +13,14 @@ export type ApplicationAuthentication = {
   types: {
     states: {
       Authentication: {
+        userSession: {
+          id: number;
+          publicId: string;
+          createdAt: string;
+          samlIdentifier: string | null;
+          samlSessionIndex: string | null;
+          samlNameID: string | null;
+        };
         user: {
           id: number;
           publicId: string;
@@ -91,6 +99,7 @@ export default async (application: Application): Promise<void> => {
       }
       const userSession = application.database.get<{
         id: number;
+        publicId: string;
         user: number;
         createdAt: string;
         samlIdentifier: string | null;
@@ -100,6 +109,7 @@ export default async (application: Application): Promise<void> => {
         sql`
           select
             "id",
+            "publicId",
             "user",
             "createdAt",
             "samlIdentifier",
