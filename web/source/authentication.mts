@@ -1159,8 +1159,11 @@ export default async (application: Application): Promise<void> => {
                 <div
                   type="form"
                   method="POST"
-                  action="/authentication/email-verification/${request.pathname
-                    .emailVerificationNonce}"
+                  action="/authentication/sign-in?${new URLSearchParams({
+                    redirect: `/authentication/email-verification/${
+                      request.pathname.emailVerificationNonce
+                    }`,
+                  }).toString()}"
                   css="${css`
                     padding: var(--size--2) var(--size--0);
                     border-bottom: var(--border-width--1) solid
