@@ -16,6 +16,7 @@ export type ApplicationAuthentication = {
         userSession: {
           id: number;
           publicId: string;
+          user: number;
           createdAt: string;
           samlIdentifier: string | null;
           samlSessionIndex: string | null;
@@ -97,7 +98,7 @@ export default async (application: Application): Promise<void> => {
           response.redirect("/authentication");
         return;
       }
-      const userSession = application.database.get<{
+      request.state.userSession = application.database.get<{
         id: number;
         publicId: string;
         user: number;
@@ -119,61 +120,75 @@ export default async (application: Application): Promise<void> => {
           where "publicId" = ${userSessionPublicId};
         `,
       );
-      if (userSession === undefined) {
+      if (request.state.userSession === undefined) {
         response.deleteCookie("session");
         if (!request.URL.pathname.match(new RegExp("^/authentication(?:$|/)")))
           response.redirect("/authentication");
         return;
       }
       if (
-        userSession.createdAt <
+        request.state.userSession.createdAt <
         new Date(Date.now() - 150 * 24 * 60 * 60 * 1000).toISOString()
       ) {
         application.database.run(
           sql`
-            delete from "userSessions" where "id" = ${userSession.id};
+            delete from "userSessions" where "id" = ${request.state.userSession.id};
           `,
         );
+        delete request.state.userSession;
         response.deleteCookie("session");
         if (!request.URL.pathname.match(new RegExp("^/authentication(?:$|/)")))
           response.redirect("/authentication");
         return;
       }
       if (
-        userSession.createdAt <
+        request.state.userSession.createdAt <
         new Date(Date.now() - 100 * 24 * 60 * 60 * 1000).toISOString()
       ) {
-        const userSessionPublicId = cryptoRandomString({
-          length: 100,
-          type: "alphanumeric",
-        });
         application.database.run(
           sql`
-            delete from "userSessions" where "id" = ${userSession.id};
+            delete from "userSessions" where "id" = ${request.state.userSession.id};
           `,
         );
         response.deleteCookie("session");
-        application.database.run(
+        request.state.userSession = application.database.get<{
+          id: number;
+          publicId: string;
+          user: number;
+          createdAt: string;
+          samlIdentifier: string | null;
+          samlSessionIndex: string | null;
+          samlNameID: string | null;
+        }>(
           sql`
-            insert into "userSessions" (
-              "publicId",
-              "user",
-              "createdAt",
-              "samlIdentifier",
-              "samlSessionIndex",
-              "samlNameID"
-            )
-            values (
-              ${userSessionPublicId},
-              ${userSession.user},
-              ${new Date().toISOString()},
-              ${userSession.samlIdentifier},
-              ${userSession.samlSessionIndex},
-              ${userSession.samlNameID}
-            );
+            select * from "userSessions" where "id" = ${
+              application.database.run(
+                sql`
+                  insert into "userSessions" (
+                    "publicId",
+                    "user",
+                    "createdAt",
+                    "samlIdentifier",
+                    "samlSessionIndex",
+                    "samlNameID"
+                  )
+                  values (
+                    ${cryptoRandomString({
+                      length: 100,
+                      type: "alphanumeric",
+                    })},
+                    ${request.state.userSession.user},
+                    ${new Date().toISOString()},
+                    ${request.state.userSession.samlIdentifier},
+                    ${request.state.userSession.samlSessionIndex},
+                    ${request.state.userSession.samlNameID}
+                  );
+                `,
+              ).lastInsertRowid
+            };
           `,
-        );
-        response.setCookie("session", userSessionPublicId);
+        )!;
+        response.setCookie("session", request.state.userSession.publicId);
       }
       request.state.user = application.database.get<{
         id: number;
@@ -256,7 +271,7 @@ export default async (application: Application): Promise<void> => {
             "userAnonymityPreferred",
             "mostRecentlyVisitedCourseParticipation"
           from "users"
-          where "id" = ${userSession.user};
+          where "id" = ${request.state.userSession.user};
         `,
       );
       if (request.state.user === undefined) throw new Error();
