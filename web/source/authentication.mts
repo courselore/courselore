@@ -893,7 +893,7 @@ export default async (application: Application): Promise<void> => {
         request.body.password,
         application.privateConfiguration.argon2,
       );
-      const emailVerificationNonce = cryptoRandomString({
+      const userEmailVerificationNonce = cryptoRandomString({
         length: 100,
         type: "numeric",
       });
@@ -910,7 +910,7 @@ export default async (application: Application): Promise<void> => {
               where "email" = ${request.body.email};
             `,
           ) !== undefined
-        )
+        ) {
           application.database.run(
             sql`
               insert into "_backgroundJobs" (
@@ -962,173 +962,173 @@ export default async (application: Application): Promise<void> => {
               );
             `,
           );
-        else {
-          const user = application.database.get<{ id: number }>(
-            sql`
-              select * from "users" where "id" = ${
-                application.database.run(
-                  sql`
-                    insert into "users" (
-                      "publicId",
-                      "name",
-                      "nameSearch",
-                      "email",
-                      "emailVerificationEmail",
-                      "emailVerificationNonce",
-                      "emailVerificationCreatedAt",
-                      "password",
-                      "passwordResetNonce",
-                      "passwordResetCreatedAt",
-                      "twoFactorAuthenticationEnabled",
-                      "twoFactorAuthenticationSecret",
-                      "twoFactorAuthenticationRecoveryCodes",
-                      "avatarColor",
-                      "avatarImage",
-                      "userRole",
-                      "lastSeenOnlineAt",
-                      "darkMode",
-                      "sidebarWidth",
-                      "emailNotificationsForAllMessages",
-                      "emailNotificationsForMessagesIncludingMentions",
-                      "emailNotificationsForMessagesInConversationsInWhichYouParticipated",
-                      "emailNotificationsForMessagesInConversationsThatYouStarted",
-                      "userAnonymityPreferred",
-                      "mostRecentlyVisitedCourseParticipation"
-                    )
-                    values (
-                      ${cryptoRandomString({ length: 20, type: "numeric" })},
-                      ${request.body.name!},
-                      ${utilities
-                        .tokenize(request.body.name!)
-                        .map((tokenWithPosition) => tokenWithPosition.token)
-                        .join(" ")},
-                      ${request.body.email},
-                      ${request.body.email},
-                      ${emailVerificationNonce},
-                      ${new Date().toISOString()},
-                      ${password},
-                      ${null},
-                      ${null},
-                      ${Number(false)},
-                      ${null},
-                      ${null},
-                      ${
-                        [
-                          "red",
-                          "orange",
-                          "amber",
-                          "yellow",
-                          "lime",
-                          "green",
-                          "emerald",
-                          "teal",
-                          "cyan",
-                          "sky",
-                          "blue",
-                          "indigo",
-                          "violet",
-                          "purple",
-                          "fuchsia",
-                          "pink",
-                          "rose",
-                        ][Math.floor(Math.random() * 17)]
-                      },
-                      ${null},
-                      ${
-                        application.database.get<{ count: number }>(
-                          sql`
-                            select count(*) as "count" from "users";
-                          `,
-                        )!.count === 0
-                          ? "userRoleSystemAdministrator"
-                          : "userRoleUser"
-                      },
-                      ${new Date().toISOString()},
-                      ${"userDarkModeSystem"},
-                      ${80 * 4},
-                      ${Number(false)},
-                      ${Number(true)},
-                      ${Number(true)},
-                      ${Number(true)},
-                      ${"userAnonymityPreferredNone"},
-                      ${null}
-                    );
-                  `,
-                ).lastInsertRowid
-              };
-            `,
-          )!;
-          application.database.run(
-            sql`
-              insert into "userSessions" (
-                "publicId",
-                "user",
-                "createdAt",
-                "samlIdentifier",
-                "samlSessionIndex",
-                "samlNameID"
-              )
-              values (
-                ${userSessionPublicId},
-                ${user.id},
-                ${new Date().toISOString()},
-                ${null},
-                ${null},
-                ${null}
-              );
-            `,
-          );
-          response.setCookie("session", userSessionPublicId);
-          application.database.run(
-            sql`
-              insert into "_backgroundJobs" (
-                "type",
-                "startAt",
-                "parameters"
-              )
-              values (
-                'email',
-                ${new Date().toISOString()},
-                ${JSON.stringify({
-                  to: request.body.email,
-                  subject: "Email verification",
-                  html: html`
-                    <p>
-                      Someone signed up to Courselore with this email address:
-                      <code>${request.body.email!}</code>
-                    </p>
-                    <p>
-                      If it was you, please confirm your email:
-                      <a
-                        href="https://${application.configuration
-                          .hostname}/authentication/email-verification/${emailVerificationNonce}"
-                        >https://${application.configuration
-                          .hostname}/authentication/email-verification/${emailVerificationNonce}</a
-                      >
-                    </p>
-                    <p>
-                      If it was not you, please report the issue to
-                      <a
-                        href="mailto:${application.configuration
-                          .systemAdministratorEmail ??
-                        "system-administrator@courselore.org"}?${new URLSearchParams(
-                          {
-                            subject: "Potential sign up impersonation",
-                            body: `Email: ${request.body.email}`,
-                          },
-                        )
-                          .toString()
-                          .replaceAll("+", "%20")}"
-                        >${application.configuration.systemAdministratorEmail ??
-                        "system-administrator@courselore.org"}</a
-                      >
-                    </p>
-                  `,
-                })}
-              );
-            `,
-          );
+          return;
         }
+        const user = application.database.get<{ id: number }>(
+          sql`
+            select * from "users" where "id" = ${
+              application.database.run(
+                sql`
+                  insert into "users" (
+                    "publicId",
+                    "name",
+                    "nameSearch",
+                    "email",
+                    "emailVerificationEmail",
+                    "emailVerificationNonce",
+                    "emailVerificationCreatedAt",
+                    "password",
+                    "passwordResetNonce",
+                    "passwordResetCreatedAt",
+                    "twoFactorAuthenticationEnabled",
+                    "twoFactorAuthenticationSecret",
+                    "twoFactorAuthenticationRecoveryCodes",
+                    "avatarColor",
+                    "avatarImage",
+                    "userRole",
+                    "lastSeenOnlineAt",
+                    "darkMode",
+                    "sidebarWidth",
+                    "emailNotificationsForAllMessages",
+                    "emailNotificationsForMessagesIncludingMentions",
+                    "emailNotificationsForMessagesInConversationsInWhichYouParticipated",
+                    "emailNotificationsForMessagesInConversationsThatYouStarted",
+                    "userAnonymityPreferred",
+                    "mostRecentlyVisitedCourseParticipation"
+                  )
+                  values (
+                    ${cryptoRandomString({ length: 20, type: "numeric" })},
+                    ${request.body.name!},
+                    ${utilities
+                      .tokenize(request.body.name!)
+                      .map((tokenWithPosition) => tokenWithPosition.token)
+                      .join(" ")},
+                    ${request.body.email},
+                    ${request.body.email},
+                    ${userEmailVerificationNonce},
+                    ${new Date().toISOString()},
+                    ${password},
+                    ${null},
+                    ${null},
+                    ${Number(false)},
+                    ${null},
+                    ${null},
+                    ${
+                      [
+                        "red",
+                        "orange",
+                        "amber",
+                        "yellow",
+                        "lime",
+                        "green",
+                        "emerald",
+                        "teal",
+                        "cyan",
+                        "sky",
+                        "blue",
+                        "indigo",
+                        "violet",
+                        "purple",
+                        "fuchsia",
+                        "pink",
+                        "rose",
+                      ][Math.floor(Math.random() * 17)]
+                    },
+                    ${null},
+                    ${
+                      application.database.get<{ count: number }>(
+                        sql`
+                          select count(*) as "count" from "users";
+                        `,
+                      )!.count === 0
+                        ? "userRoleSystemAdministrator"
+                        : "userRoleUser"
+                    },
+                    ${new Date().toISOString()},
+                    ${"userDarkModeSystem"},
+                    ${80 * 4},
+                    ${Number(false)},
+                    ${Number(true)},
+                    ${Number(true)},
+                    ${Number(true)},
+                    ${"userAnonymityPreferredNone"},
+                    ${null}
+                  );
+                `,
+              ).lastInsertRowid
+            };
+          `,
+        )!;
+        application.database.run(
+          sql`
+            insert into "userSessions" (
+              "publicId",
+              "user",
+              "createdAt",
+              "samlIdentifier",
+              "samlSessionIndex",
+              "samlNameID"
+            )
+            values (
+              ${userSessionPublicId},
+              ${user.id},
+              ${new Date().toISOString()},
+              ${null},
+              ${null},
+              ${null}
+            );
+          `,
+        );
+        response.setCookie("session", userSessionPublicId);
+        application.database.run(
+          sql`
+            insert into "_backgroundJobs" (
+              "type",
+              "startAt",
+              "parameters"
+            )
+            values (
+              'email',
+              ${new Date().toISOString()},
+              ${JSON.stringify({
+                to: request.body.email,
+                subject: "Email verification",
+                html: html`
+                  <p>
+                    Someone signed up to Courselore with this email address:
+                    <code>${request.body.email!}</code>
+                  </p>
+                  <p>
+                    If it was you, please confirm your email:
+                    <a
+                      href="https://${application.configuration
+                        .hostname}/authentication/email-verification/${userEmailVerificationNonce}"
+                      >https://${application.configuration
+                        .hostname}/authentication/email-verification/${userEmailVerificationNonce}</a
+                    >
+                  </p>
+                  <p>
+                    If it was not you, please report the issue to
+                    <a
+                      href="mailto:${application.configuration
+                        .systemAdministratorEmail ??
+                      "system-administrator@courselore.org"}?${new URLSearchParams(
+                        {
+                          subject: "Potential sign up impersonation",
+                          body: `Email: ${request.body.email}`,
+                        },
+                      )
+                        .toString()
+                        .replaceAll("+", "%20")}"
+                      >${application.configuration.systemAdministratorEmail ??
+                      "system-administrator@courselore.org"}</a
+                    >
+                  </p>
+                `,
+              })}
+            );
+          `,
+        );
       });
       response.redirect("/");
     },
