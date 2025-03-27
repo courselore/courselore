@@ -1266,7 +1266,7 @@ export default async (application: Application): Promise<void> => {
     handler: async (
       request: serverTypes.Request<
         {},
-        {},
+        { redirect: string },
         {},
         { email: string; password: string },
         Application["types"]["states"]["Authentication"]
@@ -1274,6 +1274,11 @@ export default async (application: Application): Promise<void> => {
       response,
     ) => {
       if (request.state.user !== undefined) return;
+      if (
+        typeof request.search.redirect === "string" &&
+        !request.search.redirect.startsWith("/")
+      )
+        delete request.search.redirect;
       if (
         typeof request.body.email !== "string" ||
         !request.body.email.match(utilities.emailRegExp) ||
@@ -1328,7 +1333,7 @@ export default async (application: Application): Promise<void> => {
         `,
       )!;
       response.setCookie("session", userSession.publicId);
-      response.redirect("/");
+      response.redirect(request.search.redirect ?? "/");
     },
   });
 };
