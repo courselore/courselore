@@ -143,7 +143,8 @@ export default async (application: Application): Promise<void> => {
       }
       if (
         request.state.userSession.createdAt <
-        new Date(Date.now() - 100 * 24 * 60 * 60 * 1000).toISOString()
+          new Date(Date.now() - 100 * 24 * 60 * 60 * 1000).toISOString() &&
+        request.liveConnection === undefined
       ) {
         application.database.run(
           sql`
