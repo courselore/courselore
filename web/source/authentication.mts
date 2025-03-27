@@ -552,7 +552,7 @@ export default async (application: Application): Promise<void> => {
                     gap: var(--size--2);
                   `}"
                 >
-                  <details>
+                  <details open>
                     <summary
                       class="button button--rectangle button--transparent"
                       css="${css`
