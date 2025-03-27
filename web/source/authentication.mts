@@ -330,7 +330,195 @@ export default async (application: Application): Promise<void> => {
               >
                 Authentication
               </div>
-              <details open>
+              <details>
+                <summary
+                  class="button button--rectangle button--transparent"
+                  css="${css`
+                    font-weight: 500;
+                  `}"
+                >
+                  <span
+                    css="${css`
+                      display: inline-block;
+                      transition-property: var(
+                        --transition-property--transform
+                      );
+                      transition-duration: var(--transition-duration--150);
+                      transition-timing-function: var(
+                        --transition-timing-function--ease-in-out
+                      );
+                      details[open] > summary > & {
+                        rotate: var(--rotate--90);
+                      }
+                    `}"
+                  >
+                    <i class="bi bi-chevron-right"></i>
+                  </span>
+                  Sign up
+                </summary>
+                <div
+                  type="form"
+                  method="POST"
+                  action="/authentication/sign-up"
+                  css="${css`
+                    padding: var(--size--2) var(--size--0);
+                    border-bottom: var(--border-width--1) solid
+                      light-dark(
+                        var(--color--slate--200),
+                        var(--color--slate--800)
+                      );
+                    display: flex;
+                    flex-direction: column;
+                    gap: var(--size--4);
+                  `}"
+                >
+                  <label>
+                    <div
+                      css="${css`
+                        font-size: var(--font-size--3);
+                        line-height: var(--font-size--3--line-height);
+                        font-weight: 600;
+                        color: light-dark(
+                          var(--color--slate--500),
+                          var(--color--slate--500)
+                        );
+                      `}"
+                    >
+                      Name
+                    </div>
+                    <div
+                      css="${css`
+                        display: flex;
+                      `}"
+                    >
+                      <input
+                        type="text"
+                        name="name"
+                        required
+                        maxlength="2000"
+                        class="input--text"
+                        css="${css`
+                          flex: 1;
+                        `}"
+                      />
+                    </div>
+                  </label>
+                  <label>
+                    <div
+                      css="${css`
+                        font-size: var(--font-size--3);
+                        line-height: var(--font-size--3--line-height);
+                        font-weight: 600;
+                        color: light-dark(
+                          var(--color--slate--500),
+                          var(--color--slate--500)
+                        );
+                      `}"
+                    >
+                      Email
+                    </div>
+                    <div
+                      css="${css`
+                        display: flex;
+                      `}"
+                    >
+                      <input
+                        type="email"
+                        name="email"
+                        required
+                        maxlength="2000"
+                        class="input--text"
+                        css="${css`
+                          flex: 1;
+                        `}"
+                      />
+                    </div>
+                  </label>
+                  <label>
+                    <div
+                      css="${css`
+                        font-size: var(--font-size--3);
+                        line-height: var(--font-size--3--line-height);
+                        font-weight: 600;
+                        color: light-dark(
+                          var(--color--slate--500),
+                          var(--color--slate--500)
+                        );
+                      `}"
+                    >
+                      Password
+                    </div>
+                    <div
+                      css="${css`
+                        display: flex;
+                      `}"
+                    >
+                      <input
+                        type="password"
+                        name="password"
+                        required
+                        minlength="8"
+                        maxlength="2000"
+                        class="input--text"
+                        css="${css`
+                          flex: 1;
+                        `}"
+                      />
+                    </div>
+                  </label>
+                  <label>
+                    <div
+                      css="${css`
+                        font-size: var(--font-size--3);
+                        line-height: var(--font-size--3--line-height);
+                        font-weight: 600;
+                        color: light-dark(
+                          var(--color--slate--500),
+                          var(--color--slate--500)
+                        );
+                      `}"
+                    >
+                      Password confirmation
+                    </div>
+                    <div
+                      css="${css`
+                        display: flex;
+                      `}"
+                    >
+                      <input
+                        type="password"
+                        required
+                        minlength="8"
+                        maxlength="2000"
+                        class="input--text"
+                        css="${css`
+                          flex: 1;
+                        `}"
+                        javascript="${javascript`
+                          this.onvalidate = () => {
+                            if (this.value !== this.closest('[type~="form"]').querySelector('[name="password"]').value)
+                              throw new javascript.ValidationError("“Password” and “Password confirmation” don’t match.");
+                          };
+                        `}"
+                      />
+                    </div>
+                  </label>
+                  <div
+                    css="${css`
+                      font-size: var(--font-size--3);
+                      line-height: var(--font-size--3--line-height);
+                    `}"
+                  >
+                    <button
+                      type="submit"
+                      class="button button--rectangle button--blue"
+                    >
+                      Sign up
+                    </button>
+                  </div>
+                </div>
+              </details>
+              <details>
                 <summary
                   class="button button--rectangle button--transparent"
                   css="${css`
@@ -364,7 +552,7 @@ export default async (application: Application): Promise<void> => {
                     gap: var(--size--2);
                   `}"
                 >
-                  <details open>
+                  <details>
                     <summary
                       class="button button--rectangle button--transparent"
                       css="${css`
@@ -436,7 +624,6 @@ export default async (application: Application): Promise<void> => {
                             name="email"
                             required
                             maxlength="2000"
-                            autofocus
                             class="input--text"
                             css="${css`
                               flex: 1;
@@ -563,7 +750,6 @@ export default async (application: Application): Promise<void> => {
                             name="email"
                             required
                             maxlength="2000"
-                            autofocus
                             class="input--text"
                             css="${css`
                               flex: 1;
@@ -637,196 +823,6 @@ export default async (application: Application): Promise<void> => {
                       TODO
                     </div>
                   </details>
-                </div>
-              </details>
-              <details>
-                <summary
-                  class="button button--rectangle button--transparent"
-                  css="${css`
-                    font-weight: 500;
-                  `}"
-                >
-                  <span
-                    css="${css`
-                      display: inline-block;
-                      transition-property: var(
-                        --transition-property--transform
-                      );
-                      transition-duration: var(--transition-duration--150);
-                      transition-timing-function: var(
-                        --transition-timing-function--ease-in-out
-                      );
-                      details[open] > summary > & {
-                        rotate: var(--rotate--90);
-                      }
-                    `}"
-                  >
-                    <i class="bi bi-chevron-right"></i>
-                  </span>
-                  Sign up
-                </summary>
-                <div
-                  type="form"
-                  method="POST"
-                  action="/authentication/sign-up"
-                  css="${css`
-                    padding: var(--size--2) var(--size--0);
-                    border-bottom: var(--border-width--1) solid
-                      light-dark(
-                        var(--color--slate--200),
-                        var(--color--slate--800)
-                      );
-                    display: flex;
-                    flex-direction: column;
-                    gap: var(--size--4);
-                  `}"
-                >
-                  <label>
-                    <div
-                      css="${css`
-                        font-size: var(--font-size--3);
-                        line-height: var(--font-size--3--line-height);
-                        font-weight: 600;
-                        color: light-dark(
-                          var(--color--slate--500),
-                          var(--color--slate--500)
-                        );
-                      `}"
-                    >
-                      Name
-                    </div>
-                    <div
-                      css="${css`
-                        display: flex;
-                      `}"
-                    >
-                      <input
-                        type="text"
-                        name="name"
-                        required
-                        maxlength="2000"
-                        autofocus
-                        class="input--text"
-                        css="${css`
-                          flex: 1;
-                        `}"
-                      />
-                    </div>
-                  </label>
-                  <label>
-                    <div
-                      css="${css`
-                        font-size: var(--font-size--3);
-                        line-height: var(--font-size--3--line-height);
-                        font-weight: 600;
-                        color: light-dark(
-                          var(--color--slate--500),
-                          var(--color--slate--500)
-                        );
-                      `}"
-                    >
-                      Email
-                    </div>
-                    <div
-                      css="${css`
-                        display: flex;
-                      `}"
-                    >
-                      <input
-                        type="email"
-                        name="email"
-                        required
-                        maxlength="2000"
-                        autofocus
-                        class="input--text"
-                        css="${css`
-                          flex: 1;
-                        `}"
-                      />
-                    </div>
-                  </label>
-                  <label>
-                    <div
-                      css="${css`
-                        font-size: var(--font-size--3);
-                        line-height: var(--font-size--3--line-height);
-                        font-weight: 600;
-                        color: light-dark(
-                          var(--color--slate--500),
-                          var(--color--slate--500)
-                        );
-                      `}"
-                    >
-                      Password
-                    </div>
-                    <div
-                      css="${css`
-                        display: flex;
-                      `}"
-                    >
-                      <input
-                        type="password"
-                        name="password"
-                        required
-                        minlength="8"
-                        maxlength="2000"
-                        class="input--text"
-                        css="${css`
-                          flex: 1;
-                        `}"
-                      />
-                    </div>
-                  </label>
-                  <label>
-                    <div
-                      css="${css`
-                        font-size: var(--font-size--3);
-                        line-height: var(--font-size--3--line-height);
-                        font-weight: 600;
-                        color: light-dark(
-                          var(--color--slate--500),
-                          var(--color--slate--500)
-                        );
-                      `}"
-                    >
-                      Password confirmation
-                    </div>
-                    <div
-                      css="${css`
-                        display: flex;
-                      `}"
-                    >
-                      <input
-                        type="password"
-                        required
-                        minlength="8"
-                        maxlength="2000"
-                        class="input--text"
-                        css="${css`
-                          flex: 1;
-                        `}"
-                        javascript="${javascript`
-                          this.onvalidate = () => {
-                            if (this.value !== this.closest('[type~="form"]').querySelector('[name="password"]').value)
-                              throw new javascript.ValidationError("“Password” and “Password confirmation” don’t match.");
-                          };
-                        `}"
-                      />
-                    </div>
-                  </label>
-                  <div
-                    css="${css`
-                      font-size: var(--font-size--3);
-                      line-height: var(--font-size--3--line-height);
-                    `}"
-                  >
-                    <button
-                      type="submit"
-                      class="button button--rectangle button--blue"
-                    >
-                      Sign up
-                    </button>
-                  </div>
                 </div>
               </details>
             </div>
