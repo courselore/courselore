@@ -301,7 +301,7 @@ export default async (application: Application): Promise<void> => {
       request: serverTypes.Request<
         {},
         {},
-        { session: string },
+        {},
         {},
         Application["types"]["states"]["Authentication"]
       >,
@@ -587,7 +587,7 @@ export default async (application: Application): Promise<void> => {
                     <div
                       type="form"
                       method="POST"
-                      action="/authentication/sessions"
+                      action="/authentication/sign-in"
                       css="${css`
                         padding: var(--size--2) var(--size--0);
                         border-bottom: var(--border-width--1) solid
@@ -807,7 +807,7 @@ export default async (application: Application): Promise<void> => {
                     <div
                       type="form"
                       method="POST"
-                      action="/authentication/sessions"
+                      action="/authentication/sign-in"
                       css="${css`
                         padding: var(--size--2) var(--size--0);
                         border-bottom: var(--border-width--1) solid
@@ -1080,7 +1080,7 @@ export default async (application: Application): Promise<void> => {
       request: serverTypes.Request<
         {},
         {},
-        { session: string },
+        {},
         {},
         Application["types"]["states"]["Authentication"]
       >,
@@ -1257,6 +1257,78 @@ export default async (application: Application): Promise<void> => {
         );
         return;
       }
+    },
+  });
+
+  application.server?.push({
+    method: "POST",
+    pathname: "/authentication/sign-in",
+    handler: async (
+      request: serverTypes.Request<
+        {},
+        {},
+        {},
+        { email: string; password: string },
+        Application["types"]["states"]["Authentication"]
+      >,
+      response,
+    ) => {
+      if (request.state.user !== undefined) return;
+      if (
+        typeof request.body.email !== "string" ||
+        !request.body.email.match(utilities.emailRegExp) ||
+        typeof request.body.password !== "string" ||
+        request.body.password.length <= 8
+      )
+        throw "validation";
+      const user = application.database.get<{ id: number; password: string }>(
+        sql`
+          select "id", "password"
+          from "users"
+          where "email" = ${request.body.email};
+        `,
+      );
+      const passwordVerify = await argon2.verify(
+        user?.password ??
+          "$argon2id$v=19$m=12288,t=3,p=1$pCgoHHS6clgtd39p7OfS8Q$ESbcsGxnoGpxWVbtXjBac0Lb+sdAyAd0X3EBRk4wku0",
+        request.body.password,
+        application.privateConfiguration.argon2,
+      );
+      if (user === undefined || !passwordVerify) {
+        response.redirect("/TODO");
+        return;
+      }
+      const userSession = application.database.get<{ publicId: string }>(
+        sql`
+          select * from "userSessions" where "id" = ${
+            application.database.run(
+              sql`
+                insert into "userSessions" (
+                  "publicId",
+                  "user",
+                  "createdAt",
+                  "samlIdentifier",
+                  "samlSessionIndex",
+                  "samlNameID"
+                )
+                values (
+                  ${cryptoRandomString({
+                    length: 100,
+                    type: "alphanumeric",
+                  })},
+                  ${user.id},
+                  ${new Date().toISOString()},
+                  ${null},
+                  ${null},
+                  ${null}
+                );
+              `,
+            ).lastInsertRowid
+          };
+        `,
+      )!;
+      response.setCookie("session", userSession.publicId);
+      response.redirect("/");
     },
   });
 };
