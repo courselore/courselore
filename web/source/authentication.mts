@@ -923,7 +923,7 @@ export default async (application: Application): Promise<void> => {
                 ${new Date().toISOString()},
                 ${JSON.stringify({
                   to: request.body.email,
-                  subject: "Tried to create an account with an existing email",
+                  subject: "Tried to sign up with an existing email",
                   html: html`
                     <p>
                       Someone tried to sign up to Courselore with this email
