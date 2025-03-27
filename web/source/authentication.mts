@@ -1111,13 +1111,156 @@ export default async (application: Application): Promise<void> => {
                   font-weight: 800;
                 `}"
               >
-                Authentication
+                Sign up
               </div>
               <p>To continue please check your email.</p>
             </div>
           `,
         }),
       );
+    },
+  });
+
+  application.server?.push({
+    method: "GET",
+    pathname: new RegExp(
+      "^/authentication/email-verification/(?<emailVerificationNonce>[0-9]+)$",
+    ),
+    handler: (
+      request: serverTypes.Request<
+        { emailVerificationNonce: string },
+        {},
+        {},
+        {},
+        Application["types"]["states"]["Authentication"]
+      >,
+      response,
+    ) => {
+      if (typeof request.pathname.emailVerificationNonce !== "string") return;
+      if (request.state.user === undefined) {
+        response.end(
+          application.layouts.main({
+            request,
+            response,
+            head: html`<title>Email verification · Courselore</title>`,
+            body: html`
+              <div
+                css="${css`
+                  display: flex;
+                  flex-direction: column;
+                  gap: var(--size--2);
+                `}"
+              >
+                <div
+                  css="${css`
+                    font-size: var(--font-size--4);
+                    line-height: var(--font-size--4--line-height);
+                    font-weight: 800;
+                  `}"
+                >
+                  Email verification
+                </div>
+                <div
+                  type="form"
+                  method="POST"
+                  action="/authentication/email-verification/${request.pathname
+                    .emailVerificationNonce}"
+                  css="${css`
+                    padding: var(--size--2) var(--size--0);
+                    border-bottom: var(--border-width--1) solid
+                      light-dark(
+                        var(--color--slate--200),
+                        var(--color--slate--800)
+                      );
+                    display: flex;
+                    flex-direction: column;
+                    gap: var(--size--4);
+                  `}"
+                >
+                  <label>
+                    <div
+                      css="${css`
+                        font-size: var(--font-size--3);
+                        line-height: var(--font-size--3--line-height);
+                        font-weight: 600;
+                        color: light-dark(
+                          var(--color--slate--500),
+                          var(--color--slate--500)
+                        );
+                      `}"
+                    >
+                      Email
+                    </div>
+                    <div
+                      css="${css`
+                        display: flex;
+                      `}"
+                    >
+                      <input
+                        type="email"
+                        name="email"
+                        required
+                        maxlength="2000"
+                        autofocus
+                        class="input--text"
+                        css="${css`
+                          flex: 1;
+                        `}"
+                      />
+                    </div>
+                  </label>
+                  <label>
+                    <div
+                      css="${css`
+                        font-size: var(--font-size--3);
+                        line-height: var(--font-size--3--line-height);
+                        font-weight: 600;
+                        color: light-dark(
+                          var(--color--slate--500),
+                          var(--color--slate--500)
+                        );
+                      `}"
+                    >
+                      Password
+                    </div>
+                    <div
+                      css="${css`
+                        display: flex;
+                      `}"
+                    >
+                      <input
+                        type="password"
+                        name="password"
+                        required
+                        minlength="8"
+                        maxlength="2000"
+                        class="input--text"
+                        css="${css`
+                          flex: 1;
+                        `}"
+                      />
+                    </div>
+                  </label>
+                  <div
+                    css="${css`
+                      font-size: var(--font-size--3);
+                      line-height: var(--font-size--3--line-height);
+                    `}"
+                  >
+                    <button
+                      type="submit"
+                      class="button button--rectangle button--blue"
+                    >
+                      Sign in
+                    </button>
+                  </div>
+                </div>
+              </div>
+            `,
+          }),
+        );
+        return;
+      }
     },
   });
 };
