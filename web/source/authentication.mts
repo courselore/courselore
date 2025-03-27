@@ -897,10 +897,6 @@ export default async (application: Application): Promise<void> => {
         length: 100,
         type: "numeric",
       });
-      const userSessionPublicId = cryptoRandomString({
-        length: 100,
-        type: "alphanumeric",
-      });
       application.database.executeTransaction(() => {
         if (
           application.database.get(
@@ -964,122 +960,95 @@ export default async (application: Application): Promise<void> => {
           );
           return;
         }
-        const user = application.database.get<{ id: number }>(
-          sql`
-            select * from "users" where "id" = ${
-              application.database.run(
-                sql`
-                  insert into "users" (
-                    "publicId",
-                    "name",
-                    "nameSearch",
-                    "email",
-                    "emailVerificationEmail",
-                    "emailVerificationNonce",
-                    "emailVerificationCreatedAt",
-                    "password",
-                    "passwordResetNonce",
-                    "passwordResetCreatedAt",
-                    "twoFactorAuthenticationEnabled",
-                    "twoFactorAuthenticationSecret",
-                    "twoFactorAuthenticationRecoveryCodes",
-                    "avatarColor",
-                    "avatarImage",
-                    "userRole",
-                    "lastSeenOnlineAt",
-                    "darkMode",
-                    "sidebarWidth",
-                    "emailNotificationsForAllMessages",
-                    "emailNotificationsForMessagesIncludingMentions",
-                    "emailNotificationsForMessagesInConversationsInWhichYouParticipated",
-                    "emailNotificationsForMessagesInConversationsThatYouStarted",
-                    "userAnonymityPreferred",
-                    "mostRecentlyVisitedCourseParticipation"
-                  )
-                  values (
-                    ${cryptoRandomString({ length: 20, type: "numeric" })},
-                    ${request.body.name!},
-                    ${utilities
-                      .tokenize(request.body.name!)
-                      .map((tokenWithPosition) => tokenWithPosition.token)
-                      .join(" ")},
-                    ${request.body.email},
-                    ${request.body.email},
-                    ${userEmailVerificationNonce},
-                    ${new Date().toISOString()},
-                    ${password},
-                    ${null},
-                    ${null},
-                    ${Number(false)},
-                    ${null},
-                    ${null},
-                    ${
-                      [
-                        "red",
-                        "orange",
-                        "amber",
-                        "yellow",
-                        "lime",
-                        "green",
-                        "emerald",
-                        "teal",
-                        "cyan",
-                        "sky",
-                        "blue",
-                        "indigo",
-                        "violet",
-                        "purple",
-                        "fuchsia",
-                        "pink",
-                        "rose",
-                      ][Math.floor(Math.random() * 17)]
-                    },
-                    ${null},
-                    ${
-                      application.database.get<{ count: number }>(
-                        sql`
-                          select count(*) as "count" from "users";
-                        `,
-                      )!.count === 0
-                        ? "userRoleSystemAdministrator"
-                        : "userRoleUser"
-                    },
-                    ${new Date().toISOString()},
-                    ${"userDarkModeSystem"},
-                    ${80 * 4},
-                    ${Number(false)},
-                    ${Number(true)},
-                    ${Number(true)},
-                    ${Number(true)},
-                    ${"userAnonymityPreferredNone"},
-                    ${null}
-                  );
-                `,
-              ).lastInsertRowid
-            };
-          `,
-        )!;
         application.database.run(
           sql`
-            insert into "userSessions" (
+            insert into "users" (
               "publicId",
-              "user",
-              "createdAt",
-              "samlIdentifier",
-              "samlSessionIndex",
-              "samlNameID"
+              "name",
+              "nameSearch",
+              "email",
+              "emailVerificationEmail",
+              "emailVerificationNonce",
+              "emailVerificationCreatedAt",
+              "password",
+              "passwordResetNonce",
+              "passwordResetCreatedAt",
+              "twoFactorAuthenticationEnabled",
+              "twoFactorAuthenticationSecret",
+              "twoFactorAuthenticationRecoveryCodes",
+              "avatarColor",
+              "avatarImage",
+              "userRole",
+              "lastSeenOnlineAt",
+              "darkMode",
+              "sidebarWidth",
+              "emailNotificationsForAllMessages",
+              "emailNotificationsForMessagesIncludingMentions",
+              "emailNotificationsForMessagesInConversationsInWhichYouParticipated",
+              "emailNotificationsForMessagesInConversationsThatYouStarted",
+              "userAnonymityPreferred",
+              "mostRecentlyVisitedCourseParticipation"
             )
             values (
-              ${userSessionPublicId},
-              ${user.id},
+              ${cryptoRandomString({ length: 20, type: "numeric" })},
+              ${request.body.name!},
+              ${utilities
+                .tokenize(request.body.name!)
+                .map((tokenWithPosition) => tokenWithPosition.token)
+                .join(" ")},
+              ${request.body.email},
+              ${request.body.email},
+              ${userEmailVerificationNonce},
               ${new Date().toISOString()},
+              ${password},
               ${null},
               ${null},
+              ${Number(false)},
+              ${null},
+              ${null},
+              ${
+                [
+                  "red",
+                  "orange",
+                  "amber",
+                  "yellow",
+                  "lime",
+                  "green",
+                  "emerald",
+                  "teal",
+                  "cyan",
+                  "sky",
+                  "blue",
+                  "indigo",
+                  "violet",
+                  "purple",
+                  "fuchsia",
+                  "pink",
+                  "rose",
+                ][Math.floor(Math.random() * 17)]
+              },
+              ${null},
+              ${
+                application.database.get<{ count: number }>(
+                  sql`
+                    select count(*) as "count" from "users";
+                  `,
+                )!.count === 0
+                  ? "userRoleSystemAdministrator"
+                  : "userRoleUser"
+              },
+              ${new Date().toISOString()},
+              ${"userDarkModeSystem"},
+              ${80 * 4},
+              ${Number(false)},
+              ${Number(true)},
+              ${Number(true)},
+              ${Number(true)},
+              ${"userAnonymityPreferredNone"},
               ${null}
             );
           `,
         );
-        response.setCookie("session", userSessionPublicId);
         application.database.run(
           sql`
             insert into "_backgroundJobs" (
