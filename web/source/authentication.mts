@@ -869,10 +869,6 @@ export default async (application: Application): Promise<void> => {
         request.body.password,
         application.privateConfiguration.argon2,
       );
-      const userEmailVerificationNonce = cryptoRandomString({
-        length: 100,
-        type: "numeric",
-      });
       application.database.executeTransaction(() => {
         if (
           application.database.get(
@@ -974,7 +970,7 @@ export default async (application: Application): Promise<void> => {
                 .join(" ")},
               ${request.body.email},
               ${request.body.email},
-              ${userEmailVerificationNonce},
+              ${cryptoRandomString({ length: 100, type: "numeric" })},
               ${new Date().toISOString()},
               ${password},
               ${null},
