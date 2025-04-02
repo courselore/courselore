@@ -907,9 +907,9 @@ export default async (application: Application): Promise<void> => {
                       remember your password, use the “Forgot password” feature
                       <a
                         href="https://${application.configuration
-                          .hostname}/authentication"
+                          .hostname}/authentication${request.URL.search}"
                         >https://${application.configuration
-                          .hostname}/authentication</a
+                          .hostname}/authentication${request.URL.search}</a
                       >
                     </p>
                     <p>
@@ -1047,9 +1047,11 @@ export default async (application: Application): Promise<void> => {
                     If it was you, please confirm your email:
                     <a
                       href="https://${application.configuration
-                        .hostname}/authentication/email-verification/${userEmailVerificationNonce}"
+                        .hostname}/authentication/email-verification/${userEmailVerificationNonce}${request
+                        .URL.search}"
                       >https://${application.configuration
-                        .hostname}/authentication/email-verification/${userEmailVerificationNonce}</a
+                        .hostname}/authentication/email-verification/${userEmailVerificationNonce}${request
+                        .URL.search}</a
                     >
                   </p>
                   <p>
