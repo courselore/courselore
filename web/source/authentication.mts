@@ -94,7 +94,9 @@ export default async (application: Application): Promise<void> => {
     ) => {
       if (typeof request.cookies.session !== "string") {
         if (!request.URL.pathname.match(new RegExp("^/authentication(?:$|/)")))
-          response.redirect("/authentication");
+          response.redirect(
+            `/authentication?${new URLSearchParams({ redirect: request.URL.pathname + request.URL.search }).toString()}`,
+          );
         return;
       }
       request.state.userSession = application.database.get<{
@@ -122,7 +124,9 @@ export default async (application: Application): Promise<void> => {
       if (request.state.userSession === undefined) {
         response.deleteCookie("session");
         if (!request.URL.pathname.match(new RegExp("^/authentication(?:$|/)")))
-          response.redirect("/authentication");
+          response.redirect(
+            `/authentication?${new URLSearchParams({ redirect: request.URL.pathname + request.URL.search }).toString()}`,
+          );
         return;
       }
       if (
@@ -137,7 +141,9 @@ export default async (application: Application): Promise<void> => {
         delete request.state.userSession;
         response.deleteCookie("session");
         if (!request.URL.pathname.match(new RegExp("^/authentication(?:$|/)")))
-          response.redirect("/authentication");
+          response.redirect(
+            `/authentication?${new URLSearchParams({ redirect: request.URL.pathname + request.URL.search }).toString()}`,
+          );
         return;
       }
       if (
