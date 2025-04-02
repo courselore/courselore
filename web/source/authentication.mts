@@ -92,8 +92,7 @@ export default async (application: Application): Promise<void> => {
       >,
       response,
     ) => {
-      const userSessionPublicId = request.cookies.session;
-      if (typeof userSessionPublicId !== "string") {
+      if (typeof request.cookies.session !== "string") {
         if (!request.URL.pathname.match(new RegExp("^/authentication(?:$|/)")))
           response.redirect("/authentication");
         return;
@@ -117,7 +116,7 @@ export default async (application: Application): Promise<void> => {
             "samlSessionIndex",
             "samlNameID"
           from "userSessions"
-          where "publicId" = ${userSessionPublicId};
+          where "publicId" = ${request.cookies.session};
         `,
       );
       if (request.state.userSession === undefined) {
