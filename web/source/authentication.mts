@@ -291,7 +291,7 @@ export default async (application: Application): Promise<void> => {
   });
 
   if (application.commandLineArguments.values.type === "backgroundJob")
-    node.backgroundJob({ interval: 60 * 60 * 1000 }, async () => {
+    node.backgroundJob({ interval: 60 * 60 * 1000 }, () => {
       application.database.run(
         sql`
           delete from "userSessions" where "createdAt" < ${new Date(Date.now() - 150 * 24 * 60 * 60 * 1000).toISOString()};
