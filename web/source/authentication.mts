@@ -364,7 +364,7 @@ export default async (application: Application): Promise<void> => {
                 <div
                   type="form"
                   method="POST"
-                  action="/authentication/sign-up"
+                  action="/authentication/sign-up${request.URL.search}"
                   css="${css`
                     padding: var(--size--2) var(--size--0);
                     border-bottom: var(--border-width--1) solid
@@ -592,7 +592,7 @@ export default async (application: Application): Promise<void> => {
                     <div
                       type="form"
                       method="POST"
-                      action="/authentication/sign-in"
+                      action="/authentication/sign-in${request.URL.search}"
                       css="${css`
                         padding: var(--size--2) var(--size--0);
                         border-bottom: var(--border-width--1) solid
@@ -718,7 +718,8 @@ export default async (application: Application): Promise<void> => {
                     <div
                       type="form"
                       method="POST"
-                      action="/authentication/forgot-password"
+                      action="/authentication/forgot-password${request.URL
+                        .search}"
                       css="${css`
                         padding: var(--size--2) var(--size--0);
                         border-bottom: var(--border-width--1) solid
@@ -812,7 +813,7 @@ export default async (application: Application): Promise<void> => {
                     <div
                       type="form"
                       method="POST"
-                      action="/authentication/sign-in"
+                      action="/authentication/sign-in${request.URL.search}"
                       css="${css`
                         padding: var(--size--2) var(--size--0);
                         border-bottom: var(--border-width--1) solid
