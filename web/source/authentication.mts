@@ -932,95 +932,153 @@ export default async (application: Application): Promise<void> => {
           );
           return;
         }
-        application.database.run(
+        request.state.user = application.database.get<{
+          id: number;
+          publicId: string;
+          name: string;
+          email: string;
+          emailVerificationEmail: string | null;
+          emailVerificationNonce: string | null;
+          emailVerificationCreatedAt: string | null;
+          password: string | null;
+          passwordResetNonce: string | null;
+          passwordResetCreatedAt: string | null;
+          twoFactorAuthenticationEnabled: number;
+          twoFactorAuthenticationSecret: string | null;
+          twoFactorAuthenticationRecoveryCodes: string | null;
+          avatarColor:
+            | "red"
+            | "orange"
+            | "amber"
+            | "yellow"
+            | "lime"
+            | "green"
+            | "emerald"
+            | "teal"
+            | "cyan"
+            | "sky"
+            | "blue"
+            | "indigo"
+            | "violet"
+            | "purple"
+            | "fuchsia"
+            | "pink"
+            | "rose";
+          avatarImage: string | null;
+          userRole:
+            | "userRoleSystemAdministrator"
+            | "userRoleStaff"
+            | "userRoleUser";
+          lastSeenOnlineAt: string;
+          darkMode:
+            | "userDarkModeSystem"
+            | "userDarkModeLight"
+            | "userDarkModeDark";
+          sidebarWidth: number;
+          emailNotificationsForAllMessages: number;
+          emailNotificationsForMessagesIncludingMentions: number;
+          emailNotificationsForMessagesInConversationsInWhichYouParticipated: number;
+          emailNotificationsForMessagesInConversationsThatYouStarted: number;
+          userAnonymityPreferred:
+            | "userAnonymityPreferredNone"
+            | "userAnonymityPreferredCourseParticipationRoleStudents"
+            | "userAnonymityPreferredCourseParticipationRoleInstructors";
+          mostRecentlyVisitedCourseParticipation: number | null;
+        }>(
           sql`
-            insert into "users" (
-              "publicId",
-              "name",
-              "nameSearch",
-              "email",
-              "emailVerificationEmail",
-              "emailVerificationNonce",
-              "emailVerificationCreatedAt",
-              "password",
-              "passwordResetNonce",
-              "passwordResetCreatedAt",
-              "twoFactorAuthenticationEnabled",
-              "twoFactorAuthenticationSecret",
-              "twoFactorAuthenticationRecoveryCodes",
-              "avatarColor",
-              "avatarImage",
-              "userRole",
-              "lastSeenOnlineAt",
-              "darkMode",
-              "sidebarWidth",
-              "emailNotificationsForAllMessages",
-              "emailNotificationsForMessagesIncludingMentions",
-              "emailNotificationsForMessagesInConversationsInWhichYouParticipated",
-              "emailNotificationsForMessagesInConversationsThatYouStarted",
-              "userAnonymityPreferred",
-              "mostRecentlyVisitedCourseParticipation"
-            )
-            values (
-              ${cryptoRandomString({ length: 20, type: "numeric" })},
-              ${request.body.name!},
-              ${utilities
-                .tokenize(request.body.name!)
-                .map((tokenWithPosition) => tokenWithPosition.token)
-                .join(" ")},
-              ${request.body.email},
-              ${request.body.email},
-              ${cryptoRandomString({ length: 100, type: "numeric" })},
-              ${new Date().toISOString()},
-              ${password},
-              ${null},
-              ${null},
-              ${Number(false)},
-              ${null},
-              ${null},
-              ${
-                [
-                  "red",
-                  "orange",
-                  "amber",
-                  "yellow",
-                  "lime",
-                  "green",
-                  "emerald",
-                  "teal",
-                  "cyan",
-                  "sky",
-                  "blue",
-                  "indigo",
-                  "violet",
-                  "purple",
-                  "fuchsia",
-                  "pink",
-                  "rose",
-                ][Math.floor(Math.random() * 17)]
-              },
-              ${null},
-              ${
-                application.database.get<{ count: number }>(
-                  sql`
-                    select count(*) as "count" from "users";
-                  `,
-                )!.count === 0
-                  ? "userRoleSystemAdministrator"
-                  : "userRoleUser"
-              },
-              ${new Date().toISOString()},
-              ${"userDarkModeSystem"},
-              ${80 * 4},
-              ${Number(false)},
-              ${Number(true)},
-              ${Number(true)},
-              ${Number(true)},
-              ${"userAnonymityPreferredNone"},
-              ${null}
-            );
+            select * from "users" where "id" = ${
+              application.database.run(
+                sql`
+                  insert into "users" (
+                    "publicId",
+                    "name",
+                    "nameSearch",
+                    "email",
+                    "emailVerificationEmail",
+                    "emailVerificationNonce",
+                    "emailVerificationCreatedAt",
+                    "password",
+                    "passwordResetNonce",
+                    "passwordResetCreatedAt",
+                    "twoFactorAuthenticationEnabled",
+                    "twoFactorAuthenticationSecret",
+                    "twoFactorAuthenticationRecoveryCodes",
+                    "avatarColor",
+                    "avatarImage",
+                    "userRole",
+                    "lastSeenOnlineAt",
+                    "darkMode",
+                    "sidebarWidth",
+                    "emailNotificationsForAllMessages",
+                    "emailNotificationsForMessagesIncludingMentions",
+                    "emailNotificationsForMessagesInConversationsInWhichYouParticipated",
+                    "emailNotificationsForMessagesInConversationsThatYouStarted",
+                    "userAnonymityPreferred",
+                    "mostRecentlyVisitedCourseParticipation"
+                  )
+                  values (
+                    ${cryptoRandomString({ length: 20, type: "numeric" })},
+                    ${request.body.name!},
+                    ${utilities
+                      .tokenize(request.body.name!)
+                      .map((tokenWithPosition) => tokenWithPosition.token)
+                      .join(" ")},
+                    ${request.body.email},
+                    ${request.body.email},
+                    ${cryptoRandomString({ length: 100, type: "numeric" })},
+                    ${new Date().toISOString()},
+                    ${password},
+                    ${null},
+                    ${null},
+                    ${Number(false)},
+                    ${null},
+                    ${null},
+                    ${
+                      [
+                        "red",
+                        "orange",
+                        "amber",
+                        "yellow",
+                        "lime",
+                        "green",
+                        "emerald",
+                        "teal",
+                        "cyan",
+                        "sky",
+                        "blue",
+                        "indigo",
+                        "violet",
+                        "purple",
+                        "fuchsia",
+                        "pink",
+                        "rose",
+                      ][Math.floor(Math.random() * 17)]
+                    },
+                    ${null},
+                    ${
+                      application.database.get<{ count: number }>(
+                        sql`
+                          select count(*) as "count" from "users";
+                        `,
+                      )!.count === 0
+                        ? "userRoleSystemAdministrator"
+                        : "userRoleUser"
+                    },
+                    ${new Date().toISOString()},
+                    ${"userDarkModeSystem"},
+                    ${80 * 4},
+                    ${Number(false)},
+                    ${Number(true)},
+                    ${Number(true)},
+                    ${Number(true)},
+                    ${"userAnonymityPreferredNone"},
+                    ${null}
+                  );
+                `,
+              ).lastInsertRowid
+            };
           `,
-        );
+        )!;
         application.database.run(
           sql`
             insert into "_backgroundJobs" (
@@ -1043,11 +1101,13 @@ export default async (application: Application): Promise<void> => {
                     If it was you, please confirm your email:
                     <a
                       href="https://${application.configuration
-                        .hostname}/authentication/email-verification/${userEmailVerificationNonce}${request
-                        .URL.search}"
+                        .hostname}/authentication/email-verification/${request
+                        .state.user.emailVerificationNonce!}${request.URL
+                        .search}"
                       >https://${application.configuration
-                        .hostname}/authentication/email-verification/${userEmailVerificationNonce}${request
-                        .URL.search}</a
+                        .hostname}/authentication/email-verification/${request
+                        .state.user.emailVerificationNonce!}${request.URL
+                        .search}</a
                     >
                   </p>
                   <p>
