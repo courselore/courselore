@@ -894,8 +894,8 @@ export default async (application: Application): Promise<void> => {
                   subject: "Tried to sign up with an existing email",
                   html: html`
                     <p>
-                      Someone tried to sign up to Courselore with this email
-                      address that already has an account:
+                      Someone tried to sign up to Courselore with the following
+                      email address that already has an account:
                       <code>${request.body.email!}</code>
                     </p>
                     <p>
@@ -1094,7 +1094,8 @@ export default async (application: Application): Promise<void> => {
                 subject: "Email verification",
                 html: html`
                   <p>
-                    Someone signed up to Courselore with this email address:
+                    Someone signed up to Courselore with the following email
+                    address:
                     <code>${request.body.email!}</code>
                   </p>
                   <p>
@@ -1226,7 +1227,7 @@ export default async (application: Application): Promise<void> => {
                   action="/authentication/sign-in?${new URLSearchParams({
                     redirect: `/authentication/email-verification/${
                       request.pathname.emailVerificationNonce
-                    }`,
+                    }?${request.URL.search}`,
                   }).toString()}"
                   css="${css`
                     padding: var(--size--2) var(--size--0);
