@@ -379,6 +379,44 @@ export default async (application: Application): Promise<void> => {
               `
             : html``;
         })()}
+        <div
+          key="flash"
+          css="${css`
+            color: light-dark(
+              var(--color--green--800),
+              var(--color--green--200)
+            );
+            background-color: light-dark(
+              var(--color--green--50),
+              var(--color--green--950)
+            );
+            width: max-content;
+            max-width: min(calc(100% - var(--size--8)), var(--size--96));
+            padding: var(--size--1) var(--size--2);
+            border: var(--border-width--1) solid
+              light-dark(var(--color--green--400), var(--color--green--600));
+            border-radius: var(--border-radius--1);
+            margin: var(--size--0) auto;
+            box-shadow: var(--box-shadow--4);
+            position: fixed;
+            top: var(--size--8);
+            left: var(--size--2);
+            right: var(--size--2);
+            z-index: 1500;
+          `}"
+          javascript="${javascript`
+            window.setTimeout(() => {
+              this.remove();
+            }, 5 * 1000);
+          `}"
+        >
+          Age were now considered to. Availability both to improve performance
+          of. To efficiently retrieve strings in a manuscript on deciphering
+          cryptographic messages he gave. Algorithms tend to be performed on it
+          many of these guarantees. Software engineering have been affected
+          nevertheless the ability to navigate. Is row oriented but there are
+          several different.
+        </div>
         $${request.state.courseParticipation !== undefined
           ? html`
               <div
