@@ -333,6 +333,52 @@ export default async (application: Application): Promise<void> => {
           flex-direction: column;
         `}"
       >
+        $${(() => {
+          const flash = request.getFlash();
+          return typeof flash === "string"
+            ? html`
+                <div
+                  key="flash"
+                  css="${css`
+                    color: light-dark(
+                      var(--color--green--800),
+                      var(--color--green--200)
+                    );
+                    background-color: light-dark(
+                      var(--color--green--50),
+                      var(--color--green--950)
+                    );
+                    width: max-content;
+                    max-width: min(
+                      calc(100% - var(--size--8)),
+                      var(--size--96)
+                    );
+                    padding: var(--size--1) var(--size--2);
+                    border: var(--border-width--1) solid
+                      light-dark(
+                        var(--color--green--400),
+                        var(--color--green--600)
+                      );
+                    border-radius: var(--border-radius--1);
+                    margin: var(--size--0) auto;
+                    box-shadow: var(--box-shadow--4);
+                    position: fixed;
+                    top: var(--size--8);
+                    left: var(--size--2);
+                    right: var(--size--2);
+                    z-index: 1500;
+                  `}"
+                  javascript="${javascript`
+                    window.setTimeout(() => {
+                      this.remove();
+                    }, 3 * 1000);
+                  `}"
+                >
+                  $${flash}
+                </div>
+              `
+            : html``;
+        })()}
         $${request.state.courseParticipation !== undefined
           ? html`
               <div
