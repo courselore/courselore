@@ -1190,7 +1190,7 @@ export default async (application: Application): Promise<void> => {
     handler: (
       request: serverTypes.Request<
         { emailVerificationNonce: string },
-        {},
+        { redirect: string },
         {},
         {},
         Application["types"]["states"]["Authentication"]
@@ -1198,133 +1198,229 @@ export default async (application: Application): Promise<void> => {
       response,
     ) => {
       if (typeof request.pathname.emailVerificationNonce !== "string") return;
-      if (request.state.user === undefined) {
-        response.end(
-          application.layouts.main({
-            request,
-            response,
-            head: html`<title>Email verification · Courselore</title>`,
-            body: html`
-              <div
-                css="${css`
-                  display: flex;
-                  flex-direction: column;
-                  gap: var(--size--2);
-                `}"
-              >
-                <div
-                  css="${css`
-                    font-size: var(--font-size--4);
-                    line-height: var(--font-size--4--line-height);
-                    font-weight: 800;
-                  `}"
-                >
-                  Email verification
-                </div>
-                <div
-                  type="form"
-                  method="POST"
-                  action="/authentication/sign-in?${new URLSearchParams({
-                    redirect: `/authentication/email-verification/${
-                      request.pathname.emailVerificationNonce
-                    }?${request.URL.search}`,
-                  }).toString()}"
-                  css="${css`
-                    padding: var(--size--2) var(--size--0);
-                    border-bottom: var(--border-width--1) solid
-                      light-dark(
-                        var(--color--slate--200),
-                        var(--color--slate--800)
-                      );
-                    display: flex;
-                    flex-direction: column;
-                    gap: var(--size--4);
-                  `}"
-                >
-                  <label>
-                    <div
-                      css="${css`
-                        font-size: var(--font-size--3);
-                        line-height: var(--font-size--3--line-height);
-                        font-weight: 600;
-                        color: light-dark(
-                          var(--color--slate--500),
-                          var(--color--slate--500)
-                        );
-                      `}"
-                    >
-                      Email
-                    </div>
-                    <div
-                      css="${css`
-                        display: flex;
-                      `}"
-                    >
-                      <input
-                        type="email"
-                        name="email"
-                        required
-                        maxlength="2000"
-                        autofocus
-                        class="input--text"
-                        css="${css`
-                          flex: 1;
-                        `}"
-                      />
-                    </div>
-                  </label>
-                  <label>
-                    <div
-                      css="${css`
-                        font-size: var(--font-size--3);
-                        line-height: var(--font-size--3--line-height);
-                        font-weight: 600;
-                        color: light-dark(
-                          var(--color--slate--500),
-                          var(--color--slate--500)
-                        );
-                      `}"
-                    >
-                      Password
-                    </div>
-                    <div
-                      css="${css`
-                        display: flex;
-                      `}"
-                    >
-                      <input
-                        type="password"
-                        name="password"
-                        required
-                        minlength="8"
-                        maxlength="2000"
-                        class="input--text"
-                        css="${css`
-                          flex: 1;
-                        `}"
-                      />
-                    </div>
-                  </label>
-                  <div
-                    css="${css`
-                      font-size: var(--font-size--3);
-                      line-height: var(--font-size--3--line-height);
-                    `}"
-                  >
-                    <button
-                      type="submit"
-                      class="button button--rectangle button--blue"
-                    >
-                      Sign in
-                    </button>
-                  </div>
-                </div>
-              </div>
-            `,
-          }),
-        );
+      if (
+        typeof request.search.redirect === "string" &&
+        !request.search.redirect.startsWith("/")
+      )
+        delete request.search.redirect;
+      if (
+        request.state.user !== undefined &&
+        request.state.user.emailVerificationEmail === null
+      ) {
+        response.setFlash(html`<p>The email has already been verified.</p>`);
+        response.redirect(request.search.redirect ?? "/");
         return;
       }
+      response.end(
+        application.layouts.main({
+          request,
+          response,
+          head: html`<title>Email verification · Courselore</title>`,
+          body: html`
+            <div
+              css="${css`
+                display: flex;
+                flex-direction: column;
+                gap: var(--size--2);
+              `}"
+            >
+              <div
+                css="${css`
+                  font-size: var(--font-size--4);
+                  line-height: var(--font-size--4--line-height);
+                  font-weight: 800;
+                `}"
+              >
+                Email verification
+              </div>
+              $${request.state.user === undefined
+                ? html`
+                    <div
+                      type="form"
+                      method="POST"
+                      action="/authentication/sign-in?${new URLSearchParams({
+                        redirect: `/authentication/email-verification/${
+                          request.pathname.emailVerificationNonce
+                        }${request.URL.search}`,
+                      }).toString()}"
+                      css="${css`
+                        display: flex;
+                        flex-direction: column;
+                        gap: var(--size--4);
+                      `}"
+                    >
+                      <label>
+                        <div
+                          css="${css`
+                            font-size: var(--font-size--3);
+                            line-height: var(--font-size--3--line-height);
+                            font-weight: 600;
+                            color: light-dark(
+                              var(--color--slate--500),
+                              var(--color--slate--500)
+                            );
+                          `}"
+                        >
+                          Email
+                        </div>
+                        <div
+                          css="${css`
+                            display: flex;
+                          `}"
+                        >
+                          <input
+                            type="email"
+                            name="email"
+                            required
+                            maxlength="2000"
+                            autofocus
+                            class="input--text"
+                            css="${css`
+                              flex: 1;
+                            `}"
+                          />
+                        </div>
+                      </label>
+                      <label>
+                        <div
+                          css="${css`
+                            font-size: var(--font-size--3);
+                            line-height: var(--font-size--3--line-height);
+                            font-weight: 600;
+                            color: light-dark(
+                              var(--color--slate--500),
+                              var(--color--slate--500)
+                            );
+                          `}"
+                        >
+                          Password
+                        </div>
+                        <div
+                          css="${css`
+                            display: flex;
+                          `}"
+                        >
+                          <input
+                            type="password"
+                            name="password"
+                            required
+                            minlength="8"
+                            maxlength="2000"
+                            class="input--text"
+                            css="${css`
+                              flex: 1;
+                            `}"
+                          />
+                        </div>
+                      </label>
+                      <div
+                        css="${css`
+                          font-size: var(--font-size--3);
+                          line-height: var(--font-size--3--line-height);
+                        `}"
+                      >
+                        <button
+                          type="submit"
+                          class="button button--rectangle button--blue"
+                        >
+                          Sign in
+                        </button>
+                      </div>
+                    </div>
+                  `
+                : html`
+                    <div
+                      type="form"
+                      method="POST"
+                      action="/authentication/email-verification/${request
+                        .pathname.emailVerificationNonce}${request.URL.search}"
+                      css="${css`
+                        display: flex;
+                        flex-direction: column;
+                        gap: var(--size--4);
+                      `}"
+                    >
+                      <label>
+                        <div
+                          css="${css`
+                            font-size: var(--font-size--3);
+                            line-height: var(--font-size--3--line-height);
+                            font-weight: 600;
+                            color: light-dark(
+                              var(--color--slate--500),
+                              var(--color--slate--500)
+                            );
+                          `}"
+                        >
+                          Email
+                        </div>
+                        <div
+                          css="${css`
+                            display: flex;
+                          `}"
+                        >
+                          <input
+                            type="email"
+                            value="${request.state.user
+                              .emailVerificationEmail!}"
+                            disabled
+                            class="input--text"
+                            css="${css`
+                              flex: 1;
+                            `}"
+                          />
+                        </div>
+                      </label>
+                      <div
+                        css="${css`
+                          font-size: var(--font-size--3);
+                          line-height: var(--font-size--3--line-height);
+                        `}"
+                      >
+                        <button
+                          type="submit"
+                          class="button button--rectangle button--blue"
+                        >
+                          Verify email
+                        </button>
+                      </div>
+                    </div>
+                  `}
+            </div>
+          `,
+        }),
+      );
+    },
+  });
+
+  application.server?.push({
+    method: "POST",
+    pathname: new RegExp(
+      "^/authentication/email-verification/(?<emailVerificationNonce>[0-9]+)$",
+    ),
+    handler: (
+      request: serverTypes.Request<
+        { emailVerificationNonce: string },
+        { redirect: string },
+        {},
+        {},
+        Application["types"]["states"]["Authentication"]
+      >,
+      response,
+    ) => {
+      if (
+        typeof request.pathname.emailVerificationNonce !== "string" ||
+        request.state.user === undefined
+      )
+        return;
+      if (
+        typeof request.search.redirect === "string" &&
+        !request.search.redirect.startsWith("/")
+      )
+        delete request.search.redirect;
+      // TODO
+      response.setFlash(html`<p>The email was verified successfully.</p>`);
+      response.redirect(request.search.redirect ?? "/");
     },
   });
 
