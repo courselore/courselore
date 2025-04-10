@@ -358,11 +358,7 @@ export default async (application: Application): Promise<void> => {
                         var(--size--96)
                       );
                       padding: var(--size--1) var(--size--2);
-                      border: var(--border-width--1) solid
-                        light-dark(
-                          var(--color--green--400),
-                          var(--color--green--600)
-                        );
+                      border: var(--border-width--1) solid;
                       border-radius: var(--border-radius--1);
                       margin: var(--size--0) auto;
                       box-shadow: var(--box-shadow--4);
@@ -400,6 +396,10 @@ export default async (application: Application): Promise<void> => {
                             background-color: light-dark(
                               var(--color--${color}--50),
                               var(--color--${color}--950)
+                            );
+                            border-color: light-dark(
+                              var(--color--${color}--400),
+                              var(--color--${color}--600)
                             );
                           }
                         `,

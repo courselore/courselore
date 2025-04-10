@@ -1675,7 +1675,13 @@ export default async (application: Application): Promise<void> => {
         request.state.user.emailVerificationCreatedAt <
           new Date(Date.now() - 15 * 60 * 1000).toISOString()
       ) {
-        // TODO
+        response.setFlash(html`
+          <div class="flash--red">
+            There’s something wrong with this email verification. Please request
+            a new email verification.
+          </div>
+        `);
+        response.redirect(request.search.redirect ?? "/");
         return;
       }
       application.database.run(
