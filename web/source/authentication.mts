@@ -1207,7 +1207,9 @@ export default async (application: Application): Promise<void> => {
         request.state.user !== undefined &&
         request.state.user.emailVerificationEmail === null
       ) {
-        response.setFlash(html`<p>The email has already been verified.</p>`);
+        response.setFlash(html`
+          <div class="flash--green">The email has already been verified.</div>
+        `);
         response.redirect(request.search.redirect ?? "/");
         return;
       }
@@ -1419,7 +1421,9 @@ export default async (application: Application): Promise<void> => {
       )
         delete request.search.redirect;
       // TODO
-      response.setFlash(html`<p>The email was verified successfully.</p>`);
+      response.setFlash(html`
+        <div class="flash--green">The email was verified successfully.</div>
+      `);
       response.redirect(request.search.redirect ?? "/");
     },
   });
