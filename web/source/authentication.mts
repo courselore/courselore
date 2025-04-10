@@ -282,9 +282,93 @@ export default async (application: Application): Promise<void> => {
       );
       if (request.state.user === undefined) throw new Error();
       if (
-        // TODO
-        request.state.user.email === request.state.user.emailVerificationEmail
+        request.state.user.email ===
+          request.state.user.emailVerificationEmail &&
+        typeof request.state.user.emailVerificationCreatedAt === "string" &&
+        !request.URL.pathname.match(new RegExp("^/authentication(?:$|/)"))
       ) {
+        response.end(
+          application.layouts.main({
+            request,
+            response,
+            head: html`<title>Email verification · Courselore</title>`,
+            body: html`
+              <div
+                css="${css`
+                  display: flex;
+                  flex-direction: column;
+                  gap: var(--size--2);
+                `}"
+              >
+                <div
+                  css="${css`
+                    font-size: var(--font-size--4);
+                    line-height: var(--font-size--4--line-height);
+                    font-weight: 800;
+                  `}"
+                >
+                  Email verification
+                </div>
+                <p>To continue please check your email.</p>
+                <div
+                  hidden
+                  type="form"
+                  method="POST"
+                  action="/TODO${request.URL.search}"
+                  css="${css`
+                    display: flex;
+                    flex-direction: column;
+                    gap: var(--size--4);
+                  `}"
+                >
+                  <label>
+                    <div
+                      css="${css`
+                        font-size: var(--font-size--3);
+                        line-height: var(--font-size--3--line-height);
+                        font-weight: 600;
+                        color: light-dark(
+                          var(--color--slate--500),
+                          var(--color--slate--500)
+                        );
+                      `}"
+                    >
+                      Email
+                    </div>
+                    <div
+                      css="${css`
+                        display: flex;
+                      `}"
+                    >
+                      <input
+                        type="email"
+                        value="${request.state.user.emailVerificationEmail!}"
+                        disabled
+                        class="input--text"
+                        css="${css`
+                          flex: 1;
+                        `}"
+                      />
+                    </div>
+                  </label>
+                  <div
+                    css="${css`
+                      font-size: var(--font-size--3);
+                      line-height: var(--font-size--3--line-height);
+                    `}"
+                  >
+                    <button
+                      type="submit"
+                      class="button button--rectangle button--blue"
+                    >
+                      Verify email
+                    </button>
+                  </div>
+                </div>
+              </div>
+            `,
+          }),
+        );
         return;
       }
     },
