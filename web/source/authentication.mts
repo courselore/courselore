@@ -1332,8 +1332,8 @@ export default async (application: Application): Promise<void> => {
               subject: "Email verification",
               html: html`
                 <p>
-                  Someone is trying to validate an account on Courselore with
-                  the following email address:
+                  Someone is trying to verify the following email address on an
+                  account on Courselore:
                   <code>${request.state.user.emailVerificationEmail}</code>
                 </p>
                 <p>
