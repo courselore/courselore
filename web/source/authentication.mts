@@ -285,7 +285,9 @@ export default async (application: Application): Promise<void> => {
         request.state.user.email ===
           request.state.user.emailVerificationEmail &&
         typeof request.state.user.emailVerificationCreatedAt === "string" &&
-        !request.URL.pathname.match(new RegExp("^/authentication(?:$|/)"))
+        !request.URL.pathname.match(
+          new RegExp("^/authentication/email-verification(?:$|/)"),
+        )
       ) {
         response.end(
           application.layouts.main({
