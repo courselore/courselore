@@ -315,8 +315,9 @@ export default async (application: Application): Promise<void> => {
                 <div
                   type="form"
                   method="POST"
-                  action="/authentication/email-verification/resend${request.URL
-                    .search}"
+                  action="/authentication/email-verification/resend?${new URLSearchParams(
+                    { redirect: request.URL.pathname + request.URL.search },
+                  ).toString()}"
                   css="${css`
                     display: flex;
                     flex-direction: column;
