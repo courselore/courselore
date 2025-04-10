@@ -1437,6 +1437,7 @@ export default async (application: Application): Promise<void> => {
       >,
       response,
     ) => {
+      // TODO: Send email warning about sign in
       if (request.state.user !== undefined) return;
       if (
         typeof request.search.redirect === "string" &&
