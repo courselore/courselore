@@ -1304,6 +1304,11 @@ export default async (application: Application): Promise<void> => {
         typeof request.state.user.emailVerificationCreatedAt !== "string"
       )
         return;
+      if (
+        new Date(Date.now() - 5 * 60 * 1000).toISOString() <
+        request.state.user.emailVerificationNonce
+      )
+        throw "validation";
       const emailVerificationNonce = cryptoRandomString({
         length: 100,
         type: "numeric",
@@ -1332,7 +1337,7 @@ export default async (application: Application): Promise<void> => {
               subject: "Email verification",
               html: html`
                 <p>
-                  Someone is trying to verify the following email address on an
+                  Someone is trying to verify the following email address for an
                   account on Courselore:
                   <code>${request.state.user.emailVerificationEmail}</code>
                 </p>
