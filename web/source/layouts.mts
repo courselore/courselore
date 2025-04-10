@@ -335,96 +335,98 @@ export default async (application: Application): Promise<void> => {
       >
         $${(() => {
           const flash = request.getFlash();
-          return typeof flash === "string" ? html` TODO $${flash} ` : html``;
+          return typeof flash === "string"
+            ? html`
+                <div
+                  key="flash"
+                  css="${css`
+                    transition-property: var(--transition-property--opacity);
+                    transition-duration: var(--transition-duration--150);
+                    transition-timing-function: var(
+                      --transition-timing-function--ease-in-out
+                    );
+
+                    &[state~="hidden"] {
+                      visibility: hidden;
+                      opacity: var(--opacity--0);
+                    }
+
+                    & > * {
+                      width: max-content;
+                      max-width: min(
+                        calc(100% - var(--size--8)),
+                        var(--size--96)
+                      );
+                      padding: var(--size--1) var(--size--2);
+                      border: var(--border-width--1) solid
+                        light-dark(
+                          var(--color--green--400),
+                          var(--color--green--600)
+                        );
+                      border-radius: var(--border-radius--1);
+                      margin: var(--size--0) auto;
+                      box-shadow: var(--box-shadow--4);
+                      position: fixed;
+                      top: var(--size--8);
+                      left: var(--size--2);
+                      right: var(--size--2);
+                      z-index: 1500;
+
+                      ${[
+                        "red",
+                        "orange",
+                        "amber",
+                        "yellow",
+                        "lime",
+                        "green",
+                        "emerald",
+                        "teal",
+                        "cyan",
+                        "sky",
+                        "blue",
+                        "indigo",
+                        "violet",
+                        "purple",
+                        "fuchsia",
+                        "pink",
+                        "rose",
+                      ].map(
+                        (color) => css`
+                          &.flash--${color} {
+                            color: light-dark(
+                              var(--color--${color}--800),
+                              var(--color--${color}--200)
+                            );
+                            background-color: light-dark(
+                              var(--color--${color}--50),
+                              var(--color--${color}--950)
+                            );
+                          }
+                        `,
+                      )}
+                    }
+                  `}"
+                  javascript="${javascript`
+                    this.morph = false;
+                    window.setTimeout(() => {
+                      javascript.stateAdd(this, "hidden");
+                      this.ontransitionend = (event) => {
+                        if (
+                          event.target === this &&
+                          event.propertyName === "visibility" &&
+                          window.getComputedStyle(this).visibility === "hidden" &&
+                          this.matches('[state~="hidden"]')
+                        )
+                          this.remove();
+                      };
+                    }, 5 * 1000);
+                  `}"
+                >
+                  $${flash}
+                </div>
+              `
+            : html``;
         })()}
-        <div
-          key="flash"
-          css="${css`
-            transition-property: var(--transition-property--opacity);
-            transition-duration: var(--transition-duration--150);
-            transition-timing-function: var(
-              --transition-timing-function--ease-in-out
-            );
-
-            &[state~="hidden"] {
-              visibility: hidden;
-              opacity: var(--opacity--0);
-            }
-
-            & > * {
-              width: max-content;
-              max-width: min(calc(100% - var(--size--8)), var(--size--96));
-              padding: var(--size--1) var(--size--2);
-              border: var(--border-width--1) solid
-                light-dark(var(--color--green--400), var(--color--green--600));
-              border-radius: var(--border-radius--1);
-              margin: var(--size--0) auto;
-              box-shadow: var(--box-shadow--4);
-              position: fixed;
-              top: var(--size--8);
-              left: var(--size--2);
-              right: var(--size--2);
-              z-index: 1500;
-
-              ${[
-                "red",
-                "orange",
-                "amber",
-                "yellow",
-                "lime",
-                "green",
-                "emerald",
-                "teal",
-                "cyan",
-                "sky",
-                "blue",
-                "indigo",
-                "violet",
-                "purple",
-                "fuchsia",
-                "pink",
-                "rose",
-              ].map(
-                (color) => css`
-                  &.flash--${color} {
-                    color: light-dark(
-                      var(--color--${color}--800),
-                      var(--color--${color}--200)
-                    );
-                    background-color: light-dark(
-                      var(--color--${color}--50),
-                      var(--color--${color}--950)
-                    );
-                  }
-                `,
-              )}
-            }
-          `}"
-          javascript="${javascript`
-            this.morph = false;
-            window.setTimeout(() => {
-              javascript.stateAdd(this, "hidden");
-              this.ontransitionend = (event) => {
-                if (
-                  event.target === this &&
-                  event.propertyName === "visibility" &&
-                  window.getComputedStyle(this).visibility === "hidden" &&
-                  this.matches('[state~="hidden"]')
-                )
-                  this.remove();
-              };
-            }, 5 * 1000);
-          `}"
-        >
-          <div class="flash--green">
-            Age were now considered to. Availability both to improve performance
-            of. To efficiently retrieve strings in a manuscript on deciphering
-            cryptographic messages he gave. Algorithms tend to be performed on
-            it many of these guarantees. Software engineering have been affected
-            nevertheless the ability to navigate. Is row oriented but there are
-            several different.
-          </div>
-        </div>
         $${request.state.courseParticipation !== undefined
           ? html`
               <div
