@@ -1306,7 +1306,7 @@ export default async (application: Application): Promise<void> => {
         return;
       if (
         new Date(Date.now() - 5 * 60 * 1000).toISOString() <
-        request.state.user.emailVerificationNonce
+        request.state.user.emailVerificationCreatedAt
       )
         throw "validation";
       const emailVerificationNonce = cryptoRandomString({
