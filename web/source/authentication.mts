@@ -1279,6 +1279,145 @@ export default async (application: Application): Promise<void> => {
   });
 
   application.server?.push({
+    method: "POST",
+    pathname: "/authentication/email-verification/resend",
+    handler: (
+      request: serverTypes.Request<
+        {},
+        {},
+        {},
+        {},
+        Application["types"]["states"]["Authentication"]
+      >,
+      response,
+    ) => {
+      if (
+        request.state.user === undefined ||
+        typeof request.state.user.emailVerificationEmail !== "string" ||
+        typeof request.state.user.emailVerificationNonce !== "string" ||
+        typeof request.state.user.emailVerificationCreatedAt !== "string"
+      )
+        return;
+      const emailVerificationNonce = cryptoRandomString({
+        length: 100,
+        type: "numeric",
+      });
+      application.database.run(
+        sql`
+          update "users"
+          set
+            "emailVerificationNonce" = ${emailVerificationNonce},
+            "emailVerificationCreatedAt" = ${new Date().toISOString()}
+          where "id" = ${request.state.user.id};
+        `,
+      );
+      application.database.run(
+        sql`
+          insert into "_backgroundJobs" (
+            "type",
+            "startAt",
+            "parameters"
+          )
+          values (
+            'email',
+            ${new Date().toISOString()},
+            ${JSON.stringify({
+              to: request.state.user.emailVerificationEmail,
+              subject: "Email verification",
+              html: html`
+                <p>
+                  Someone is trying to validate an account on Courselore with
+                  the following email address:
+                  <code>${request.state.user.emailVerificationEmail}</code>
+                </p>
+                <p>
+                  If it was you, please confirm your email:
+                  <a
+                    href="https://${application.configuration
+                      .hostname}/authentication/email-verification/${emailVerificationNonce}${request
+                      .URL.search}"
+                    >https://${application.configuration
+                      .hostname}/authentication/email-verification/${emailVerificationNonce}${request
+                      .URL.search}</a
+                  >
+                </p>
+                <p>
+                  If it was not you, please report the issue to
+                  <a
+                    href="mailto:${application.configuration
+                      .systemAdministratorEmail ??
+                    "system-administrator@courselore.org"}?${new URLSearchParams(
+                      {
+                        subject: "Potential sign up impersonation",
+                        body: `Email: ${request.state.user.emailVerificationEmail}`,
+                      },
+                    )
+                      .toString()
+                      .replaceAll("+", "%20")}"
+                    >${application.configuration.systemAdministratorEmail ??
+                    "system-administrator@courselore.org"}</a
+                  >
+                </p>
+              `,
+            })}
+          );
+        `,
+      );
+      response.redirect();
+    },
+  });
+
+  application.server?.push({
+    method: "GET",
+    pathname: "/authentication/email-verification/resend",
+    handler: (
+      request: serverTypes.Request<
+        {},
+        {},
+        {},
+        {},
+        Application["types"]["states"]["Authentication"]
+      >,
+      response,
+    ) => {
+      if (
+        request.state.user === undefined ||
+        typeof request.state.user.emailVerificationEmail !== "string" ||
+        typeof request.state.user.emailVerificationNonce !== "string" ||
+        typeof request.state.user.emailVerificationCreatedAt !== "string"
+      )
+        return;
+      response.end(
+        application.layouts.main({
+          request,
+          response,
+          head: html`<title>Email verification · Courselore</title>`,
+          body: html`
+            <div
+              css="${css`
+                display: flex;
+                flex-direction: column;
+                gap: var(--size--2);
+              `}"
+            >
+              <div
+                css="${css`
+                  font-size: var(--font-size--4);
+                  line-height: var(--font-size--4--line-height);
+                  font-weight: 800;
+                `}"
+              >
+                Email verification
+              </div>
+              <p>To continue please check your email.</p>
+            </div>
+          `,
+        }),
+      );
+    },
+  });
+
+  application.server?.push({
     method: "GET",
     pathname: new RegExp(
       "^/authentication/email-verification/(?<emailVerificationNonce>[0-9]+)$",
