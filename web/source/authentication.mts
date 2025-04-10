@@ -1412,7 +1412,10 @@ export default async (application: Application): Promise<void> => {
     ) => {
       if (
         typeof request.pathname.emailVerificationNonce !== "string" ||
-        request.state.user === undefined
+        request.state.user === undefined ||
+        typeof request.state.user.emailVerificationEmail !== "string" ||
+        typeof request.state.user.emailVerificationNonce !== "string" ||
+        typeof request.state.user.emailVerificationCreatedAt !== "string"
       )
         return;
       if (
@@ -1420,7 +1423,26 @@ export default async (application: Application): Promise<void> => {
         !request.search.redirect.startsWith("/")
       )
         delete request.search.redirect;
-      // TODO
+      if (
+        request.state.user.emailVerificationNonce !==
+          request.pathname.emailVerificationNonce ||
+        request.state.user.emailVerificationCreatedAt <
+          new Date(Date.now() - 15 * 60 * 1000).toISOString()
+      ) {
+        // TODO
+        return;
+      }
+      application.database.run(
+        sql`
+          update "users"
+          set
+            "email" = ${request.state.user.emailVerificationEmail},
+            "emailVerificationEmail" = null,
+            "emailVerificationNonce" = null,
+            "emailVerificationCreatedAt" = null
+          where "id" = ${request.state.user.id};
+        `,
+      );
       response.setFlash(html`
         <div class="flash--green">The email was verified successfully.</div>
       `);
