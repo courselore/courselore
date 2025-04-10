@@ -363,8 +363,14 @@ export default async (application: Application): Promise<void> => {
                     request.state.user.emailVerificationCreatedAt
                       ? html`
                           <p>
-                            Wait for 5 minutes before you can request the email
-                            verification to be sent again.
+                            Wait until
+                            <span
+                              javascript="${javascript`
+                                this.textContent = javascript.localizeTime(${new Date(new Date(request.state.user.emailVerificationCreatedAt).getTime() + 6 * 60 * 1000).toISOString()});
+                              `}"
+                            ></span>
+                            before you can request the email verification to be
+                            sent again.
                           </p>
                         `
                       : html`
