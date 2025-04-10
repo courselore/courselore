@@ -313,10 +313,10 @@ export default async (application: Application): Promise<void> => {
                 </div>
                 <p>To continue please check your email.</p>
                 <div
-                  hidden
                   type="form"
                   method="POST"
-                  action="/TODO${request.URL.search}"
+                  action="/authentication/email-verification/resend${request.URL
+                    .search}"
                   css="${css`
                     display: flex;
                     flex-direction: column;
@@ -344,7 +344,7 @@ export default async (application: Application): Promise<void> => {
                     >
                       <input
                         type="email"
-                        value="${request.state.user.emailVerificationEmail!}"
+                        value="${request.state.user.emailVerificationEmail}"
                         disabled
                         class="input--text"
                         css="${css`
@@ -359,12 +359,22 @@ export default async (application: Application): Promise<void> => {
                       line-height: var(--font-size--3--line-height);
                     `}"
                   >
-                    <button
-                      type="submit"
-                      class="button button--rectangle button--blue"
-                    >
-                      Verify email
-                    </button>
+                    $${new Date(Date.now() - 5 * 60 * 1000).toISOString() <
+                    request.state.user.emailVerificationCreatedAt
+                      ? html`
+                          <p>
+                            Wait for 5 minutes before you can request the email
+                            verification to be sent again.
+                          </p>
+                        `
+                      : html`
+                          <button
+                            type="submit"
+                            class="button button--rectangle button--blue"
+                          >
+                            Resend email verification
+                          </button>
+                        `}
                   </div>
                 </div>
               </div>
