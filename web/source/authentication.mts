@@ -726,7 +726,7 @@ export default async (application: Application): Promise<void> => {
                     <div
                       type="form"
                       method="POST"
-                      action="/authentication/forgot-password${request.URL
+                      action="/authentication/reset-password${request.URL
                         .search}"
                       css="${css`
                         padding: var(--size--2) var(--size--0);
@@ -908,7 +908,7 @@ export default async (application: Application): Promise<void> => {
                     </p>
                     <p>
                       If it was you, please sign in instead, and if you don’t
-                      remember your password, use the “Forgot password” feature
+                      remember your password use the “Forgot password” feature
                       <a
                         href="https://${application.configuration
                           .hostname}/authentication${request.URL.search}"
@@ -1849,6 +1849,311 @@ export default async (application: Application): Promise<void> => {
         `,
       );
       response.redirect(request.search.redirect ?? "/");
+    },
+  });
+
+  application.server?.push({
+    method: "POST",
+    pathname: "/authentication/reset-password",
+    handler: (
+      request: serverTypes.Request<
+        {},
+        {},
+        {},
+        { email: string },
+        Application["types"]["states"]["Authentication"]
+      >,
+      response,
+    ) => {
+      if (request.state.user !== undefined) return;
+      if (
+        typeof request.body.email !== "string" ||
+        !request.body.email.match(utilities.emailRegExp)
+      )
+        throw "validation";
+      request.state.user = application.database.get<{
+        id: number;
+        publicId: string;
+        name: string;
+        email: string;
+        emailVerificationEmail: string | null;
+        emailVerificationNonce: string | null;
+        emailVerificationCreatedAt: string | null;
+        password: string | null;
+        passwordResetNonce: string | null;
+        passwordResetCreatedAt: string | null;
+        twoFactorAuthenticationEnabled: number;
+        twoFactorAuthenticationSecret: string | null;
+        twoFactorAuthenticationRecoveryCodes: string | null;
+        avatarColor:
+          | "red"
+          | "orange"
+          | "amber"
+          | "yellow"
+          | "lime"
+          | "green"
+          | "emerald"
+          | "teal"
+          | "cyan"
+          | "sky"
+          | "blue"
+          | "indigo"
+          | "violet"
+          | "purple"
+          | "fuchsia"
+          | "pink"
+          | "rose";
+        avatarImage: string | null;
+        userRole:
+          | "userRoleSystemAdministrator"
+          | "userRoleStaff"
+          | "userRoleUser";
+        lastSeenOnlineAt: string;
+        darkMode:
+          | "userDarkModeSystem"
+          | "userDarkModeLight"
+          | "userDarkModeDark";
+        sidebarWidth: number;
+        emailNotificationsForAllMessages: number;
+        emailNotificationsForMessagesIncludingMentions: number;
+        emailNotificationsForMessagesInConversationsInWhichYouParticipated: number;
+        emailNotificationsForMessagesInConversationsThatYouStarted: number;
+        userAnonymityPreferred:
+          | "userAnonymityPreferredNone"
+          | "userAnonymityPreferredCourseParticipationRoleStudents"
+          | "userAnonymityPreferredCourseParticipationRoleInstructors";
+        mostRecentlyVisitedCourseParticipation: number | null;
+      }>(
+        sql`
+          select
+            "id",
+            "publicId",
+            "name",
+            "email",
+            "emailVerificationEmail",
+            "emailVerificationNonce",
+            "emailVerificationCreatedAt",
+            "password",
+            "passwordResetNonce",
+            "passwordResetCreatedAt",
+            "twoFactorAuthenticationEnabled",
+            "twoFactorAuthenticationSecret",
+            "twoFactorAuthenticationRecoveryCodes",
+            "avatarColor",
+            "avatarImage",
+            "userRole",
+            "lastSeenOnlineAt",
+            "darkMode",
+            "sidebarWidth",
+            "emailNotificationsForAllMessages",
+            "emailNotificationsForMessagesIncludingMentions",
+            "emailNotificationsForMessagesInConversationsInWhichYouParticipated",
+            "emailNotificationsForMessagesInConversationsThatYouStarted",
+            "userAnonymityPreferred",
+            "mostRecentlyVisitedCourseParticipation"
+          from "users"
+          where "email" = ${request.body.email};
+        `,
+      );
+      if (
+        request.state.user !== undefined &&
+        (request.state.user.passwordResetCreatedAt === null ||
+          request.state.user.passwordResetCreatedAt <
+            new Date(Date.now() - 5 * 60 * 1000).toISOString())
+      ) {
+        request.state.user.passwordResetNonce = cryptoRandomString({
+          length: 100,
+          type: "numeric",
+        });
+        request.state.user.passwordResetCreatedAt = new Date().toISOString();
+        application.database.run(
+          sql`
+            update "users"
+            set
+              "passwordResetNonce" = ${request.state.user.passwordResetNonce},
+              "passwordResetCreatedAt" = ${request.state.user.passwordResetCreatedAt}
+            where "id" = ${request.state.user.id};
+          `,
+        );
+        application.database.run(
+          sql`
+            insert into "_backgroundJobs" (
+              "type",
+              "startAt",
+              "parameters"
+            )
+            values (
+              'email',
+              ${new Date().toISOString()},
+              ${JSON.stringify({
+                to: request.state.user.email,
+                subject: "Reset password",
+                html: html`
+                  <p>
+                    Someone is trying to reset the password for an account on
+                    Courselore with the following email address:
+                    <code>${request.state.user.email}</code>
+                  </p>
+                  <p>
+                    If it was you, please reset your password:
+                    <a
+                      href="https://${application.configuration
+                        .hostname}/authentication/reset-password/${request.state
+                        .user.passwordResetNonce}${request.URL.search}"
+                      >https://${application.configuration
+                        .hostname}/authentication/reset-password/${request.state
+                        .user.passwordResetNonce}${request.URL.search}</a
+                    >
+                  </p>
+                  <p>
+                    If it was not you, please report the issue to
+                    <a
+                      href="mailto:${application.configuration
+                        .systemAdministratorEmail ??
+                      "system-administrator@courselore.org"}?${new URLSearchParams(
+                        {
+                          subject: "Potential impersonation",
+                          body: `Email: ${request.state.user.emailVerificationEmail}`,
+                        },
+                      )
+                        .toString()
+                        .replaceAll("+", "%20")}"
+                      >${application.configuration.systemAdministratorEmail ??
+                      "system-administrator@courselore.org"}</a
+                    >
+                  </p>
+                `,
+              })}
+            );
+          `,
+        );
+      }
+      response.redirect(`/authentication/reset-password${request.URL.search}`);
+    },
+  });
+
+  application.server?.push({
+    method: "GET",
+    pathname: "/authentication/reset-password",
+    handler: (
+      request: serverTypes.Request<
+        {},
+        {},
+        {},
+        {},
+        Application["types"]["states"]["Authentication"]
+      >,
+      response,
+    ) => {
+      // TODO
+      if (
+        request.state.user !== undefined &&
+        request.state.user.emailVerificationEmail === null
+      )
+        return;
+      response.end(
+        application.layouts.main({
+          request,
+          response,
+          head: html`<title>Email verification · Courselore</title>`,
+          body: html`
+            <div
+              css="${css`
+                display: flex;
+                flex-direction: column;
+                gap: var(--size--2);
+              `}"
+            >
+              <div
+                css="${css`
+                  font-size: var(--font-size--4);
+                  line-height: var(--font-size--4--line-height);
+                  font-weight: 800;
+                `}"
+              >
+                Email verification
+              </div>
+              <p>To continue please check your email.</p>
+              $${request.state.user !== undefined &&
+              typeof request.state.user.emailVerificationEmail === "string" &&
+              typeof request.state.user.emailVerificationCreatedAt === "string"
+                ? html`
+                    <div
+                      type="form"
+                      method="POST"
+                      action="/authentication/email-verification/resend${request
+                        .URL.search}"
+                      css="${css`
+                        display: flex;
+                        flex-direction: column;
+                        gap: var(--size--4);
+                      `}"
+                    >
+                      <label>
+                        <div
+                          css="${css`
+                            font-size: var(--font-size--3);
+                            line-height: var(--font-size--3--line-height);
+                            font-weight: 600;
+                            color: light-dark(
+                              var(--color--slate--500),
+                              var(--color--slate--500)
+                            );
+                          `}"
+                        >
+                          Email
+                        </div>
+                        <div
+                          css="${css`
+                            display: flex;
+                          `}"
+                        >
+                          <input
+                            type="email"
+                            value="${request.state.user.emailVerificationEmail}"
+                            disabled
+                            class="input--text"
+                            css="${css`
+                              flex: 1;
+                            `}"
+                          />
+                        </div>
+                      </label>
+                      <div
+                        css="${css`
+                          font-size: var(--font-size--3);
+                          line-height: var(--font-size--3--line-height);
+                        `}"
+                      >
+                        $${new Date(Date.now() - 5 * 60 * 1000).toISOString() <
+                        request.state.user.emailVerificationCreatedAt
+                          ? html`
+                              <p>
+                                Wait until
+                                <span
+                                  javascript="${javascript`
+                                    this.textContent = javascript.localizeTime(${new Date(new Date(request.state.user.emailVerificationCreatedAt).getTime() + 6 * 60 * 1000).toISOString()});
+                                  `}"
+                                ></span>
+                                before you can request a new email verification.
+                              </p>
+                            `
+                          : html`
+                              <button
+                                type="submit"
+                                class="button button--rectangle button--blue"
+                              >
+                                Send new email verification
+                              </button>
+                            `}
+                      </div>
+                    </div>
+                  `
+                : html``}
+            </div>
+          `,
+        }),
+      );
     },
   });
 
